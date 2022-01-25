@@ -10,10 +10,13 @@ import StakingRewards from '../../../source/renderer/app/components/staking/rewa
 // Dummy data initialization
 import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.json';
 
-const rewards = map(REWARDS, (reward) => {
+const rewards = map(REWARDS, (reward, index) => {
   return {
     ...reward,
     reward: new BigNumber(reward.reward),
+    walletName: reward.wallet,
+    isRestoring: index === 1,
+    syncingProgress: index === 1 ? 40 : 100,
   };
 });
 
@@ -26,5 +29,6 @@ export const StakingRewardsStory = () => (
     onExportCsv={action('onExportCsv')}
     onCopyAddress={action('onCopyAddress')}
     onOpenExternalLink={action('onOpenExternalLink')}
+    onOpenWalletRewards={action('onOpenExternalLink')}
   />
 );

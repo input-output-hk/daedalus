@@ -16,10 +16,11 @@ import StakingInfoCountdown from '../../../source/renderer/app/components/stakin
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 
 import { StakePoolsStory } from './StakePools.stories';
-import { StakingRewardsStory } from './Rewards.stories';
+import { StakingRewardsStory } from './StakingRewards.stories';
 import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
+import { StakingRewardsHistoryStory } from './StakingRewardsHistoryDialog.stories';
 import {
   Step1ConfigurationDialogStory,
   Step2ConfirmationDialogStory,
@@ -50,6 +51,7 @@ const pageNames = {
   'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
+  rewardsHistory: 'Rewards History',
   epochs: 'Epochs',
   info: 'Info',
   'info-countdown': 'Info Countdown',
@@ -81,6 +83,7 @@ const decorator = (story, context) => {
               showInfoTab
               activeItem={getItemFromContext()}
               onNavItemClick={() => {}}
+              isLoading={false}
             >
               {storyWithKnobs}
             </StakingWithNavigation>
@@ -169,6 +172,9 @@ storiesOf('Decentralization | Staking', module)
   })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
+  .add(pageNames.rewardsHistory, StakingRewardsHistoryStory, {
+    id: 'rewardsHistory',
+  })
 
   .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 

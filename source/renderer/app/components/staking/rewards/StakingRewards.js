@@ -5,24 +5,19 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   bigNumberComparator,
   stringComparator,
 } from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
+import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
-import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import ButtonLink from '../../widgets/ButtonLink';
+import Ellipsis from '../../widgets/Ellipsis';
+import LoadingStakePools from '../widgets/LoadingStakePools';
 import { RewardAmount } from './RewardAmount';
 
 const messages = defineMessages({
@@ -31,18 +26,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Earned delegation rewards',
     description:
       'Title "Earned delegation rewards" label on the staking rewards page.',
-  },
-  csvFilenamePrefix: {
-    id: 'staking.rewards.csvFilenamePrefix',
-    defaultMessage: '!!!Rewards',
-    description:
-      'Filename prefix for the "Export CSV" on the staking rewards page.',
-  },
-  exportButtonLabel: {
-    id: 'staking.rewards.exportButtonLabel',
-    defaultMessage: '!!!Export CSV',
-    description:
-      'Label for the "Export CSV" button on the staking rewards page.',
   },
   noRewards: {
     id: 'staking.rewards.no.rewards',
@@ -56,18 +39,13 @@ const messages = defineMessages({
   },
   tableHeaderReward: {
     id: 'staking.rewards.tableHeader.reward',
-    defaultMessage: '!!!Total rewards earned (ADA)',
+    defaultMessage: '!!!Total (ADA)',
     description: 'Table header "Reward" label on staking rewards page',
   },
   tableHeaderRewardsAddress: {
     id: 'staking.rewards.tableHeader.rewardsAddress',
     defaultMessage: '!!!Rewards address',
     description: 'Table header "Rewards address" label on staking rewards page',
-  },
-  tableHeaderDate: {
-    id: 'staking.rewards.tableHeader.date',
-    defaultMessage: '!!!Date',
-    description: 'Table header "Date" label in exported csv file',
   },
   note: {
     id: 'staking.rewards.note',
@@ -80,6 +58,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing {syncingProgress}%',
     description: 'unknown stake pool label on staking rewards page.',
   },
+  detailsButtonLabel: {
+    id: 'staking.rewards.detailsButton.label',
+    defaultMessage: '!!!Details',
+    description: 'Details Button label on staking rewards page.',
+  },
   actionViewInExplorer: {
     id: 'staking.rewards.actionViewInExplorer',
     defaultMessage: '!!!View in explorer',
@@ -88,11 +71,13 @@ const messages = defineMessages({
 });
 
 const REWARD_FIELDS = {
-  WALLET_NAME: 'wallet',
+  WALLET_ID: 'walletId',
+  WALLET_NAME: 'walletName',
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
-  REWARD: 'reward',
+  REWARD_AMOUNT: 'reward',
   REWARDS_ADDRESS: 'rewardsAddress',
+  ACTIONS: 'actions',
 };
 
 const REWARD_ORDERS = {
@@ -100,15 +85,10 @@ const REWARD_ORDERS = {
   DESCENDING: 'desc',
 };
 
-const IS_EXPLORER_LINK_BUTTON_ENABLED = false;
-
 type Props = {
   rewards: Array<Reward>,
   isLoading: boolean,
-  isExporting: boolean,
-  onExportCsv: Function,
-  onCopyAddress: Function,
-  onOpenExternalLink: Function,
+  onOpenWalletRewards: Function,
 };
 
 type State = {
@@ -131,44 +111,11 @@ export default class StakingRewards extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      rewardsOrder: REWARD_ORDERS.DESCENDING,
+      rewardsOrder: REWARD_ORDERS.ASCENDING,
       rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
       contentScrollTop: 0,
     };
   }
-
-  handleExportCsv = (
-    availableTableHeaders: Array<any>,
-    sortedRewards: Array<Reward>
-  ) => {
-    const { onExportCsv } = this.props;
-    const { intl } = this.context;
-    const exportedHeader = [
-      ...availableTableHeaders.map((header) => header.title),
-      intl.formatMessage(messages.tableHeaderDate),
-    ];
-    const date = new Date().toISOString();
-    const exportedBody = sortedRewards.map((reward) => {
-      const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
-      const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
-        DECIMAL_PLACES_IN_ADA
-      );
-      const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
-      return [
-        rewardWallet,
-        rewardsAddress,
-        isRestoring ? '-' : rewardAmount,
-        date,
-      ];
-    });
-    const exportedContent = [exportedHeader, ...exportedBody];
-
-    onExportCsv({
-      fileContent: exportedContent,
-      filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
-    });
-  };
 
   getSortedRewards = (): Array<Reward> => {
     const { rewards } = this.props;
@@ -180,8 +127,8 @@ export default class StakingRewards extends Component<Props, State> {
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
       const walletNameCompareResult = stringComparator(
-        rewardA.wallet,
-        rewardB.wallet,
+        rewardA.walletName,
+        rewardB.walletName,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
       const walletAddressCompareResult = stringComparator(
@@ -189,7 +136,7 @@ export default class StakingRewards extends Component<Props, State> {
         rewardB.rewardsAddress,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
-      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_AMOUNT) {
         if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
           return walletNameCompareResult;
         }
@@ -225,13 +172,7 @@ export default class StakingRewards extends Component<Props, State> {
   };
 
   render() {
-    const {
-      rewards,
-      isLoading,
-      isExporting,
-      onCopyAddress,
-      onOpenExternalLink,
-    } = this.props;
+    const { rewards, isLoading, onOpenWalletRewards } = this.props;
     const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
@@ -247,33 +188,24 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
       {
-        name: REWARD_FIELDS.REWARD,
+        name: REWARD_FIELDS.REWARD_AMOUNT,
         title: `${intl.formatMessage(
           messages.tableHeaderReward
         )} (${intl.formatMessage(globalMessages.adaUnit)})`,
       },
+      {
+        name: REWARD_FIELDS.ACTIONS,
+        title: '',
+      },
     ];
-    const exportCsvButtonLabel = isExporting ? (
-      <div className={styles.exportingSpinnerWrapper}>
-        <LoadingSpinner />
-      </div>
-    ) : (
-      <>
-        <div className={styles.actionLabel}>
-          {intl.formatMessage(messages.exportButtonLabel)}
-        </div>
-        <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
-      </>
-    );
-    const exportCsvButtonClasses = classNames(['flat', styles.actionButton]);
-    const explorerButtonClasses = classNames([
-      'flat',
-      styles.actionExplorerLink,
-    ]);
     const headerWrapperClasses = classNames([
       styles.headerWrapper,
       contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
     ]);
+
+    if (isLoading) {
+      return <LoadingStakePools />;
+    }
 
     return (
       <div className={styles.component}>
@@ -281,16 +213,6 @@ export default class StakingRewards extends Component<Props, State> {
           <div className={styles.title}>
             {intl.formatMessage(messages.title)}
           </div>
-          {!noRewards && (
-            <Button
-              className={exportCsvButtonClasses}
-              label={exportCsvButtonLabel}
-              onClick={() =>
-                this.handleExportCsv(availableTableHeaders, sortedRewards)
-              }
-              skin={ButtonSkin}
-            />
-          )}
         </div>
         <div
           className={styles.contentWrapper}
@@ -309,20 +231,26 @@ export default class StakingRewards extends Component<Props, State> {
                   <tr>
                     {map(availableTableHeaders, (tableHeader) => {
                       const isSorted = tableHeader.name === rewardsSortBy;
+                      const hideSorting =
+                        tableHeader.name === REWARD_FIELDS.ACTIONS;
                       const sortIconClasses = classNames([
                         styles.sortIcon,
                         isSorted ? styles.sorted : null,
                         isSorted && rewardsOrder === 'asc'
                           ? styles.ascending
                           : null,
+                        hideSorting ? styles.hideSorting : null,
                       ]);
 
                       return (
                         <th
                           key={tableHeader.name}
                           onClick={() =>
-                            this.handleRewardsSort(tableHeader.name)
+                            !hideSorting
+                              ? this.handleRewardsSort(tableHeader.name)
+                              : null
                           }
+                          className={styles[tableHeader.name]}
                         >
                           {tableHeader.title}
                           <SVGInline
@@ -344,54 +272,30 @@ export default class StakingRewards extends Component<Props, State> {
                     );
                     const rewardAmount = get(
                       reward,
-                      REWARD_FIELDS.REWARD
+                      REWARD_FIELDS.REWARD_AMOUNT
                     ).toFormat(DECIMAL_PLACES_IN_ADA);
                     const rewardsAddress = get(
                       reward,
                       REWARD_FIELDS.REWARDS_ADDRESS
                     );
+                    const onOpenWalletRewardsBind = () =>
+                      !isRestoring ? onOpenWalletRewards(reward) : null;
+
+                    const trClassName = !isRestoring ? styles.hasLink : null;
+                    const detailsButtonStyles = classNames([
+                      styles.actionButton,
+                      styles.detailsButton,
+                    ]);
 
                     return (
-                      <tr key={key}>
+                      <tr
+                        key={key}
+                        onClick={onOpenWalletRewardsBind}
+                        className={trClassName}
+                      >
                         <td className={styles.rewardWallet}>{rewardWallet}</td>
                         <td className={styles.rewardsAddress}>
-                          {rewardsAddress && (
-                            <div>
-                              <CopyToClipboard
-                                text={rewardsAddress}
-                                onCopy={() => onCopyAddress(rewardsAddress)}
-                              >
-                                <div className={styles.addressContainer}>
-                                  <span className={styles.address}>
-                                    {rewardsAddress}
-                                  </span>
-                                  <span className={styles.copyAddress}>
-                                    <SVGInline
-                                      svg={iconCopy}
-                                      className={styles.copyIcon}
-                                    />
-                                  </span>
-                                </div>
-                              </CopyToClipboard>
-                              {IS_EXPLORER_LINK_BUTTON_ENABLED && (
-                                <ButtonLink
-                                  className={explorerButtonClasses}
-                                  onClick={() =>
-                                    onOpenExternalLink(rewardsAddress)
-                                  }
-                                  skin={ButtonSkin}
-                                  label={intl.formatMessage(
-                                    messages.actionViewInExplorer
-                                  )}
-                                  linkProps={{
-                                    className: styles.externalLink,
-                                    hasIconBefore: false,
-                                    hasIconAfter: true,
-                                  }}
-                                />
-                              )}
-                            </div>
-                          )}
+                          <Ellipsis string={rewardsAddress} />
                         </td>
                         <td className={styles.rewardAmount}>
                           {isRestoring ? (
@@ -399,18 +303,27 @@ export default class StakingRewards extends Component<Props, State> {
                           ) : (
                             <RewardAmount amount={rewardAmount} />
                           )}
+                        </td>
+                        <td className={styles.actions}>
+                          {!isRestoring && (
+                            <div className={detailsButtonStyles}>
+                              {intl.formatMessage(messages.detailsButtonLabel)}
+                            </div>
+                          )}
                           {isRestoring && (
                             <div className={styles.syncingProgress}>
-                              <PopOver
-                                content={intl.formatMessage(
+                              <div className={styles.actionButton}>
+                                <SVGInline
+                                  svg={tinySpinnerIcon}
+                                  className={styles.syncingProgressIcon}
+                                />
+                                {intl.formatMessage(
                                   messages.syncingTooltipLabel,
                                   {
                                     syncingProgress,
                                   }
                                 )}
-                              >
-                                <LoadingSpinner medium />
-                              </PopOver>
+                              </div>
                             </div>
                           )}
                         </td>
@@ -419,12 +332,6 @@ export default class StakingRewards extends Component<Props, State> {
                   })}
                 </tbody>
               </table>
-            )}
-
-            {isLoading && (
-              <div className={styles.loadingSpinnerWrapper}>
-                <LoadingSpinner />
-              </div>
             )}
           </BorderedBox>
           <div className={styles.note}>

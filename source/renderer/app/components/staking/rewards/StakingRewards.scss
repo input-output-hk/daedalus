@@ -134,6 +134,30 @@
       background-color: var(--theme-staking-table-head-background-color);
     }
 
+    tbody {
+      tr {
+        background-color: transparent;
+        transition: background-color 0.1s;
+        &.hasLink {
+          cursor: pointer;
+          &:hover {
+            background-color: var(
+              --theme-staking-rewards-table-background-color-hover
+            );
+            .detailsButton {
+              background-color: var(--theme-button-primary-background-color);
+              color: var(--theme-button-primary-text-color);
+              &:hover {
+                background-color: var(
+                  --theme-button-primary-background-color-hover
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+
     tr,
     td,
     th {
@@ -146,16 +170,23 @@
       font-family: var(--font-semibold);
       font-size: 14px;
       line-height: 1.14;
-      padding: 14px 20px;
+      max-height: 43px;
+      padding: 14px 7px 14px 20px;
       text-align: left;
-
+      user-select: none;
+      white-space: nowrap;
+      &.actions {
+        cursor: default;
+      }
+      &.reward {
+        text-align: right;
+      }
       &:hover {
-        & > .sortIcon {
+        & > .sortIcon:not(.hideSorting):not(.sorted) {
           opacity: 0.5;
           visibility: visible;
         }
       }
-
       & > .sortIcon {
         margin-left: 6px;
         visibility: hidden;
@@ -187,7 +218,7 @@
       font-family: var(--font-light);
       font-size: 14px;
       line-height: 1.3;
-      padding: 14px 20px;
+      padding: 12.5px 20px;
       position: relative;
       text-align: left;
       -webkit-user-select: none;
@@ -208,16 +239,20 @@
       }
 
       .syncingProgress {
-        position: absolute;
-        right: 10px;
-        top: 0;
-
-        :global .LoadingSpinner_component.LoadingSpinner_medium {
-          margin: 10px auto !important;
-
-          .LoadingSpinner_icon svg path {
-            fill: var(--theme-loading-spinner-color);
-            opacity: 0.3;
+        opacity: 0.5;
+        .actionButton {
+          .syncingProgressIcon {
+            display: inline-block;
+            margin-right: 4px;
+            svg {
+              animation: rotating-spinner 1.2s linear infinite;
+              display: block;
+              height: 6px;
+              width: 6px;
+              circle {
+                stroke: var(--theme-staking-font-color-regular);
+              }
+            }
           }
         }
       }
@@ -280,11 +315,41 @@
       }
 
       &.rewardAmount {
-        min-width: 250px;
+        // min-width: 100px;
+        text-align: right;
       }
-
+      &.actions {
+        width: 10px;
+        .actionButton {
+          background-color: var(
+            --theme-staking-rewards-table-background-color-hover
+          );
+          border-radius: 3px;
+          display: inline-block;
+          font-family: var(--font-bold);
+          font-size: 8px;
+          height: 16px;
+          line-height: 1.25;
+          margin-top: 1px;
+          padding: 3px 8px;
+          text-transform: uppercase;
+          transition: opacity 0.1s;
+          white-space: nowrap;
+        }
+      }
       &.rewardsAddress {
         min-width: 100px;
+        word-wrap: break-word;
+
+        @media (max-width: 1200px) {
+          max-width: 420px;
+        }
+        @media (max-width: 1120px) {
+          max-width: 420px;
+        }
+        @media (max-width: 1024px) {
+          max-width: 300px;
+        }
 
         > div {
           align-items: center;
@@ -325,6 +390,14 @@
           }
         }
       }
+    }
+  }
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

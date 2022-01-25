@@ -1,0 +1,147 @@
+.component {
+  .label {
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 6px;
+  }
+  .rewardsAddress {
+    font-family: var(--font-light);
+    line-height: 1.38;
+    margin-bottom: 20px;
+  }
+  .rewardsAddress {
+    cursor: pointer;
+    .copyIconWrapper {
+      margin-left: 7px;
+      .copyIcon,
+      [data-tippy-root] {
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .copyIcon {
+        svg {
+          width: 9px;
+          g {
+            fill: var(--theme-dialog-title-color);
+          }
+        }
+      }
+      &.visible {
+        .copyIcon {
+          opacity: 1;
+          svg {
+            path {
+              stroke: var(--theme-dialog-title-color);
+            }
+          }
+        }
+      }
+      &.itemCopied {
+        svg {
+          transform: translateY(-1px);
+        }
+      }
+      :global {
+        .SimplePopOver_root {
+          white-space: nowrap;
+        }
+      }
+      .copyPopOver {
+        :global {
+          .tippy-content {
+            font-size: 13px;
+            height: 24px;
+            line-height: 1.15;
+            padding: 4px 16px;
+          }
+        }
+      }
+    }
+    &:hover {
+      .copyIcon,
+      [data-tippy-root] {
+        opacity: 1;
+      }
+    }
+  }
+  .loadingSpinner {
+    margin-bottom: 30px;
+  }
+  .table {
+    tr:last-child td {
+      padding-bottom: 0;
+    }
+    td {
+      font-family: var(--font-regular);
+    }
+    tr {
+      &:hover {
+        .unpaidPopover {
+          opacity: 1;
+        }
+      }
+    }
+    .unpaidRow {
+      :global {
+        .epoch,
+        .pool,
+        .amount > span {
+          opacity: 0.5;
+        }
+        .amount {
+          .tippy-content {
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+    :global {
+      th.amount {
+        text-align: right;
+      }
+      td.epoch {
+        width: 80px;
+      }
+      td.pool {
+        max-width: 350px;
+      }
+      td.amount {
+        padding: 0 13px 0 0px;
+        text-align: right;
+      }
+    }
+  }
+  .unpaidPopover {
+    opacity: 0;
+  }
+  .stakePoolTicker {
+    color: var(--theme-staking-stake-pool-tooltip-link-color);
+  }
+  :global {
+    .Dialog_content .LoadingSpinner_icon {
+      svg {
+        path {
+          fill: var(--theme-dialog-title-color) !important;
+        }
+      }
+    }
+    .Dialog_contentWrapper {
+      overflow-y: hidden;
+    }
+  }
+  .noData {
+    font-size: 16px;
+    line-height: 1.38;
+    p:first-child {
+      color: var(--theme-color-error);
+      font-family: var(--font-regular);
+    }
+    span {
+      font-family: var(--font-light);
+      font-size: 16px;
+      > span {
+        font-family: var(--font-regular);
+      }
+    }
+  }
+}

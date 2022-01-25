@@ -23,11 +23,27 @@ export const stringComparator = (
   stringB: string,
   isAscending: boolean = true
 ): number => {
-  if (stringA < stringB) {
+  if (`${stringA}`.toLowerCase() < `${stringB}`.toLowerCase()) {
     return isAscending ? -1 : 1;
   }
 
-  if (stringA > stringB) {
+  if (`${stringA}`.toLowerCase() > `${stringB}`.toLowerCase()) {
+    return isAscending ? 1 : -1;
+  }
+
+  return 0;
+};
+
+export const numberComparator = (
+  numberA: number,
+  numberB: number,
+  isAscending: boolean = true
+): number => {
+  if (numberA < numberB) {
+    return isAscending ? -1 : 1;
+  }
+
+  if (numberA > numberB) {
     return isAscending ? 1 : -1;
   }
 

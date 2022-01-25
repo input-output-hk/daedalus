@@ -943,6 +943,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
     '--theme-staking-redeemItnRewards-description-text-color': '#515c6ab3',
     '--theme-staking-redeemItnRewards-icon-color': '#e9f4fe',
+    '--theme-staking-rewards-table-background-color-hover':
+      'rgba(233, 244, 254, 0.1)',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

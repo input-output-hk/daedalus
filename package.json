@@ -62,7 +62,9 @@
     "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
+    "graphql:generate-types": "graphql-codegen",
+    "graphql:link-schema": "ln -s ./node_modules/@cardano-graphql/client-ts/api/cardano-db-hasura/schema.graphql schema.graphql"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -81,7 +83,11 @@
     "@babel/preset-flow": "7.16.0",
     "@babel/preset-react": "7.0.0",
     "@babel/register": "7.0.0",
+    "@cardano-graphql/client-ts": "4.0.0",
     "@dump247/storybook-state": "1.6.1",
+    "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/flow": "1.19.0",
+    "@graphql-codegen/flow-operations": "1.18.8",
     "@storybook/addon-actions": "5.3.14",
     "@storybook/addon-knobs": "5.3.14",
     "@storybook/addon-links": "5.3.14",
@@ -208,6 +214,9 @@
     "fuse.js": "6.5.3",
     "glob": "7.1.6",
     "graceful-fs": "4.2.4",
+    "graphql": "14.3.0",
+    "graphql-request": "1.8.2",
+    "graphql-tag": "2.10.1",
     "gulp": "4.0.2",
     "highlight-words": "1.2.0",
     "history": "4.10.1",
@@ -235,6 +244,7 @@
     "react-animate-height": "2.0.23",
     "react-copy-to-clipboard": "5.0.2",
     "react-custom-scrollbars": "4.2.1",
+    "react-date-range": "1.1.3",
     "react-datetime": "3.0.4",
     "react-dom": "16.13.1",
     "react-intl": "2.7.2",

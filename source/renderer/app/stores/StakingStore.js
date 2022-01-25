@@ -1,8 +1,19 @@
 // @flow
-import { computed, action, observable, runInAction } from 'mobx';
+import { computed, action, observable, runInAction, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
-import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
+import type {
+  GetRewardsHistoryResponse,
+  Reward,
+  JoinStakePoolRequest,
+  GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
+  QuitStakePoolRequest,
+  RewardsHistoryItem,
+  PoolMetadataSource,
+} from '../api/staking/types';
+import type { GetRewardsForAddressesQueryVariables } from '../types/cardano-graphql';
+import { GraphQLRequest } from './lib/GraphQLRequest';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -21,22 +32,13 @@ import {
   SMASH_SERVER_INVALID_TYPES,
   CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
-import type {
-  Reward,
-  JoinStakePoolRequest,
-  GetDelegationFeeRequest,
-  DelegationCalculateFeeResponse,
-  QuitStakePoolRequest,
-  PoolMetadataSource,
-} from '../api/staking/types';
+import { i18nContext } from '../utils/i18nContext';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
-import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
-import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import rewardsCsvGenerator from '../utils/rewardsCsvGenerator';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
-import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -66,6 +68,19 @@ export default class StakingStore extends Store {
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
   @observable stakingInfoWasOpen: boolean = false;
+
+  /* ----------  Rewards History  ---------- */
+  @observable rewardsHistoryStartDate: Date = new Date();
+  @observable rewardsHistoryEndDate: ?Date = null;
+  @observable rewardsHistory: {
+    [key: string]: Array<RewardsHistoryItem>,
+  } = {};
+
+  @observable
+  rewardsHistoryRequest = new GraphQLRequest<
+    GetRewardsForAddressesQueryVariables,
+    GetRewardsHistoryResponse
+  >(this.api.ada.getRewardsHistory);
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -113,12 +128,18 @@ export default class StakingStore extends Store {
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
-    stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
+    stakingActions.fetchRewardsHistory.listen(this._fetchRewardsHistory);
+    stakingActions.requestRewardsHistoryCSVFile.listen(
+      this._requestRewardsHistoryCSVFile
+    );
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
-    this.registerReactions([this._pollOnSync]);
+    this.registerReactions([
+      this._pollOnSync,
+      this._updateRewardsHistoryOnRequestChange,
+    ]);
 
     this._startStakePoolsFetchTracker();
     this._getStakingInfoWasOpen();
@@ -391,41 +412,6 @@ export default class StakingStore extends Store {
     this.isDelegationTransactionPending = false;
   };
 
-  @action _requestCSVFile = async ({
-    fileContent,
-    filenamePrefix: prefix,
-  }: {
-    fileContent: CsvFileContent,
-    filenamePrefix: string,
-  }) => {
-    const {
-      actions: { wallets },
-    } = this;
-    const fileName = generateFileNameWithTimestamp({
-      prefix,
-      extension: 'csv',
-      isUTC: true,
-    });
-    const { desktopDirectoryPath } = this.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = {
-      defaultPath,
-      filters: [
-        {
-          extensions: ['csv'],
-        },
-      ],
-    };
-    const { filePath } = await showSaveDialogChannel.send(params);
-
-    // if cancel button is clicked or path is empty
-    if (!filePath) return;
-
-    await wallets.generateCsv.trigger({ fileContent, filePath });
-
-    this.actions.staking.requestCSVFileSuccess.trigger();
-  };
-
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
   ): Promise<?DelegationCalculateFeeResponse> => {
@@ -459,6 +445,12 @@ export default class StakingStore extends Store {
   };
 
   // GETTERS
+
+  @computed get isLoadingStakePools(): boolean {
+    const { fetchingStakePoolsFailed, stores } = this;
+    const { isSynced } = stores.networkStatus;
+    return !isSynced || fetchingStakePoolsFailed;
+  }
 
   @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
@@ -510,10 +502,48 @@ export default class StakingStore extends Store {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
 
-  @computed get rewards(): Array<Reward> {
-    const { wallets } = this.stores;
-    return wallets.allWallets.map(this._transformWalletToReward);
+  @computed
+  get rewards(): Array<Reward> {
+    const { wallets, transactions, addresses } = this.stores;
+    const { withdrawals } = transactions;
+    const { stakeAddresses } = addresses;
+    return wallets.allWallets
+      .filter((inputWallet: Wallet) => {
+        const { id: walletId, reward, isRestoring } = inputWallet;
+        if (isRestoring) {
+          return true;
+        }
+        const withdrawal = withdrawals[walletId];
+        const total = reward.plus(withdrawal);
+        return !total.isZero();
+      })
+      .map((inputWallet: Wallet) => {
+        const {
+          id: walletId,
+          name: walletName,
+          isRestoring,
+          reward: rewards,
+          syncState,
+        } = inputWallet;
+        const reward = rewards.plus(withdrawals[walletId]);
+        const rewardsAddress = stakeAddresses[walletId];
+        const syncingProgress = get(syncState, 'progress.quantity', '');
+        return {
+          walletId,
+          walletName,
+          reward,
+          isRestoring,
+          syncingProgress,
+          rewardsAddress,
+        };
+      });
   }
+
+  @computed get isFetchingRewardsHistory() {
+    return this.rewardsHistoryRequest.isExecuting;
+  }
+
+  // ACTIONS
 
   @action showCountdown(): boolean {
     const { isShelleyPending } = this.stores.networkStatus;
@@ -569,6 +599,7 @@ export default class StakingStore extends Store {
         );
       }
     } else {
+      // regular / smash
       this.fetchingStakePoolsFailed = false;
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
@@ -831,22 +862,85 @@ export default class StakingStore extends Store {
     });
   };
 
-  _transformWalletToReward = (inputWallet: Wallet) => {
-    const {
-      id: walletId,
-      name: wallet,
-      isRestoring,
-      reward: rewards,
-      syncState,
-    } = inputWallet;
-    const { stakeAddresses } = this.stores.addresses;
-    const { withdrawals } = this.stores.transactions;
-    const reward = rewards.plus(withdrawals[walletId]);
-    const rewardsAddress = stakeAddresses[walletId];
-    const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
-  };
-
   getStakePoolById = (stakePoolId: string) =>
     this.stakePools.find(({ id }: StakePool) => id === stakePoolId);
+
+  _fetchRewardsHistory = async ({ address }: { address: string }) => {
+    const addresses: Array<string> = [address];
+    try {
+      await this.rewardsHistoryRequest.execute({
+        addresses,
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.rewardsHistory[address] = [];
+      });
+    }
+  };
+
+  _updateRewardsHistoryOnRequestChange = () => {
+    const { result } = this.rewardsHistoryRequest;
+    const { stakePools } = this.stores.staking;
+    const { epochNumber } = this.stores.networkStatus.nextEpoch || {};
+
+    // Only continue if rewards history data is available
+    if (result == null || !result.length) return;
+
+    const rewardsHistory = toJS(result);
+    const { address } = rewardsHistory[0];
+    runInAction(() => {
+      this.rewardsHistory[address] = rewardsHistory
+        ? rewardsHistory.filter(Boolean).map(({ amount, epoch, stakePool }) => {
+            const poolId = stakePool.id;
+            const pool = stakePools.find((p) => p.id === poolId) || {
+              id: poolId,
+            };
+            const isUnpaid = !!epochNumber && epoch >= epochNumber - 2;
+            return {
+              pool,
+              epoch,
+              amount,
+              isUnpaid,
+            };
+          })
+        : [];
+    });
+  };
+
+  _requestRewardsHistoryCSVFile = async ({
+    rewardsAddress,
+    walletName,
+  }: {
+    rewardsAddress: string,
+    walletName: string,
+  }) => {
+    const {
+      stores: { profile },
+    } = this;
+    const { desktopDirectoryPath } = profile;
+    const locale = profile.currentLocale;
+    const intl = i18nContext(locale);
+
+    const rewards = this.rewardsHistory[rewardsAddress];
+    if (rewards) {
+      const success = await rewardsCsvGenerator({
+        desktopDirectoryPath,
+        intl,
+        rewards,
+        walletName,
+      });
+      if (success) this.actions.staking.requestCSVFileSuccess.trigger();
+    }
+  };
+
+  @action _setRewardsHistoryDateRange = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: Date,
+    endDate: ?Date,
+  }) => {
+    this.rewardsHistoryStartDate = startDate;
+    this.rewardsHistoryEndDate = endDate;
+  };
 }

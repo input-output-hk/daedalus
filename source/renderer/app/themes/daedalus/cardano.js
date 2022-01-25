@@ -938,6 +938,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
     '--theme-staking-redeemItnRewards-description-text-color': '#f2f2f2b3',
     '--theme-staking-redeemItnRewards-icon-color': '#5e6066',
+    '--theme-staking-rewards-table-background-color-hover':
+      'rgba(32, 34, 37, 0.1)',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',

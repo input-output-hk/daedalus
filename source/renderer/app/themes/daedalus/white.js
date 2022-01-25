@@ -930,6 +930,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
     '--theme-staking-redeemItnRewards-description-text-color': '#fafafab3',
     '--theme-staking-redeemItnRewards-icon-color': '#2d2d2d',
+    '--theme-staking-rewards-table-background-color-hover':
+      'rgba(41, 181, 149, 0.1)',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',
