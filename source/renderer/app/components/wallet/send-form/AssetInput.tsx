@@ -121,6 +121,7 @@ class AssetInput extends Component<Props> {
                 small
               />
             }
+            data-testid={`assetInput:${uniqueId}`}
             bigNumberFormat={decimals ? currentNumberFormat : null}
             decimalPlaces={decimals}
             numberLocaleOptions={{

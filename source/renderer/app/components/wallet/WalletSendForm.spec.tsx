@@ -101,15 +101,11 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   function getInput(label: string) {
-    return screen
-      .getByText(label)
-      .closest('label')
-      .parentElement.querySelector('input');
+    return screen.getByLabelText(label);
   }
 
   async function findInput(label: string) {
-    await screen.findByText(label);
-    return getInput(label);
+    return screen.findByLabelText(label);
   }
 
   async function addToken(value = 1, tokenIndex = 0) {
@@ -122,7 +118,10 @@ describe('wallet/Wallet Send Form', () => {
     fireEvent.click(tokenCheckbox);
     const addTokenPickerButton = await screen.findByText('Add');
     fireEvent.click(addTokenPickerButton);
-    const token = await findInput(assets[tokenIndex].metadata.name);
+
+    const { uniqueId } = assets[tokenIndex];
+
+    const token = await screen.findByTestId(`assetInput:${uniqueId}`);
     fireEvent.change(token, {
       target: {
         value,
@@ -131,7 +130,7 @@ describe('wallet/Wallet Send Form', () => {
     return async () => {
       fireEvent.mouseEnter(token);
       const removeTokenButton = await screen.findByTestId(
-        `remove-asset-${assets[tokenIndex].uniqueId}`
+        `remove-asset-${uniqueId}`
       );
       fireEvent.click(removeTokenButton);
     };
