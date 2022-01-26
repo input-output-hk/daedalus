@@ -1,7 +1,7 @@
 // @flow
 import { shell } from 'electron';
 import type { MenuItem } from 'electron';
-import { getRtsFlagsSettings } from '../utils/rtsFlagSettings';
+import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 import { environment } from '../environment';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';

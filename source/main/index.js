@@ -25,10 +25,10 @@ import {
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
-import { safeExitWithCode } from './utils/safeExitWithCode';
+import { safeExitDaedalusWithCode } from './utils/safeExitDaedalusWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import { getRtsFlagsSettings } from './utils/rtsFlagSettings';
+import { getRtsFlagsSettings } from './utils/rtsFlagsSettings';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
@@ -242,7 +242,7 @@ const onAppReady = async () => {
             keepLocalClusterRunning,
           }
         );
-        return safeExitWithCode(0);
+        return safeExitDaedalusWithCode(0);
       }
 
       const exitSelfnodeDialogOptions = {
@@ -262,7 +262,7 @@ const onAppReady = async () => {
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus'
         );
-        return safeExitWithCode(0);
+        return safeExitDaedalusWithCode(0);
       }
       logger.info('ipcMain: Exiting local cluster together with Daedalus');
     }

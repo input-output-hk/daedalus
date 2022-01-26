@@ -4,12 +4,11 @@ import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { logger } from './logging';
-import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { storeRtsFlagsSettings } from './rtsFlagSettings';
+import { storeRtsFlagsSettings } from './rtsFlagsSettings';
 import { RTS_FLAGS } from '../config';
 import { safeExit } from './safeExit';
 
@@ -50,16 +49,14 @@ export const buildAppMenus = async (
 
   const restartWithBlankScreenFix = async () => {
     logger.info('Restarting in BlankScreenFix...');
-    if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 21', { code: 21 });
-    safeExitWithCode(21);
+    return safeExit(cardanoNode, 21);
   };
 
   const restartWithoutBlankScreenFix = async () => {
     logger.info('Restarting without BlankScreenFix...');
-    if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 22', { code: 22 });
-    safeExitWithCode(22);
+    return safeExit(cardanoNode, 22);
   };
 
   const toggleBlankScreenFix = async (item) => {

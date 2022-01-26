@@ -101,8 +101,8 @@ const messages = defineMessages({
   },
   rtsFlagsModeEnabled: {
     id: 'daedalus.diagnostics.dialog.rtsFlagsModeEnabled',
-    defaultMessage: '!!!RTS Flags Mode enabled',
-    description: 'RTS Flags Mode enabled',
+    defaultMessage: '!!!RTS Flags Mode',
+    description: 'Indicates whether RTS Flags Mode is enabled or not',
   },
   coreInfo: {
     id: 'daedalus.diagnostics.dialog.coreInfo',
@@ -331,13 +331,23 @@ const messages = defineMessages({
   },
   statusOn: {
     id: 'daedalus.diagnostics.dialog.statusOn',
-    defaultMessage: '!!!YES',
-    description: 'YES',
+    defaultMessage: '!!!Yes',
+    description: 'Yes',
   },
   statusOff: {
     id: 'daedalus.diagnostics.dialog.statusOff',
-    defaultMessage: '!!!NO',
-    description: 'NO',
+    defaultMessage: '!!!No',
+    description: 'No',
+  },
+  statusOnForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOnForUserSettings',
+    defaultMessage: '!!!On',
+    description: 'On',
+  },
+  statusOffForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOffForUserSettings',
+    defaultMessage: '!!!Off',
+    description: 'Off',
   },
   serviceUnreachable: {
     id: 'daedalus.diagnostics.dialog.serviceUnreachable',
@@ -600,17 +610,35 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               )}
               {getRow(
                 'meetsHardwareRequirementsLabel',
-                <PopOver content={cpu}>
-                  {meetsHardwareRequirements
-                    ? intl.formatMessage(
-                        messages.meetsHardwareRequirementsStatusGoodValue
-                      )
-                    : intl.formatMessage(
-                        messages.meetsHardwareRequirementsStatusLowValue
-                      )}
+                <PopOver
+                  content={intl.formatMessage(
+                    meetsHardwareRequirements
+                      ? messages.meetsHardwareRequirementsStatusGoodTooltip
+                      : messages.meetsHardwareRequirementsStatusLowTooltip
+                  )}
+                >
+                  <div
+                    className={classNames(
+                      styles.layoutData,
+                      meetsHardwareRequirements ? styles.green : styles.red
+                    )}
+                  >
+                    {intl.formatMessage(
+                      meetsHardwareRequirements
+                        ? messages.meetsHardwareRequirementsStatusGoodValue
+                        : messages.meetsHardwareRequirementsStatusLowValue
+                    )}
+                  </div>
                 </PopOver>
               )}
-              {getRow('rtsFlagsModeEnabled', rtsFlagsModeEnabled)}
+              {getRow(
+                'rtsFlagsModeEnabled',
+                intl.formatMessage(
+                  rtsFlagsModeEnabled
+                    ? messages.statusOnForUserSettings
+                    : messages.statusOffForUserSettings
+                )
+              )}
             </div>
             <div>
               {getSectionRow('coreInfo')}
@@ -621,8 +649,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'blankScreenFix',
                 isBlankScreenFixActive
-                  ? intl.formatMessage(messages.statusOn)
-                  : intl.formatMessage(messages.statusOff)
+                  ? intl.formatMessage(messages.statusOnForUserSettings)
+                  : intl.formatMessage(messages.statusOffForUserSettings)
               )}
               {getRow(
                 'stateDirectoryPath',

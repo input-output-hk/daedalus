@@ -8,7 +8,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
-import { getRtsFlagsSettings } from '../utils/rtsFlagSettings';
+import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
