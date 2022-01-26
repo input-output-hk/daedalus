@@ -4,9 +4,8 @@ import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
-import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
-import formatCpuInfo from '../../utils/formatCpuInfo';
+import { buildSystemInfo } from '../../utils/buildSystemInfo';
 
 type Props = InjectedDialogContainerProps;
 
@@ -52,7 +51,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       networkTip,
       localTip,
       environment,
-      diskSpaceAvailable,
       tlsConfig,
       cardanoNodePID,
       cardanoWalletPID,
@@ -60,13 +58,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       getNetworkClockRequest,
     } = networkStatus;
 
-    const systemInfo = {
-      platform: environment.os,
-      platformVersion: environment.platformVersion,
-      cpu: formatCpuInfo(environment.cpu),
-      ram: formattedBytesToSize(environment.ram),
-      availableDiskSpace: diskSpaceAvailable,
-    };
+    const systemInfo = buildSystemInfo(environment, networkStatus);
 
     const {
       network,

@@ -66,6 +66,44 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc',
     description: '"Support" link URL while disk space is unknown',
   },
+  meetsHardwareRequirementsLabel: {
+    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatus',
+    defaultMessage: '!!!Recommended system requirements status',
+    description:
+      'Displayed on the left of the Recommended system requirements status row',
+  },
+  meetsHardwareRequirementsStatusLowValue: {
+    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowValue',
+    defaultMessage: '!!!Low',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are insufficient',
+  },
+  meetsHardwareRequirementsStatusGoodValue: {
+    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodValue',
+    defaultMessage: '!!!Good',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
+  },
+  meetsHardwareRequirementsStatusLowTooltip: {
+    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowTooltip',
+    defaultMessage:
+      '!!!Your current system requirements are low to run Daedalus. We suggest using a machine with at least 16 gb of RAM',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Low',
+  },
+  meetsHardwareRequirementsStatusGoodTooltip: {
+    id:
+      'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodTooltip',
+    defaultMessage:
+      '!!!Your current system requirements are good enough to run Daedalus',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Good',
+  },
+  rtsFlagsModeEnabled: {
+    id: 'daedalus.diagnostics.dialog.rtsFlagsModeEnabled',
+    defaultMessage: '!!!RTS Flags Mode enabled',
+    description: 'RTS Flags Mode enabled',
+  },
   coreInfo: {
     id: 'daedalus.diagnostics.dialog.coreInfo',
     defaultMessage: '!!!CORE INFO',
@@ -482,6 +520,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cpu,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
+      meetsHardwareRequirements,
+      rtsFlagsModeEnabled,
     } = systemInfo;
 
     const availableDiskSpace = formattedSize(
@@ -558,6 +598,19 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   />
                 )
               )}
+              {getRow(
+                'meetsHardwareRequirementsLabel',
+                <PopOver content={cpu}>
+                  {meetsHardwareRequirements
+                    ? intl.formatMessage(
+                        messages.meetsHardwareRequirementsStatusGoodValue
+                      )
+                    : intl.formatMessage(
+                        messages.meetsHardwareRequirementsStatusLowValue
+                      )}
+                </PopOver>
+              )}
+              {getRow('rtsFlagsModeEnabled', rtsFlagsModeEnabled)}
             </div>
             <div>
               {getSectionRow('coreInfo')}

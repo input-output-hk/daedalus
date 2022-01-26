@@ -22,18 +22,13 @@ import {
   launcherConfig,
   pubLogsFolderPath,
   stateDirectoryPath,
-  RTS_FLAGS,
-  MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS,
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import {
-  getRtsFlagsSettings,
-  storeRtsFlagsSettings,
-} from './utils/rtsFlagSettings';
+import { getRtsFlagsSettings } from './utils/rtsFlagSettings';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
@@ -85,18 +80,6 @@ if (isBlankScreenFixActive) {
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
-
-const getCurrentRtsFlags = () => {
-  const rtsFlagsFromStorage = getRtsFlagsSettings(network);
-  if (!rtsFlagsFromStorage) {
-    if (os.totalmem() < MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS) {
-      storeRtsFlagsSettings(environment.network, RTS_FLAGS);
-      return RTS_FLAGS;
-    }
-    return [];
-  }
-  return rtsFlagsFromStorage;
-};
 
 const onAppReady = async () => {
   setupLogging();
@@ -154,7 +137,7 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const rtsFlags = getCurrentRtsFlags();
+  const rtsFlags = getRtsFlagsSettings(network) || [];
 
   logger.info(
     `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
