@@ -107,25 +107,6 @@ describe('MenuUpdater feature/makeReactionCallback', () => {
     );
   });
 
-  it('sends walletSettingsState hidden when wallet settings route is already active', () => {
-    const send = jest.fn();
-    makeReactionCallback({
-      ...defaultArgs,
-      stores: {
-        ...defaultArgs.stores,
-        router: makeRouter({
-          pathname: ROUTES.WALLETS.SETTINGS,
-        }),
-      },
-      rebuildApplicationMenu: makeRebuildApplicationMenu({ send }),
-    })();
-
-    expect(send.mock.calls[0][0]).toHaveProperty(
-      'walletSettingsState',
-      WalletSettingsStateEnum.hidden
-    );
-  });
-
   it('sends walletSettingsState enabled when it is one of a wallet pages', () => {
     const send = jest.fn();
     makeReactionCallback({
@@ -155,6 +136,25 @@ describe('MenuUpdater feature/makeReactionCallback', () => {
           pathname: ROUTES.WALLETS.ADD,
         }),
         uiDialogs: makeUiDialogs({ activeDialog: true }),
+      },
+      rebuildApplicationMenu: makeRebuildApplicationMenu({ send }),
+    })();
+
+    expect(send.mock.calls[0][0]).toHaveProperty(
+      'walletSettingsState',
+      WalletSettingsStateEnum.disabled
+    );
+  });
+
+  it('sends walletSettingsState disabled when wallet settings route is already active', () => {
+    const send = jest.fn();
+    makeReactionCallback({
+      ...defaultArgs,
+      stores: {
+        ...defaultArgs.stores,
+        router: makeRouter({
+          pathname: ROUTES.WALLETS.SETTINGS,
+        }),
       },
       rebuildApplicationMenu: makeRebuildApplicationMenu({ send }),
     })();
