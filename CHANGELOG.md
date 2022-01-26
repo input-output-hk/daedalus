@@ -11,6 +11,7 @@
 
 ### Chores
 
+- Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
 
 ## 4.8.0-FC1
