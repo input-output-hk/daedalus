@@ -1,0 +1,86 @@
+.walletSortButtonContainer {
+  position: relative;
+
+  .walletSortButton {
+    align-items: center;
+    background-color: rgba(
+      var(--theme-sidebar-sort-button-background-color),
+      0.1
+    );
+    color: var(--theme-sidebar-menu-add-button-text-color);
+    display: flex;
+    font-size: 11px;
+    height: 22px;
+    opacity: 0.3;
+    padding: 0 8px;
+    width: auto;
+
+    &.walletSortButtonActive,
+    &:hover,
+    &:active {
+      opacity: 1;
+    }
+
+    &.walletSortButtonActive {
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.1
+      );
+    }
+
+    &:hover {
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.05
+      );
+    }
+
+    &:active {
+      background-color: rgba(
+        var(--theme-sidebar-sort-button-background-color),
+        0.12
+      );
+    }
+  }
+}
+
+.walletSortButtonActive {
+  opacity: 1;
+}
+
+.walletSortOrderArrowContainer {
+  align-items: center;
+  background-color: var(--theme-sidebar-menu-background-color);
+
+  border-radius: 4px;
+
+  display: flex;
+  height: 12px;
+  justify-content: center;
+  position: absolute;
+  right: -4px;
+  top: -2px;
+
+  width: 12px;
+  z-index: 1;
+}
+
+.walletSortOrderArrow {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+
+  > svg {
+    transform: scale(0.5);
+
+    path {
+      stroke: var(--theme-sidebar-menu-add-button-text-color);
+    }
+  }
+}
+
+.walletSortOrderArrowAsc {
+  transform: rotate(-180deg);
+}

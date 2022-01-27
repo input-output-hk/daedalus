@@ -15,7 +15,7 @@ import {
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
-import WalletTokens from '../../../../source/renderer/app/components/wallet/tokens/WalletTokens';
+import WalletTokens from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens';
 
 const assets = [
   generateAssetToken(

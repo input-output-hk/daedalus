@@ -8,10 +8,12 @@ import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
+import { getRtsFlags } from '../utils/rtsFlags';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, isLinux, isBlankScreenFixActive } = environment;
+const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
+const rtsFlags = getRtsFlags(network);
 
 const id = 'window';
 
@@ -21,6 +23,8 @@ const getWindowTitle = (locale: string): string => {
   let title = buildLabel;
   if (isBlankScreenFixActive)
     title += ` ${translation('title.blankScreenFix')}`;
+  if (!!rtsFlags && rtsFlags?.length > 0)
+    title += ` ${translation('title.usingRtsFlags')}`;
   return title;
 };
 

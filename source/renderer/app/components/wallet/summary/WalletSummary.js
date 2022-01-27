@@ -7,7 +7,7 @@ import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
-import WalletTokensList from '../tokens/WalletTokensList';
+import WalletTokensList from '../tokens/wallet-tokens-list/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
 
 const messages = defineMessages({

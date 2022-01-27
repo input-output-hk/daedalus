@@ -3,12 +3,12 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './WalletTokens.scss';
-import Wallet from '../../../domains/Wallet';
-import WalletTokensList from './WalletTokensList';
-import WalletTokensSearch from './WalletTokensSearch';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
-import type { AssetToken } from '../../../api/assets/types';
-import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../config/timingConfig';
+import Wallet from '../../../../domains/Wallet';
+import WalletTokensList from '../wallet-tokens-list/WalletTokensList';
+import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
+import LoadingSpinner from '../../../widgets/LoadingSpinner';
+import type { AssetToken } from '../../../../api/assets/types';
+import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../../config/timingConfig';
 
 const messages = defineMessages({
   favoritesListTitle: {
@@ -123,10 +123,12 @@ const WalletTokens = observer((props: Props) => {
   return (
     <div className={styles.component}>
       {hasTokens && (
-        <WalletTokensSearch
-          searchValue={searchValue}
-          onSearch={setSearchValue}
-        />
+        <div className={styles.searchContainer}>
+          <WalletTokensSearch
+            searchValue={searchValue}
+            onSearch={setSearchValue}
+          />
+        </div>
       )}
       {!!favoriteTokensList.length && (
         <WalletTokensList
