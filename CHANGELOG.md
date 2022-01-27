@@ -11,6 +11,7 @@
 
 ### Chores
 
+- Updated check-disk-space version ([PR 2844](https://github.com/input-output-hk/daedalus/pull/2844))
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
 - Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
 
