@@ -123,7 +123,12 @@ export const buildAppMenus = async (
     const flagsToSet = enable ? RTS_FLAGS : [];
     storeRtsFlagsSettings(environment.network, flagsToSet);
 
-    await safeExit(cardanoNode);
+    // TODO
+    if (isBlankScreenFixActive) {
+      restartWithBlankScreenFix();
+    } else {
+      restartWithoutBlankScreenFix();
+    }
   };
 
   const menuActions = {
