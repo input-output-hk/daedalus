@@ -9,7 +9,7 @@ import { getAssetTokens } from '../../utils/assets';
 
 type Props = InjectedProps;
 
-type OpenAssetSettingsArgs = {
+type OpenAssetSettingsDialogArgs = {
   asset: AssetToken,
 };
 
@@ -35,8 +35,8 @@ const WalletTokensPage = inject(
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
 
-    const openAssetSettings = useCallback(
-      ({ asset }: OpenAssetSettingsArgs) => {
+    const openAssetSettingsDialog = useCallback(
+      ({ asset }: OpenAssetSettingsDialogArgs) => {
         setEditedAsset.trigger({ asset });
         open.trigger({ dialog: AssetSettingsDialog });
       },
@@ -60,7 +60,7 @@ const WalletTokensPage = inject(
         currentLocale={currentLocale}
         insertingAssetUniqueId={insertingAssetUniqueId}
         isLoadingAssets={isLoadingAssets}
-        onAssetSettings={openAssetSettings}
+        onAssetSettings={openAssetSettingsDialog}
         onCopyAssetParam={() => {}}
         onOpenAssetSend={onOpenAssetSend.trigger}
         onToggleFavorite={onToggleFavorite.trigger}

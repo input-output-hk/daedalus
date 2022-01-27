@@ -4,6 +4,7 @@ import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { WalletSettingsStateEnum } from '../common/ipc/api';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
@@ -50,7 +51,6 @@ import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
-import { WalletSettingsStateEnum } from '../common/ipc/api';
 
 /* eslint-disable consistent-return */
 

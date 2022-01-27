@@ -28,7 +28,7 @@ export const messages = defineMessages({
 
 type Props = InjectedProps;
 
-type OpenAssetSettingsArgs = {
+type OpenAssetSettingsDialogArgs = {
   asset: AssetToken,
 };
 
@@ -61,7 +61,7 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  openAssetSettingsDialog = ({ asset }: OpenAssetSettingsArgs) => {
+  openAssetSettingsDialog = ({ asset }: OpenAssetSettingsDialogArgs) => {
     const { assets, dialogs } = this.props.actions;
     assets.setEditedAsset.trigger({ asset });
     dialogs.open.trigger({ dialog: AssetSettingsDialog });
