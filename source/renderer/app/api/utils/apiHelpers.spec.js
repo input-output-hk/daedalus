@@ -9,6 +9,14 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     ).not.toThrow();
   });
 
+  it('should not throw error if error code is "cannot_cover_fee" but hasAssetsRemainingAfterTransaction is undefined', () => {
+    const error = new Error(
+      'I cannot proceed with transaction, I need approximately 1.6 ada to proceed'
+    );
+    error.code = 'cannot_cover_fee';
+    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error)).not.toThrow();
+  });
+
   it('should not throw error if error code is "cannot_cover_fee" but message does not match reegex', () => {
     const error = new Error('other message');
     error.code = 'cannot_cover_fee';

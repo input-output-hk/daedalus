@@ -29,7 +29,7 @@ export const wait = (ms: number): Promise<void> =>
 
 export const throwErrorIfNotEnoughAdaToSupportTokens = (
   error: any,
-  hasAssetsRemainingAfterTransaction: boolean
+  hasAssetsRemainingAfterTransaction?: boolean
 ) => {
   const adaToProceedRegex = new RegExp(
     /.*I need approximately([\s\d.,]+)ada to proceed.*/
