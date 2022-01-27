@@ -82,7 +82,7 @@ const itnShelleyMnemonics = [
   ['awkward', 'electric', 'strong', 'early', 'rose', 'abuse', 'mutual', 'limit', 'ketchup', 'child', 'limb', 'exist', 'hurry', 'business', 'whisper'],
 ];
 
-module.exports = {
+export {
   byronMnemonics,
   shelleyMnemonics,
   maryMnemonics,
