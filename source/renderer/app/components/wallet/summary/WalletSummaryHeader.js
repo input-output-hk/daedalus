@@ -4,12 +4,14 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import type { Reward } from '../../../api/staking/types';
 import globalMessages from '../../../i18n/global-messages';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DiscreetValue } from '../../../features/discreet-mode';
+import WalletSummaryHeaderRewards from './WalletSummaryHeaderRewards';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -27,6 +29,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
+  reward: Reward,
   numberOfRecentTransactions: number,
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
@@ -43,6 +46,7 @@ export default class WalletSummaryHeader extends Component<Props> {
   render() {
     const {
       wallet,
+      reward,
       numberOfPendingTransactions,
       numberOfRecentTransactions,
       numberOfTransactions,
@@ -83,6 +87,16 @@ export default class WalletSummaryHeader extends Component<Props> {
                   {intl.formatMessage(globalMessages.adaUnit)}
                 </span>
               </div>
+              {!wallet.isLegacy && (
+                <div className={styles.rewards}>
+                  <WalletSummaryHeaderRewards
+                    isRestoring={isRestoreActive}
+                    total={reward.total}
+                    unspent={reward.unspent}
+                    walletAmount={wallet.amount}
+                  />
+                </div>
+              )}
               {!isLoadingTransactions && (
                 <div className={styles.transactionsCountWrapper}>
                   <div className={numberOfPendingTransactionsStyles}>
@@ -104,7 +118,7 @@ export default class WalletSummaryHeader extends Component<Props> {
                 </div>
               )}
             </div>
-            {currency}
+            <div className={styles.currency}>{currency}</div>
           </div>
         </BorderedBox>
       </div>

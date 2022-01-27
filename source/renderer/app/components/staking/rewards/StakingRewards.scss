@@ -273,14 +273,9 @@
 
       &.rewardWallet {
         max-width: 200px;
-        min-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      &.rewardAmount {
-        min-width: 250px;
       }
 
       &.rewardsAddress {
@@ -301,7 +296,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            width: 237px;
+            width: 230px;
 
             &:hover {
               cursor: pointer;

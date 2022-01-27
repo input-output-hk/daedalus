@@ -6,6 +6,7 @@ import moment from 'moment';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import seedrandom from 'seedrandom';
+import type { Reward } from '../../../source/renderer/app/api/staking/types';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -106,7 +107,7 @@ export const generateWallet = (
   name: string,
   amount: string,
   assets?: WalletTokens = { available: [], total: [] },
-  reward?: number = 0,
+  reward?: string | number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
@@ -134,6 +135,18 @@ export const generateWallet = (
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
+
+export const generateRewardForWallet = (
+  wallet: Wallet,
+  unspent: string | number = '0'
+): Reward => ({
+  wallet: wallet.name,
+  total: wallet.reward,
+  unspent: new BigNumber(unspent).dividedBy(LOVELACES_PER_ADA),
+  isRestoring: wallet.isRestoring,
+  syncingProgress: 100,
+  rewardsAddress: 'stake_fake_address',
+});
 
 export const generateAssetDomain = (
   policyId: string,
