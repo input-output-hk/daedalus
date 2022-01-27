@@ -14,6 +14,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
+
 const allAssets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
@@ -229,6 +230,7 @@ storiesOf('Wallets|Summary', module)
         currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currencySelected={currencySelected}
         currencyRate={0.321}
         onToggleFavorite={action('onToggleFavorite')}

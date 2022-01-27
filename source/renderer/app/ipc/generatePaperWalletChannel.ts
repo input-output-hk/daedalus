@@ -4,6 +4,7 @@ import type {
   GeneratePaperWalletRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const generatePaperWalletChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GeneratePaperWalletMainResponse,

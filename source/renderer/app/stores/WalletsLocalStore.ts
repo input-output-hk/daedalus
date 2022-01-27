@@ -3,6 +3,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { asyncForEach } from '../utils/asyncForEach';
 import type { WalletsLocalData } from '../api/utils/localStorage';
+
 export default class WalletsLocalStore extends Store {
   @observable
   localWalletsRequest: Request<WalletsLocalData> = new Request(
@@ -29,6 +30,7 @@ export default class WalletsLocalStore extends Store {
   // GETTERS
   @computed
   get all(): WalletsLocalData {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'WalletsLocalData | {}' is not assignable to ... Remove this comment to see the full error message
     return this.localWalletsRequest.result
       ? this.localWalletsRequest.result
       : {};
@@ -49,6 +51,7 @@ export default class WalletsLocalStore extends Store {
         });
       }
     });
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.localWalletsRequest.execute();
   };
   _setWalletLocalData = async ({
@@ -60,6 +63,7 @@ export default class WalletsLocalStore extends Store {
     updatedWalletData?: Record<string, any>;
     skipRefresh?: boolean;
   }) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setWalletLocalDataRequest.execute(walletId, updatedWalletData);
 
     if (!skipRefresh) {
@@ -67,6 +71,7 @@ export default class WalletsLocalStore extends Store {
     }
   };
   _unsetWalletLocalData = async ({ walletId }: { walletId: string }) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.unsetWalletLocalDataRequest.execute(walletId);
 
     this._refreshWalletsLocalData();

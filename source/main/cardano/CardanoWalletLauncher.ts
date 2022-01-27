@@ -21,6 +21,7 @@ import { CardanoNodeImplementationOptions } from '../../common/types/cardano-nod
 import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
 import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
+
 export type WalletOptions = {
   nodeImplementation: CardanoNodeImplementations;
   nodeConfig: NodeConfig;
@@ -38,6 +39,7 @@ export type WalletOptions = {
 };
 export async function CardanoWalletLauncher(
   walletOptions: WalletOptions
+// @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
 ): Launcher {
   const {
     nodeImplementation,
@@ -122,13 +124,16 @@ export async function CardanoWalletLauncher(
 
       if (cluster === MAINNET) {
         launcherConfig.networkName = MAINNET;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --mainnet flag');
       } else if (isStaging) {
         launcherConfig.networkName = STAGING;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --staging flag');
       } else {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Wallet with --testnet flag');
       }
 
@@ -153,6 +158,7 @@ export async function CardanoWalletLauncher(
           rtsFlags,
         });
       } else {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('Launching Cardano Node without RTS flags');
       }
 
@@ -171,5 +177,6 @@ export async function CardanoWalletLauncher(
     walletOptions,
     launcherConfig,
   });
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ networkName: string; stateDir:... Remove this comment to see the full error message
   return new cardanoLauncher.Launcher(launcherConfig, logger);
 }

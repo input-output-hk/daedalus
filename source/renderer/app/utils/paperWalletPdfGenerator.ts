@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { generatePaperWalletChannel } from '../ipc/generatePaperWalletChannel';
+
 const messages = defineMessages({
   walletAddressLabel: {
     id: 'paper.wallet.pdf.walletAddress.label',

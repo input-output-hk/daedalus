@@ -7,6 +7,7 @@ import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
 import { getStakeAddressFromStakeKey } from '../utils/crypto';
 import type { Address, InspectAddressResponse } from '../api/addresses/types';
+
 export default class AddressesStore extends Store {
   @observable
   lastGeneratedAddress: WalletAddress | null | undefined = null;
@@ -43,6 +44,7 @@ export default class AddressesStore extends Store {
     try {
       const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
+      // @ts-ignore ts-migrate(2739) FIXME: Type 'Address' is missing the following properties... Remove this comment to see the full error message
       const address: WalletAddress = await this.createByronWalletAddressRequest.execute(
         {
           addressIndex: accountIndex,
@@ -141,6 +143,7 @@ export default class AddressesStore extends Store {
         const getWalletStakeKeyRequest = new Request(
           this.api.ada.getWalletPublicKey
         );
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         const stakeKeyBech32 = await getWalletStakeKeyRequest.execute({
           walletId,
           role: 'mutable_account',
@@ -203,11 +206,13 @@ export default class AddressesStore extends Store {
       walletId,
       isLegacy: true,
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'accountIndex' does not exist on type 'Wa... Remove this comment to see the full error message
     return result ? result.accountIndex : null;
   };
   getAddressesByWalletId = async (
     walletId: string
   ): Promise<Array<WalletAddress>> => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     const addresses = await this._getAddressesAllRequest(walletId);
     return addresses || [];
   };

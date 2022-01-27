@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { discreetWalletAmount } from './discreetWalletAmount';
+
 describe('discreetWalletAmount replacer', () => {
   it('should replace the given amount with the sensitive data symbol', () => {
     const amount = new BigNumber(1);
     const discreetSymbol = '***';
     expect(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
       discreetWalletAmount({
         amount,
         withCurrency: false,
@@ -16,6 +18,7 @@ describe('discreetWalletAmount replacer', () => {
     const discreetSymbol = '***';
     const currency = 'TEST';
     expect(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
       discreetWalletAmount({
         amount,
         currency,
@@ -27,6 +30,7 @@ describe('discreetWalletAmount replacer', () => {
     const amount = new BigNumber(1);
     const currency = 'TEST';
     expect(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
       discreetWalletAmount({
         amount,
         currency,
@@ -37,6 +41,7 @@ describe('discreetWalletAmount replacer', () => {
     const discreetSymbol = '***';
     const amount = new BigNumber(1);
     expect(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
       discreetWalletAmount({
         amount,
         withCurrency: false,

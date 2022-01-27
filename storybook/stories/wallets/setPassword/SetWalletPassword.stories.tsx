@@ -13,6 +13,7 @@ import {
 } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet from '../../../../source/renderer/app/domains/Wallet';
+
 const assets = {
   available: [
     {
@@ -58,7 +59,7 @@ const WALLETS = [
   ),
 ];
 const activeWallet: Wallet = WALLETS[0];
-let walletPasswordIsOpen: boolean = false;
+let walletPasswordIsOpen = false;
 storiesOf('Wallets|Set Password', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>

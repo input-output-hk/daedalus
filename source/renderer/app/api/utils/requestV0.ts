@@ -2,6 +2,7 @@ import https from 'https';
 import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
+
 export type RequestOptions = {
   hostname: string;
   method: string;
@@ -41,6 +42,7 @@ function typedRequest<Response>(
         // Passphrase must be ommited from rest query params
         queryParams = omit(queryParams, 'passphrase');
 
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'boolean' is not assignable to pa... Remove this comment to see the full error message
         if (size(queryParams > 1) && passphrase) {
           queryString += `&${querystring.stringify(queryParams)}`;
         }

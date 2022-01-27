@@ -8,8 +8,10 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
 import { TransactionMetadataView } from './metadata/TransactionMetadataView';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Transaction.scss' or its cor... Remove this comment to see the full error message
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import {
   TransactionStates,

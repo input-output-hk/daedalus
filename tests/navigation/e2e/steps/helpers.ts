@@ -1,4 +1,5 @@
 import { waitAndClick } from "../../../common/e2e/steps/helpers";
+
 const SELECTORS = {
   ACTIVE_CATEGORY: '.SidebarCategory_active',
   ADD_WALLET_BTN: '.SidebarWalletsMenu_addWalletButton'
@@ -16,6 +17,7 @@ export const waitUntilUrlEquals = function (expectedUrl: string) {
 };
 export const navigateTo = function (requestedRoute: string) {
   return this.client.execute(route => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.router.goToRoute.trigger({
       route
     });
@@ -28,6 +30,7 @@ export const sidebarHelpers = {
     category: string;
   }) => {
     await client.execute(cat => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
         showSubMenu: true

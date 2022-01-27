@@ -7,7 +7,9 @@ import {
 } from 'react-intl';
 import classnames from 'classnames';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './OversaturationText.scss' or ... Remove this comment to see the full error message
 import styles from './OversaturationText.scss';
+
 const messages: Record<string, ReactIntlMessage> = defineMessages({
   oversaturationWarning: {
     id:

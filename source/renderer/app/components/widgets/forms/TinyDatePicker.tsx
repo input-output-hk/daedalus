@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
@@ -7,7 +8,9 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
 import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TinyDatePicker.scss' or its ... Remove this comment to see the full error message
 import styles from './TinyDatePicker.scss';
+
 type PickerPanelPosition = 'left' | 'right';
 type Props = {
   onBlur?: (...args: Array<any>) => any;

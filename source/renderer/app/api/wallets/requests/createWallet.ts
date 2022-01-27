@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet, WalletInitData } from '../types';
 import { request } from '../../utils/request';
+
 export const createWallet = (
   config: RequestConfig,
   {

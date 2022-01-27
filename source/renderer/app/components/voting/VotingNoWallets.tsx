@@ -4,9 +4,12 @@ import SVGInline from 'react-svg-inline';
 import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingNoWallets.scss' or its... Remove this comment to see the full error message
 import styles from './VotingNoWallets.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/attention-... Remove this comment to see the full error message
 import icon from '../../assets/images/attention-big-thin.inline.svg';
 import { NEXT_VOTING_FUND_NUMBER } from '../../config/votingConfig';
+
 const messages = defineMessages({
   headLine: {
     id: 'voting.info.noWallets.headLine',

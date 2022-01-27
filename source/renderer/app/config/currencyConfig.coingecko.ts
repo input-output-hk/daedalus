@@ -89,6 +89,7 @@ const responses = {
     }
   },
 };
+// @ts-ignore ts-migrate(2352) FIXME: Conversion of type '{ id: string; name: string; ho... Remove this comment to see the full error message
 export default {
   id,
   name,

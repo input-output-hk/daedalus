@@ -10,6 +10,7 @@ import News from '../../../source/renderer/app/domains/News';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { getNewsItem } from './_utils/fakeDataNewsFeed';
+
 const updateDownloadProgressOptions = {
   range: true,
   min: 0,
@@ -23,6 +24,7 @@ storiesOf('News|NewsFeed', module)
   .add('Empty', () => (
     <div>
       <NewsFeed
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onGoToRoute={action('onGoToRoute')}
         isLoadingNews={false}
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
@@ -42,6 +44,7 @@ storiesOf('News|NewsFeed', module)
   .add('Fetching', () => (
     <div>
       <NewsFeed
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onGoToRoute={action('onGoToRoute')}
         isLoadingNews
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
@@ -58,6 +61,7 @@ storiesOf('News|NewsFeed', module)
       />
     </div>
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Fetched', ({ locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
@@ -77,6 +81,7 @@ storiesOf('News|NewsFeed', module)
     return (
       <div>
         <NewsFeed
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onGoToRoute={action('onGoToRoute')}
           isLoadingNews={false}
           onMarkNewsAsRead={action('onMarkNewsAsRead')}

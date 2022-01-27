@@ -4,6 +4,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TYPES as types,
   RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../config/walletRecoveryPhraseVerificationConfig';
+
 export const getStatusFromWalletData = ({
   creationDate: creation,
   recoveryPhraseVerificationDate: verification,

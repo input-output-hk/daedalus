@@ -99,10 +99,12 @@ export const setupCardanoNode = (
       createWriteStream,
       broadcastTlsConfig: (tlsConfig: TlsConfig | null | undefined) => {
         if (!mainWindow.isDestroyed())
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           cardanoTlsConfigChannel.send(tlsConfig, mainWindow);
       },
       broadcastStateChange: (state: CardanoNodeState) => {
         if (!mainWindow.isDestroyed())
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           cardanoStateChangeChannel.send(state, mainWindow);
       },
     },
@@ -155,13 +157,16 @@ export const setupCardanoNode = (
     return Promise.resolve(cardanoNode.state);
   });
   cardanoTlsConfigChannel.onRequest(() => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
   cardanoAwaitUpdateChannel.onReceive(() => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('ipcMain: Received request from renderer to await update');
     setTimeout(async () => {
       await cardanoNode.expectNodeUpdate();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         'CardanoNode applied an update. Exiting Daedalus with code 20.'
       );
@@ -170,6 +175,7 @@ export const setupCardanoNode = (
     return Promise.resolve();
   });
   cardanoRestartChannel.onReceive(() => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('ipcMain: Received request from renderer to restart node');
     return cardanoNode.restart(true); // forced restart
   });

@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { hasTokensLeftAfterTransaction } from "../../../source/renderer/app/utils/assets";
+
 const allAvailableTokens = [{
   policyId: '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7',
   assetName: '',
@@ -56,16 +57,19 @@ const initialSelectedAssets = [{
 describe('Function hasTokenLeftAfterTransaction returns:', () => {
   it('<true> if some assets are left in the wallet', () => {
     const selectedAssets = ["3", "1", "1"];
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ policyId: string; assetName: ... Remove this comment to see the full error message
     const result = hasTokensLeftAfterTransaction(allAvailableTokens, allAvailableTokens, selectedAssets);
     expect(result).toBe(true);
   });
   it('<false> if no tokens and no assets are left in the wallet', () => {
     const selectedAssets = ["6", "1", "2"];
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ policyId: string; assetName: ... Remove this comment to see the full error message
     const result = hasTokensLeftAfterTransaction(allAvailableTokens, allAvailableTokens, selectedAssets);
     expect(result).toBe(false);
   });
   it('<true> in case all assets of a token are spend but other tokens are are left in the wallet', () => {
     const selectedAssets = ["1"];
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ policyId: string; assetName: ... Remove this comment to see the full error message
     const result = hasTokensLeftAfterTransaction(allAvailableTokens, initialSelectedAssets, selectedAssets);
     expect(result).toBe(true);
   });

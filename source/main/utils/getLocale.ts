@@ -1,5 +1,6 @@
 import Store from 'electron-store';
 import { detectSystemLocale } from './detectSystemLocale';
+
 const store = new Store();
 export const getLocale = (network: string) => {
   const systemLocale = detectSystemLocale();

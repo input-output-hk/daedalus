@@ -21,6 +21,7 @@ import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
+
 export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();

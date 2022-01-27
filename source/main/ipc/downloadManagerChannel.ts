@@ -43,6 +43,7 @@ import type {
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest,
 } from '../../common/ipc/api';
+
 localStorage.setAllPaused();
 
 const requestDownload = async (
@@ -88,15 +89,20 @@ const requestDownload = async (
     window,
     requestDownloadChannel
   );
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ fileName: string; method?: "GE... Remove this comment to see the full error message
   const download = new DownloaderHelper(fileUrl, destinationPath, options);
   downloads[downloadId] = download;
 
   if (resumeDownload) {
     const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property '__total' does not exist on type 'Downloa... Remove this comment to see the full error message
     download.__total = downloadSize;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '__filePath' does not exist on type 'Down... Remove this comment to see the full error message
     download.__filePath = `${info.destinationPath}/${info.temporaryFilename}`;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '__downloaded' does not exist on type 'Do... Remove this comment to see the full error message
     download.__downloaded = download.__getFilesizeInBytes(download.__filePath);
+    // @ts-ignore ts-migrate(2551) FIXME: Property '__isResumable' does not exist on type 'D... Remove this comment to see the full error message
     download.__isResumable = true;
   }
 
@@ -106,6 +112,7 @@ const requestDownload = async (
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
   download.on(progressType, (evt) => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     if (!evt || parseInt(evt.progress, 10) === currentDownloadData) return;
     currentDownloadData++;
     eventActions.progress(evt);
@@ -152,6 +159,7 @@ const requestResumeDownload = async (
   if (fs.existsSync(filePath)) {
     requestDownloadPayload = {
       ...requestDownloadPayload,
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ resumeDownload: { temporaryFilename: strin... Remove this comment to see the full error message
       resumeDownload: {
         temporaryFilename,
         originalFilename,
@@ -169,6 +177,7 @@ const requestResumeDownload = async (
     await localStorage.unset(id);
   }
 
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ override: boolean; id: string;... Remove this comment to see the full error message
   return requestDownload({ ...requestDownloadPayload, override: true }, window);
 };
 
@@ -202,6 +211,7 @@ const getDownloadLocalData = async ({
 
 const getDownloadsLocalData = async (): Promise<
   DownloadsLocalDataMainResponse
+// @ts-ignore ts-migrate(2322) FIXME: Type 'unknown' is not assignable to type 'Download... Remove this comment to see the full error message
 > => localStorage.getAll();
 
 const clearDownloadLocalData = async ({
@@ -284,7 +294,9 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
 export const pauseActiveDownloads = () => {
   forEach(downloads, (download, downloadId) => {
     try {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'state' does not exist on type 'never'.
       if (download && download.state === DOWNLOAD_STATES.DOWNLOADING)
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'pause' does not exist on type 'never'.
         download.pause();
       logger.info(
         `DownloadManager:PauseDownloads download "${downloadId}" was paused`,

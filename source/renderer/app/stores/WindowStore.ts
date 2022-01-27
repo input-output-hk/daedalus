@@ -1,9 +1,10 @@
 import { action } from 'mobx';
 import Store from './lib/Store';
 // TODO: refactor all parts that rely on this to ipc channels!
+// @ts-ignore ts-migrate(2339) FIXME: Property 'ipcRenderer' does not exist on type 'typ... Remove this comment to see the full error message
 const { ipcRenderer } = global;
 export default class WindowStore extends Store {
-  _isTest: boolean = false;
+  _isTest = false;
 
   setup() {
     this.actions.window.resizeWindow.listen(this._resizeWindow);

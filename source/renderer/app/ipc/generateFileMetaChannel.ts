@@ -4,6 +4,7 @@ import type {
   GenerateFileMetaRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const generateFileMetaChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GenerateFileMetaMainResponse,

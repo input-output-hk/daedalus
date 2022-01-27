@@ -3,7 +3,9 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 import NavButton from './NavButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NavDropdown.scss' or its cor... Remove this comment to see the full error message
 import styles from './NavDropdown.scss';
+
 type Props = {
   label: string;
   activeItem: string;

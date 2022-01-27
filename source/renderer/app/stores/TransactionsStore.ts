@@ -28,6 +28,7 @@ import {
   isTransactionInFilterRange,
 } from '../utils/transaction';
 import type { ApiTokens } from '../api/assets/types';
+
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -183,11 +184,13 @@ export default class TransactionsStore extends Store {
 
   @computed
   get defaultFilterOptions(): TransactionFilterOptionsType {
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ dateRange: string; fromDate: string; toDat... Remove this comment to see the full error message
     return generateFilterOptions(this.all);
   }
 
   @computed
   get populatedFilterOptions(): TransactionFilterOptionsType {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'TransactionFilterOptionsType | { searchTerm:... Remove this comment to see the full error message
     return this.filterOptions || emptyTransactionFilterOptions;
   }
 
@@ -303,6 +306,7 @@ export default class TransactionsStore extends Store {
       }
     }
   };
+  // @ts-ignore ts-migrate(1058) FIXME: The return type of an async function must either b... Remove this comment to see the full error message
   calculateTransactionFee = async (
     transactionFeeRequest: TransactionFeeRequest
   ) => {
@@ -341,6 +345,7 @@ export default class TransactionsStore extends Store {
     }
 
     const { isLegacy } = wallet;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.deleteTransactionRequest.execute({
       walletId,
       transactionId,
@@ -397,10 +402,12 @@ export default class TransactionsStore extends Store {
       getAsset,
       isInternalAddress,
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     if (success) actions.transactions.requestCSVFileSuccess.trigger();
   };
   @action
   _createExternalTransaction = async (signedTransactionBlob: Buffer) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.createExternalTransactionRequest.execute({
       signedTransactionBlob,
     });

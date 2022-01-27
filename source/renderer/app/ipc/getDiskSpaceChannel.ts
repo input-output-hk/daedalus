@@ -4,6 +4,7 @@ import type {
   GetDiskSpaceStatusMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const getDiskSpaceStatusChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetDiskSpaceStatusMainResponse,

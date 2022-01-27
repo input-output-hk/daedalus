@@ -24,6 +24,7 @@ import type {
   CheckFileExistsMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   DownloadMainResponse,

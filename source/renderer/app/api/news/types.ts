@@ -1,4 +1,5 @@
 import type { Platform } from '../../../../common/types/environment.types';
+
 export type NewsTranslations = {
   'en-US': string;
   'ja-JP': string;

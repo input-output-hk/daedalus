@@ -4,6 +4,7 @@ import type {
   SubmitBugReportRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const bugReportRequestChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   SubmitBugReportRequestMainResponse,

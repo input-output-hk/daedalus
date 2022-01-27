@@ -12,6 +12,7 @@ import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DiscreetValue } from '../../../features/discreet-mode';
+
 const messages = defineMessages({
   transactionsLabel: {
     id: 'wallet.summary.header.transactionsLabel',
@@ -73,6 +74,7 @@ class WalletSummaryHeader extends Component<Props> {
             <div>
               <div className={walletNameStyles}>{wallet.name}</div>
               <div className={walletAmountStyles}>
+                // @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message
                 <DiscreetValue>{walletAmount}</DiscreetValue>
                 <span className={styles.currencyCode}>
                   {intl.formatMessage(globalMessages.adaUnit)}

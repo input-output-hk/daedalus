@@ -11,6 +11,7 @@ import type {
   NavButtonProps,
   NavDropdownProps,
 } from '../../navigation/Navigation';
+
 const messages = defineMessages({
   summary: {
     id: 'wallet.navigation.summary',
@@ -79,6 +80,7 @@ class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2322) FIXME: Type '({ id: string; label: any; type?: undefined;... Remove this comment to see the full error message
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,

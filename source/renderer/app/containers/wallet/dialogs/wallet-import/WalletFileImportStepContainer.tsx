@@ -4,6 +4,7 @@ import type { InjectedDialogContainerStepProps } from '../../../../types/injecte
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import WalletImportFileDialog from '../../../../components/wallet/wallet-import/WalletImportFileDialog';
 import type { ImportFromOption } from '../../../../types/walletExportTypes';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -39,6 +40,7 @@ class WalletFileImportStepContainer extends Component<Props> {
         exportSourcePath={exportSourcePath}
         defaultExportSourcePath={defaultExportSourcePath}
         exportErrors={exportErrors}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         pendingImportWalletsCount={pendingImportWalletsCount}
         onOpen={this.onOpen}
         onOpenExternalLink={openExternalLink}

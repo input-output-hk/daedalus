@@ -5,6 +5,7 @@ import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryP
 import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
 import type { walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
+
 type Props = {
   currentStep: walletBackupStep;
   canPhraseBeShown: boolean;

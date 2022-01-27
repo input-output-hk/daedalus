@@ -13,6 +13,7 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.page.no.transactions',
@@ -136,6 +137,7 @@ class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}

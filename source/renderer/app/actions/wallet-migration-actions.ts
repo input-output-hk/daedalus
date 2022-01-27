@@ -1,5 +1,6 @@
 import Action from './lib/Action';
 import type { ImportFromOption } from '../types/walletExportTypes';
+
 export default class WalletMigrationActions {
   initiateMigration: Action<any> = new Action();
   startMigration: Action<any> = new Action();

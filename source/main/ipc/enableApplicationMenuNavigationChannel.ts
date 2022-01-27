@@ -4,6 +4,7 @@ import type {
   EnableApplicationMenuNavigationMainResponse,
   EnableApplicationMenuNavigationRendererRequest,
 } from '../../common/ipc/api';
+
 export const enableApplicationMenuNavigationChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   EnableApplicationMenuNavigationRendererRequest,

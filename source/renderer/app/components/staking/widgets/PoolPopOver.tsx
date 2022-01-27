@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PoolPopOver.scss' or its cor... Remove this comment to see the full error message
 import styles from './PoolPopOver.scss';
 
 /**
@@ -36,7 +38,7 @@ export function PoolPopOver(props: {
   const popOverTargetRef = useRef(null);
   const poolId = props.stakePool.id;
 
-  const close = (isStillHovered: boolean = false) => {
+  const close = (isStillHovered = false) => {
     setIsHovered(isStillHovered);
     props.onClose?.();
   };

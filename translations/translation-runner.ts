@@ -1,4 +1,5 @@
 import manageTranslations from "react-intl-translations-manager";
+
 manageTranslations({
   messagesDirectory: 'translations/messages',
   translationsDirectory: 'source/renderer/app/i18n/locales',

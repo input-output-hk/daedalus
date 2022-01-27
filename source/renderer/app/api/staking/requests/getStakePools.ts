@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { AdaApiStakePools } from '../types';
 import { request } from '../../utils/request';
+
 export const getStakePools = (
   config: RequestConfig,
   stake: number

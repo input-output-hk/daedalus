@@ -8,13 +8,16 @@ import {
 import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsChooseWalletD... Remove this comment to see the full error message
 import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
+
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.title',
@@ -211,6 +214,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           </p>
           <WalletsDropdown
             className={walletSelectClasses}
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
             label={intl.formatMessage(messages.selectWalletInputLabel)}
             numberOfStakePools={numberOfStakePools}
             wallets={wallets}

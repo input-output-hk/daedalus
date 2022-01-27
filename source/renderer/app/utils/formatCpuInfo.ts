@@ -3,6 +3,7 @@ import type {
   CpuThreadData,
 } from '../../../common/types/environment.types';
 import { formattedNumber } from './formatters';
+
 type FormatArgs = {
   modelName: string;
   speedValue: string;

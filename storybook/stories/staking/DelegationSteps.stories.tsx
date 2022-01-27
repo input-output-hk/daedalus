@@ -22,6 +22,7 @@ import {
   WalletSyncStateStatuses,
   HwDeviceStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
+
 const assets = {
   available: [
     {
@@ -57,12 +58,14 @@ const assets = {
   ],
 };
 const WALLETS = [
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   generateWallet('Wallet 1', '1000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
     'Wallet 2 - Rewards Only',
     '500000000',
     assets,
     500000000,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
     STAKE_POOLS[100]
   ),
   generateWallet(
@@ -70,6 +73,7 @@ const WALLETS = [
     '10',
     assets,
     10,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
     STAKE_POOLS[150]
   ),
   generateWallet(
@@ -77,6 +81,7 @@ const WALLETS = [
     '0',
     assets,
     0,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
     STAKE_POOLS[290]
   ),
   generateWallet(
@@ -84,6 +89,7 @@ const WALLETS = [
     '0',
     assets,
     0,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
     STAKE_POOLS[290],
     true,
     WalletSyncStateStatuses.RESTORING
@@ -137,6 +143,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         key="DelegationStepsIntroDialog"
         onClose={action('onClose')}
         onContinue={this.onContinue}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onLearnMoreClick={action('onLearnMoreClick')}
       />,
       <DelegationStepsChooseWalletDialog
@@ -179,6 +186,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
           depositsReclaimed: new BigNumber(0),
         }}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         selectedPool={STAKE_POOLS[0]}
         isSubmitting={false}
         selectedWallet={WALLETS[0]}
@@ -196,6 +204,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"
         delegatedWallet={WALLETS[0]}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         delegatedStakePool={STAKE_POOLS[0]}
         slotLength={null}
         currentLocale={this.props.locale}

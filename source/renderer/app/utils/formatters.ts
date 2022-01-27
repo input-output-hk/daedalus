@@ -14,16 +14,16 @@ import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
 import type { AssetMetadata } from '../api/assets/types';
+
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true,
-  long: boolean = true,
-  currency: string = 'ADA',
-  decimalPlaces: number = DECIMAL_PLACES_IN_ADA
+  withCurrency = true,
+  long = true,
+  currency = 'ADA'
 ): string => {
   let formattedAmount = long
-    ? new BigNumber(amount).toFormat(decimalPlaces)
-    : shortNumber(amount, decimalPlaces);
+    ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
+    : shortNumber(amount);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   const { decimalSeparator } = BigNumber.config().FORMAT;
 
@@ -52,6 +52,7 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: AssetMetadata | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   decimals: number | null | undefined,
   isShort?: boolean
 ): string => {
@@ -93,6 +94,7 @@ export const formattedTokenWalletAmount = (
     formattedAmount += ` ${ticker}`;
   }
 
+  // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
   return formattedAmount;
 };
 export const formattedTokenDecimals = (
@@ -201,6 +203,7 @@ export type FormattedDownloadData = {
 };
 export const formattedDownloadData = (
   downloadData?: DownloadData | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   userLocale: Locale
 ): FormattedDownloadData => {
   let timeLeft = '';
@@ -221,6 +224,7 @@ export const formattedDownloadData = (
     timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     progress = parseInt(rawProgress, 10);
   }
 

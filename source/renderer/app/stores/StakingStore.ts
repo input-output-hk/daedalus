@@ -36,6 +36,7 @@ import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+
 export default class StakingStore extends Store {
   @observable
   isDelegationTransactionPending = false;
@@ -52,7 +53,7 @@ export default class StakingStore extends Store {
   @observable
   smashServerUrlError: LocalizableError | null | undefined = null;
   @observable
-  smashServerLoading: boolean = false;
+  smashServerLoading = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable
@@ -68,9 +69,9 @@ export default class StakingStore extends Store {
   @observable
   redeemedRewards: BigNumber | null | undefined = null;
   @observable
-  isSubmittingReedem: boolean = false;
+  isSubmittingReedem = false;
   @observable
-  isCalculatingReedemFees: boolean = false;
+  isCalculatingReedemFees = false;
   @observable
   redeemSuccess: boolean | null | undefined = null;
   @observable
@@ -80,18 +81,22 @@ export default class StakingStore extends Store {
 
   /* ----------  Stake Pools Fetching Tracker  ---------- */
   @observable
-  isFetchingStakePools: boolean = false;
+  isFetchingStakePools = false;
   @observable
-  numberOfStakePoolsFetched: number = 0;
+  numberOfStakePoolsFetched = 0;
   @observable
-  cyclesWithoutIncreasingStakePools: number = 0;
+  cyclesWithoutIncreasingStakePools = 0;
   @observable
-  stakingInfoWasOpen: boolean = false;
+  stakingInfoWasOpen = false;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingStakePoolsInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   refreshPolling: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   delegationCheckTimeInterval: IntervalID | null | undefined = null;
   adaValue: BigNumber = new BigNumber(82650.15);
-  percentage: number = 14;
+  percentage = 14;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   stakePoolsFetchTrackerInterval: IntervalID | null | undefined = null;
   _delegationFeeCalculationWalletId: string | null | undefined = null;
 
@@ -181,6 +186,7 @@ export default class StakingStore extends Store {
   @action
   _getSmashSettingsRequest = async () => {
     this.smashServerLoading = true;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
     const localSmashServer = await this.api.localStorage.getSmashServer();
 
@@ -195,6 +201,7 @@ export default class StakingStore extends Store {
       smashServerUrl = this.environment.isSelfnode
         ? SMASH_SERVERS_LIST.direct.url
         : SMASH_SERVERS_LIST.iohk.url;
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
     }
 
@@ -227,6 +234,7 @@ export default class StakingStore extends Store {
         this.smashServerUrlError = null;
         // Retrieves the API update
         this.smashServerLoading = true;
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
         // Resets the Stake Pools list request
         this.stakePoolsRequest.reset();
@@ -326,6 +334,7 @@ export default class StakingStore extends Store {
           selectedWalletId: walletId,
         });
       } else {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         joinTransaction = await this.joinStakePoolRequest.execute({
           walletId,
           stakePoolId,
@@ -367,6 +376,7 @@ export default class StakingStore extends Store {
           selectedWalletId: walletId,
         });
       } else {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         quitTransaction = await this.quitStakePoolRequest.execute({
           walletId,
           passphrase,
@@ -466,6 +476,7 @@ export default class StakingStore extends Store {
       fileContent,
       filePath,
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.staking.requestCSVFileSuccess.trigger();
   };
   calculateDelegationFee = async (
@@ -483,6 +494,7 @@ export default class StakingStore extends Store {
     }
 
     if (this.calculateDelegationFeeRequest.isExecuting) {
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.calculateDelegationFeeRequest;
     }
 
@@ -793,6 +805,7 @@ export default class StakingStore extends Store {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
         walletId
       );
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
         recoveryPhrase,
@@ -845,6 +858,7 @@ export default class StakingStore extends Store {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
         walletId
       );
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {
           address: address.id,

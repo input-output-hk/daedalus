@@ -1,5 +1,6 @@
 import { observable } from 'mobx';
 import type { AddressStyle } from '../api/addresses/types';
+
 type WalletAddressProps = {
   id: string;
   used: boolean;
@@ -16,11 +17,11 @@ export const AddressStyles: {
 };
 export default class WalletAddress {
   @observable
-  id: string = '';
+  id = '';
   @observable
-  used: boolean = false;
+  used = false;
   @observable
-  spendingPath: string = "1852'/1815'/0'";
+  spendingPath = "1852'/1815'/0'";
 
   constructor(data: WalletAddressProps) {
     Object.assign(this, data);

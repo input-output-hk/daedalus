@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -12,6 +13,7 @@ import StakePool from '../../domains/StakePool';
 import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
+
 type Props = {
   stepsList: Array<string>;
   activeStep: number;

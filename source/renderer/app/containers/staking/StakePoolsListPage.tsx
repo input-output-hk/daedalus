@@ -6,6 +6,7 @@ import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizar
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

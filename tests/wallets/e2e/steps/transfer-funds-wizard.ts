@@ -3,6 +3,7 @@ import { expect } from "chai";
 import BigNumber from "bignumber.js/bignumber";
 import { formattedWalletAmount } from "../../../../source/renderer/app/utils/formatters";
 import { noWalletsErrorMessage, getFixedAmountByName } from "./helpers";
+
 When(/^I click "Byron" wallet top bar notification action$/, function () {
   return this.waitAndClick('.LegacyNotification_actions button:nth-child(2)');
 });

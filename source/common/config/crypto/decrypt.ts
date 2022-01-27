@@ -3,6 +3,7 @@ import * as bip39 from 'bip39';
 import blakejs from 'blakejs';
 import crypto from 'crypto';
 import validWords from './valid-words.en';
+
 const iv = Buffer.alloc(16); // it's iv = 0 simply
 
 function decryptWithAES(aesKey, bytes) {
@@ -34,6 +35,7 @@ const hexChar = [
 const hexToBytes = (s) => {
   const arr = [];
 
+  // @ts-ignore ts-migrate(2363) FIXME: The right-hand side of an arithmetic operation mus... Remove this comment to see the full error message
   // eslint-disable-next-line no-self-compare
   if (s.length & (1 === 1)) {
     throw new Error(`Wrong hex: ${s}`);
@@ -72,6 +74,7 @@ export const decryptForceVend = (key, data) =>
   decryptWithAES(
     blake2b(
       key[0].trim().toLowerCase() +
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'hexSlice' does not exist on type 'Buffer... Remove this comment to see the full error message
         hashData(key[1].trim()).hexSlice() +
         key[2].trim()
     ),

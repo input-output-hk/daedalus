@@ -8,6 +8,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { getRtsFlags } from '../utils/rtsFlags';
+
 const id = 'menu';
 const { isWindows, isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
@@ -160,6 +161,7 @@ export const winLinuxMenu = (
         accelerator: 'Alt+Ctrl+I',
 
         click() {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleDevTools' does not exist on type '... Remove this comment to see the full error message
           window.toggleDevTools();
         },
       },
@@ -234,6 +236,7 @@ export const winLinuxMenu = (
         label: translation('helpSupport.downloadLogs'),
 
         click() {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },

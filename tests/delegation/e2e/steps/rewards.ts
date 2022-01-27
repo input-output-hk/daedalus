@@ -2,6 +2,7 @@ import fs from "fs";
 import { When, Then } from "cucumber";
 import path from "path";
 import moment from "moment";
+
 const exportedCSVPath = path.resolve(__dirname, '../documents/rewards_exported.csv');
 const exportedCSVContent = [['Wallet', 'Reward', 'Date'], ['Test Wallet', '1,000,000.000000 ADA', moment().format('YYYY-MM-DDTHHmmss.0SSS')]];
 const REWARDS_TAB_BUTTON = '.rewards.NavButton_component.NavButton_normal';
@@ -33,6 +34,7 @@ Then(/^I click on the Export to CSV button$/, async function () {
     fileContent,
     filePath
   }) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.wallets.generateCsv.trigger({
       fileContent,
       filePath

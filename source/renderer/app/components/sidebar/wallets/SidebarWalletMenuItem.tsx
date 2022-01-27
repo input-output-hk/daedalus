@@ -7,10 +7,13 @@ import LegacyBadge, {
   LEGACY_BADGE_MODES,
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletMenuItem.scss' ... Remove this comment to see the full error message
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import { DiscreetWalletAmount } from '../../../features/discreet-mode';
+
 type Props = {
   title: string;
   amount: number;
@@ -96,6 +99,7 @@ class SidebarWalletMenuItem extends Component<Props> {
             {isRestoreActive ? (
               '-'
             ) : (
+              // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
               <DiscreetWalletAmount amount={amount} withCurrency long={false} />
             )}
           </div>

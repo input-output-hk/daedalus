@@ -5,9 +5,11 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
 import { discreetWalletTokenAmount } from '../../features/discreet-mode/replacers/discreetWalletTokenAmount';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetAmount.scss' or its cor... Remove this comment to see the full error message
 import styles from './AssetAmount.scss';
 import type { AssetMetadata } from '../../api/assets/types';
 import { useDiscreetModeFeature } from '../../features/discreet-mode';
+
 const messages = defineMessages({
   unformattedAmount: {
     id: 'assets.assetAmount.unformattedAmount',
@@ -75,4 +77,5 @@ function AssetAmount({
   );
 }
 
+// @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ amount, metadata, decimals, i... Remove this comment to see the full error message
 export default observer(AssetAmount);

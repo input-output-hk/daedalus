@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 import { every } from 'lodash';
+
 const MIN_PASSWORD_LENGTH = 10;
 const MAX_PASSWORD_LENGTH = 255;
 export const isValidWalletName = (walletName: string) => {

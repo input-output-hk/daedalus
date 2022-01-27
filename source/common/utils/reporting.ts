@@ -1,5 +1,6 @@
 import type { SupportRequests } from '../types/support-requests.types';
 import type { Environment } from '../types/environment.types';
+
 const localesFillForm = {
   'en-US': 'English',
   'ja-JP': 'Japanese',

@@ -26,6 +26,7 @@ configure({
 });
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
+// @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'typ... Remove this comment to see the full error message
 const { environment } = global;
 const { isTest } = environment;
 
@@ -35,6 +36,7 @@ const initializeDaedalus = () => {
   const routingStore = new RouterStore();
   const stores = setupStores(api, actions, routingStore);
   const history = syncHistoryWithStore(hashHistory, routingStore);
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
   window.daedalus = {
     api,
     environment,

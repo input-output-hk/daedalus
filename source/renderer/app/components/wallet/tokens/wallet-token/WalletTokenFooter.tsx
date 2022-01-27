@@ -5,12 +5,15 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokenFooter.scss' or i... Remove this comment to see the full error message
 import styles from './WalletTokenFooter.scss';
 import AssetAmount from '../../../assets/AssetAmount';
 import type { AssetToken } from '../../../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/asse... Remove this comment to see the full error message
 import warningIcon from '../../../../assets/images/asset-token-warning-ic.inline.svg';
 import { messages } from './WalletToken.messages';
 import { isRecommendedDecimal } from './helpers';
+
 type Props = {
   asset: AssetToken;
   className?: string;

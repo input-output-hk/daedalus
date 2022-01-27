@@ -20,9 +20,11 @@ import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
 import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxo.scss' or its corr... Remove this comment to see the full error message
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
 import { WalletUtxoDescription } from './WalletUtxoDescription';
+
 export const messages = defineMessages({
   title: {
     id: 'wallet.settings.utxos.title',

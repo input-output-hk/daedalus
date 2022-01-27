@@ -4,13 +4,16 @@ import moment from 'moment';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/currenc... Remove this comment to see the full error message
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryCurrency.scss' ... Remove this comment to see the full error message
 import styles from './WalletSummaryCurrency.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';
 import type { Currency } from '../../../types/currencyTypes';
 import { DiscreetValue } from '../../../features/discreet-mode';
+
 const messages = defineMessages({
   currencyTitle: {
     id: 'wallet.summary.currency.title',
@@ -87,6 +90,7 @@ class WalletSummaryCurrency extends Component<Props> {
           {intl.formatMessage(messages.currencyTitle)}
         </div>
         <div className={styles.currencyWalletAmount}>
+          // @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message
           <DiscreetValue>{currencyWalletAmount}</DiscreetValue>
           <span className={styles.currencyCode}>
             {' '}

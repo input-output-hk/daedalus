@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterHeader.scss'... Remove this comment to see the full error message
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
@@ -12,6 +13,7 @@ import type {
   FutureEpoch,
 } from '../../../api/network/types';
 import { generateFieldPanel } from './helpers';
+
 const messages = defineMessages({
   epoch: {
     id: 'staking.delegationCenter.epoch',
@@ -58,6 +60,7 @@ type State = {
 
 @observer
 class DelegationCenterHeader extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
   state = {
     timeUntilFutureEpoch: 0,
@@ -144,6 +147,7 @@ class DelegationCenterHeader extends Component<Props, State> {
     }
 
     const fieldPanels = this.generateCurrentEpochPanels(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number | "-"' is not assignable ... Remove this comment to see the full error message
       epoch,
       slot,
       epochLength

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import type { DiscreetValueReplacer } from '../types';
+
 export type DiscreetWalletAmountProps = {
   amount: BigNumber;
   currency?: string;

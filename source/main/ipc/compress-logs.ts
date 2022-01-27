@@ -10,6 +10,7 @@ import type {
   CompressLogsRendererRequest,
   CompressLogsMainResponse,
 } from '../../common/ipc/api';
+
 export const compressLogsChannel: MainIpcChannel<
   CompressLogsRendererRequest,
   CompressLogsMainResponse
@@ -37,6 +38,7 @@ export default () => {
           });
           reject(error);
         });
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('COMPRESS_LOGS.START');
         // compress files
         const logFiles = get(logs, ['files'], []);

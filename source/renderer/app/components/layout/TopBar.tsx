@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -7,9 +8,12 @@ import { IS_BYRON_WALLET_MIGRATION_ENABLED } from '../../config/walletsConfig';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TopBar.scss' or its correspo... Remove this comment to see the full error message
 import styles from './TopBar.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/header-log... Remove this comment to see the full error message
 import headerLogo from '../../assets/images/header-logo.inline.svg';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
+
 type Props = {
   onLeftIconClick?: ((...args: Array<any>) => any) | null | undefined;
   leftIcon?: string | null | undefined;

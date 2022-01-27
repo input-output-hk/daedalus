@@ -5,10 +5,13 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/attenti... Remove this comment to see the full error message
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SystemTimeError.scss' or its... Remove this comment to see the full error message
 import styles from './SystemTimeError.scss';
+
 const messages = defineMessages({
   overlayTitle: {
     id: 'systemTime.error.overlayTitle',

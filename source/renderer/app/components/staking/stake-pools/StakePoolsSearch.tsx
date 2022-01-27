@@ -5,13 +5,20 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSearch.scss' or it... Remove this comment to see the full error message
 import styles from './StakePoolsSearch.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message
 import searchIcon from '../../../assets/images/search.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/grid-ic... Remove this comment to see the full error message
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/grid-re... Remove this comment to see the full error message
 import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/list-ic... Remove this comment to see the full error message
 import listIcon from '../../../assets/images/list-ic.inline.svg';
 import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
+
 const messages = defineMessages({
   searchInputPlaceholder: {
     id: 'staking.stakePools.search.searchInputPlaceholder',

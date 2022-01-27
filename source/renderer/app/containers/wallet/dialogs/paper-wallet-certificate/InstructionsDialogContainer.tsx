@@ -7,6 +7,7 @@ import InstructionsDialog from '../../../../components/wallet/paper-wallet-certi
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
 import type { FileDialogRequestParams } from '../../../../../../common/types/file-dialog.types';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletConnectDialog from '../../../components/wallet/WalletConnectDialog';
 import type { InjectedStoresProps } from '../../../types/injectedPropsType';
+
 type Props = InjectedStoresProps & {
   onClose: (...args: Array<any>) => any;
 };

@@ -35,27 +35,29 @@ import type {
   DownloadData,
 } from '../../../common/types/downloadManager.types';
 import type { FormattedDownloadData } from '../utils/formatters';
+
 const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
 export default class AppUpdateStore extends Store {
   @observable
+  // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   availableUpdate: News | null | undefined = null;
   @observable
-  availableUpdateVersion: string = '';
+  availableUpdateVersion = '';
   @observable
-  isUpdateDownloading: boolean = false;
+  isUpdateDownloading = false;
   @observable
-  isUpdateDownloaded: boolean = false;
+  isUpdateDownloaded = false;
   @observable
-  isUpdateProgressOpen: boolean = false;
+  isUpdateProgressOpen = false;
   @observable
-  isAutomaticUpdateFailed: boolean = false;
+  isAutomaticUpdateFailed = false;
   @observable
-  isUpdatePostponed: boolean = false;
+  isUpdatePostponed = false;
   @observable
-  isWaitingToQuitDaedalus: boolean = false;
+  isWaitingToQuitDaedalus = false;
   @observable
-  installationProgress: number = 0;
+  installationProgress = 0;
   @observable
   downloadInfo: DownloadInfo | null | undefined = null;
   @observable
@@ -155,6 +157,7 @@ export default class AppUpdateStore extends Store {
     return this.isAutomaticUpdateFailed;
   }
 
+  // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
     const { version, hash, url } = softwareUpdate[platform] || {};
@@ -165,13 +168,16 @@ export default class AppUpdateStore extends Store {
     };
   }
 
+  // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   isUpdateInstalled = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
     return !semver.lt(currentVersion, updateVersion);
   };
   // =================== PRIVATE ==================
+  // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   _checkNewAppUpdate = async (update: News) => {
     const { version, url } = this.getUpdateInfo(update);
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
     /*
@@ -184,7 +190,9 @@ export default class AppUpdateStore extends Store {
     // Was the update already installed?
     if (this.isUpdateInstalled(update)) {
       // Sets the `appUpdateCompleted` flag to prevent this whole process every app load
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.setAppUpdateCompletedRequest.execute(version);
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.unsetAppAutomaticUpdateFailedRequest.execute();
       await this._removeUpdateFile();
       await this._removeLocalDataInfo();
@@ -199,6 +207,7 @@ export default class AppUpdateStore extends Store {
     // Cancels if the update download is already in progress
     if (this.isUpdateDownloading) return false;
     // Is there an 'Automatic Update Failed' flag?
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
 
     if (isAutomaticUpdateFailed) {
@@ -225,6 +234,7 @@ export default class AppUpdateStore extends Store {
         const installerFileStillExists = await this._checkFileExists();
 
         if (!installerFileStillExists) {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.error(
             'AppUpdateStore:_setAppAutomaticUpdateFailed: Failed to find the installer file'
           );
@@ -290,6 +300,7 @@ export default class AppUpdateStore extends Store {
 
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
         this.isUpdateDownloaded = true;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.app.closeNewsFeed.trigger();
       }
 
@@ -321,12 +332,14 @@ export default class AppUpdateStore extends Store {
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ id: string; options: { progres... Remove this comment to see the full error message
       options: {
         progressIsThrottled: false,
         persistLocalData: true,
       },
     });
   };
+  // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   _requestUpdateDownload = (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
     if (!fileUrl) return null;
@@ -400,6 +413,7 @@ export default class AppUpdateStore extends Store {
     });
   };
   _setAppAutomaticUpdateFailed = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setAppAutomaticUpdateFailedRequest.execute();
     runInAction(() => {
       this.isAutomaticUpdateFailed = true;

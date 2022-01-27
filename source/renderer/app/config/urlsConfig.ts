@@ -1,4 +1,5 @@
 import coingeckoConfig from './currencyConfig.coingecko';
+
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'explorer.staging.cardano.org';
 export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';

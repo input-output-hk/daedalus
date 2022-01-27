@@ -11,6 +11,7 @@ import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/com
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
+
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
@@ -52,6 +53,7 @@ export const defaultProps = {
     <WalletRecoveryPhraseStep1Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       wordCount={number('wordCount', 15)}
       walletName="My Wallet"
     />
@@ -60,6 +62,7 @@ export const defaultProps = {
     <WalletRecoveryPhraseStep2Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       wordCount={number('wordCount', 15)}
       expectedWordCount={15}
       walletName="My Wallet"
@@ -101,6 +104,7 @@ export const defaultProps = {
       isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
       onSave={action('Change Password - onSave')}
       onCancel={action('Change Password - onCancel')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onPasswordSwitchToggle={action(
         'Change Password - onPasswordSwitchToggle'
       )}
@@ -123,6 +127,7 @@ export const defaultProps = {
       onAcceptBackupNotice={action('Delete Wallet - onAcceptBackupNotice')}
       onContinue={action('Delete Wallet - onContinue')}
       onCancel={action('Delete Wallet - onCancel')}
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       confirmationValue={text('Delete Wallet Confirmation Value')}
       onConfirmationValueChange={action(
         'Delete Wallet - onConfirmationValueChange'

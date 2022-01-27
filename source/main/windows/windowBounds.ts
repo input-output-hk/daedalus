@@ -4,6 +4,7 @@ import {
   STORAGE_TYPES,
 } from '../../common/config/electron-store.config';
 import type { StoreMessage } from '../../common/types/electron-store.types';
+
 interface Rectangle {
   x: number;
   y: number;
@@ -100,7 +101,7 @@ export function restoreSavedWindowBounds(
 export function saveWindowBoundsOnSizeAndPositionChange(
   window: Window,
   sendStoreRequest: SendStoreRequest,
-  debounceWait: number = 1000
+  debounceWait = 1000
 ) {
   const saveWindowBoundsSoon = debounce(
     () =>

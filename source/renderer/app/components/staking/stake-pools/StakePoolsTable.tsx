@@ -4,12 +4,14 @@ import { orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsTable.scss' or its... Remove this comment to see the full error message
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
+
 const messages = defineMessages({
   tableHeaderRank: {
     id: 'staking.stakePools.tableHeader.rank',
@@ -264,6 +266,7 @@ class StakePoolsTable extends Component<Props, State> {
         'calculatedCost',
         stakePoolsSortBy,
       ],
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
     );
     const availableTableHeaders = [
@@ -393,6 +396,7 @@ class StakePoolsTable extends Component<Props, State> {
                   }
                 >
                   <StakePoolsTableBody
+                    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                     sortedStakePoolList={sortedStakePoolList}
                     numberOfRankedStakePools={numberOfRankedStakePools}
                     currentTheme={currentTheme}

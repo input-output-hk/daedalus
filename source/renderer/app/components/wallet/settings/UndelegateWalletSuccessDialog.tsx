@@ -4,11 +4,14 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UndelegateWalletSuccessDialo... Remove this comment to see the full error message
 import styles from './UndelegateWalletSuccessDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/untada.... Remove this comment to see the full error message
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
+
 const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.result.dialog.title',
@@ -40,6 +43,7 @@ type State = {
 
 @observer
 class UndelegateWalletSuccessDialog extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
   state = {
     timeUntilNextEpochStart: 0,

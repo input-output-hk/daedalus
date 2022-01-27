@@ -4,6 +4,7 @@ import type {
   GenerateWalletMigrationReportRendererRequest,
   GenerateWalletMigrationReportMainResponse,
 } from '../../../common/ipc/api';
+
 export const generateWalletMigrationReportChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GenerateWalletMigrationReportMainResponse,

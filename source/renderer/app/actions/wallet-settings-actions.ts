@@ -1,4 +1,5 @@
 import Action from './lib/Action';
+
 export type WalletExportToFileParams = {
   walletId: string;
   exportType: string;

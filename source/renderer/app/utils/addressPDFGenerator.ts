@@ -3,6 +3,7 @@ import { defineMessages } from 'react-intl';
 import { generateAddressPDFChannel } from '../ipc/generateAddressPDFChannel';
 import type { Network } from '../../../common/types/environment.types';
 import globalMessages from '../i18n/global-messages';
+
 const messages = defineMessages({
   creationDate: {
     id: 'wallet.receive.pdf.creationDate',

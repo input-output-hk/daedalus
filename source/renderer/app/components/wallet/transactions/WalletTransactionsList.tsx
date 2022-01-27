@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -6,6 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactionsList.scss'... Remove this comment to see the full error message
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -15,6 +17,7 @@ import { SimpleTransactionList } from './render-strategies/SimpleTransactionList
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
+
 const messages = defineMessages({
   today: {
     id: 'wallet.summary.transactionsList.todayLabel',
@@ -205,6 +208,7 @@ class WalletTransactionsList extends Component<Props, State> {
   };
   getExpandedTransactions = () => this.expandedTransactionIds;
   renderGroup = (data: TransactionsGroup): Node => (
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Moment' is not assignable to par... Remove this comment to see the full error message
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
   );
   renderTransaction = (data: TransactionInfo): Node => {

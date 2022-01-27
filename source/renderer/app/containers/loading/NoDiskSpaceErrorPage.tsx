@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedStoresProps } from '../../types/injectedPropsType';
 import NoDiskSpaceError from '../../components/loading/no-disk-space-error/NoDiskSpaceError';
+
 type Props = InjectedStoresProps;
 
 @inject('stores')

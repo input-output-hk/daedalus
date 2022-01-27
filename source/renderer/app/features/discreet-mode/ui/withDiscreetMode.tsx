@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'AbstractC... Remove this comment to see the full error message
 import type { AbstractComponent } from 'react';
 import { observer } from 'mobx-react';
 import { useDiscreetModeFeature } from '../context';

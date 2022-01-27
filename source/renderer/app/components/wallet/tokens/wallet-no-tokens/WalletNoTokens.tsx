@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import BorderedBox from '../../../widgets/BorderedBox';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletNoTokens.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletNoTokens.scss';
 import { ExternalLinkButton } from '../../../widgets/ExternalLinkButton';
+
 const messages = defineMessages({
   tokensTitle: {
     id: 'wallet.summary.assets.tokensTitle',

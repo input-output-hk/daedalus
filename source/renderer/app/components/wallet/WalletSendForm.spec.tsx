@@ -20,6 +20,7 @@ import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletSendForm from './WalletSendForm';
+
 describe('wallet/Wallet Send Form', () => {
   beforeEach(() => addLocaleData([...en]));
   afterEach(cleanup);
@@ -111,7 +112,7 @@ describe('wallet/Wallet Send Form', () => {
     return getInput(label);
   }
 
-  async function addToken(value: number = 1, tokenIndex: number = 0) {
+  async function addToken(value = 1, tokenIndex = 0) {
     const addTokenButton = await screen.findByText('+ Add a token');
     fireEvent.click(addTokenButton);
     const tokenPicker = await screen.findByTestId('WalletTokenPicker');
@@ -136,7 +137,7 @@ describe('wallet/Wallet Send Form', () => {
     };
   }
 
-  async function waitForMinimumAdaRequiredMsg(minimumAda: number = 2) {
+  async function waitForMinimumAdaRequiredMsg(minimumAda = 2) {
     const minimumAdaRequiredMsg = screen.getByTestId('minimumAdaRequiredMsg');
     await within(minimumAdaRequiredMsg).findByText(
       `a minimum of ${minimumAda} ADA required`

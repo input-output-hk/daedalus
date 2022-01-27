@@ -1,11 +1,19 @@
 import { ROUTES } from '../routes-config';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/walle... Remove this comment to see the full error message
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/setti... Remove this comment to see the full error message
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/paper... Remove this comment to see the full error message
 import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certificate-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/deleg... Remove this comment to see the full error message
 import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/deleg... Remove this comment to see the full error message
 import delegationProgressIcon from '../assets/images/sidebar/delegation-progress-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/netwo... Remove this comment to see the full error message
 import networkInfoLogo from '../assets/images/sidebar/network-info-logo-cardano-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/votin... Remove this comment to see the full error message
 import votingIcon from '../assets/images/sidebar/voting-ic.inline.svg';
+
 export type SidebarCategoryInfo = {
   name: string;
   icon: string;

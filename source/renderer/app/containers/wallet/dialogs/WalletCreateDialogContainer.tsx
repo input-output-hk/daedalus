@@ -8,6 +8,7 @@ import HashDialogContainer from './wallet-create/HashDialogContainer';
 import ConfigDialogContainer from './wallet-create/ConfigDialogContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
+
 type Props = InjectedProps;
 
 // TODO create component;
@@ -86,6 +87,7 @@ class WalletCreateDialogContainer extends Component<Props> {
     return (
       <Fragment>
         {createWalletShowAbortConfirmation && (
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ onAbort: () => any; }' is not assignable t... Remove this comment to see the full error message
           <CreateWalletAbortConfirmation onAbort={this.onAbort} />
         )}
         <CurrentContainer

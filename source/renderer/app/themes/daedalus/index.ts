@@ -8,6 +8,7 @@ import { LIGHT_BLUE_THEME_OUTPUT } from './light-blue';
 import { SHELLEY_TESTNET_THEME_OUTPUT } from './shelley-testnet';
 import { WHITE_THEME_OUTPUT } from './white';
 import { YELLOW_THEME_OUTPUT } from './yellow';
+
 export const EXISTING_THEME_OUTPUTS = [
   ['cardano.ts', CARDANO_THEME_OUTPUT],
   ['dark-blue.ts', DARK_BLUE_THEME_OUTPUT],
@@ -24,6 +25,7 @@ export const EXISTING_THEME_OUTPUTS_OBJ = EXISTING_THEME_OUTPUTS.reduce(
     const [themeName, themeOutput] = theme;
 
     if (themeName && !isEmpty(themeOutput)) {
+      // @ts-ignore ts-migrate(2538) FIXME: Type '{ aboutWindow: { '--theme-about-window-backg... Remove this comment to see the full error message
       outputsObj[themeName] = themeOutput;
     }
 

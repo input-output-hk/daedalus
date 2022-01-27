@@ -3,19 +3,24 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokenHeader.scss' or i... Remove this comment to see the full error message
 import styles from './WalletTokenHeader.scss';
 import Asset from '../../../assets/Asset';
 import AssetAmount from '../../../assets/AssetAmount';
 import type { AssetToken } from '../../../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/coll... Remove this comment to see the full error message
 import arrow from '../../../../assets/images/collapse-arrow-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/star... Remove this comment to see the full error message
 import starNotFilledIcon from '../../../../assets/images/star-not-filled.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/star... Remove this comment to see the full error message
 import starFilledIcon from '../../../../assets/images/star-filled.inline.svg';
 import { isRecommendedDecimal } from './helpers';
+
 type Props = {
   anyAssetWasHovered: boolean;
   asset: AssetToken;
   assetSettingsDialogWasOpened: boolean;
-  className?: String;
+  className?: string;
   fullFingerprint?: boolean;
   isExpanded: boolean;
   isFavorite: boolean;
@@ -76,6 +81,7 @@ const WalletTokenHeader = (props: Props) => {
         asset={asset}
         small={false}
         onCopyAssetParam={onCopyAssetParam}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         metadataNameChars={get('name', asset.metadata, 0)}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         anyAssetWasHovered={anyAssetWasHovered}

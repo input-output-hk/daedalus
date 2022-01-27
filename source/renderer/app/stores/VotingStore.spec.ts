@@ -7,6 +7,7 @@ import {
   VOTING_RESULTS_DATE,
   VOTING_SNAPSHOT_DATE,
 } from '../config/votingConfig';
+
 describe('VotingStore', () => {
   const api: Api = {
     ada: jest.fn(),

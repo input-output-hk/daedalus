@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Navigation from '../../navigation/Navigation';
+
 const messages = defineMessages({
   delegation_center: {
     id: 'staking.navigation.delegation_center',

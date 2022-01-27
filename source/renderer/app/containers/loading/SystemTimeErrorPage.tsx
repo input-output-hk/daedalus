@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SystemTimeError from '../../components/loading/system-time-error/SystemTimeError';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

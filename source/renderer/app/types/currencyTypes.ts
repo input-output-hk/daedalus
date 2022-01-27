@@ -1,5 +1,6 @@
 import type { HttpOptions } from '../api/utils/externalRequest';
 import type { Locale } from '../../../common/types/locales.types';
+
 export type Currency = {
   code: string;
   name: Record<Locale, string>;

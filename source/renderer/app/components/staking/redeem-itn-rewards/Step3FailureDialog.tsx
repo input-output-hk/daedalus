@@ -4,9 +4,13 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step3FailureDialog.scss' or ... Remove this comment to see the full error message
 import styles from './Step3FailureDialog.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sad-wal... Remove this comment to see the full error message
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+
 const messages = defineMessages({
   description1NoRewards: {
     id: 'staking.redeemItnRewards.step3.failure.description1NoRewards',
@@ -78,6 +82,7 @@ class Step3FailureDialog extends Component<Props> {
     );
     return (
       <Dialog
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         actions={actions}
         onClose={onClose}
         closeButton={closeButton}

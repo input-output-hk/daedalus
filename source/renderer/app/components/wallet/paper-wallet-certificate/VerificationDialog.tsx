@@ -13,6 +13,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VerificationDialog.scss' or ... Remove this comment to see the full error message
 import styles from './VerificationDialog.scss';
 import {
   PAPER_WALLET_PRINTED_WORDS_COUNT,
@@ -20,6 +21,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
 } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.verification.dialog.headline',
@@ -120,6 +122,7 @@ class VerificationDialog extends Component<Props, State> {
   };
   recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -185,6 +188,7 @@ class VerificationDialog extends Component<Props, State> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { recoveryPhrase } = form.values();
@@ -199,10 +203,13 @@ class VerificationDialog extends Component<Props, State> {
     const { form } = this;
     const autocomplete = this.recoveryPhraseAutocomplete;
     // Cancel all debounced field validations
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     form.reset();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     form.showErrors(false);
     // Autocomplete has to be reset manually
     autocomplete.clear();
@@ -226,6 +233,7 @@ class VerificationDialog extends Component<Props, State> {
       recoveringConfirmed,
       isRecoveryPhraseValid,
     } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
     const storingUnderstandanceCheckboxClasses = classnames([

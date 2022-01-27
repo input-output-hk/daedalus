@@ -16,6 +16,7 @@ import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialogContainerOld from './dialogs/WalletRestoreDialogContainerOld';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletImportDialogContainer from './dialogs/WalletImportDialogContainer';
+
 type Props = InjectedProps;
 
 @inject('actions', 'stores')
@@ -70,14 +71,17 @@ class WalletAddPage extends Component<Props> {
     if (uiDialogs.isOpen(WalletCreateDialog)) {
       activeDialog = <WalletCreateDialogContainerOld onClose={this.onClose} />;
     } else if (createWalletStep !== null) {
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       activeDialog = <WalletCreateDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletBackupDialog)) {
       activeDialog = <WalletBackupDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletRestoreDialog)) {
       activeDialog = <WalletRestoreDialogContainerOld onClose={this.onClose} />;
     } else if (restoreWalletStep !== null) {
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     } else if (walletMigrationStep !== null) {
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       activeDialog = <WalletImportDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletConnectDialog)) {
       activeDialog = <WalletConnectDialogContainer onClose={this.onClose} />;

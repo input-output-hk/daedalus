@@ -28,12 +28,19 @@ describe('WalletTokenPicker hooks', () => {
       currentAssets: assets,
       previouslyCheckedIds: [],
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'checkboxes' does not exist on type '{}'.
     expect(hook.checkboxes).toMatchObject({});
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'checkedIds' does not exist on type '{}'.
     expect(hook.checkedIds.length).toEqual(0);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'totalCheckedCount' does not exist on typ... Remove this comment to see the full error message
     expect(hook.totalCheckedCount).toBe(0);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'previouslyCheckedIdsSet' does not exist ... Remove this comment to see the full error message
     expect(hook.previouslyCheckedIdsSet.size).toEqual(0);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isMaxTotalCount' does not exist on type ... Remove this comment to see the full error message
     expect(hook.isMaxTotalCount).toBe(false);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isToggleAllDisabled' does not exist on t... Remove this comment to see the full error message
     expect(hook.isToggleAllDisabled).toEqual(false);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isClearAllMode' does not exist on type '... Remove this comment to see the full error message
     expect(hook.isClearAllMode).toEqual(false);
   });
   const toggleCases = [
@@ -86,15 +93,22 @@ describe('WalletTokenPicker hooks', () => {
 
       for (let i = 0; i < sequence.length; i++) {
         act(() => {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleCheckbox' does not exist on type '... Remove this comment to see the full error message
           hook.toggleCheckbox(sequence[i]);
         });
       }
 
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'checkboxes' does not exist on type '{}'.
       expect(hook.checkboxes).toMatchObject(expected[0]);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'checkedIds' does not exist on type '{}'.
       expect(hook.checkedIds).toEqual(expected[1]);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'totalCheckedCount' does not exist on typ... Remove this comment to see the full error message
       expect(hook.totalCheckedCount).toBe(expected[1].length);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isMaxTotalCount' does not exist on type ... Remove this comment to see the full error message
       expect(hook.isMaxTotalCount).toBe(false);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isToggleAllDisabled' does not exist on t... Remove this comment to see the full error message
       expect(hook.isToggleAllDisabled).toEqual(false);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isClearAllMode' does not exist on type '... Remove this comment to see the full error message
       expect(hook.isClearAllMode).toEqual(false);
     }
   );
@@ -127,6 +141,7 @@ describe('WalletTokenPicker hooks', () => {
   ];
   test.each(toogleAllFnCases)(
     'useCheckboxes toogle toogleAllFn for %s',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(testId: string | string[] | (nu... Remove this comment to see the full error message
     (testId, [assets, previouslyCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
@@ -136,17 +151,24 @@ describe('WalletTokenPicker hooks', () => {
 
       for (let i = 0; i < alreadyChecked.length; i++) {
         act(() => {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleCheckbox' does not exist on type '... Remove this comment to see the full error message
           hook.toggleCheckbox(alreadyChecked[i]);
         });
       }
 
       act(() => {
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'toogleAllFn' does not exist on type '{}'... Remove this comment to see the full error message
         hook.toogleAllFn();
       });
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'totalCheckedCount' does not exist on typ... Remove this comment to see the full error message
       expect(hook.totalCheckedCount).toBe(expected[0]);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'checkedIds' does not exist on type '{}'.
       expect(hook.checkedIds).toEqual(expected[1]);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isMaxTotalCount' does not exist on type ... Remove this comment to see the full error message
       expect(hook.isMaxTotalCount).toBe(true);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isToggleAllDisabled' does not exist on t... Remove this comment to see the full error message
       expect(hook.isToggleAllDisabled).toEqual(false);
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isClearAllMode' does not exist on type '... Remove this comment to see the full error message
       expect(hook.isClearAllMode).toEqual(true);
     }
   );

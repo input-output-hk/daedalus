@@ -5,6 +5,7 @@ import type {
   DownloadLogsMainResponse,
 } from '../../common/ipc/api';
 import { DOWNLOAD_LOGS_CHANNEL } from '../../common/ipc/api';
+
 export const downloadLogsChannel: MainIpcChannel<
   DownloadLogsRendererRequest,
   DownloadLogsMainResponse

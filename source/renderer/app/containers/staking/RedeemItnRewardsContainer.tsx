@@ -8,6 +8,7 @@ import RedemptionUnavailableContainer from './dialogs/redeem-itn-rewards/Redempt
 import LoadingOverlay from '../../components/staking/redeem-itn-rewards/LoadingOverlay';
 import { REDEEM_ITN_REWARDS_STEPS } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

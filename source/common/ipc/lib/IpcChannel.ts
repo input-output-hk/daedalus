@@ -1,4 +1,5 @@
 import { isString } from 'lodash';
+
 export type IpcSender = {
   send: (channel: string, ...args: Array<any>) => void;
 };

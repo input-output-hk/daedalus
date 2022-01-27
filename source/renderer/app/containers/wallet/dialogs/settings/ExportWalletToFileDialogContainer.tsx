@@ -5,6 +5,7 @@ import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')

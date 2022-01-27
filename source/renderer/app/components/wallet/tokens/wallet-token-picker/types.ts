@@ -1,5 +1,6 @@
 import type { Intl } from '../../../../types/i18nTypes';
 import type { AssetToken } from '../../../../api/assets/types';
+
 export type Props = {
   intl: Intl;
   assets: Array<AssetToken>;

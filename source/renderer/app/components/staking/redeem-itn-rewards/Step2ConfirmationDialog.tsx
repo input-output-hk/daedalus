@@ -7,6 +7,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step2ConfirmationDialog.scss... Remove this comment to see the full error message
 import styles from './Step2ConfirmationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';
@@ -17,7 +18,9 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.step2.title',
@@ -83,6 +86,7 @@ class Step2ConfirmationDialog extends Component<Props> {
     error: null,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -123,6 +127,7 @@ class Step2ConfirmationDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -158,12 +163,14 @@ class Step2ConfirmationDialog extends Component<Props> {
       ? amount
       : transactionFees;
     const { name: walletName } = wallet;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const actions = {
       direction: 'column',
       items: [
         {
           className: isSubmitting ? styles.isSubmitting : null,
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
           disabled: !form.isValid,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
@@ -187,6 +194,7 @@ class Step2ConfirmationDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         actions={actions}
         onContinue={onContinue}
         onClose={onClose}

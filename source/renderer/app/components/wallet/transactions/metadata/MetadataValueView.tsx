@@ -7,6 +7,7 @@ import type {
   MetadataString,
   MetadataValue,
 } from '../../../../types/TransactionMetadata';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransactionMetadataView.scss... Remove this comment to see the full error message
 import styles from './TransactionMetadataView.scss';
 
 /**
@@ -60,23 +61,33 @@ function MapView({ value }: { value: MetadataMap }) {
 function MetadataValueView(props: { value: MetadataValue }) {
   const { value } = props;
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'int' does not exist on type 'MetadataVal... Remove this comment to see the full error message
   if (value.int) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'MetadataValue' is not assignable to type 'Me... Remove this comment to see the full error message
     return <IntegerView value={value} />;
   }
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'string' does not exist on type 'Metadata... Remove this comment to see the full error message
   if (value.string) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'MetadataValue' is not assignable to type 'Me... Remove this comment to see the full error message
     return <StringView value={value} />;
   }
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'bytes' does not exist on type 'MetadataV... Remove this comment to see the full error message
   if (value.bytes) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'MetadataValue' is not assignable to type 'Me... Remove this comment to see the full error message
     return <BytesView value={value} />;
   }
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'list' does not exist on type 'MetadataVa... Remove this comment to see the full error message
   if (value.list) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'MetadataValue' is not assignable to type 'Me... Remove this comment to see the full error message
     return <ListView value={value} />;
   }
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type 'MetadataVal... Remove this comment to see the full error message
   if (value.map) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'MetadataValue' is not assignable to type 'Me... Remove this comment to see the full error message
     return <MapView value={value} />;
   }
 

@@ -5,6 +5,7 @@ import type {
   MessageBody,
   ElectronLoggerMessage,
 } from '../types/logging.types';
+
 const DEFAULT_MESSAGE_BODY = {
   ns: ['daedalus'],
   data: {},
@@ -81,6 +82,7 @@ export const constructMessageBody = (
 };
 export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   const at = loggerMessage.date.toISOString();
+  // @ts-ignore ts-migrate(2488) FIXME: Type 'LogSystemInfoParams' must have a '[Symbol.it... Remove this comment to see the full error message
   const [context, messageData] = loggerMessage.data;
   const { level } = loggerMessage;
   const { message: msg, environmentData } = messageData;

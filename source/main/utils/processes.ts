@@ -12,6 +12,7 @@ export type Process = {
 };
 export const getProcessById = async (processId: number): Promise<Process> => {
   // finds running processes matching PID
+  // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
   const matchingProcesses: Array<Process> = await find('pid', processId);
   return matchingProcesses.length > 0 ? matchingProcesses[0] : Promise.reject();
 };
@@ -21,6 +22,7 @@ export const getProcessesByName = async (
   processName: string
 ): Promise<Array<Process>> => {
   // finds running processes matching name
+  // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
   const matchingProcesses: Array<Process> = await find('name', processName);
   return matchingProcesses;
 };
@@ -30,6 +32,7 @@ export const getProcess = async (
 ): Promise<Process | null | undefined> => {
   try {
     // finds running processes matching PID
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
     const matchingProcesses: Array<Process> = await find('pid', processId);
     // no processes exist with a matching PID
     if (!matchingProcesses.length) return null;

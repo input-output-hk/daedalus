@@ -5,6 +5,7 @@ import type {
   getRecoveryWalletIdRendererRequest,
   getRecoveryWalletIdMainResponse,
 } from '../../common/ipc/api';
+
 const getRecoveryWalletIdChannel: MainIpcChannel<
   getRecoveryWalletIdRendererRequest,
   getRecoveryWalletIdMainResponse

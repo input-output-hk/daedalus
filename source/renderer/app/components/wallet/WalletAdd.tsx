@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletAdd.scss' or its corre... Remove this comment to see the full error message
 import styles from './WalletAdd.scss';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/create-ic.... Remove this comment to see the full error message
 import createIcon from '../../assets/images/create-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/import-ic.... Remove this comment to see the full error message
 import importIcon from '../../assets/images/import-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/connect-ic... Remove this comment to see the full error message
 import connectIcon from '../../assets/images/connect-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/restore-ic... Remove this comment to see the full error message
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 import { isHardwareWalletSupportEnabled } from '../../config/hardwareWalletsConfig';
+
 const messages = defineMessages({
   title: {
     id: 'wallet.add.dialog.title.label',

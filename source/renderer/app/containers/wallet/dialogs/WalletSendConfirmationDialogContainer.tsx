@@ -10,6 +10,7 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
 import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
+
 type Props = {
   stores: any | StoresMap;
   actions: any | ActionsMap;
@@ -78,6 +79,7 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
       },
     } = stores;
     const { getAsset } = assetsStore;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
@@ -117,6 +119,7 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
         {selectedAssets.length ? (
           <WalletSendAssetsConfirmationDialog
             amount={amount}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             sender={activeWallet.id}
             receiver={receiver}
             wallet={activeWallet}

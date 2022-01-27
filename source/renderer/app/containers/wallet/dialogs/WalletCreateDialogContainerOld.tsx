@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -25,6 +26,7 @@ class WalletCreateDialogContainer extends Component<Props> {
       <WalletCreateDialog
         onSubmit={this.onSubmit}
         onCancel={this.props.onClose}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isShelleyActivated={isShelleyActivated}
         currentLocale={currentLocale}
       />

@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingCountdown from '../../components/staking/countdown/StakingCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 const messages = defineMessages({
   learnMoreLinkUrl: {
     id: 'staking.countdown.learnMore.linkUrl',

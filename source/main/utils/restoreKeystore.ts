@@ -1,6 +1,7 @@
 import * as cbor from 'cbor';
 import * as blake2b from 'blake2b';
 import * as crypto from 'crypto';
+
 export type EncryptedSecretKeys = Array<EncryptedSecretKey>;
 export type EncryptedSecretKey = {
   encryptedPayload: Buffer;

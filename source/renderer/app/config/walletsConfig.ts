@@ -4,6 +4,7 @@ import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from './cryptoConfig';
+
 export const CREATE_WALLET_STEPS = [
   'instructions',
   'template',

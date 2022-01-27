@@ -14,13 +14,16 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveRandom.scss' or... Remove this comment to see the full error message
 import styles from './WalletReceiveRandom.scss';
 import AddressRandom from './AddressRandom';
 import WalletAddress from '../../../domains/WalletAddress';
+
 const messages = defineMessages({
   walletAddressLabel: {
     id: 'wallet.receive.page.walletAddressLabel',
@@ -91,6 +94,7 @@ class WalletReceiveRandom extends Component<Props> {
     onToggleUsedAddresses();
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -137,6 +141,7 @@ class WalletReceiveRandom extends Component<Props> {
     />
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -184,6 +189,7 @@ class WalletReceiveRandom extends Component<Props> {
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
     ]);
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passwordField = form.$('spendingPassword');
     const canSubmit = !isSubmitting && passwordField.value;
     const generateAddressForm = (

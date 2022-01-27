@@ -14,6 +14,7 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
+
 const assets = {
   available: [
     {
@@ -49,12 +50,14 @@ const assets = {
   ],
 };
 const dummyWallets = [
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   generateWallet('Dummy1', '1000000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
     'Dummy2',
     '2000000000000',
     assets,
     0,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
     STAKE_POOLS[1],
     true,
     'syncing'
@@ -82,6 +85,7 @@ export const StakePoolsStory = (props: Props) => {
     null
   );
   return (
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     <StakePools
       stakePoolsList={STAKE_POOLS.slice(
         0,

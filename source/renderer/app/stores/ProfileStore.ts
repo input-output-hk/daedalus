@@ -42,6 +42,7 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 import formatCpuInfo from '../utils/formatCpuInfo';
+
 export default class ProfileStore extends Store {
   @observable
   systemLocale: Locale = LOCALES.english;
@@ -120,17 +121,18 @@ export default class ProfileStore extends Store {
   @observable
   error: LocalizableError | null | undefined = null;
   @observable
+  // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   logFiles: LogFiles = {};
   @observable
   compressedLogsFilePath: string | null | undefined = null;
   @observable
   compressedLogsStatus: CompressedLogStatus = {};
   @observable
-  desktopDirectoryPath: string = '';
+  desktopDirectoryPath = '';
   @observable
-  isSubmittingBugReport: boolean = false;
+  isSubmittingBugReport = false;
   @observable
-  isInitialScreen: boolean = false;
+  isInitialScreen = false;
 
   /* eslint-enable max-len */
   setup() {
@@ -279,6 +281,7 @@ export default class ProfileStore extends Store {
 
   @computed
   get areTermsOfUseAccepted(): boolean {
+    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
@@ -292,6 +295,7 @@ export default class ProfileStore extends Store {
 
   @computed
   get isDataLayerMigrationAccepted(): boolean {
+    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
@@ -328,7 +332,9 @@ export default class ProfileStore extends Store {
   }) => {
     // In case `value` is missing, it consolidates in the localstorage the default value
     const consolidatedValue =
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message
       value || (this as any)[camelCase(['current', param])];
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'set' does not exist on type 'LocalizedRe... Remove this comment to see the full error message
     const { set, get } = getRequestKeys(param, this.currentLocale);
     await (this as any)[set].execute(consolidatedValue);
     await (this as any)[get].execute();
@@ -339,15 +345,20 @@ export default class ProfileStore extends Store {
     }
   };
   _updateTheme = async ({ theme }: { theme: string }) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setThemeRequest.execute(theme);
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getThemeRequest.execute();
   };
   _acceptTermsOfUse = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setTermsOfUseAcceptanceRequest.execute();
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
     await enableApplicationMenuNavigationChannel.send();
   };
   _getTermsOfUseAcceptance = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
 
     if (this.getTermsOfUseAcceptanceRequest.result) {
@@ -355,7 +366,9 @@ export default class ProfileStore extends Store {
     }
   };
   _acceptDataLayerMigration = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDataLayerMigrationAcceptanceRequest.execute();
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
   _getDataLayerMigrationAcceptance = () => {
@@ -474,6 +487,7 @@ export default class ProfileStore extends Store {
         const { isDownloading, destination } = this.compressedLogsStatus;
 
         if (isDownloading) {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ destination: string; fileName:... Remove this comment to see the full error message
           this._downloadLogs({
             destination,
             fileName,
@@ -522,6 +536,7 @@ export default class ProfileStore extends Store {
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('ProfileStore: Requesting state snapshot log file creation');
       const { networkStatus } = this.stores;
       const {

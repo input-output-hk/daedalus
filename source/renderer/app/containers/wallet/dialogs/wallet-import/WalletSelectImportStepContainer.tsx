@@ -7,6 +7,7 @@ import { WalletImportStatuses } from '../../../../types/walletExportTypes';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../config/numbersConfig';
 import { isValidWalletName } from '../../../../utils/validations';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 type State = {

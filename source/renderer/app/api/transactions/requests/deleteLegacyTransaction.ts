@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
+
 export const deleteLegacyTransaction = (
   config: RequestConfig,
   {

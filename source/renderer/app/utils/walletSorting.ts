@@ -5,6 +5,7 @@ import type {
   WalletSortByOptions,
 } from '../types/sidebarTypes';
 import type Wallet from '../domains/Wallet';
+
 type IndexedWallet = {
   wallet: Wallet;
   index: number;

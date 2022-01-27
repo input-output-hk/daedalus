@@ -4,12 +4,15 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NewsFeed.scss' or its corres... Remove this comment to see the full error message
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
 import NewsItem from './NewsItem';
 import UpdateItem from './UpdateItem';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+
 const messages = defineMessages({
   newsFeedEmpty: {
     id: 'news.newsfeed.empty',
@@ -30,6 +33,7 @@ const messages = defineMessages({
 type Props = {
   onClose: (...args: Array<any>) => any;
   onOpenAlert?: (...args: Array<any>) => any;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   news?: News.NewsCollection;
   isNewsFeedOpen: boolean;
   onMarkNewsAsRead: (...args: Array<any>) => any;
@@ -173,6 +177,7 @@ class NewsFeed extends Component<Props, State> {
       hasShadow ? styles.hasShadow : null,
     ]);
     return (
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'RefObject<HTMLElement>' is not assignable to... Remove this comment to see the full error message
       <div className={componentClasses} ref={this.newsFeedRef}>
         <div className={newsFeedHeaderStyles}>
           <h3 className={styles.newsFeedTitle}>
@@ -194,6 +199,7 @@ class NewsFeed extends Component<Props, State> {
                 <UpdateItem
                   key={update.id}
                   updateItem={update}
+                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
                   onOpenAlert={onOpenAlert}

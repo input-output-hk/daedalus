@@ -2,12 +2,15 @@ import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/untada.... Remove this comment to see the full error message
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import ProgressBarLarge from '../../widgets/ProgressBarLarge';
 import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../config/votingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsConfi... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsConfirm.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
+
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.confirm.step.description',

@@ -24,7 +24,9 @@ import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import { getFilteredStakePoolsList } from '../stake-pools/helpers';
 import BackToTopButton from '../../widgets/BackToTopButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsChooseStakePo... Remove this comment to see the full error message
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
@@ -32,6 +34,7 @@ import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 import { getMessages } from './DelegationStepsChooseStakePoolDialog.messages';
 import { OversaturationText } from './OversaturationText';
+
 const messages = getMessages();
 type Props = {
   stepsList: Array<string>;
@@ -77,9 +80,11 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     Array<StakePool>
   >([]);
   const stakePoolsScrollElementRef = useRef();
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const handleClearSearch = useCallback(() => {
     setSearchValue('');
   });
@@ -289,6 +294,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
             </p>
           )}
           <StakePoolsList
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ listName: string; stakePoolsList: StakePoo... Remove this comment to see the full error message
             listName="recentStakePools"
             stakePoolsList={recentStakePools}
             onOpenExternalLink={onOpenExternalLink}
@@ -312,6 +318,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
             placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
             onSearch={handleSearch}
             onClearSearch={handleClearSearch}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             scrollableElementClassName="Dialog_content"
             disabledStakePoolId={activeStakePoolId}
           />
@@ -319,6 +326,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
 
         <div className={styles.stakePoolsListWrapper}>
           <StakePoolsList
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ listName: string; stakePoolsList: StakePoo... Remove this comment to see the full error message
             listName="selectedIndexList"
             stakePoolsList={filteredStakePoolsList}
             onOpenExternalLink={onOpenExternalLink}

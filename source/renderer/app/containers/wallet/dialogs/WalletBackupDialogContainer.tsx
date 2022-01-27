@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')

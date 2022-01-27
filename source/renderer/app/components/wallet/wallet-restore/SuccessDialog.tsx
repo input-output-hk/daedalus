@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/tada-ic... Remove this comment to see the full error message
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SuccessDialog.scss' or its c... Remove this comment to see the full error message
 import styles from './SuccessDialog.scss';
 import type {
   WalletDaedalusKind,
@@ -12,6 +14,7 @@ import {
   WALLET_DAEDALUS_KINDS,
   WALLET_YOROI_KINDS,
 } from '../../../config/walletRestoreConfig';
+
 const messages = defineMessages({
   closeButtonLabel: {
     id: 'wallet.restore.dialog.step.success.dialog.close',

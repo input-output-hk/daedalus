@@ -7,11 +7,13 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PrintDialog.scss' or its cor... Remove this comment to see the full error message
 import styles from './PrintDialog.scss';
 import {
   PAPER_WALLET_PRINTED_WORDS_COUNT,
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
 } from '../../../config/cryptoConfig';
+
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.print.dialog.headline',

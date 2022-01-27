@@ -1,4 +1,5 @@
 import { clickInputByLabel, clickOptionByValue, clickOptionByIndex } from "../../../common/e2e/steps/helpers";
+
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const DEFAULT_LANGUAGE = 'en-US';
 const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
@@ -60,7 +61,9 @@ export const i18nHelpers = {
       const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
 
 
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const locale = daedalus.stores.profile.currentLocale;
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const messages = daedalus.translations;
       const intlProvider = new IntlProvider({
         locale,
@@ -72,11 +75,13 @@ export const i18nHelpers = {
     }, id, values || {});
     return translation.value;
   },
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
   setActiveLanguage: async (client: Record<string, any>, {
     language
   }: {
     language: string;
   } = {}) => client.execute(value => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.profile.updateUserLocalSetting.trigger({
       param: 'locale',
       value
@@ -84,11 +89,13 @@ export const i18nHelpers = {
   }, language || DEFAULT_LANGUAGE)
 };
 export const initialSettingsHelpers = {
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (client: Record<string, any>, {
     isHidden
   }: {
     isHidden: boolean;
   } = {}) => client.waitForVisible(INITIAL_SETTINGS_FORM, null, isHidden),
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
   ensureLanguageIsSelected: async (client: Record<string, any>, {
     language
   }: {
@@ -97,6 +104,7 @@ export const initialSettingsHelpers = {
     await i18nHelpers.setActiveLanguage(client, {
       language
     });
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     client.execute(() => daedalus.actions.profile.finishInitialScreenSettings.trigger());
     await initialSettingsHelpers.waitForVisible(client, {
       isHidden: true
@@ -104,6 +112,7 @@ export const initialSettingsHelpers = {
   }
 };
 export const migrationHelpers = {
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (client: Record<string, any>, {
     isHidden
   }: {
@@ -111,6 +120,7 @@ export const migrationHelpers = {
   } = {}) => client.waitForVisible(DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT, null, isHidden),
   acceptMigration: async (client: Record<string, any>) => {
     await client.execute(() => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.profile.acceptDataLayerMigration.trigger();
     });
     await migrationHelpers.waitForVisible(client, {
@@ -119,6 +129,7 @@ export const migrationHelpers = {
   }
 };
 export const termsOfUseHelpers = {
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (client: Record<string, any>, {
     isHidden
   }: {
@@ -126,6 +137,7 @@ export const termsOfUseHelpers = {
   } = {}) => client.waitForVisible(TERMS_OF_USE_FORM, null, isHidden),
   acceptTerms: async (client: Record<string, any>) => {
     await client.execute(() => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.profile.acceptTermsOfUse.trigger();
     });
     await termsOfUseHelpers.waitForVisible(client, {
@@ -155,6 +167,7 @@ export const getSelectedCustomOptions = async function () {
       currentNumberFormat,
       currentDateFormat,
       currentTimeFormat
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.profile;
     return {
       currentNumberFormat,
@@ -175,7 +188,7 @@ export const getSelectedCustomOptions = async function () {
 };
 export const getValueFromSelector = async function (screenElement: string, expectedParam: string) {
   const selector = screenElementSelectors[screenElement][expectedParam];
-  const transform = screenElementSelectors[screenElement].transform;
+  const {transform} = screenElementSelectors[screenElement];
   const tagName = await this.client.getTagName(selector);
   let value;
 

@@ -7,6 +7,7 @@ import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinne
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ProfileSettingsForm.scss' or... Remove this comment to see the full error message
 import styles from './ProfileSettingsForm.scss';
 import {
   LANGUAGE_OPTIONS,
@@ -16,6 +17,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../../../config/profileConfig';
+
 const messages = defineMessages({
   localeSelectLabel: {
     id: 'profile.settings.languageSelect.label',

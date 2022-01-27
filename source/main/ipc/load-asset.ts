@@ -6,6 +6,7 @@ import type {
   LoadAssetRendererRequest,
   LoadAssetMainResponse,
 } from '../../common/ipc/api';
+
 const loadAssetChannel: MainIpcChannel<
   LoadAssetRendererRequest,
   LoadAssetMainResponse

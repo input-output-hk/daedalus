@@ -1,4 +1,5 @@
 import { observable } from 'mobx';
+
 export default class Profile {
   @observable
   name: string;

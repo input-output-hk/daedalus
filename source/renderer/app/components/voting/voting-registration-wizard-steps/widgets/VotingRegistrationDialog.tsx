@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classnames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationDialog.scs... Remove this comment to see the full error message
 import styles from './VotingRegistrationDialog.scss';
 import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import type { DialogActions } from '../../../widgets/Dialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
+
 const messages = defineMessages({
   dialogTitle: {
     id: 'voting.votingRegistration.dialog.dialogTitle',

@@ -4,6 +4,7 @@ import type {
   GetGPUStatusRendererRequest,
   GetGPUStatusMainResponse,
 } from '../../../common/ipc/api';
+
 export const getGPUStatusChannel: RendererIpcChannel<
   GetGPUStatusMainResponse,
   GetGPUStatusRendererRequest

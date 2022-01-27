@@ -1,3 +1,4 @@
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -20,6 +21,7 @@ import UnpairWallet from './UnpairWallet';
 import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import type { Locale } from '../../../../../common/types/locales.types';
@@ -31,6 +33,7 @@ import ICOPublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from './WalletPublicKeyDialog';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+
 export const messages: Record<string, ReactIntlMessage> = defineMessages({
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
@@ -336,6 +339,7 @@ class WalletSettings extends Component<Props, State> {
             <WalletRecoveryPhraseVerificationWidget
               onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               recoveryPhraseVerificationStatus={
                 recoveryPhraseVerificationStatus
               }

@@ -1,8 +1,9 @@
 import { autorun } from 'mobx';
+
 type Fn = () => void;
 export class Reaction {
   reaction: Fn;
-  isRunning: boolean = false;
+  isRunning = false;
   dispose: Fn | null = null;
 
   constructor(reaction: Fn) {

@@ -5,9 +5,11 @@ import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterBody.scss' o... Remove this comment to see the full error message
 import styles from './DelegationCenterBody.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { FutureEpoch, NextEpoch } from '../../../api/network/types';
+
 const messages = defineMessages({
   bodyTitle: {
     id: 'staking.delegationCenter.bodyTitle',
@@ -110,6 +112,7 @@ class DelegationCenterBody extends Component<Props> {
                 <WalletRow
                   key={wallet.id}
                   wallet={wallet}
+                  // @ts-ignore ts-migrate(2322) FIXME: Type '{ key: string; wallet: Wallet; numberOfStake... Remove this comment to see the full error message
                   numberOfStakePools={numberOfStakePools}
                   numberOfRankedStakePools={numberOfRankedStakePools}
                   onDelegate={() => onDelegate(wallet.id)}

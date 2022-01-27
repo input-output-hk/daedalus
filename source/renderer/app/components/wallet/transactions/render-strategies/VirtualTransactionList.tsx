@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -9,7 +10,9 @@ import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualTransactionList.scss'... Remove this comment to see the full error message
 import styles from './VirtualTransactionList.scss';
+
 type Props = {
   getExpandedTransactions: () => Map<string, WalletTransaction>;
   renderRow: (arg0: Row) => Node;
@@ -30,8 +33,8 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 class VirtualTransactionList extends Component<Props> {
   list: List;
   rowHeights: RowHeight[] = [];
-  txAddressHeight: number = 0;
-  txIdHeight: number = 0;
+  txAddressHeight = 0;
+  txIdHeight = 0;
   visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
@@ -59,7 +62,7 @@ class VirtualTransactionList extends Component<Props> {
   /**
    * Recomputes virtual row heights only once per tick (debounced)
    */
-  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
+  recomputeVirtualRowHeights = debounce((startIndex = 0): void => {
     const { list } = this;
     if (!list) return;
     list.recomputeRowHeights(startIndex);
@@ -91,6 +94,7 @@ class VirtualTransactionList extends Component<Props> {
     const { addresses } = tx;
     const txAddressesCount = addresses.from.length + addresses.to.length;
     const txAddressesHeight = txAddressesCount * txSingleAddressHeight;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isLastInGroup' does not exist on type 'R... Remove this comment to see the full error message
     const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 1;
     return (
       TX_EXPANDED_ROW_BASE_HEIGHT +
@@ -104,6 +108,7 @@ class VirtualTransactionList extends Component<Props> {
    * Gets an Info contracted row height
    */
   estimateHeightOfTxContractedRow = (row: Row): number => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isLastInGroup' does not exist on type 'R... Remove this comment to see the full error message
     const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_CONTRACTED_ROW_HEIGHT + txBottomMargin;
   };
@@ -178,6 +183,7 @@ class VirtualTransactionList extends Component<Props> {
 
     if (txRow) {
       const txElement = txRow.firstChild;
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'ChildNode' is not assignable to ... Remove this comment to see the full error message
       const style = window.getComputedStyle(txElement, null);
       return parseInt(style.getPropertyValue('height'), 10);
     }
@@ -284,6 +290,7 @@ class VirtualTransactionList extends Component<Props> {
     index: number;
     style: string;
   }) => (
+    // @ts-ignore ts-migrate(2559) FIXME: Type 'string' has no properties in common with typ... Remove this comment to see the full error message
     <div key={key} style={style} className={styles.row}>
       {this.props.renderRow(this.props.rows[index])}
     </div>

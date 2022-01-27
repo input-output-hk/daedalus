@@ -13,6 +13,7 @@ import {
 } from 'react-intl';
 import { getSmashServerIdFromUrl, getUrlParts } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSettings.scss' or ... Remove this comment to see the full error message
 import styles from './StakePoolsSettings.scss';
 import {
   SMASH_SERVERS_LIST,
@@ -20,9 +21,11 @@ import {
   SMASH_URL_VALIDATOR,
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+
 const messages = defineMessages({
   description: {
     id: 'settings.stakePools.smash.description',

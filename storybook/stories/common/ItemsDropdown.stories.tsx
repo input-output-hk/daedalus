@@ -26,8 +26,10 @@ import {
   generateAssetToken,
 } from '../_support/utils';
 import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
+
 const WALLETS = [
   generateWallet('Second Wallet', '500000000'),
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   generateWallet('Third Wallet', '100000000', STAKE_POOLS[3]),
   generateWallet(
     'Fourth Syncing Wallet',
@@ -46,21 +48,25 @@ const stakePoolsList = [
   ...STAKE_POOLS.slice(290, 295),
 ];
 const assets = [
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(generateHash(), '', generateHash(), 100, {
     name: 'Asset 1',
     ticker: 'ABCD',
     description: 'Asset 1 description',
   }),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(generateHash(), '', generateHash(), 200, {
     name: 'Asset 2',
     ticker: 'EFG',
     description: 'Asset 2 description',
   }),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(generateHash(), '', generateHash(), 300, {
     name: 'Asset 3',
     ticker: 'HI',
     description: 'Asset 3 description',
   }),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(generateHash(), '', generateHash(), 400, {
     name: 'Asset 4',
     ticker: 'JKL',
@@ -128,6 +134,7 @@ storiesOf('Common|ItemsDropdown', module)
         return (
           <ItemsDropdown
             options={options}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             value={store.state.value}
             onChange={(value) =>
               store.set({
@@ -153,9 +160,11 @@ storiesOf('Common|ItemsDropdown', module)
           `${number('Amount', 1000000000, {}, 'First wallet')}`,
           undefined,
           undefined,
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'SelectTypeKnobValue' is not assi... Remove this comment to see the full error message
           select(
             'Stake pool',
             stakePoolsOptions,
+            // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
             STAKE_POOLS[0],
             'First wallet'
           ),
@@ -172,6 +181,7 @@ storiesOf('Common|ItemsDropdown', module)
             getStakePoolById={(poolId) =>
               find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
             }
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ getStakePoolById: (poolId: any) => { relat... Remove this comment to see the full error message
             label={text('label', 'Wallets')}
             numberOfStakePools={
               boolean('Has stake pools', true, 'First wallet')
@@ -183,6 +193,7 @@ storiesOf('Common|ItemsDropdown', module)
                 walletId,
               })
             }
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
             placeholder={text('placeholder')}
             syncingLabel={text('syncingLabel', 'syncing')}
             value={store.state.walletId}
@@ -199,6 +210,7 @@ storiesOf('Common|ItemsDropdown', module)
       '1000000000',
       undefined,
       undefined,
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'SelectTypeKnobValue' is not assi... Remove this comment to see the full error message
       select('Wallet - Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
       true,
       undefined,
@@ -218,6 +230,7 @@ storiesOf('Common|ItemsDropdown', module)
           getStakePoolById={(poolId) =>
             find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
           }
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isSyncing={boolean('isSyncing', false)}
           numberOfStakePools={
             boolean('Has stake pools', true) ? STAKE_POOLS.length : 0
@@ -238,6 +251,7 @@ storiesOf('Common|ItemsDropdown', module)
         return (
           <AssetsDropdown
             assets={assets}
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ assets: AssetToken[]; value: string; onCha... Remove this comment to see the full error message
             value={store.state.assetId}
             onChange={(assetId) =>
               store.set({

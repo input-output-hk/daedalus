@@ -2,6 +2,7 @@ import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet, LegacyWalletInitData } from '../types';
 import type { WalletByronKind } from '../../../types/walletRestoreTypes';
 import { request } from '../../utils/request';
+
 export const restoreByronWallet = (
   config: RequestConfig,
   {

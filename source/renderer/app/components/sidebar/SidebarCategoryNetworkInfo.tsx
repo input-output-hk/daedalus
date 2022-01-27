@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarCategoryNetworkInfo.s... Remove this comment to see the full error message
 import styles from './SidebarCategoryNetworkInfo.scss';
 import type { networkType } from '../../types/networkTypes';
+
 const messages = defineMessages({
   mainnet: {
     id: 'test.environment.mainnetLabel',
@@ -53,6 +55,7 @@ export default class SidebarCategoryNetworkInfo extends Component<Props> {
   };
 
   render() {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     const { network } = this.props;
     const { intl } = this.context;

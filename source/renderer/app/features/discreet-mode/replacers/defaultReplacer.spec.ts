@@ -1,4 +1,5 @@
 import { defaultReplacer } from './defaultReplacer';
+
 describe('Discreet mode default replacer', () => {
   const symbol = '***';
   const value = 'test';

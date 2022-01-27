@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransferFundsStep1Dialog.scs... Remove this comment to see the full error message
 import styles from './TransferFundsStep1Dialog.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -9,6 +10,7 @@ import ItemDropdownOption from '../../widgets/forms/ItemDropdownOption';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
@@ -92,6 +94,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
           />
         </div>
         <WalletsDropdown
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ label: any; wallets: Partial<Wallet>[]; on... Remove this comment to see the full error message
           label={intl.formatMessage(messages.targetWallet)}
           wallets={wallets}
           onChange={onSetSourceWallet}

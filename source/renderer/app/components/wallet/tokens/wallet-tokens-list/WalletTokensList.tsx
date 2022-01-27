@@ -5,16 +5,19 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { searchAssets, sortAssets } from '../../../../utils/assets';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokensList.scss' or it... Remove this comment to see the full error message
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../../domains/Wallet';
 import BorderedBox from '../../../widgets/BorderedBox';
 import LoadingSpinner from '../../../widgets/LoadingSpinner';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletNoTokens from '../wallet-no-tokens/WalletNoTokens';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/asce... Remove this comment to see the full error message
 import sortIcon from '../../../../assets/images/ascending.inline.svg';
 import { messages } from './WalletTokensList.messages';
 import type { AssetToken } from '../../../../api/assets/types';
 import type { SortBy, SortDirection } from '../../../../utils/assets';
+
 type Props = {
   assets: Array<AssetToken>;
   assetSettingsDialogWasOpened: boolean;

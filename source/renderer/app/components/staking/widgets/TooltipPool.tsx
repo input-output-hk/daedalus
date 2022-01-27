@@ -16,12 +16,18 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TooltipPool.scss' or its cor... Remove this comment to see the full error message
 import styles from './TooltipPool.scss';
 import StakePool from '../../../domains/StakePool';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import {
@@ -34,6 +40,7 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+
 const messages = defineMessages({
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
@@ -172,6 +179,7 @@ class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   idCopyFeedbackTimeout: TimeoutID;
   rootRef: ElementRef<any> = createRef();
   state = {
@@ -246,6 +254,7 @@ class TooltipPool extends Component<Props, State> {
               <span className={saturationBarClassnames}>
                 <span
                   style={{
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
                     width: `${parseFloat(saturation).toFixed(2)}%`,
                   }}
                 />
@@ -291,6 +300,7 @@ class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
+              // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
               relativeStake,
               2
             )}%`}</span>
@@ -448,6 +458,7 @@ class TooltipPool extends Component<Props, State> {
       <div
         className={styles.component}
         style={componentStyle}
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'unknown' is not assignable to type 'LegacyRe... Remove this comment to see the full error message
         ref={this.rootRef}
       >
         <div className={colorBandClassnames} style={colorBandStyle} />

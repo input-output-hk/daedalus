@@ -9,20 +9,27 @@ import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
 import type { WalletNextDelegation } from '../../../api/wallets/types';
 import StakePool from '../../../domains/StakePool';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ada-sym... Remove this comment to see the full error message
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { PoolPopOver } from '../widgets/PoolPopOver';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRow.scss' or its corre... Remove this comment to see the full error message
 import styles from './WalletRow.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRowPopOverOverrides.sc... Remove this comment to see the full error message
 import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import { WalletAmount } from './widgets';
+
 const messages = defineMessages({
   walletAmount: {
     id: 'staking.delegationCenter.walletAmount',

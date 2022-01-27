@@ -7,6 +7,7 @@ import {
   getUtxoChartData,
   getWalletUtxosTotalAmount,
 } from '../../utils/utxoUtils';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

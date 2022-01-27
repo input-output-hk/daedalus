@@ -12,6 +12,7 @@ import {
   DeviceModels,
   DeviceTypes,
 } from '../../../../source/common/types/hardware-wallets.types';
+
 const ledgerDevice = {
   deviceId: '1',
   deviceType: DeviceTypes.LEDGER,
@@ -35,6 +36,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -45,6 +47,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -55,6 +58,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -65,6 +69,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -75,6 +80,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -85,6 +91,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -95,6 +102,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -105,6 +113,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -115,6 +124,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
@@ -125,6 +135,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       isSubmitting={action('isSubmitting')}
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}

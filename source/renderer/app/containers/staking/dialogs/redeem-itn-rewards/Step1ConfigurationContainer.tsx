@@ -10,6 +10,7 @@ import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../../config/stakingConfig';
 import Wallet from '../../../../domains/Wallet';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 const messages = defineMessages({
@@ -73,6 +74,7 @@ class Step1ConfigurationContainer extends Component<Props> {
         error={errorMessage}
         isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}

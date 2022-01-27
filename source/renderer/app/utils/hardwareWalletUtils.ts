@@ -5,6 +5,7 @@ import { HARDENED } from '../config/hardwareWalletsConfig';
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
 import type { AddressType } from '../../../common/types/address-introspection.types';
+
 export type PathRoleIdentityType =
   | 'utxo_external'
   | 'utxo_internal'

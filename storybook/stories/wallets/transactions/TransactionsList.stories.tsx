@@ -24,6 +24,7 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 import Asset from '../../../../source/renderer/app/domains/Asset';
+
 type Props = {
   defaultFilterOptions: TransactionFilterOptionsType;
   filterOptions: TransactionFilterOptionsType;
@@ -34,6 +35,7 @@ type Props = {
   totalAvailable: number;
 };
 const assetDetails = {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -51,6 +53,7 @@ const assetDetails = {
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -68,6 +71,7 @@ const assetDetails = {
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b': generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -85,6 +89,7 @@ const assetDetails = {
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b': generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -160,6 +165,7 @@ storiesOf('Wallets|Transactions', module)
       'groupedByDays'
     );
     return (
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       <WalletsTransactionsWrapper
         {...props}
         transactionsOption={transactionsOption}
@@ -168,6 +174,7 @@ storiesOf('Wallets|Transactions', module)
     );
   })
   .addDecorator(WalletsWrapper) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add('Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,
@@ -188,6 +195,7 @@ storiesOf('Wallets|Transactions', module)
         defaultFilterOptions={defaultFilterOptions}
         filterOptions={filterOptions}
         deletePendingTransaction={action('deletePendingTransaction')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         formattedWalletAmount={formattedWalletAmount}
         getUrlByType={action('getUrlByType')}
         hasMoreToLoad={false}
@@ -209,6 +217,7 @@ storiesOf('Wallets|Transactions', module)
       />
     );
   })
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add('Wallet Tokens Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,
@@ -230,6 +239,7 @@ storiesOf('Wallets|Transactions', module)
         defaultFilterOptions={defaultFilterOptions}
         filterOptions={filterOptions}
         deletePendingTransaction={action('deletePendingTransaction')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         formattedWalletAmount={formattedWalletAmount}
         getUrlByType={action('getUrlByType')}
         hasMoreToLoad={false}

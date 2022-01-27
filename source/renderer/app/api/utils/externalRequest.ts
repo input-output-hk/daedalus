@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { ALLOWED_EXTERNAL_HOSTNAMES } from '../../config/urlsConfig';
+
 export type HttpOptions = {
   hostname: string;
   method: string;
@@ -13,7 +14,7 @@ export type HttpOptions = {
 };
 export const externalRequest = (
   httpOptions: HttpOptions,
-  raw: boolean = false
+  raw = false
 ): Promise<any> =>
   new Promise((resolve, reject) => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {

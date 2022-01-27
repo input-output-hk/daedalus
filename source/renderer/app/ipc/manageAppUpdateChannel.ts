@@ -4,6 +4,7 @@ import type {
   ManageAppUpdateMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const manageAppUpdateChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   ManageAppUpdateMainResponse,

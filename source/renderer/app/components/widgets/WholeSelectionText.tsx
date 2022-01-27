@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 type Props = {
   className?: string;
   text?: string | null | undefined;

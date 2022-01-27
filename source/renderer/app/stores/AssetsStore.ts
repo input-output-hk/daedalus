@@ -7,6 +7,7 @@ import { ROUTES } from '../routes-config';
 import { requestGetter } from '../utils/storesUtils';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
+
 type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
@@ -196,6 +197,7 @@ export default class AssetsStore extends Store {
       uniqueId,
       !isFavorite
     );
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.favoritesRequest.execute();
   };
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>

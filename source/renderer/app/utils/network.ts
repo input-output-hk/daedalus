@@ -17,6 +17,7 @@ import {
   TESTNET,
   DEVELOPMENT,
 } from '../../../common/types/environment.types';
+
 export const getNetworkExplorerUri = (network: string): string => {
   if (network === MAINNET) {
     return MAINNET_EXPLORER_URL;
@@ -55,11 +56,13 @@ export const getNetworkExplorerUrlByType = (
 
     if (type === 'address') {
       queryStringPrefix = '?address=';
+      // @ts-ignore ts-migrate(2322) FIXME: Type '"address.html"' is not assignable to type '"... Remove this comment to see the full error message
       typeValue = 'address.html';
     }
 
     if (type === 'tx') {
       queryStringPrefix = '?id=';
+      // @ts-ignore ts-migrate(2322) FIXME: Type '"transaction"' is not assignable to type '"t... Remove this comment to see the full error message
       typeValue = 'transaction';
     }
   }

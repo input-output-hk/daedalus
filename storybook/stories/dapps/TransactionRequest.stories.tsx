@@ -9,13 +9,16 @@ import DappTransactionRequest from '../../../source/renderer/app/components/dapp
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
 import StoryProvider, { WALLETS_V2 } from '../_support/StoryProvider';
 import { generateAssetToken } from '../_support/utils';
+
 const allAssets = [
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
     50
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -166,6 +169,7 @@ storiesOf('dApps|TransactionRequest', module)
       }
     )
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Notifications', ({ locale }: { locale: string }) => {
     let text1 = 'Opening transaction received via link...';
     let text2 = 'Transaction received via link';

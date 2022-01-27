@@ -1,5 +1,6 @@
 import { STORAGE_KEYS as storageKeys } from '../../../../../common/config/electron-store.config';
 import type { LocalStorageApi } from '../../local-storage';
+
 export class DiscreetModeApi {
   localStorage: LocalStorageApi;
 

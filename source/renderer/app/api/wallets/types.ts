@@ -3,6 +3,7 @@ import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 import type { Currency, LocalizedCurrency } from '../../types/currencyTypes';
 import type { ApiTokens } from '../assets/types';
+
 export type Block = {
   slot_number: number;
   epoch_number: number;
@@ -15,6 +16,7 @@ export type Input = {
   address?: string;
   amount?: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   id: string;
@@ -24,6 +26,7 @@ export type Output = {
   address: string;
   amount: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
 };
@@ -68,6 +71,7 @@ export type LegacyAdaWallet = {
   tip: Block;
 };
 export type LegacyAdaWallets = Array<LegacyAdaWallet>;
+// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
 export type WalletUnit = WalletUnits.LOVELACE | WalletUnits.ADA;
 export type AdaWallets = Array<AdaWallet>;
 export type SyncStateStatus =
@@ -87,6 +91,7 @@ export type WalletSyncState = {
 };
 export type WalletBalance = {
   quantity: number;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE | WalletUnits.ADA;
 };
 export type DelegationStakePool = {
@@ -110,6 +115,7 @@ export type WalletNextDelegation = {
 export type Histogram = Record<string, number>;
 export type WalletUtxoTotal = {
   quantity: number;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type WalletUtxos = {
@@ -215,10 +221,12 @@ export type TransferFundsCalculateFeeRequest = {
 export type TransferFundsCalculateFeeApiResponse = {
   migration_cost: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   leftovers: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
 };
@@ -235,14 +243,17 @@ export type TransferFundsResponse = {
   id: string;
   amount: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   fee: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   deposit: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   inserted_at?: {

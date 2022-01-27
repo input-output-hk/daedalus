@@ -1,4 +1,5 @@
 import React, { Component, Children } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
@@ -33,9 +34,13 @@ import {
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/c... Remove this comment to see the full error message
 import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
+
 export type StoriesProps = {
   wallets: Array<Wallet>;
   activeWalletId: string;
@@ -91,10 +96,12 @@ class StoryLayout extends Component<Props> {
         obj[option.label] = option.value;
         return obj;
       }, {}),
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ value: string; label: string; ... Remove this comment to see the full error message
       NUMBER_OPTIONS[0]
     );
     const FORMAT = {
       ...DEFAULT_NUMBER_FORMAT,
+      // @ts-ignore ts-migrate(2538) FIXME: Type 'PropertyKey[]' cannot be used as an index ty... Remove this comment to see the full error message
       ...NUMBER_FORMATS[currentNumberFormat],
     };
     BigNumber.config({
@@ -190,6 +197,7 @@ class StoryLayout extends Component<Props> {
         menus={sidebarMenus}
         isShowingSubMenus={this.isShowingSubMenus}
         onActivateCategory={action('onActivateCategory')}
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ categories: { name: string; icon: any; rou... Remove this comment to see the full error message
         isDialogOpen={() => false}
         onAddWallet={action('onAddWallet')}
         onOpenDialog={action('onOpenDialog')}
@@ -208,6 +216,7 @@ class StoryLayout extends Component<Props> {
     currentTheme: string
   ) => (
     <TopBar
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onToggleSidebar={() => {
         runInAction(() => {
           this.isShowingSubMenus = !this.isShowingSubMenus;
@@ -232,6 +241,7 @@ class StoryLayout extends Component<Props> {
       <NodeSyncStatusIcon
         isSynced
         syncPercentage={100}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isProduction
         isMainnet
         {...(boolean('hasTadaIcon', true)
@@ -243,10 +253,13 @@ class StoryLayout extends Component<Props> {
       <span
         className={classNames(
           topBarStyles.rectangle,
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
           boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
         )}
       />
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
       )}

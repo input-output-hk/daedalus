@@ -6,6 +6,7 @@ import electronLog from 'electron-log-daedalus';
 import EventEmitter from 'events';
 import { environment } from './environment';
 import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
+
 const _process = process;
 // Increase maximum event listeners to avoid IPC channel stalling
 // (2/2) this line increases the limit for the renderer process
@@ -17,19 +18,26 @@ process.once('loaded', () => {
     buildLabel,
     https: {
       Agent: _https.Agent,
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 1-3 arguments, but got 0 or more.
       request: (...args) => _https.request(...args),
     },
     http: {
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 1-3 arguments, but got 0 or more.
       request: (...args) => _http.request(...args),
     },
     os: {
       platform: os.platform(),
     },
     ipcRenderer: {
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
       on: (...args) => ipcRenderer.on(...args),
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
       once: (...args) => ipcRenderer.once(...args),
+      // @ts-ignore ts-migrate(2557) FIXME: Expected at least 1 arguments, but got 0 or more.
       send: (...args) => ipcRenderer.send(...args),
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
       removeListener: (...args) => ipcRenderer.removeListener(...args),
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 1 arguments, but got 0 or more.
       removeAllListeners: (...args) => ipcRenderer.removeAllListeners(...args),
     },
     electronLog: {
@@ -63,7 +71,9 @@ process.once('loaded', () => {
       'contextmenu',
       (event) => {
         const targetIsSelectable =
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'EventTarget' is not assignable t... Remove this comment to see the full error message
           getComputedStyle(event.target).userSelect === 'text';
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'nodeName' does not exist on type 'EventT... Remove this comment to see the full error message
         const targetIsInput = event.target.nodeName === 'INPUT';
 
         if (targetIsSelectable || targetIsInput) {

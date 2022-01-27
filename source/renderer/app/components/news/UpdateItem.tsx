@@ -4,8 +4,11 @@ import classNames from 'classnames';
 import moment from 'moment';
 import News from /* , { NewsTypes } */
 '../../domains/News';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UpdateItem.scss' or its corr... Remove this comment to see the full error message
 import styles from './UpdateItem.scss';
+
 type Props = {
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   updateItem: News.News;
   onOpenAppUpdate: (...args: Array<any>) => any;
   currentDateFormat: string;

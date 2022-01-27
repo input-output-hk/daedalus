@@ -6,8 +6,10 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../types/notificationTypes';
+
 export default class UiNotificationsStore extends Store {
   @observable
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   activeNotifications: Record<
     NotificationId,
     {
@@ -15,6 +17,7 @@ export default class UiNotificationsStore extends Store {
       index: number;
     }
   > = {};
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   activeNotificationsTimeouts: Record<NotificationId, TimeoutID> = {};
 
   setup() {
@@ -67,6 +70,7 @@ export default class UiNotificationsStore extends Store {
   @action
   _onClose = ({ id }: { id: NotificationId }) => {
     if (id in this.activeNotifications) {
+      // @ts-ignore ts-migrate(2740) FIXME: Type 'Pick<Record<NotificationId, { labelValues?: ... Remove this comment to see the full error message
       this.activeNotifications = omit(this.activeNotifications, id);
     }
   };

@@ -9,6 +9,7 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+
 type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
@@ -23,7 +24,9 @@ class Wallet extends Component<Props> {
     if (!wallets.active) return false;
     const { options } = item;
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type 'never'.
     if (options && options.length) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'forEach' does not exist on type 'never'.
       options.forEach((option) => {
         if (
           app.currentRoute &&

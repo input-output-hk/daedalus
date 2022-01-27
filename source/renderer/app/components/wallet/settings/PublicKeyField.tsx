@@ -6,14 +6,19 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { injectIntl, intlShape } from 'react-intl';
 import PublicKeyFieldSkin from './PublicKeyFieldSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/qr-code... Remove this comment to see the full error message
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/reveal-... Remove this comment to see the full error message
 import revealKeyImage from '../../../assets/images/reveal-key.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hide-ke... Remove this comment to see the full error message
 import hideKeyImage from '../../../assets/images/hide-key.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyField.scss' or its ... Remove this comment to see the full error message
 import styles from './PublicKeyField.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+
 type Props = {
   publicKey: string;
   locale: Locale;
@@ -37,6 +42,7 @@ const PublicKeyField = (props: Props) => {
     onCopyPublicKey,
   } = props;
   const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(!publicKey);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const togglePublicKeyVisibility = useCallback(() => {
     if (!publicKey) {
       onOpenWalletKeyDialog();

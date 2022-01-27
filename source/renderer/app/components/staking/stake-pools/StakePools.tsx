@@ -11,6 +11,7 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePools.scss' or its corr... Remove this comment to see the full error message
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
@@ -19,9 +20,12 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/smash-s... Remove this comment to see the full error message
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
+
 const messages = defineMessages({
   delegatingListTitle: {
     id: 'staking.stakePools.delegatingListTitle',
@@ -268,6 +272,7 @@ class StakePools extends Component<Props, State> {
               isListView={isListView}
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               smashServer={smashServer}
             />
             {stakePoolsDelegatingList.length > 0 && (

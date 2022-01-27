@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { generateFileNameWithTimestamp } from "../../../../source/common/utils/files";
 import ensureDirectoryExists from "../../../../source/main/utils/ensureDirectoryExists";
 import { DEFAULT_TIMEOUT } from "./config";
+
 export const notFoundWalletsErrorMessage = 'No wallet(s) found with the given name(s).';
 export const expectTextInSelector = async (client: Record<string, any>, {
   selector,
@@ -100,13 +101,14 @@ export const scrollIntoView = async (client: Record<string, any>, targetSelector
   if (!isVisibleWithinViewport) {
     await client.execute(target => {
       const targetElement = window.document.evaluate(target, window.document, null, window.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'scrollIntoView' does not exist on type '... Remove this comment to see the full error message
       targetElement.scrollIntoView();
     }, targetSelector);
     // awaits for smooth scroll-behavior
     await timeout(500);
   }
 };
-export const clickInputByLabel = async function (label: string, isExactText: boolean = true) {
+export const clickInputByLabel = async function (label: string, isExactText = true) {
   const className = 'SimpleFormField_label';
   const textSelector = isExactText ? `text()="${label}"` : `contains(text(),'${label}'`;
   const selector = `//label[@class="${className}" and ${textSelector}]//following-sibling::div//input`;
@@ -120,7 +122,7 @@ export const clickOptionByIndex = async function (index: number) {
   const selector = `(//div[contains(@class, 'SimpleSelect_isOpen')]//li[contains(@class, 'SimpleOptions_option')])[${index + 1}]`;
   await this.waitAndClick(selector);
 };
-export const getInputValueByLabel = async function (label: string, isExactText: boolean = true) {
+export const getInputValueByLabel = async function (label: string, isExactText = true) {
   const className = 'SimpleFormField_label';
   const textSelector = isExactText ? `text()="${label}"` : `contains(text(),'${label}'`;
   const selector = `//label[@class="${className}" and ${textSelector}]//following-sibling::div//input`;

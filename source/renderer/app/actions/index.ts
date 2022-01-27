@@ -19,6 +19,7 @@ import WalletBackupActions from './wallet-backup-actions';
 import WalletMigrationActions from './wallet-migration-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
+
 export type ActionsMap = {
   addresses: AddressesActions;
   app: AppActions;

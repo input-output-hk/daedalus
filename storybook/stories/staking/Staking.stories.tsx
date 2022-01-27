@@ -29,6 +29,7 @@ import {
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
 import { StakePoolsTableStory } from './StakePoolsTable.stories';
+
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date();
 defaultStartDateTime.setDate(defaultStartDateTime.getDate() + 2);
@@ -112,6 +113,7 @@ storiesOf('Decentralization | Staking', module)
   .add(
     pageNames['delegation-center'],
     (props) => (
+      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: true; id: string; n... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
     ),
     {
@@ -121,6 +123,7 @@ storiesOf('Decentralization | Staking', module)
   .add(
     'Delegation Center - Loading',
     (props) => (
+      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; isEpochsInfoAvailable: tr... Remove this comment to see the full error message
       <StakingDelegationCenterStory
         {...props}
         isLoading
@@ -134,6 +137,7 @@ storiesOf('Decentralization | Staking', module)
   .add(
     'Delegation Center - Not an Shelley era',
     (props) => (
+      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: false; id: string; ... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
     {
@@ -146,16 +150,19 @@ storiesOf('Decentralization | Staking', module)
       minDelegationFunds={number('minDelegationFunds', 10)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add(pageNames['stake-pools'], StakePoolsStory, {
     id: 'stake-pools',
   })
   .add(
     `${pageNames['stake-pools']} - Loading`,
+    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; id: string; name: string;... Remove this comment to see the full error message
     (props) => <StakePoolsStory {...props} isLoading />,
     {
       id: 'stake-pools-loading',
     }
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add(pageNames['stake-pools-table'], StakePoolsTableStory, {
     id: 'stake-pools-table',
   })
@@ -195,6 +202,7 @@ storiesOf('Decentralization | Staking', module)
           onLearnMoreClick={action('onLearnMoreClick')}
           startDateTime={startDateTime}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAnimating={boolean('isAnimating', false)}
           isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}
@@ -217,6 +225,7 @@ storiesOf('Decentralization | Staking', module)
         range: true,
       });
       return (
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         <StakingDelegationSteps
           {...props}
           oversaturationPercentage={oversaturationPercentage}
@@ -229,6 +238,7 @@ storiesOf('Decentralization | Staking', module)
   )
   .add(
     'Delegation Wizard - Delegation Not Available',
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     (props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
@@ -257,6 +267,7 @@ storiesOf('Decentralization | Staking', module)
   )
   .add(
     'Undelegate Confirmation Result',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale, }: { locale: string; ... Remove this comment to see the full error message
     StakingUndelegateConfirmationResultStory,
     {
       id: 'undelegate-confirmation-result',
