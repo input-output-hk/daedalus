@@ -1592,6 +1592,109 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Enable RTS flags (RAM management system)",
+        "description": "Headline for the RTS flags dialog - when enabling",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.enableRtsFlagsMode.title",
+        "start": {
+          "column": 30,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.",
+        "description": "Main body of the dialog - when enabling",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.enableRtsFlagsMode.explanation",
+        "start": {
+          "column": 33,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "Enable and quit",
+        "description": "Enable RTS flags button label",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.enableRtsFlagsMode.actionButton",
+        "start": {
+          "column": 34,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "Disable RTS flags (RAM management system)",
+        "description": "Headline for the RTS flags dialog - when disabling",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.disableRtsFlagsMode.title",
+        "start": {
+          "column": 31,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "When disabled, the Cardano node will start in default mode. You will need to restart Daedalus for this change to take effect.",
+        "description": "Main body of the dialog - when disabling",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.disableRtsFlagsMode.explanation",
+        "start": {
+          "column": 34,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "Disable and quit",
+        "description": "Disable RTS flags button label",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.disableRtsFlagsMode.actionButton",
+        "start": {
+          "column": 35,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "I understand that I will need to launch Daedalus manually",
+        "description": "Manual relaunch confirmation checkbox label",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "id": "knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel",
+        "start": {
+          "column": 43,
+          "line": 44
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!<b>Daedalus requires at least {diskSpaceRequired} of hard drive space to operate. Your computer is missing {diskSpaceMissing} of available space. Please delete some files to increase available hard drive space to continue using Daedalus. </b><br /><br />It is recommended to have at least 15% of hard drive space available ({diskSpaceRecommended} in your case) for normal and stable operation of the operating system and installed programs. We strongly recommend that you free up at least that amount of space from your hard drive.",
         "description": "Content of No disk space overlay",
         "end": {
@@ -3679,120 +3782,17 @@
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 20
         },
         "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Date",
-        "description": "Label for the \"Date\" sort button",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByDateButton",
-        "start": {
-          "column": 20,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Sort wallets by creation date",
-        "description": "Tooltip message for Date sort button",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByDateTooltip",
-        "start": {
-          "column": 21,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Balance",
-        "description": "Label for the \"Balance\" sort button",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByBalanceButton",
-        "start": {
-          "column": 23,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Sort wallets by balance",
-        "description": "Tooltip message for Balance sort button",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByBalanceTooltip",
-        "start": {
-          "column": 24,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!A – Z",
-        "description": "Label for the \"Name\" sort button",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByNameButton",
-        "start": {
-          "column": 20,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Sort wallets by name",
-        "description": "Tooltip message for Name sort button",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
-        "id": "sidebar.wallets.sortByNameTooltip",
-        "start": {
-          "column": 21,
-          "line": 55
+          "line": 16
         }
       }
     ],
     "path": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Filter",
-        "description": "Search placeholder for the sidebar wallet menu",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/sidebar/wallets/WalletSearch.js",
-        "id": "sidebar.wallets.search.placeholder",
-        "start": {
-          "column": 15,
-          "line": 14
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/sidebar/wallets/WalletSearch.json"
   },
   {
     "descriptors": [
@@ -7144,7 +7144,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Amit Sagar, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Lucas Araujo, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Renan Ferreira, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
+        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Manus McCole, Michael Bishop, Mior Sufian, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
@@ -7158,7 +7158,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Alan McNicholas, Alejandro Garcia, Alexander Diemand, Alexander Vieth, Anatoli Ivanou, Andreas Triantafyllos, Ante Kegalj, Armando Santos, Ben Ford, Charles Hoskinson, Dan Friedman, Deepak Kapiswe, Denis Shevchenko, Dorin Solomon, Duncan Coutts, Edsko de Vries, Erik de Castro Lopo, Gerard Moroney, Hiroto Shioi, Jane Wild, Jean-Christophe Mincke, Jeremy Wood, Johannes Lund, Jordan Millar, Karl Knutsson, Kristijan Šarić, Lars Brünjes, Laurie Wang, Liz Bancroft, Luke Nadur, Marc Fontaine, Marcin Szamotulski, Matt Parsons, Matthias Benkort, Michael Bishop, Michael Hueschen, Moritz Angermann, Neil Davis, Niamh Ahern, Nicholas Clarke, Nicolas Di Prima, Noel Rimbert, Patrick Kelly, Pawel Jakubas, Peter Gaži, Peter Thompson, Philipp Kant, Piotr Stachyra, Ravi Patel, Richard Wild, Rob Cohen, Rodney Lorrimar, Ryan Lemmer, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tom Flynn, Vasileios Gkoumas, Vincent Hanquez",
+        "defaultMessage": "!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez",
         "description": "About page cardano team members",
         "end": {
           "column": 3,
@@ -7223,13 +7223,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 37
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 29
+          "line": 33
         }
       },
       {
@@ -7237,13 +7237,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 42
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 34
+          "line": 38
         }
       },
       {
@@ -7251,13 +7251,13 @@
         "description": "Platform version",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 47
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 43
         }
       },
       {
@@ -7265,13 +7265,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 52
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 44
+          "line": 48
         }
       },
       {
@@ -7279,13 +7279,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 57
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 49
+          "line": 53
         }
       },
       {
@@ -7293,13 +7293,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 62
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 54
+          "line": 58
         }
       },
       {
@@ -7307,13 +7307,13 @@
         "description": "Unknown amount of disk space",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 67
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 63
         }
       },
       {
@@ -7321,13 +7321,13 @@
         "description": "\"Support\" link URL while disk space is unknown",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 72
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
         "start": {
           "column": 30,
-          "line": 64
+          "line": 68
         }
       },
       {
@@ -7335,13 +7335,13 @@
         "description": "Displayed on the left of the Recommended system requirements status row",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 78
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatus",
         "start": {
           "column": 34,
-          "line": 69
+          "line": 73
         }
       },
       {
@@ -7349,13 +7349,13 @@
         "description": "Displayed on the right of the Recommended system requirements status row when hardware requirements are insufficient",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 84
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowValue",
         "start": {
           "column": 43,
-          "line": 75
+          "line": 79
         }
       },
       {
@@ -7363,13 +7363,13 @@
         "description": "Displayed on the right of the Recommended system requirements status row when hardware requirements are ok",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 90
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodValue",
         "start": {
           "column": 44,
-          "line": 81
+          "line": 85
         }
       },
       {
@@ -7377,13 +7377,13 @@
         "description": "Visible on hovering over Recommended system requirement status when status is Low",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 97
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowTooltip",
         "start": {
           "column": 45,
-          "line": 87
+          "line": 91
         }
       },
       {
@@ -7391,13 +7391,13 @@
         "description": "Visible on hovering over Recommended system requirement status when status is Good",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 105
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodTooltip",
         "start": {
           "column": 46,
-          "line": 94
+          "line": 98
         }
       },
       {
@@ -7405,13 +7405,13 @@
         "description": "Indicates whether RTS Flags Mode is enabled or not",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 110
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.rtsFlagsModeEnabled",
         "start": {
           "column": 23,
-          "line": 102
+          "line": 106
         }
       },
       {
@@ -7419,13 +7419,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 115
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 107
+          "line": 111
         }
       },
       {
@@ -7433,13 +7433,13 @@
         "description": "Daedalus version",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 120
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 112
+          "line": 116
         }
       },
       {
@@ -7447,13 +7447,13 @@
         "description": "Daedalus build number",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 125
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusBuildNumber",
         "start": {
           "column": 23,
-          "line": 117
+          "line": 121
         }
       },
       {
@@ -7461,13 +7461,13 @@
         "description": "Daedalus main process ID",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 130
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 122
+          "line": 126
         }
       },
       {
@@ -7475,13 +7475,13 @@
         "description": "Daedalus renderer process ID",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 135
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 127
+          "line": 131
         }
       },
       {
@@ -7489,13 +7489,13 @@
         "description": "Daedalus 'Blank Screen Fix' active",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 140
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
           "column": 18,
-          "line": 132
+          "line": 136
         }
       },
       {
@@ -7503,13 +7503,13 @@
         "description": "Cardano node version",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 145
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeVersion",
         "start": {
           "column": 22,
-          "line": 137
+          "line": 141
         }
       },
       {
@@ -7517,13 +7517,13 @@
         "description": "Cardano node process ID",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 150
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodePID",
         "start": {
           "column": 18,
-          "line": 142
+          "line": 146
         }
       },
       {
@@ -7531,13 +7531,13 @@
         "description": "Cardano node port",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 155
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeApiPort",
         "start": {
           "column": 22,
-          "line": 147
+          "line": 151
         }
       },
       {
@@ -7545,13 +7545,13 @@
         "description": "Cardano wallet process ID",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 160
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletPID",
         "start": {
           "column": 20,
-          "line": 152
+          "line": 156
         }
       },
       {
@@ -7559,13 +7559,13 @@
         "description": "Cardano wallet version",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 165
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletVersion",
         "start": {
           "column": 24,
-          "line": 157
+          "line": 161
         }
       },
       {
@@ -7573,13 +7573,13 @@
         "description": "Cardano wallet port",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 170
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletApiPort",
         "start": {
           "column": 24,
-          "line": 162
+          "line": 166
         }
       },
       {
@@ -7587,13 +7587,13 @@
         "description": "Cardano network",
         "end": {
           "column": 3,
-          "line": 171
+          "line": 175
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 167
+          "line": 171
         }
       },
       {
@@ -7601,13 +7601,13 @@
         "description": "Daedalus state directory",
         "end": {
           "column": 3,
-          "line": 176
+          "line": 180
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 172
+          "line": 176
         }
       },
       {
@@ -7615,13 +7615,13 @@
         "description": "Open",
         "end": {
           "column": 3,
-          "line": 181
+          "line": 185
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 29,
-          "line": 177
+          "line": 181
         }
       },
       {
@@ -7629,13 +7629,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 186
+          "line": 190
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 182
+          "line": 186
         }
       },
       {
@@ -7643,13 +7643,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 191
+          "line": 195
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 187
+          "line": 191
         }
       },
       {
@@ -7657,13 +7657,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 196
+          "line": 200
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 192
+          "line": 196
         }
       },
       {
@@ -7671,13 +7671,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 201
+          "line": 205
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 197
+          "line": 201
         }
       },
       {
@@ -7685,13 +7685,13 @@
         "description": "Sync percentage",
         "end": {
           "column": 3,
-          "line": 206
+          "line": 210
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 202
+          "line": 206
         }
       },
       {
@@ -7699,13 +7699,13 @@
         "description": "Local time difference",
         "end": {
           "column": 3,
-          "line": 211
+          "line": 215
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 207
+          "line": 211
         }
       },
       {
@@ -7713,13 +7713,13 @@
         "description": "System time correct",
         "end": {
           "column": 3,
-          "line": 216
+          "line": 220
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 212
+          "line": 216
         }
       },
       {
@@ -7727,13 +7727,13 @@
         "description": "System time ignored",
         "end": {
           "column": 3,
-          "line": 221
+          "line": 225
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 217
+          "line": 221
         }
       },
       {
@@ -7741,13 +7741,13 @@
         "description": "Checking system time",
         "end": {
           "column": 3,
-          "line": 226
+          "line": 230
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 222
+          "line": 226
         }
       },
       {
@@ -7755,13 +7755,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 231
+          "line": 235
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 227
+          "line": 231
         }
       },
       {
@@ -7769,13 +7769,13 @@
         "description": "Restarting Cardano node...",
         "end": {
           "column": 3,
-          "line": 236
+          "line": 240
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 232
+          "line": 236
         }
       },
       {
@@ -7783,13 +7783,13 @@
         "description": "Restart Cardano node",
         "end": {
           "column": 3,
-          "line": 241
+          "line": 245
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 237
+          "line": 241
         }
       },
       {
@@ -7797,13 +7797,13 @@
         "description": "Cardano node state",
         "end": {
           "column": 3,
-          "line": 246
+          "line": 250
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 242
+          "line": 246
         }
       },
       {
@@ -7811,13 +7811,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 251
+          "line": 255
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 247
+          "line": 251
         }
       },
       {
@@ -7825,13 +7825,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 256
+          "line": 260
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 252
+          "line": 256
         }
       },
       {
@@ -7839,13 +7839,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 261
+          "line": 265
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 257
+          "line": 261
         }
       },
       {
@@ -7853,13 +7853,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 266
+          "line": 270
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 262
+          "line": 266
         }
       },
       {
@@ -7867,13 +7867,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 271
+          "line": 275
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 267
+          "line": 271
         }
       },
       {
@@ -7881,13 +7881,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 276
+          "line": 280
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 272
+          "line": 276
         }
       },
       {
@@ -7895,13 +7895,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 281
+          "line": 285
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 277
+          "line": 281
         }
       },
       {
@@ -7909,13 +7909,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 286
+          "line": 290
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 282
+          "line": 286
         }
       },
       {
@@ -7923,13 +7923,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 291
+          "line": 295
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 287
+          "line": 291
         }
       },
       {
@@ -7937,13 +7937,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 296
+          "line": 300
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 292
+          "line": 296
         }
       },
       {
@@ -7951,13 +7951,13 @@
         "description": "Cardano node responding",
         "end": {
           "column": 3,
-          "line": 301
+          "line": 305
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 297
+          "line": 301
         }
       },
       {
@@ -7965,13 +7965,13 @@
         "description": "Cardano node subscribed",
         "end": {
           "column": 3,
-          "line": 306
+          "line": 310
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 302
+          "line": 306
         }
       },
       {
@@ -7979,13 +7979,13 @@
         "description": "Cardano node time correct",
         "end": {
           "column": 3,
-          "line": 311
+          "line": 315
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 307
+          "line": 311
         }
       },
       {
@@ -7993,13 +7993,13 @@
         "description": "Cardano node syncing",
         "end": {
           "column": 3,
-          "line": 316
+          "line": 320
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 312
+          "line": 316
         }
       },
       {
@@ -8007,13 +8007,13 @@
         "description": "Cardano node in sync",
         "end": {
           "column": 3,
-          "line": 321
+          "line": 325
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 317
+          "line": 321
         }
       },
       {
@@ -8021,13 +8021,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 326
+          "line": 330
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 322
+          "line": 326
         }
       },
       {
@@ -8035,13 +8035,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 331
+          "line": 335
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 327
+          "line": 331
         }
       },
       {
@@ -8049,13 +8049,13 @@
         "description": "Yes",
         "end": {
           "column": 3,
-          "line": 336
+          "line": 340
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 332
+          "line": 336
         }
       },
       {
@@ -8063,13 +8063,13 @@
         "description": "No",
         "end": {
           "column": 3,
-          "line": 341
+          "line": 345
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 337
+          "line": 341
         }
       },
       {
@@ -8077,13 +8077,13 @@
         "description": "On",
         "end": {
           "column": 3,
-          "line": 346
+          "line": 350
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOnForUserSettings",
         "start": {
           "column": 27,
-          "line": 342
+          "line": 346
         }
       },
       {
@@ -8091,13 +8091,13 @@
         "description": "Off",
         "end": {
           "column": 3,
-          "line": 351
+          "line": 355
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOffForUserSettings",
         "start": {
           "column": 28,
-          "line": 347
+          "line": 351
         }
       },
       {
@@ -8105,13 +8105,13 @@
         "description": "NTP service unreachable",
         "end": {
           "column": 3,
-          "line": 356
+          "line": 360
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 352
+          "line": 356
         }
       },
       {
@@ -8119,13 +8119,13 @@
         "description": "message",
         "end": {
           "column": 3,
-          "line": 361
+          "line": 365
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.message",
         "start": {
           "column": 11,
-          "line": 357
+          "line": 361
         }
       },
       {
@@ -8133,13 +8133,13 @@
         "description": "code",
         "end": {
           "column": 3,
-          "line": 366
+          "line": 370
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.code",
         "start": {
           "column": 8,
-          "line": 362
+          "line": 366
         }
       },
       {
@@ -8147,13 +8147,13 @@
         "description": "Last network block",
         "end": {
           "column": 3,
-          "line": 371
+          "line": 375
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastNetworkBlock",
         "start": {
           "column": 20,
-          "line": 367
+          "line": 371
         }
       },
       {
@@ -8161,13 +8161,13 @@
         "description": "Last synchronized block",
         "end": {
           "column": 3,
-          "line": 376
+          "line": 380
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock",
         "start": {
           "column": 25,
-          "line": 372
+          "line": 376
         }
       },
       {
@@ -8175,13 +8175,13 @@
         "description": "epoch",
         "end": {
           "column": 3,
-          "line": 381
+          "line": 385
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.epoch",
         "start": {
           "column": 9,
-          "line": 377
+          "line": 381
         }
       },
       {
@@ -8189,13 +8189,13 @@
         "description": "slot",
         "end": {
           "column": 3,
-          "line": 386
+          "line": 390
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.slot",
         "start": {
           "column": 8,
-          "line": 382
+          "line": 386
         }
       }
     ],
@@ -11288,62 +11288,6 @@
           "column": 24,
           "line": 129
         }
-      },
-      {
-        "defaultMessage": "!!!UPDATE",
-        "description": "Label for the \"UPDATE\" button responsible to set minimum amount required for transaction .",
-        "end": {
-          "column": 3,
-          "line": 140
-        },
-        "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.asset.updateAdaAmountButton",
-        "start": {
-          "column": 25,
-          "line": 135
-        }
-      },
-      {
-        "defaultMessage": "!!!to the minimum of {minimumAda} ADA required",
-        "description": "Description for the \"UPDATE\" button when ADA amount is less than required",
-        "end": {
-          "column": 3,
-          "line": 146
-        },
-        "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.updateAdaAmountDescription",
-        "start": {
-          "column": 30,
-          "line": 141
-        }
-      },
-      {
-        "defaultMessage": "!!!<b>Note:</b> the ada field was automatically updated because this transaction requires a minimum of {minimumAda} ADA.",
-        "description": "Minimum amount update notice",
-        "end": {
-          "column": 3,
-          "line": 152
-        },
-        "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.minimumAmountNote",
-        "start": {
-          "column": 23,
-          "line": 147
-        }
-      },
-      {
-        "defaultMessage": "!!!<b>Note:</b> the ada field was automatically updated to {adaAmount} ADA because now it fulfills the minimum amount of {minimumAda} ADA for the transaction.",
-        "description": "Restored ada amount to original user input",
-        "end": {
-          "column": 3,
-          "line": 158
-        },
-        "file": "source/renderer/app/components/wallet/send-form/messages.js",
-        "id": "wallet.send.form.restoredAdaAmount",
-        "start": {
-          "column": 21,
-          "line": 153
-        }
       }
     ],
     "path": "source/renderer/app/components/wallet/send-form/messages.json"
@@ -13302,7 +13246,7 @@
           "column": 3,
           "line": 14
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 15,
@@ -13316,7 +13260,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textTop",
         "start": {
           "column": 20,
@@ -13330,7 +13274,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.textBottom",
         "start": {
           "column": 23,
@@ -13344,7 +13288,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkLabel",
         "start": {
           "column": 22,
@@ -13358,7 +13302,7 @@
           "column": 3,
           "line": 37
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletNoTokens.js",
         "id": "wallet.summary.noTokens.learnMore.linkUrl",
         "start": {
           "column": 20,
@@ -13366,152 +13310,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Add tokens",
-        "description": "Token picker title",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.title",
-        "start": {
-          "column": 9,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!All tokens",
-        "description": "Label for all tokens option",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.allTokensLabel",
-        "start": {
-          "column": 18,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Favorites",
-        "description": "Label for favorite tokens option",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.favoriteTokensLabel",
-        "start": {
-          "column": 23,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Select all",
-        "description": "Label for select all button label",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.checkAllLabel",
-        "start": {
-          "column": 17,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!{checkedCount} out of {maxTokens} tokens.",
-        "description": "Label of selected tokens count",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.checkedCountLabel",
-        "start": {
-          "column": 21,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Cancel",
-        "description": "Label of cancel button",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.cancelButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Add",
-        "description": "Label of add button",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.addButtonLabel",
-        "start": {
-          "column": 18,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear selection",
-        "description": "Label of clear selection button",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.clearAll",
-        "start": {
-          "column": 12,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Results do not match search query",
-        "description": "Text for no results",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.noResults",
-        "start": {
-          "column": 13,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.",
-        "description": "Max tokens warning",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.js",
-        "id": "wallet.token.picker.maxTokensWarning",
-        "start": {
-          "column": 20,
-          "line": 50
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletNoTokens.json"
   },
   {
     "descriptors": [
@@ -13520,13 +13319,13 @@
         "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 25
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
         "id": "wallet.summary.asset.tokenSendButton",
         "start": {
           "column": 19,
-          "line": 4
+          "line": 21
         }
       },
       {
@@ -13534,13 +13333,13 @@
         "description": "Amount label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 30
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
         "id": "wallet.summary.asset.amountLabel",
         "start": {
           "column": 15,
-          "line": 9
+          "line": 26
         }
       },
       {
@@ -13548,13 +13347,13 @@
         "description": "Settings label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 35
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
         "id": "wallet.summary.asset.settings.button.label",
         "start": {
           "column": 23,
-          "line": 14
+          "line": 31
         }
       },
       {
@@ -13562,13 +13361,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 41
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
         "id": "assets.warning.available",
         "start": {
           "column": 35,
-          "line": 19
+          "line": 36
         }
       },
       {
@@ -13576,111 +13375,17 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 47
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletToken.js",
         "id": "assets.warning.notUsing",
         "start": {
           "column": 34,
-          "line": 25
+          "line": 42
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!No results matching your query",
-        "description": "No results on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
-        "id": "wallet.tokens.list.search.noResults",
-        "start": {
-          "column": 13,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Search Results",
-        "description": "Search Results on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
-        "id": "wallet.tokens.list.search.searchResults",
-        "start": {
-          "column": 17,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount header on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
-        "id": "wallet.tokens.list.column.amount",
-        "start": {
-          "column": 16,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token header on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
-        "id": "wallet.tokens.list.column.token",
-        "start": {
-          "column": 15,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!View all tokens",
-        "description": "View all button label on the WalletTokensList",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.js",
-        "id": "wallet.tokens.list.viewAllButton.label",
-        "start": {
-          "column": 22,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search tokens",
-        "description": "Search placeholder for the Wallet Tokens search",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.js",
-        "id": "wallet.tokens.search.placeholder",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletToken.json"
   },
   {
     "descriptors": [
@@ -13691,7 +13396,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
         "id": "wallet.tokens.list.favorites.title",
         "start": {
           "column": 22,
@@ -13705,7 +13410,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
         "id": "wallet.tokens.list.tokens.title",
         "start": {
           "column": 19,
@@ -13719,7 +13424,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.js",
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokens.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 18,
@@ -13727,7 +13432,101 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.json"
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokens.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No results matching your query",
+        "description": "No results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.noResults",
+        "start": {
+          "column": 13,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Search Results",
+        "description": "Search Results on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.search.searchResults",
+        "start": {
+          "column": 17,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.amount",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token header on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.column.token",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!View all tokens",
+        "description": "View all button label on the WalletTokensList",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensList.js",
+        "id": "wallet.tokens.list.viewAllButton.label",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokensList.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Search tokens",
+        "description": "Search placeholder for the Wallet Tokens search",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.js",
+        "id": "wallet.tokens.search.placeholder",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/WalletTokensSearch.json"
   },
   {
     "descriptors": [
