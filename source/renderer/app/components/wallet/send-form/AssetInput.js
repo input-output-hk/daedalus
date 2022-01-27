@@ -181,6 +181,7 @@ export default class AssetInput extends Component<Props> {
           <span
             className={classNames([styles.removeAssetButton, 'flat'])}
             onClick={() => removeAssetRow(uniqueId)}
+            data-testid={`remove-asset-${uniqueId}`}
           >
             <SVGInline svg={removeIcon} className={styles.removeIcon} />
           </span>
