@@ -514,3 +514,7 @@ export type deriveAddressMainResponse = string;
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
 export type showAddressRendererRequest = showAddressRendererRequestType;
 export type showAddressMainResponse = void;
+
+export const TOGGLE_RTS_FLAGS_MODE_CHANNEL = 'TOGGLE_RTS_FLAGS_MODE_CHANNEL';
+export type ToggleRTSFlagsModeRendererRequest = void;
+export type ToggleRTSFlagsModeMainResponse = void;

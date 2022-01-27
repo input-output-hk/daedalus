@@ -5,4 +5,6 @@ export type SystemInfo = {
   cpu: string,
   ram: string,
   availableDiskSpace: string,
+  meetsHardwareRequirements: boolean,
+  rtsFlagsModeEnabled: boolean,
 };

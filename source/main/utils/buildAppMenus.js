@@ -9,8 +9,6 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { setRtsFlagsAndRestart } from './rtsFlags';
-import { RTS_FLAGS } from '../config';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -20,7 +18,12 @@ export const buildAppMenus = async (
     isNavigationEnabled: boolean,
   }
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
+  const {
+    ABOUT,
+    DAEDALUS_DIAGNOSTICS,
+    ITN_REWARDS_REDEMPTION,
+    TOGGLE_RTS_FLAGS_MODE,
+  } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isNavigationEnabled } = data;
 
@@ -94,36 +97,8 @@ export const buildAppMenus = async (
     item.checked = isBlankScreenFixActive;
   };
 
-  const setRtsFlags = async (enable: boolean): Promise<void> => {
-    const translation = getTranslation(translations, 'menu');
-    const rtsFlagsDialogOptions = {
-      buttons: [
-        translation('helpSupport.rtsFlagsDialogConfirm'),
-        translation('helpSupport.rtsFlagsDialogCancel'),
-      ],
-      type: 'warning',
-      title: enable
-        ? translation('helpSupport.enableRtsFlagsDialogTitle')
-        : translation('helpSupport.disableRtsFlagsDialogTitle'),
-      message: enable
-        ? translation('helpSupport.enableRtsFlagsDialogMessage')
-        : translation('helpSupport.disableRtsFlagsDialogMessage'),
-      defaultId: 1,
-      cancelId: 1,
-      noLink: true,
-    };
-
-    const { response } = await dialog.showMessageBox(
-      mainWindow,
-      rtsFlagsDialogOptions
-    );
-    if (response === 0) {
-      if (enable) {
-        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
-      } else {
-        setRtsFlagsAndRestart(environment.network, []);
-      }
-    }
+  const openToggleRTSFlagsModeDialog = () => {
+    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
   };
 
   const menuActions = {
@@ -133,7 +108,7 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
-    setRtsFlags,
+    openToggleRTSFlagsModeDialog,
   };
 
   // Build app menus

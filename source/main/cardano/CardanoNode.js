@@ -4,7 +4,7 @@ import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import type { Launcher } from 'cardano-launcher';
-import { get, toInteger } from 'lodash';
+import { get, toInteger, isEqual } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
 import { environment } from '../environment';
@@ -27,7 +27,7 @@ import type {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
-import { launcherConfig } from '../config';
+import { launcherConfig, RTS_FLAGS } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
 
@@ -225,6 +225,7 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      rtsFlagsModeEnabled: isEqual(this._config.rtsFlags, RTS_FLAGS),
     });
   }
 
