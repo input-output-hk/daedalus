@@ -6023,16 +6023,30 @@
       },
       {
         "defaultMessage": "!!!Total rewards earned (ADA)",
-        "description": "Table header \"Reward\" label on staking rewards page",
+        "description": "Table header \"Total Reward\" label on staking rewards page",
         "end": {
           "column": 3,
           "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
-        "id": "staking.rewards.tableHeader.reward",
+        "id": "staking.rewards.tableHeader.total",
         "start": {
-          "column": 21,
+          "column": 26,
           "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Unspent (ADA)",
+        "description": "Table header \"Unspent\" label on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
+        "id": "staking.rewards.tableHeader.unspent",
+        "start": {
+          "column": 28,
+          "line": 62
         }
       },
       {
@@ -6040,13 +6054,13 @@
         "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
-          "line": 62
+          "line": 67
         }
       },
       {
@@ -6054,13 +6068,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 67
+          "line": 72
         }
       },
       {
@@ -6068,13 +6082,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 72
+          "line": 77
         }
       },
       {
@@ -6082,13 +6096,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 83
         }
       },
       {
@@ -6096,13 +6110,13 @@
         "description": "View in explorer button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
-          "line": 83
+          "line": 88
         }
       }
     ],
@@ -13089,13 +13103,13 @@
         "description": "Tokens title in the wallet summary",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 19,
-          "line": 14
+          "line": 15
         }
       }
     ],
@@ -13155,13 +13169,13 @@
         "description": "\"Number of transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
         "id": "wallet.summary.header.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 15
+          "line": 17
         }
       },
       {
@@ -13169,17 +13183,50 @@
         "description": "\"Number of pending transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
         "id": "wallet.summary.header.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 20
+          "line": 22
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!{total} rewards earned, {unspent} unspent rewards",
+        "description": "Headline for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.js",
+        "id": "wallet.summary.header.rewardsSummary",
+        "start": {
+          "column": 11,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!info message about unspendable rewards due to missing utxos",
+        "description": "Tooltip describing that rewards are unspendable on the Wallet summary header",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.js",
+        "id": "wallet.summary.header.unspendableTooltip",
+        "start": {
+          "column": 22,
+          "line": 24
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.json"
   },
   {
     "descriptors": [
