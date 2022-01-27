@@ -22,7 +22,7 @@ import {
 } from '../common/utils/environmentCheckers';
 
 // TODO figure out better place for it - can't import from config.js as it would be a circular dep
-export const RECOMMENDED_RAM_IN_BYTES = 17 * 1024 * 1024 * 1024;
+export const RECOMMENDED_RAM_IN_BYTES = 16 * 1024 * 1024 * 1024;
 
 /* ==================================================================
 =                           Evaluations                             =
