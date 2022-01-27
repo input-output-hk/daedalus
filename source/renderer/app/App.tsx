@@ -42,8 +42,8 @@ export default class App extends Component<{
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
-    const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
-    const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
+    const themeVars = require(`./themes/daedalus/${currentTheme}.ts`).default;
+    const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
