@@ -54,13 +54,16 @@ export type AdaApiStakePool = {
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 
-export type Reward = {
+export type Reward = {|
   date?: string,
   wallet: string,
-  reward: BigNumber,
+  total: BigNumber,
+  unspent: BigNumber,
   rewardsAddress: string,
+  isRestoring: boolean,
+  syncingProgress: number,
   pool?: StakePool,
-};
+|};
 
 export type EpochData = {
   pool: StakePool,

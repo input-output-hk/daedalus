@@ -14,10 +14,14 @@
 }
 
 .walletContent {
-  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.currency {
+  min-width: 187px;
+  padding-top: 6px;
 }
 
 .walletName {
@@ -41,10 +45,18 @@
 
   .currencyCode {
     font-size: 16px;
-    font-size: 16px;
     margin-left: 6px;
     opacity: 0.7;
   }
+}
+
+.rewards {
+  @extend %smallText;
+  height: auto;
+}
+
+.rewardsAmount {
+  font-family: var(--font-medium);
 }
 
 .transactionsCountWrapper {

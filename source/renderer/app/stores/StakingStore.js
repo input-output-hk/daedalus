@@ -418,6 +418,7 @@ export default class StakingStore extends Store {
     };
     const { filePath } = await showSaveDialogChannel.send(params);
 
+    console.log(filePath);
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
@@ -512,7 +513,21 @@ export default class StakingStore extends Store {
 
   @computed get rewards(): Array<Reward> {
     const { wallets } = this.stores;
-    return wallets.allWallets.map(this._transformWalletToReward);
+    return wallets.allWallets.map((w) => this.getRewardForWallet(w));
+  }
+
+  getRewardForWallet(wallet: Wallet): Reward {
+    const { transactions, addresses } = this.stores;
+    const rewardsAddress = addresses.stakeAddresses[wallet.id];
+    const syncingProgress = get(wallet.syncState, 'progress.quantity', '');
+    return {
+      wallet: wallet.name,
+      total: wallet.reward.plus(transactions.withdrawals[wallet.id]),
+      unspent: wallet.reward,
+      isRestoring: wallet.isRestoring,
+      syncingProgress,
+      rewardsAddress,
+    };
   }
 
   @action showCountdown(): boolean {
@@ -829,22 +844,6 @@ export default class StakingStore extends Store {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.DELEGATION_CENTER,
     });
-  };
-
-  _transformWalletToReward = (inputWallet: Wallet) => {
-    const {
-      id: walletId,
-      name: wallet,
-      isRestoring,
-      reward: rewards,
-      syncState,
-    } = inputWallet;
-    const { stakeAddresses } = this.stores.addresses;
-    const { withdrawals } = this.stores.transactions;
-    const reward = rewards.plus(withdrawals[walletId]);
-    const rewardsAddress = stakeAddresses[walletId];
-    const syncingProgress = get(syncState, 'progress.quantity', '');
-    return { wallet, reward, isRestoring, syncingProgress, rewardsAddress };
   };
 
   getStakePoolById = (stakePoolId: string) =>

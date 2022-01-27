@@ -54,10 +54,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet',
     description: 'Table header "Wallet" label on staking rewards page',
   },
-  tableHeaderReward: {
-    id: 'staking.rewards.tableHeader.reward',
+  tableHeaderRewardTotal: {
+    id: 'staking.rewards.tableHeader.total',
     defaultMessage: '!!!Total rewards earned (ADA)',
-    description: 'Table header "Reward" label on staking rewards page',
+    description: 'Table header "Total Reward" label on staking rewards page',
+  },
+  tableHeaderRewardUnspent: {
+    id: 'staking.rewards.tableHeader.unspent',
+    defaultMessage: '!!!Unspent (ADA)',
+    description: 'Table header "Unspent" label on staking rewards page',
   },
   tableHeaderRewardsAddress: {
     id: 'staking.rewards.tableHeader.rewardsAddress',
@@ -91,7 +96,8 @@ const REWARD_FIELDS = {
   WALLET_NAME: 'wallet',
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
-  REWARD: 'reward',
+  REWARD_TOTAL: 'total',
+  REWARD_UNSPENT: 'unspent',
   REWARDS_ADDRESS: 'rewardsAddress',
 };
 
@@ -151,14 +157,18 @@ export default class StakingRewards extends Component<Props, State> {
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
+      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
+        DECIMAL_PLACES_IN_ADA
+      );
+      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
       return [
         rewardWallet,
         rewardsAddress,
-        isRestoring ? '-' : rewardAmount,
+        isRestoring ? '-' : rewardTotal,
+        isRestoring ? '-' : rewardUnspent,
         date,
       ];
     });
@@ -174,9 +184,14 @@ export default class StakingRewards extends Component<Props, State> {
     const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
-      const rewardCompareResult = bigNumberComparator(
-        rewardA.reward,
-        rewardB.reward,
+      const totalCompareResult = bigNumberComparator(
+        rewardA.total,
+        rewardB.total,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const unspentCompareResult = bigNumberComparator(
+        rewardA.unspent,
+        rewardB.unspent,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
       const walletNameCompareResult = stringComparator(
@@ -189,32 +204,25 @@ export default class StakingRewards extends Component<Props, State> {
         rewardB.rewardsAddress,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
-      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-        if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
-          return walletNameCompareResult;
-        }
-        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-          return walletAddressCompareResult;
-        }
-        return rewardCompareResult;
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_TOTAL) {
+        if (totalCompareResult !== 0) return totalCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return walletAddressCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_UNSPENT) {
+        if (unspentCompareResult !== 0) return unspentCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return walletAddressCompareResult;
       }
       if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-        if (walletNameCompareResult === 0 && walletAddressCompareResult) {
-          return rewardCompareResult;
-        }
-        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-          return walletAddressCompareResult;
-        }
-        return walletNameCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        if (totalCompareResult !== 0) return totalCompareResult;
+        return walletAddressCompareResult;
       }
       if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
-        if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
-          return walletNameCompareResult;
-        }
-        if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
-          return rewardCompareResult;
-        }
-        return walletAddressCompareResult;
+        if (walletAddressCompareResult !== 0) return walletAddressCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return totalCompareResult;
       }
       return 0;
     });
@@ -247,9 +255,15 @@ export default class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
       {
-        name: REWARD_FIELDS.REWARD,
+        name: REWARD_FIELDS.REWARD_TOTAL,
         title: `${intl.formatMessage(
-          messages.tableHeaderReward
+          messages.tableHeaderRewardTotal
+        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
+      },
+      {
+        name: REWARD_FIELDS.REWARD_UNSPENT,
+        title: `${intl.formatMessage(
+          messages.tableHeaderRewardUnspent
         )} (${intl.formatMessage(globalMessages.adaUnit)})`,
       },
     ];
@@ -342,9 +356,13 @@ export default class StakingRewards extends Component<Props, State> {
                       reward,
                       REWARD_FIELDS.SYNCING_PROGRESS
                     );
-                    const rewardAmount = get(
+                    const rewardTotal = get(
                       reward,
-                      REWARD_FIELDS.REWARD
+                      REWARD_FIELDS.REWARD_TOTAL
+                    ).toFormat(DECIMAL_PLACES_IN_ADA);
+                    const rewardUnspent = get(
+                      reward,
+                      REWARD_FIELDS.REWARD_UNSPENT
                     ).toFormat(DECIMAL_PLACES_IN_ADA);
                     const rewardsAddress = get(
                       reward,
@@ -393,11 +411,11 @@ export default class StakingRewards extends Component<Props, State> {
                             </div>
                           )}
                         </td>
-                        <td className={styles.rewardAmount}>
+                        <td className={styles.rewardTotal}>
                           {isRestoring ? (
                             '-'
                           ) : (
-                            <RewardAmount amount={rewardAmount} />
+                            <RewardAmount amount={rewardTotal} />
                           )}
                           {isRestoring && (
                             <div className={styles.syncingProgress}>
@@ -412,6 +430,13 @@ export default class StakingRewards extends Component<Props, State> {
                                 <LoadingSpinner medium />
                               </PopOver>
                             </div>
+                          )}
+                        </td>
+                        <td className={styles.rewardUnspent}>
+                          {isRestoring ? (
+                            '-'
+                          ) : (
+                            <RewardAmount amount={rewardUnspent} />
                           )}
                         </td>
                       </tr>
