@@ -12,8 +12,6 @@ import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DiscreetValue } from '../../../features/discreet-mode';
-import WalletSummaryHeaderRewards from './WalletSummaryHeaderRewards';
-
 const messages = defineMessages({
   transactionsLabel: {
     id: 'wallet.summary.header.transactionsLabel',
@@ -29,7 +27,6 @@ const messages = defineMessages({
 });
 type Props = {
   wallet: Wallet;
-  reward: Reward;
   numberOfRecentTransactions: number;
   numberOfTransactions?: number;
   numberOfPendingTransactions: number;
@@ -120,4 +117,4 @@ class WalletSummaryHeader extends Component<Props> {
   }
 }
 
-export default WalletSummaryHeader
+export default WalletSummaryHeader;

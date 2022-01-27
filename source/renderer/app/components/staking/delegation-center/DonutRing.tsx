@@ -1,13 +1,11 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './DonutRing.scss';
-
 type Props = {
-  percentage: number,
-  sqSize: number,
-  strokeWidth: number,
-  showText?: boolean,
+  percentage: number;
+  sqSize: number;
+  strokeWidth: number;
+  showText?: boolean;
 };
 
 @observer
@@ -18,14 +16,12 @@ class DonutRing extends Component<Props> {
 
   render() {
     const { percentage, sqSize, strokeWidth, showText } = this.props;
-
     const invertedPercentage = 100 - percentage;
     const radius = (sqSize - strokeWidth) / 2;
     const viewBox = `0 0 ${sqSize} ${sqSize}`;
     const dashArray = radius * Math.PI * 2;
     const dashOffset = dashArray - (dashArray * invertedPercentage) / 100;
     const rotateDeg = -((invertedPercentage / 100) * 360 + 90);
-
     return (
       <div className={styles.component}>
         <svg width={sqSize} height={sqSize} viewBox={viewBox}>
@@ -65,4 +61,4 @@ class DonutRing extends Component<Props> {
   }
 }
 
-export default DonutRing
+export default DonutRing;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { IntlProvider } from 'react-intl';
@@ -6,7 +5,6 @@ import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import { render, fireEvent, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-
 import { BrowserLocalStorageBridge } from '../local-storage';
 import { DiscreetModeFeatureProvider } from './context';
 import {
@@ -17,7 +15,6 @@ import {
   withDiscreetMode,
 } from './ui';
 import { DiscreetMode } from './feature';
-
 describe('Discreet Mode feature', () => {
   afterEach(cleanup);
 
@@ -25,8 +22,8 @@ describe('Discreet Mode feature', () => {
     children,
     testId,
   }: {
-    children: Node,
-    testId: string,
+    children: Node;
+    testId: string;
   }) {
     return (
       <IntlProvider locale="en-US">
@@ -49,12 +46,10 @@ describe('Discreet Mode feature', () => {
     ['ada as ticker', [new BigNumber(1), undefined, true, false], '1 ADA'],
     ['no currency', [new BigNumber(1), 'TEST', false, false], '1'],
   ];
-
   test.each(discreetWalletAmountCases)(
     '<DiscreetWalletAmount /> should replace wallet amount with %s by sensitive data symbol',
     async (testId, [amount, currency, withCurrency, long], expected) => {
       expect.assertions(2);
-
       render(
         <TestDecorator testId={testId}>
           <DiscreetWalletAmount
@@ -65,28 +60,34 @@ describe('Discreet Mode feature', () => {
           />
         </TestDecorator>
       );
-
       expect(screen.getByTestId(testId)).toHaveTextContent(expected);
-
       fireEvent.click(
-        screen.getByRole('button', { name: /discreetModeToggle/i })
+        screen.getByRole('button', {
+          name: /discreetModeToggle/i,
+        })
       );
-
       expect(screen.getByTestId(testId)).toHaveTextContent('***');
     }
   );
-
   const discreetTokenWalletAmountCases = [
     // testId, [amount, metada, decimals], [expected]
     ['without ticker', [new BigNumber(1), null, 0], '1'],
-    ['with ticker', [new BigNumber(1), { ticker: 'TEST' }, 5], '0.00001 TEST'],
+    [
+      'with ticker',
+      [
+        new BigNumber(1),
+        {
+          ticker: 'TEST',
+        },
+        5,
+      ],
+      '0.00001 TEST',
+    ],
   ];
-
   test.each(discreetTokenWalletAmountCases)(
     '<DiscreetTokenWalletAmount /> should replace token wallet amount with %s by sensitive data symbol',
     (testId, [amount, metadata, decimals], expected) => {
       expect.assertions(2);
-
       render(
         <TestDecorator testId={testId}>
           <DiscreetTokenWalletAmount
@@ -96,46 +97,41 @@ describe('Discreet Mode feature', () => {
           />
         </TestDecorator>
       );
-
       expect(screen.getByTestId(testId)).toHaveTextContent(expected);
-
       fireEvent.click(
-        screen.getByRole('button', { name: /discreetModeToggle/i })
+        screen.getByRole('button', {
+          name: /discreetModeToggle/i,
+        })
       );
-
       expect(screen.getByTestId(testId)).toHaveTextContent('***');
     }
   );
-
   test('<DiscreetValue /> should replace value by sensitive data symbol', () => {
     expect.assertions(2);
-
     const value = 'test';
     const testId = 'discreet-value';
-
     render(
       <TestDecorator testId={testId}>
         <DiscreetValue>{value}</DiscreetValue>
       </TestDecorator>
     );
-
     expect(screen.getByTestId(testId)).toHaveTextContent(value);
-
     fireEvent.click(
-      screen.getByRole('button', { name: /discreetModeToggle/i })
+      screen.getByRole('button', {
+        name: /discreetModeToggle/i,
+      })
     );
-
     expect(screen.getByTestId(testId)).toHaveTextContent('***');
   });
-
   test('<withDiscreetMode /> high order component should replace value by sensitive data symbol', () => {
     expect.assertions(2);
-
     const value = 'test';
     const testId = 'discreet-value';
     const HighOrderComponentApi = withDiscreetMode(
       observer(
-        class View extends Component<{ discreetModeFeature: DiscreetMode }> {
+        class View extends Component<{
+          discreetModeFeature: DiscreetMode;
+        }> {
           render() {
             return this.props.discreetModeFeature.discreetValue({
               value,
@@ -144,19 +140,17 @@ describe('Discreet Mode feature', () => {
         }
       )
     );
-
     render(
       <TestDecorator testId={testId}>
         <HighOrderComponentApi />
       </TestDecorator>
     );
-
     expect(screen.getByTestId(testId)).toHaveTextContent(value);
-
     fireEvent.click(
-      screen.getByRole('button', { name: /discreetModeToggle/i })
+      screen.getByRole('button', {
+        name: /discreetModeToggle/i,
+      })
     );
-
     expect(screen.getByTestId(testId)).toHaveTextContent('***');
   });
 });

@@ -1,4 +1,3 @@
-// @flow
 import type { Node } from 'react';
 import React from 'react';
 import { observer } from 'mobx-react';
@@ -13,8 +12,7 @@ import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import BorderedBox from '../../widgets/BorderedBox';
 import WalletSettingsRemoveButton from './WalletSettingsRemoveButton';
 import WalletSettingsActionConfirmationDialog from './WalletSettingsRemoveConfirmationDialog';
-
-export const messages: { [string]: ReactIntlMessage } = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   unpairWalletHeader: {
     id: 'wallet.settings.unpairWallet.header',
     defaultMessage: '!!!Unpair wallet',
@@ -32,15 +30,13 @@ export const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Label for the unpair button on wallet settings',
   },
 });
-
 type Props = {
-  openDialogAction: Function,
-  isDialogOpen: Function,
-  unpairWalletDialogContainer: Node,
-  onBlockForm: Function,
-  intl: intlShape.isRequired,
+  openDialogAction: (...args: Array<any>) => any;
+  isDialogOpen: (...args: Array<any>) => any;
+  unpairWalletDialogContainer: Node;
+  onBlockForm: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
 };
-
 const UnpairWallet = observer(
   ({
     openDialogAction,
@@ -50,7 +46,6 @@ const UnpairWallet = observer(
     intl,
   }: Props) => {
     const label = intl.formatMessage(messages.unpairButton);
-
     return (
       <>
         <BorderedBox className={styles.unpairWalletBox}>
@@ -81,5 +76,4 @@ const UnpairWallet = observer(
     );
   }
 );
-
 export default injectIntl(UnpairWallet);

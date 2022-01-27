@@ -1,13 +1,8 @@
-// @flow
 export type NumberFormat = {
-  groupSeparator: '.' | ',' | ' ',
-  decimalSeparator: '.' | ',' | ' ',
+  groupSeparator: '.' | ',' | ' ';
+  decimalSeparator: '.' | ',' | ' ';
 };
-
-type NumbersFormat = {
-  [key: string]: NumberFormat,
-};
-
+type NumbersFormat = Record<string, NumberFormat>;
 export const NUMBER_FORMATS: NumbersFormat = {
   'number-1': {
     groupSeparator: ',',
@@ -22,8 +17,7 @@ export const NUMBER_FORMATS: NumbersFormat = {
     decimalSeparator: '.',
   },
 };
-
-export const DEFAULT_NUMBER_FORMAT: Object = {
+export const DEFAULT_NUMBER_FORMAT: Record<string, any> = {
   decimalSeparator: '.',
   groupSeparator: ',',
   groupSize: 3,

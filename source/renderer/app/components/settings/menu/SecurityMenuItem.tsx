@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -11,11 +10,10 @@ import { ROUTES } from '../../../routes-config';
 import { useTriggerOnRouteLeave } from './hooks';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import type { Intl } from '../../../types/i18nTypes';
-
 type Props = {
-  intl: Intl,
-  isActiveItem: Function,
-  onClick: Function,
+  intl: Intl;
+  isActiveItem: (...args: Array<any>) => any;
+  onClick: (...args: Array<any>) => any;
 };
 
 const SecurityMenuItem = ({ intl, isActiveItem, onClick }: Props) => {
@@ -24,18 +22,18 @@ const SecurityMenuItem = ({ intl, isActiveItem, onClick }: Props) => {
     setDiscreetModeNotification,
     setDiscreetModeSettingsTooltip,
   } = useDiscreetModeFeature();
+
   const disableNotification = () => {
     setDiscreetModeNotification(false);
     setDiscreetModeSettingsTooltip(false);
   };
-  const isActive = isActiveItem(ROUTES.SETTINGS.SECURITY);
 
+  const isActive = isActiveItem(ROUTES.SETTINGS.SECURITY);
   useTriggerOnRouteLeave({
     enabled: isNotificationEnabled,
     isOnRoute: isActive,
     onLeave: disableNotification,
   });
-
   return (
     <NotificationDot
       enabled={isNotificationEnabled}

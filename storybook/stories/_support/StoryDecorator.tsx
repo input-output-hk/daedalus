@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
@@ -7,10 +6,9 @@ import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';
 import { themeOverrides } from '../../../source/renderer/app/themes/overrides';
-
 type Props = {
-  children: Node,
-  propsForChildren?: any,
+  children: Node;
+  propsForChildren?: any;
 };
 
 @observer
@@ -29,7 +27,12 @@ class StoryDecorator extends Component<Props> {
         themeOverrides={themeOverrides}
       >
         {Children.map(children, (child) => {
-          const childProps = child.type === 'div' ? {} : { propsForChildren };
+          const childProps =
+            child.type === 'div'
+              ? {}
+              : {
+                  propsForChildren,
+                };
           return React.cloneElement(child, childProps);
         })}
       </ThemeProvider>
@@ -37,4 +40,4 @@ class StoryDecorator extends Component<Props> {
   }
 }
 
-export default StoryDecorator
+export default StoryDecorator;

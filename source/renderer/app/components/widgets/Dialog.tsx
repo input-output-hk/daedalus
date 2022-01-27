@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import classnames from 'classnames';
@@ -12,52 +11,44 @@ import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
 import dialogOverrides from './DialogOverride.scss';
 import dialogFullSizeOverride from './DialogFullSizeOverride.scss';
-
 export type DialogActionItems = Array<DialogActionItem>;
-
 export type DialogActionItem = {
-  className?: ?string,
-  label: string | Node,
-  primary?: boolean,
-  disabled?: boolean,
-  onClick?: Function,
-  onDisabled?: Function,
-  isLink?: boolean,
-  hasIconAfter?: boolean,
-  hasIconBefore?: boolean,
+  className?: string | null | undefined;
+  label: string | Node;
+  primary?: boolean;
+  disabled?: boolean;
+  onClick?: (...args: Array<any>) => any;
+  onDisabled?: (...args: Array<any>) => any;
+  isLink?: boolean;
+  hasIconAfter?: boolean;
+  hasIconBefore?: boolean;
 };
-
 type ActionDirection = 'row' | 'column';
-
 export type DialogActionOptions = {
-  items: DialogActionItems,
-  direction?: ActionDirection,
+  items: DialogActionItems;
+  direction?: ActionDirection;
 };
-
 export type DialogActions = DialogActionItems | DialogActionOptions;
-
 type Props = {
-  title?: string | Element<any>,
-  subtitle?: string | Node,
-  children?: Node,
-  footer?: Node,
-  actions?: DialogActions,
-  closeButton?: ?Element<any>,
-  backButton?: Node,
-  className?: string,
-  defaultThemeOverrides?: boolean,
-  onClose?: Function,
-  closeOnOverlayClick?: boolean,
-  primaryButtonAutoFocus?: boolean,
-  fullSize?: boolean,
-  scrollWrapperRef?: ?ElementRef<*>,
+  title?: string | Element<any>;
+  subtitle?: string | Node;
+  children?: Node;
+  footer?: Node;
+  actions?: DialogActions;
+  closeButton?: Element<any> | null | undefined;
+  backButton?: Node;
+  className?: string;
+  defaultThemeOverrides?: boolean;
+  onClose?: (...args: Array<any>) => any;
+  closeOnOverlayClick?: boolean;
+  primaryButtonAutoFocus?: boolean;
+  fullSize?: boolean;
+  scrollWrapperRef?: ElementRef<any> | null | undefined;
 };
-
 const defaultActionOptions = {
   direction: 'row',
   items: [],
 };
-
 export default class Dialog extends Component<Props> {
   render() {
     const {
@@ -76,26 +67,16 @@ export default class Dialog extends Component<Props> {
       fullSize,
       scrollWrapperRef,
     } = this.props;
-
     const { items, direction } = Array.isArray(actions)
-      ? {
-          ...defaultActionOptions,
-          items: actions,
-        }
-      : {
-          ...defaultActionOptions,
-          ...actions,
-        };
-
+      ? { ...defaultActionOptions, items: actions }
+      : { ...defaultActionOptions, ...actions };
     let themeOverrides;
     if (defaultThemeOverrides) themeOverrides = dialogOverrides;
     else if (fullSize) themeOverrides = dialogFullSizeOverride;
-
     const classActionsClasses = classnames([
       styles.actions,
       styles[`${direction}Direction`],
     ]);
-
     return (
       <Modal
         isOpen
@@ -161,7 +142,11 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {closeButton ? React.cloneElement(closeButton, { onClose }) : null}
+          {closeButton
+            ? React.cloneElement(closeButton, {
+                onClose,
+              })
+            : null}
           {backButton}
         </div>
       </Modal>

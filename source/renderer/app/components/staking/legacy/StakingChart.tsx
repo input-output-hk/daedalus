@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
@@ -18,18 +17,20 @@ class CustomReferenceLine extends ReferenceLine {
 }
 
 type Props = {
-  width: number,
-  height: number,
-  options: Object,
+  width: number;
+  height: number;
+  options: Record<string, any>;
 };
-
 type State = {
-  isHovered: boolean,
-  hoveredBarData: ?Object,
-  tooltipPos?: ?{
-    left: number,
-    top: number,
-  },
+  isHovered: boolean;
+  hoveredBarData: Record<string, any> | null | undefined;
+  tooltipPos?:
+    | {
+        left: number;
+        top: number;
+      }
+    | null
+    | undefined;
 };
 
 @observer
@@ -57,6 +58,7 @@ class StakingChart extends Component<Props, State> {
     const { isHovered, hoveredBarData, tooltipPos } = this.state;
     const refLineSlot = Math.floor(data.length / 2) + 1;
     let tooltip = null;
+
     // TODO: find better way to represent the data records that are behind the reference line
     // for now this is the easiest way to ignore zero-bars in the chart
     if (
@@ -96,10 +98,16 @@ class StakingChart extends Component<Props, State> {
           <Bar
             dataKey="numberOfTransactions"
             onMouseEnter={(barData) =>
-              this.setState({ isHovered: true, hoveredBarData: barData })
+              this.setState({
+                isHovered: true,
+                hoveredBarData: barData,
+              })
             }
             onMouseLeave={() =>
-              this.setState({ isHovered: false, hoveredBarData: null })
+              this.setState({
+                isHovered: false,
+                hoveredBarData: null,
+              })
             }
             minPointSize={2}
             isAnimationActive={false}
@@ -109,15 +117,16 @@ class StakingChart extends Component<Props, State> {
               let cursor = 'pointer';
               // eslint-disable-next-line react/no-array-index-key
               if (index === activeIndex) fillColor = '#445b7c';
+
               if (entry.numberOfTransactions === 0) {
                 fillColor = '#e7eaee';
                 cursor = 'default';
               }
+
               return (
                 <Cell
                   cursor={cursor}
-                  fill={fillColor}
-                  // eslint-disable-next-line react/no-array-index-key
+                  fill={fillColor} // eslint-disable-next-line react/no-array-index-key
                   key={`cell-${index}`}
                 />
               );
@@ -130,4 +139,4 @@ class StakingChart extends Component<Props, State> {
   }
 }
 
-export default StakingChart
+export default StakingChart;

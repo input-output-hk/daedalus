@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRecoveryPhraseStep1Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
@@ -35,7 +34,6 @@ class WalletRecoveryPhraseContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { active: activeWallet } = stores.wallets;
-
     if (!activeWallet) throw new Error('Active wallet required.');
     const {
       recoveryPhraseVerificationContinue,
@@ -48,7 +46,6 @@ class WalletRecoveryPhraseContainer extends Component<Props> {
         ? recoveryPhraseVerificationCheck.trigger
         : recoveryPhraseVerificationContinue.trigger;
     const onClose = recoveryPhraseVerificationClose.trigger;
-
     const expectedWordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : RECOVERY_PHRASE_VERIFICATION_WORD_COUNT;
@@ -67,4 +64,4 @@ class WalletRecoveryPhraseContainer extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseContainer
+export default WalletRecoveryPhraseContainer;

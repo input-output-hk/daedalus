@@ -1,4 +1,3 @@
-// @flow
 import SimpleAutocomplete from 'react-polymorph/lib/themes/simple/SimpleAutocomplete.scss';
 import SimpleBubble from 'react-polymorph/lib/themes/simple/SimpleBubble.scss';
 import SimpleButton from 'react-polymorph/lib/themes/simple/SimpleButton.scss';
@@ -20,7 +19,6 @@ import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scs
 import SimpleTooltip from 'react-polymorph/lib/themes/simple/SimpleTooltip.scss';
 import SimpleLink from 'react-polymorph/lib/themes/simple/SimpleLink.scss';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-
 const {
   AUTOCOMPLETE,
   BUBBLE,
@@ -43,7 +41,6 @@ const {
   TEXT_AREA,
   TOOLTIP,
 } = IDENTIFIERS;
-
 export const daedalusTheme = {
   [AUTOCOMPLETE]: SimpleAutocomplete,
   [BUBBLE]: SimpleBubble,

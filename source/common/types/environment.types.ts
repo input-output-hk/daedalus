@@ -1,45 +1,41 @@
-// @flow
 export type Environment = {
-  network: Network,
-  apiVersion: string,
-  nodeVersion: string,
-  mobxDevTools: boolean | string,
-  current: string,
-  isDev: boolean,
-  isTest: boolean,
-  isProduction: boolean,
-  isMainnet: boolean,
-  isStaging: boolean,
-  isTestnet: boolean,
-  isAlonzoPurple: boolean,
-  isShelleyQA: boolean,
-  isSelfnode: boolean,
-  isDevelopment: boolean,
-  isWatchMode: boolean,
-  build: string,
-  buildNumber: string,
-  platform: string,
-  platformVersion: string,
-  mainProcessID: string,
-  rendererProcessID: string,
-  os: string,
-  cpu: Cpu,
-  ram: number,
-  hasMetHardwareRequirements: boolean,
-  installerVersion: string,
-  version: string,
-  isWindows: boolean,
-  isMacOS: boolean,
-  isLinux: boolean,
-  isBlankScreenFixActive: boolean,
-  keepLocalClusterRunning: boolean,
+  network: Network;
+  apiVersion: string;
+  nodeVersion: string;
+  mobxDevTools: boolean | string;
+  current: string;
+  isDev: boolean;
+  isTest: boolean;
+  isProduction: boolean;
+  isMainnet: boolean;
+  isStaging: boolean;
+  isTestnet: boolean;
+  isAlonzoPurple: boolean;
+  isShelleyQA: boolean;
+  isSelfnode: boolean;
+  isDevelopment: boolean;
+  isWatchMode: boolean;
+  build: string;
+  buildNumber: string;
+  platform: string;
+  platformVersion: string;
+  mainProcessID: string;
+  rendererProcessID: string;
+  os: string;
+  cpu: Cpu;
+  ram: number;
+  installerVersion: string;
+  version: string;
+  isWindows: boolean;
+  isMacOS: boolean;
+  isLinux: boolean;
+  isBlankScreenFixActive: boolean;
+  keepLocalClusterRunning: boolean;
 };
-
 // constants
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
 export const TEST = 'test';
-
 // cardano-node networks
 export const MAINNET = 'mainnet';
 export const MAINNET_FLIGHT = 'mainnet_flight';
@@ -48,7 +44,6 @@ export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
 export const ALONZO_PURPLE = 'alonzo_purple';
 export const SELFNODE = 'selfnode';
-
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
@@ -57,9 +52,7 @@ export const OS_NAMES = {
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
 };
-
 export type Platform = 'darwin' | 'win32' | 'linux';
-
 export type Network =
   | 'mainnet'
   | 'mainnet_flight'
@@ -69,7 +62,6 @@ export type Network =
   | 'alonzo_purple'
   | 'selfnode'
   | 'development';
-
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
   testnet: 'Testnet',
@@ -79,13 +71,9 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   development: 'Development',
 };
-
 export type CpuThreadData = {
-  model: string,
-  speed: number,
-  times: {
-    [string]: number,
-  },
+  model: string;
+  speed: number;
+  times: Record<string, number>;
 };
-
 export type Cpu = Array<CpuThreadData>;

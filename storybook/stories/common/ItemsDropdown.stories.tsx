@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
@@ -27,7 +26,6 @@ import {
   generateAssetToken,
 } from '../_support/utils';
 import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
-
 const WALLETS = [
   generateWallet('Second Wallet', '500000000'),
   generateWallet('Third Wallet', '100000000', STAKE_POOLS[3]),
@@ -42,13 +40,11 @@ const WALLETS = [
   ),
   generateWallet('Fifth Wallet', '7000000'),
 ];
-
 const stakePoolsList = [
   ...STAKE_POOLS.slice(0, 5),
   ...STAKE_POOLS.slice(150, 155),
   ...STAKE_POOLS.slice(290, 295),
 ];
-
 const assets = [
   generateAssetToken(generateHash(), '', generateHash(), 100, {
     name: 'Asset 1',
@@ -71,20 +67,18 @@ const assets = [
     description: 'Asset 4 description',
   }),
 ];
-
 const firstWalletId = generateHash();
-
 const stakePoolsOptions = stakePoolsList.reduce((obj, pool) => {
   const { name, ticker, ranking } = pool;
   obj[`[${ticker}] ${name} - (${ranking})`] = pool;
   return obj;
 }, {});
-
 storiesOf('Common|ItemsDropdown', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();
     }
+
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
@@ -93,90 +87,112 @@ storiesOf('Common|ItemsDropdown', module)
         onChangeAction(value, event);
       }),
     });
-
     return (
       <StoryDecorator propsForChildren={state}>
         <StoryProvider>
           <StoryLayout activeSidebarCategory={null} {...context}>
-            <div style={{ margin: 50 }}>{story()}</div>
+            <div
+              style={{
+                margin: 50,
+              }}
+            >
+              {story()}
+            </div>
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>
     );
   })
-
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add(
     'Generic',
-    withState({ value: 'usd' }, (store) => {
-      const options = Object.values(currenciesList).map((currency, index) => {
-        const label = get(currency, 'name.en-US');
-        const code = get(currency, 'code');
-        const decimalDigits = get(currency, 'decimalDigits');
-        const detail = `Code: ${code} - Decimal digits: ${decimalDigits}`;
-        const value = code;
-        const isSyncing = index === 1;
-        return {
-          label,
-          detail,
-          value,
-          isSyncing,
-        };
-      });
-      return (
-        <ItemsDropdown
-          options={options}
-          value={store.state.value}
-          onChange={(value) => store.set({ value })}
-          hasSearch
-          error={boolean('Has error', false) ? 'Error message' : ''}
-        />
-      );
-    })
+    withState(
+      {
+        value: 'usd',
+      },
+      (store) => {
+        const options = Object.values(currenciesList).map((currency, index) => {
+          const label = get(currency, 'name.en-US');
+          const code = get(currency, 'code');
+          const decimalDigits = get(currency, 'decimalDigits');
+          const detail = `Code: ${code} - Decimal digits: ${decimalDigits}`;
+          const value = code;
+          const isSyncing = index === 1;
+          return {
+            label,
+            detail,
+            value,
+            isSyncing,
+          };
+        });
+        return (
+          <ItemsDropdown
+            options={options}
+            value={store.state.value}
+            onChange={(value) =>
+              store.set({
+                value,
+              })
+            }
+            hasSearch
+            error={boolean('Has error', false) ? 'Error message' : ''}
+          />
+        );
+      }
+    )
   )
-
   .add(
     'Wallets',
-    withState({ walletId: firstWalletId }, (store) => {
-      const firstWallet = generateWallet(
-        text('Name', 'First Wallet', 'First wallet'),
-        `${number('Amount', 1000000000, {}, 'First wallet')}`,
-        undefined,
-        undefined,
-        select('Stake pool', stakePoolsOptions, STAKE_POOLS[0], 'First wallet'),
-        true,
-        boolean('isSyncing', false, 'First wallet')
-          ? WalletSyncStateStatuses.SYNCING
-          : WalletSyncStateStatuses.READY,
-        boolean('Wallet - isHardwareWallet', true, 'First wallet'),
-        firstWalletId
-      );
-      const wallets = [firstWallet, ...WALLETS];
-      return (
-        <WalletsDropdown
-          getStakePoolById={(poolId) =>
-            find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
-          }
-          label={text('label', 'Wallets')}
-          numberOfStakePools={
-            boolean('Has stake pools', true, 'First wallet')
-              ? STAKE_POOLS.length
-              : 0
-          }
-          onChange={(walletId) => store.set({ walletId })}
-          placeholder={text('placeholder')}
-          syncingLabel={text('syncingLabel', 'syncing')}
-          value={store.state.walletId}
-          wallets={wallets}
-          hasSearch={boolean('hasSearch', false)}
-        />
-      );
-    })
+    withState(
+      {
+        walletId: firstWalletId,
+      },
+      (store) => {
+        const firstWallet = generateWallet(
+          text('Name', 'First Wallet', 'First wallet'),
+          `${number('Amount', 1000000000, {}, 'First wallet')}`,
+          undefined,
+          undefined,
+          select(
+            'Stake pool',
+            stakePoolsOptions,
+            STAKE_POOLS[0],
+            'First wallet'
+          ),
+          true,
+          boolean('isSyncing', false, 'First wallet')
+            ? WalletSyncStateStatuses.SYNCING
+            : WalletSyncStateStatuses.READY,
+          boolean('Wallet - isHardwareWallet', true, 'First wallet'),
+          firstWalletId
+        );
+        const wallets = [firstWallet, ...WALLETS];
+        return (
+          <WalletsDropdown
+            getStakePoolById={(poolId) =>
+              find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+            }
+            label={text('label', 'Wallets')}
+            numberOfStakePools={
+              boolean('Has stake pools', true, 'First wallet')
+                ? STAKE_POOLS.length
+                : 0
+            }
+            onChange={(walletId) =>
+              store.set({
+                walletId,
+              })
+            }
+            placeholder={text('placeholder')}
+            syncingLabel={text('syncingLabel', 'syncing')}
+            value={store.state.walletId}
+            wallets={wallets}
+            hasSearch={boolean('hasSearch', false)}
+          />
+        );
+      }
+    )
   )
-
   .add('Wallets - Label only', () => {
     const wallet = generateWallet(
       text('Wallet - Name', 'Wallet name'),
@@ -212,16 +228,24 @@ storiesOf('Common|ItemsDropdown', module)
       </div>
     );
   })
-
   .add(
     'Assets',
-    withState({ assetId: assets[0].fingerprint }, (store) => {
-      return (
-        <AssetsDropdown
-          assets={assets}
-          value={store.state.assetId}
-          onChange={(assetId) => store.set({ assetId })}
-        />
-      );
-    })
+    withState(
+      {
+        assetId: assets[0].fingerprint,
+      },
+      (store) => {
+        return (
+          <AssetsDropdown
+            assets={assets}
+            value={store.state.assetId}
+            onChange={(assetId) =>
+              store.set({
+                assetId,
+              })
+            }
+          />
+        );
+      }
+    )
   );

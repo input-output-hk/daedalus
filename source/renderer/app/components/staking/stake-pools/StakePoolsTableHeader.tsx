@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map } from 'lodash';
@@ -7,12 +6,14 @@ import SVGInline from 'react-svg-inline';
 import styles from './StakePoolsTable.scss';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import { defaultTableOrdering } from './StakePoolsTable';
-
 type TableHeaderProps = {
-  availableTableHeaders: Array<{ name: string, title: any }>,
-  stakePoolsSortBy: string,
-  stakePoolsOrder: string,
-  onHandleSort: Function,
+  availableTableHeaders: Array<{
+    name: string;
+    title: any;
+  }>;
+  stakePoolsSortBy: string;
+  stakePoolsOrder: string;
+  onHandleSort: (...args: Array<any>) => any;
 };
 
 @observer
@@ -49,4 +50,4 @@ class StakePoolsTableHeader extends Component<TableHeaderProps> {
   }
 }
 
-export { StakePoolsTableHeader }
+export { StakePoolsTableHeader };

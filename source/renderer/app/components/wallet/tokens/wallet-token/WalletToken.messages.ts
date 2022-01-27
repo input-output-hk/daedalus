@@ -1,5 +1,4 @@
 import { defineMessages } from 'react-intl';
-
 export const messages = defineMessages({
   tokenSendButton: {
     id: 'wallet.summary.asset.tokenSendButton',

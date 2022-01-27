@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from './backup-recovery/WalletBackupPrivacyWarningDialog';
@@ -6,28 +5,27 @@ import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryP
 import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
 import type { walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
-
 type Props = {
-  currentStep: walletBackupStep,
-  canPhraseBeShown: boolean,
-  isPrivacyNoticeAccepted: boolean,
-  countdownRemaining: number,
-  isTermOfflineAccepted: boolean,
-  canFinishBackup: boolean,
-  isTermRecoveryAccepted: boolean,
-  isValid: boolean,
-  isSubmitting: boolean,
-  recoveryPhrase: string,
-  enteredPhrase: Array<string>,
-  onCancelBackup: Function,
-  onAcceptPrivacyNotice: Function,
-  onContinue: Function,
-  onStartWalletBackup: Function,
-  onAcceptTermOffline: Function,
-  onAcceptTermRecovery: Function,
-  onUpdateVerificationPhrase: Function,
-  onFinishBackup: Function,
-  onRestartBackup: Function,
+  currentStep: walletBackupStep;
+  canPhraseBeShown: boolean;
+  isPrivacyNoticeAccepted: boolean;
+  countdownRemaining: number;
+  isTermOfflineAccepted: boolean;
+  canFinishBackup: boolean;
+  isTermRecoveryAccepted: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
+  recoveryPhrase: string;
+  enteredPhrase: Array<string>;
+  onCancelBackup: (...args: Array<any>) => any;
+  onAcceptPrivacyNotice: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onStartWalletBackup: (...args: Array<any>) => any;
+  onAcceptTermOffline: (...args: Array<any>) => any;
+  onAcceptTermRecovery: (...args: Array<any>) => any;
+  onUpdateVerificationPhrase: (...args: Array<any>) => any;
+  onFinishBackup: (...args: Array<any>) => any;
+  onRestartBackup: (...args: Array<any>) => any;
 };
 
 @observer
@@ -68,6 +66,7 @@ class WalletBackupDialog extends Component<Props> {
         />
       );
     }
+
     if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
       return (
         <WalletRecoveryPhraseDisplayDialog
@@ -78,6 +77,7 @@ class WalletBackupDialog extends Component<Props> {
         />
       );
     }
+
     if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
       return (
         <WalletRecoveryPhraseEntryDialog
@@ -96,8 +96,9 @@ class WalletBackupDialog extends Component<Props> {
         />
       );
     }
+
     return null;
   }
 }
 
-export default WalletBackupDialog
+export default WalletBackupDialog;

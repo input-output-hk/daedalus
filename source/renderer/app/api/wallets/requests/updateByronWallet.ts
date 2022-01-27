@@ -1,12 +1,16 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
-
 export const updateByronWallet = (
   config: RequestConfig,
-  { walletId, name }: { walletId: string, name: string }
+  {
+    walletId,
+    name,
+  }: {
+    walletId: string;
+    name: string;
+  }
 ): Promise<AdaWallet> =>
   request(
     {
@@ -15,5 +19,7 @@ export const updateByronWallet = (
       ...config,
     },
     {},
-    { name }
+    {
+      name,
+    }
   );

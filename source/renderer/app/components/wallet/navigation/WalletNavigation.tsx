@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { includes } from 'lodash';
@@ -12,7 +11,6 @@ import type {
   NavButtonProps,
   NavDropdownProps,
 } from '../../navigation/Navigation';
-
 const messages = defineMessages({
   summary: {
     id: 'wallet.navigation.summary',
@@ -58,13 +56,12 @@ const messages = defineMessages({
     description: 'Label for the "More" nav button in the wallet navigation.',
   },
 });
-
 type Props = {
-  activeItem: string,
-  isActiveNavItem: Function,
-  isLegacy: boolean,
-  onNavItemClick: Function,
-  hasNotification?: boolean,
+  activeItem: string;
+  isActiveNavItem: (...args: Array<any>) => any;
+  isLegacy: boolean;
+  onNavItemClick: (...args: Array<any>) => any;
+  hasNotification?: boolean;
 };
 
 @observer
@@ -135,4 +132,4 @@ class WalletNavigation extends Component<Props> {
   }
 }
 
-export default WalletNavigation
+export default WalletNavigation;

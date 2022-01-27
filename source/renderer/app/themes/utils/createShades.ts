@@ -1,11 +1,8 @@
-// @flow
 import chroma from 'chroma-js';
 import type { BackgroundShades, ErrorShades } from '../types';
-
 export const createBackgroundShades = (color: string): BackgroundShades => {
   const lightShades = chroma.scale([color, '#fff']);
   const darkShades = chroma.scale([color, '#000']);
-
   return {
     lightest: lightShades(0.6).hex(),
     ultralighter: lightShades(0.5).hex(),
@@ -18,11 +15,9 @@ export const createBackgroundShades = (color: string): BackgroundShades => {
     darkest: darkShades(0.3).hex(),
   };
 };
-
 export const createErrorShades = (color: string): ErrorShades => {
   const lightShades = chroma.scale([color, '#fff']);
   const darkShades = chroma.scale([color, '#000']);
-
   return {
     ultralight: lightShades(0.8).hex(),
     lightest: lightShades(0.6).hex(),

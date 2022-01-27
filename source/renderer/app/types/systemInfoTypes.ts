@@ -1,10 +1,7 @@
-// @flow
 export type SystemInfo = {
-  platform: string,
-  platformVersion: string,
-  cpu: string,
-  ram: string,
-  availableDiskSpace: string,
-  hasMetHardwareRequirements: boolean,
-  isRTSFlagsModeEnabled: boolean,
+  platform: string;
+  platformVersion: string;
+  cpu: string;
+  ram: string;
+  availableDiskSpace: string;
 };

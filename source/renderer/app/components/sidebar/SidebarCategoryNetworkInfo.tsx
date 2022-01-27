@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './SidebarCategoryNetworkInfo.scss';
 import type { networkType } from '../../types/networkTypes';
-
 const messages = defineMessages({
   mainnet: {
     id: 'test.environment.mainnetLabel',
@@ -46,11 +44,9 @@ const messages = defineMessages({
     description: 'Label for development with version.',
   },
 });
-
 type Props = {
-  network: networkType,
+  network: networkType;
 };
-
 export default class SidebarCategoryNetworkInfo extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

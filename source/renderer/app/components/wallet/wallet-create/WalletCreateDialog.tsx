@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -7,7 +6,6 @@ import Dialog from '../../widgets/Dialog';
 import WalletCreateSteps from './WalletCreateSteps';
 import styles from './WalletCreateDialog.scss';
 import type { DialogActionItems } from '../../widgets/Dialog';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.create.dialog.title',
@@ -15,14 +13,12 @@ const messages = defineMessages({
     description: 'Title "Create a new wallet" in the wallet create form.',
   },
 });
-
 type Props = {
-  stepNumber: number,
-  actions?: DialogActionItems,
-  onClose?: Function,
-  children: Node,
+  stepNumber: number;
+  actions?: DialogActionItems;
+  onClose?: (...args: Array<any>) => any;
+  children: Node;
 };
-
 export default class WalletCreateDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -31,7 +27,6 @@ export default class WalletCreateDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { actions, children, stepNumber, onClose } = this.props;
-
     return (
       <Dialog
         className={styles.component}

@@ -9,7 +9,6 @@ import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletTokensList from '../tokens/wallet-tokens-list/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
-
 const messages = defineMessages({
   tokensListTitle: {
     id: 'wallet.summary.assets.tokensTitle',
@@ -19,7 +18,6 @@ const messages = defineMessages({
 });
 type Props = {
   wallet: Wallet;
-  reward: Reward;
   numberOfRecentTransactions: number;
   numberOfTransactions?: number;
   numberOfPendingTransactions: number;
@@ -122,4 +120,4 @@ class WalletSummary extends Component<Props> {
   }
 }
 
-export default WalletSummary
+export default WalletSummary;

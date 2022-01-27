@@ -1,5 +1,3 @@
-// @flow
-
 import { orderBy } from 'lodash';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type {
@@ -7,18 +5,15 @@ import type {
   WalletSortByOptions,
 } from '../types/sidebarTypes';
 import type Wallet from '../domains/Wallet';
-
 type IndexedWallet = {
-  wallet: Wallet,
-  index: number,
-  amount: number,
-  name: string,
+  wallet: Wallet;
+  index: number;
+  amount: number;
+  name: string;
 };
-
 type SortWalletsProps = {
-  wallets: Wallet[],
+  wallets: Wallet[];
 } & WalletSortConfig;
-
 export function sortWallets({
   wallets,
   sortBy,
@@ -44,33 +39,36 @@ export function sortWallets({
   switch (sortBy) {
     case WalletSortBy.Date:
       return doOrderBy(['index']);
+
     case WalletSortBy.Balance:
       return doOrderBy(['amount', 'name', 'index']);
+
     case WalletSortBy.Name:
       return doOrderBy(['name', 'amount', 'index']);
+
     case WalletSortBy.None:
     default:
       return wallets;
   }
 }
-
 const defaultSortOrderByType = {
   [WalletSortBy.Name]: WalletSortOrder.Asc,
   [WalletSortBy.Date]: WalletSortOrder.Asc,
   [WalletSortBy.Balance]: WalletSortOrder.Desc,
 };
-
 type ChangeWalletSortingProps = {
-  currentSortBy: WalletSortByOptions,
+  currentSortBy: WalletSortByOptions;
 } & WalletSortConfig;
-
 export function changeWalletSorting({
   currentSortBy,
   sortBy,
   sortOrder,
 }: ChangeWalletSortingProps) {
   if (sortBy === currentSortBy) {
-    return reverseWalletSortOrder({ sortBy, sortOrder });
+    return reverseWalletSortOrder({
+      sortBy,
+      sortOrder,
+    });
   }
 
   return {

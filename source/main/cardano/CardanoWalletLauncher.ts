@@ -1,4 +1,3 @@
-// @flow
 import { merge } from 'lodash';
 import path from 'path';
 import * as fs from 'fs-extra';
@@ -22,29 +21,28 @@ import { CardanoNodeImplementationOptions } from '../../common/types/cardano-nod
 import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
 import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
-
 export type WalletOptions = {
-  nodeImplementation: CardanoNodeImplementations,
-  nodeConfig: NodeConfig,
-  cluster: string,
-  stateDir: string,
-  tlsPath: string,
-  configPath: string,
-  syncTolerance: string,
-  nodeLogFile: WriteStream,
-  walletLogFile: WriteStream,
-  cliBin: string,
-  isStaging: boolean,
-  metadataUrl?: string,
-  rtsFlags: Array<string>,
+  nodeImplementation: CardanoNodeImplementations;
+  nodeConfig: NodeConfig;
+  cluster: string;
+  stateDir: string;
+  tlsPath: string;
+  configPath: string;
+  syncTolerance: string;
+  nodeLogFile: WriteStream;
+  walletLogFile: WriteStream;
+  cliBin: string;
+  isStaging: boolean;
+  metadataUrl?: string;
+  rtsFlags: Array<string>;
 };
-
 export async function CardanoWalletLauncher(
   walletOptions: WalletOptions
 ): Launcher {
   const {
     nodeImplementation,
-    nodeConfig, // For cardano-node / byron only!
+    nodeConfig,
+    // For cardano-node / byron only!
     cluster,
     stateDir,
     tlsPath,
@@ -59,7 +57,6 @@ export async function CardanoWalletLauncher(
   } = walletOptions;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
-
   // Shared launcher config (node implementations agnostic)
   const launcherConfig = {
     networkName: cluster,
@@ -78,16 +75,15 @@ export async function CardanoWalletLauncher(
     },
     installSignalHandlers: false,
   };
-
   // TLS configuration used only for cardano-node
   const tlsConfiguration = {
     caCert: path.join(tlsPath, 'server/ca.crt'),
     svCert: path.join(tlsPath, 'server/server.crt'),
     svKey: path.join(tlsPath, 'server/server.key'),
   };
-
   // Prepare development TLS files
   const { isProduction } = environment;
+
   if (
     !isProduction &&
     nodeImplementation === CardanoNodeImplementationOptions.CARDANO
@@ -96,10 +92,12 @@ export async function CardanoWalletLauncher(
   }
 
   let tokenMetadataServer;
-
   // This switch statement handles any node specific
   // configuration, prior to spawning the child process
-  logger.info('Node implementation', { nodeImplementation });
+  logger.info('Node implementation', {
+    nodeImplementation,
+  });
+
   switch (nodeImplementation) {
     case CardanoNodeImplementationOptions.CARDANO:
       if (cluster === SELFNODE) {
@@ -117,8 +115,11 @@ export async function CardanoWalletLauncher(
         nodeConfig.network.configFile = selfnodeConfigPath;
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
-        merge(launcherConfig, { apiPort: 8088 });
+        merge(launcherConfig, {
+          apiPort: 8088,
+        });
       }
+
       if (cluster === MAINNET) {
         launcherConfig.networkName = MAINNET;
         logger.info('Launching Wallet with --mainnet flag');
@@ -130,6 +131,7 @@ export async function CardanoWalletLauncher(
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
       }
+
       if (MOCK_TOKEN_METADATA_SERVER_PORT) {
         tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}`;
       } else if (metadataUrl) {
@@ -137,6 +139,7 @@ export async function CardanoWalletLauncher(
       } else {
         tokenMetadataServer = FALLBACK_TOKEN_METADATA_SERVER_URL;
       }
+
       logger.info('Launching Wallet with --token-metadata-server flag', {
         tokenMetadataServer,
       });
@@ -159,6 +162,7 @@ export async function CardanoWalletLauncher(
         tokenMetadataServer,
       });
       break;
+
     default:
       break;
   }
@@ -167,6 +171,5 @@ export async function CardanoWalletLauncher(
     walletOptions,
     launcherConfig,
   });
-
   return new cardanoLauncher.Launcher(launcherConfig, logger);
 }

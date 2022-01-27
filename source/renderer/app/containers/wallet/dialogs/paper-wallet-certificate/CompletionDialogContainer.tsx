@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import CompletionDialog from '../../../../components/wallet/paper-wallet-certificate/CompletionDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { ADDRESS_COPY_NOTIFICATION_SMALL_DURATION } from '../../../../config/timingConfig';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores')
@@ -23,6 +21,7 @@ class CompletionDialogContainer extends Component<Props> {
       environment: { network },
     } = app;
     const { walletCertificateAddress } = wallets;
+
     if (!walletCertificateAddress) {
       throw new Error(
         'Prop "walletCertificateAddress" is required but was null.'
@@ -43,4 +42,4 @@ class CompletionDialogContainer extends Component<Props> {
   }
 }
 
-export default CompletionDialogContainer
+export default CompletionDialogContainer;

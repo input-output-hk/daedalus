@@ -27,7 +27,6 @@ import globalMessages from '../../../i18n/global-messages';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import ButtonLink from '../../widgets/ButtonLink';
 import { RewardAmount } from './RewardAmount';
-
 const messages = defineMessages({
   title: {
     id: 'staking.rewards.title',
@@ -200,28 +199,40 @@ class StakingRewards extends Component<Props, State> {
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
 
-      if (rewardsSortBy === REWARD_FIELDS.REWARD_TOTAL) {
-        if (totalCompareResult !== 0) return totalCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return walletAddressCompareResult;
-      }
+      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+        if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
+          return walletNameCompareResult;
+        }
 
-      if (rewardsSortBy === REWARD_FIELDS.REWARD_UNSPENT) {
-        if (unspentCompareResult !== 0) return unspentCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return walletAddressCompareResult;
+        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+          return walletAddressCompareResult;
+        }
+
+        return rewardCompareResult;
       }
 
       if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        if (totalCompareResult !== 0) return totalCompareResult;
-        return walletAddressCompareResult;
+        if (walletNameCompareResult === 0 && walletAddressCompareResult) {
+          return rewardCompareResult;
+        }
+
+        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
+          return walletAddressCompareResult;
+        }
+
+        return walletNameCompareResult;
       }
 
       if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
-        if (walletAddressCompareResult !== 0) return walletAddressCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return totalCompareResult;
+        if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+
+        if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
+          return rewardCompareResult;
+        }
+
+        return walletAddressCompareResult;
       }
 
       return 0;
@@ -478,4 +489,4 @@ class StakingRewards extends Component<Props, State> {
   };
 }
 
-export default StakingRewards
+export default StakingRewards;

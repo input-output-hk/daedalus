@@ -1,18 +1,18 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakingEpochs from '../../components/staking/epochs/StakingEpochs';
 import type { InjectedProps } from '../../types/injectedPropsType';
-
 import PREVIOUS_EPOCHS from '../../config/stakingPreviousEpoch.dummy.json';
 import CURRENT_EPOCHS from '../../config/stakingCurrentEpoch.dummy.json';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class StakingEpochsPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     return (
@@ -29,4 +29,4 @@ class StakingEpochsPage extends Component<Props> {
   }
 }
 
-export default StakingEpochsPage
+export default StakingEpochsPage;

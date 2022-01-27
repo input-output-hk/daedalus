@@ -1,13 +1,9 @@
-// @flow
-
 import React from 'react';
 import type { Node } from 'react';
 import { LocalStorageFeatureProvider } from '../context';
-
 type Props = {
-  children: Node,
+  children: Node;
 };
-
 export function BrowserLocalStorageBridge({ children }: Props) {
   return (
     <LocalStorageFeatureProvider

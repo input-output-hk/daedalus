@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -14,7 +13,6 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
-
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.success.step.dialog.title',
@@ -43,25 +41,23 @@ const messages = defineMessages({
       'Label for Close button on the delegation setup "success" step dialog.',
   },
 });
-
 type Props = {
-  delegatedWallet: ?Wallet,
-  delegatedStakePool: ?StakePool,
-  futureEpochStartTime: string,
-  onClose: Function,
-  currentLocale: string,
+  delegatedWallet: Wallet | null | undefined;
+  delegatedStakePool: StakePool | null | undefined;
+  futureEpochStartTime: string;
+  onClose: (...args: Array<any>) => any;
+  currentLocale: string;
+};
+type State = {
+  timeUntilNextEpochStart: number;
 };
 
-type State = { timeUntilNextEpochStart: number };
-
 @observer
-class DelegationStepsSuccessDialog extends Component<
-  Props,
-  State
-> {
-  intervalHandler: ?IntervalID = null;
-  state = { timeUntilNextEpochStart: 0 };
-
+class DelegationStepsSuccessDialog extends Component<Props, State> {
+  intervalHandler: IntervalID | null | undefined = null;
+  state = {
+    timeUntilNextEpochStart: 0,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -77,14 +73,15 @@ class DelegationStepsSuccessDialog extends Component<
       EPOCH_COUNTDOWN_INTERVAL
     );
   };
-
   updateTimeUntilNextEpochStart = () => {
     const { futureEpochStartTime } = this.props;
     const timeUntilNextEpochStart = Math.max(
       0,
       new Date(futureEpochStartTime).getTime() - new Date().getTime()
     );
-    this.setState({ timeUntilNextEpochStart });
+    this.setState({
+      timeUntilNextEpochStart,
+    });
   };
 
   componentWillUnmount() {
@@ -92,6 +89,7 @@ class DelegationStepsSuccessDialog extends Component<
       clearInterval(this.intervalHandler);
     }
   }
+
   render() {
     const { intl } = this.context;
     const {
@@ -100,7 +98,6 @@ class DelegationStepsSuccessDialog extends Component<
       currentLocale,
       onClose,
     } = this.props;
-
     const actions = [
       {
         className: 'closeButton',
@@ -109,22 +106,18 @@ class DelegationStepsSuccessDialog extends Component<
         primary: true,
       },
     ];
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsSuccessDialogWrapper,
     ]);
     const contentClasses = classNames([commonStyles.content, styles.content]);
-
     const delegatedWalletName = get(delegatedWallet, 'name');
     const delegatedStakePoolName = get(delegatedStakePool, 'name');
     const delegatedStakePoolTicker = get(delegatedStakePool, 'ticker');
-
     const timeUntilNextEpochStart = humanizeDurationByLocale(
       this.state.timeUntilNextEpochStart,
       currentLocale
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -149,7 +142,9 @@ class DelegationStepsSuccessDialog extends Component<
           <div className={styles.description2}>
             <FormattedHTMLMessage
               {...messages.descriptionLine2}
-              values={{ timeUntilNextEpochStart }}
+              values={{
+                timeUntilNextEpochStart,
+              }}
             />
           </div>
         </div>
@@ -158,4 +153,4 @@ class DelegationStepsSuccessDialog extends Component<
   }
 }
 
-export default DelegationStepsSuccessDialog
+export default DelegationStepsSuccessDialog;

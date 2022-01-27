@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
@@ -14,7 +13,6 @@ import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
 import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
-
 const messages = defineMessages({
   tokenSendButton: {
     id: 'wallet.summary.asset.tokenSendButton',
@@ -44,20 +42,17 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  asset: AssetToken,
-  onOpenAssetSend: Function,
-  onCopyAssetParam: Function,
-  onAssetSettings: Function,
-  anyAssetWasHovered: boolean,
-  isLoading: boolean,
-  assetSettingsDialogWasOpened: boolean,
-  intl: intlShape.isRequired,
+  asset: AssetToken;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onAssetSettings: (...args: Array<any>) => any;
+  anyAssetWasHovered: boolean;
+  isLoading: boolean;
+  assetSettingsDialogWasOpened: boolean;
+  intl: intlShape.isRequired;
 };
-
 type IsExpanded = boolean;
-
 const WalletSummaryAsset = observer((props: Props) => {
   const [isExpanded, setIsExpanded] = useState<IsExpanded>(false);
 
@@ -136,6 +131,7 @@ const WalletSummaryAsset = observer((props: Props) => {
       decimals !== recommendedDecimals;
     let settingsButtonLabel = intl.formatMessage(messages.settingsButtonLabel);
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage =
         typeof decimals === 'number'
@@ -148,14 +144,18 @@ const WalletSummaryAsset = observer((props: Props) => {
         </>
       );
     }
+
     const settingsButton = (
       <Button
         className={classNames(['flat', styles.button, styles.settingsButton])}
         label={settingsButtonLabel}
-        onClick={() => onAssetSettings({ asset })}
+        onClick={() =>
+          onAssetSettings({
+            asset,
+          })
+        }
       />
     );
-
     return (
       <div className={styles.footerButtons}>
         {hasWarning ? (
@@ -201,5 +201,4 @@ const WalletSummaryAsset = observer((props: Props) => {
     </div>
   );
 });
-
 export default injectIntl(WalletSummaryAsset);

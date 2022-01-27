@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './WalletTransactionsSearch.scss';
-
 const messages = defineMessages({
   searchHint: {
     id: 'wallet.transactions.search.hint',
@@ -13,10 +11,9 @@ const messages = defineMessages({
     description: 'Hint in the transactions search box.',
   },
 });
-
 type Props = {
-  searchTerm: string,
-  onChange: Function,
+  searchTerm: string;
+  onChange: (...args: Array<any>) => any;
 };
 
 @observer
@@ -43,4 +40,4 @@ class WalletTransactionsSearch extends Component<Props> {
   }
 }
 
-export default WalletTransactionsSearch
+export default WalletTransactionsSearch;

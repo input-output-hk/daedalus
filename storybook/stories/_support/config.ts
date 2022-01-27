@@ -1,14 +1,12 @@
-// @flow
-import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
-import darkBlue from '../../../source/renderer/app/themes/daedalus/dark-blue.js';
-import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.js';
-import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
-import flightCandidate from '../../../source/renderer/app/themes/daedalus/flight-candidate.js';
-import white from '../../../source/renderer/app/themes/daedalus/white.js';
-import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
-import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet.js';
-import shelleyTestnet from '../../../source/renderer/app/themes/daedalus/shelley-testnet.js';
-
+import cardano from '../../../source/renderer/app/themes/daedalus/cardano';
+import darkBlue from '../../../source/renderer/app/themes/daedalus/dark-blue';
+import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue';
+import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano';
+import flightCandidate from '../../../source/renderer/app/themes/daedalus/flight-candidate';
+import white from '../../../source/renderer/app/themes/daedalus/white';
+import yellow from '../../../source/renderer/app/themes/daedalus/yellow';
+import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet';
+import shelleyTestnet from '../../../source/renderer/app/themes/daedalus/shelley-testnet';
 export const themes = {
   Cardano: cardano,
   DarkBlue: darkBlue,
@@ -32,20 +30,17 @@ export const themesIds = {
   IncentivizedTestnet: 'incentivized-testnet',
   ShelleyTestnet: 'shelley-testnet',
 };
-
 export const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
 };
 export const localeNames: Array<any> = Object.keys(locales);
-
 export const operatingSystems = {
   Windows: 'windows',
   Linux: 'linux',
   Mac: 'mac',
 };
 export const osNames: Array<any> = Object.keys(operatingSystems);
-
 // These differences are due to the different menu heights on each OS
 export const osMinWindowHeights = {
   Windows: '641px',
@@ -66,15 +61,12 @@ export const getInitialState = () => {
     getParams('themeName') ||
     sessionStorage.getItem('themeName') ||
     themeNames[0];
-
   const localeName =
     getParams('localeName') ||
     sessionStorage.getItem('localeName') ||
     localeNames[0];
-
   const osName =
     getParams('osName') || sessionStorage.getItem('osName') || osNames[0];
-
   return {
     themeName,
     localeName,

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AppUpdateOverlay from '../../components/appUpdate/AppUpdateOverlay';
@@ -7,7 +6,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class AppUpdateContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { stores, actions } = this.props;
@@ -32,9 +34,7 @@ class AppUpdateContainer extends Component<InjectedProps> {
       closeAppUpdateOverlay,
       postponeUpdate,
     } = actions.appUpdate;
-
     if (!availableUpdate) return null;
-
     return (
       <AppUpdateOverlay
         update={availableUpdate}
@@ -60,4 +60,4 @@ class AppUpdateContainer extends Component<InjectedProps> {
   }
 }
 
-export default AppUpdateContainer
+export default AppUpdateContainer;

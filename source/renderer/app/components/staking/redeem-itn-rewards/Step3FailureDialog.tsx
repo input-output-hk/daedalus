@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -8,7 +7,6 @@ import Dialog from '../../widgets/Dialog';
 import styles from './Step3FailureDialog.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   description1NoRewards: {
     id: 'staking.redeemItnRewards.step3.failure.description1NoRewards',
@@ -40,10 +38,9 @@ const messages = defineMessages({
       'closeWindowLinkLabel for Redeem Incentivized Testnet - Step 3',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onBack: Function,
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
 };
 
 @observer
@@ -55,7 +52,6 @@ class Step3FailureDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, onBack } = this.props;
-
     const actions = {
       direction: 'column',
       items: [
@@ -72,9 +68,7 @@ class Step3FailureDialog extends Component<Props> {
         },
       ],
     };
-
     const description = messages.description1NoRewards;
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -82,7 +76,6 @@ class Step3FailureDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         actions={actions}
@@ -100,4 +93,4 @@ class Step3FailureDialog extends Component<Props> {
   }
 }
 
-export default Step3FailureDialog
+export default Step3FailureDialog;

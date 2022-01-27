@@ -1,4 +1,3 @@
-// @flow
 import React, {
   useRef,
   useState,
@@ -33,34 +32,29 @@ import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 import { getMessages } from './DelegationStepsChooseStakePoolDialog.messages';
 import { OversaturationText } from './OversaturationText';
-
 const messages = getMessages();
-
 type Props = {
-  stepsList: Array<string>,
-  recentStakePools: Array<StakePool>,
-  stakePoolsList: Array<StakePool>,
-  selectedWallet: ?Wallet,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  selectedPool: ?StakePool,
-  onClose: Function,
-  onBack: Function,
-  onSelectPool: Function,
-  intl: intlShape.isRequired,
-  onContinue: Function,
-  oversaturationPercentage: number,
-  onThumbPoolSelect: Function,
+  stepsList: Array<string>;
+  recentStakePools: Array<StakePool>;
+  stakePoolsList: Array<StakePool>;
+  selectedWallet: Wallet | null | undefined;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentTheme: string;
+  selectedPool: StakePool | null | undefined;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onSelectPool: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
+  onContinue: (...args: Array<any>) => any;
+  oversaturationPercentage: number;
+  onThumbPoolSelect: (...args: Array<any>) => any;
 };
-
 type FooterProps = {
-  footerText: string,
+  footerText: string;
 };
-
 const Footer = memo((props: FooterProps) => (
   <div className={styles.retiringPoolFooter}>{props.footerText}</div>
 ));
-
 const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
   const {
     stepsList,
@@ -75,52 +69,48 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     intl,
     oversaturationPercentage,
   } = props;
-
   const [searchValue, setSearchValue] = useState<string>('');
-  const [selectedPool, setSelectedPool] = useState<?StakePool>(preselectedPool);
+  const [selectedPool, setSelectedPool] = useState<
+    StakePool | null | undefined
+  >(preselectedPool);
   const [filteredStakePoolsList, setFilteredStakePoolsList] = useState<
     Array<StakePool>
   >([]);
   const stakePoolsScrollElementRef = useRef();
-
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   });
-
   const handleClearSearch = useCallback(() => {
     setSearchValue('');
   });
-
   const handleSelect = useCallback(
     (value: string) => {
       const _selectedPool = find(
         stakePoolsList,
         (stakePool) => stakePool.id === value
       );
+
       setSelectedPool(_selectedPool);
       props.onThumbPoolSelect(_selectedPool.id);
     },
     [props.onThumbPoolSelect, stakePoolsList]
   );
-
   useEffect(() => {
     if (preselectedPool && preselectedPool.id) handleSelect(preselectedPool.id);
   }, [preselectedPool]);
-
   const onContinue = useCallback(() => {
     props.onContinue(selectedPool);
   }, [props.onContinue, selectedPool]);
-
   const {
     name: selectedWalletName,
     lastDelegatedStakePoolId,
     delegatedStakePoolId,
     pendingDelegations,
   } = selectedWallet || {};
-
   const hasPendingDelegations =
     pendingDelegations && pendingDelegations.length > 0;
   let activeStakePoolId = delegatedStakePoolId;
+
   if (hasPendingDelegations) {
     activeStakePoolId = lastDelegatedStakePoolId;
   }
@@ -128,7 +118,6 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
   const selectedPoolTicker = selectedPool?.ticker;
   const canSubmit =
     !activeStakePoolId || activeStakePoolId !== selectedPool?.id;
-
   const actions = [
     {
       className: 'continueButton',
@@ -138,14 +127,11 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
       disabled: !selectedPool?.id || !canSubmit,
     },
   ];
-
   const dialogClassName = classNames([
     commonStyles.delegationSteps,
     styles.delegationStepsChooseStakePoolDialogWrapper,
   ]);
-
   const contentClassName = classNames([commonStyles.content, styles.content]);
-
   const stepsIndicatorLabel = (
     <FormattedMessage
       {...messages.stepIndicatorLabel}
@@ -155,19 +141,17 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
       }}
     />
   );
-
   useEffect(() => {
     setFilteredStakePoolsList(
       getFilteredStakePoolsList(stakePoolsList, searchValue)
     );
   }, [stakePoolsList, searchValue]);
-
   const numberOfRankedStakePools: number = stakePoolsList.filter(
     (stakePool) => IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
   ).length;
-
   const getSelectionPoolLabel = useCallback(() => {
     let label;
+
     // Label when selected wallet already delegating to selected stake pool
     if (
       selectedPool?.id &&
@@ -222,6 +206,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
         />
       );
     }
+
     return label;
   }, [
     activeStakePoolId,
@@ -232,7 +217,6 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     selectedPoolTicker,
     selectedPool,
   ]);
-
   const footer = useMemo(
     () => (
       <>
@@ -251,7 +235,6 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     ),
     [selectedPool?.retiring, oversaturationPercentage]
   );
-
   return (
     <Dialog
       title={intl.formatMessage(messages.title)}
@@ -355,5 +338,4 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     </Dialog>
   );
 });
-
 export default injectIntl(DelegationStepsChooseStakePoolDialog);

@@ -35,7 +35,6 @@ import type {
 import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
-
 const random = seedrandom('daedalus', {
   global: false,
 });
@@ -108,7 +107,7 @@ export const generateWallet = (
     available: [],
     total: [],
   },
-  reward: string | number = 0,
+  reward: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status: SyncStateStatus = WalletSyncStateStatuses.READY,
@@ -139,17 +138,6 @@ export const generateWallet = (
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
-export const generateRewardForWallet = (
-  wallet: Wallet,
-  unspent: string | number = '0'
-): Reward => ({
-  wallet: wallet.name,
-  total: wallet.reward,
-  unspent: new BigNumber(unspent).dividedBy(LOVELACES_PER_ADA),
-  isRestoring: wallet.isRestoring,
-  syncingProgress: 100,
-  rewardsAddress: 'stake_fake_address',
-});
 export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',

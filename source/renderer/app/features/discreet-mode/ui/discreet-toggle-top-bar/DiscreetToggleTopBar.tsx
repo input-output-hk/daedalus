@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -9,10 +8,9 @@ import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';
 import { DiscreetModeToggleComponent } from '../discreet-toggle/DiscreetModeToggle';
 import type { Intl } from '../../../../types/i18nTypes';
-
 type Props = {
-  intl: Intl,
-  hasTadaIcon?: boolean,
+  intl: Intl;
+  hasTadaIcon?: boolean;
 };
 
 const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
@@ -24,7 +22,6 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
   } = useDiscreetModeFeature();
   const [visible, setVisible] = useState(false);
   const isPopOverVisible = visible || isSettingsTooltipEnabled;
-
   return (
     <div
       className={classnames(styles.root, hasTadaIcon && styles.hasTadaIcon)}
@@ -48,6 +45,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
           isDiscreetMode={isDiscreetMode}
           onToggle={() => {
             toggleDiscreetMode();
+
             if (isSettingsTooltipEnabled) {
               setDiscreetModeSettingsTooltip(false);
             }

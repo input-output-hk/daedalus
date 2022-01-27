@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
@@ -14,7 +13,6 @@ import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import InlineNotification from '../../notifications/InlineNotification';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.completion.dialog.headline',
@@ -68,17 +66,15 @@ const messages = defineMessages({
       '"Paper wallet create certificate completion dialog" finish button label.',
   },
 });
-
 type Props = {
-  walletCertificateAddress: string,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  copyAddressNotificationDuration: number,
-  network: string,
+  walletCertificateAddress: string;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  copyAddressNotificationDuration: number;
+  network: string;
 };
-
 type State = {
-  showCopyNotification: boolean,
+  showCopyNotification: boolean;
 };
 
 @observer
@@ -86,25 +82,25 @@ class CompletionDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     network: DEVELOPMENT,
   };
-
   state = {
     showCopyNotification: false,
   };
-
   copyNotificationTimeout: TimeoutID;
-
   onShowCopyNotification = () => {
     const { copyAddressNotificationDuration } = this.props;
     const timeInSeconds = copyAddressNotificationDuration * 1000;
     clearTimeout(this.copyNotificationTimeout);
-
-    this.setState({ showCopyNotification: true });
+    this.setState({
+      showCopyNotification: true,
+    });
     this.copyNotificationTimeout = setTimeout(
-      () => this.setState({ showCopyNotification: false }),
+      () =>
+        this.setState({
+          showCopyNotification: false,
+        }),
       timeInSeconds
     );
   };
@@ -119,7 +115,6 @@ class CompletionDialog extends Component<Props, State> {
     } = this.props;
     const { showCopyNotification } = this.state;
     const dialogClasses = classnames([styles.component, 'completionDialog']);
-
     const actions = [
       {
         className: 'finishButton',
@@ -131,7 +126,6 @@ class CompletionDialog extends Component<Props, State> {
     const cardanoExplorerLink = `${getNetworkExplorerUrl(
       network
     )}/address/${walletCertificateAddress}`;
-
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(
@@ -143,7 +137,6 @@ class CompletionDialog extends Component<Props, State> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     return (
       <Dialog
         className={dialogClasses}
@@ -208,4 +201,4 @@ class CompletionDialog extends Component<Props, State> {
   }
 }
 
-export default CompletionDialog
+export default CompletionDialog;

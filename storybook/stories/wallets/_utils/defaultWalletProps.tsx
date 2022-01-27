@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import { boolean, number, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
-
 // Screens
 import { defineMessages } from 'react-intl';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
@@ -13,7 +11,6 @@ import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/com
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
-
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
@@ -45,7 +42,6 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Instruction for recovery word on delete wallet dialog',
   },
 });
-
 export const defaultProps = {
   isDialogOpen: () => {},
   creationDate: new Date(),

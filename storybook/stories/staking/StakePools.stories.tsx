@@ -1,10 +1,8 @@
-// @flow
 import React from 'react';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number, boolean, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import {
   CIRCULATING_SUPPLY,
@@ -16,7 +14,6 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
-
 const assets = {
   available: [
     {
@@ -51,7 +48,6 @@ const assets = {
     },
   ],
 };
-
 const dummyWallets = [
   generateWallet('Dummy1', '1000000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
@@ -65,17 +61,14 @@ const dummyWallets = [
   ),
   generateWallet('Dummy3', '2000000000000', assets),
 ];
-
 const maxDelegationFunds = Math.round(
   CIRCULATING_SUPPLY / INITIAL_DESIRED_POOLS_NUMBER
 );
-
 type Props = {
-  currentTheme: string,
-  locale: string,
-  isLoading: boolean,
+  currentTheme: string;
+  locale: string;
+  isLoading: boolean;
 };
-
 export const StakePoolsStory = (props: Props) => {
   const selectedWallet = select(
     'selectedWallet',

@@ -1,10 +1,7 @@
-// @flow
-
 type IsRecommendedDecimal = {
-  decimals: ?number,
-  recommendedDecimals: ?number,
+  decimals: number | null | undefined;
+  recommendedDecimals: number | null | undefined;
 };
-
 export const isRecommendedDecimal = ({
   recommendedDecimals,
   decimals,

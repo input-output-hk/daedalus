@@ -1,19 +1,16 @@
-// @flow
 import { omit } from 'lodash';
 import { ALLOWED_EXTERNAL_HOSTNAMES } from '../../config/urlsConfig';
-
 export type HttpOptions = {
-  hostname: string,
-  method: string,
-  path?: string,
-  port?: number,
-  protocol?: string,
+  hostname: string;
+  method: string;
+  path?: string;
+  port?: number;
+  protocol?: string;
   headers?: {
-    'Content-Type': string,
-    'Content-Length': number,
-  },
+    'Content-Type': string;
+    'Content-Length': number;
+  };
 };
-
 export const externalRequest = (
   httpOptions: HttpOptions,
   raw: boolean = false
@@ -27,7 +24,6 @@ export const externalRequest = (
     const options = omit(httpOptions, 'protocol');
     const requestMethod = global[protocol].request;
     const request = requestMethod(options);
-
     request.on('response', (response) => {
       response.setEncoding('utf8');
       let body = '';

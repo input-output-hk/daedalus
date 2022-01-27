@@ -1,13 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
 import WalletSettingsActionConfirmationDialog from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { WalletSettingRemoveMessages } from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
-
 type Props = InjectedProps;
-
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
@@ -43,7 +40,10 @@ const messages: WalletSettingRemoveMessages = defineMessages({
 @inject('actions', 'stores')
 @observer
 class DeleteWalletDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -55,13 +55,11 @@ class DeleteWalletDialogContainer extends Component<Props> {
     const {
       environment: { isTest },
     } = app;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error(
         'Active wallet required for DeleteWalletDialogContainer.'
       );
-
     return (
       <WalletSettingsActionConfirmationDialog
         isTest={isTest}
@@ -72,7 +70,9 @@ class DeleteWalletDialogContainer extends Component<Props> {
         messages={messages}
         onAcceptBackupNotice={() =>
           updateDataForActiveDialog.trigger({
-            data: { isBackupNoticeAccepted: true },
+            data: {
+              isBackupNoticeAccepted: true,
+            },
           })
         }
         onContinue={() => {
@@ -88,7 +88,9 @@ class DeleteWalletDialogContainer extends Component<Props> {
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={(confirmationValue) =>
           updateDataForActiveDialog.trigger({
-            data: { confirmationValue },
+            data: {
+              confirmationValue,
+            },
           })
         }
         isSubmitting={isDeleting}
@@ -97,4 +99,4 @@ class DeleteWalletDialogContainer extends Component<Props> {
   }
 }
 
-export default DeleteWalletDialogContainer
+export default DeleteWalletDialogContainer;

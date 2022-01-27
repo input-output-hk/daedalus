@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -6,7 +5,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import styles from './StakingCountdown.scss';
 import ButtonLink from '../../widgets/ButtonLink';
-
 const messages = defineMessages({
   heading: {
     id: 'staking.delegationCountdown.heading',
@@ -30,11 +28,10 @@ const messages = defineMessages({
     description: 'Button Label for the Decentralisation notification.',
   },
 });
-
 type Props = {
-  redirectToStakingInfo?: Function,
-  startDateTime: string,
-  onLearnMoreClick: Function,
+  redirectToStakingInfo?: (...args: Array<any>) => any;
+  startDateTime: string;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -82,4 +79,4 @@ class StakingCountdown extends Component<Props> {
   }
 }
 
-export default StakingCountdown
+export default StakingCountdown;

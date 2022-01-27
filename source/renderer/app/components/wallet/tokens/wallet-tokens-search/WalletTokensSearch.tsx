@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';
@@ -8,7 +7,6 @@ import { observer } from 'mobx-react';
 import styles from './WalletTokensSearch.scss';
 import searchIcon from '../../../../assets/images/search.inline.svg';
 import crossIcon from '../../../../assets/images/close-cross.inline.svg';
-
 const messages = defineMessages({
   placeholder: {
     id: 'wallet.tokens.search.placeholder',
@@ -16,11 +14,10 @@ const messages = defineMessages({
     description: 'Search placeholder for the Wallet Tokens search',
   },
 });
-
 type Props = {
-  intl: intlShape.isRequired,
-  onSearch: (term: string) => string,
-  searchValue: string,
+  intl: intlShape.isRequired;
+  onSearch: (term: string) => string;
+  searchValue: string;
 };
 
 const WalletTokensSearch = (props: Props) => {

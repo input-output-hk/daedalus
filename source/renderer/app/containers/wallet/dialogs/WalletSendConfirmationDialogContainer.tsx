@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type BigNumber from 'bignumber.js';
@@ -11,43 +10,45 @@ import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { AssetToken } from '../../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
 import { IS_DAPP_ENABLED } from '../../../config/walletsConfig';
-
 type Props = {
-  stores: any | StoresMap,
-  actions: any | ActionsMap,
-  amount: string,
-  receiver: string,
-  selectedAssets: Array<AssetToken>,
-  assetsAmounts: Array<string>,
-  totalAmount: BigNumber,
-  transactionFee: ?string,
-  amountToNaturalUnits: (amountWithFractions: string) => string,
-  onExternalLinkClick: Function,
-  hwDeviceStatus: HwDeviceStatus,
-  isHardwareWallet: boolean,
-  formattedTotalAmount: string,
+  stores: any | StoresMap;
+  actions: any | ActionsMap;
+  amount: string;
+  receiver: string;
+  selectedAssets: Array<AssetToken>;
+  assetsAmounts: Array<string>;
+  totalAmount: BigNumber;
+  transactionFee: string | null | undefined;
+  amountToNaturalUnits: (amountWithFractions: string) => string;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  hwDeviceStatus: HwDeviceStatus;
+  isHardwareWallet: boolean;
+  formattedTotalAmount: string;
 };
 
 @inject('actions', 'stores')
 @observer
 class WalletSendConfirmationDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleWalletSendFormSubmit = (values: Object) => {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
+  handleWalletSendFormSubmit = (values: Record<string, any>) => {
     if (values.isHardwareWallet) {
       this.props.actions.hardwareWallets.sendMoney.trigger({});
     } else {
       this.props.actions.wallets.sendMoney.trigger(values);
     }
   };
-
   handleInitiateTransaction = () => {
     const { stores } = this.props;
     const { wallets, hardwareWallets } = stores;
     const { active: activeWallet } = wallets;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
-    hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
+    hardwareWallets.initiateTransaction({
+      walletId: activeWallet.id,
+    });
   };
 
   render() {
@@ -66,7 +67,6 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
       formattedTotalAmount,
       stores,
     } = this.props;
-
     const {
       assets: assetsStore,
       wallets: { sendMoneyRequest, active: activeWallet },
@@ -77,24 +77,18 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
         checkIsTrezorByWalletId,
       },
     } = stores;
-
     const { getAsset } = assetsStore;
     const { isFlight } = global;
-
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
-
     const isSubmitting =
       (!isHardwareWallet && sendMoneyRequest.isExecuting) ||
       (isHardwareWallet &&
         (sendMoneyExternalRequest.isExecuting || isTransactionPending));
-
     const error = isHardwareWallet
       ? sendMoneyExternalRequest.error
       : sendMoneyRequest.error;
-
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
-
     const walletTokens = activeWallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const { onCopyAssetParam } = actions.assets;
@@ -138,7 +132,9 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
             onCancel={() => {
               actions.dialogs.closeActiveDialog.trigger();
               sendMoneyRequest.reset();
-              resetHardwareWalletTransaction({ cancelDeviceAction: true });
+              resetHardwareWalletTransaction({
+                cancelDeviceAction: true,
+              });
             }}
             error={error}
             onExternalLinkClick={onExternalLinkClick}
@@ -164,7 +160,9 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
             onCancel={() => {
               actions.dialogs.closeActiveDialog.trigger();
               sendMoneyRequest.reset();
-              resetHardwareWalletTransaction({ cancelDeviceAction: true });
+              resetHardwareWalletTransaction({
+                cancelDeviceAction: true,
+              });
             }}
             error={error}
             onExternalLinkClick={onExternalLinkClick}
@@ -180,4 +178,4 @@ class WalletSendConfirmationDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletSendConfirmationDialogContainer
+export default WalletSendConfirmationDialogContainer;

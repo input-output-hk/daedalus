@@ -1,7 +1,5 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import { discreetWalletAmount } from './discreetWalletAmount';
-
 describe('discreetWalletAmount replacer', () => {
   it('should replace the given amount with the sensitive data symbol', () => {
     const amount = new BigNumber(1);
@@ -13,7 +11,6 @@ describe('discreetWalletAmount replacer', () => {
       })(true, discreetSymbol)
     ).toEqual(discreetSymbol);
   });
-
   it('should replace the amount and show the currency symbol', () => {
     const amount = new BigNumber(1);
     const discreetSymbol = '***';
@@ -25,7 +22,6 @@ describe('discreetWalletAmount replacer', () => {
       })(true, discreetSymbol)
     ).toEqual(`${discreetSymbol} ${currency}`);
   });
-
   it('should show the amount with currency', () => {
     const discreetSymbol = '***';
     const amount = new BigNumber(1);
@@ -37,7 +33,6 @@ describe('discreetWalletAmount replacer', () => {
       })(false, discreetSymbol)
     ).toEqual(`1.000000 ${currency}`);
   });
-
   it('should show the amount in short format', () => {
     const discreetSymbol = '***';
     const amount = new BigNumber(1);

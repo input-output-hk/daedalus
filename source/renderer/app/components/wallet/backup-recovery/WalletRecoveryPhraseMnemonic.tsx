@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './WalletRecoveryPhraseMnemonic.scss';
-
 type Props = {
-  phrase: string,
+  phrase: string;
 };
 
 @observer
@@ -15,4 +13,4 @@ class WalletRecoveryPhraseMnemonic extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseMnemonic
+export default WalletRecoveryPhraseMnemonic;

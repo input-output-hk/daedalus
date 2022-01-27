@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import About from '../../components/static/About';
 import styles from './AboutDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -24,7 +22,6 @@ class AboutDialog extends Component<Props> {
     const { actions } = this.props;
     const { closeAboutDialog } = actions.app;
     const { apiVersion, nodeVersion, build, os, version } = environment;
-
     return (
       <ReactModal
         isOpen
@@ -48,4 +45,4 @@ class AboutDialog extends Component<Props> {
   }
 }
 
-export default AboutDialog
+export default AboutDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { injectIntl } from 'react-intl';
@@ -7,10 +6,9 @@ import { VOTING_REWARD } from '../../../config/votingConfig';
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './Headline.scss';
 import { messages } from './Headline.messages';
-
 type Props = {
-  onExternalLinkClick: Function,
-  intl: Intl,
+  onExternalLinkClick: (...args: Array<any>) => any;
+  intl: Intl;
 };
 
 function Headline({ onExternalLinkClick, intl }: Props) {

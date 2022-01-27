@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -6,7 +5,6 @@ import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';
-
 const messages = defineMessages({
   learnMoreLinkUrl: {
     id: 'staking.rewards.learnMore.linkUrl',
@@ -14,7 +12,6 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the staking rewards page',
   },
 });
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -23,16 +20,16 @@ class StakingRewardsPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  static defaultProps = { actions: null, stores: null };
-
-  handleLearnMoreClick = (event: SyntheticEvent<HTMLButtonElement>) => {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
+  handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
-
   onOpenExternalLink = (rewardsAddress: string) => {
     const { app } = this.props.stores;
     const {
@@ -43,10 +40,11 @@ class StakingRewardsPage extends Component<Props> {
     )}/address/${rewardsAddress}`;
     this.props.stores.app.openExternalLink(cardanoExplorerLink);
   };
-
   handleCopyAddress = (copiedAddress: string) => {
     const address = ellipsis(copiedAddress, 15, 15);
-    this.props.actions.wallets.copyAddress.trigger({ address });
+    this.props.actions.wallets.copyAddress.trigger({
+      address,
+    });
   };
 
   render() {
@@ -55,7 +53,6 @@ class StakingRewardsPage extends Component<Props> {
       wallets,
     } = this.props.stores;
     const { requestCSVFile } = this.props.actions.staking;
-
     return (
       <StakingRewards
         rewards={rewards}
@@ -70,4 +67,4 @@ class StakingRewardsPage extends Component<Props> {
   }
 }
 
-export default StakingRewardsPage
+export default StakingRewardsPage;

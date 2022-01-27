@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -14,7 +13,6 @@ import themeShelleyTestnetPreview from '../../../assets/images/themes/shelley-te
 import themeYellowPreview from '../../../assets/images/themes/yellow.png';
 import themeWhitePreview from '../../../assets/images/themes/white.png';
 import { THEMES } from '../../../themes/index';
-
 const messages = defineMessages({
   themeLabel: {
     id: 'settings.display.themeLabel',
@@ -72,10 +70,9 @@ const messages = defineMessages({
     description: 'Name of the "White" theme on the display settings page.',
   },
 });
-
 type Props = {
-  theme: string,
-  selectTheme: Function,
+  theme: string;
+  selectTheme: (...args: Array<any>) => any;
 };
 
 @observer
@@ -89,52 +86,42 @@ class DisplaySettings extends Component<Props> {
     const { intl } = this.context;
     const { isFlight, environment } = global;
     const { isDev } = environment;
-
     const themeIncentivizedTestnetClasses = classnames([
       theme === THEMES.INCENTIVIZED_TESTNET ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeLightBlueClasses = classnames([
       theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeCardanoClasses = classnames([
       theme === THEMES.CARDANO ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeDarkBlueClasses = classnames([
       theme === THEMES.DARK_BLUE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeDarkCardanoClasses = classnames([
       theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeFlightCandidateClasses = classnames([
       theme === THEMES.FLIGHT_CANDIDATE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeShelleyTestnetClasses = classnames([
       theme === THEMES.SHELLEY_TESTNET ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeYellowClasses = classnames([
       theme === THEMES.YELLOW ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     const themeWhiteClasses = classnames([
       theme === THEMES.WHITE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.label}>
@@ -144,7 +131,9 @@ class DisplaySettings extends Component<Props> {
         <div className={styles.themesRowWrapper}>
           <button
             className={themeLightBlueClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.LIGHT_BLUE,
+            })}
           >
             <img
               src={themeLightBluePreview}
@@ -156,7 +145,9 @@ class DisplaySettings extends Component<Props> {
 
           <button
             className={themeCardanoClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.CARDANO,
+            })}
           >
             <img
               src={themeCardanoPreview}
@@ -168,7 +159,9 @@ class DisplaySettings extends Component<Props> {
 
           <button
             className={themeWhiteClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.WHITE,
+            })}
           >
             <img
               src={themeWhitePreview}
@@ -182,7 +175,9 @@ class DisplaySettings extends Component<Props> {
         <div className={styles.themesRowWrapper}>
           <button
             className={themeDarkBlueClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.DARK_BLUE,
+            })}
           >
             <img
               src={themeDarkBluePreview}
@@ -194,7 +189,9 @@ class DisplaySettings extends Component<Props> {
 
           <button
             className={themeDarkCardanoClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.DARK_CARDANO })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.DARK_CARDANO,
+            })}
           >
             <img
               src={themeDarkCardanoPreview}
@@ -206,7 +203,9 @@ class DisplaySettings extends Component<Props> {
 
           <button
             className={themeYellowClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
+            onClick={selectTheme.bind(this, {
+              theme: THEMES.YELLOW,
+            })}
           >
             <img
               src={themeYellowPreview}
@@ -273,4 +272,4 @@ class DisplaySettings extends Component<Props> {
   }
 }
 
-export default DisplaySettings
+export default DisplaySettings;

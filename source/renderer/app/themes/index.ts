@@ -1,4 +1,3 @@
-// @flow
 export const THEMES = {
   CARDANO: 'cardano',
   DARK_BLUE: 'dark-blue',

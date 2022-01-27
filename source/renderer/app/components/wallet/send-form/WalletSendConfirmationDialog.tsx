@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -24,47 +23,39 @@ import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 import type { AssetToken } from '../../../api/assets/types';
 import globalMessages from '../../../i18n/global-messages';
-
 type Props = {
-  amount: string,
-  receiver: string,
-  wallet: Wallet,
-  totalAmount: BigNumber,
-  allAvailableTokens?: Array<AssetToken>,
-  transactionFee: ?string,
-  onSubmit: Function,
-  amountToNaturalUnits: (amountWithFractions: string) => string,
-  onCancel: Function,
-  isSubmitting: boolean,
-  isFlight: boolean,
-  error: ?LocalizableError,
-  hwDeviceStatus: HwDeviceStatus,
-  isHardwareWallet: boolean,
-  onInitiateTransaction: Function,
-  onExternalLinkClick: Function,
-  isTrezor: boolean,
-  formattedTotalAmount: string,
+  amount: string;
+  receiver: string;
+  wallet: Wallet;
+  totalAmount: BigNumber;
+  allAvailableTokens?: Array<AssetToken>;
+  transactionFee: string | null | undefined;
+  onSubmit: (...args: Array<any>) => any;
+  amountToNaturalUnits: (amountWithFractions: string) => string;
+  onCancel: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  isFlight: boolean;
+  error: LocalizableError | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  isHardwareWallet: boolean;
+  onInitiateTransaction: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  isTrezor: boolean;
+  formattedTotalAmount: string;
 };
-
 type State = {
-  areTermsAccepted: boolean,
+  areTermsAccepted: boolean;
 };
-
 const messages = getMessages();
 
 @observer
-class WalletSendConfirmationDialog extends Component<
-  Props,
-  State
-> {
+class WalletSendConfirmationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     areTermsAccepted: false,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -78,12 +69,14 @@ class WalletSendConfirmationDialog extends Component<
           validators: [
             ({ field }) => {
               if (this.props.isHardwareWallet) return [true];
+
               if (field.value === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -97,14 +90,15 @@ class WalletSendConfirmationDialog extends Component<
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -126,14 +120,12 @@ class WalletSendConfirmationDialog extends Component<
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
-
   renderConfirmationElement = (
     isHardwareWallet: boolean
-  ): ?React$Element<*> => {
+  ): React.ReactElement<React.ComponentProps<any>, any> | null | undefined => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
@@ -167,12 +159,15 @@ class WalletSendConfirmationDialog extends Component<
         />
       );
     }
+
     return null;
   };
-
   onCheckboxClick = (areTermsAccepted: boolean) => {
     const { isHardwareWallet, onInitiateTransaction } = this.props;
-    this.setState({ areTermsAccepted });
+    this.setState({
+      areTermsAccepted,
+    });
+
     if (isHardwareWallet) {
       onInitiateTransaction();
     }
@@ -200,13 +195,11 @@ class WalletSendConfirmationDialog extends Component<
       formattedTotalAmount,
       totalAmount,
     } = this.props;
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.sendButtonLabel)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: intl.formatMessage(messages.backButtonLabel),
@@ -225,8 +218,8 @@ class WalletSendConfirmationDialog extends Component<
           (!areTermsAccepted && isFlight),
       },
     ];
-
     let errorElement = null;
+
     if (error) {
       const errorHasLink = !!error.values.linkLabel;
       errorElement = errorHasLink ? (
@@ -320,4 +313,4 @@ class WalletSendConfirmationDialog extends Component<
   }
 }
 
-export default WalletSendConfirmationDialog
+export default WalletSendConfirmationDialog;

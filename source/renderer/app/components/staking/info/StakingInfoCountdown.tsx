@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -7,7 +6,6 @@ import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfoCountdown.scss';
 import FullyDecentralizedEffect from '../../widgets/FullyDecentralizedEffect';
 import CountdownWidget from '../../widgets/CountdownWidget';
-
 const messages = defineMessages({
   heading: {
     id: 'staking.infoCountdown.heading',
@@ -43,13 +41,12 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the "Staking Info" screen.',
   },
 });
-
 type Props = {
-  startDateTime: string,
-  isAlonzoActivated: boolean,
-  stakingInfoWasOpen: boolean,
-  onSetStakingInfoWasOpen: Function,
-  onLearnMoreClick: Function,
+  startDateTime: string;
+  isAlonzoActivated: boolean;
+  stakingInfoWasOpen: boolean;
+  onSetStakingInfoWasOpen: (...args: Array<any>) => any;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -57,7 +54,6 @@ class StakingInfoCountdown extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -76,6 +72,7 @@ class StakingInfoCountdown extends Component<Props> {
       isAlonzoActivated,
       stakingInfoWasOpen,
     } = this.props;
+
     if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
     }
@@ -123,4 +120,4 @@ class StakingInfoCountdown extends Component<Props> {
   }
 }
 
-export default StakingInfoCountdown
+export default StakingInfoCountdown;

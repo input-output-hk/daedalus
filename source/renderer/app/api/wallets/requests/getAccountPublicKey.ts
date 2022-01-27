@@ -1,8 +1,6 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
 import type { GetAccountPublicKeyRequest } from '../types';
-
 export const getAccountPublicKey = (
   config: RequestConfig,
   { walletId, index, passphrase, extended }: GetAccountPublicKeyRequest
@@ -14,5 +12,8 @@ export const getAccountPublicKey = (
       ...config,
     },
     {},
-    { passphrase, format: extended ? 'extended' : 'non_extended' }
+    {
+      passphrase,
+      format: extended ? 'extended' : 'non_extended',
+    }
   );

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { number, withKnobs, radios, boolean } from '@storybook/addon-knobs';
@@ -7,7 +6,6 @@ import StoryDecorator from '../_support/StoryDecorator';
 import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/AppUpdateOverlay';
 import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
-
 storiesOf('News|Overlays', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
@@ -21,7 +19,6 @@ storiesOf('News|Overlays', module)
       },
       'downloading'
     );
-
     let isUpdateDownloaded = boolean('isUpdateDownloaded', true);
     let isAutomaticUpdateFailed = false;
     let isLinux = boolean('isLinux', false);
@@ -55,17 +52,14 @@ storiesOf('News|Overlays', module)
             step: 1,
           })
         : 0;
-
     const timeLeftNumber = parseInt(
       rangeMap(downloadProgress, 0, 100, 30, 1),
       10
     );
-
     const downloadTimeLeft = {
       'EN-US': `${timeLeftNumber} minutes`,
       'JP-JP': `${timeLeftNumber}分`,
     };
-
     return (
       <AppUpdateOverlay
         update={update[locale]}

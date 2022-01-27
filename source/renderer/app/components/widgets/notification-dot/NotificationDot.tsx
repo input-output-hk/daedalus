@@ -1,14 +1,12 @@
-// @flow
 import React from 'react';
 import classNames from 'classnames';
 import type { Node } from 'react';
 import styles from './NotificationDot.scss';
-
 type Props = {
-  children: Node,
-  className?: string,
-  enabled: boolean,
-  dotClassName?: string,
+  children: Node;
+  className?: string;
+  enabled: boolean;
+  dotClassName?: string;
 };
 
 const NotificationDot = ({

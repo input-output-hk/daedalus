@@ -1,4 +1,3 @@
-// @flow
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
@@ -14,13 +13,11 @@ import fontRegularEn from '../../common/assets/pdf/NotoSans-Regular.ttf';
 import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
 import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
 import fontMono from '../../common/assets/pdf/NotoSansMono-Regular.ttf';
-
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   GenerateAddressPDFRendererRequest,
   GenerateAddressPDFMainResponse
 > = new MainIpcChannel(GENERATE_ADDRESS_PDF_CHANNEL);
-
 export const handleAddressPDFRequests = () => {
   generateAddressPDFChannel.onReceive(
     (request: GenerateAddressPDFRendererRequest) =>
@@ -41,6 +38,7 @@ export const handleAddressPDFRequests = () => {
         } = request;
 
         const readAssetSync = (p) => fs.readFileSync(path.join(__dirname, p));
+
         let fontRegular;
         let fontMedium;
 
@@ -65,8 +63,8 @@ export const handleAddressPDFRequests = () => {
           const fontBufferRegular = readAssetSync(fontRegular);
           const fontBufferMono = readAssetSync(fontMono);
           const fontBufferUnicode = readAssetSync(fontUnicode);
-
           let noteHeight = 0;
+
           if (note) {
             noteHeight = getHeightOfString(note, fontBufferRegular, 14) + 30;
           }
@@ -88,13 +86,11 @@ export const handleAddressPDFRequests = () => {
               Author: author,
             },
           }).fillColor(textColor);
-
           // Title
           doc.font(fontBufferMedium).fontSize(18).text(title.toUpperCase(), {
             align: 'center',
             characterSpacing: 2,
           });
-
           // Creation date
           doc
             .font(fontBufferRegular)
@@ -103,17 +99,13 @@ export const handleAddressPDFRequests = () => {
               align: 'center',
               characterSpacing: 0.6,
             });
-
           doc.moveDown();
-
           // QR Code
           doc.image(qrCodeImage, {
             fit: [width - 60, 192],
             align: 'center',
           });
-
           doc.moveDown();
-
           // Address
           doc.font(fontBufferMono).fontSize(9).text(address, {
             align: 'center',
@@ -123,7 +115,6 @@ export const handleAddressPDFRequests = () => {
             doc.moveDown();
             // Note title
             doc.font(fontBufferRegular).fontSize(12).text(noteLabel);
-
             // Note
             doc.font(fontBufferUnicode).fontSize(12).text(note);
           }

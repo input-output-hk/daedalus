@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -8,7 +7,6 @@ import Dialog from '../../widgets/Dialog';
 import styles from './NoWalletsDialog.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   description: {
     id: 'staking.redeemItnRewards.noWallets.description',
@@ -23,10 +21,9 @@ const messages = defineMessages({
       'addWalletButtonLabel for Redeem Incentivized Testnet - Step 3',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onAddWallet: Function,
+  onClose: (...args: Array<any>) => any;
+  onAddWallet: (...args: Array<any>) => any;
 };
 
 @observer
@@ -38,7 +35,6 @@ class NoWalletsDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, onAddWallet } = this.props;
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -46,7 +42,6 @@ class NoWalletsDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         actions={[
@@ -72,4 +67,4 @@ class NoWalletsDialog extends Component<Props> {
   }
 }
 
-export default NoWalletsDialog
+export default NoWalletsDialog;

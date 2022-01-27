@@ -1,16 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
 import styles from './AddressRandom.scss';
 import WalletAddress from '../../../domains/WalletAddress';
-
 type Props = {
-  address: WalletAddress,
-  index: number,
-  onCopyAddress: Function,
-  onShareAddress: Function,
+  address: WalletAddress;
+  index: number;
+  onCopyAddress: (...args: Array<any>) => any;
+  onShareAddress: (...args: Array<any>) => any;
 };
 
 @observer
@@ -38,4 +36,4 @@ class AddressRandom extends Component<Props> {
   }
 }
 
-export default AddressRandom
+export default AddressRandom;

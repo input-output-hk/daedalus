@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './StakingChartTooltipItem.scss';
-
 type Props = {
-  value: string,
-  label: string,
+  value: string;
+  label: string;
 };
 
 @observer
@@ -20,4 +18,4 @@ class StakingChartTooltipItem extends Component<Props> {
   }
 }
 
-export default StakingChartTooltipItem
+export default StakingChartTooltipItem;

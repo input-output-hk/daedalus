@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -11,7 +10,6 @@ import News from '../../domains/News';
 import NewsItem from './NewsItem';
 import UpdateItem from './UpdateItem';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-
 const messages = defineMessages({
   newsFeedEmpty: {
     id: 'news.newsfeed.empty',
@@ -29,28 +27,25 @@ const messages = defineMessages({
     description: 'Newsfeed',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onOpenAlert?: Function,
-  news?: News.NewsCollection,
-  isNewsFeedOpen: boolean,
-  onMarkNewsAsRead: Function,
-  openWithoutTransition?: boolean,
-  isLoadingNews: boolean,
-  currentDateFormat: string,
-  onOpenExternalLink: Function,
-  onProceedNewsAction: Function,
-  onOpenAppUpdate: Function,
-  updateDownloadProgress?: number,
-  displayAppUpdateNewsItem?: boolean,
-  isUpdatePostponed: boolean,
+  onClose: (...args: Array<any>) => any;
+  onOpenAlert?: (...args: Array<any>) => any;
+  news?: News.NewsCollection;
+  isNewsFeedOpen: boolean;
+  onMarkNewsAsRead: (...args: Array<any>) => any;
+  openWithoutTransition?: boolean;
+  isLoadingNews: boolean;
+  currentDateFormat: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onProceedNewsAction: (...args: Array<any>) => any;
+  onOpenAppUpdate: (...args: Array<any>) => any;
+  updateDownloadProgress?: number;
+  displayAppUpdateNewsItem?: boolean;
+  isUpdatePostponed: boolean;
 };
-
 type State = {
-  hasShadow: boolean,
+  hasShadow: boolean;
 };
-
 const SCROLLABLE_DOM_ELEMENT_SELECTOR = '.NewsFeed_newsFeedList';
 
 @observer
@@ -59,16 +54,13 @@ class NewsFeed extends Component<Props, State> {
     onClose: null,
     openWithoutTransition: false,
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     hasShadow: false,
   };
-
-  scrollableDomElement: ?HTMLElement = null;
+  scrollableDomElement: HTMLElement | null | undefined = null;
   newsFeedRef = React.createRef<HTMLElement>();
   newsFeedOpenedAt: number;
 
@@ -89,6 +81,7 @@ class NewsFeed extends Component<Props, State> {
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleWindowClick);
+
     if (this.scrollableDomElement) {
       this.scrollableDomElement.removeEventListener(
         'scroll',
@@ -101,6 +94,7 @@ class NewsFeed extends Component<Props, State> {
     const newsFeedElement = this.newsFeedRef.current;
     const clickedElement = event.target;
     const { isNewsFeedOpen } = this.props;
+
     // Detect clicks outside of the newsfeed container
     if (
       isNewsFeedOpen &&
@@ -111,18 +105,19 @@ class NewsFeed extends Component<Props, State> {
       // This is necessary otherwise the UI click on the newsfeed bell icon
       // would immediately close the newsfeed again
       const msSinceNewsFeedOpened = Date.now() - this.newsFeedOpenedAt;
+
       if (msSinceNewsFeedOpened > 100) {
         this.props.onClose();
       }
     }
   };
-
   handleOnScroll = () => {
     const { hasShadow: currentHasShadow } = this.state;
 
     if (this.scrollableDomElement) {
       const { scrollTop } = this.scrollableDomElement;
       const hasShadow = scrollTop > 0.5;
+
       if (currentHasShadow !== hasShadow) {
         this.setState({
           hasShadow,
@@ -150,40 +145,33 @@ class NewsFeed extends Component<Props, State> {
       displayAppUpdateNewsItem,
     } = this.props;
     const { hasShadow } = this.state;
-
     const items = get(news, 'all', []);
     const update = get(news, 'update');
     const totalUnreadNewsItems = get(items, 'unread', []).length;
     const hasUpdateItem = displayAppUpdateNewsItem && update;
-
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,
       openWithoutTransition ? styles.noTransition : null,
     ]);
-
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
       hasShadow && !hasUpdateItem ? styles.hasShadow : null,
     ]);
-
     const newsFeedContainerStyles = classNames([
       styles.newsFeedContainer,
       !hasUpdateItem ? styles.noUpdateItem : null,
       hasShadow ? styles.hasShadow : null,
     ]);
-
     const newsFeedListStyles = classNames([
       styles.newsFeedList,
       hasUpdateItem ? styles.hasUpdate : null,
       hasShadow ? styles.hasShadow : null,
     ]);
-
     const newsFeedUpdateStyles = classNames([
       styles.updateItem,
       hasShadow ? styles.hasShadow : null,
     ]);
-
     return (
       <div className={componentClasses} ref={this.newsFeedRef}>
         <div className={newsFeedHeaderStyles}>
@@ -257,4 +245,4 @@ class NewsFeed extends Component<Props, State> {
   }
 }
 
-export default NewsFeed
+export default NewsFeed;

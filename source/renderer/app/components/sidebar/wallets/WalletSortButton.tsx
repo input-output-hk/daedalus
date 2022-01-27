@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -8,15 +7,13 @@ import type { WalletSortOrderOptions } from '../../../types/sidebarTypes';
 import { WalletSortOrder } from '../../../types/sidebarTypes';
 import arrow from '../../../assets/images/sort-arrow.inline.svg';
 import styles from './WalletSortButton.scss';
-
 type Props = {
-  onClick: () => void,
-  label: string,
-  isActive: boolean,
-  sortOrder: WalletSortOrderOptions,
-  tooltip: string,
+  onClick: () => void;
+  label: string;
+  isActive: boolean;
+  sortOrder: WalletSortOrderOptions;
+  tooltip: string;
 };
-
 export function WalletSortButton({
   onClick,
   label,
@@ -28,12 +25,10 @@ export function WalletSortButton({
     styles.walletSortButton,
     isActive ? styles.walletSortButtonActive : null,
   ]);
-
   const walletSortOrderArrowStyles = classNames([
     styles.walletSortOrderArrowContainer,
     sortOrder === WalletSortOrder.Asc ? styles.walletSortOrderArrowAsc : null,
   ]);
-
   return (
     <PopOver content={tooltip}>
       <div className={styles.walletSortButtonContainer}>

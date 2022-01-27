@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -14,7 +13,6 @@ import {
 import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 import globalMessages from '../../../i18n/global-messages';
-
 const messages = defineMessages({
   tableHeaderPool: {
     id: 'staking.epochs.previousEpoch.tableHeader.pool',
@@ -47,26 +45,20 @@ const messages = defineMessages({
     description: '"of" text in table body on staking epochs page',
   },
 });
-
 type Props = {
-  previousEpochData: EpochData,
-  isLoading: boolean,
+  previousEpochData: EpochData;
+  isLoading: boolean;
 };
-
 type State = {
-  previousEpochDataOrder: string,
-  previousEpochDataSortBy: string,
+  previousEpochDataOrder: string;
+  previousEpochDataSortBy: string;
 };
 
 @observer
-class StakingEpochsPreviousEpochData extends Component<
-  Props,
-  State
-> {
+class StakingEpochsPreviousEpochData extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
   };
@@ -88,6 +80,7 @@ class StakingEpochsPreviousEpochData extends Component<
     } else {
       newOrder = 'desc';
     }
+
     this.setState({
       previousEpochDataSortBy: newSortBy,
       previousEpochDataOrder: newOrder,
@@ -123,7 +116,6 @@ class StakingEpochsPreviousEpochData extends Component<
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
           const sharedRewards = get(row, 'sharedRewards', [0, 0]);
-
           return (
             <tr key={key}>
               <td>
@@ -167,7 +159,6 @@ class StakingEpochsPreviousEpochData extends Component<
         })}
       </tbody>
     );
-
     return (
       <StakingEpochsDataTable
         tableHeaders={tableHeaders}
@@ -180,4 +171,4 @@ class StakingEpochsPreviousEpochData extends Component<
   }
 }
 
-export default StakingEpochsPreviousEpochData
+export default StakingEpochsPreviousEpochData;

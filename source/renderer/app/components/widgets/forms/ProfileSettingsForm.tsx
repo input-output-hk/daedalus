@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -17,7 +16,6 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../../../config/profileConfig';
-
 const messages = defineMessages({
   localeSelectLabel: {
     id: 'profile.settings.languageSelect.label',
@@ -45,16 +43,15 @@ const messages = defineMessages({
     description: 'Label for the "Language select" form submit button.',
   },
 });
-
 export type ProfileSettingsFormProps = {
-  currentLocale: string,
-  currentNumberFormat: string,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  onChangeItem: Function,
-  onSubmit?: Function,
-  isSubmitting?: boolean,
-  error?: ?LocalizableError,
+  currentLocale: string;
+  currentNumberFormat: string;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  onChangeItem: (...args: Array<any>) => any;
+  onSubmit?: (...args: Array<any>) => any;
+  isSubmitting?: boolean;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
@@ -62,7 +59,6 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     onChangeItem: () => {},
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -74,7 +70,10 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
       label: context.intl.formatMessage(language.label),
     }));
     const value = props.currentLocale;
-    return { value, options };
+    return {
+      value,
+      options,
+    };
   }
 
   get numberFormat() {
@@ -105,7 +104,7 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   getSelect = (id: string) => {
     const { formatMessage } = this.context.intl;
     const { onChangeItem } = this.props;
-    const { value, options } = (this: any)[id];
+    const { value, options } = (this as any)[id];
     return (
       <Select
         label={formatMessage(messages[`${id}SelectLabel`])}
@@ -142,4 +141,4 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default ProfileSettingsForm
+export default ProfileSettingsForm;

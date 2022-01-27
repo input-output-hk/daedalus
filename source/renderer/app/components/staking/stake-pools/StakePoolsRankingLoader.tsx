@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -15,4 +14,4 @@ class StakePoolsRankingLoader extends Component<any> {
   }
 }
 
-export default StakePoolsRankingLoader
+export default StakePoolsRankingLoader;

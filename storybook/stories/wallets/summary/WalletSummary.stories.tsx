@@ -14,7 +14,6 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
-
 const allAssets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
@@ -199,8 +198,6 @@ storiesOf('Wallets|Summary', module)
       },
       'Currency'
     );
-    const wallet = generateWallet('Wallet name', '45119903750165', assets);
-    const reward = generateRewardForWallet(wallet, '0');
     const [firstAsset] = walletAssets;
     return (
       <WalletSummary

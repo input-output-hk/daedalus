@@ -1,29 +1,23 @@
-// @flow
 import BigNumber from 'bignumber.js';
-
 export type SidebarWalletType = {
-  id: string,
-  title: string,
-  amount: BigNumber,
-  isConnected: boolean,
-  isRestoreActive?: boolean,
-  restoreProgress?: number,
-  isLegacy: boolean,
-  isNotResponding: boolean,
-  hasNotification: boolean,
+  id: string;
+  title: string;
+  amount: BigNumber;
+  isConnected: boolean;
+  isRestoreActive?: boolean;
+  restoreProgress?: number;
+  isLegacy: boolean;
+  isNotResponding: boolean;
+  hasNotification: boolean;
 };
-
 export type WalletSortByOptions = 'DATE' | 'BALANCE' | 'NAME' | 'NONE';
-
 export type WalletSortOrderOptions = 'asc' | 'desc';
-
 export const WalletSortBy: EnumMap<string, WalletSortByOptions> = {
   Date: 'DATE',
   Balance: 'BALANCE',
   Name: 'NAME',
   None: 'NONE',
 };
-
 export const WalletSortOrder: EnumMap<
   string,
   WalletSortOrderOptions
@@ -31,8 +25,7 @@ export const WalletSortOrder: EnumMap<
   Desc: 'desc',
   Asc: 'asc',
 });
-
 export type WalletSortConfig = {
-  sortBy: WalletSortByOptions,
-  sortOrder: WalletSortOrderOptions,
+  sortBy: WalletSortByOptions;
+  sortOrder: WalletSortOrderOptions;
 };

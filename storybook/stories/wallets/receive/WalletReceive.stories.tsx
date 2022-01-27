@@ -1,25 +1,20 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { number, boolean, select } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { generateAddress } from '../../_support/utils';
-
 // Screens
 import WalletReceiveSequential from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveSequential';
 import WalletReceiveRandom from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveRandom';
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
-
 const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
-
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
   .add('Receive - sequential', ({ locale }: { locale: string }) => {

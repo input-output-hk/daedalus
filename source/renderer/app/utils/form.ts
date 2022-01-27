@@ -1,7 +1,5 @@
-// @flow
-
 export const submitOnEnter = (
-  callback: Function,
+  callback: (...args: Array<any>) => any,
   event: KeyboardEvent
 ): void => {
   if (event.target instanceof HTMLInputElement && event.key === 'Enter')

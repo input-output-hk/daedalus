@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
@@ -9,7 +8,6 @@ import { discreetWalletTokenAmount } from '../../features/discreet-mode/replacer
 import styles from './AssetAmount.scss';
 import type { AssetMetadata } from '../../api/assets/types';
 import { useDiscreetModeFeature } from '../../features/discreet-mode';
-
 const messages = defineMessages({
   unformattedAmount: {
     id: 'assets.assetAmount.unformattedAmount',
@@ -17,14 +15,13 @@ const messages = defineMessages({
     description: 'Unformatted amount',
   },
 });
-
 type Props = {
-  amount: BigNumber,
-  metadata?: ?AssetMetadata,
-  decimals: ?number,
-  isLoading?: boolean,
-  className?: string,
-  isShort?: boolean,
+  amount: BigNumber;
+  metadata?: AssetMetadata | null | undefined;
+  decimals: number | null | undefined;
+  isLoading?: boolean;
+  className?: string;
+  isShort?: boolean;
 };
 
 function AssetAmount({
@@ -36,7 +33,6 @@ function AssetAmount({
   isShort,
 }: Props) {
   const discreetModeFeature = useDiscreetModeFeature();
-
   if (isLoading) return '-';
   const componentStyles = classnames([styles.component, className]);
   const content = !isLoading
@@ -49,7 +45,6 @@ function AssetAmount({
         }),
       })
     : '-';
-
   return (
     <div className={componentStyles}>
       {decimals ? (

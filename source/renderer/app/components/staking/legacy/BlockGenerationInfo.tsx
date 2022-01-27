@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './BlockGenerationInfo.scss';
@@ -21,4 +20,4 @@ class BlockGenerationInfo extends Component<any> {
   }
 }
 
-export default BlockGenerationInfo
+export default BlockGenerationInfo;

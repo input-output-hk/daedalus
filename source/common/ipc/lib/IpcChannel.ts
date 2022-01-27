@@ -1,23 +1,19 @@
-// @flow
 import { isString } from 'lodash';
-
 export type IpcSender = {
-  send: (channel: string, ...args: Array<any>) => void,
+  send: (channel: string, ...args: Array<any>) => void;
 };
-
 export type IpcEvent = {
-  sender: IpcSender,
+  sender: IpcSender;
 };
-
 export type IpcReceiver = {
   on: (
     channel: string,
-    (event: IpcEvent, ...args: Array<any>) => Promise<any>
-  ) => void,
+    arg1: (event: IpcEvent, ...args: Array<any>) => Promise<any>
+  ) => void;
   once: (
     channel: string,
-    (event: IpcEvent, isOk: boolean, ...args: Array<any>) => void
-  ) => void,
+    arg1: (event: IpcEvent, isOk: boolean, ...args: Array<any>) => void
+  ) => void;
 };
 
 /**
@@ -32,21 +28,25 @@ export class IpcChannel<Incoming, Outgoing> {
    * Here we track the created instances.
    */
   static _instances = {};
+
   /**
    * The public broadcast channel (any process will receive these messages)
    * @private
    */
   _broadcastChannel: string;
+
   /**
    * The public request channel (any process will receive these messages)
    * @private
    */
   _requestChannel: string;
+
   /**
    * The response channel between a main and render process
    * @private
    */
   _responseChannel: string;
+
   /**
    * Sets up the ipc channel and checks that its name is valid.
    * Ensures that only one instance per channel name can exist.
@@ -55,11 +55,11 @@ export class IpcChannel<Incoming, Outgoing> {
     if (!isString(channelName) || channelName === '') {
       throw new Error(`Invalid channel name ${channelName} provided`);
     }
+
     // Enforce the singleton pattern based on the channel name
     const existingChannel = IpcChannel._instances[channelName];
     if (existingChannel) return existingChannel;
     IpcChannel._instances[channelName] = this;
-
     this._broadcastChannel = `${channelName}-broadcast`;
     this._requestChannel = `${channelName}-request`;
     this._responseChannel = `${channelName}-response`;
@@ -142,7 +142,7 @@ export class IpcChannel<Incoming, Outgoing> {
    * Sets up a permanent handler for receiving request from the other side.
    */
   onRequest(
-    handler: (Incoming) => Promise<Outgoing>,
+    handler: (arg0: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver
   ): void {
     receiver.on(

@@ -36,7 +36,6 @@ import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
-
 export default class StakingStore extends Store {
   @observable
   isDelegationTransactionPending = false;
@@ -88,15 +87,11 @@ export default class StakingStore extends Store {
   cyclesWithoutIncreasingStakePools: number = 0;
   @observable
   stakingInfoWasOpen: boolean = false;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingStakePoolsInterval: IntervalID | null | undefined = null;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   refreshPolling: IntervalID | null | undefined = null;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   delegationCheckTimeInterval: IntervalID | null | undefined = null;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   stakePoolsFetchTrackerInterval: IntervalID | null | undefined = null;
   _delegationFeeCalculationWalletId: string | null | undefined = null;
 
@@ -150,38 +145,31 @@ export default class StakingStore extends Store {
   // REQUESTS
   @observable
   joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.joinStakePool
   );
   @observable
   quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.quitStakePool
   );
   @observable
   stakePoolsRequest: Request<Array<StakePool>> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getStakePools
   );
   @observable
   calculateDelegationFeeRequest: Request<
     DelegationCalculateFeeResponse
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
   > = new Request(this.api.ada.calculateDelegationFee);
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable
   getRedeemItnRewardsFeeRequest: Request<any> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getRedeemItnRewardsFee
   );
   @observable
   requestRedeemItnRewardsRequest: Request<any> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.requestRedeemItnRewards
   );
   @observable
   getSmashSettingsRequest: Request<any> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getSmashSettings
   );
   @observable
@@ -194,7 +182,6 @@ export default class StakingStore extends Store {
   _getSmashSettingsRequest = async () => {
     this.smashServerLoading = true;
     let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     const localSmashServer = await this.api.localStorage.getSmashServer();
 
     // If the server wasn't set, sets it for IOHK
@@ -279,7 +266,6 @@ export default class StakingStore extends Store {
   };
   @action
   _getStakingInfoWasOpen = async () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
@@ -413,7 +399,6 @@ export default class StakingStore extends Store {
   }) => {
     const { transactionId, walletId } = request;
 
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
@@ -481,7 +466,6 @@ export default class StakingStore extends Store {
       fileContent,
       filePath,
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     this.actions.staking.requestCSVFileSuccess.trigger();
   };
   calculateDelegationFee = async (
@@ -520,7 +504,6 @@ export default class StakingStore extends Store {
   // GETTERS
   @computed
   get currentRoute(): string {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     return this.stores.router.location.pathname;
   }
 
@@ -531,7 +514,6 @@ export default class StakingStore extends Store {
 
   @computed
   get maxDelegationFunds(): number {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { desiredPoolNumber } = this.stores.networkStatus;
     return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
   }
@@ -582,7 +564,6 @@ export default class StakingStore extends Store {
 
   @computed
   get rewards(): Array<Reward> {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { wallets } = this.stores;
     return wallets.allWallets.map((w) => this.getRewardForWallet(w));
   }
@@ -604,7 +585,6 @@ export default class StakingStore extends Store {
 
   @action
   showCountdown(): boolean {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { isShelleyPending } = this.stores.networkStatus;
     return isShelleyPending;
   }
@@ -694,7 +674,6 @@ export default class StakingStore extends Store {
   // For testing only
   @action
   _setFakePoller = (forceLoading: boolean) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { stores, environment } = this;
     const { networkStatus, wallets } = stores;
     const { isConnected } = networkStatus;
@@ -737,7 +716,6 @@ export default class StakingStore extends Store {
   // For testing only
   @action
   _setFakedStakePools = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Sta... Remove this comment to see the full error message
     if (this.environment.isDev) {
       if (this.refreshPolling) {
         clearInterval(this.refreshPolling);
@@ -948,6 +926,27 @@ export default class StakingStore extends Store {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.DELEGATION_CENTER,
     });
+  };
+  _transformWalletToReward = (inputWallet: Wallet) => {
+    const {
+      id: walletId,
+      name: wallet,
+      isRestoring,
+      reward: rewards,
+      syncState,
+    } = inputWallet;
+    const { stakeAddresses } = this.stores.addresses;
+    const { withdrawals } = this.stores.transactions;
+    const reward = rewards.plus(withdrawals[walletId]);
+    const rewardsAddress = stakeAddresses[walletId];
+    const syncingProgress = get(syncState, 'progress.quantity', '');
+    return {
+      wallet,
+      reward,
+      isRestoring,
+      syncingProgress,
+      rewardsAddress,
+    };
   };
   getStakePoolById = (stakePoolId: string) =>
     this.stakePools.find(({ id }: StakePool) => id === stakePoolId);

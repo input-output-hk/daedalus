@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
@@ -7,7 +6,6 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import styles from './VotingRegistrationStepsChooseWallet.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
-
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
@@ -64,24 +62,21 @@ const messages = defineMessages({
       'Label for continue button on the voting registration "choose wallet" step.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  numberOfStakePools: number,
-  onSelectWallet: Function,
-  wallets: Array<Wallet>,
-  minVotingRegistrationFunds: number,
-  selectedWalletId: ?string,
-  isWalletAcceptable: Function,
-  getStakePoolById: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  numberOfStakePools: number;
+  onSelectWallet: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  minVotingRegistrationFunds: number;
+  selectedWalletId: string | null | undefined;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
 };
-
 type State = {
-  selectedWalletId: ?string,
+  selectedWalletId: string | null | undefined;
 };
-
 export default class VotingRegistrationStepsChooseWallet extends Component<
   Props,
   State
@@ -89,15 +84,14 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     selectedWalletId: this.props.selectedWalletId,
   };
-
   onWalletChange = (selectedWalletId: string) => {
-    this.setState({ selectedWalletId });
+    this.setState({
+      selectedWalletId,
+    });
   };
-
   onSelectWallet = () => {
     const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
@@ -116,16 +110,13 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
-
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
-
-    const selectedWallet: ?Wallet = wallets.find(
+    const selectedWallet: Wallet | null | undefined = wallets.find(
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
-
     const { amount, reward, isLegacy, isRestoring } = selectedWallet || {};
-
     let errorMessage;
+
     if (
       selectedWallet &&
       !isWalletAcceptable(isLegacy, isRestoring, amount, reward)
@@ -153,12 +144,10 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         />
       </p>
     );
-
     const walletSelectClasses = classNames([
       styles.walletSelect,
       error ? styles.error : null,
     ]);
-
     const actions = [
       {
         label: buttonLabel,
@@ -167,7 +156,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         primary: true,
       },
     ];
-
     return (
       <VotingRegistrationDialog
         onClose={() => {

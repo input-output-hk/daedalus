@@ -1,8 +1,6 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { SignatureParams } from '../types';
 import { request } from '../../utils/request';
-
 export const createWalletSignature = (
   config: RequestConfig,
   { walletId, role, index, data }: SignatureParams
@@ -15,5 +13,7 @@ export const createWalletSignature = (
     },
     {},
     data,
-    { isOctetStreamResponse: true }
+    {
+      isOctetStreamResponse: true,
+    }
   );

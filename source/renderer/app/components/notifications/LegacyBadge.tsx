@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import styles from './LegacyBadge.scss';
-
 const messages = defineMessages({
   label: {
     id: 'wallet.byron.badge.label',
@@ -12,14 +10,12 @@ const messages = defineMessages({
     description: 'Label "Byron" on the legacy badge.',
   },
 });
-
 export const LEGACY_BADGE_MODES = {
   FLOATING: 'floating',
   NATURAL: 'natural',
 };
-
 type Props = {
-  mode: string,
+  mode: string;
 };
 
 @observer
@@ -36,9 +32,8 @@ class LegacyBadge extends Component<Props> {
       styles.component,
       mode === LEGACY_BADGE_MODES.FLOATING ? styles.floating : styles.natural,
     ]);
-
     return <div className={stylesClassName}>{label}</div>;
   }
 }
 
-export default LegacyBadge
+export default LegacyBadge;

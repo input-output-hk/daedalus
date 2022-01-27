@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -16,7 +15,6 @@ import {
 } from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
-
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
@@ -61,12 +59,11 @@ const messages = defineMessages({
       'Label for continue button on the voting registration "enter pin code" step.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  onSetPinCode: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  onSetPinCode: (...args: Array<any>) => any;
 };
 
 @observer
@@ -74,7 +71,6 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -90,7 +86,6 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
               repeatPinCodeField.validate({
                 showErrors: isRepeatPinCodeFieldSet,
               });
-
               return [
                 isValidPinCode(value, VOTING_REGISTRATION_PIN_CODE_LENGTH),
                 this.context.intl.formatMessage(messages.invalidPinCode),
@@ -117,14 +112,15 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -138,16 +134,13 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const { onClose, stepsList, activeStep } = this.props;
-
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
-
     const pinCodeField = form.$('pinCode');
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
-
     const actions = [
       {
         label: buttonLabel,
@@ -156,7 +149,6 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <VotingRegistrationDialog
         onClose={() => {
@@ -170,7 +162,9 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{
+              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+            }}
           />
         </p>
 
@@ -199,4 +193,4 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsEnterPinCode
+export default VotingRegistrationStepsEnterPinCode;

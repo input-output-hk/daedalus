@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,7 +10,6 @@ import paperWalletImage from '../../../assets/images/paper-wallet-certificate/ce
 import globalMessages from '../../../i18n/global-messages';
 import styles from './SecuringPasswordDialog.scss';
 import { PAPER_WALLET_WRITTEN_WORDS_COUNT } from '../../../config/cryptoConfig';
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.securingPassword.dialog.headline',
@@ -42,15 +40,13 @@ const messages = defineMessages({
       '"Paper wallet create certificate securing password dialog" secure password confirmation.',
   },
 });
-
 type State = {
-  securePasswordConfirmed: boolean,
+  securePasswordConfirmed: boolean;
 };
-
 type Props = {
-  additionalMnemonics: string,
-  onContinue: Function,
-  onClose: Function,
+  additionalMnemonics: string;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
 
 @observer
@@ -58,11 +54,9 @@ class SecuringPasswordDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     securePasswordConfirmed: false,
   };
-
   onSecurePasswordConfirmation = () => {
     this.setState((prevState) => ({
       securePasswordConfirmed: !prevState.securePasswordConfirmed,
@@ -73,12 +67,10 @@ class SecuringPasswordDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
-
     const dialogClasses = classnames([
       styles.component,
       'SecuringPasswordDialog',
     ]);
-
     const actions = [
       {
         className: 'continueButton',
@@ -88,7 +80,6 @@ class SecuringPasswordDialog extends Component<Props, State> {
         onClick: onContinue,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -131,4 +122,4 @@ class SecuringPasswordDialog extends Component<Props, State> {
   }
 }
 
-export default SecuringPasswordDialog
+export default SecuringPasswordDialog;

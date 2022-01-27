@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -8,13 +7,11 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import icon from '../../../assets/images/not-responding.inline.svg';
 import styles from './NotResponding.scss';
-
 type Props = {
-  walletName: string,
-  onRestartNode: Function,
-  onOpenExternalLink: Function,
+  walletName: string;
+  onRestartNode: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
-
 const messages = defineMessages({
   title: {
     id: 'wallet.notResponding.title',
@@ -43,7 +40,6 @@ const messages = defineMessages({
     description: 'Submit Support Request Url on the NotResponding dialog',
   },
 });
-
 export default class NotResponding extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -1,4 +1,3 @@
-// @flow
 import classnames from 'classnames';
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
@@ -6,13 +5,12 @@ import { PasswordInput as RPPasswordInput } from 'react-polymorph/lib/components
 import type { PasswordInputProps } from 'react-polymorph/lib/components/PasswordInput';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './PasswordInput.scss';
-
 export type Props = PasswordInputProps;
-
 export class PasswordInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   render() {
     const { intl } = this.context;
     const { className, ...pwInputProps } = this.props;

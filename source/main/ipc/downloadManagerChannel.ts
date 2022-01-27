@@ -1,4 +1,3 @@
-// @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
 import { forEach, omit } from 'lodash';
@@ -26,7 +25,7 @@ import {
   TEMPORARY_FILENAME,
   DOWNLOAD_STATES,
 } from '../../common/config/downloadManagerConfig';
-import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
+import { generateFileNameWithTimestamp } from '../../common/utils/files';
 import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalStorage';
 import type {
   DownloadRendererRequest,
@@ -44,7 +43,6 @@ import type {
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest,
 } from '../../common/ipc/api';
-
 localStorage.setAllPaused();
 
 const requestDownload = async (
@@ -63,10 +61,7 @@ const requestDownload = async (
     : generateFileNameWithTimestamp(TEMPORARY_FILENAME);
   const originalFilename = getOriginalFilename(downloadRequestPayload);
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
-  const options = {
-    ..._options,
-    fileName: temporaryFilename,
-  };
+  const options = { ..._options, fileName: temporaryFilename };
   const downloadId = getIdFromFileName(id || originalFilename);
   const info = {
     downloadId,
@@ -77,13 +72,17 @@ const requestDownload = async (
     originalFilename,
     options,
   };
+
   if (downloads[downloadId]) {
     logger.info(
       `DownloadManager: Preventing download "${downloadId}" duplicity`,
-      { downloadId }
+      {
+        downloadId,
+      }
     );
     return false;
   }
+
   const eventActions = await getEventActions(
     info,
     window,
@@ -94,6 +93,7 @@ const requestDownload = async (
 
   if (resumeDownload) {
     const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
+
     download.__total = downloadSize;
     download.__filePath = `${info.destinationPath}/${info.temporaryFilename}`;
     download.__downloaded = download.__getFilesizeInBytes(download.__filePath);
@@ -101,10 +101,8 @@ const requestDownload = async (
   }
 
   let currentDownloadData = 0;
-
   const progressType =
     options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
-
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
   download.on(progressType, (evt) => {
@@ -121,6 +119,7 @@ const requestDownload = async (
   } else {
     download.start();
   }
+
   return download;
 };
 
@@ -148,11 +147,15 @@ const requestResumeDownload = async (
     destinationDirectoryName,
     options,
   };
+
   // Check if the file to be resumed still exists
   if (fs.existsSync(filePath)) {
     requestDownloadPayload = {
       ...requestDownloadPayload,
-      resumeDownload: { temporaryFilename, originalFilename },
+      resumeDownload: {
+        temporaryFilename,
+        originalFilename,
+      },
     };
   } else {
     // Otherwise:
@@ -165,19 +168,18 @@ const requestResumeDownload = async (
     };
     await localStorage.unset(id);
   }
-  return requestDownload(
-    {
-      ...requestDownloadPayload,
-      override: true,
-    },
-    window
-  );
+
+  return requestDownload({ ...requestDownloadPayload, override: true }, window);
 };
 
 const deleteDownloadedFile = async ({
   id,
-}: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
-  const downloadLocalData = await getDownloadLocalData({ id });
+}: DeleteDownloadedFileRendererRequest): Promise<
+  DeleteDownloadedFileMainResponse
+> => {
+  const downloadLocalData = await getDownloadLocalData({
+    id,
+  });
   if (!downloadLocalData) throw new Error('Download data not found');
   const { destinationPath, originalFilename, temporaryFilename } =
     downloadLocalData.info || {};
@@ -190,19 +192,24 @@ const deleteDownloadedFile = async ({
 const getDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
+}: DownloadLocalDataRendererRequest): Promise<
+  DownloadLocalDataMainResponse
+> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.get(downloadId);
 };
 
-const getDownloadsLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
-  localStorage.getAll();
+const getDownloadsLocalData = async (): Promise<
+  DownloadsLocalDataMainResponse
+> => localStorage.getAll();
 
 const clearDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: ClearDownloadLocalDataRendererRequest): Promise<ClearDownloadLocalDataMainResponse> => {
+}: ClearDownloadLocalDataRendererRequest): Promise<
+  ClearDownloadLocalDataMainResponse
+> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.unset(downloadId);
@@ -211,7 +218,9 @@ const clearDownloadLocalData = async ({
 const checkFileExists = async ({
   id,
 }: CheckFileExistsRendererRequest): Promise<CheckFileExistsMainResponse> => {
-  const downloadLocalData = await getDownloadLocalData({ id });
+  const downloadLocalData = await getDownloadLocalData({
+    id,
+  });
   if (!downloadLocalData) throw new Error('Download data not found');
   const { destinationPath, originalFilename, temporaryFilename } =
     downloadLocalData.info || {};
@@ -232,13 +241,11 @@ MainIpcChannel<
   ResumeDownloadRendererRequest,
   ResumeDownloadMainResponse
 > = new MainIpcChannel(RESUME_DOWNLOAD);
-
 const deleteDownloadedFileChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DeleteDownloadedFileRendererRequest,
   DeleteDownloadedFileMainResponse
 > = new MainIpcChannel(DELETE_DOWNLOADED_FILE);
-
 const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadLocalDataRendererRequest,
@@ -259,7 +266,6 @@ MainIpcChannel<
   CheckFileExistsRendererRequest,
   CheckFileExistsMainResponse
 > = new MainIpcChannel(CHECK_FILE_EXISTS);
-
 export const downloadManagerChannel = (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
@@ -270,13 +276,11 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
       requestResumeDownload(resumeDownloadRequestPayload, window)
   );
   deleteDownloadedFileChannel.onRequest(deleteDownloadedFile);
-
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
   getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
   clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
   checkFileExistsChannel.onRequest(checkFileExists);
 };
-
 export const pauseActiveDownloads = () => {
   forEach(downloads, (download, downloadId) => {
     try {
@@ -284,7 +288,9 @@ export const pauseActiveDownloads = () => {
         download.pause();
       logger.info(
         `DownloadManager:PauseDownloads download "${downloadId}" was paused`,
-        { downloadId }
+        {
+          downloadId,
+        }
       );
     } catch (error) {
       logger.error(

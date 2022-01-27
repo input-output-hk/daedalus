@@ -1,15 +1,11 @@
-// @flow
 import React from 'react';
 import moment from 'moment';
 import { date, number } from '@storybook/addon-knobs';
-
 // Component
 import StakingEpochs from '../../../source/renderer/app/components/staking/epochs/StakingEpochs';
-
 // Dummy data initialization
 import PREVIOUS_EPOCHS from '../../../source/renderer/app/config/stakingPreviousEpoch.dummy.json';
 import CURRENT_EPOCHS from '../../../source/renderer/app/config/stakingCurrentEpoch.dummy.json';
-
 const threeDaysFromToday = moment().add(3, 'days');
 
 const endDateTimeKnob = (name, defaultValue) => {

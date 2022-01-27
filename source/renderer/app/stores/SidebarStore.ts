@@ -1,4 +1,3 @@
-// @flow
 import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import { sidebarConfig } from '../config/sidebarConfig';
@@ -11,16 +10,20 @@ import type {
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import { changeWalletSorting, sortWallets } from '../utils/walletSorting';
 import Store from './lib/Store';
-
 export default class SidebarStore extends Store {
-  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
-  @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
-  @observable isShowingSubMenus: boolean = true;
-  @observable walletSortConfig: WalletSortConfig = {
+  @observable
+  CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
+  @observable
+  activeSidebarCategory: string = this.CATEGORIES[0].route;
+  @observable
+  isShowingSubMenus: boolean = true;
+  @observable
+  walletSortConfig: WalletSortConfig = {
     sortBy: WalletSortBy.Date,
     sortOrder: WalletSortOrder.Asc,
   };
-  @observable searchValue: string = '';
+  @observable
+  searchValue: string = '';
 
   setup() {
     const { sidebar: sidebarActions } = this.actions;
@@ -34,13 +37,15 @@ export default class SidebarStore extends Store {
       this._syncSidebarRouteWithRouter,
       this._syncSidebarItemsWithShelleyActivation,
     ]);
+
     this._configureCategories();
   }
 
   // We need to use computed.struct for computed objects (so they are structurally compared
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
-  @computed.struct get wallets(): Array<SidebarWalletType> {
+  @computed.struct
+  get wallets(): Array<SidebarWalletType> {
     const {
       networkStatus,
       wallets,
@@ -84,32 +89,32 @@ export default class SidebarStore extends Store {
     });
   }
 
-  @action onChangeWalletSortType = (sortBy: WalletSortByOptions) => {
+  @action
+  onChangeWalletSortType = (sortBy: WalletSortByOptions) => {
     this.walletSortConfig = changeWalletSorting({
       sortBy,
       sortOrder: this.walletSortConfig.sortOrder,
       currentSortBy: this.walletSortConfig.sortBy,
     });
   };
-
-  @action onSearchValueUpdated = (searchValue: string) => {
+  @action
+  onSearchValueUpdated = (searchValue: string) => {
     this.searchValue = searchValue;
   };
-
-  @action _configureCategories = () => {
+  @action
+  _configureCategories = () => {
     const {
       isFlight,
       environment: { isDev, isMainnet },
     } = global;
-
     const {
       CATEGORIES_BY_NAME: categories,
       CATEGORIES_LIST: list,
     } = sidebarConfig;
-
-    const categoryValidation: {
-      [key: string]: boolean | Function,
-    } = {
+    const categoryValidation: Record<
+      string,
+      boolean | ((...args: Array<any>) => any)
+    > = {
       [categories.WALLETS.name]: true,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
@@ -118,29 +123,32 @@ export default class SidebarStore extends Store {
       [categories.VOTING.name]: isMainnet || isDev,
       [categories.NETWORK_INFO.name]: isFlight,
     };
-
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
       ({ name }: SidebarCategoryInfo): boolean => {
         let validator = categoryValidation[name];
+
         if (typeof validator === 'function') {
           validator = validator();
         }
+
         return validator;
       }
     );
-
     this.CATEGORIES = categoriesFilteredList;
   };
-
-  @action _onActivateSidebarCategory = (params: {
-    category: string,
-    showSubMenu?: boolean,
+  @action
+  _onActivateSidebarCategory = (params: {
+    category: string;
+    showSubMenu?: boolean;
   }) => {
     const { category, showSubMenu } = params;
+
     if (category !== this.activeSidebarCategory) {
       this.activeSidebarCategory = category;
       if (showSubMenu != null) this.isShowingSubMenus = showSubMenu;
-      this.actions.router.goToRoute.trigger({ route: category });
+      this.actions.router.goToRoute.trigger({
+        route: category,
+      });
     } else if (showSubMenu == null || this.isShowingSubMenus !== showSubMenu) {
       // If no explicit preferred state is given -> toggle sub menus
       this._toggleSubMenus();
@@ -148,31 +156,30 @@ export default class SidebarStore extends Store {
       this.isShowingSubMenus = showSubMenu;
     }
   };
-
-  @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
+  @action
+  _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
   };
-
-  @action _setActivateSidebarCategory = (category: string) => {
+  @action
+  _setActivateSidebarCategory = (category: string) => {
     this.activeSidebarCategory = category;
   };
-
-  @action _resetActivateSidebarCategory = () => {
+  @action
+  _resetActivateSidebarCategory = () => {
     this.activeSidebarCategory = '';
   };
-
-  @action _showSubMenus = () => {
+  @action
+  _showSubMenus = () => {
     this.isShowingSubMenus = true;
   };
-
-  @action _hideSubMenus = () => {
+  @action
+  _hideSubMenus = () => {
     this.isShowingSubMenus = false;
   };
-
-  @action _toggleSubMenus = () => {
+  @action
+  _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
   };
-
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     this.CATEGORIES.forEach((category) => {
@@ -181,9 +188,9 @@ export default class SidebarStore extends Store {
         this._setActivateSidebarCategory(category.route);
     });
   };
-
   _syncSidebarItemsWithShelleyActivation = () => {
     const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+
     if (isShelleyActivated || isShelleyPending) {
       this._configureCategories();
     }

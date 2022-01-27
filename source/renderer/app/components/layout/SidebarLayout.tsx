@@ -1,15 +1,13 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import styles from './SidebarLayout.scss';
-
 type Props = {
-  children: any | Node,
-  sidebar: Node,
-  topbar: Node,
-  notification?: ?Node,
-  contentDialogs?: ?Array<Node>,
+  children: any | Node;
+  sidebar: Node;
+  topbar: Node;
+  notification?: Node | null | undefined;
+  contentDialogs?: Array<Node> | null | undefined;
 };
 
 @observer
@@ -26,7 +24,6 @@ class SidebarLayout extends Component<Props> {
       notification,
       contentDialogs,
     } = this.props;
-
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>{sidebar}</div>
@@ -43,4 +40,4 @@ class SidebarLayout extends Component<Props> {
   }
 }
 
-export default SidebarLayout
+export default SidebarLayout;

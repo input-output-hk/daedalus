@@ -1,7 +1,5 @@
-// @flow
 import MobxReactForm from 'mobx-react-form';
 import { waitForExist } from './waitForExist';
-
 export default class ReactToolboxMobxForm extends MobxReactForm {
   bindings() {
     return {
@@ -21,21 +19,20 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
     };
   }
 }
-
 type HandleFormErrorsOptions = {
-  focusElement?: ?boolean,
+  focusElement?: boolean | null | undefined;
 };
-
 export const handleFormErrors = async (
   querySelector: string,
   options: HandleFormErrorsOptions = {}
 ) => {
   const { focusElement } = options;
-
   const firstErrorLabel = await waitForExist(querySelector);
 
   if (firstErrorLabel) {
-    firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
+    firstErrorLabel.scrollIntoView({
+      behavior: 'smooth',
+    });
   }
 
   if (
@@ -48,5 +45,6 @@ export const handleFormErrors = async (
     );
     if (input) return setTimeout(() => input.focus(), 500);
   }
+
   return false;
 };

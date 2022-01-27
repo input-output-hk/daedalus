@@ -1,4 +1,3 @@
-// @flow
 import { get, map } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
@@ -7,40 +6,40 @@ import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
 import ApiError from '../../domains/ApiError';
-
 // domains
 import Wallet from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
-
 import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
 } from '../network/types';
 import type { GetNewsResponse } from '../news/types';
-
 let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
-let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
-let TESTING_WALLETS_DATA: Object = {};
-
+let TESTING_NEWSFEED_JSON: GetNewsResponse | null | undefined;
+let TESTING_WALLETS_DATA: Record<string, any> = {};
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
     logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
+
     try {
       const networkInfo: NetworkInfoResponse = await getNetworkInfo(api.config);
-      logger.debug('AdaApi::getNetworkInfo (PATCHED) success', { networkInfo });
-
+      logger.debug('AdaApi::getNetworkInfo (PATCHED) success', {
+        networkInfo,
+      });
       const {
-        sync_progress, // eslint-disable-line camelcase
-        node_tip, // eslint-disable-line camelcase
-        network_tip, // eslint-disable-line camelcase
+        sync_progress,
+        // eslint-disable-line camelcase
+        node_tip,
+        // eslint-disable-line camelcase
+        network_tip,
+        // eslint-disable-line camelcase
         next_epoch, // eslint-disable-line camelcase
       } = networkInfo;
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'quantity', 0);
-
       // extract relevant data before sending to NetworkStatusStore
       const nextEpochNumber = get(next_epoch, 'epoch_number', null);
       const nextEpochStartTime = get(next_epoch, 'epoch_start_time', '');
@@ -63,7 +62,9 @@ export default (api: AdaApi) => {
         },
       };
     } catch (error) {
-      logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
+      logger.error('AdaApi::getNetworkInfo (PATCHED) error', {
+        error,
+      });
       throw new ApiError();
     }
   };
@@ -72,12 +73,16 @@ export default (api: AdaApi) => {
     SYNC_PROGRESS = syncProgress;
   };
 
-  api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
+  api.setTestingNewsFeed = (
+    testingNewsFeedData: GetNewsResponse | null | undefined
+  ) => {
     const { version: packageJsonVersion } = packageJson;
+
     if (!testingNewsFeedData) {
       TESTING_NEWSFEED_JSON = null;
       return;
     }
+
     // Always mutate newsfeed target version to current app version
     const newsFeedItems = map(testingNewsFeedData.items, (item) => {
       return {
@@ -90,11 +95,7 @@ export default (api: AdaApi) => {
         },
       };
     });
-
-    TESTING_NEWSFEED_JSON = {
-      ...testingNewsFeedData,
-      items: newsFeedItems,
-    };
+    TESTING_NEWSFEED_JSON = { ...testingNewsFeedData, items: newsFeedItems };
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
@@ -108,28 +109,25 @@ export default (api: AdaApi) => {
   };
 
   api.setTestingWallet = (
-    testingWalletData: Object,
-    walletIndex?: number = 0
+    testingWalletData: Record<string, any>,
+    walletIndex: number = 0
   ): void => {
     TESTING_WALLETS_DATA[walletIndex] = testingWalletData;
   };
 
-  api.setTestingWallets = (testingWalletsData: Array<Object>): void => {
+  api.setTestingWallets = (
+    testingWalletsData: Array<Record<string, any>>
+  ): void => {
     TESTING_WALLETS_DATA = testingWalletsData;
   };
 
-  const originalGetWallets: Function = api.getWallets;
-
-  const getModifiedWallet = action((wallet: Object) => {
+  const originalGetWallets: (...args: Array<any>) => any = api.getWallets;
+  const getModifiedWallet = action((wallet: Record<string, any>) => {
     let { amount = 100000, availableAmount = 100000 } = wallet;
     if (typeof amount !== 'object') amount = new BigNumber(amount);
     if (typeof availableAmount !== 'object')
       availableAmount = new BigNumber(availableAmount);
-    return new Wallet({
-      ...wallet,
-      amount,
-      availableAmount,
-    });
+    return new Wallet({ ...wallet, amount, availableAmount });
   });
 
   api.getWallets = async (): Promise<Array<Wallet>> => {
@@ -137,20 +135,19 @@ export default (api: AdaApi) => {
     const modifiedWallets = originalWallets.map(
       (originalWallet: Wallet, index: number) => {
         const testingWallet = TESTING_WALLETS_DATA[index] || {};
-        const modifiedWallet = {
-          ...originalWallet,
-          ...testingWallet,
-        };
+        const modifiedWallet = { ...originalWallet, ...testingWallet };
         return getModifiedWallet(modifiedWallet);
       }
     );
     return Promise.resolve(modifiedWallets);
   };
 
-  api.setTestingStakePools = (testingStakePoolsData: Array<Object>): void => {
+  api.setTestingStakePools = (
+    testingStakePoolsData: Array<Record<string, any>>
+  ): void => {
     api.getStakePools = (): Array<StakePool> =>
       testingStakePoolsData.map(
-        (stakePool: Object) => new StakePool(stakePool)
+        (stakePool: Record<string, any>) => new StakePool(stakePool)
       );
   };
 

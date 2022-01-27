@@ -1,17 +1,17 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import WalletPublicKeyDialog from '../../../../components/wallet/settings/WalletPublicKeyDialog';
 import ICOPublicKeyDialog from '../../../../components/wallet/settings/ICOPublicKeyDialog';
-
 type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
 class PublicKeyDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleClose = () => {
     const { actions, stores } = this.props;
     const { accountPublicKeyRequest, icoPublicKeyRequest } = stores.wallets;
@@ -30,7 +30,6 @@ class PublicKeyDialogContainer extends Component<Props> {
       icoPublicKey,
       active: activeWallet,
     } = stores.wallets;
-
     if (!activeWallet) throw new Error('Active wallet required.');
     return isICO ? (
       <ICOPublicKeyDialog
@@ -52,4 +51,4 @@ class PublicKeyDialogContainer extends Component<Props> {
   }
 }
 
-export default PublicKeyDialogContainer
+export default PublicKeyDialogContainer;

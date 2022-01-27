@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './StakingEpochs.scss';
-
 const messages = defineMessages({
   noResults: {
     id: 'staking.epochs.no.results',
@@ -20,7 +18,6 @@ class StakingEpochsNoData extends Component<any> {
 
   render() {
     const { intl } = this.context;
-
     return (
       <div className={styles.noResultsLabel}>
         {intl.formatMessage(messages.noResults)}
@@ -29,4 +26,4 @@ class StakingEpochsNoData extends Component<any> {
   }
 }
 
-export default StakingEpochsNoData
+export default StakingEpochsNoData;

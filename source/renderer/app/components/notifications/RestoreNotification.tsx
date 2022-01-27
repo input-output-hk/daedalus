@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -7,7 +6,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import { formattedNumber } from '../../utils/formatters';
 import styles from './RestoreNotification.scss';
-
 const messages = defineMessages({
   activeRestoreMessage: {
     id: 'wallet.statusMessages.activeRestore',
@@ -17,9 +15,8 @@ const messages = defineMessages({
       'Status message "Wallet restore in progress" shown while wallet is being restored.',
   },
 });
-
 type Props = {
-  restoreProgress: number,
+  restoreProgress: number;
 };
 
 @observer
@@ -31,12 +28,10 @@ class RestoreNotification extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { restoreProgress } = this.props;
-
     const restoreNotificationClasses = classnames([
       styles.component,
       'ActiveRestoreNotification',
     ]);
-
     return (
       <div className={restoreNotificationClasses}>
         <span className={styles.text}>
@@ -50,4 +45,4 @@ class RestoreNotification extends Component<Props> {
   }
 }
 
-export default RestoreNotification
+export default RestoreNotification;

@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== shelley-testnet theme output for Daedalus and react-polymorph components === //
 export const SHELLEY_TESTNET_THEME_OUTPUT = {
   aboutWindow: {
@@ -1118,9 +1116,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#ffffff',
   },
 };
-
 const SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
   config: SHELLEY_TESTNET_THEME_OUTPUT,
 };
-
 export default createTheme(SHELLEY_TESTNET_THEME_PARAMS);

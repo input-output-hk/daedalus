@@ -1,10 +1,8 @@
-// @flow
 import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { select, withKnobs } from '@storybook/addon-knobs';
-
 import StoryDecorator from '../_support/StoryDecorator';
 import enMessages from '../../../source/renderer/app/i18n/locales/en-US.json';
 import jpMessages from '../../../source/renderer/app/i18n/locales/ja-JP.json';
@@ -14,7 +12,6 @@ import {
   DATE_JAPANESE_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
-
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
   messages: enMessages,
@@ -23,12 +20,14 @@ const { intl: jpIntl } = new IntlProvider({
   locale: 'ja-JP',
   messages: jpMessages,
 }).getChildContext();
-const intl = { 'en-US': enIntl, 'ja-JP': jpIntl };
+const intl = {
+  'en-US': enIntl,
+  'ja-JP': jpIntl,
+};
 const dateOptionsIntl = {
   'en-US': DATE_ENGLISH_OPTIONS,
   'ja-JP': DATE_JAPANESE_OPTIONS,
 };
-
 const messages = defineMessages({
   readMore: {
     id: 'global.labels.readMore',

@@ -1,5 +1,4 @@
-// @flow
 export type GenerateQRCodeParams = {
-  address: string,
-  filePath: string,
+  address: string;
+  filePath: string;
 };

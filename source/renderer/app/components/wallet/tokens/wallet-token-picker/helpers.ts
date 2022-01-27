@@ -1,4 +1,3 @@
-// @flow
 import { messages } from './WalletTokenPicker.messages';
 import {
   MAX_TOKENS,
@@ -40,7 +39,6 @@ export const getScrollPosition = (element: EventTarget): ScrollPosition => {
 
   return ScrollPositionEnum.MIDDLE;
 };
-
 export const getMaxTokensIdMap = ({
   checkedIds,
   currentAssetIds,
@@ -50,7 +48,6 @@ export const getMaxTokensIdMap = ({
     .slice(0, MAX_TOKENS - previouslyCheckedIds.length)
     .reduce((acc: BooleanMap, element) => ({ ...acc, [element]: true }), {});
 };
-
 export const clearSelection = ({
   checkboxes,
   currentAssetIds,
@@ -59,11 +56,10 @@ export const clearSelection = ({
     ...checkboxes,
     ...currentAssetIds.reduce(
       (acc, assestId) => ({ ...acc, [assestId]: false }),
-      ({}: BooleanMap)
+      {} as BooleanMap
     ),
   };
 };
-
 export const getEnabledAssetIds = ({
   assets,
   previouslyCheckedIdsSet,
@@ -73,19 +69,16 @@ export const getEnabledAssetIds = ({
       previouslyCheckedIdsSet.has(uniqueId) ? acc : [...acc, uniqueId],
     []
   );
-
 export const getCheckedIds = (checkBoxes: BooleanMap) =>
   Object.entries(checkBoxes).reduce(
     (acc, [id, checked]) => (checked ? [...acc, id] : acc),
     []
   );
-
 export const getCurrentCheckedIds = ({
   checkboxes,
   currentAssetIds,
 }: GetCurrentCheckedIds): Array<string> =>
   currentAssetIds.filter((assetId) => checkboxes[assetId]);
-
 export const filterSelectOptions = (intl: Intl) => [
   {
     label: intl.formatMessage(messages.allTokensLabel),
@@ -96,7 +89,6 @@ export const filterSelectOptions = (intl: Intl) => [
     value: FilterSelectOptionsEnum.FAVORITES,
   },
 ];
-
 export const filterAssets = ({
   assets,
   filter,
@@ -108,10 +100,8 @@ export const filterAssets = ({
       : true;
   });
 };
-
 export const getToogleAllLabel = (isClearAllMode: boolean) =>
   isClearAllMode ? 'clearAll' : 'checkAllLabel';
-
 export const getTokenCounterText = ({
   assets,
   currentAssets,
@@ -119,6 +109,7 @@ export const getTokenCounterText = ({
   if (assets.length === currentAssets.length) {
     return ` (${assets.length})`;
   }
+
   return ` (${currentAssets.length} / ${assets.length})`;
 };
 
@@ -143,9 +134,11 @@ export const getToggleAllMode = (args: GetToggleAllMode) => {
   if (isMaxedAndSomeSelected(args)) {
     return ToggleModeEnum.CLEAR_ALL;
   }
+
   if (isAllCurrentDisabled(args)) {
     return ToggleModeEnum.CLEAR_ALL_DISABLED;
   }
+
   if (isMaxedAndCurrentCleared(args)) {
     return ToggleModeEnum.SELECT_ALL_DISABLED;
   }

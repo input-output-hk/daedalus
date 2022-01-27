@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
@@ -17,7 +16,10 @@ import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
 import topBarStyles from '../components/layout/TopBar.scss';
 
 const TopBarContainer = (
-  { actions, stores }: InjectedProps = { actions: null, stores: null }
+  { actions, stores }: InjectedProps = {
+    actions: null,
+    stores: null,
+  }
 ) => {
   const {
     sidebar,
@@ -39,7 +41,6 @@ const TopBarContainer = (
   const shouldShowTadaIconAnimation = isAlonzoActivated && !stakingInfoWasOpen;
   const shouldShowTadaIcon =
     IS_TADA_ICON_AVAILABLE && (isAlonzoPending || isAlonzoActivated);
-
   const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
   const {
     currentRoute,
@@ -79,9 +80,7 @@ const TopBarContainer = (
 
   const { unread } = newsFeed.newsFeedData;
   const { displayAppUpdateNewsItem } = appUpdate;
-
   const hasUnreadNews = unread.length > 0;
-
   return (
     <TopBar
       leftIcon={leftIcon}

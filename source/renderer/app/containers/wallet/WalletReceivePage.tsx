@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import path from 'path';
 import { defineMessages, intlShape } from 'react-intl';
@@ -14,7 +13,6 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 import type { WalletLocalData } from '../../api/utils/localStorage';
-
 const messages = defineMessages({
   address: {
     id: 'wallet.receive.pdf.filenamePrefix',
@@ -22,22 +20,21 @@ const messages = defineMessages({
     description: '"Address" word in the Address PDF export',
   },
 });
-
 type Props = InjectedProps;
-
 type State = {
-  addressToShare?: ?WalletAddress,
+  addressToShare?: WalletAddress | null | undefined;
 };
 
 @inject('stores', 'actions')
 @observer
 class WalletReceivePage extends Component<Props, State> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     addressToShare: null,
   };
@@ -55,56 +52,54 @@ class WalletReceivePage extends Component<Props, State> {
   }
 
   handleIsAddressValid = (index: number) => index < 3 || index > 7;
-
   handleCopyAddress = (copiedAddress: string) => {
     const address = ellipsis(copiedAddress, 15, 15);
-    this.props.actions.wallets.copyAddress.trigger({ address });
+    this.props.actions.wallets.copyAddress.trigger({
+      address,
+    });
   };
-
   handleShareAddress = (addressToShare: WalletAddress) => {
     const { activeWallet } = this;
     const { actions, stores } = this.props;
     const { dialogs } = actions;
     const { hardwareWallets } = stores;
-
     this.setState({
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
+
     if (activeWallet && activeWallet.isHardwareWallet) {
       hardwareWallets.initiateAddressVerification(addressToShare);
     }
-    dialogs.open.trigger({ dialog });
-  };
 
+    dialogs.open.trigger({
+      dialog,
+    });
+  };
   handleCloseShareAddress = () => {
     const { activeWallet } = this;
     const { actions, stores } = this.props;
     const { dialogs } = actions;
     const { hardwareWallets } = stores;
-
     dialogs.closeActiveDialog.trigger();
+
     if (activeWallet && activeWallet.isHardwareWallet) {
       hardwareWallets.resetInitializedAddressVerification({
         cancelDeviceAction: true,
       });
     }
   };
-
   handleToggleUsedAddresses = () => {
     this.props.actions.walletSettings.toggleShowUsedAddresses.trigger();
   };
-
   getAddressAndFilepath = async (fileExtension: string = 'pdf') => {
     const { addressToShare } = this.state;
     const { activeWallet } = this;
     const { intl } = this.context;
     if (!activeWallet) return {};
-
     const prefix = `${intl.formatMessage(messages.address)}-${
       activeWallet.name
     }`;
-
     const name = generateFileNameWithTimestamp({
       prefix,
       extension: '',
@@ -125,23 +120,17 @@ class WalletReceivePage extends Component<Props, State> {
       ],
     };
     const { filePath } = await showSaveDialogChannel.send(params);
-
     if (!filePath || !addressToShare) return {};
-
     const { id: address } = addressToShare;
-
     return {
       filePath,
       address,
     };
   };
-
   handleDownloadPDF = async (note: string) => {
     const { address, filePath } = await this.getAddressAndFilepath();
-
     // if cancel button is clicked or path is empty
     if (!filePath || !address) return;
-
     this.handleCloseShareAddress();
     this.props.actions.wallets.generateAddressPDF.trigger({
       note,
@@ -149,22 +138,19 @@ class WalletReceivePage extends Component<Props, State> {
       filePath,
     });
   };
-
   handleSaveQRCodeImage = async () => {
     const { address, filePath } = await this.getAddressAndFilepath('png');
-
     // if cancel button is clicked or path is empty
     if (!filePath || !address) return;
-
     this.handleCloseShareAddress();
     this.props.actions.wallets.saveQRCodeImage.trigger({
       address,
       filePath,
     });
   };
-
   handleGenerateAddress = (passphrase: string) => {
     const { activeWallet } = this;
+
     if (activeWallet) {
       this.props.actions.addresses.createByronWalletAddress.trigger({
         walletId: activeWallet.id,
@@ -172,7 +158,6 @@ class WalletReceivePage extends Component<Props, State> {
       });
     }
   };
-
   handleSupportRequestClick = async (supportRequestLinkUrl: string) => {
     const { profile, app } = this.props.stores;
     const { environment, openExternalLink } = app;
@@ -205,28 +190,22 @@ class WalletReceivePage extends Component<Props, State> {
       setAddressVerificationCheckStatus,
       checkIsTrezorByWalletId,
     } = hardwareWallets;
-
     const { getLocalWalletDataById } = walletSettings;
-
-    const localWalletData: ?WalletLocalData = getLocalWalletDataById(
-      activeWallet ? activeWallet.id : ''
-    );
-
+    const localWalletData:
+      | WalletLocalData
+      | null
+      | undefined = getLocalWalletDataById(activeWallet ? activeWallet.id : '');
     const { showUsedAddresses } = localWalletData || {};
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
-
     const { hasPassword, isRandom } = activeWallet;
     const walletAddresses = addresses.all.slice().reverse();
     const byronWalletAddress = addresses.active ? addresses.active.id : '';
     const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used
       : false;
-
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
-
     return (
       <Fragment>
         <VerticalFlexContainer>
@@ -283,4 +262,4 @@ class WalletReceivePage extends Component<Props, State> {
   }
 }
 
-export default WalletReceivePage
+export default WalletReceivePage;

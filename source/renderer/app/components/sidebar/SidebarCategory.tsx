@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
@@ -7,12 +6,11 @@ import classNames from 'classnames';
 import { camelCase } from 'lodash';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 import styles from './SidebarCategory.scss';
-
 type Props = {
-  category: SidebarCategoryInfo,
-  isActive: boolean,
-  onClick: Function,
-  content?: Node,
+  category: SidebarCategoryInfo;
+  isActive: boolean;
+  onClick: (...args: Array<any>) => any;
+  content?: Node;
 };
 
 @observer
@@ -29,9 +27,7 @@ class SidebarCategory extends Component<Props> {
         [styles.active]: isActive,
       }
     );
-
     const iconClassName = classNames(styles.icon, styles[`${className}Icon`]);
-
     return (
       <button className={componentStyles} onClick={() => onClick(route)}>
         <SVGInline svg={icon} className={iconClassName} />
@@ -41,4 +37,4 @@ class SidebarCategory extends Component<Props> {
   }
 }
 
-export default SidebarCategory
+export default SidebarCategory;

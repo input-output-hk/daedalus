@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer, inject } from 'mobx-react';
@@ -14,7 +13,6 @@ import ConfirmationDialog from '../../../components/voting/voting-registration-w
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-
 const messages = defineMessages({
   votingRegistrationStep1Label: {
     id: 'voting.votingRegistration.steps.step.1.label',
@@ -42,32 +40,25 @@ const messages = defineMessages({
     description: 'Step 5 label text on voting registration.',
   },
 });
-
 type Props = InjectedDialogContainerProps;
-
 type State = {
-  selectedWalletId: string,
-  transactionFee: BigNumber,
-  transactionFeeError: string | Node | null,
+  selectedWalletId: string;
+  transactionFee: BigNumber;
+  transactionFeeError: string | Node | null;
 };
 
 @inject('stores', 'actions')
 @observer
-class VotingRegistrationDialogContainer extends Component<
-  Props,
-  State
-> {
+class VotingRegistrationDialogContainer extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
   };
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -86,7 +77,7 @@ class VotingRegistrationDialogContainer extends Component<
     isLegacy?: boolean,
     isRestoring?: boolean,
     walletAmount?: BigNumber,
-    walletReward?: BigNumber = 0
+    walletReward: BigNumber = 0
   ) =>
     !isLegacy &&
     !isRestoring &&
@@ -103,7 +94,6 @@ class VotingRegistrationDialogContainer extends Component<
     transactionFee: null,
     transactionFeeError: null,
   };
-
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.votingRegistrationStep1Label),
     this.context.intl.formatMessage(messages.votingRegistrationStep2Label),
@@ -111,7 +101,6 @@ class VotingRegistrationDialogContainer extends Component<
     this.context.intl.formatMessage(messages.votingRegistrationStep4Label),
     this.context.intl.formatMessage(messages.votingRegistrationStep5Label),
   ];
-
   handleClose = (showConfirmationDialog?: boolean) => {
     if (showConfirmationDialog) {
       this.props.actions.voting.showConfirmationDialog.trigger();
@@ -119,32 +108,30 @@ class VotingRegistrationDialogContainer extends Component<
       this.props.actions.dialogs.closeActiveDialog.trigger();
     }
   };
-
   handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
     this.props.stores.hardwareWallets.sendMoneyRequest.reset();
   };
-
   handleContinue = () => {
     this.props.actions.voting.nextRegistrationStep.trigger();
   };
-
   handleBack = () => {
     this.props.actions.voting.previousRegistrationStep.trigger();
   };
-
   handleSelectWallet = (walletId: string) => {
-    this.setState({ selectedWalletId: walletId });
+    this.setState({
+      selectedWalletId: walletId,
+    });
     this.props.actions.voting.selectWallet.trigger(walletId);
+
     this._handleCalculateTransactionFee();
+
     this.handleContinue();
   };
-
   handleSetPinCode = (code: number) => {
     this.props.actions.voting.generateQrCode.trigger(code);
   };
-
-  handleSendTransaction = (spendingPassword: ?string) => {
+  handleSendTransaction = (spendingPassword: string | null | undefined) => {
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
@@ -188,13 +175,13 @@ class VotingRegistrationDialogContainer extends Component<
       sendMoneyRequest,
       isTransactionPending: isHwTransactionPending,
     } = hardwareWallets;
-
     const selectedWallet = find(
       all,
       (wallet) => wallet.id === selectedWalletId
     );
     let isTrezor = false;
     let isHardwareWallet = false;
+
     if (selectedWallet) {
       isTrezor = checkIsTrezorByWalletId(selectedWallet.id);
       isHardwareWallet = selectedWallet.isHardwareWallet;
@@ -271,13 +258,14 @@ class VotingRegistrationDialogContainer extends Component<
       transactionFee: null,
       transactionFeeError: null,
     });
+
     try {
       const selectedWallet = getWalletById(this.selectedWalletId);
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
-
       let fee;
       let votingData;
+
       if (isHardwareWallet) {
         votingData = await prepareVotingData({
           walletId: this.selectedWalletId,
@@ -295,12 +283,14 @@ class VotingRegistrationDialogContainer extends Component<
           amount,
         }));
       }
+
       if (this._isMounted) {
         this.setState({
           transactionFee: fee,
           transactionFeeError: null,
         });
       }
+
       if (isHardwareWallet) {
         await initiateTransaction({
           walletId: this.selectedWalletId,
@@ -328,4 +318,4 @@ class VotingRegistrationDialogContainer extends Component<
   }
 }
 
-export default VotingRegistrationDialogContainer
+export default VotingRegistrationDialogContainer;

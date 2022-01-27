@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { PoolPopOver } from './PoolPopOver';
@@ -15,21 +14,20 @@ import ThumbPoolContent from './ThumbPoolContent';
  *
  * It also renders differently depending on the isSelected prop
  */
-
 export function ThumbPool(props: {
-  currentTheme: string,
-  isSelected: boolean,
-  highlightOnHover?: boolean,
-  highlightWithDelay?: boolean,
-  onOpenExternalLink: Function,
-  onSelect?: (poolId: string) => void,
-  selectOnClick?: boolean,
-  showWithSelectButton?: boolean,
-  stakePool: StakePool,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  disabledStakePoolId: ?string,
-  isGridRewardsView?: boolean,
+  currentTheme: string;
+  isSelected: boolean;
+  highlightOnHover?: boolean;
+  highlightWithDelay?: boolean;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onSelect?: (poolId: string) => void;
+  selectOnClick?: boolean;
+  showWithSelectButton?: boolean;
+  stakePool: StakePool;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  disabledStakePoolId: string | null | undefined;
+  isGridRewardsView?: boolean;
 }) {
   const {
     isGridRewardsView,
@@ -41,14 +39,12 @@ export function ThumbPool(props: {
   const color = getColorFromRange(ranking, numberOfRankedStakePools);
   const isDisabled = props.disabledStakePoolId === id;
   const [isHighlighted, setIsHighlighted] = useState(false);
-
   const contentClassnames = classnames([
     styles.content,
     isDisabled ? styles.disabled : null,
     isHighlighted ? styles.isHighlighted : null,
     props.highlightOnHover ? styles.shouldHighlightOnHover : null,
   ]);
-
   const content = isSelected ? (
     <ThumbSelectedPool
       stakePool={stakePool}
@@ -61,7 +57,6 @@ export function ThumbPool(props: {
       numberOfRankedStakePools={numberOfRankedStakePools}
     />
   );
-
   return (
     <div className={styles.component}>
       <PoolPopOver

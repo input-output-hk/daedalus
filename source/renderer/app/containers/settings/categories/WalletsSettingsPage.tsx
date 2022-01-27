@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletsSettings from '../../../components/settings/categories/WalletsSettings';
@@ -7,12 +6,15 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class WalletsSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleSelectCurrency = (code: string) => {
-    this.props.actions.currency.setCurrencySelected.trigger({ code });
+  static defaultProps = {
+    actions: null,
+    stores: null,
   };
-
+  handleSelectCurrency = (code: string) => {
+    this.props.actions.currency.setCurrencySelected.trigger({
+      code,
+    });
+  };
   handleToggleCurrencyIsActive = () =>
     this.props.actions.currency.toggleCurrencyIsActive.trigger();
 
@@ -41,4 +43,4 @@ class WalletsSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default WalletsSettingsPage
+export default WalletsSettingsPage;

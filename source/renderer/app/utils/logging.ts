@@ -1,23 +1,19 @@
-// @flow
 import { formatContext } from '../../../common/utils/logging';
 import type {
   FormatMessageContextParams,
   Logger,
   LoggingLevel,
 } from '../../../common/types/logging.types';
-
 const { environment, electronLog } = global;
 const appName = 'daedalus';
 const electronProcess = 'ipcRenderer';
 const { network, os, platformVersion, version } = environment;
-
 const messageContext: FormatMessageContextParams = {
   appName,
   electronProcess,
   network,
   level: '',
 };
-
 const environmentData = {
   network,
   os,
@@ -27,7 +23,7 @@ const environmentData = {
 
 const logToLevel = (level: LoggingLevel) => (
   message: string,
-  data: ?Object
+  data: Record<string, any> | null | undefined
 ) => {
   const args = [
     formatContext({ ...messageContext, level }),

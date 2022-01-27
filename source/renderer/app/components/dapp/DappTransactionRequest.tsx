@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useCallback, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
@@ -19,7 +18,6 @@ import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmati
 import { formattedWalletAmount } from '../../utils/formatters';
 import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 import type { AssetToken } from '../../api/assets/types';
-
 const messages = defineMessages({
   title: {
     id: 'dapp.transaction.request.title',
@@ -75,25 +73,23 @@ const messages = defineMessages({
       '"Not enough ada" error in the dApp transaction request dialog',
   },
 });
-
 type Props = {
-  adaAmount: BigNumber,
-  additionalData?: string,
-  address: string,
-  assets: Array<AssetToken>,
-  assetsAmounts: Array<BigNumber>,
-  intl: intlShape.isRequired,
-  metadata?: string,
-  onAddWallet: Function,
-  onClose: Function,
-  onSelectWallet: Function,
-  onSubmit: Function,
-  selectedWallet: ?Wallet,
-  transactionFee: BigNumber,
-  triggeredFrom: string,
-  wallets: Array<Wallet>,
+  adaAmount: BigNumber;
+  additionalData?: string;
+  address: string;
+  assets: Array<AssetToken>;
+  assetsAmounts: Array<BigNumber>;
+  intl: intlShape.isRequired;
+  metadata?: string;
+  onAddWallet: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
+  selectedWallet: Wallet | null | undefined;
+  transactionFee: BigNumber;
+  triggeredFrom: string;
+  wallets: Array<Wallet>;
 };
-
 const DappTransactionRequest = observer((props: Props) => {
   const [isAdditionalDataVisible, toggleAdditionalData] = useState<boolean>(
     false
@@ -138,9 +134,11 @@ const DappTransactionRequest = observer((props: Props) => {
   const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
     adaBalanceRequired
   );
+
   if (walletsDropdownHasError) {
     hasAmountError = true;
   }
+
   const adaAmountErrorMessage = walletsDropdownHasError ? (
     <FormattedHTMLMessage
       {...messages.insufficientBalanceErrorMessage}
@@ -156,7 +154,6 @@ const DappTransactionRequest = observer((props: Props) => {
   ]);
   const canSubmit =
     !!selectedWallet && !hasTokenError && !walletsDropdownHasError;
-
   const actions = [
     {
       label: intl.formatMessage(globalMessages.cancel),
@@ -170,12 +167,13 @@ const DappTransactionRequest = observer((props: Props) => {
     },
   ];
   const componentStyles = classnames([styles.component]);
-
   return (
     <Dialog
       className={componentStyles}
       title={intl.formatMessage(messages.title)}
-      subtitle={intl.formatMessage(messages.subtitle, { triggeredFrom })}
+      subtitle={intl.formatMessage(messages.subtitle, {
+        triggeredFrom,
+      })}
       actions={actions}
     >
       <p className={styles.label}>
@@ -255,5 +253,4 @@ const DappTransactionRequest = observer((props: Props) => {
     </Dialog>
   );
 });
-
 export default injectIntl(DappTransactionRequest);

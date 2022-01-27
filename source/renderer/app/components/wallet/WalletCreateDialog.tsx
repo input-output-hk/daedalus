@@ -1,4 +1,3 @@
-// @flow
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -26,7 +25,6 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.create.dialog.title',
@@ -86,15 +84,13 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
-
 type Props = {
-  onSubmit: Function,
-  onCancel: Function,
-  currentLocale: string,
+  onSubmit: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  currentLocale: string;
 };
-
 type State = {
-  isSubmitting: boolean,
+  isSubmitting: boolean;
 };
 
 @observer
@@ -102,7 +98,6 @@ class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isSubmitting: false,
   };
@@ -114,7 +109,6 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 
   walletNameInput: Input;
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -177,19 +171,24 @@ class WalletCreateDialog extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
-    this.setState({ isSubmitting: false });
+    this.setState({
+      isSubmitting: false,
+    });
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
+        this.setState({
+          isSubmitting: true,
+        });
         const { walletName, spendingPassword } = form.values();
         const walletData = {
           name: walletName,
@@ -198,12 +197,15 @@ class WalletCreateDialog extends Component<Props, State> {
         this.props.onSubmit(walletData);
       },
       onError: () => {
-        handleFormErrors('.SimpleFormField_error', { focusElement: true });
-        this.setState({ isSubmitting: false });
+        handleFormErrors('.SimpleFormField_error', {
+          focusElement: true,
+        });
+        this.setState({
+          isSubmitting: false,
+        });
       },
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -216,19 +218,15 @@ class WalletCreateDialog extends Component<Props, State> {
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
-
     const canSubmit = !isSubmitting && form.isValid;
-
     const buttonLabel = !isSubmitting ? (
       this.context.intl.formatMessage(messages.createPersonalWallet)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         disabled: !canSubmit,
@@ -237,7 +235,6 @@ class WalletCreateDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -300,4 +297,4 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 }
 
-export default WalletCreateDialog
+export default WalletCreateDialog;

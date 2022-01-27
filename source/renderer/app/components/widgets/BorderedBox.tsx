@@ -1,16 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './BorderedBox.scss';
-
 type Props = {
-  children?: Node,
-  className?: string,
-  fullHeight?: boolean,
-  onMouseEnter?: Function,
-  onMouseLeave?: Function,
+  children?: Node;
+  className?: string;
+  fullHeight?: boolean;
+  onMouseEnter?: (...args: Array<any>) => any;
+  onMouseLeave?: (...args: Array<any>) => any;
 };
 
 @observer
@@ -28,7 +26,6 @@ class BorderedBox extends Component<Props> {
       fullHeight ? styles.fullHeight : null,
       className,
     ]);
-
     return (
       <div
         className={componentClasses}
@@ -41,4 +38,4 @@ class BorderedBox extends Component<Props> {
   }
 }
 
-export default BorderedBox
+export default BorderedBox;

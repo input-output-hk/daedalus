@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -13,7 +12,6 @@ import {
 } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
-
 const messages = defineMessages({
   tableHeaderPool: {
     id: 'staking.epochs.currentEpoch.tableHeader.pool',
@@ -26,26 +24,20 @@ const messages = defineMessages({
     description: 'Table header "Slots elected" label on staking epochs page',
   },
 });
-
 type Props = {
-  currentEpochData: EpochData,
-  isLoading: boolean,
+  currentEpochData: EpochData;
+  isLoading: boolean;
 };
-
 type State = {
-  currentEpochDataOrder: string,
-  currentEpochDataSortBy: string,
+  currentEpochDataOrder: string;
+  currentEpochDataSortBy: string;
 };
 
 @observer
-class StakingEpochsCurrentEpochData extends Component<
-  Props,
-  State
-> {
+class StakingEpochsCurrentEpochData extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
   };
@@ -67,6 +59,7 @@ class StakingEpochsCurrentEpochData extends Component<
     } else {
       newOrder = 'desc';
     }
+
     this.setState({
       currentEpochDataSortBy: newSortBy,
       currentEpochDataOrder: newOrder,
@@ -100,7 +93,6 @@ class StakingEpochsCurrentEpochData extends Component<
           const poolTicker = get(row, ['pool', 'ticker'], '');
           const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0]);
-
           return (
             <tr key={key}>
               <td>
@@ -121,7 +113,6 @@ class StakingEpochsCurrentEpochData extends Component<
         })}
       </tbody>
     );
-
     return (
       <StakingEpochsDataTable
         tableHeaders={tableHeaders}
@@ -134,4 +125,4 @@ class StakingEpochsCurrentEpochData extends Component<
   }
 }
 
-export default StakingEpochsCurrentEpochData
+export default StakingEpochsCurrentEpochData;

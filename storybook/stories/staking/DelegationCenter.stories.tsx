@@ -1,11 +1,10 @@
-// @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -18,9 +17,9 @@ import type {
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
 import { generateHash, generatePolicyIdHash } from '../_support/utils';
-
-const walletSyncedStateReady = { status: 'ready' };
-
+const walletSyncedStateReady = {
+  status: 'ready',
+};
 const walletSyncedStateRestoring = {
   status: 'syncing',
   progress: {
@@ -28,29 +27,23 @@ const walletSyncedStateRestoring = {
     unit: 'percentage',
   },
 };
-
 const networkTip: TipInfo = {
   epoch: 1232,
   slot: 123,
   absoluteSlotNumber: 15000000,
 };
-
 const nextEpochDate = new Date();
 nextEpochDate.setDate(nextEpochDate.getDate() + 1);
-
 const futureEpochDate = new Date();
 futureEpochDate.setDate(futureEpochDate.getDate() + 2);
-
 const nextEpoch: NextEpoch = {
   epochNumber: 1233,
   epochStart: nextEpochDate.toUTCString(),
 };
-
 const futureEpoch: NextEpoch = {
   epochNumber: 1234,
   epochStart: futureEpochDate.toUTCString(),
 };
-
 // Dummy data initialization
 const wallets = [
   new Wallet({
@@ -339,17 +332,16 @@ const wallets = [
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
   }),
 ];
-
 export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
   isEpochsInfoAvailable,
   currentTheme,
 }: {
-  locale: string,
-  isLoading: boolean,
-  isEpochsInfoAvailable: boolean,
-  currentTheme: string,
+  locale: string;
+  isLoading: boolean;
+  isEpochsInfoAvailable: boolean;
+  currentTheme: string;
 }) => (
   <DelegationCenter
     wallets={wallets}

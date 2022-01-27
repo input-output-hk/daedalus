@@ -1,4 +1,3 @@
-// @flow
 import { observable, action, runInAction, computed } from 'mobx';
 import { map, get, find } from 'lodash';
 import Store from './lib/Store';
@@ -15,22 +14,22 @@ import type {
   NewsItem,
   MarkNewsAsReadResponse,
 } from '../api/news/types';
-
 const { isTest, version, isDev } = global.environment;
-
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
   'OPEN_DIAGNOSTIC_DIALOG',
 ];
-
 export default class NewsFeedStore extends Store {
-  @observable rawNews: ?Array<NewsItem> = null;
-  @observable newsUpdatedAt: ?Date = null;
-  @observable fetchingNewsFailed = false;
-  @observable getNewsRequest: Request<GetNewsResponse> = new Request(
-    this.api.ada.getNews
-  );
-  @observable getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
+  @observable
+  rawNews: Array<NewsItem> | null | undefined = null;
+  @observable
+  newsUpdatedAt: Date | null | undefined = null;
+  @observable
+  fetchingNewsFailed = false;
+  @observable
+  getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
+  @observable
+  getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
     this.api.localStorage.getReadNews
   );
   @observable
@@ -41,17 +40,22 @@ export default class NewsFeedStore extends Store {
   markNewsAsUnreadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsUnread
   );
-  @observable openedAlert: ?News.News = null;
-  @observable fetchLocalNews: boolean = false;
-  @observable rawNewsJsonQA: ?GetNewsResponse = null;
-
-  pollingNewsIntervalId: ?IntervalID = null;
-  pollingNewsOnErrorIntervalId: ?IntervalID = null;
-  pollingNewsOnIncidentIntervalId: ?IntervalID = null;
+  @observable
+  openedAlert: News.News | null | undefined = null;
+  @observable
+  fetchLocalNews: boolean = false;
+  @observable
+  rawNewsJsonQA: GetNewsResponse | null | undefined = null;
+  pollingNewsIntervalId: IntervalID | null | undefined = null;
+  pollingNewsOnErrorIntervalId: IntervalID | null | undefined = null;
+  pollingNewsOnIncidentIntervalId: IntervalID | null | undefined = null;
 
   setup() {
     // Fetch news on app start
-    this.getNews({ isInit: true });
+    this.getNews({
+      isInit: true,
+    });
+
     if (!isTest) {
       // Refetch news every 30 mins
       this.pollingNewsIntervalId = setInterval(
@@ -61,14 +65,17 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNews = async (params?: { isInit: boolean }) => {
+  @action
+  getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
+
     try {
       if (this.rawNewsJsonQA && isDev) {
         rawNews = this.rawNewsJsonQA;
       } else {
         rawNews = await this.getNewsRequest.execute().promise;
       }
+
       const hasIncident = find(
         rawNews.items,
         (news) => news.type === NewsTypes.INCIDENT
@@ -80,6 +87,7 @@ export default class NewsFeedStore extends Store {
           rawNews.items,
           (news) => news.type === NewsTypes.ALERT && news.repeatOnStartup
         );
+
         if (repeatableNews) {
           const mainIdentificator = repeatableNews.id || repeatableNews.date;
           // Mark Alert as unread in LC if "repeatOnStartup" parameter set
@@ -143,6 +151,7 @@ export default class NewsFeedStore extends Store {
           clearInterval(this.pollingNewsIntervalId);
           this.pollingNewsIntervalId = null;
         }
+
         if (this.pollingNewsOnIncidentIntervalId) {
           clearInterval(this.pollingNewsOnIncidentIntervalId);
           this.pollingNewsOnIncidentIntervalId = null;
@@ -156,6 +165,7 @@ export default class NewsFeedStore extends Store {
           );
         }
       }
+
       this._setFetchingNewsFailed(true);
     }
 
@@ -168,35 +178,37 @@ export default class NewsFeedStore extends Store {
       });
     }
   };
-
-  @action markNewsAsRead = async (newsId: number[]) => {
+  @action
+  markNewsAsRead = async (newsId: number[]) => {
     // Set news timestamp to LC
     await this.markNewsAsReadRequest.execute(newsId);
     // Get all read news to force @computed change
     await this.getReadNewsRequest.execute();
   };
-
-  @action openAlert = (newsId: number) => {
+  @action
+  openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
         (newsItem) => newsItem.id === newsId
       );
+
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
       }
     }
   };
-
-  @action closeOpenedAlert = () => {
+  @action
+  closeOpenedAlert = () => {
     this.openedAlert = null;
   };
-
-  @action _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
+  @action
+  _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
-
-  @action proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
+  @action
+  proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
     const { url, route, event } = newsItem.action;
+
     if (url) {
       this.stores.app.openExternalLink(url, e);
     } else if (
@@ -205,28 +217,31 @@ export default class NewsFeedStore extends Store {
       newsItem.type !== NewsTypes.ALERT
     ) {
       this.actions.app.closeNewsFeed.trigger();
-      this.actions.router.goToRoute.trigger({ route });
+      this.actions.router.goToRoute.trigger({
+        route,
+      });
     } else if (event && AVAILABLE_NEWSFEED_EVENT_ACTIONS.includes(event)) {
       switch (event) {
         case 'OPEN_DIAGNOSTIC_DIALOG':
           this.actions.app.openDaedalusDiagnosticsDialog.trigger();
           break;
+
         case 'DOWNLOAD_LOGS':
           this.actions.app.downloadLogs.trigger();
           break;
+
         default:
           break;
       }
     }
   };
-
-  @action setFakedNewsfeed = (params: {
-    isAutomaticUpdateTest: ?boolean,
-    appVersion?: string,
+  @action
+  setFakedNewsfeed = (params: {
+    isAutomaticUpdateTest: boolean | null | undefined;
+    appVersion?: string;
   }) => {
     if (isDev) {
       const { isAutomaticUpdateTest, appVersion } = params;
-
       // Fake appVersion for news ONLY so we can check multiple cases
       global.environment.version = appVersion || version;
 
@@ -234,18 +249,24 @@ export default class NewsFeedStore extends Store {
         clearInterval(this.pollingNewsIntervalId);
         this.pollingNewsIntervalId = null;
       }
+
       let rawNewsJsonQA;
+
       if (isAutomaticUpdateTest) {
         rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
       } else {
         rawNewsJsonQA = require('../config/news.dummy.json');
       }
+
       this.rawNewsJsonQA = rawNewsJsonQA;
-      this.getNews({ isInit: true });
+      this.getNews({
+        isInit: true,
+      });
     }
   };
 
-  @computed get newsFeedData(): News.NewsCollection {
+  @computed
+  get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
@@ -268,6 +289,7 @@ export default class NewsFeedStore extends Store {
           date: get(item, ['publishedAt', currentLocale], item.date),
           read: readNews.includes(mainIdentificator),
         };
+
         // Exclude "color" parameter from news that are not incidents
         if (item.type === NewsTypes.INCIDENT) {
           newsfeedItem = {
@@ -283,13 +305,16 @@ export default class NewsFeedStore extends Store {
             repeatOnStartup: get(item, 'repeatOnStartup', false),
           };
         }
+
         return newsfeedItem;
       });
     }
+
     return new News.NewsCollection(news);
   }
 
-  @computed get isLoadingNews() {
+  @computed
+  get isLoadingNews() {
     return this.fetchingNewsFailed || !this.rawNews;
   }
 }

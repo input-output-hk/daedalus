@@ -1,4 +1,3 @@
-// @flow
 import fs from 'fs';
 import archiver from 'archiver';
 import path from 'path';
@@ -11,12 +10,10 @@ import type {
   CompressLogsRendererRequest,
   CompressLogsMainResponse,
 } from '../../common/ipc/api';
-
 export const compressLogsChannel: MainIpcChannel<
   CompressLogsRendererRequest,
   CompressLogsMainResponse
 > = new MainIpcChannel(COMPRESS_LOGS_CHANNEL);
-
 export default () => {
   compressLogsChannel.onRequest(
     ({ logs, compressedFileName }) =>
@@ -24,37 +21,43 @@ export default () => {
         const outputPath = path.join(appLogsFolderPath, compressedFileName);
         const output = fs.createWriteStream(outputPath);
         const archive = archiver('zip', {
-          zlib: { level: 9 }, // Sets the compression level
+          zlib: {
+            level: 9,
+          }, // Sets the compression level
         });
-
         output.on('close', () => {
-          logger.debug('COMPRESS_LOGS.SUCCESS', { outputPath });
+          logger.debug('COMPRESS_LOGS.SUCCESS', {
+            outputPath,
+          });
           resolve(outputPath);
         });
-
         archive.on('error', (error) => {
-          logger.error('COMPRESS_LOGS.ERROR', { error });
+          logger.error('COMPRESS_LOGS.ERROR', {
+            error,
+          });
           reject(error);
         });
-
         logger.debug('COMPRESS_LOGS.START');
-
         // compress files
         const logFiles = get(logs, ['files'], []);
+
         for (let i = 0; i < logFiles.length; i++) {
           const stream = fs.readFileSync(
             path.join(pubLogsFolderPath, logFiles[i])
           );
-          archive.append(stream, { name: logFiles[i] });
+          archive.append(stream, {
+            name: logFiles[i],
+          });
         }
 
         archive.finalize((error) => {
           if (error) {
-            logger.error('COMPRESS_LOGS.ERROR', { error });
+            logger.error('COMPRESS_LOGS.ERROR', {
+              error,
+            });
             reject(error);
           }
         });
-
         archive.pipe(output);
       })
   );

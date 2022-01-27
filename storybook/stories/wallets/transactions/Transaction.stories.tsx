@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,17 +9,14 @@ import {
   text,
 } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-
 // Screens
 import Transaction from '../../../../source/renderer/app/components/wallet/transactions/Transaction';
-
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import {
   generateHash,
-  generatePolicyIdHash,
-  // generat eAsset,
+  generatePolicyIdHash, // generat eAsset,
 } from '../../_support/utils';
 import {
   WalletTransaction,
@@ -28,9 +24,7 @@ import {
   TransactionStates,
 } from '../../../../source/renderer/app/domains/WalletTransaction';
 import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-
 const date = new Date();
-
 const assetsMetadata = [
   {
     name: 'MakerDAO',
@@ -77,7 +71,6 @@ const assetsMetadata = [
     logo: '',
   },
 ];
-
 const transactionTokens = [
   {
     policyId: generatePolicyIdHash(),
@@ -120,10 +113,7 @@ storiesOf('Wallets|Transactions', module)
     <StoryProvider>
       <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
     </StoryProvider>
-  ))
-
-  // ====== Stories ======
-
+  )) // ====== Stories ======
   .add('Transaction', () => {
     const direction = select(
       'direction',
@@ -140,10 +130,8 @@ storiesOf('Wallets|Transactions', module)
       },
       ...transactionTokens.slice(1),
     ];
-
     const decimals = number('decimals', 1, {}, 'First Asset');
     const hasMetadata = boolean('hasMetadata', true, 'First Asset');
-
     const assetTokens = tokens.map((token, index) => ({
       ...token,
       uniqueId: token.policyId + token.assetName,
@@ -166,9 +154,7 @@ storiesOf('Wallets|Transactions', module)
             }
           : assetsMetadata[index],
     }));
-
     const amount = new BigNumber(number('amount', 10, {}, 'Transaction'));
-
     const transaction = new WalletTransaction({
       id: generateHash(),
       confirmations: number('confirmations', 10, {}, 'Transaction'),

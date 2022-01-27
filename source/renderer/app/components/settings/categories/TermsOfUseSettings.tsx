@@ -1,12 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import TermsOfUseText from '../../profile/terms-of-use/TermsOfUseText';
 import styles from './TermsOfUseSettings.scss';
-
 type Props = {
-  localizedTermsOfUse: string,
-  onOpenExternalLink: Function,
+  localizedTermsOfUse: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
 
 @observer
@@ -24,4 +22,4 @@ class TermsOfUseSettings extends Component<Props> {
   }
 }
 
-export default TermsOfUseSettings
+export default TermsOfUseSettings;

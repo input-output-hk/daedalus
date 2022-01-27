@@ -1,16 +1,17 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletFileImportStepContainer from './wallet-import/WalletFileImportStepContainer';
 import WalletSelectImportStepContainer from './wallet-import/WalletSelectImportStepContainer';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class WalletImportDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   get containers() {
     return {
@@ -26,7 +27,6 @@ class WalletImportDialogContainer extends Component<Props> {
   onConfirm = () => {
     this.props.actions.walletMigration.nextStep.trigger();
   };
-
   onCancel = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
@@ -39,7 +39,6 @@ class WalletImportDialogContainer extends Component<Props> {
     const CurrentContainer = walletMigrationStep
       ? this.containers[walletMigrationStep]
       : WalletFileImportStepContainer;
-
     return (
       <CurrentContainer
         onContinue={() => nextStep.trigger()}
@@ -49,4 +48,4 @@ class WalletImportDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletImportDialogContainer
+export default WalletImportDialogContainer;

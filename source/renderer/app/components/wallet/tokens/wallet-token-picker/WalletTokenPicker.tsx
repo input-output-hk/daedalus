@@ -1,4 +1,3 @@
-// @flow
 import React, { useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -78,7 +77,6 @@ const WalletTokenPicker = ({
     ],
     [intl, checkedIds, onAdd]
   );
-
   return (
     <Dialog
       className={styles.dialog}
@@ -108,7 +106,10 @@ const WalletTokenPicker = ({
                 <span>
                   {option.label}
                   <span className={styles.filterCounter}>
-                    {getTokenCounterText({ assets, currentAssets })}
+                    {getTokenCounterText({
+                      assets,
+                      currentAssets,
+                    })}
                   </span>
                 </span>
               )}

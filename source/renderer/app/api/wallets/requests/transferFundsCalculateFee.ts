@@ -1,4 +1,3 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type {
   TransferFundsCalculateFeeRequest,
@@ -6,7 +5,6 @@ import type {
 } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
-
 export const transferFundsCalculateFee = (
   config: RequestConfig,
   { sourceWalletId }: TransferFundsCalculateFeeRequest

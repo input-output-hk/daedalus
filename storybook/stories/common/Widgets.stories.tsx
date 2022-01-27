@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
 import { storiesOf } from '@storybook/react';
@@ -20,7 +19,6 @@ import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shar
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
-
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
   messages: enMessages,
@@ -29,8 +27,10 @@ const { intl: jpIntl } = new IntlProvider({
   locale: 'ja-JP',
   messages: jpMessages,
 }).getChildContext();
-const intl = { 'en-US': enIntl, 'ja-JP': jpIntl };
-
+const intl = {
+  'en-US': enIntl,
+  'ja-JP': jpIntl,
+};
 const messages = defineMessages({
   create: {
     id: 'global.labels.create',
@@ -75,12 +75,12 @@ const messages = defineMessages({
     description: 'Save description.',
   },
 });
-
 storiesOf('Common|Widgets', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();
     }
+
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
@@ -89,7 +89,6 @@ storiesOf('Common|Widgets', module)
         onChangeAction(value, event);
       }),
     });
-
     return (
       <StoryDecorator propsForChildren={state}>
         <StoryProvider>
@@ -100,21 +99,22 @@ storiesOf('Common|Widgets', module)
       </StoryDecorator>
     );
   })
-
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('CountdownWidget', () => (
     <CountdownWidget
       startDateTime={new Date(date('startDateTime')).toISOString()}
       format="DD-HH-mm-ss"
     />
   ))
-
   .add('InlineEditingInput', () => (
     <div>
-      <div style={{ width: '700px', height: '200px', display: 'flex' }}>
+      <div
+        style={{
+          width: '700px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
         <InlineEditingInput
           label={text('inputFieldLabel', 'Input label')}
           value=""
@@ -133,10 +133,15 @@ storiesOf('Common|Widgets', module)
       </div>
     </div>
   ))
-
   .add('BigButtonForDialogs', (props: { locale: string }) => (
     <div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
         <BigButtonForDialogs
           description={intl[props.locale].formatMessage(
             messages.createNewWallet
@@ -146,7 +151,13 @@ storiesOf('Common|Widgets', module)
           onClick={() => {}}
         />
       </div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
         <BigButtonForDialogs
           description={intl[props.locale].formatMessage(
             messages.joinSharedWallet
@@ -157,7 +168,13 @@ storiesOf('Common|Widgets', module)
           isDisabled
         />
       </div>
-      <div style={{ width: '300px', height: '200px', display: 'flex' }}>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
         <BigButtonForDialogs
           description={intl[props.locale].formatMessage(
             messages.importExistingWallet
@@ -169,11 +186,14 @@ storiesOf('Common|Widgets', module)
       </div>
     </div>
   ))
-
   .add('MnemonicInputWidget - 9 words', (props: { locale: string }) => {
     const tokens = observable(['', '', '', '', '', '', '', '', '']);
     return (
-      <div style={{ padding: 20 }}>
+      <div
+        style={{
+          padding: 20,
+        }}
+      >
         <MnemonicInputWidget
           label={intl[props.locale].formatMessage(messages.recoveryPhrase)}
           tokens={tokens}
@@ -184,20 +204,16 @@ storiesOf('Common|Widgets', module)
       </div>
     );
   })
-
   .add('TinySwitch', () => <TinySwitch />)
-
   .add('TinySwitch - short label', (props: { locale: string }) => (
     <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
   ))
-
   .add('ButtonLink', (props: { locale: string }) => (
     <ButtonLink
       label={intl[props.locale].formatMessage(messages.save)}
       onClick={action('onClick')}
     />
   ))
-
   .add('NormalSwitch', () => (
     <div>
       <NormalSwitch onChange={action('onChange')} />

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -12,14 +11,13 @@ import type { AssetToken } from '../../../../api/assets/types';
 import warningIcon from '../../../../assets/images/asset-token-warning-ic.inline.svg';
 import { messages } from './WalletToken.messages';
 import { isRecommendedDecimal } from './helpers';
-
 type Props = {
-  asset: AssetToken,
-  className?: string,
-  intl: intlShape.isRequired,
-  isLoading: boolean,
-  onAssetSettings?: Function,
-  onOpenAssetSend?: Function,
+  asset: AssetToken;
+  className?: string;
+  intl: intlShape.isRequired;
+  isLoading: boolean;
+  onAssetSettings?: (...args: Array<any>) => any;
+  onOpenAssetSend?: (...args: Array<any>) => any;
 };
 
 const WalletTokenFooter = (props: Props) => {
@@ -32,12 +30,14 @@ const WalletTokenFooter = (props: Props) => {
     onOpenAssetSend,
   } = props;
   const { recommendedDecimals, decimals } = asset;
-  const hasWarning = isRecommendedDecimal({ decimals, recommendedDecimals });
+  const hasWarning = isRecommendedDecimal({
+    decimals,
+    recommendedDecimals,
+  });
   const warningPopOverMessage =
     typeof decimals === 'number'
       ? messages.settingsWarningPopOverNotUsing
       : messages.settingsWarningPopOverAvailable;
-
   return (
     <div className={classNames(styles.root, className)}>
       <div className={styles.amount}>
@@ -81,7 +81,11 @@ const WalletTokenFooter = (props: Props) => {
                   )}
                 </>
               }
-              onClick={() => onAssetSettings({ asset })}
+              onClick={() =>
+                onAssetSettings({
+                  asset,
+                })
+              }
             />
           </PopOver>
         )}

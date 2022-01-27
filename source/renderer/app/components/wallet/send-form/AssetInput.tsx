@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import type { Field } from 'mobx-react-form';
@@ -16,21 +15,17 @@ import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import styles from './AssetInput.scss';
 import messages from './messages';
-
 type Props = {
-  uniqueId: string,
-  getAssetByUniqueId: Function,
-  assetFields: {
-    [uniqueId: string]: Field,
-  },
-  addFocusableField: Function,
-  currentNumberFormat: NumberFormat,
-  removeAssetRow: Function,
-  handleSubmitOnEnter: Function,
-  clearAssetFieldValue: Function,
-  autoFocus: boolean,
+  uniqueId: string;
+  getAssetByUniqueId: (...args: Array<any>) => any;
+  assetFields: Record<string, Field>;
+  addFocusableField: (...args: Array<any>) => any;
+  currentNumberFormat: NumberFormat;
+  removeAssetRow: (...args: Array<any>) => any;
+  handleSubmitOnEnter: (...args: Array<any>) => any;
+  clearAssetFieldValue: (...args: Array<any>) => any;
+  autoFocus: boolean;
 };
-
 const INPUT_FIELD_PADDING_DELTA = 10;
 
 @observer
@@ -38,21 +33,21 @@ class AssetInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  rightContentRef: { current: null | HTMLDivElement };
+  rightContentRef: {
+    current: null | HTMLDivElement;
+  };
 
   constructor(props: Props) {
     super(props);
-
     this.rightContentRef = React.createRef();
   }
 
   hasAssetValue = (asset: Field) => {
     return get(asset, 'value', false);
   };
-
   generateInputFieldStyle = () => {
     const { current: rightContentDom } = this.rightContentRef;
+
     if (!rightContentDom) {
       return null;
     }
@@ -79,6 +74,7 @@ class AssetInput extends Component<Props> {
       autoFocus,
     } = this.props;
     const asset = getAssetByUniqueId(uniqueId);
+
     if (!asset) {
       return false;
     }
@@ -87,7 +83,6 @@ class AssetInput extends Component<Props> {
     const ticker = get(metadata, 'ticker', null);
     const assetField = assetFields[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
-
     return (
       <div key={`receiver_asset_${uniqueId}`} className={styles.component}>
         <div className={styles.inputBlock}>
@@ -135,15 +130,17 @@ class AssetInput extends Component<Props> {
             error={assetField.error}
             skin={AmountInputSkin}
             style={inputFieldStyle}
-            onKeyPress={(evt: SyntheticKeyboardEvent<EventTarget>) => {
+            onKeyPress={(evt: React.KeyboardEvent<EventTarget>) => {
               if (decimals === 0) {
                 const { charCode } = evt;
+
                 if (charCode === 190 || charCode === 110 || charCode === 46) {
                   evt.persist();
                   evt.preventDefault();
                   evt.stopPropagation();
                 }
               }
+
               handleSubmitOnEnter(evt);
             }}
             allowSigns={false}
@@ -191,4 +188,4 @@ class AssetInput extends Component<Props> {
   }
 }
 
-export default AssetInput
+export default AssetInput;

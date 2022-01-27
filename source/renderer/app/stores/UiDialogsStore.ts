@@ -1,13 +1,13 @@
-// @flow
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
-
 export default class UiDialogsStore extends Store {
-  @observable activeDialog: ?Function = null;
-  @observable secondsSinceActiveDialogIsOpen: number = 0;
-  @observable dataForActiveDialog: Object = {};
-
-  _secondsTimerInterval: ?IntervalID = null;
+  @observable
+  activeDialog: ((...args: Array<any>) => any) | null | undefined = null;
+  @observable
+  secondsSinceActiveDialogIsOpen: number = 0;
+  @observable
+  dataForActiveDialog: Record<string, any> = {};
+  _secondsTimerInterval: IntervalID | null | undefined = null;
 
   setup() {
     this.actions.dialogs.open.listen(this._onOpen);
@@ -18,33 +18,34 @@ export default class UiDialogsStore extends Store {
     );
   }
 
-  isOpen = (dialog: Function): boolean => this.activeDialog === dialog;
-
+  isOpen = (dialog: (...args: Array<any>) => any): boolean =>
+    this.activeDialog === dialog;
   countdownSinceDialogOpened = (countDownTo: number) =>
     Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0);
-
-  @action _onOpen = ({ dialog }: { dialog: Function }) => {
+  @action
+  _onOpen = ({ dialog }: { dialog: (...args: Array<any>) => any }) => {
     this._reset();
+
     this.activeDialog = dialog;
     this.dataForActiveDialog = observable(dialog.defaultProps || {});
     this.secondsSinceActiveDialogIsOpen = 0;
     if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
     this._secondsTimerInterval = setInterval(this._updateSeconds, 1000);
   };
-
-  @action _onClose = () => {
+  @action
+  _onClose = () => {
     this._reset();
   };
-
-  @action _updateSeconds = () => {
+  @action
+  _updateSeconds = () => {
     this.secondsSinceActiveDialogIsOpen += 1;
   };
-
-  @action _onUpdateDataForActiveDialog = ({ data }: { data: Object }) => {
+  @action
+  _onUpdateDataForActiveDialog = ({ data }: { data: Record<string, any> }) => {
     Object.assign(this.dataForActiveDialog, data);
   };
-
-  @action _reset = () => {
+  @action
+  _reset = () => {
     this.activeDialog = null;
     this.secondsSinceActiveDialogIsOpen = 0;
     this.dataForActiveDialog = {};

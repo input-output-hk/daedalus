@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import WalletImportFileDialog from '../../../../components/wallet/wallet-import/WalletImportFileDialog';
 import type { ImportFromOption } from '../../../../types/walletExportTypes';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -13,15 +11,12 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 @observer
 class WalletFileImportStepContainer extends Component<Props> {
   static defaultProps = DefaultProps;
-
   onSelectExportSourcePath = (params: { importFrom: ImportFromOption }) => {
     this.props.actions.walletMigration.selectExportSourcePath.trigger(params);
   };
-
   onResetExportSourcePath = () => {
     this.props.actions.walletMigration.resetExportSourcePath.trigger();
   };
-
   onOpen = () => {
     this.props.actions.walletMigration.resetMigration.trigger();
     this.props.actions.walletMigration.initiateMigration.trigger();
@@ -30,7 +25,6 @@ class WalletFileImportStepContainer extends Component<Props> {
   render() {
     const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
-
     const {
       exportErrors,
       exportSourcePath,
@@ -38,9 +32,7 @@ class WalletFileImportStepContainer extends Component<Props> {
       pendingImportWalletsCount,
       isExportRunning,
     } = walletMigration;
-
     const { openExternalLink } = app;
-
     return (
       <WalletImportFileDialog
         isSubmitting={isExportRunning}
@@ -59,4 +51,4 @@ class WalletFileImportStepContainer extends Component<Props> {
   }
 }
 
-export default WalletFileImportStepContainer
+export default WalletFileImportStepContainer;

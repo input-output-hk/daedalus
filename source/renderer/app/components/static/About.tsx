@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -10,7 +9,6 @@ import styles from './About.scss';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
-
 const messages = defineMessages({
   aboutTitle: {
     id: 'static.about.title',
@@ -55,17 +53,15 @@ const messages = defineMessages({
     description: 'About page build information',
   },
 });
-
 type Props = {
-  apiVersion: string,
-  nodeVersion: string,
-  build: string,
-  onOpenExternalLink: Function,
-  os: string,
-  version: string,
-  onClose: Function,
+  apiVersion: string;
+  nodeVersion: string;
+  build: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  os: string;
+  version: string;
+  onClose: (...args: Array<any>) => any;
 };
-
 export default class About extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -88,7 +84,6 @@ export default class About extends Component<Props> {
       messages.aboutContentCardanoHeadline
     );
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
-
     return (
       <div className={styles.container}>
         <DialogCloseButton

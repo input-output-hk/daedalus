@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -10,7 +9,6 @@ import styles from './WalletRestoreDialog.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { DialogActionItems } from '../../../widgets/Dialog';
 import type { RestoreWalletStep } from '../../../../types/walletRestoreTypes';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.restore.dialog.title',
@@ -28,15 +26,13 @@ const messages = defineMessages({
     description: 'Step couters in the wallet restore dialog.',
   },
 });
-
 type Props = {
-  stepNumber?: number,
-  actions?: DialogActionItems,
-  onClose?: Function,
-  onBack?: Function,
-  children: Node,
+  stepNumber?: number;
+  actions?: DialogActionItems;
+  onClose?: (...args: Array<any>) => any;
+  onBack?: (...args: Array<any>) => any;
+  children: Node;
 };
-
 export default class WalletRestoreDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -64,7 +60,6 @@ export default class WalletRestoreDialog extends Component<Props> {
         }}
       />
     );
-
     return (
       <Dialog
         className={styles.component}
