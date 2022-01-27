@@ -13,21 +13,28 @@ export default class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleSubmit = (asset: AssetToken, decimals: number) => {
-    const { onAssetSettingsSubmit } = this.props.actions.assets;
-    onAssetSettingsSubmit.trigger({ asset, decimals });
+    const { assets, dialogs } = this.props.actions;
+    assets.onAssetSettingsSubmit.trigger({ asset, decimals });
+    dialogs.closeActiveDialog.trigger();
+  };
+
+  handleCancel = () => {
+    const { assets, dialogs } = this.props.actions;
+    assets.unsetEditedAsset.trigger();
+    dialogs.closeActiveDialog.trigger();
   };
 
   render() {
-    const { actions, stores } = this.props;
-    const { assets } = stores;
-    const { assets: assetsActions } = actions;
-    const { editingsAsset } = assets;
-    if (!editingsAsset) return null;
+    const { stores } = this.props;
+    const { assets, uiDialogs } = stores;
+    const { editedAsset } = assets;
+    if (!uiDialogs.isOpen(AssetSettingsDialog) || !editedAsset) return null;
+
     return (
       <AssetSettingsDialog
-        asset={editingsAsset}
+        asset={editedAsset}
         onSubmit={this.handleSubmit}
-        onCancel={assetsActions.onAssetSettingsCancel.trigger}
+        onCancel={this.handleCancel}
       />
     );
   }

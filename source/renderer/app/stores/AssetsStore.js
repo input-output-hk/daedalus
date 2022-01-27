@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
-import { requestGetter } from '../utils/storesUtils';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
@@ -20,25 +19,19 @@ export default class AssetsStore extends Store {
   );
 
   @observable activeAsset: ?string = null;
-  @observable editingsAsset: ?AssetToken = null;
+  @observable editedAsset: ?AssetToken = null;
   @observable assetsRequests: {
     [key: WalletId]: Request<GetAssetsResponse>,
   } = {};
   @observable insertingAssetUniqueId: ?string = null;
   @observable removingAssetUniqueId: ?string = null;
 
-  // REQUESTS
-  @observable
-  getAssetSettingsDialogWasOpenedRequest: Request<void> = new Request(
-    this.api.localStorage.getAssetSettingsDialogWasOpened
-  );
-
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
-    assetsActions.onAssetSettingsOpen.listen(this._onAssetSettingsOpen);
+    assetsActions.setEditedAsset.listen(this._onEditedAssetSet);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
-    assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
+    assetsActions.unsetEditedAsset.listen(this._onEditedAssetUnset);
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
     assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
     assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
@@ -74,10 +67,6 @@ export default class AssetsStore extends Store {
   getAsset = (policyId: string, assetName: string): ?Asset =>
     this.details[`${policyId}${assetName}`];
 
-  @computed get assetSettingsDialogWasOpened(): boolean {
-    return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
-  }
-
   @computed get favorites(): Object {
     return this.favoritesRequest.result || {};
   }
@@ -88,10 +77,8 @@ export default class AssetsStore extends Store {
     this.favoritesRequest.execute();
   };
 
-  @action _onAssetSettingsOpen = ({ asset }: { asset: AssetToken }) => {
-    this.editingsAsset = asset;
-    this.api.localStorage.setAssetSettingsDialogWasOpened();
-    this.getAssetSettingsDialogWasOpenedRequest.execute();
+  @action _onEditedAssetSet = ({ asset }: { asset: AssetToken }) => {
+    this.editedAsset = asset;
   };
 
   @action _onAssetSettingsSubmit = async ({
@@ -101,7 +88,7 @@ export default class AssetsStore extends Store {
     asset: AssetToken,
     decimals: number,
   }) => {
-    this.editingsAsset = null;
+    this.editedAsset = null;
     const { policyId, assetName } = asset;
     const assetDomain = this.getAsset(policyId, assetName);
     if (assetDomain) {
@@ -115,8 +102,8 @@ export default class AssetsStore extends Store {
     });
   };
 
-  @action _onAssetSettingsCancel = () => {
-    this.editingsAsset = null;
+  @action _onEditedAssetUnset = () => {
+    this.editedAsset = null;
   };
 
   @action _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {

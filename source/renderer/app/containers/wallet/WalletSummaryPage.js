@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import type { AssetToken } from '../../api/assets/types';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
+import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
@@ -25,6 +27,10 @@ export const messages = defineMessages({
 });
 
 type Props = InjectedProps;
+
+type OpenAssetSettingsArgs = {
+  asset: AssetToken,
+};
 
 @inject('stores', 'actions')
 @observer
@@ -55,6 +61,16 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  openAssetSettingsDialog = ({ asset }: OpenAssetSettingsArgs) => {
+    const { assets, dialogs } = this.props.actions;
+    assets.setEditedAsset.trigger({ asset });
+    dialogs.open.trigger({ dialog: AssetSettingsDialog });
+  };
+
+  get assetSettingsDialogWasOpened() {
+    return this.props.stores.uiDialogs.isOpen(AssetSettingsDialog);
+  }
+
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
@@ -67,10 +83,9 @@ export default class WalletSummaryPage extends Component<Props> {
       assets,
       currency,
     } = stores;
-    const { all, getAsset, assetSettingsDialogWasOpened, favorites } = assets;
+    const { all, getAsset, favorites } = assets;
     const { isInternalAddress } = addresses;
     const {
-      onAssetSettingsOpen,
       onOpenAssetSend,
       onCopyAssetParam,
       onToggleFavorite,
@@ -166,10 +181,10 @@ export default class WalletSummaryPage extends Component<Props> {
           currencySelected={selected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={assetTokens}
-          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+          assetSettingsDialogWasOpened={this.assetSettingsDialogWasOpened}
           onOpenAssetSend={onOpenAssetSend.trigger}
           onCopyAssetParam={onCopyAssetParam.trigger}
-          onAssetSettings={onAssetSettingsOpen.trigger}
+          onAssetSettings={this.openAssetSettingsDialog}
           onExternalLinkClick={app.openExternalLink}
           onViewAllButtonClick={onViewAllButtonClick}
           tokenFavorites={favorites}
