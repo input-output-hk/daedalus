@@ -29,8 +29,9 @@ import { OversaturationText } from './OversaturationText';
 
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import { ReactIntlMessage } from '../../../types/i18nTypes';
 
-const messages = {
+const messages: Record<string, ReactIntlMessage> = {
   ...getMessages(),
   fieldIsRequired: globalMessages.fieldIsRequired,
 };
