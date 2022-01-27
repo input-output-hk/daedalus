@@ -457,9 +457,7 @@ class WalletSendForm extends Component<Props, State> {
         });
       });
   };
-  calculateTransactionFee = async (
-    shouldUpdateMinimumAdaAmount = false
-  ) => {
+  calculateTransactionFee = async (shouldUpdateMinimumAdaAmount = false) => {
     this.validateEmptyAssets();
     const { form } = this;
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
@@ -853,7 +851,7 @@ class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     } = formFields.receiver;
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = selectedAssetUniqueIds.length

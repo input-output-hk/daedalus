@@ -39,7 +39,7 @@ declare global {
       WALLET_COUNT: number;
     }
   }
-  const daedalus: Daedalus;
+  var daedalus: Daedalus;
 }
 
 export {};

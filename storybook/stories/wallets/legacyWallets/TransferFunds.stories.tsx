@@ -33,7 +33,7 @@ storiesOf('Wallets|Legacy Wallets', module)
     const sourceWallet = {
       // @ts-ignore ts-migrate(2698) FIXME: Spread types may only be created from object types... Remove this comment to see the full error message
       ...sourceWalletSelect,
- 			// @ts-ignore
+      // @ts-ignore
       amount: new BigNumber(sourceWalletSelect.amount),
     };
     return (

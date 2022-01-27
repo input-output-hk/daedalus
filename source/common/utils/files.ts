@@ -32,10 +32,9 @@ export const generateFileNameWithTimestamp = (props: Props = {}) => {
   if (sanitize) fileName = sanitizeFilename(fileName);
   return fileName;
 };
-export const isFileNameWithTimestamp = (
-  prefix = 'logs',
-  extension = 'zip'
-) => (fileName: string) =>
+export const isFileNameWithTimestamp = (prefix = 'logs', extension = 'zip') => (
+  fileName: string
+) =>
   fileName.match(
     RegExp(
       `(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3}Z)(.${extension})`
