@@ -118,6 +118,7 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 import { currencyConfig } from '../config/currencyConfig';
+import LightWalletApi from './lightWalletApi';
 
 // Addresses Types
 import type {
@@ -252,7 +253,9 @@ export default class AdaApi {
   // to avoid losing it in case of Token Metadata Registry server unvailability
   storedAssetMetadata: StoredAssetMetadata = {};
 
-  constructor(isTest: boolean, config: RequestConfig) {
+  constructor(isTest: boolean, config: RequestConfig, isLightWalletMode: boolean) {
+    // if (isLightWalletMode) LightWalletApi(this);
+    LightWalletApi(this);
     this.setRequestConfig(config);
     if (isTest) patchAdaApi(this);
   }
@@ -260,6 +263,10 @@ export default class AdaApi {
   setRequestConfig(config: RequestConfig) {
     this.config = config;
   }
+
+  tomoTest = async () => {
+    return 'adaAPI Test';
+  };
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');

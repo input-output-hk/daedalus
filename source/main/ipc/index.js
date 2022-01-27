@@ -22,6 +22,7 @@ import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
+import { handleLightWalletRequests } from './getLightWalletChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -48,4 +49,5 @@ export default (window: BrowserWindow) => {
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
   handleHardwareWalletRequests(window);
+  handleLightWalletRequests(window);
 };

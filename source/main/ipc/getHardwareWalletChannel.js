@@ -465,9 +465,9 @@ export const handleHardwareWalletRequests = async (
       throw e;
     } */
 
-    const walletProps = { name: 'tomo-test-wallet' }; // type SingleAddressWalletProps
-    const mnemonicWords = KeyManagement.util.generateMnemonicWords();
-    const mnemonicWords_memo = [
+    const walletProps = { name: 'tomotestwallet' }; // type SingleAddressWalletProps
+    // const mnemonicWords = KeyManagement.util.generateMnemonicWords();
+    const mnemonicWords = [
       'immune',
       'soul',
       'bus',
@@ -492,7 +492,7 @@ export const handleHardwareWalletRequests = async (
       'glare',
       'trade',
       'pyramid'
-    ];
+    ]; // address is "addr_test1qqnl3q7xlnzgjpyt3zy6arajjz52mkrsn3z3ld9wnckcvsyny332me0mkgnxeq7qlm223n2nj6kprsxzuzsxxj9du00ssrvqw0"
     const password = 'Secret1234';
     const keyManager = KeyManagement.createInMemoryKeyManager({
       mnemonicWords,
@@ -505,19 +505,42 @@ export const handleHardwareWalletRequests = async (
     let stakePoolSearchProvider;
     try {
       walletProvider = blockfrostWalletProvider({ isTestnet: true, projectId });
-      assetProvider = blockfrostAssetProvider({ isTestnet, projectId });
+      assetProvider = blockfrostAssetProvider({ isTestnet: true, projectId });
       stakePoolSearchProvider = createStubStakePoolSearchProvider();
       logger.info('>>>> DATA ready');
     } catch (e) {
       throw e
     }
 
-    const networkInfo = await walletProvider.networkInfo();
+    try {
+      logger.info('>>> START - LOG walletProvider - 1 <<<');
+      const networkInfo = await walletProvider.ledgerTip();
+      logger.info('>>> !!! DONE 1 - walletProvider <<<: ', { ledgerTip: networkInfo, walletProvider2: JSON.stringify(walletProvider) });
+      console.debug('>>>> TOMO TT 1: ', { walletProvider2: walletProvider, networkInfo })
+      logger.info('>>> CONTINUE walletProvider <<<');
+    } catch (e) {
+      logger.info('>>> ERROR - walletProvider <<<', e);
+    }
 
+    try {
+      logger.info('>>> START - LOG assetProvider - 1 <<<');
+      const assetHistory = await assetProvider.getAsset('b0d07d45fe9514f80213f4020e5a61241458be626841cde717cb38a76e7574636f696e');
+      logger.info('>>> !!! DONE 1 - assetProvider <<<: ', { assetHistory_1: assetHistory });
+      console.debug('>>>> TOMO TT 2: ', { assetProvider22: assetProvider, assetHistory })
+      logger.info('>>> CONTINUE assetProvider <<<');
+    } catch (e) {
+      logger.info('>>> ERROR - assetProvider <<<', e);
+    }
 
-    logger.info('>>> START - LOG networkInfo <<<');
-    // logger.info('>>> LOG networkInfo <<<: ', { networkInfo: JSONBigInt.stringify(networkInfo) });
-    logger.info('>>> CONTINUE networkInfo <<<');
+    try {
+      logger.info('>>> START - LOG stakePoolSearchProvider - 1 <<<');
+      const stakePool = stakePoolSearchProvider.queryStakePools(['d-to-matc']);
+      logger.info('>>> !!! DONE 1 - stakePoolSearchProvider <<<: ', { stakePool_1: stakePool, stakePoolSearchProvider });
+      logger.info('>>> CONTINUE stakePoolSearchProvider <<<');
+      console.debug('>>>> TOMO TT 3: ', { stakePoolSearchProvider22: stakePoolSearchProvider, stakePool })
+    } catch (e) {
+      logger.info('>>> ERROR - stakePoolSearchProvider <<<', e);
+    }
 
     /* mainWindow.webContents.executeJavaScript(`
       console.log(" TOMO TOMO ${JSON.stringify(walletProvider)}");
@@ -560,12 +583,100 @@ export const handleHardwareWalletRequests = async (
       logger.info('>>> Create Light Wallet - ERROR: ', e);
       throw e;
     } */
-    const tt = new SingleAddressWallet(walletProps, {
-      assetProvider,
-      keyManager,
-      stakePoolSearchProvider,
-      walletProvider,
-    });
+    let tt;
+    try {
+      logger.info('>>> START - LOG SingleAddressWallet - 1 <<<');
+
+      /*
+      beforeAll(async () => {
+        wallet = new SingleAddressWallet(
+          { name: 'Test Wallet' },
+          {
+            assetProvider,
+            keyManager,
+            stakePoolSearchProvider,
+            walletProvider
+          }
+        );
+        [{ rewardAccount }] = await firstValueFrom(wallet.addresses$);
+      });
+      */
+
+      tt = new SingleAddressWallet(
+        { name: 'Test Wallet' },
+        {
+          assetProvider,
+          keyManager,
+          stakePoolSearchProvider,
+          walletProvider,
+        }
+      );
+      console.debug('>>>> TOMO TT - Single Address Wallet: ', { SingleAddressWallet_1: tt })
+      console.debug('>>>> TOMO TT - Single Address Wallet - addresses: ', { addresses: tt.addresses })
+      // console.debug('>>>> TOMO TT - Single Address Wallet - addresses - value: ', { addresses: tt.addresses._value })
+      console.debug('>>>> TOMO TT - Single Address Wallet - addresses - value 2: ', { addresses: tt.addresses$ })
+      console.debug('>>>> TOMO TT - Single Address Wallet - addresses - value 3: ', { addresses: tt.addresses$.value })
+
+      console.debug('>>> BALANCE 0 - ', tt.balance)
+      console.debug('>>> BALANCE 1 - ', tt.balance.available)
+      console.debug('>>> BALANCE 2 -', tt.balance.available$.value)
+      console.debug('>>> BALANCE 3 -', tt.balance.total)
+      console.debug('>>> BALANCE 4 -', tt.balance.total$)
+      console.debug('>>> BALANCE 5 -', tt.balance.total$.value)
+
+      console.debug('>>> BALANCE 6 - coins available -', tt.balance.available$.value?.coins)
+      console.debug('>>> BALANCE 6 - coins total -', tt.balance.total$.value?.coins)
+
+
+
+      console.debug('>>> TX History 1 -', tt.transactions.history)
+      console.debug('>>> TX History 2 -', tt.transactions.history.all$)
+      console.debug('>>> TX History 3 -', tt.transactions.history.all$.value)
+
+      console.debug('>>> TX History 4 -', tt.transactions.history.incoming$.value)
+      console.debug('>>> TX History 5 -', tt.transactions.history.all$.observers[0])
+      console.debug('>>> TX History 6 -', tt.transactions.history.all$.observers[1])
+      console.debug('>>> TX History 7 -', tt.transactions.history.all$.value?.length)
+      console.debug('>>> TX History 8 -', tt.transactions.history.all$.observers[0].destination)
+      console.debug('>>> TX History 9 -', tt.transactions.history.all$.observers[0].destination.tx)
+      console.debug('>>> TX History 10 -', tt.transactions.history.all$.observers[0].destination.value)
+
+      try {
+        tt.balance.available$.subscribe(res => {
+          console.debug('>>> subscribe 1 - SOMETHING HAPPENED: ', res);
+        })
+      } catch (e) {
+        console.debug('>> subscribe 1 ERROR', e);
+      }
+
+      try {
+        tt.balance.total$.subscribe(res => {
+          console.debug('>>> subscribe 2 - SOMETHING HAPPENED: ', res);
+        })
+      } catch (e) {
+        console.debug('>> subscribe 2 ERROR, e');
+      }
+
+
+      /* try {
+        tt.balance.total$.observers[0].subscribe(res => {
+          console.debug('>>> subscribe 3 - SOMETHING HAPPENED: ', res);
+        })
+      } catch (e) {
+        console.debug('>> subscribe 3 ERROR', e);
+      } */
+
+      // logger.info('>>> !!! DONE 1 - SingleAddressWallet_1 - addresses <<<: ', { SingleAddressWallet_1: tt.addresses$.value![0] });
+    } catch (e) {
+      logger.info('>>> ERROR - SingleAddressWallet <<<', e);
+      throw e;
+    }
+
+
+
+    logger.info('>>> !!! DONE 1 - SingleAddressWallet_1 - addresses <<<: ', { SingleAddressWallet_1: tt.addresses });
+    logger.info('>>> Hello: ', {tip: tt.protocolParameters});
+
 
 
     /* return {
@@ -579,7 +690,11 @@ export const handleHardwareWalletRequests = async (
       assetProvider: assetProvider(),
       stakePoolSearchProvider: stakePoolSearchProvider(),
     }; */
-    return tt;
+    return {
+      addresses: tt.addresses$.value,
+      wallet: tt,
+      balance: tt.balance.total$.value,
+    };
   }
 
   handleInitLedgerConnectChannel.onRequest(async () => {
@@ -587,11 +702,14 @@ export const handleHardwareWalletRequests = async (
     light_wallet.one = { init: true }
     observer = new EventObserver(mainWindow);
     try {
-      const fin = testSingleAddressWallet();
+      const fin = await testSingleAddressWallet();
+      logger.info('>>> I have LW !!!');
+
+      console.debug('>>> FIN: ', fin);
 
       /* logger.info('[HW-LIGHT] Response: ', {
         fin
-      });*/
+      }); */
 
 
 
@@ -603,7 +721,7 @@ export const handleHardwareWalletRequests = async (
       // return JSON.stringify(LightWalletData)
       // return JSON.stringify({ done: true });
       // return fin;
-      logger.info('>>>>> DONE <<<< ', { aa: 'tt', addresses: fin.addresses });
+      // logger.info('>>>>> DONE <<<< ', { aa: 'tt', addresses: fin.addresses });
       // return JSON.stringify(fin)
       light_wallet.one = {
         ...light_wallet.one,
@@ -611,7 +729,7 @@ export const handleHardwareWalletRequests = async (
         wallet: fin,
       }
       // return JSON.stringify({ fin, light_wallet });
-      return JSON.stringify({ aa: 'luka' });
+      return JSON.stringify({ addresses: fin.addresses, balance: fin.balance });
     } catch (e) {
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
       ledgerStatus.listening = false;
@@ -743,10 +861,17 @@ export const handleHardwareWalletRequests = async (
   getCardanoAdaAppChannel.onRequest(async (request) => {
     logger.info('>>> UPDATE <<<')
 
+    console.debug('>> OBSERVED WALLET: ', light_wallet)
+
     // logger.info('>>>>> DONE 22 <<<< ', { light_wallet, mainWindow });
-    mainWindow.webContents.send('>> Final', JSON.stringify(light_wallet))
+    // mainWindow.webContents.send('>> Final', JSON.stringify(light_wallet))
     // return JSON.stringify(light_wallet);
-    return JSON.stringify({tomo: 'test', light_wallet});
+    return JSON.stringify({
+      tomo: 'test',
+      addresses: light_wallet.addresses,
+      balance: light_wallet.balance,
+    });
+
     const { path } = request;
     try {
       if (!path || !devicesMemo[path]) {

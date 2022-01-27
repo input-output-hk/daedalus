@@ -135,6 +135,9 @@ export default class WalletsStore extends Store {
   @observable createHardwareWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createHardwareWallet
   );
+  @observable tomoTestRequest: Request<Wallet> = new Request(
+    this.api.ada.tomoTest
+  );
 
   /* ----------  Active Wallet  ---------- */
   @observable active: ?Wallet = null;
@@ -292,6 +295,13 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+  }
+
+  _test = () => {
+    console.debug('>>>> tomoTestRequest: ', this.tomoTestRequest);
+    const res = this.tomoTestRequest.execute();
+    console.debug('>>>> tomoTestRequest 2: ', res);
+    console.debug('>>>> tomoTestRequest 3: ', this.tomoTestRequest);
   }
 
   @action _getAccountPublicKey = async ({
@@ -989,6 +999,7 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
+    // console.debug('>>> _pollRefresh');
     const { isConnected } = this.stores.networkStatus;
     return isConnected && this.refreshWalletsData();
   };
@@ -1065,6 +1076,7 @@ export default class WalletsStore extends Store {
     this.api.ada.isValidCertificateMnemonic(mnemonic);
 
   @action refreshWalletsData = async () => {
+    console.debug('>>> refreshWalletsData');
     // Prevent wallets data refresh if polling is blocked
     if (this._pollingBlocked) return;
 
