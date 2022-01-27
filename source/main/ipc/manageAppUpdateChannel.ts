@@ -31,7 +31,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
   const response = (
     success: boolean | null | undefined,
     functionPrefix: string,
-    messageText: string = '',
+    messageText = '',
     _data?: Record<string, any>
   ): Response => {
     let status = statuses.PROGRESS;
@@ -39,11 +39,13 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     else if (success === false) status = statuses.ERROR;
     const log = success === false ? logger.error : logger.info;
     const message = getMessage(functionPrefix, messageText);
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     log(getMessage(functionPrefix, message));
     const data = { ..._data, message };
     manageAppUpdateChannel.send(
       {
         status,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ status: UpdateInstallationStat... Remove this comment to see the full error message
         message,
         data,
       },
@@ -51,6 +53,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     );
     return {
       status,
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ status: UpdateInstallationStatus; message:... Remove this comment to see the full error message
       message,
       data,
     };
@@ -61,6 +64,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     const fileBuffer = fs.readFileSync(filePath);
 
     if (!fileBuffer) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error(getMessage(functionPrefix, 'Unable to read the installer:'));
       return false;
     }
@@ -93,6 +97,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
           if (progressStr) {
             const [item, total] = `${progressStr}`.trim().split('/');
             return parseInt(
+              // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
               (parseInt(item, 10) * 100) / parseInt(total, 10),
               10
             );
@@ -113,6 +118,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       updater.on('close', (code) => {
         if (code !== 0) {
           success = false;
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info(`updater closed with ${code}`);
           reject(
             response(
@@ -132,6 +138,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       });
       updater.on('error', (error) => {
         success = false;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.error(`on error with ${error}`);
         reject(
           response(false, functionPrefix, 'installation failed', {
@@ -142,6 +149,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       updater.on('exit', (code) => {
         if (code !== 0) {
           success = false;
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info(`updater exited with ${code}`);
           reject(
             response(
@@ -156,6 +164,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
         }
 
         if (!success) {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.error('exit without success');
           return reject();
         }
@@ -166,6 +175,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     });
   };
 
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';
     const fileExists = fs.existsSync(filePath);

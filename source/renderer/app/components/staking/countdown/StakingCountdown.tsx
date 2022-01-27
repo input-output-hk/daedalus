@@ -3,8 +3,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CountdownWidget from '../../widgets/CountdownWidget';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingCountdown.scss' or it... Remove this comment to see the full error message
 import styles from './StakingCountdown.scss';
 import ButtonLink from '../../widgets/ButtonLink';
+
 const messages = defineMessages({
   heading: {
     id: 'staking.delegationCountdown.heading',
@@ -64,6 +66,7 @@ class StakingCountdown extends Component<Props> {
           />
           {showLearnMoreButton && (
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.learnMoreButton}
               onClick={onLearnMoreClick}
               skin={ButtonSkin}

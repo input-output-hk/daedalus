@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { ComponentType, Element, Node, Ref } from 'react';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TinyInput.scss' or its corre... Remove this comment to see the full error message
 import styles from './TinyInput.scss';
 // TODO: Extend react-polymorph Input component props when they are available
 type Props = {
@@ -54,6 +56,7 @@ export default class TinyInput extends Component<Props, State> {
   onKeyPress = (evt: React.KeyboardEvent<EventTarget>) => {
     const { onKeyPress, onSubmit } = this.props;
     const { charCode } = evt;
+    // @ts-ignore ts-migrate(2559) FIXME: Type 'EventTarget' has no properties in common wit... Remove this comment to see the full error message
     const control: {
       blur?: (...args: Array<any>) => any;
     } = evt.target;

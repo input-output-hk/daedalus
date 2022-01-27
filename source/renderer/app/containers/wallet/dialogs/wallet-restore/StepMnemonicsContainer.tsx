@@ -24,6 +24,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../../../../types/walletRestoreTypes';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -80,6 +81,7 @@ class MnemonicsDialogContainer extends Component<Props> {
     } else if (walletKindYoroi && walletKind === WALLET_KINDS.YOROI) {
       expectedWordCount = WALLET_YOROI_WORD_COUNT[walletKindYoroi];
     } else if (walletKindHardware) {
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'number[]' is not assignable to type 'number'... Remove this comment to see the full error message
       expectedWordCount = WALLET_HARDWARE_WORD_COUNT[walletKindHardware];
     }
 

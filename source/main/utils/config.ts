@@ -8,6 +8,7 @@ function recurseReplace(obj) {
 
     for (let idx in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, idx)) {
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
         idx = parseInt(idx, 10);
         out[idx] = recurseReplace(obj[idx]);
       }

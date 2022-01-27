@@ -11,7 +11,9 @@ import {
   sortData,
 } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
+
 const messages = defineMessages({
   tableHeaderPool: {
     id: 'staking.epochs.currentEpoch.tableHeader.pool',
@@ -43,6 +45,7 @@ class StakingEpochsCurrentEpochData extends Component<Props, State> {
   };
 
   constructor() {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-2 arguments, but got 0.
     super();
     this.state = {
       currentEpochDataOrder: 'desc',
@@ -115,6 +118,7 @@ class StakingEpochsCurrentEpochData extends Component<Props, State> {
     );
     return (
       <StakingEpochsDataTable
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         tableHeaders={tableHeaders}
         tableBody={tableBody}
         order={currentEpochDataOrder}

@@ -13,11 +13,15 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AppUpdateOverlay.scss' or it... Remove this comment to see the full error message
 import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/link-ic.in... Remove this comment to see the full error message
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+
 const messages = defineMessages({
   title: {
     id: 'appUpdate.overlay.title',
@@ -113,6 +117,7 @@ const messages = defineMessages({
   },
 });
 type Props = {
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   update: News.News;
   onClose: (...args: Array<any>) => any;
   downloadTimeLeft: string;
@@ -241,6 +246,7 @@ class AppUpdateOverlay extends Component<Props, State> {
           <div className={styles.progressBar}>
             <ProgressBarLarge
               progress={installationProgress}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               labelLeft={intl.formatMessage(messages.installingUpdateLabel)}
               isDarkMode
             />

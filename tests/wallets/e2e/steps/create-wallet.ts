@@ -1,5 +1,6 @@
 import { Given, When, Then } from "cucumber";
 import { addWalletPage } from "./helpers";
+
 Given(/^I see the add wallet page/, function () {
   return addWalletPage.waitForVisible(this.client);
 });

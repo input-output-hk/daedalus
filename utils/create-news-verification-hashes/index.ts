@@ -10,10 +10,13 @@
  * 2. Fetch file for specific environment and create hash:
  *   NEWS_ENV=development yarn create-news-verification-hashes
  */
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'lodash'.
 const lodash = require('lodash');
 
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'crypto'.
 const crypto = require('crypto');
 
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'fs'.
 const fs = require('fs');
 
 const readModuleFile = (path, callback) => {
@@ -99,6 +102,7 @@ const readModuleFile = (path, callback) => {
           }
 
           // Create verification hash
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'createHash' does not exist on type 'Cryp... Remove this comment to see the full error message
           const hash = crypto.createHash('sha256');
           const hashBuffer = hash.digest(hash.update(fileContent, 'utf8'));
           const hashArray = Array.from(new Uint8Array(hashBuffer));

@@ -7,6 +7,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import { getUtxoChartData } from '../../../../source/renderer/app/utils/utxoUtils';
 // Screens
 import WalletUtxo from '../../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
+
 const cfg = {
   range: true,
   step: 1,

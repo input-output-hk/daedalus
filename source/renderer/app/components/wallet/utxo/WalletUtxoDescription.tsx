@@ -3,6 +3,7 @@ import { FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+
 type Props = {
   description: ReactIntlMessage;
   formattedWalletAmount: string;

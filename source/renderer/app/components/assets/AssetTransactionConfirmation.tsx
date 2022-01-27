@@ -10,11 +10,14 @@ import {
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/question-m... Remove this comment to see the full error message
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetTransactionConfirmation... Remove this comment to see the full error message
 import styles from './AssetTransactionConfirmation.scss';
 import type { AssetToken } from '../../api/assets/types';
 import Asset from './Asset';
 import { formattedTokenWalletAmount } from '../../utils/formatters';
+
 const messages = defineMessages({
   assetLabel: {
     id: 'asset.transactionConfirmation.assetLabel',

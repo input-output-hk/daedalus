@@ -2,17 +2,28 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DisplaySettings.scss' or its... Remove this comment to see the full error message
 import styles from './DisplaySettings.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeIncentivizedTestnetPreview from '../../../assets/images/themes/incentivized-testnet.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeFlightCandidatePreview from '../../../assets/images/themes/flight-candidate.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeShelleyTestnetPreview from '../../../assets/images/themes/shelley-testnet.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeYellowPreview from '../../../assets/images/themes/yellow.png';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/themes/... Remove this comment to see the full error message
 import themeWhitePreview from '../../../assets/images/themes/white.png';
 import { THEMES } from '../../../themes/index';
+
 const messages = defineMessages({
   themeLabel: {
     id: 'settings.display.themeLabel',
@@ -84,6 +95,7 @@ class DisplaySettings extends Component<Props> {
   render() {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight, environment } = global;
     const { isDev } = environment;
     const themeIncentivizedTestnetClasses = classnames([

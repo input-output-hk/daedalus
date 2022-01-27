@@ -9,6 +9,7 @@ import {
   LoadingWalletDataSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
 } from './SyncingConnecting.stories';
+
 storiesOf('Nodes|Connecting and Loading', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>

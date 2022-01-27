@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ThumbSelectedPool.scss' or i... Remove this comment to see the full error message
 import styles from './ThumbSelectedPool.scss';
 import { getColorFromRange } from '../../../utils/colors';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clock.i... Remove this comment to see the full error message
 import clockImage from '../../../assets/images/clock.inline.svg';
 import StakePool from '../../../domains/StakePool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+
 type Props = {
   stakePool?: StakePool;
   alreadyDelegated?: boolean;

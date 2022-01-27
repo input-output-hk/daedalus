@@ -5,7 +5,9 @@ import { intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ReadOnlyInput.scss' or its c... Remove this comment to see the full error message
 import styles from './ReadOnlyInput.scss';
+
 type Props = {
   label: string;
   value: string;

@@ -1,7 +1,9 @@
 import { When, Then } from "cucumber";
 import { WalletSyncStateStatuses } from "../../../../source/renderer/app/domains/Wallet";
+
 When(/^the "([^"]*)" wallet is not responding$/, async function (walletName) {
   await this.client.execute((walletName, status) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const walletIndex: number = daedalus.stores.wallets.all.findIndex(wallet => wallet.name === walletName);
     const modifiedWallet: {
       name: string;
@@ -12,6 +14,7 @@ When(/^the "([^"]*)" wallet is not responding$/, async function (walletName) {
         status
       }
     };
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setTestingWallet(modifiedWallet, walletIndex);
   }, walletName, WalletSyncStateStatuses.NOT_RESPONDING);
 });

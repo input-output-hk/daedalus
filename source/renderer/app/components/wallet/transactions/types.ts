@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
+
 export class TransactionsGroup {
   date: moment.Moment;
   transactions: WalletTransaction[];

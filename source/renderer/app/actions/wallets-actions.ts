@@ -7,6 +7,7 @@ import type {
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
 import type { AssetToken } from '../api/assets/types';
+
 export type WalletImportFromFileParams = {
   filePath: string;
   walletName: string | null | undefined;

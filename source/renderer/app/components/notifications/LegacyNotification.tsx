@@ -6,7 +6,9 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './LegacyNotification.scss' or ... Remove this comment to see the full error message
 import styles from './LegacyNotification.scss';
+
 const messages = defineMessages({
   moveFundsTitle: {
     id: 'wallet.byron.notification.moveFundsTitle',
@@ -148,6 +150,7 @@ class LegacyNotification extends Component<Props> {
         <div className={styles.actions}>
           {showLearnMoreButton && (
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={styles.actionLearnMore}
               onClick={onLearnMore}
               skin={ButtonSkin}

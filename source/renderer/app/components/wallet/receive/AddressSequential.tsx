@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AddressSequential.scss' or i... Remove this comment to see the full error message
 import styles from './AddressSequential.scss';
 import WalletAddress from '../../../domains/WalletAddress';
+
 type Props = {
   address: WalletAddress;
   onShareAddress: (...args: Array<any>) => any;

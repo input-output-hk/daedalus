@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { environment } from "../../../../source/main/environment";
 import { getVisibleTextsForSelector } from "../../../common/e2e/steps/helpers";
 import { i18nHelpers } from "../../../settings/e2e/steps/helpers";
+
 const currentAppVersion = environment.version;
 const currentAppVersionChunks = currentAppVersion.split('.');
 const {

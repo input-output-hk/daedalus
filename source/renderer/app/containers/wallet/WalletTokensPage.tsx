@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import WalletTokens from '../../components/wallet/tokens/wallet-tokens/WalletTokens';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { getAssetTokens } from '../../utils/assets';
+
 type Props = InjectedProps;
 const WalletTokensPage = inject(
   'stores',

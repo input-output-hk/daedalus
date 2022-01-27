@@ -4,13 +4,17 @@ import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Asset.scss' or its correspon... Remove this comment to see the full error message
 import styles from './Asset.scss';
 import { ellipsis } from '../../utils/strings';
 import AssetContent from './AssetContent';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import { ASSET_TOKEN_DISPLAY_DELAY } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
+
 const messages = defineMessages({
   fingerprintItem: {
     id: 'assets.assetToken.param.fingerprint',
@@ -92,7 +96,9 @@ class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   copyNotificationTimeout: TimeoutID;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   displayDelayTimeout: TimeoutID;
   state = {
     isPillPopOverVisible: false,
@@ -292,6 +298,7 @@ class Asset extends Component<Props, State> {
           visible={isSettingsPopOverVisible}
         >
           <SVGInline
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ onMouseEnter: () => void; onMouseLeave: ()... Remove this comment to see the full error message
             onMouseEnter={handleSettingsMouseEnter}
             onMouseLeave={handleSettingsMouseLeave}
             className={styles.settingsIcon}

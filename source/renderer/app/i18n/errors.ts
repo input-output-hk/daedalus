@@ -1,4 +1,5 @@
 import LocalizableError from './LocalizableError';
+
 export class InvalidMnemonicError extends LocalizableError {
   constructor() {
     super({

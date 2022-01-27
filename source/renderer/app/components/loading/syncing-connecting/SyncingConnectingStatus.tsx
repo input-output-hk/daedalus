@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnectingStatus.scss... Remove this comment to see the full error message
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
+
 const messages = defineMessages({
   starting: {
     id: 'loading.screen.startingCardanoMessage',

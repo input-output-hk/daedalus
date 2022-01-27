@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SyncingConnecting from '../../components/loading/syncing-connecting/SyncingConnecting';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -54,6 +55,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         isSyncProgressStalling={isSyncProgressStalling}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         hasNotification={hasNotification}

@@ -7,13 +7,14 @@ import {
   getCurrencyFromCode,
 } from '../config/currencyConfig';
 import type { Currency, LocalizedCurrency } from '../types/currencyTypes';
+
 export default class CurrencyStore extends Store {
   @observable
-  isFetchingList: boolean = false;
+  isFetchingList = false;
   @observable
-  isFetchingRate: boolean = false;
+  isFetchingRate = false;
   @observable
-  isActive: boolean = false;
+  isActive = false;
   @observable
   list: Array<Currency> = [];
   @observable
@@ -22,6 +23,7 @@ export default class CurrencyStore extends Store {
   rate: number | null | undefined = null;
   @observable
   lastFetched: Date | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _getCurrencyRateInterval: IntervalID | null | undefined = null;
 
   setup() {

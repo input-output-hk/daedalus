@@ -1,4 +1,5 @@
 import addons from '@storybook/addons';
+
 const channel = addons.getChannel();
 export const setInitialState = (initialState: Record<string, any>) =>
   Object.entries(initialState).forEach(([param, value]) =>

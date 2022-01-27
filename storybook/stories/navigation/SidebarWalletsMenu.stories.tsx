@@ -10,6 +10,7 @@ import {
   WalletSortOrder,
 } from '../../../source/renderer/app/types/sidebarTypes';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
+
 const wallets = [
   {
     id: '1',
@@ -80,6 +81,7 @@ storiesOf('Navigation|Wallets Menu', module)
       </StoryProvider>
     </StoryDecorator>
   )) // // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Empty', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
@@ -93,6 +95,7 @@ storiesOf('Navigation|Wallets Menu', module)
       sortOrder={WalletSortOrder.Desc}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('With Wallets', (props: { currentTheme: string }) => (
     <div
       style={{
@@ -108,6 +111,7 @@ storiesOf('Navigation|Wallets Menu', module)
         }}
       >
         <SidebarWalletsMenu
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           wallets={wallets}
           isActiveWallet={(id) => id === '2'}
           onWalletItemClick={action('walletItemClick')}
@@ -127,6 +131,7 @@ storiesOf('Navigation|Wallets Menu', module)
         }}
       >
         <SidebarWalletsMenu
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           wallets={wallets}
           isActiveWallet={(id) => id === '2'}
           onWalletItemClick={action('walletItemClick')}

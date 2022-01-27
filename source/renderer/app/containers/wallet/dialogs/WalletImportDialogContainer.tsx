@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletFileImportStepContainer from './wallet-import/WalletFileImportStepContainer';
 import WalletSelectImportStepContainer from './wallet-import/WalletSelectImportStepContainer';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

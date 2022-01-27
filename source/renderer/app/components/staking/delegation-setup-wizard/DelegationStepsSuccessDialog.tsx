@@ -4,15 +4,19 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsSuccessDialog... Remove this comment to see the full error message
 import styles from './DelegationStepsSuccessDialog.scss';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/tada-ic... Remove this comment to see the full error message
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
+
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.success.step.dialog.title',
@@ -54,6 +58,7 @@ type State = {
 
 @observer
 class DelegationStepsSuccessDialog extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
   state = {
     timeUntilNextEpochStart: 0,

@@ -2,6 +2,7 @@ import { includes, omit, size, values, flatten } from 'lodash';
 import JSONBigInt from 'json-bigint';
 import querystring from 'querystring';
 import { getContentLength } from '.';
+
 export type RequestOptions = {
   hostname: string;
   method: string;
@@ -47,6 +48,7 @@ const httpsOptions = {
 };
 
 const logSocketStats = (state: string, { sockets, freeSockets }) => {
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'logSocketStats' does not exist on type '... Remove this comment to see the full error message
   if (!window.logSocketStats) {
     return;
   }
@@ -109,6 +111,7 @@ function typedRequest<Response>(
 
       options.headers = {
         ...options.headers,
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ Accept: string; 'Content-Type': string; 'C... Remove this comment to see the full error message
         Accept: isOctetStreamResponse
           ? 'application/octet-stream'
           : 'application/json; charset=utf-8',

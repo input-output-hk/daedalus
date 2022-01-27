@@ -11,8 +11,10 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactions.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
+
 export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.transactions.no.transactions',
@@ -117,6 +119,7 @@ class WalletTransactions extends Component<Props, State> {
           deletePendingTransaction={deletePendingTransaction}
           isLoadingTransactions={isLoadingTransactions}
           isRestoreActive={isRestoreActive}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onLoadMore={onLoadMore}
           hasMoreToLoad={hasMoreToLoad}
           walletId={activeWallet.id}

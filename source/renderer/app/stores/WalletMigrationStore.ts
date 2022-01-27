@@ -29,6 +29,7 @@ import {
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
 import { IS_AUTOMATIC_WALLET_MIGRATION_ENABLED } from '../config/walletsConfig';
 import type { ImportWalletStep } from '../types/walletRestoreTypes';
+
 export type WalletMigrationStatus =
   | 'unstarted'
   | 'running'
@@ -56,13 +57,13 @@ export default class WalletMigrationStore extends Store {
   @observable
   exportedWallets: Array<ExportedByronWallet> = [];
   @observable
-  exportErrors: string = '';
+  exportErrors = '';
   @observable
-  exportSourcePath: string = '';
+  exportSourcePath = '';
   @observable
   defaultExportSourcePath: string = global.legacyStateDir;
   @observable
-  isTestMigrationEnabled: boolean = false;
+  isTestMigrationEnabled = false;
   @observable
   isRestorationRunning = false;
   @observable
@@ -228,6 +229,7 @@ export default class WalletMigrationStore extends Store {
     // Reset export data
     this._resetExportData();
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('WalletMigrationStore: Starting wallet export...');
     this.isExportRunning = true;
     const {
@@ -284,6 +286,7 @@ export default class WalletMigrationStore extends Store {
     // Reset restoration data
     this._resetRestorationData();
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug(
       `WalletMigrationStore: Restoring ${this.pendingImportWalletsCount} selected wallets...`
     );
@@ -301,6 +304,7 @@ export default class WalletMigrationStore extends Store {
         return this._restoreWallet(wallet);
       })
     );
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug(
       `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${this.pendingImportWalletsCount} selected wallets`
     );
@@ -387,6 +391,7 @@ export default class WalletMigrationStore extends Store {
       await generateWalletMigrationReportChannel.send(
         toJS(walletMigrationReportData)
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('WalletMigrationStore: Generated wallet migration report');
     } catch (error) {
       logger.error(
@@ -413,7 +418,9 @@ export default class WalletMigrationStore extends Store {
         // Wait for wallets to load as we need to match existing and exported wallets
         await this.stores.wallets.refreshWalletsData();
         // Update migration status to "RUNNING"
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('WalletMigrationStore: Starting wallet migration...');
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.RUNNING
         );
@@ -426,6 +433,7 @@ export default class WalletMigrationStore extends Store {
             this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
           });
           this.actions.dialogs.open.trigger({
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'typeof WalletImportFileDialog' is not assign... Remove this comment to see the full error message
             dialog: WalletImportFileDialog,
           });
         } else {
@@ -439,6 +447,7 @@ export default class WalletMigrationStore extends Store {
       }
     } else {
       // Update migration status to "SKIPPED"
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.setWalletMigrationStatusRequest.execute(
         WalletMigrationStatuses.SKIPPED
       );
@@ -478,6 +487,7 @@ export default class WalletMigrationStore extends Store {
   _enableTestWalletMigration = async () => {
     if (this.environment.isTest) {
       this.isTestMigrationEnabled = true;
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.setWalletMigrationStatusRequest.execute(
         WalletMigrationStatuses.UNSTARTED
       );
@@ -487,7 +497,9 @@ export default class WalletMigrationStore extends Store {
   };
   @action
   _finishMigration = async () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'typeof WalletImportFileDialog' i... Remove this comment to see the full error message
     if (this.stores.uiDialogs.isOpen(WalletImportFileDialog)) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.dialogs.closeActiveDialog.trigger();
     }
 
@@ -497,7 +509,9 @@ export default class WalletMigrationStore extends Store {
     if (walletMigrationStatus === WalletMigrationStatuses.RUNNING) {
       // Update migration status
       if (this.exportErrors === '' && !this.restorationErrors.length) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('WalletMigrationStore: Wallet migration succeeded');
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.COMPLETED
         );
@@ -506,6 +520,7 @@ export default class WalletMigrationStore extends Store {
           exportErrors: this.exportErrors,
           restorationErrors: this.restorationErrors,
         });
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.setWalletMigrationStatusRequest.execute(
           WalletMigrationStatuses.ERRORED
         );

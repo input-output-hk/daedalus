@@ -18,12 +18,14 @@ import { RECOVERY_PHRASE_VERIFICATION_TIMES as times } from '../../../../source/
 import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import WalletRecoveryPhraseVerificationWidget from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget';
+
 storiesOf('Wallets|Settings', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======
   .add(
     'Recovery Prase Verification - Widget',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
     ({ locale }: { locale: string }) => {
       const groupId = 'Recovery Phrase Verification';
       const wordCount = options(
@@ -61,6 +63,7 @@ storiesOf('Wallets|Settings', module)
       const creationDate = !wasAlreadyVerified
         ? select(
             'Wallet creation date',
+            // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ '1 month ago': moment.Moment; ... Remove this comment to see the full error message
             creationTimeOptions,
             creationTimeOptions['1 month ago'],
             groupId
@@ -69,6 +72,7 @@ storiesOf('Wallets|Settings', module)
       const recoveryPhraseVerificationDate = wasAlreadyVerified
         ? select(
             'Last verification date',
+            // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ '1 month ago': moment.Moment; ... Remove this comment to see the full error message
             veriticationTimeOptions,
             veriticationTimeOptions['1 month ago'],
             groupId
@@ -80,9 +84,11 @@ storiesOf('Wallets|Settings', module)
       return (
         <div style={containerStyle} className="WalletSettings_component">
           <WalletRecoveryPhraseVerificationWidget
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             creationDate={new Date(creationDate)}
             locale={locale}
             onVerify={action('onVerify')}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
             wordCount={parseInt(wordCount, 10)}
             isLegacy={boolean('isLegacy', true)}

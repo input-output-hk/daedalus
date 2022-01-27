@@ -15,8 +15,10 @@ import {
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletFileImportDialog.scss'... Remove this comment to see the full error message
 import styles from './WalletFileImportDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+
 const messages = defineMessages({
   headline: {
     id: 'wallet.file.import.dialog.headline',
@@ -84,6 +86,7 @@ class WalletFileImportDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         walletFilePath: {
@@ -168,6 +171,7 @@ class WalletFileImportDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { walletFilePath, spendingPassword, walletName } = form.values();
@@ -186,6 +190,7 @@ class WalletFileImportDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletFilePath = form.$('walletFilePath');
     const dialogClasses = classnames([
       styles.component,

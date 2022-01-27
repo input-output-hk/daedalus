@@ -28,6 +28,7 @@ import type {
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
 import type { AddressStyle } from '../api/addresses/types';
+
 export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 export type ShelleyTxInputType = {
   coins: number;
@@ -129,7 +130,9 @@ export const ShelleyTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   Object.entries(tokenObject).forEach(([policyId, tokens]) => {
     const assetMap = new Map<Buffer, number>();
 
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     _.map(tokens, (token) => {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'assetName' does not exist on type 'unkno... Remove this comment to see the full error message
       assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
     });
 
@@ -142,6 +145,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObjectEntries = Object.entries(tokenObject);
 
   const tokenBundle = _.map(tokenObjectEntries, ([policyId, tokens]) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type 'unknown'.
     const tokensList = tokens.map(({ assetName, quantity }) => ({
       assetNameHex: assetName,
       amount: quantity.toString(),
@@ -510,6 +514,7 @@ export const cborizeTxAuxiliaryVotingData = (
   txAuxiliaryData: TxAuxiliaryData,
   signatureHex: string
 ) => [
+  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
   new Map<number, Map<number, Buffer | number>>([
     cborizeTxVotingRegistration(txAuxiliaryData),
     [

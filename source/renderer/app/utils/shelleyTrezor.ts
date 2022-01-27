@@ -12,6 +12,7 @@ import type {
   CoinSelectionWithdrawal,
   CoinSelectionAssetsType,
 } from '../api/transactions/types';
+
 export const TrezorTransactionSigningMode = {
   ORDINARY_TRANSACTION: 0,
   POOL_REGISTRATION_AS_OWNER: 1,
@@ -96,6 +97,7 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
   const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type 'unknown'.
     const tokenAmounts = tokens.map(({ assetName, quantity }) => ({
       assetNameBytes: assetName,
       amount: quantity.toString(),

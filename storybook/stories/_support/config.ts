@@ -7,6 +7,7 @@ import white from '../../../source/renderer/app/themes/daedalus/white';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow';
 import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet';
 import shelleyTestnet from '../../../source/renderer/app/themes/daedalus/shelley-testnet';
+
 export const themes = {
   Cardano: cardano,
   DarkBlue: darkBlue,

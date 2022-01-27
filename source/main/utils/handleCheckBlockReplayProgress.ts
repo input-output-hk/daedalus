@@ -4,6 +4,7 @@ import readline from 'readline';
 import path from 'path';
 import { getBlockReplayProgressChannel } from '../ipc/get-block-replay-progress';
 import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
+
 export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string

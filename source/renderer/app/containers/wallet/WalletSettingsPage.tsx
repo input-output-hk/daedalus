@@ -19,6 +19,7 @@ import {
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -123,6 +124,7 @@ class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
           lastDelegationStakePoolStatus={
             activeWallet.lastDelegationStakePoolStatus
@@ -175,6 +177,7 @@ class WalletSettingsPage extends Component<Props> {
           undelegateWalletDialogContainer={
             <UndelegateWalletDialogContainer
               onExternalLinkClick={app.openExternalLink}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               isTrezor={isHardwareWallet && isTrezor}
             />
           }

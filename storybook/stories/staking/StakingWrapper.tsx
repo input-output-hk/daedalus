@@ -7,6 +7,7 @@ import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
 import StakingWithNavigation from '../../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
+
 const pageNames = {
   countdown: 'Staking Countdown',
   'delegation-center': 'Delegation Center',
@@ -40,6 +41,7 @@ export default (story, context) => {
           {context.parameters.id === 'countdown' ? (
             storyWithKnobs
           ) : (
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             <StakingWithNavigation
               isActiveNavItem={(item) => item === getItemFromContext()}
               activeItem={getItemFromContext()}

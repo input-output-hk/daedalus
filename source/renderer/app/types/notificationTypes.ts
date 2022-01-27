@@ -1,4 +1,5 @@
 import Action from '../actions/lib/Action';
+
 export type NotificationId =
   | 'copyWalletPublicKey'
   | 'copyICOPublicKey'

@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import BorderedBox from '../../widgets/BorderedBox';
 import type { Locale } from '../../../../../common/types/locales.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import styles from './VotingInfo.scss';
 import ResultsPhase from './ResultsPhase';
 import SnapshotPhase from './SnapshotPhase';
@@ -12,6 +13,7 @@ import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
 import { FundPhases } from '../../../stores/VotingStore';
 import type { FundPhase } from '../../../stores/VotingStore';
+
 type Props = {
   currentLocale: Locale;
   currentDateFormat: string;

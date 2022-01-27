@@ -10,6 +10,7 @@ import {
   DELEGATION_ACTIONS,
   DELEGATION_DEPOSIT,
 } from '../../../../config/stakingConfig';
+
 type Props = InjectedProps & {
   onExternalLinkClick: (...args: Array<any>) => any;
 };

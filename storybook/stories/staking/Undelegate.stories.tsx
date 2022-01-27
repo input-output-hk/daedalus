@@ -12,6 +12,7 @@ import {
 // Screens
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
+
 const assets = {
   available: [
     {
@@ -51,6 +52,7 @@ const generalWallet = generateWallet(
   '1000000000',
   assets,
   0,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   STAKE_POOLS[0]
 );
 const hardwareWallet = generateWallet(
@@ -58,6 +60,7 @@ const hardwareWallet = generateWallet(
   '10000000',
   assets,
   0,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   STAKE_POOLS[0],
   false,
   'ready',
@@ -95,6 +98,7 @@ export const StakingUndelegateConfirmationResultStory = ({
 }) => (
   <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     slotLength={null}
     onClose={() => null}
     currentLocale={locale}

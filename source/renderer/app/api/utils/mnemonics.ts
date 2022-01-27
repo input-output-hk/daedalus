@@ -4,6 +4,7 @@ import {
   generateMnemonic,
 } from '../../utils/crypto';
 import { PAPER_WALLET_WRITTEN_WORDS_COUNT } from '../../config/cryptoConfig';
+
 type MnemonicsParams = {
   passphrase: string;
   // 9-word mnemonic

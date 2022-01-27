@@ -1,10 +1,12 @@
 import { Given, Then } from "cucumber";
 import { expect } from "chai";
 import { last } from "lodash";
+
 let walletsTickers = [];
 Given(/^the wallets have the following pending delegations:$/, async function (delegationScenariosTable) {
   const delegationScenarios = delegationScenariosTable.hashes();
   await this.client.waitUntil(async () => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const stakePools = await this.client.execute(() => daedalus.stores.staking.stakePools);
     return stakePools.value.length;
   });
@@ -34,6 +36,7 @@ Given(/^the wallets have the following pending delegations:$/, async function (d
       };
       const {
         stakePools
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       } = daedalus.stores.staking;
       const tickers = delegationQueue.map((delegationInfo, index) => {
         const status = statusOptions[delegationInfo];

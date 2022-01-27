@@ -12,6 +12,7 @@ import {
   DATE_JAPANESE_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
+
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
   messages: enMessages,
@@ -58,6 +59,7 @@ const getAlerts = (locale: string) => [
     target: {
       daedalusVersion: 'v0.13',
       platform: 'macOS',
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ daedalusVersion: string; platform: string;... Remove this comment to see the full error message
       platformVersion: '10.14.6',
     },
     title: intl[locale].formatMessage(messages.failureAlert),
@@ -75,6 +77,7 @@ const getAlerts = (locale: string) => [
     target: {
       daedalusVersion: 'v0.13',
       platform: 'macOS',
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ daedalusVersion: string; platform: string;... Remove this comment to see the full error message
       platformVersion: '10.14.6',
     },
     title: intl[locale].formatMessage(messages.failureAlert),
@@ -87,6 +90,7 @@ storiesOf('News|Overlays', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('Alerts', (props: { locale: string }) => (
     <AlertsOverlay
       allAlertsCount={getAlerts(props.locale).length}

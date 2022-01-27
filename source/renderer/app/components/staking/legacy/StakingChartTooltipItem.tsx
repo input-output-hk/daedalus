@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingChartTooltipItem.scss... Remove this comment to see the full error message
 import styles from './StakingChartTooltipItem.scss';
+
 type Props = {
   value: string;
   label: string;

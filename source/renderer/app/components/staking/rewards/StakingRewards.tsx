@@ -15,14 +15,19 @@ import {
 } from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ascendi... Remove this comment to see the full error message
 import sortIcon from '../../../assets/images/ascending.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingRewards.scss' or its ... Remove this comment to see the full error message
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import ButtonLink from '../../widgets/ButtonLink';
 import { RewardAmount } from './RewardAmount';
+
 const messages = defineMessages({
   title: {
     id: 'staking.rewards.title',
@@ -373,6 +378,7 @@ class StakingRewards extends Component<Props, State> {
                               </CopyToClipboard>
                               {IS_EXPLORER_LINK_BUTTON_ENABLED && (
                                 <ButtonLink
+                                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                                   className={explorerButtonClasses}
                                   onClick={() =>
                                     onOpenExternalLink(rewardsAddress)

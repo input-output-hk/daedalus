@@ -1,4 +1,5 @@
 import Action from './lib/Action';
+
 export default class VotingActions {
   selectWallet: Action<string> = new Action();
   sendTransaction: Action<{

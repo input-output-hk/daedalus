@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseMnemonic... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseMnemonic.scss';
+
 type Props = {
   phrase: string;
 };

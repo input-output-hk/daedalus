@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import { sortWallets } from './walletSorting';
+
 describe('Wallet Sorting', () => {
   const cases = [
     // Sort wallets by DATE from ASC to DESC

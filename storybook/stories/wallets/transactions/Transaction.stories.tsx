@@ -24,6 +24,7 @@ import {
   TransactionStates,
 } from '../../../../source/renderer/app/domains/WalletTransaction';
 import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
+
 const date = new Date();
 const assetsMetadata = [
   {
@@ -160,8 +161,10 @@ storiesOf('Wallets|Transactions', module)
       confirmations: number('confirmations', 10, {}, 'Transaction'),
       slotNumber: number('slotNumber', 10, {}, 'Transaction'),
       epochNumber: number('epochNumber', 10, {}, 'Transaction'),
+      // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
       type:
+        // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
         direction === 'outgoing'
           ? TransactionTypes.EXPEND
           : TransactionTypes.INCOME,

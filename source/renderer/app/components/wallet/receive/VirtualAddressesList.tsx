@@ -3,7 +3,9 @@ import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualAddressesList.scss' o... Remove this comment to see the full error message
 import styles from './VirtualAddressesList.scss';
+
 type Props = {
   rows: Array<WalletAddress>;
   renderRow: (...args: Array<any>) => any;
@@ -26,8 +28,8 @@ const ADDRESS_SELECTOR = '.Address';
 @observer
 class VirtualAddressesList extends Component<Props> {
   list: List;
-  listWidth: number = 0;
-  addressHeight: number = 0;
+  listWidth = 0;
+  addressHeight = 0;
 
   /**
    * Estimate the address height based on number of lines
@@ -89,6 +91,7 @@ class VirtualAddressesList extends Component<Props> {
     const { rows, renderRow } = this.props;
     const address = rows[index];
     return (
+      // @ts-ignore ts-migrate(2559) FIXME: Type 'string' has no properties in common with typ... Remove this comment to see the full error message
       <div key={key} style={style} className={styles.address}>
         {renderRow(address, index)}
       </div>

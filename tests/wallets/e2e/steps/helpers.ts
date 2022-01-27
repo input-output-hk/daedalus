@@ -4,6 +4,7 @@ import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from 
 import { byronMnemonics, shelleyMnemonics } from "../../../../utils/api-importer/mnemonics";
 import { testStorageKeys } from "../../../common/e2e/steps/config";
 import { WalletSyncStateStatuses } from "../../../../source/renderer/app/domains/Wallet";
+
 const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
@@ -19,10 +20,12 @@ export const restoreWalletWithFunds = async (client: Record<string, any>, {
   const recoveryPhrase = shelleyMnemonics[shelleyMnemonicsIndex++];
   if (shelleyMnemonicsIndex === shelleyMnemonics.length) shelleyMnemonicsIndex = 0;
   client.executeAsync((name, recoveryPhrase, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.restoreWallet({
       walletName: name,
       recoveryPhrase,
       spendingPassword: 'Secret1234'
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     }).then(() => daedalus.stores.wallets.refreshWalletsData().then(done).catch(error => done(error))).catch(error => done(error));
   }, walletName, recoveryPhrase);
 };
@@ -61,13 +64,17 @@ export const restoreLegacyWallet = async (client: Record<string, any>, {
   }
 
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
     const recoveryPhraseArray = typeof mnemonics === 'string' ? mnemonics.split(' ') : mnemonics;
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.restoreByronRandomWallet({
       walletName: name,
       recoveryPhrase: recoveryPhraseArray,
       spendingPassword: 'Secret1234'
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     }).then(() => daedalus.stores.wallets.refreshWalletsData().then(() => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const wallet = daedalus.stores.wallets.getWalletByName(name);
 
       if (!wallet) {
@@ -99,6 +106,7 @@ export const getNameOfActiveWalletInSidebar = async function () {
   return this.waitAndGetText('.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title');
 };
 export const getWalletByName = async function (walletName: string) {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   const wallet = await this.client.execute(walletName => daedalus.stores.wallets.getWalletByName(walletName), walletName);
   return wallet.value;
 };
@@ -112,6 +120,7 @@ export const getWalletByName = async function (walletName: string) {
 export const getFixedAmountByName = async function (walletName: string) {
   await this.client.waitUntil(async () => {
     const isRestoring = await this.client.execute(walletName => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const wallet = daedalus.stores.wallets.getWalletByName(walletName);
 
       if (!wallet) {
@@ -123,6 +132,7 @@ export const getFixedAmountByName = async function (walletName: string) {
     return !isRestoring.value;
   });
   const walletAmount = await this.client.execute(walletName => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const wallet = daedalus.stores.wallets.getWalletByName(walletName);
 
     if (!wallet) {
@@ -135,11 +145,13 @@ export const getFixedAmountByName = async function (walletName: string) {
   return walletAmount.value;
 };
 export const importWalletHelpers = {
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForDialog: (client: Record<string, any>, {
     isHidden
   }: {
     isHidden: boolean;
   } = {}) => client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
   clickImport: (client: Record<string, any>) => waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
   expectError: (client: Record<string, any>, {
     error
@@ -157,12 +169,15 @@ export const importWalletWithFunds = async (client: Record<string, any>, {
   keyFilePath: string;
   password: string | null | undefined;
 }) => client.executeAsync((filePath, spendingPassword, done) => {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   daedalus.api.ada.importWalletFromKey({
     filePath,
     spendingPassword
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   }).then(() => daedalus.stores.wallets.refreshWalletsData().then(done).catch(error => done(error))).catch(error => done(error));
 }, keyFilePath, password);
 export const isActiveWalletBeingRestored = async (client: Record<string, any>) => {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   const result = await client.execute(expectedSyncTag => daedalus.stores.wallets.active === expectedSyncTag, WalletSyncStateStatuses.RESTORING);
   return result.value ? result.value.syncState.tag : false;
 };
@@ -170,6 +185,7 @@ export const waitUntilWalletIsLoaded = async function (walletName: string): Prom
   let wallet = null;
   const context = this;
   await context.client.waitUntil(async () => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const result = await context.client.execute(name => daedalus.stores.wallets.getWalletByName(name), walletName);
 
     if (result.value) {
@@ -206,12 +222,14 @@ export const createWallets = async function (wallets: Array<any>, options: {
 const createWalletsSequentially = async function (wallets: Array<any>) {
   for (const walletData of wallets) {
     await this.client.executeAsync((wallet, done) => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const mnemonic = daedalus.utils.crypto.generateMnemonic(24);
       const walletDetails = {
         name: wallet.name,
         mnemonic,
         spendingPassword: wallet.password || 'Secret1234'
       };
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.api.ada.createWallet(walletDetails).then(() => daedalus.stores.wallets.walletsRequest.execute().then(storeWallets => daedalus.stores.wallets.refreshWalletsData().then(() => done(storeWallets)).catch(error => done(error))).catch(error => done(error))).catch(error => done(error.stack));
     }, walletData);
     await waitUntilWalletIsLoaded.call(this, walletData.name);
@@ -224,9 +242,11 @@ const createWalletsAsync = async function (table, isLegacy?: boolean) {
     const {
       restoreByronRandomWallet,
       createWallet
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.api.ada;
     const mnemonicsLength = isLegacyWallet ? 12 : 24;
     window.Promise.all(wallets.map(wallet => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const mnemonic = daedalus.utils.crypto.generateMnemonic(mnemonicsLength);
       const recoveryPhrase = !isLegacyWallet ? mnemonic : mnemonic.split(' ');
       mnemonics[wallet.name] = mnemonic.split(' ');
@@ -249,6 +269,7 @@ const createWalletsAsync = async function (table, isLegacy?: boolean) {
         recoveryPhrase,
         spendingPassword: wallet.password || 'Secret1234'
       });
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     })).then(() => daedalus.stores.wallets.refreshWalletsData().then(() => done({
       mnemonics
     })).catch(error => done(error))).catch(error => done(error));
@@ -269,6 +290,7 @@ export const waitUntilUrlEquals = function (expectedUrl: string) {
 };
 export const navigateTo = function (requestedRoute: string) {
   return this.client.execute(route => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.router.goToRoute.trigger({
       route
     });
@@ -281,6 +303,7 @@ export const sidebar = {
     category: string;
   }) => {
     await client.execute(cat => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
         showSubMenu: true
@@ -288,6 +311,7 @@ export const sidebar = {
     }, `/${category}`);
     return client.waitForVisible(`.SidebarCategory_active.${category}`);
   },
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
   clickAddWalletButton: (client: Record<string, any>) => waitAndClick(client, '.SidebarWalletsMenu_addWalletButton')
 };
 export const addWalletPage = {
@@ -296,6 +320,7 @@ export const addWalletPage = {
   }: {
     isHidden?: boolean;
   } = {}) => client.waitForVisible(ADD_WALLET, null, isHidden),
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
   clickImportButton: (client: Record<string, any>) => waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`)
 };
 export default {
@@ -309,6 +334,7 @@ export default {
   }: {
     filePath: string;
   }) => client.chooseFile(`${IMPORT_WALLET_DIALOG} .FileUploadWidget_dropZone input`, filePath),
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
   clickImport: (client: Record<string, any>) => waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
   expectError: (client: Record<string, any>, {
     error
@@ -331,7 +357,9 @@ export const i18n = {
       const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
 
 
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const locale = daedalus.stores.profile.currentLocale;
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const messages = daedalus.translations;
       const intlProvider = new IntlProvider({
         locale,
@@ -343,11 +371,13 @@ export const i18n = {
     }, id, values || {});
     return translation.value;
   },
+  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
   setActiveLanguage: async (client: Record<string, any>, {
     language
   }: {
     language: string;
   } = {}) => client.execute(value => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.profile.updateUserLocalSetting.trigger({
       param: 'locale',
       value
@@ -359,7 +389,7 @@ export const waitForActiveRestoreNotification = (client: Record<string, any>, {
 }: {
   isHidden?: boolean;
 } = {}) => client.waitForVisible('.ActiveRestoreNotification', null, isHidden);
-export const getWalletType = async function (_type: string = '') {
+export const getWalletType = async function (_type = '') {
   let type = _type ? _type.trim() : null;
   if (type === 'byron') return 'byron';
 
@@ -371,14 +401,16 @@ export const getWalletType = async function (_type: string = '') {
 };
 export const restoreWallet = async function (walletName: string, kind: string, subkind: string, recovery_phrase: string) {
   await this.client.executeAsync(done => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.wallets._pausePolling().then(done);
   });
-  let recoveryPhrase = recovery_phrase.split(' ');
+  const recoveryPhrase = recovery_phrase.split(' ');
   await this.client.executeAsync((walletName, kind, subkind, recoveryPhrase, done) => {
     const {
       restoreWalletSetKind,
       restoreWalletSetMnemonics,
       restoreWalletSetConfig
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.actions.wallets;
     restoreWalletSetKind.trigger({
       kind
@@ -389,6 +421,7 @@ export const restoreWallet = async function (walletName: string, kind: string, s
     });
     const {
       restoreRequest
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.wallets;
     const spendingPassword = 'Secret1234';
     const data = {
@@ -397,8 +430,10 @@ export const restoreWallet = async function (walletName: string, kind: string, s
       spendingPassword
     };
     restoreRequest.execute(data).then(() => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.wallets._resumePolling();
 
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.wallets.refreshWalletsData().then(done);
     }).catch(error => done(error));
   }, walletName, kind, subkind, recoveryPhrase);

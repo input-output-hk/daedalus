@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import PrintDialog from '../../../../components/wallet/paper-wallet-certificate/PrintDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('actions')

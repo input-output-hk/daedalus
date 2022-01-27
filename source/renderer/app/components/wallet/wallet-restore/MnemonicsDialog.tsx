@@ -18,6 +18,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../../../types/walletRestoreTypes';
+
 const messages = defineMessages({
   autocompletePlaceholder: {
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.placeholder',
@@ -69,6 +70,7 @@ class MnemonicsDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -95,6 +97,7 @@ class MnemonicsDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: this.props.onContinue,
       onError: () => {},
@@ -111,6 +114,7 @@ class MnemonicsDialog extends Component<Props> {
       maxWordCount,
       expectedWordCount,
     } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
     return (

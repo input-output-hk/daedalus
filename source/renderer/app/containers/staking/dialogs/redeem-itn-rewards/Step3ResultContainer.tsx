@@ -4,6 +4,7 @@ import Step3SuccessDialog from '../../../../components/staking/redeem-itn-reward
 import Step3FailureDialog from '../../../../components/staking/redeem-itn-rewards/Step3FailureDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -31,6 +32,7 @@ class Step3ResultContainer extends Component<Props> {
           redeemedRewards={redeemedRewards}
           onClose={onClose}
           onContinue={onResultContinue.trigger}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onBack={onBack}
         />
       );

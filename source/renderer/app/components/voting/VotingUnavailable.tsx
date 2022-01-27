@@ -3,8 +3,10 @@ import { observer } from 'mobx-react';
 import { FormattedHTMLMessage } from 'react-intl';
 import globalMessages from '../../i18n/global-messages';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingUnavailable.scss' or i... Remove this comment to see the full error message
 import styles from './VotingUnavailable.scss';
 import { formattedNumber } from '../../utils/formatters';
+
 type Props = {
   syncPercentage: number;
 };

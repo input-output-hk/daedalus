@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyDialog.scss' or its... Remove this comment to see the full error message
 import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
@@ -13,6 +14,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+
 const messages: Record<string, ReactIntlMessage> = defineMessages({
   title: {
     id: 'wallet.settings.icoPublicKeyDialog.title',
@@ -54,6 +56,7 @@ class ICOPublicKeyDialog extends Component<Props> {
   }
 
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -93,6 +96,7 @@ class ICOPublicKeyDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -109,12 +113,14 @@ class ICOPublicKeyDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, error, walletName } = this.props;
     const { form } = this;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const actions = [
       {
         label: intl.formatMessage(messages.buttonLabel),
         onClick: this.submit,
         primary: true,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
         disabled: !this.form.isValid,
       },
     ];

@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+
 export const messages = defineMessages({
   noResults: {
     id: 'wallet.tokens.list.search.noResults',

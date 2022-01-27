@@ -25,6 +25,7 @@ import type {
   UseFilters,
   BooleanMap,
 } from './types';
+
 export const useCheckboxes = ({
   assets,
   currentAssets,

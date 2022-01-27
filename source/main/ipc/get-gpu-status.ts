@@ -5,6 +5,7 @@ import type {
   GetGPUStatusMainResponse,
 } from '../../common/ipc/api';
 import { GET_GPU_STATUS_CHANNEL } from '../../common/ipc/api';
+
 export const getGPUStatusChannel: MainIpcChannel<
   GetGPUStatusRendererRequest,
   GetGPUStatusMainResponse

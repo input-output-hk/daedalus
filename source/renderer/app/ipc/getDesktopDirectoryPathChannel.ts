@@ -4,6 +4,7 @@ import type {
   GetDesktopDirectoryPathMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const getDesktopDirectoryPathChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetDesktopDirectoryPathMainResponse,

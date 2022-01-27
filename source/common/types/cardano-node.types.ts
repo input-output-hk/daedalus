@@ -6,6 +6,7 @@ import {
   ALONZO_PURPLE,
   SELFNODE,
 } from './environment.types';
+
 export type TlsConfig = {
   hostname: string;
   port: number;
@@ -52,6 +53,7 @@ export type CardanoNodeState =
   | 'errored'
   | 'unknown'
   | 'unrecoverable';
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',

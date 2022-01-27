@@ -1,9 +1,13 @@
 import { get } from 'lodash';
 import React from 'react';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterHeader.scss'... Remove this comment to see the full error message
 import styles from './DelegationCenterHeader.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/delimet... Remove this comment to see the full error message
 import delimeterIcon from '../../../assets/images/delimeter.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/delimet... Remove this comment to see the full error message
 import delimeterSlashIcon from '../../../assets/images/delimeter-slash.inline.svg';
+
 const EPOCH_MAX_LENGTH = 5;
 export const with2Decimals = (value: number) => {
   const formattedValue = value.toString().match(/^-?\d+(?:\.\d{0,2})?/);
@@ -24,6 +28,7 @@ export const generateFieldPanel = (labels: any, values: any, index: number) => {
       index === 1
         ? parseInt(values[index + 1].toString().length, 10) -
           parseInt(valueStr.length, 10)
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         : parseInt(EPOCH_MAX_LENGTH, 10) - parseInt(valueStr.length, 10);
 
     switch (zerosToAdd) {

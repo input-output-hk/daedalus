@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { find } from "lodash";
 import { getVisibleElementsCountForSelector } from "../../../common/e2e/steps/helpers";
 import { getWalletByName } from "../../../wallets/e2e/steps/helpers";
+
 const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
   ADDRESS_COMPONENT: '.Address',
@@ -23,12 +24,14 @@ Given('I have {int} generated wallet addresses', async function (numberOfAddress
     await this.client.executeAsync(done => {
       const {
         active
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       } = daedalus.stores.wallets;
 
       if (!active) {
         return done();
       }
 
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       return daedalus.stores.addresses._createByronWalletAddress({
         walletId: active.id,
         passphrase: 'Secret1234'
@@ -102,6 +105,7 @@ Then('The active address should be the newest one', async function () {
     value: {
       id: lastGeneratedAddress
     }
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   } = await this.client.execute(() => daedalus.stores.addresses.lastGeneratedAddress);
   const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
@@ -122,6 +126,7 @@ Then(/^The active address belongs to "([^"]*)" wallet$/, async function (walletN
     isLegacy
   } = await getWalletByName.call(this, walletName);
   const walletAddresses = await this.client.executeAsync((walletId, isLegacy, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.getAddresses({
       walletId,
       isLegacy

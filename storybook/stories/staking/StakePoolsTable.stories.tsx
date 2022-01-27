@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import { StakePoolsTable } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsTable';
 import { StakePoolsSearch } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsSearch';
+
 const listTitle = {
   id: 'staking.stakePools.listTitle',
   defaultMessage: '!!!Stake pools ({pools})',
@@ -31,6 +32,7 @@ export const StakePoolsTableStory = (props: Props) => (
         onListView={action('onOpenExternalLink')}
         isListView
         isGridView={false}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isClearTooltipOpeningDownward
       />
       <h2
@@ -59,6 +61,7 @@ export const StakePoolsTableStory = (props: Props) => (
       </h2>
       <StakePoolsTable
         listName="selectedIndexList"
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         stakePoolsList={STAKE_POOLS.slice(
           0,
           number('Pools', 300, {

@@ -11,6 +11,7 @@ import {
 } from '../../../features';
 import type { SidebarWalletType } from '../../../types/sidebarTypes';
 import SidebarWalletsMenu from './SidebarWalletsMenu';
+
 describe('Sidebar Wallets Menu', () => {
   afterEach(cleanup);
 
@@ -52,6 +53,7 @@ describe('Sidebar Wallets Menu', () => {
       return {
         id: id.toString(),
         title,
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
         amount: 0,
         isConnected: false,
         isRestoreActive: false,

@@ -6,6 +6,7 @@ import StoryDecorator from '../../../../../../../storybook/stories/_support/Stor
 import StoryProvider from '../../../../../../../storybook/stories/_support/StoryProvider';
 import { generateHash } from '../../../../../../../storybook/stories/_support/utils';
 import WalletTokenPicker from './WalletTokenPicker';
+
 const assets = [
   {
     policyId: generateHash(),

@@ -4,6 +4,7 @@ import type {
   GenerateQRCodeRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const saveQRCodeImageChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GenerateQRCodeMainResponse,

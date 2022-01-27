@@ -10,6 +10,7 @@ import type {
   Discovery,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
+
 export const WalletDiscovery: {
   RANDOM: Discovery;
   SEQUENTIAL: Discovery;
@@ -123,11 +124,11 @@ export type WalletProps = {
   walletNotConnected?: boolean;
 };
 export default class Wallet {
-  id: string = '';
+  id = '';
   @observable
   addressPoolGap: number;
   @observable
-  name: string = '';
+  name = '';
   @observable
   amount: BigNumber;
   @observable

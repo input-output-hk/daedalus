@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -12,17 +13,22 @@ import SVGInline from 'react-svg-inline';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/clipboard-... Remove this comment to see the full error message
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/sand-clock... Remove this comment to see the full error message
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
+
 const messages = defineMessages({
   systemInfo: {
     id: 'daedalus.diagnostics.dialog.system.info',
@@ -812,6 +818,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'focus' does not exist on type 'Element'.
     document.getElementsByClassName('ReactModal__Content')[0].focus();
   };
   checkTime = () => {
@@ -822,6 +829,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     this.setState({
       isNodeRestarting: true,
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'trigger' does not exist on type '(...arg... Remove this comment to see the full error message
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
   };

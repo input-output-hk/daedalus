@@ -4,6 +4,7 @@ import type {
   WalletSortOrderOptions,
   WalletSortConfig,
 } from '../../types/sidebarTypes';
+
 export type SidebarMenus = {
   wallets:
     | {

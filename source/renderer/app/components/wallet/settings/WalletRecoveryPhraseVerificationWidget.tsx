@@ -8,9 +8,13 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseVerifica... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseVerificationWidget.scss';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES as statuses,
@@ -18,6 +22,7 @@ import {
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
 import { LOCALES } from '../../../../../common/types/locales.types';
+
 export const messages = defineMessages({
   title: {
     id: 'wallet.settings.recoveryPhraseVerification.title',
@@ -201,6 +206,7 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
       const replacement = this.context.intl
         .formatMessage(messages.timeUntilWarningReplacement)
         .split(',');
+      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
       timeUntilWarning = timeUntilWarning.replace(...replacement);
     }
 

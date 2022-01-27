@@ -1,9 +1,12 @@
 import React, { Component, createRef } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { ElementRef, Node } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingWithNavigation.scss' ... Remove this comment to see the full error message
 import styles from './StakingWithNavigation.scss';
+
 type Props = {
   children?: Node;
   activeItem: string;
@@ -49,6 +52,7 @@ class StakingWithNavigation extends Component<Props> {
           <div
             className={styles.page}
             ref={(ref) => {
+              // @ts-ignore ts-migrate(2540) FIXME: Cannot assign to 'current' because it is a read-on... Remove this comment to see the full error message
               this.stakingPageRef.current = ref;
             }}
           >

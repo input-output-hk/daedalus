@@ -21,6 +21,7 @@ const logDifferences = ({
 // Checks for properties/CSS vars on existing themes that don't exist on createThemeObj
 export const checkCreateTheme = (createThemeObj: Record<string, any>) => {
   const missingDefinitions = EXISTING_THEME_OUTPUTS.reduce(
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     (
       defsToAdd: Record<string, any>,
       themeOutput: [string, Record<string, any>]
@@ -45,6 +46,7 @@ export const checkCreateTheme = (createThemeObj: Record<string, any>) => {
     if (themeName && !isEmpty(missingDefinitions[themeName])) {
       logDifferences({
         color: THEME_LOGGING_COLORS[themeName],
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string | { aboutWindow: { '--theme-about-win... Remove this comment to see the full error message
         missingDefs: missingDefinitions[themeName],
         themeName,
       });

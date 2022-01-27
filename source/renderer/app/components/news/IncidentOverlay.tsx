@@ -7,8 +7,11 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './IncidentOverlay.scss' or its... Remove this comment to see the full error message
 import styles from './IncidentOverlay.scss';
+
 type Props = {
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   incident: News.News;
   onOpenExternalLink: (...args: Array<any>) => any;
   onProceedNewsAction: (...args: Array<any>) => any;
@@ -20,6 +23,7 @@ class IncidentOverlay extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
   componentDidMount() {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type '"MM/DD/YY... Remove this comment to see the full error message
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
@@ -40,6 +44,7 @@ class IncidentOverlay extends Component<Props> {
     if (action && (action.url || action.event)) {
       return (
         <ButtonLink
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           className={styles.actionBtn}
           onClick={this.onProceedNewsAction}
           skin={ButtonSkin}

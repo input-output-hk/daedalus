@@ -5,9 +5,11 @@ import type { ElementRef } from 'react';
 import { AutoSizer, List, WindowScroller } from 'react-virtualized';
 import { Instance } from 'tippy.js';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsList.scss' or its ... Remove this comment to see the full error message
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
+
 type TippyElement = Element & {
   _tippy: Instance;
 };
@@ -58,6 +60,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     // Note: do not use window here otherwise the pool description cannot be
     // scrolled anymore because it closes the pop over immediately.
     const scrollContainer = props.scrollElementRef
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
       ? props.scrollElementRef.current
       : null;
 
@@ -122,7 +125,9 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
   return (
     <WindowScroller
       scrollElement={
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
         props.scrollElementRef && props.scrollElementRef.current
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
           ? props.scrollElementRef.current
           : window
       }
@@ -159,6 +164,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     </WindowScroller>
   );
 });
+// @ts-ignore ts-migrate(2339) FIXME: Property 'defaultProps' does not exist on type '(p... Remove this comment to see the full error message
 StakePoolsList.defaultProps = {
   showWithSelectButton: false,
   highlightWithDelay: false,

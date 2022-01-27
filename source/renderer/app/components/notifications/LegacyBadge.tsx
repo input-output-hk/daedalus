@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './LegacyBadge.scss' or its cor... Remove this comment to see the full error message
 import styles from './LegacyBadge.scss';
+
 const messages = defineMessages({
   label: {
     id: 'wallet.byron.badge.label',

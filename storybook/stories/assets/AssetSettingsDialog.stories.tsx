@@ -6,6 +6,7 @@ import { withKnobs, number } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import AssetSettingsDialog from '../../../source/renderer/app/components/assets/AssetSettingsDialog';
+
 const asset = {
   policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
   assetName: '6861707079636f696e',
@@ -27,6 +28,7 @@ storiesOf('Assets|AssetSettingsDialog', module)
   .add('Default', () => (
     <AssetSettingsDialog
       asset={asset}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { policyId: string; assetName: stri... Remove this comment to see the full error message
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
@@ -38,6 +40,7 @@ storiesOf('Assets|AssetSettingsDialog', module)
         ...asset,
         recommendedDecimals: number('recommendedDecimals', 2),
       }}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { recommendedDecimals: number; poli... Remove this comment to see the full error message
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}

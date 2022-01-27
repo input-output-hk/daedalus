@@ -4,6 +4,7 @@ import type {
   GenerateAddressPDFRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GenerateAddressPDFMainResponse,

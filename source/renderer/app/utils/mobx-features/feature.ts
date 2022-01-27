@@ -1,7 +1,8 @@
 import pull from 'lodash/pull';
 import { Reaction } from './reaction';
+
 export class Feature {
-  isRunning: boolean = false;
+  isRunning = false;
   reactions: Reaction[] = [];
 
   async start() {

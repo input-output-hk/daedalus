@@ -6,13 +6,17 @@ import ReactMarkdown from 'react-markdown';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import ButtonLink from '../widgets/ButtonLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AlertsOverlay.scss' or its c... Remove this comment to see the full error message
 import styles from './AlertsOverlay.scss';
+
 type State = {
   showOverlay: boolean;
 };
 type Props = {
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   alerts: Array<News.News>;
   onCloseOpenAlert: (...args: Array<any>) => any;
   onMarkNewsAsRead: (...args: Array<any>) => any;
@@ -35,6 +39,7 @@ class AlertsOverlay extends Component<Props, State> {
   localizedDateFormat: 'MM/DD/YYYY';
 
   componentDidMount() {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type '"MM/DD/YY... Remove this comment to see the full error message
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
@@ -69,6 +74,7 @@ class AlertsOverlay extends Component<Props, State> {
     if (action && (action.url || action.event)) {
       return (
         <ButtonLink
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           className={styles.actionBtn}
           onClick={this.onProceedNewsAction}
           skin={ButtonSkin}
@@ -84,6 +90,7 @@ class AlertsOverlay extends Component<Props, State> {
 
     return null;
   };
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   renderCounter = (alerts: Array<News.News>) => {
     const { allAlertsCount, hideCounter } = this.props;
 

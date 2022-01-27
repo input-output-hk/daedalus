@@ -13,8 +13,10 @@ import {
 } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseStepDial... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
+
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
     id: 'wallet.settings.recoveryPhraseStep2Title',
@@ -77,6 +79,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
     isVerifying: false,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -110,6 +113,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onClose, onContinue, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
     const canSubmit =

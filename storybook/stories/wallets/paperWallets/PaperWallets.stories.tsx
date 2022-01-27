@@ -8,6 +8,7 @@ import PrintDialog from '../../../../source/renderer/app/components/wallet/paper
 import SecuringPasswordDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
 import VerificationDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
 import CompletionDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
+
 storiesOf('Wallets|Paper Wallets', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Instructions', () => (
@@ -17,6 +18,7 @@ storiesOf('Wallets|Paper Wallets', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onPrint={action('onPrint')}
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onContinue={action('onContinue')}
       />
     </div>
@@ -40,6 +42,7 @@ storiesOf('Wallets|Paper Wallets', module)
   ))
   .add('Confirm Mnemonics', () => (
     <div>
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       <VerificationDialog
         walletCertificatePassword="flugenheimer"
         walletCertificateRecoveryPhrase={wordlist}
@@ -56,6 +59,7 @@ storiesOf('Wallets|Paper Wallets', module)
       <CompletionDialog
         walletCertificateAddress="WalletCertificateAddress"
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={action('onBack')}
         onContinue={action('onContinue')}
         onOpenExternalLink={action('onOpenExternalLink')}

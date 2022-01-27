@@ -34,6 +34,7 @@ import type {
 import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
+
 const random = seedrandom('daedalus', {
   global: false,
 });
@@ -106,11 +107,11 @@ export const generateWallet = (
     available: [],
     total: [],
   },
-  reward: number = 0,
+  reward = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet: boolean = false,
+  isHardwareWallet = false,
   id: string = generateHash()
 ) =>
   new Wallet({
@@ -124,6 +125,7 @@ export const generateWallet = (
     name,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ progress: { quantity: number; unit: string... Remove this comment to see the full error message
     syncState: {
       status,
       ...statusProgress(status),
@@ -139,8 +141,9 @@ export const generateWallet = (
   });
 export const generateAssetDomain = (
   policyId: string,
-  assetName: string = '',
-  fingerprint: string = '',
+  assetName = '',
+  fingerprint = '',
+  // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   metadata: AssetMetadata = {}
 ): Asset =>
   new Asset({
@@ -154,8 +157,8 @@ export const generateAssetDomain = (
   });
 export const generateAssetToken = (
   policyId: string,
-  assetName: string = '',
-  fingerprint: string = '',
+  assetName = '',
+  fingerprint = '',
   quantity: number,
   metadata: AssetMetadata | null | undefined,
   decimals: number | null | undefined,
@@ -177,9 +180,9 @@ export const generateTransaction = (
   amount: BigNumber = new BigNumber(faker.finance.amount()),
   deposit: BigNumber = new BigNumber(faker.finance.amount()),
   state: TransactionState = TransactionStates.OK,
-  hasUnresolvedIncomeAddresses: boolean = false,
-  noIncomeAddresses: boolean = false,
-  noWithdrawals: boolean = true,
+  hasUnresolvedIncomeAddresses = false,
+  noIncomeAddresses = false,
+  noWithdrawals = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
   assets?: Tokens,
   metadata: TransactionMetadata = EXAMPLE_METADATA
@@ -231,7 +234,7 @@ export const generateMultipleTransactions = (
   Array.from(Array(amount).keys()).map((key: number) =>
     generateRandomTransaction(Math.round(Math.random() * key))
   );
-export const generateAddress = (used: boolean = false): WalletAddress =>
+export const generateAddress = (used = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,

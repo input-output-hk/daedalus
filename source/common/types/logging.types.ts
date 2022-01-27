@@ -16,6 +16,7 @@ import type { Address } from '../../renderer/app/api/addresses/types';
 import type { GetTransactionsRequest } from '../../renderer/app/api/transactions/types';
 import type { HardwareWalletLocalData } from '../../renderer/app/api/utils/localStorage';
 import type { AdaApiStakePool } from '../../renderer/app/api/staking/types';
+
 export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
 export type Logger = {
   debug: (arg0: string, arg1: Record<string, any> | null | undefined) => void;

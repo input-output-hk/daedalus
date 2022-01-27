@@ -1,4 +1,5 @@
 import { ApiMethodNotYetImplementedError } from '../common/errors';
+
 export const notYetImplemented = async () =>
   new Promise((resolve, reject) => {
     reject(new ApiMethodNotYetImplementedError());

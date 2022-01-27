@@ -58,13 +58,17 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UNRECOVERABLE,
 ];
 // END CONSTANTS ----------------------------
+// @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
 const { isFlight } = global;
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _networkStatusPollingInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _networkClockPollingInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _networkParametersPollingInterval: IntervalID | null | undefined = null;
   // Initialize store observables
   // Internal Node states
@@ -73,9 +77,9 @@ export default class NetworkStatusStore extends Store {
   @observable
   cardanoNodeState: CardanoNodeState = 'unknown';
   @observable
-  cardanoNodePID: number = 0;
+  cardanoNodePID = 0;
   @observable
-  cardanoWalletPID: number = 0;
+  cardanoWalletPID = 0;
   @observable
   isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
 
@@ -122,7 +126,7 @@ export default class NetworkStatusStore extends Store {
   localTimeDifference: number | null | undefined = 0; // microseconds
 
   @observable
-  decentralizationProgress: number = 0; // percentage
+  decentralizationProgress = 0; // percentage
 
   @observable
   desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
@@ -139,35 +143,36 @@ export default class NetworkStatusStore extends Store {
     GetNetworkParametersResponse
   > = new Request(this.api.ada.getNetworkParameters);
   @observable
-  isNotEnoughDiskSpace: boolean = false;
+  isNotEnoughDiskSpace = false;
   @observable
-  diskSpaceRequired: string = '';
+  diskSpaceRequired = '';
   @observable
-  diskSpaceMissing: string = '';
+  diskSpaceMissing = '';
   @observable
-  diskSpaceRecommended: string = '';
+  diskSpaceRecommended = '';
   @observable
-  diskSpaceAvailable: string = '';
+  diskSpaceAvailable = '';
   @observable
-  isTlsCertInvalid: boolean = false;
+  isTlsCertInvalid = false;
   @observable
-  stateDirectoryPath: string = '';
+  stateDirectoryPath = '';
   @observable
-  isShelleyActivated: boolean = false;
+  isShelleyActivated = false;
   @observable
-  isShelleyPending: boolean = false;
+  isShelleyPending = false;
   @observable
-  isAlonzoActivated: boolean = false;
+  isAlonzoActivated = false;
   @observable
-  shelleyActivationTime: string = '';
+  shelleyActivationTime = '';
   @observable
-  isAlonzoActivated: boolean = false;
+  // @ts-ignore ts-migrate(2300) FIXME: Duplicate identifier 'isAlonzoActivated'.
+  isAlonzoActivated = false;
   @observable
-  isAlonzoPending: boolean = false;
+  isAlonzoPending = false;
   @observable
-  alonzoActivationTime: string = '';
+  alonzoActivationTime = '';
   @observable
-  verificationProgress: number = 0;
+  verificationProgress = 0;
   @observable
   epochLength: number | null | undefined = null; // unit: 1 slot
 
@@ -222,6 +227,7 @@ export default class NetworkStatusStore extends Store {
     this._resetSystemTime();
 
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
@@ -254,10 +260,12 @@ export default class NetworkStatusStore extends Store {
   };
   _updateNetworkStatusWhenConnected = () => {
     if (this.isConnected) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Connected');
 
       this._updateNetworkStatus();
 
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.walletMigration.startMigration.trigger();
     }
   };
@@ -265,6 +273,7 @@ export default class NetworkStatusStore extends Store {
     if (this.environment.isTest && !this.isConnected) return;
 
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
@@ -285,10 +294,12 @@ export default class NetworkStatusStore extends Store {
 
   _getStateDirectoryPath = async () => {
     this._onReceiveStateDirectoryPath(
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       await getStateDirectoryPathChannel.request()
     );
   };
   _requestCardanoState = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
     logger.info(`NetworkStatusStore: handling node state <${state}>`, {
@@ -298,7 +309,9 @@ export default class NetworkStatusStore extends Store {
   };
   _requestCardanoStatus = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: requesting node status');
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       const status = await getCachedCardanoStatusChannel.request();
       logger.info('NetworkStatusStore: received cached node status', {
         status,
@@ -313,6 +326,7 @@ export default class NetworkStatusStore extends Store {
   };
   _requestTlsConfig = async () => {
     try {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         'NetworkStatusStore: requesting tls config from main process'
       );
@@ -328,11 +342,13 @@ export default class NetworkStatusStore extends Store {
   _updateTlsConfig = (config: TlsConfig | null | undefined): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     runInAction('updating tlsConfig', () => {
       this.tlsConfig = config;
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
@@ -440,17 +456,18 @@ export default class NetworkStatusStore extends Store {
     }
   };
   @action
-  ignoreSystemTimeChecks = (flag: boolean = true) => {
+  ignoreSystemTimeChecks = (flag = true) => {
     this.isSystemTimeIgnored = flag;
   };
   @action
   _forceCheckNetworkClock = () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: Force checking network clock...');
 
     this._updateNetworkClock(true);
   };
   @action
-  _updateNetworkClock = async (isForceCheck: boolean = false) => {
+  _updateNetworkClock = async (isForceCheck = false) => {
     // Skip checking network clock if we are not connected or system time is ignored
     if (!this.isNodeResponding || (this.isSystemTimeIgnored && !isForceCheck))
       return;
@@ -459,6 +476,7 @@ export default class NetworkStatusStore extends Store {
     // check in which case we need to wait for previous request to be executed
     if (this.getNetworkClockRequest.isExecuting) {
       if (isForceCheck) {
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         await this.getNetworkClockRequest;
       } else {
         return;
@@ -509,6 +527,7 @@ export default class NetworkStatusStore extends Store {
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
@@ -590,6 +609,7 @@ export default class NetworkStatusStore extends Store {
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
         this._networkStatus = NETWORK_STATUS.RUNNING;
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.networkStatus.isSyncedAndReady.trigger();
 
         const syncingTimeDelta = this._getStartupTimeDelta();
@@ -607,10 +627,12 @@ export default class NetworkStatusStore extends Store {
             });
           }
 
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
           // Make sure all wallets data is fully reloaded after the connection is re-established
           this.stores.wallets.resetWalletsData();
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug('NetworkStatusStore: Connection Restored');
         }
 
@@ -651,6 +673,7 @@ export default class NetworkStatusStore extends Store {
         });
       }
 
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
   };

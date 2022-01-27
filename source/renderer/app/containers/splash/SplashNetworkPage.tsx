@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SplashNetworkFlight from '../../components/splash/SplashNetworkFlight';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

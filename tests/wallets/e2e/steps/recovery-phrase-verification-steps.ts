@@ -1,4 +1,5 @@
 import { Given, When, Then } from "cucumber";
+
 const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhraseVerificationWidget_status';
 const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhraseVerificationWidget_statusButton`;
 const DIALOG_SELECTOR = '.Dialog_dialogWrapper';
@@ -13,12 +14,14 @@ Given('the last recovery phrase veryfication was done {int} days ago', async fun
   await this.client.executeAsync((days, done) => {
     const {
       id: walletId
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.wallets.active;
     const date = new Date();
     date.setDate(date.getDate() - days);
     const recoveryPhraseVerificationDate = date.toISOString();
     const {
       setWalletLocalData
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.actions.walletsLocal;
     setWalletLocalData.once(done);
     setWalletLocalData.trigger({
@@ -42,8 +45,10 @@ When(/^I click the checkbox and Continue button$/, function () {
 });
 When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async function (_type) {
   const recoveryPhrase = await this.client.execute((type, mnemonics) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const activeWallet = daedalus.stores.wallets.active;
     const correctMnemonics = mnemonics[activeWallet.name];
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const incorrectMnemonics = daedalus.utils.crypto.generateMnemonic(correctMnemonics.length).split(' ');
     return type === 'correctly' ? correctMnemonics : incorrectMnemonics;
   }, _type, this.mnemonics);

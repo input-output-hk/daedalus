@@ -20,6 +20,7 @@ import {
   CardanoNodeImplementationOptions,
   NetworkNameOptions,
 } from '../../common/types/cardano-node.types';
+
 export type Process = {
   pid: number;
   name: string;
@@ -35,7 +36,7 @@ const checkCondition = async (
   reject: (...args: Array<any>) => any,
   timeout: number,
   retryEvery: number,
-  timeWaited: number = 0
+  timeWaited = 0
 ): Promise<void> => {
   const result = await condition();
 
@@ -61,8 +62,8 @@ const checkCondition = async (
 
 export const promisedCondition = (
   cond: (...args: Array<any>) => any,
-  timeout: number = 5000,
-  retryEvery: number = 1000
+  timeout = 5000,
+  retryEvery = 1000
 ): Promise<void> =>
   new Promise((resolve, reject) => {
     checkCondition(cond, resolve, reject, timeout, retryEvery);
@@ -342,11 +343,13 @@ const prepareMigrationData = async (
       if (code === 'EBUSY') {
         // "EBUSY" error happens on Windows when Daedalus mainnet is running during preparation
         // of Daedalus Flight wallet migration data as this prevents the files from being copied.
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('ipcMain: Showing "Automatic wallet migration" warning...');
         const { response } = await showExportWalletsWarning(mainWindow, locale);
 
         if (response === 0) {
           // User confirmed migration retry
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('ipcMain: User confirmed wallet migration retry');
           resolve(
             prepareMigrationData(
@@ -359,6 +362,7 @@ const prepareMigrationData = async (
           );
         } else {
           // User canceled migration
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('ipcMain: User canceled wallet migration');
           reject(error);
         }

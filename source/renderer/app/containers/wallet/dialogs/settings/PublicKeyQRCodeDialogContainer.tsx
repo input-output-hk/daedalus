@@ -11,6 +11,7 @@ import {
 } from '../../../../config/walletsConfig';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { ReactIntlMessage } from '../../../../types/i18nTypes';
+
 const walletMessages: Record<string, ReactIntlMessage> = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.walletPublicKey',
@@ -37,7 +38,7 @@ class PublicKeyQRCodeDialogContainer extends Component<Props> {
     actions: null,
     stores: null,
   };
-  handleCopyWalletPublicKey = (isICO: boolean = false) => {
+  handleCopyWalletPublicKey = (isICO = false) => {
     const { actions, stores } = this.props;
     const { wallets: walletsAction } = actions;
     const { wallets: walletsStore } = stores;

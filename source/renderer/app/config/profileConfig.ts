@@ -1,4 +1,5 @@
 import globalMessages from '../i18n/global-messages';
+
 export const PROFILE_SETTINGS = [
   'locale',
   'numberFormat',

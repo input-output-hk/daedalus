@@ -4,6 +4,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+
 const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',

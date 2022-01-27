@@ -6,6 +6,7 @@ import type {
   Logger,
 } from '../../common/types/logging.types';
 import { toJS } from '../../common/utils/helper';
+
 const appName = 'daedalus';
 const electronProcess = 'ipcMain';
 const { network, os, platformVersion, version } = environment;

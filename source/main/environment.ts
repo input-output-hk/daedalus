@@ -60,6 +60,7 @@ const isLinux = checkIsLinux(PLATFORM);
 /* ==================================================================
 =                       Compose environment                         =
 ================================================================== */
+// @ts-ignore ts-migrate(2322) FIXME: Type '{ network: string; apiVersion: string; nodeV... Remove this comment to see the full error message
 export const environment: Environment = Object.assign(
   {},
   {

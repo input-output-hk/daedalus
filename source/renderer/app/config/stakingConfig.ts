@@ -4,8 +4,11 @@ import type {
   DelegationAction,
 } from '../types/stakingTypes';
 import type { SmashServerStatuses } from '../api/staking/types';
+
+// @ts-ignore ts-migrate(2339) FIXME: Property 'smashUrl' does not exist on type 'typeof... Remove this comment to see the full error message
 const { smashUrl, environment, isFlight } = global;
 const { isMainnet } = environment;
+// @ts-ignore ts-migrate(2739) FIXME: Type '{ iohk: { name: string; url: any; }; direct:... Remove this comment to see the full error message
 export const SMASH_SERVERS_LIST: Record<
   SmashServerType,
   {

@@ -28,6 +28,7 @@ class App extends Component<{
 }> {
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.props.actions.app.initAppEnvironment.trigger();
   }
 
@@ -55,6 +56,7 @@ class App extends Component<{
 
     return (
       <Fragment>
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
           <ThemeProvider
@@ -76,7 +78,9 @@ class App extends Component<{
                 </Router>
                 {mobxDevTools}
                 {[
+                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
                   isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
                   isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
                     <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
                   ),

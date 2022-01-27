@@ -3,10 +3,14 @@ import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CountdownWidget.scss' or its... Remove this comment to see the full error message
 import styles from './CountdownWidget.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/delimeter.... Remove this comment to see the full error message
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner.in... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner.inline.svg';
 import globalMessages from '../../i18n/global-messages';
+
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
 const COLUMNS = {
@@ -40,6 +44,7 @@ type State = {
 
 @observer
 class CountdownWidget extends Component<Props, State> {
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
   state = {
     timeLeft: null,

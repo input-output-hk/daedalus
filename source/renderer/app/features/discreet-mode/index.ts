@@ -1,4 +1,5 @@
 import type { DiscreetMode } from './feature';
+
 export { useDiscreetModeFeature, DiscreetModeFeatureProvider } from './context';
 export {
   DiscreetValue,

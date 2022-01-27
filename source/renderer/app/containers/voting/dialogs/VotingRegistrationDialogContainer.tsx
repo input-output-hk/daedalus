@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -13,6 +14,7 @@ import ConfirmationDialog from '../../../components/voting/voting-registration-w
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+
 const messages = defineMessages({
   votingRegistrationStep1Label: {
     id: 'voting.votingRegistration.steps.step.1.label',
@@ -77,6 +79,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     isLegacy?: boolean,
     isRestoring?: boolean,
     walletAmount?: BigNumber,
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     walletReward: BigNumber = 0
   ) =>
     !isLegacy &&

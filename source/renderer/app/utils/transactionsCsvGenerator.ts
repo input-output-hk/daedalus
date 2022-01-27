@@ -14,6 +14,7 @@ import {
 } from './formatters';
 import { WALLET_ASSETS_ENABLED } from '../config/walletsConfig';
 import { filterAssets } from './assets';
+
 const messages = defineMessages({
   columnID: {
     id: 'wallet.transactions.csv.column.id',
@@ -178,6 +179,7 @@ const transactionsCsvGenerator = async ({
 
       if (type === TransactionTypes.EXPEND) {
         const amountWithoutFees = -amount.minus(-fee);
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
         valueDepositAmount = formattedWalletAmount(deposit, false);
         valueTransactionFee = formattedWalletAmount(fee, false);

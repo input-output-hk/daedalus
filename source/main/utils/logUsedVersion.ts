@@ -1,4 +1,5 @@
 import fs from 'fs';
+
 export const logUsedVersion = async (version: string, logFilePath: string) => {
   let usedVersions = null;
   const currentVersionData = {

@@ -4,6 +4,7 @@ import type {
   SetStateSnapshotLogRendererRequest,
   SetStateSnapshotLogMainResponse,
 } from '../../../common/ipc/api';
+
 export const setStateSnapshotLogChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   SetStateSnapshotLogMainResponse,

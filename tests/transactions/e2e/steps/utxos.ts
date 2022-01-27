@@ -2,6 +2,7 @@ import { Then } from "cucumber";
 import { expect } from "chai";
 import { getVisibleTextsForSelector } from "../../../common/e2e/steps/helpers";
 import { getWalletUtxosTotalAmount } from "../../../../source/renderer/app/utils/utxoUtils";
+
 const container = '.WalletUtxo_container';
 const selectors = {
   container,
@@ -28,9 +29,11 @@ Then('the page description displays the correct wallet and UTXOs amount', async 
   } = await this.client.executeAsync(done => {
     const {
       walletUtxos
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.walletSettings || {};
     const {
       activeValue
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.wallets;
     done({
       expextedWalletAmount: activeValue,

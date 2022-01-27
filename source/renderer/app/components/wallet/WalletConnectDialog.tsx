@@ -12,13 +12,18 @@ import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import LocalizableError from '../../i18n/LocalizableError';
 import Dialog from '../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletConnectDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
@@ -32,6 +37,7 @@ import {
 } from '../../../../common/types/hardware-wallets.types';
 import type { TransportDevice } from '../../../../common/types/hardware-wallets.types';
 import type { HwDeviceStatus } from '../../domains/Wallet';
+
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.connect.dialog.title',
@@ -199,6 +205,7 @@ class WalletConnectDialog extends Component<Props> {
                 <HardwareWalletStatus
                   hwDeviceStatus={hwDeviceStatus}
                   onExternalLinkClick={onExternalLinkClick}
+                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                   isTransactionStatus={false}
                   isTrezor={isTrezor}
                 />

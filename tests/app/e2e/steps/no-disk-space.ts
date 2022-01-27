@@ -1,5 +1,6 @@
 import { Given, Then, When } from "cucumber";
 import type { Daedalus } from "../../../types";
+
 let diskSpaceRequired;
 const HUNDRED_TB = 100 * 1e12; // 100 TB | unit: bytes
 
@@ -16,6 +17,7 @@ Given(/^I set the required space to 1 KB$/, () => {
 });
 When(/^I check the disk space$/, function () {
   this.client.execute(() => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._checkDiskSpace();
   }, diskSpaceRequired);
 });

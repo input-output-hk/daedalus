@@ -4,6 +4,7 @@ import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
 import { toJS } from '../../../common/utils/helper';
+
 type KnownErrorType =
   | 'invalid_wallet_type'
   | 'no_such_wallet'
@@ -56,14 +57,14 @@ type ErrorType = {
 };
 export default class ApiError {
   @observable
-  tempError: string = '';
+  tempError = '';
   @observable
   clause: boolean;
   @observable
-  forceSet: boolean = false;
+  forceSet = false;
   @observable
   additionalValues: Record<string, any> = {};
-  isFinalError: boolean = false;
+  isFinalError = false;
   id: string;
   defaultMessage: string;
   values: Record<string, any>;
@@ -85,8 +86,11 @@ export default class ApiError {
     } else {
       const genericApiError = new GenericApiError(error);
       humanizedError = {
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'GenericApiEr... Remove this comment to see the full error message
         id: genericApiError.id,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'defaultMessage' does not exist on type '... Remove this comment to see the full error message
         defaultMessage: genericApiError.defaultMessage,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'GenericA... Remove this comment to see the full error message
         values: genericApiError.values,
       };
     }
@@ -100,7 +104,8 @@ export default class ApiError {
   @action
   set(
     predefinedError: string,
-    force?: boolean = false,
+    // @ts-ignore ts-migrate(1015) FIXME: Parameter cannot have question mark and initialize... Remove this comment to see the full error message
+    force? = false,
     values?: Record<string, any>
   ) {
     if (

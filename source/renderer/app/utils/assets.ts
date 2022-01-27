@@ -7,6 +7,7 @@ import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 import { formattedTokenDecimals } from './formatters';
+
 export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
 
@@ -285,6 +286,7 @@ export const searchAssets = (
       description,
     ];
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | AssetMetadata' is not a... Remove this comment to see the full error message
     return checkList.some((item) => regex.test(item));
   });
 };

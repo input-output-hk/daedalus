@@ -7,6 +7,7 @@ import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { RESTORE_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 import ConfirmationDialog from '../../../components/wallet/wallet-restore/widgets/ConfirmationDialog';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

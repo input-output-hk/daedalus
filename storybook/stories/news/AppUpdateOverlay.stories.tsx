@@ -6,9 +6,11 @@ import StoryDecorator from '../_support/StoryDecorator';
 import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/AppUpdateOverlay';
 import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
+
 storiesOf('News|Overlays', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Update', ({ locale }: { locale: string }) => {
     const scenario = radios(
       'Scenario',
@@ -53,6 +55,7 @@ storiesOf('News|Overlays', module)
           })
         : 0;
     const timeLeftNumber = parseInt(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
       rangeMap(downloadProgress, 0, 100, 30, 1),
       10
     );

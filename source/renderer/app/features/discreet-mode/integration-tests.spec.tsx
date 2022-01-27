@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { IntlProvider } from 'react-intl';
 import BigNumber from 'bignumber.js';
@@ -15,6 +16,7 @@ import {
   withDiscreetMode,
 } from './ui';
 import { DiscreetMode } from './feature';
+
 describe('Discreet Mode feature', () => {
   afterEach(cleanup);
 
@@ -51,21 +53,28 @@ describe('Discreet Mode feature', () => {
     async (testId, [amount, currency, withCurrency, long], expected) => {
       expect.assertions(2);
       render(
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string | (string | boolean | BigNumber)[]' i... Remove this comment to see the full error message
         <TestDecorator testId={testId}>
           <DiscreetWalletAmount
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | boolean | BigNumber' is not assigna... Remove this comment to see the full error message
             amount={amount}
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | boolean | BigNumber' is not assigna... Remove this comment to see the full error message
             currency={currency}
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | boolean | BigNumber' is not assigna... Remove this comment to see the full error message
             withCurrency={withCurrency}
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | boolean | BigNumber' is not assigna... Remove this comment to see the full error message
             long={long}
           />
         </TestDecorator>
       );
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       expect(screen.getByTestId(testId)).toHaveTextContent(expected);
       fireEvent.click(
         screen.getByRole('button', {
           name: /discreetModeToggle/i,
         })
       );
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       expect(screen.getByTestId(testId)).toHaveTextContent('***');
     }
   );
@@ -89,20 +98,26 @@ describe('Discreet Mode feature', () => {
     (testId, [amount, metadata, decimals], expected) => {
       expect.assertions(2);
       render(
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string | (number | BigNumber | { ticker: str... Remove this comment to see the full error message
         <TestDecorator testId={testId}>
           <DiscreetTokenWalletAmount
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | number | BigNumber | { ticker: stri... Remove this comment to see the full error message
             amount={amount}
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | number | BigNumber | { ticker: stri... Remove this comment to see the full error message
             metadata={metadata}
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'string | number | BigNumber | { ticker: stri... Remove this comment to see the full error message
             decimals={decimals}
           />
         </TestDecorator>
       );
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       expect(screen.getByTestId(testId)).toHaveTextContent(expected);
       fireEvent.click(
         screen.getByRole('button', {
           name: /discreetModeToggle/i,
         })
       );
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       expect(screen.getByTestId(testId)).toHaveTextContent('***');
     }
   );
@@ -112,6 +127,7 @@ describe('Discreet Mode feature', () => {
     const testId = 'discreet-value';
     render(
       <TestDecorator testId={testId}>
+        // @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message
         <DiscreetValue>{value}</DiscreetValue>
       </TestDecorator>
     );

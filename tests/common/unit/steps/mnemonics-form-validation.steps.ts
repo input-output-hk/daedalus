@@ -4,6 +4,7 @@ import { sampleSize } from "lodash";
 import sinon from "sinon";
 import validWords from "../../../../source/common/config/crypto/valid-words.en";
 import { validateMnemonics, INCOMPLETE_MNEMONIC_MARKER } from "../../../../source/renderer/app/utils/validations";
+
 const STUB_VALIDATOR_RETURN_VALUE = Symbol('validator return value');
 Given('I require {int} mnemonic words', function (requiredWordsCount) {
   this.context.requiredWords = requiredWordsCount;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { Provider, observer } from 'mobx-react';
 import faker from 'faker';
@@ -13,6 +14,7 @@ import {
 } from '../../../source/renderer/app/features';
 import { DiscreetModeToggleKnob } from './DiscreetModeToggleKnob';
 import { DiscreetModeNotificationKnob } from './DiscreetModeNotificationKnob';
+
 type Props = {
   children: Node;
 };

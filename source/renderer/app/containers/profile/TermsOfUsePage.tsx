@@ -24,6 +24,7 @@ class TermsOfUsePage extends Component<InjectedProps> {
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = (
       <TopBar
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currentRoute={currentRoute}
         showSubMenuToggle={false}
         isShelleyActivated={isShelleyActivated}

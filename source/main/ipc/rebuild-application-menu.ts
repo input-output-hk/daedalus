@@ -4,6 +4,7 @@ import type {
   RebuildAppMenuRendererRequest,
   RebuildAppMenuMainResponse,
 } from '../../common/ipc/api';
+
 export const rebuildApplicationMenu: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   RebuildAppMenuRendererRequest,

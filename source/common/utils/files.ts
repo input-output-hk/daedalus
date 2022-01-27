@@ -1,5 +1,6 @@
 import moment from 'moment';
 import sanitizeFilename from 'sanitize-filename';
+
 export const defaultProps = {
   prefix: 'logs',
   extension: 'zip',
@@ -9,6 +10,7 @@ export const defaultProps = {
 type Props = {
   prefix?: string;
   extension?: string;
+  // @ts-ignore ts-migrate(2709) FIXME: Cannot use namespace 'moment' as a type.
   date?: moment;
   isUTC?: boolean;
   sanitize?: boolean;
@@ -31,8 +33,8 @@ export const generateFileNameWithTimestamp = (props: Props = {}) => {
   return fileName;
 };
 export const isFileNameWithTimestamp = (
-  prefix: string = 'logs',
-  extension: string = 'zip'
+  prefix = 'logs',
+  extension = 'zip'
 ) => (fileName: string) =>
   fileName.match(
     RegExp(

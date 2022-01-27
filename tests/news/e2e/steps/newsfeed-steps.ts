@@ -12,6 +12,7 @@ async function prepareFakeNews(context, fakeNews, preparation, ...args) {
   const newsData = await context.client.executeAsync(done => {
     const {
       newsFeed
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores;
     // Refresh the newsfeed request & store
     newsFeed.getNews().then(() => {
@@ -43,6 +44,7 @@ async function prepareNewsOfType(context, type, count = null, markAsRead = false
   await prepareFakeNews(context, newsFeed, (news, isRead, done) => {
     const {
       api
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus;
     api.ada.setTestingNewsFeed(news);
 
@@ -57,7 +59,9 @@ async function prepareNewsOfType(context, type, count = null, markAsRead = false
 // Set newsfeed to open before each newsfeed step
 export function setNewsFeedIsOpen(client: Record<string, any>, flag) {
   return client.execute(desiredState => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     if (daedalus.stores.app.newsFeedIsOpen !== desiredState) {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.app.toggleNewsFeed.trigger();
     }
   }, flag);
@@ -65,10 +69,12 @@ export function setNewsFeedIsOpen(client: Record<string, any>, flag) {
 // Reset the fake news before each newsfeed step
 export function resetTestNews(client) {
   return client.executeAsync(done => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: []
     });
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.newsFeed.getNews().then(done);
   });
 }
@@ -78,6 +84,7 @@ Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function (coun
 });
 Given('there is no news', async function () {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: []
@@ -88,6 +95,7 @@ Given('there is no news', async function () {
 Given('there is an incident', async function () {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const incident = news.items.find(i => i.type === 'incident');
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [incident]
@@ -97,7 +105,9 @@ Given('there is an incident', async function () {
 });
 Given('the newsfeed server is unreachable', async function () {
   this.client.executeAsync(done => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setTestingNewsFeed(null);
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.newsFeed.getNews().then(done);
   });
   this.news = [];

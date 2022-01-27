@@ -6,7 +6,9 @@ import { observer } from 'mobx-react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsQrCod... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsQrCode.scss';
+
 const messages = defineMessages({
   qrCodeTitle: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeTitle',

@@ -8,6 +8,7 @@ import type {
 } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
+
 export type PaymentsType = {
   payments: Array<TransactionPaymentData>;
   withdrawal?: TransactionWithdrawalType;
@@ -54,6 +55,7 @@ export type SelectCoinsResponseType = {
   }>;
   deposits?: Array<{
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   }>;
   metadata?: string;

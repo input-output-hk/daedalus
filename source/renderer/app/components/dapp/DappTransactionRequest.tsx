@@ -9,6 +9,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DappTransactionRequest.scss'... Remove this comment to see the full error message
 import styles from './DappTransactionRequest.scss';
 import Dialog from '../widgets/Dialog';
 import globalMessages from '../../i18n/global-messages';
@@ -18,6 +19,7 @@ import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmati
 import { formattedWalletAmount } from '../../utils/formatters';
 import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 import type { AssetToken } from '../../api/assets/types';
+
 const messages = defineMessages({
   title: {
     id: 'dapp.transaction.request.title',
@@ -95,6 +97,7 @@ const DappTransactionRequest = observer((props: Props) => {
     false
   );
   const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const getToggleLabel = useCallback((isVisible: boolean) =>
     isVisible
       ? intl.formatMessage(globalMessages.hide)
@@ -184,6 +187,7 @@ const DappTransactionRequest = observer((props: Props) => {
           className={walletsDropdownStyles}
           getStakePoolById={() => {}}
           numberOfStakePools={100}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; getStakePoolById: () => vo... Remove this comment to see the full error message
           onChange={onSelectWallet}
           placeholder={intl.formatMessage(messages.walletsDropdownPlaceholder)}
           value={selectedWallet?.id}

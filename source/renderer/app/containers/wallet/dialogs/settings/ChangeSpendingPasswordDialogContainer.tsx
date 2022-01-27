@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import type { StoresMap } from '../../../../stores/index';
 import type { ActionsMap } from '../../../../actions/index';
+
 type Props = {
   stores: any | StoresMap;
   actions: any | ActionsMap;

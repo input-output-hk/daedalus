@@ -1,5 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import humanizeDuration from 'humanize-duration';
+
 export const SELECTED_EPOCH_OPTIONS = {
   CURRENT_EPOCH: 'currentEpoch',
   PREVIOUS_EPOCH: 'previousEpoch',

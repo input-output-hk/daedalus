@@ -4,6 +4,7 @@ import {
   DATE_JAPANESE_OPTIONS,
   TIME_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
+
 export const timeOptions = TIME_OPTIONS.reduce((obj, { label, value }) => {
   obj[label] = value;
   return obj;

@@ -3,13 +3,16 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import Notification from '../../components/notifications/Notification';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/success-sm... Remove this comment to see the full error message
 import successIcon from '../../assets/images/success-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
 import type { NotificationDataProps } from '../../components/notifications/Notification';
+
 const ICONS = {
   successIcon,
   spinnerIcon,
@@ -167,6 +170,7 @@ class NotificationsContainer extends Component<InjectedProps> {
         .copyAssetParamNotification,
     },
   ];
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{ downloadLogsProgress: { icon: string; hasE... Remove this comment to see the full error message
   notificationsData: Record<NotificationId, NotificationDataProps> = {
     downloadLogsProgress: {
       icon: 'spinner',
@@ -180,7 +184,7 @@ class NotificationsContainer extends Component<InjectedProps> {
       registerNotification.trigger(notificationConfig)
     );
   };
-  getIcon = (icon: string = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
+  getIcon = (icon = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
   getLabel = (
     id: string,
     labelValues?: Record<string, any> | null | undefined
@@ -198,6 +202,7 @@ class NotificationsContainer extends Component<InjectedProps> {
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
           const isVisible = id in activeNotifications;
           const data = this.notificationsData[id] || {};
+          // @ts-ignore ts-migrate(2525) FIXME: Initializer provides no value for this binding ele... Remove this comment to see the full error message
           const { labelValues, index } = isVisible
             ? activeNotifications[id]
             : {};

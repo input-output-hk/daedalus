@@ -4,6 +4,7 @@ import type { ActionsMap } from '../actions/index';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 import SidebarStore from './SidebarStore';
+
 describe('Sidebar Store', () => {
   const api: Api = {
     ada: jest.fn(),

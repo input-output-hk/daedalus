@@ -1,5 +1,6 @@
 import { observable } from 'mobx';
 import Profile from './Profile';
+
 export default class User {
   @observable
   id: string;

@@ -2,6 +2,7 @@ import type { RequestConfig } from '../../common/types';
 import type { Transactions } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId } from '../../utils';
+
 export type GetTransactionsQueryParams = {
   start?: string;
   end?: string;

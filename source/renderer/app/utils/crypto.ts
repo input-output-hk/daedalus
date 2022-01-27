@@ -80,6 +80,7 @@ export const getScrambledInput = (mnemonics: Array<string>) => {
 
   const certificatePassword = chunked[1]; // last 9 mnemonics
 
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const passphrase = mnemonicToSeedHex(certificatePassword.join(' '));
   return {
     passphrase,
@@ -109,6 +110,7 @@ export const blake2b224 = (data: Buffer): Buffer => blake2b(data, null, 28);
 export const decodeBech32 = (data: string): Buffer =>
   Buffer.from(bech32.fromWords(bech32.decode(data).words));
 export const encodeBech32 = (prefix: string, data: Buffer): string =>
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Buffer' is not assignable to par... Remove this comment to see the full error message
   bech32.encode(prefix, bech32.toWords(data));
 export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
   const { isMainnet, isStaging, isSelfnode } = global.environment;
@@ -119,6 +121,7 @@ export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
   const addressPrefix = isMainnetLikeNetwork ? 'stake' : 'stake_test';
   const stakeAddress = encodeBech32(
     addressPrefix,
+    // @ts-ignore ts-migrate(2488) FIXME: Type 'Buffer' must have a '[Symbol.iterator]()' me... Remove this comment to see the full error message
     Buffer.from([...networkPrefix, ...stakeKeyHash])
   );
   return stakeAddress;

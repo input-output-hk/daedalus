@@ -8,15 +8,18 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Asset from './Asset';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetSettingsDialog.scss' or... Remove this comment to see the full error message
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
+
 const messages = defineMessages({
   title: {
     id: 'assets.settings.dialog.title',
@@ -173,6 +176,7 @@ class AssetSettingsDialog extends Component<Props, State> {
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         className1={styles.dialog}
       >
         <div>

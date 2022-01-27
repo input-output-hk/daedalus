@@ -31,9 +31,12 @@ export const handleBugReportRequests = () => {
         formData.append('payload', JSON.stringify(payload));
 
         // prepare file stream (attachment)
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'compressedLogsFilePath' does not exist o... Remove this comment to see the full error message
         if (payload.compressedLogsFilePath) {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'compressedLogsFilePath' does not exist o... Remove this comment to see the full error message
           const stream = fs.createReadStream(payload.compressedLogsFilePath);
           const fileName = extractFileNameFromPath(
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'compressedLogsFilePath' does not exist o... Remove this comment to see the full error message
             payload.compressedLogsFilePath
           );
           formData.append(fileName, stream);
@@ -43,6 +46,7 @@ export const handleBugReportRequests = () => {
         logger.info('Sending bug report request with options', {
           options,
         });
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BugReportRequestHttpOptions' is ... Remove this comment to see the full error message
         const httpRequest = http.request(options);
         httpRequest.on('response', (response) => {
           if (response.statusCode !== 200) {

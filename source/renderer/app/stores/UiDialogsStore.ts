@@ -1,12 +1,14 @@
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
+
 export default class UiDialogsStore extends Store {
   @observable
   activeDialog: ((...args: Array<any>) => any) | null | undefined = null;
   @observable
-  secondsSinceActiveDialogIsOpen: number = 0;
+  secondsSinceActiveDialogIsOpen = 0;
   @observable
   dataForActiveDialog: Record<string, any> = {};
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _secondsTimerInterval: IntervalID | null | undefined = null;
 
   setup() {
@@ -27,6 +29,7 @@ export default class UiDialogsStore extends Store {
     this._reset();
 
     this.activeDialog = dialog;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'defaultProps' does not exist on type '(.... Remove this comment to see the full error message
     this.dataForActiveDialog = observable(dialog.defaultProps || {});
     this.secondsSinceActiveDialogIsOpen = 0;
     if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);

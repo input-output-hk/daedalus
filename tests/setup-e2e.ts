@@ -11,12 +11,14 @@ import { setNewsFeedIsOpen, resetTestNews } from "./news/e2e/steps/newsfeed-step
 import { refreshClient } from "./app/e2e/steps/helpers";
 import { TEST } from "../source/common/types/environment.types";
 import { environment } from "../source/main/environment";
+
 global.environment = environment;
 
 /* eslint-disable consistent-return */
 const context = {};
 let scenariosCount = 0;
 
+// @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
 const printMainProcessLogs = () => context.app.client.getMainProcessLogs().then(logs => {
   // eslint-disable-next-line no-console
   console.log('========= DAEDALUS LOGS =========');
@@ -31,6 +33,7 @@ const defaultWalletKeyFilePath = path.resolve(__dirname, './wallets/e2e/document
 
 const startApp = async () => {
   const app = new Application({
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'typeof Electron' is not assignable to type '... Remove this comment to see the full error message
     path: electronPath,
     args: ['./dist/main/index.js'],
     requireName: 'spectronRequire',
@@ -66,6 +69,7 @@ function getTagNames(testCase) {
 BeforeAll({
   timeout: 5 * 60 * 1000
 }, async () => {
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   context.app = await startApp();
 });
 // Skip / Execute test depending on node integration
@@ -80,8 +84,11 @@ Before({
   timeout: DEFAULT_TIMEOUT * 2
 }, async function (testCase) {
   const tags = getTagNames(testCase);
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   this.app = context.app;
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   this.client = context.app.client;
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   this.browserWindow = context.app.browserWindow;
   // Set timeouts of various operations:
   // Determines when to interrupt a script that is being evaluated.
@@ -93,7 +100,9 @@ Before({
   // Reset backend
   await this.client.executeAsync(done => {
     const resetBackend = () => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       if (daedalus.stores.networkStatus.isConnected) {
+        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.stores.wallets._pausePolling().then(() => daedalus.stores.wallets.resetWalletsData()).then(() => daedalus.api.ada.testReset()).then(() => daedalus.api.ada.resetTestOverrides()).then(() => daedalus.api.localStorage.reset()).then(() => daedalus.stores.wallets._resumePolling()).then(() => daedalus.stores.wallets.refreshWalletsData()).then(done).catch(error => done(error));
       } else {
         setTimeout(resetBackend, 50);
@@ -111,6 +120,7 @@ Before({
   // Ensure that frontend is synced and ready before test case
   await this.client.executeAsync(done => {
     const waitUntilSyncedAndReady = () => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       if (daedalus.stores.networkStatus.isSynced) {
         done();
       } else {
@@ -146,7 +156,9 @@ Before({
       const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
 
 
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const locale = daedalus.stores.profile.currentLocale;
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const messages = daedalus.translations;
       const intlProvider = new IntlProvider({
         locale,
@@ -165,6 +177,7 @@ Before({
 After({
   tags: '@restartApp'
 }, async function () {
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   context.app = await startApp();
 });
 // this ensures that the reset-backend call successfully executes
@@ -174,8 +187,10 @@ After({
   tags: '@reconnectApp'
 }, async function () {
   await this.client.executeAsync(done => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.resetTestOverrides();
 
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._updateNetworkStatus().then(done).catch(error => done(error));
   });
 });
@@ -191,6 +206,7 @@ After({
   if (result.status === 'failed') {
     const testName = getTestNameFromTestFile(sourceLocation.uri);
     const file = generateScreenshotFilePath(testName);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     await saveScreenshot(context.app, file);
     await printMainProcessLogs();
   }
@@ -206,7 +222,9 @@ After({
 });
 // eslint-disable-next-line prefer-arrow-callback
 AfterAll(async function () {
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   if (allWindowsClosed || !context.app.running) return;
 
   if (scenariosCount === 0) {
@@ -217,5 +235,6 @@ AfterAll(async function () {
     return;
   }
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   return context.app.stop();
 });

@@ -1,5 +1,6 @@
 import { Given, When, Then } from "cucumber";
 import { sidebarHelpers } from "./helpers";
+
 const SELECTORS = {
   CATEGORY_ACTIVE: '.SidebarCategory_active',
   CATEGORY_COMPONENT: '.SidebarCategory_component',
@@ -16,11 +17,13 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
   await this.client.executeAsync((visible, SELECTORS, done) => {
     const {
       isShowingSubMenus
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.sidebar;
     let sidebarWillAnimate = false;
 
     if (isShowingSubMenus !== visible) {
       sidebarWillAnimate = true;
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.sidebar.toggleSubMenus.trigger();
     }
 

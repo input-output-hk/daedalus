@@ -3,7 +3,9 @@ import { observer } from 'mobx-react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingSwitch.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingSwitch.scss';
+
 type Props = {
   active: boolean;
 };

@@ -5,6 +5,7 @@ import {
 } from './createTheme';
 import type { PartialThemeParts } from './createTheme';
 import type { CreateThemeParams } from '../types';
+
 export const DEFAULT_FONTS = {
   black: 'NotoSans-Black, NotoSansCJKjp-Black',
   bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',

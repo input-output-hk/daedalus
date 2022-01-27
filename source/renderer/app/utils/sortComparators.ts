@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+
 export const bigNumberComparator = (
   numberA: BigNumber,
   numberB: BigNumber,
-  isAscending: boolean = true
+  isAscending = true
 ): number => {
   if (numberA.isLessThan(numberB)) {
     return isAscending ? -1 : 1;
@@ -18,7 +19,7 @@ export const bigNumberComparator = (
 export const stringComparator = (
   stringA: string,
   stringB: string,
-  isAscending: boolean = true
+  isAscending = true
 ): number => {
   if (stringA < stringB) {
     return isAscending ? -1 : 1;
@@ -33,7 +34,7 @@ export const stringComparator = (
 export const dateComparator = (
   dateA: string,
   dateB: string,
-  isAscending: boolean = true
+  isAscending = true
 ): number => {
   if (moment(dateA).unix() < moment(dateB).unix()) {
     return isAscending ? -1 : 1;
