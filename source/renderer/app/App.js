@@ -81,8 +81,8 @@ export default class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
-                <RTSFlagsRecommendationOverlayContainer key="recommendationDialog" />
-                <NotificationsContainer key="notificationsContainer" />
+                <RTSFlagsRecommendationOverlayContainer />
+                <NotificationsContainer />
                 {canShowNews && [
                   <NewsFeedContainer key="newsFeedList" />,
                   <NewsOverlayContainer key="newsFeedOverlay" />,
