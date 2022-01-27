@@ -1,12 +1,12 @@
 {runCommand, rawapp, source }:
-runCommand "daedalus-flow-ci" { preferLocalBuild = true; } ''
-  # flow command fails to ignore the files if node_modules is symlink
+runCommand "daedalus-tsc-ci" { preferLocalBuild = true; } ''
+  # tsc command fails to ignore the files if node_modules is symlink
   # so we have to copy the whole directory to run the test
   cp -a ${source}/. .
   chmod -R u+w ./
   rm -rf node_modules || true
   cp -a ${rawapp.node_modules} node_modules
-  node_modules/.bin/flow --quiet
+  node_modules/.bin/tsc --noEmit
   if [ $? == 0 ] || [ $? == 2 ]
   then
     echo $? > $out
