@@ -268,6 +268,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
         primary: true,
         className: 'confirmButton',
         disabled:
+          !!error ||
           (!isHardwareWallet && !passphraseField.isValid) ||
           (isHardwareWallet &&
             hwDeviceStatus !==
