@@ -23,8 +23,9 @@ const messages = defineMessages({
   },
   unspendableTooltip: {
     id: 'wallet.summary.header.unspendableTooltip',
-    defaultMessage:
-      '!!!info message about unspendable rewards due to missing utxos',
+    defaultMessage: `!!!All the ada in this wallet is in the rewards account.
+      Since transaction fees cannot be paid with rewards, please send 2 or
+      more ada to this wallet to cover transaction fees.`,
     description:
       'Tooltip describing that rewards are unspendable on the Wallet summary header',
   },
