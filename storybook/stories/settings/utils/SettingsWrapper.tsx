@@ -37,7 +37,7 @@ export default (story: Record<string, any>, context: Record<string, any>) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <StoryLayout activeSidebarCategory="/settings" {...context}>
           <SettingsLayout menu={menu} activePage="/settings">
             {storyWithKnobs}

@@ -257,9 +257,9 @@ class StoryLayout extends Component<Props> {
           boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
         )}
       />
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
+      {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
       <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
+      {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />
       )}

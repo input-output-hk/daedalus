@@ -127,7 +127,7 @@ describe('Discreet Mode feature', () => {
     const testId = 'discreet-value';
     render(
       <TestDecorator testId={testId}>
-        // @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message
+        {/* @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message */}
         <DiscreetValue>{value}</DiscreetValue>
       </TestDecorator>
     );

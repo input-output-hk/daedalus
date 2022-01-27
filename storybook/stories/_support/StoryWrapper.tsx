@@ -55,9 +55,9 @@ export default class StoryWrapper extends Component<Props, State> {
     const minScreenHeight = osMinWindowHeights[osName];
     return (
       <Fragment>
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={theme} />
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <WindowSizeManager minScreenHeight={minScreenHeight} />
         <IntlProvider
           {...{

@@ -95,7 +95,7 @@ class StakingChart extends Component<Props, State> {
             ticks={ticks.slice()}
             domain={['dataMin', 'dataMax + 10']}
           />
-          // @ts-ignore ts-migrate(2607) FIXME: JSX element class does not support attributes beca... Remove this comment to see the full error message
+          {/* @ts-ignore ts-migrate(2607) FIXME: JSX element class does not support attributes beca... Remove this comment to see the full error message */}
           <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
           <Bar
             dataKey="numberOfTransactions"

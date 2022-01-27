@@ -1115,7 +1115,7 @@ class WalletSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletSendForm}>
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
+              {/* @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'. */}
               {formFields.receiver && this.renderReceiverRow()}
               <div className={estimatedFeeInputClasses}>
                 <ReadOnlyInput

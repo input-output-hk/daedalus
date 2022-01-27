@@ -10,7 +10,7 @@ import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profil
 storiesOf('News|Overlays', module)
   .addDecorator((story) => (
     <StoryDecorator>
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ action: { label: string; url: ... Remove this comment to see the full error message
+      {/* @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ action: { label: string; url: ... Remove this comment to see the full error message */}
       {story({
         action: {
           label: 'Read More',

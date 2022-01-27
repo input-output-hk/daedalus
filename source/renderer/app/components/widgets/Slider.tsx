@@ -87,7 +87,7 @@ export const Slider = observer((props: Props) => {
           )}
         </div>
       </div>
-      // @ts-ignore ts-migrate(2322) FIXME: Type '{ onBeforeChange: (e: number) => void; onCha... Remove this comment to see the full error message
+      {/* @ts-ignore ts-migrate(2322) FIXME: Type '{ onBeforeChange: (e: number) => void; onCha... Remove this comment to see the full error message */}
       <RcSlider
         {...rest}
         onBeforeChange={(e: number) => {

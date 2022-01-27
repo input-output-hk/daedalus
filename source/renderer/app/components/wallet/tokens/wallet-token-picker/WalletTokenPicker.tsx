@@ -136,7 +136,7 @@ const WalletTokenPicker = ({
             </button>
           </div>
         </div>
-        // @ts-ignore ts-migrate(2322) FIXME: Type '(evt: React.MouseEvent<HTMLElement>) => void... Remove this comment to see the full error message
+        {/* @ts-ignore ts-migrate(2322) FIXME: Type '(evt: React.MouseEvent<HTMLElement>) => void... Remove this comment to see the full error message */}
         <div className={styles.list} onScroll={onScroll}>
           {currentAssets?.length === 0 && (
             <span className={styles.noResults}>
@@ -155,7 +155,7 @@ const WalletTokenPicker = ({
                 uniqueId={asset.uniqueId}
                 toggleCheckbox={toggleCheckbox}
               />
-              // @ts-ignore ts-migrate(2739) FIXME: Type '{ asset: AssetToken; className: any; headerC... Remove this comment to see the full error message
+              {/* @ts-ignore ts-migrate(2739) FIXME: Type '{ asset: AssetToken; className: any; headerC... Remove this comment to see the full error message */}
               <WalletToken
                 asset={asset}
                 className={styles.token}

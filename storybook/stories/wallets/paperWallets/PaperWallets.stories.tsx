@@ -42,7 +42,7 @@ storiesOf('Wallets|Paper Wallets', module)
   ))
   .add('Confirm Mnemonics', () => (
     <div>
-      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
       <VerificationDialog
         walletCertificatePassword="flugenheimer"
         walletCertificateRecoveryPhrase={wordlist}
