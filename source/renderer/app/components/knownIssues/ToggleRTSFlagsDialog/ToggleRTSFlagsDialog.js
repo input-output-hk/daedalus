@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import Dialog from '../widgets/Dialog';
-import globalMessages from '../../i18n/global-messages';
-import styles from './knownIssuesDialogStyles.scss';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
+import globalMessages from '../../../i18n/global-messages';
+import styles from './ToggleRTSFlagsDialog.scss';
 
 const messages = defineMessages({
   enableRTSFlagsModeHeadline: {
@@ -60,7 +60,7 @@ type State = {
 };
 
 @observer
-export default class TurnOnRTSFlagsDialog extends Component<Props, State> {
+export default class ToggleRTSFlagsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
-import TurnOnRTSFlagsDialog from '../../components/knownIssues/TurnOnRTSFlagsDialog';
+import ToggleRTSFlagsDialog from '../../components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog';
 
 type Props = InjectedDialogContainerProps;
 
@@ -26,7 +26,7 @@ export default class ToggleRTSFlagsDialogContainer extends Component<Props> {
 
   render() {
     return (
-      <TurnOnRTSFlagsDialog
+      <ToggleRTSFlagsDialog
         rtsFlagsModeEnabled={
           this.props.stores.networkStatus.rtsFlagsModeEnabled
         }

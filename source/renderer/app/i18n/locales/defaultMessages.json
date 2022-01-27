@@ -1592,13 +1592,74 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "RTS flag warning",
+        "description": "Title of the RTS flags recommendation overlay",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay.js",
+        "id": "knownIssues.rtsRecommendationOverlay.title",
+        "start": {
+          "column": 9,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "WARNING/REMINDER: You are running Daedalus with less memory than recommended. You can try these experimental settings to improve performance.",
+        "description": "Content of the RTS flags recommendation overlay",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay.js",
+        "id": "knownIssues.rtsRecommendationOverlay.content",
+        "start": {
+          "column": 11,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "Enable and quit",
+        "description": "Enable and quit button label",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay.js",
+        "id": "knownIssues.rtsRecommendationOverlay.enableAndQuitButtonLabel",
+        "start": {
+          "column": 28,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "Decide later",
+        "description": "Decide later button label",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay.js",
+        "id": "knownIssues.rtsRecommendationOverlay.decideLaterButtonLabel",
+        "start": {
+          "column": 26,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "Enable RTS flags (RAM management system)",
         "description": "Headline for the RTS flags dialog - when enabling",
         "end": {
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.enableRtsFlagsMode.title",
         "start": {
           "column": 30,
@@ -1612,7 +1673,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.enableRtsFlagsMode.explanation",
         "start": {
           "column": 33,
@@ -1626,7 +1687,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.enableRtsFlagsMode.actionButton",
         "start": {
           "column": 34,
@@ -1640,7 +1701,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.disableRtsFlagsMode.title",
         "start": {
           "column": 31,
@@ -1654,7 +1715,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.disableRtsFlagsMode.explanation",
         "start": {
           "column": 34,
@@ -1668,7 +1729,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.disableRtsFlagsMode.actionButton",
         "start": {
           "column": 35,
@@ -1682,7 +1743,7 @@
           "column": 3,
           "line": 49
         },
-        "file": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.js",
+        "file": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.js",
         "id": "knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel",
         "start": {
           "column": 43,
@@ -1690,7 +1751,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/knownIssues/TurnOnRTSFlagsDialog.json"
+    "path": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.json"
   },
   {
     "descriptors": [

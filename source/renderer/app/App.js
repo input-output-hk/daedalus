@@ -21,6 +21,7 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
+import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 
 @observer
 export default class App extends Component<{
@@ -79,8 +80,9 @@ export default class App extends Component<{
                   isActiveDialog(TOGGLE_RTS_FLAGS_MODE) && (
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
-                  <NotificationsContainer key="notificationsContainer" />,
                 ]}
+                <RTSFlagsRecommendationOverlayContainer key="recommendationDialog" />
+                <NotificationsContainer key="notificationsContainer" />
                 {canShowNews && [
                   <NewsFeedContainer key="newsFeedList" />,
                   <NewsOverlayContainer key="newsFeedOverlay" />,
