@@ -28,7 +28,7 @@ type RadioProps = $Exact<{
 }>;
 
 @observer
-export default class RadioSet extends Component<Props> {
+class RadioSet extends Component<Props> {
   render() {
     const { label, items, verticallyAligned } = this.props;
     const radiosContainerStyles = classnames([
@@ -52,3 +52,5 @@ export default class RadioSet extends Component<Props> {
     );
   }
 }
+
+export default RadioSet

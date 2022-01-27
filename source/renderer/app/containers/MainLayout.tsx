@@ -14,7 +14,7 @@ import type { WalletSortConfig } from '../types/sidebarTypes';
 
 @inject('stores', 'actions')
 @observer
-export default class MainLayout extends Component<InjectedContainerProps> {
+class MainLayout extends Component<InjectedContainerProps> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -114,3 +114,5 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     );
   }
 }
+
+export default MainLayout

@@ -668,7 +668,7 @@ export default class WalletsStore extends Store {
 
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
 
-    // $FlowFixMe
+    // @ts-ignore
     return unscrambledRecoveryPhrase;
   };
 

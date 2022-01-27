@@ -1,9 +1,7 @@
 // @flow
 import { Given, Then } from 'cucumber';
 import { expectTextInSelector } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   ERROR_COMPONENT: '.SystemTimeError_component',
   TIME_OFF: '.time-off',

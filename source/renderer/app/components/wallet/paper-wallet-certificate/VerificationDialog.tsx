@@ -103,7 +103,7 @@ type Props = {
 };
 
 @observer
-export default class VerificationDialog extends Component<Props, State> {
+class VerificationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -325,3 +325,5 @@ export default class VerificationDialog extends Component<Props, State> {
     );
   }
 }
+
+export default VerificationDialog

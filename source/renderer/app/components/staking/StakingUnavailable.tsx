@@ -12,7 +12,7 @@ type Props = {
 };
 
 @observer
-export default class StakingUnavailable extends Component<Props> {
+class StakingUnavailable extends Component<Props> {
   render() {
     const { syncPercentage } = this.props;
 
@@ -31,3 +31,5 @@ export default class StakingUnavailable extends Component<Props> {
     );
   }
 }
+
+export default StakingUnavailable

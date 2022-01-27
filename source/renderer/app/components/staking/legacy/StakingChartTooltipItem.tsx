@@ -9,7 +9,7 @@ type Props = {
 };
 
 @observer
-export default class StakingChartTooltipItem extends Component<Props> {
+class StakingChartTooltipItem extends Component<Props> {
   render() {
     const { value, label } = this.props;
     return (
@@ -19,3 +19,5 @@ export default class StakingChartTooltipItem extends Component<Props> {
     );
   }
 }
+
+export default StakingChartTooltipItem

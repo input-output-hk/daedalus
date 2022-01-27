@@ -168,7 +168,7 @@ describe('wallet/Wallet Send Form', () => {
     });
 
     Array.from({ length: times }).forEach(() => {
-      // $FlowFixMe
+      // @ts-ignore
       mock.mockResolvedValueOnce({
         fee: new BigNumber(1),
         minimumAda: new BigNumber(minimumAda),

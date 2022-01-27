@@ -1,8 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const STAKING_BUTTON_SIDEBAR = '.SidebarCategory_component.staking';
 const DELEGATION_CENTER_PAGE = '.StakingWithNavigation_page';

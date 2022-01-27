@@ -11,7 +11,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class DaedalusDiagnosticsDialog extends Component<Props> {
+class DaedalusDiagnosticsDialog extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -140,3 +140,5 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     );
   }
 }
+
+export default DaedalusDiagnosticsDialog

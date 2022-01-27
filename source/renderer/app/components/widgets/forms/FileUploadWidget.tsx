@@ -17,7 +17,7 @@ type Props = {
 };
 
 @observer
-export default class FileUploadWidget extends Component<Props> {
+class FileUploadWidget extends Component<Props> {
   onOpen = async () => {
     const params: FileDialogRequestParams = {
       filters: [
@@ -78,3 +78,5 @@ export default class FileUploadWidget extends Component<Props> {
     );
   }
 }
+
+export default FileUploadWidget

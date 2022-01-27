@@ -1,9 +1,7 @@
 // @flow
 import { Then } from 'cucumber';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const SYNCING_STATUS_HEADER = '.SyncingConnectingTitle_syncing h1';
 

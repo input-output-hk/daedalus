@@ -25,7 +25,7 @@ type Props = {
 };
 
 @observer
-export default class WalletWithNavigation extends Component<Props> {
+class WalletWithNavigation extends Component<Props> {
   render() {
     const {
       children,
@@ -77,3 +77,5 @@ export default class WalletWithNavigation extends Component<Props> {
     );
   }
 }
+
+export default WalletWithNavigation

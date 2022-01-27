@@ -23,7 +23,7 @@ type Props = {
 };
 
 @observer
-export default class ThumbPoolContent extends Component<Props> {
+class ThumbPoolContent extends Component<Props> {
   formattedRewards = (potentialRewards: BigNumber) => {
     const potentialRewardsAsString = formattedWalletAmount(potentialRewards);
     let targetLength = 4;
@@ -126,3 +126,5 @@ export default class ThumbPoolContent extends Component<Props> {
     );
   }
 }
+
+export default ThumbPoolContent

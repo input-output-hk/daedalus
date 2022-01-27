@@ -32,7 +32,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class MnemonicsDialogContainer extends Component<Props> {
+class MnemonicsDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleSetWalletMnemonics = (mnemonics: Array<string>) =>
@@ -124,3 +124,5 @@ export default class MnemonicsDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default MnemonicsDialogContainer

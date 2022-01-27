@@ -7,7 +7,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class NewsOverlayContainer extends Component<InjectedProps> {
+class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -69,3 +69,5 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
     return null;
   }
 }
+
+export default NewsOverlayContainer

@@ -23,7 +23,7 @@ type Props = {
 };
 
 @observer
-export default class MnemonicInputWidget extends Component<Props> {
+class MnemonicInputWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -54,3 +54,5 @@ export default class MnemonicInputWidget extends Component<Props> {
     );
   }
 }
+
+export default MnemonicInputWidget

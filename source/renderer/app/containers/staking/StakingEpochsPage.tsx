@@ -11,7 +11,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingEpochsPage extends Component<Props> {
+class StakingEpochsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -28,3 +28,5 @@ export default class StakingEpochsPage extends Component<Props> {
     );
   }
 }
+
+export default StakingEpochsPage

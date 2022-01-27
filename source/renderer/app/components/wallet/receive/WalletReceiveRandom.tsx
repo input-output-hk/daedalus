@@ -85,7 +85,7 @@ type Props = {
 };
 
 @observer
-export default class WalletReceiveRandom extends Component<Props> {
+class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -317,3 +317,5 @@ export default class WalletReceiveRandom extends Component<Props> {
     );
   }
 }
+
+export default WalletReceiveRandom

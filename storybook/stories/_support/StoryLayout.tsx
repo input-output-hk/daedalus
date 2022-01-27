@@ -70,7 +70,7 @@ const CATEGORIES = [
 
 @inject('stores', 'storiesProps')
 @observer
-export default class StoryLayout extends Component<Props> {
+class StoryLayout extends Component<Props> {
   static defaultProps = { stores: null, storiesProps: null };
 
   render() {
@@ -259,3 +259,5 @@ export default class StoryLayout extends Component<Props> {
     </TopBar>
   );
 }
+
+export default StoryLayout

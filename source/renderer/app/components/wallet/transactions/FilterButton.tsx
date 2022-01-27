@@ -16,7 +16,7 @@ type Props = {
 };
 
 @observer
-export default class FilterButton extends Component<Props> {
+class FilterButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -52,3 +52,5 @@ export default class FilterButton extends Component<Props> {
     );
   }
 }
+
+export default FilterButton

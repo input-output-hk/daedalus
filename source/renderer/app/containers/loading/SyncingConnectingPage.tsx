@@ -9,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class LoadingSyncingConnectingPage extends Component<Props> {
+class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
@@ -107,3 +107,5 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     app.openDaedalusDiagnosticsDialog.trigger();
   };
 }
+
+export default LoadingSyncingConnectingPage

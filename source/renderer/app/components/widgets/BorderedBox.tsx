@@ -14,7 +14,7 @@ type Props = {
 };
 
 @observer
-export default class BorderedBox extends Component<Props> {
+class BorderedBox extends Component<Props> {
   render() {
     const {
       children,
@@ -40,3 +40,5 @@ export default class BorderedBox extends Component<Props> {
     );
   }
 }
+
+export default BorderedBox

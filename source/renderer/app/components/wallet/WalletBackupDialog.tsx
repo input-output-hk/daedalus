@@ -31,7 +31,7 @@ type Props = {
 };
 
 @observer
-export default class WalletBackupDialog extends Component<Props> {
+class WalletBackupDialog extends Component<Props> {
   render() {
     const {
       currentStep,
@@ -99,3 +99,5 @@ export default class WalletBackupDialog extends Component<Props> {
     return null;
   }
 }
+
+export default WalletBackupDialog

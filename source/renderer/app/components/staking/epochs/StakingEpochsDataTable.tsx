@@ -22,7 +22,7 @@ type Props = {
 };
 
 @observer
-export default class StakingEpochsDataTable extends Component<Props> {
+class StakingEpochsDataTable extends Component<Props> {
   render() {
     const {
       tableHeaders,
@@ -61,3 +61,5 @@ export default class StakingEpochsDataTable extends Component<Props> {
     );
   }
 }
+
+export default StakingEpochsDataTable

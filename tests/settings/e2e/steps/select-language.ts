@@ -2,9 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { initialSettingsHelpers } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const { ensureLanguageIsSelected } = initialSettingsHelpers;
 const INITIAL_SETTINGS_FORM = '.InitialSettings_component';
 

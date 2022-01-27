@@ -55,7 +55,7 @@ type Props = {
 type State = { timeUntilNextEpochStart: number };
 
 @observer
-export default class DelegationStepsSuccessDialog extends Component<
+class DelegationStepsSuccessDialog extends Component<
   Props,
   State
 > {
@@ -157,3 +157,5 @@ export default class DelegationStepsSuccessDialog extends Component<
     );
   }
 }
+
+export default DelegationStepsSuccessDialog

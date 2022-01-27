@@ -3,9 +3,7 @@ import fs from 'fs';
 import { When, Then } from 'cucumber';
 import path from 'path';
 import moment from 'moment';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const exportedCSVPath = path.resolve(
   __dirname,

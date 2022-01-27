@@ -12,7 +12,7 @@ type Props = {
 };
 
 @observer
-export default class FullyDecentralizedEffect extends Component<Props> {
+class FullyDecentralizedEffect extends Component<Props> {
   constructor(props: Props) {
     super(props);
     this.container = createRef();
@@ -68,3 +68,5 @@ export default class FullyDecentralizedEffect extends Component<Props> {
     return <div className={componentStyles} ref={this.container} />;
   }
 }
+
+export default FullyDecentralizedEffect

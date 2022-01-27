@@ -11,7 +11,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class ExportWalletToFileDialogContainer extends Component<Props> {
+class ExportWalletToFileDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -67,3 +67,5 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     );
   }
 }
+
+export default ExportWalletToFileDialogContainer

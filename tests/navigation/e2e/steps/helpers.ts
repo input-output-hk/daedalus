@@ -1,8 +1,6 @@
 // @flow
 import { waitAndClick } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   ACTIVE_CATEGORY: '.SidebarCategory_active',
   ADD_WALLET_BTN: '.SidebarWalletsMenu_addWalletButton',

@@ -141,7 +141,7 @@ type State = {
 };
 
 @observer
-export default class AppUpdateOverlay extends Component<Props, State> {
+class AppUpdateOverlay extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -385,3 +385,5 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     );
   }
 }
+
+export default AppUpdateOverlay

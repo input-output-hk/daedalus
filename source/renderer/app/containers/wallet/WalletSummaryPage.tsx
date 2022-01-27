@@ -27,10 +27,8 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 class WalletSummaryPage extends Component<Props> {
-  static defaultProps = {
-    actions: null,
-    stores: null,
-  };
+  static defaultProps = { actions: null, stores: null };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -185,4 +183,4 @@ class WalletSummaryPage extends Component<Props> {
   }
 }
 
-export default WalletSummaryPage;
+export default WalletSummaryPage

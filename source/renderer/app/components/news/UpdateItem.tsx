@@ -15,7 +15,7 @@ type Props = {
 };
 
 @observer
-export default class UpdateItem extends Component<Props> {
+class UpdateItem extends Component<Props> {
   static defaultProps = {
     onupdateItemActionClick: null,
     expandWithoutTransition: false,
@@ -76,3 +76,5 @@ export default class UpdateItem extends Component<Props> {
     );
   }
 }
+
+export default UpdateItem

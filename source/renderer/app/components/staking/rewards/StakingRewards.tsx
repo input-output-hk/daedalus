@@ -478,4 +478,4 @@ class StakingRewards extends Component<Props, State> {
   };
 }
 
-export default StakingRewards;
+export default StakingRewards

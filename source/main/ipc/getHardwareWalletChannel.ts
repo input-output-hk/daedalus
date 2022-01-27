@@ -10,7 +10,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   UI,
   UI_EVENT,
-  // $FlowFixMe
+  // @ts-ignore
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -137,7 +137,7 @@ let devicesMemo = {};
 
 class EventObserver {
   constructor(props) {
-    // $FlowFixMe
+    // @ts-ignore
     this.mainWindow = props;
   }
 
@@ -162,7 +162,7 @@ class EventObserver {
           if (!devicesMemo[device.path]) {
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
             try {
-              // $FlowFixMe
+              // @ts-ignore
               const transport = await TransportNodeHid.open(device.path);
               const AdaConnection = new AppAda(transport);
               devicesMemo[device.path] = {
@@ -179,7 +179,7 @@ class EventObserver {
                   deviceName: deviceModel.productName, // e.g. Test Name
                   path: device.path,
                 },
-                // $FlowFixMe
+                // @ts-ignore
                 this.mainWindow
               );
             } catch (e) {
@@ -198,7 +198,7 @@ class EventObserver {
               deviceName: deviceModel.productName, // e.g. Test Name
               path: device.path,
             },
-            // $FlowFixMe
+            // @ts-ignore
             this.mainWindow
           );
         }
@@ -251,7 +251,7 @@ export const handleHardwareWalletRequests = async (
               payload: event.payload,
             },
           },
-          // $FlowFixMe
+          // @ts-ignore
           mainWindow
         );
       }
@@ -279,7 +279,7 @@ export const handleHardwareWalletRequests = async (
             path: event.payload.path,
             eventType: event.type,
           },
-          // $FlowFixMe
+          // @ts-ignore
           mainWindow
         );
       }
@@ -337,7 +337,7 @@ export const handleHardwareWalletRequests = async (
           )}`
         );
 
-        // $FlowFixMe
+        // @ts-ignore
         if (transportList && !transportList.length) {
           // Establish connection with last device
           try {
@@ -361,7 +361,7 @@ export const handleHardwareWalletRequests = async (
             const device = find(deviceList, ['path', lastConnectedPath]);
             logger.info('[HW-DEBUG] INIT NEW transport - DONE');
 
-            // $FlowFixMe
+            // @ts-ignore
             deviceConnection = new AppAda(hw);
             devicesMemo[lastConnectedPath] = {
               device,
@@ -375,7 +375,7 @@ export const handleHardwareWalletRequests = async (
         } else if (!devicePath || !devicesMemo[devicePath]) {
           // Use first like native usb nodeHID
           logger.info('[HW-DEBUG] USE First');
-          // $FlowFixMe
+          // @ts-ignore
           lastConnectedPath = transportList[0]; // eslint-disable-line
           if (devicesMemo[lastConnectedPath]) {
             hw = devicesMemo[lastConnectedPath].transport;
@@ -389,7 +389,7 @@ export const handleHardwareWalletRequests = async (
           deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
         }
 
-        // $FlowFixMe
+        // @ts-ignore
         const { deviceModel } = hw;
         if (deviceModel) {
           logger.info(
@@ -619,7 +619,7 @@ export const handleHardwareWalletRequests = async (
         isDeviceDisconnected,
       });
       if (path && !isDeviceDisconnected && isDisconnectError) {
-        // $FlowFixMe
+        // @ts-ignore
         const oldPath = path;
         const deviceMemo = devicesMemo[oldPath];
         const devicePaths = await TransportNodeHid.list();
@@ -642,7 +642,7 @@ export const handleHardwareWalletRequests = async (
 
         const { device: oldDevice } = deviceMemo;
 
-        // $FlowFixMe
+        // @ts-ignore
         const newTransport = await TransportNodeHid.open(newPath);
         const newDeviceConnection = new AppAda(newTransport);
 

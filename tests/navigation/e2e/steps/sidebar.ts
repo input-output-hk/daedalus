@@ -1,9 +1,7 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { sidebarHelpers } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   CATEGORY_ACTIVE: '.SidebarCategory_active',
   CATEGORY_COMPONENT: '.SidebarCategory_component',

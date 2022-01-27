@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class SidebarMenu extends Component<Props> {
+class SidebarMenu extends Component<Props> {
   render() {
     const { children, visible } = this.props;
     const componentStyles = classNames([
@@ -21,3 +21,5 @@ export default class SidebarMenu extends Component<Props> {
     return <div className={componentStyles}>{children}</div>;
   }
 }
+
+export default SidebarMenu

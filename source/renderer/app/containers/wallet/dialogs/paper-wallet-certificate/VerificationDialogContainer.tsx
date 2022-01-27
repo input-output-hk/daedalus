@@ -9,7 +9,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class VerificationDialogContainer extends Component<Props> {
+class VerificationDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -43,3 +43,5 @@ export default class VerificationDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default VerificationDialogContainer

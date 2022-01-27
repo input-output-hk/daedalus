@@ -53,7 +53,7 @@ type State = {
 
 @inject('stores', 'actions')
 @observer
-export default class VotingRegistrationDialogContainer extends Component<
+class VotingRegistrationDialogContainer extends Component<
   Props,
   State
 > {
@@ -327,3 +327,5 @@ export default class VotingRegistrationDialogContainer extends Component<
     }
   }
 }
+
+export default VotingRegistrationDialogContainer

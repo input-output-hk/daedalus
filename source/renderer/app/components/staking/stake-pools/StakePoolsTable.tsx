@@ -166,7 +166,7 @@ const initialState = {
 };
 
 @observer
-export class StakePoolsTable extends Component<Props, State> {
+class StakePoolsTable extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -422,3 +422,5 @@ export class StakePoolsTable extends Component<Props, State> {
     );
   }
 }
+
+export { StakePoolsTable }

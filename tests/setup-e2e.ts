@@ -25,14 +25,12 @@ import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './app/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
-import type { Daedalus } from './types';
 import { environment } from '../source/main/environment';
 
 global.environment = environment;
 
 /* eslint-disable consistent-return */
 
-declare var daedalus: Daedalus;
 const context = {};
 let scenariosCount = 0;
 

@@ -109,7 +109,7 @@ type State = {
 };
 
 @observer
-export default class WalletImportFileDialog extends Component<Props, State> {
+class WalletImportFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -290,3 +290,5 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     );
   }
 }
+
+export default WalletImportFileDialog

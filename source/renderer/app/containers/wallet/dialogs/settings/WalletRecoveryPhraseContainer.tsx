@@ -13,7 +13,7 @@ import type { InjectedProps as Props } from '../../../../types/injectedPropsType
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseContainer extends Component<Props> {
+class WalletRecoveryPhraseContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -66,3 +66,5 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletRecoveryPhraseContainer

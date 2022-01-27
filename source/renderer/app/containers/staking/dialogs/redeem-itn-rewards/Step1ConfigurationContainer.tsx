@@ -34,7 +34,7 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class Step1ConfigurationContainer extends Component<Props> {
+class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onWalletAcceptable = (walletAmount?: BigNumber) => {
@@ -92,3 +92,5 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     );
   }
 }
+
+export default Step1ConfigurationContainer

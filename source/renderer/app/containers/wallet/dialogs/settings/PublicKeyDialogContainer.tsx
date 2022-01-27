@@ -9,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class PublicKeyDialogContainer extends Component<Props> {
+class PublicKeyDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleClose = () => {
@@ -51,3 +51,5 @@ export default class PublicKeyDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default PublicKeyDialogContainer

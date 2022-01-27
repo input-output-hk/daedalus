@@ -428,7 +428,7 @@ const FINAL_CARDANO_NODE_STATES = [
 ];
 
 @observer
-export default class DaedalusDiagnostics extends Component<Props, State> {
+class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -910,3 +910,5 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.restoreDialogCloseOnEscKey();
   };
 }
+
+export default DaedalusDiagnostics

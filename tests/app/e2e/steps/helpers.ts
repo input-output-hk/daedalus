@@ -1,9 +1,7 @@
 // @flow
 import { When } from 'cucumber';
 import { getProcessesByName } from '../../../../source/main/utils/processes';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const ACTIVE_RESTORE_NOTIFICATION = '.ActiveRestoreNotification';
 

@@ -2,9 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import packageJson from '../../../../package.json';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   CONTAINER: '.About_container',
   VERSION: '.About_daedalusVersion',

@@ -10,7 +10,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTypeDialogContainer extends Component<Props> {
+class WalletTypeDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleSetWalletKind = (kind: string, param?: string) =>
@@ -37,3 +37,5 @@ export default class WalletTypeDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletTypeDialogContainer

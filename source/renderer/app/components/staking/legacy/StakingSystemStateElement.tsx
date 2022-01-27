@@ -9,7 +9,7 @@ type Props = {
 };
 
 @observer
-export default class StakingSystemState extends Component<Props> {
+class StakingSystemState extends Component<Props> {
   render() {
     const { value, label } = this.props;
     return (
@@ -19,3 +19,5 @@ export default class StakingSystemState extends Component<Props> {
     );
   }
 }
+
+export default StakingSystemState

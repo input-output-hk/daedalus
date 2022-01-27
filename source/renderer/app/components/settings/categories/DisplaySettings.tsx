@@ -79,7 +79,7 @@ type Props = {
 };
 
 @observer
-export default class DisplaySettings extends Component<Props> {
+class DisplaySettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -272,3 +272,5 @@ export default class DisplaySettings extends Component<Props> {
     );
   }
 }
+
+export default DisplaySettings

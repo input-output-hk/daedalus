@@ -13,7 +13,7 @@ type Props = {
 };
 
 @observer
-export default class SidebarLayout extends Component<Props> {
+class SidebarLayout extends Component<Props> {
   static defaultProps = {
     children: null,
   };
@@ -42,3 +42,5 @@ export default class SidebarLayout extends Component<Props> {
     );
   }
 }
+
+export default SidebarLayout

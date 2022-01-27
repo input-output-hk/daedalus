@@ -24,7 +24,7 @@ import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFla
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 
 @observer
-export default class App extends Component<{
+class App extends Component<{
   stores: StoresMap,
   actions: ActionsMap,
   history: Object,
@@ -95,3 +95,5 @@ export default class App extends Component<{
     );
   }
 }
+
+export default App

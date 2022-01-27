@@ -78,7 +78,7 @@ type Props = {
 };
 
 @observer
-export default class SidebarWalletsMenu extends Component<Props> {
+class SidebarWalletsMenu extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -219,3 +219,5 @@ export default class SidebarWalletsMenu extends Component<Props> {
     );
   }
 }
+
+export default SidebarWalletsMenu

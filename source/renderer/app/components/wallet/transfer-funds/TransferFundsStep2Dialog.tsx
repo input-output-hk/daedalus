@@ -97,7 +97,7 @@ type Props = {
 };
 
 @observer
-export default class TransferFundsStep2Dialog extends Component<Props> {
+class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -273,3 +273,5 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsStep2Dialog

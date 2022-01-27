@@ -17,7 +17,7 @@ type Props = {
 };
 
 @observer
-export default class ReadOnlyInput extends Component<Props> {
+class ReadOnlyInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -55,3 +55,5 @@ export default class ReadOnlyInput extends Component<Props> {
     );
   }
 }
+
+export default ReadOnlyInput

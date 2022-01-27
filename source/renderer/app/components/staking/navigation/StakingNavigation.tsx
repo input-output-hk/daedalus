@@ -42,7 +42,7 @@ type Props = {
 };
 
 @observer
-export default class StakingNavigation extends Component<Props> {
+class StakingNavigation extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -91,3 +91,5 @@ export default class StakingNavigation extends Component<Props> {
     );
   }
 }
+
+export default StakingNavigation

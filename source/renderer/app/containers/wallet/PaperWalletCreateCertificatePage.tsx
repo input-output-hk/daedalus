@@ -23,7 +23,7 @@ type State = {
 
 @inject('actions', 'stores')
 @observer
-export default class PaperWalletCreateCertificatePage extends Component<
+class PaperWalletCreateCertificatePage extends Component<
   Props,
   State
 > {
@@ -173,3 +173,5 @@ export default class PaperWalletCreateCertificatePage extends Component<
     }
   };
 }
+
+export default PaperWalletCreateCertificatePage

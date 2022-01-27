@@ -14,7 +14,7 @@ type Props = {
 };
 
 @observer
-export default class AddressRandom extends Component<Props> {
+class AddressRandom extends Component<Props> {
   render() {
     const { address, onCopyAddress, onShareAddress, index } = this.props;
     const addressClasses = classnames([
@@ -37,3 +37,5 @@ export default class AddressRandom extends Component<Props> {
     );
   }
 }
+
+export default AddressRandom

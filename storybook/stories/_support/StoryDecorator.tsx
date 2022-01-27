@@ -14,7 +14,7 @@ type Props = {
 };
 
 @observer
-export default class StoryDecorator extends Component<Props> {
+class StoryDecorator extends Component<Props> {
   static defaultProps = {
     propsForChildren: {},
   };
@@ -36,3 +36,5 @@ export default class StoryDecorator extends Component<Props> {
     );
   }
 }
+
+export default StoryDecorator

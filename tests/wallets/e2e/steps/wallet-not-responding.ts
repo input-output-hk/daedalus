@@ -1,9 +1,7 @@
 // @flow
 import { When, Then } from 'cucumber';
-import type { Daedalus } from '../../../types';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet.js';
 
-declare var daedalus: Daedalus;
 
 When(/^the "([^"]*)" wallet is not responding$/, async function(walletName) {
   await this.client.execute((walletName, status) => {

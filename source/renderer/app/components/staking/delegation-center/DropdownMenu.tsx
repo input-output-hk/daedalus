@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class DropdownMenu extends Component<Props> {
+class DropdownMenu extends Component<Props> {
   optionRenderer = (option: any) => (
     <span className={option.className}>{option.label}</span>
   );
@@ -38,3 +38,5 @@ export default class DropdownMenu extends Component<Props> {
     );
   }
 }
+
+export default DropdownMenu

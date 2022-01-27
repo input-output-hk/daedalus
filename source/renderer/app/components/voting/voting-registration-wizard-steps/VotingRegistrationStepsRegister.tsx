@@ -90,7 +90,7 @@ type Props = {
 };
 
 @observer
-export default class VotingRegistrationStepsRegister extends Component<Props> {
+class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -256,3 +256,5 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
     );
   }
 }
+
+export default VotingRegistrationStepsRegister

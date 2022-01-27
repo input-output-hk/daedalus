@@ -15,7 +15,7 @@ export type TickProps = {
 };
 
 @observer
-export default class WalletUtxoTick extends Component<TickProps> {
+class WalletUtxoTick extends Component<TickProps> {
   render() {
     const {
       x,
@@ -35,3 +35,5 @@ export default class WalletUtxoTick extends Component<TickProps> {
     );
   }
 }
+
+export default WalletUtxoTick

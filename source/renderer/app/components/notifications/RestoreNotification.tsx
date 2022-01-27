@@ -23,7 +23,7 @@ type Props = {
 };
 
 @observer
-export default class RestoreNotification extends Component<Props> {
+class RestoreNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -49,3 +49,5 @@ export default class RestoreNotification extends Component<Props> {
     );
   }
 }
+
+export default RestoreNotification

@@ -18,7 +18,7 @@ type State = {
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSelectImportStepContainer extends Component<
+class WalletSelectImportStepContainer extends Component<
   Props,
   State
 > {
@@ -79,3 +79,5 @@ export default class WalletSelectImportStepContainer extends Component<
     );
   }
 }
+
+export default WalletSelectImportStepContainer

@@ -4,9 +4,7 @@ import {
   clickOptionByValue,
   clickOptionByIndex,
 } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const DEFAULT_LANGUAGE = 'en-US';

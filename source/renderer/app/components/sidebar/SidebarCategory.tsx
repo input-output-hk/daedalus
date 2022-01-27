@@ -16,7 +16,7 @@ type Props = {
 };
 
 @observer
-export default class SidebarCategory extends Component<Props> {
+class SidebarCategory extends Component<Props> {
   render() {
     const { category, isActive, onClick, content } = this.props;
     const { name, icon, route } = category;
@@ -40,3 +40,5 @@ export default class SidebarCategory extends Component<Props> {
     );
   }
 }
+
+export default SidebarCategory

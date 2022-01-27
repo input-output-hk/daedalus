@@ -16,7 +16,7 @@ type Props = {
 };
 
 @observer
-export default class AddressSequential extends Component<Props> {
+class AddressSequential extends Component<Props> {
   addressElement: ?HTMLElement;
   addressContainerElement: ?HTMLElement;
 
@@ -91,3 +91,5 @@ export default class AddressSequential extends Component<Props> {
     );
   }
 }
+
+export default AddressSequential

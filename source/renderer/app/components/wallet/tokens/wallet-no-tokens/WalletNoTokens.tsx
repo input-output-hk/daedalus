@@ -44,7 +44,7 @@ type Props = {
 };
 
 @observer
-export default class WalletSummaryNoTokens extends Component<Props> {
+class WalletSummaryNoTokens extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -82,3 +82,5 @@ export default class WalletSummaryNoTokens extends Component<Props> {
     );
   }
 }
+
+export default WalletSummaryNoTokens

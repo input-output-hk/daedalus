@@ -120,4 +120,4 @@ class WalletSummaryHeader extends Component<Props> {
   }
 }
 
-export default WalletSummaryHeader;
+export default WalletSummaryHeader

@@ -5,9 +5,7 @@ import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from 
 import { byronMnemonics, shelleyMnemonics } from '../../../../utils/api-importer/mnemonics';
 import { testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';

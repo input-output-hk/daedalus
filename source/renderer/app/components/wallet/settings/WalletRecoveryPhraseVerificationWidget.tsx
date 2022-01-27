@@ -134,7 +134,7 @@ export type Props = {
 };
 
 @observer
-export default class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
+class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -294,3 +294,5 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
     );
   }
 }
+
+export default WalletRecoveryPhraseVerificationWidget

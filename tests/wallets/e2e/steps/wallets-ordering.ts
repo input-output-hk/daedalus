@@ -1,9 +1,7 @@
 // @flow
 import { Then } from 'cucumber';
 import { expect } from 'chai';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Then(/^I should see the wallets in the following order:$/, async function(
   table

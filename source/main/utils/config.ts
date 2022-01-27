@@ -52,6 +52,6 @@ export const readLauncherConfig = (configPath: ?string): LauncherConfig => {
   if (finalYaml === null || finalYaml === []) {
     throw new Error('Daedalus requires a valid launcher config file to work');
   }
-  // $FlowFixMe
+  // @ts-ignore
   return finalYaml;
 };
