@@ -84,7 +84,7 @@ export default class PinCode extends Component<Props> {
     ]);
     return (
       <div className={styles.pinCodeInput}>
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
+        {/* @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0. */}
         {map(Array(length).fill(), (action, key) => {
           return (
             <NumericInput

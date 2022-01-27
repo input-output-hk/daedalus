@@ -90,7 +90,7 @@ class WalletSummaryCurrency extends Component<Props> {
           {intl.formatMessage(messages.currencyTitle)}
         </div>
         <div className={styles.currencyWalletAmount}>
-          // @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message
+          {/* @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message */}
           <DiscreetValue>{currencyWalletAmount}</DiscreetValue>
           <span className={styles.currencyCode}>
             {' '}

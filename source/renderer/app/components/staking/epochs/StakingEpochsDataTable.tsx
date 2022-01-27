@@ -51,7 +51,7 @@ class StakingEpochsDataTable extends Component<Props> {
                   // @ts-ignore ts-migrate(2339) FIXME: Property 'name' does not exist on type 'string'.
                   onClick={() => handleDataSort(tableHeader.name)}
                 >
-                  // @ts-ignore ts-migrate(2339) FIXME: Property 'title' does not exist on type 'string'.
+                  {/* @ts-ignore ts-migrate(2339) FIXME: Property 'title' does not exist on type 'string'. */}
                   {tableHeader.title}
                   <SVGInline svg={sortIcon} className={sortIconClasses} />
                 </th>
