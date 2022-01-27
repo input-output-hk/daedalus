@@ -2,7 +2,7 @@
 import { app } from 'electron';
 import log from 'electron-log-daedalus';
 
-export const safeExitDaedalusWithCode = (
+export const safeExitWithCode = (
   exitCode: number = 0,
   relaunch: boolean = false
 ) => {

@@ -40,6 +40,7 @@ import type {
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import { toggleRTSFlagsModeChannel } from '../ipc/toggleRTSFlagsModeChannel';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -145,6 +146,7 @@ export default class NetworkStatusStore extends Store {
     networkStatusActions.forceCheckNetworkClock.listen(
       this._forceCheckNetworkClock
     );
+    networkStatusActions.toggleRTSFlagsMode.listen(this._toggleRTSFlagsMode);
 
     // Request node state
     this._requestCardanoState();
@@ -353,6 +355,10 @@ export default class NetworkStatusStore extends Store {
       cardanoWalletPID,
       rtsFlagsModeEnabled,
     };
+  };
+
+  @action _toggleRTSFlagsMode = async () => {
+    await toggleRTSFlagsModeChannel.send();
   };
 
   // DEFINE ACTIONS

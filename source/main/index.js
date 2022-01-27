@@ -2,8 +2,10 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import type { Event } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { isEqual } from 'lodash';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
@@ -21,20 +23,21 @@ import mainErrorHandler from './utils/mainErrorHandler';
 import {
   launcherConfig,
   pubLogsFolderPath,
+  RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
-import { safeExitDaedalusWithCode } from './utils/safeExitDaedalusWithCode';
+import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import { getRtsFlagsSettings } from './utils/rtsFlagsSettings';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
+import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type {
   GenerateWalletMigrationReportRendererRequest,
   SetStateSnapshotLogMainResponse,
@@ -43,11 +46,16 @@ import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
+import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
-import { safeExit } from './utils/safeExit';
+import {
+  getRtsFlagsSettings,
+  storeRtsFlagsSettings,
+} from './utils/rtsFlagsSettings';
+import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 
 /* eslint-disable consistent-return */
 
@@ -80,6 +88,40 @@ if (isBlankScreenFixActive) {
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
+const safeExit = async () => {
+  pauseActiveDownloads();
+  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    return safeExitWithCode(0);
+  }
+  if (cardanoNode.state === CardanoNodeStates.STOPPING) {
+    logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
+    cardanoNode.exitOnStop();
+    return;
+  }
+  try {
+    const pid = cardanoNode.pid || 'null';
+    logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
+      pid,
+    });
+    await cardanoNode.stop();
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    safeExitWithCode(0);
+  } catch (error) {
+    logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
+      error,
+    });
+    safeExitWithCode(0);
+  }
+};
+
+const handleWindowClose = async (event: ?Event) => {
+  logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  if (event) {
+    event.preventDefault();
+  }
+  await safeExit();
+};
 
 const onAppReady = async () => {
   setupLogging();
@@ -137,12 +179,12 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const rtsFlags = getRtsFlagsSettings(network) || [];
+  const currentRtsFlags = getRtsFlagsSettings(network) || [];
 
   logger.info(
-    `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
+    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
   );
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, rtsFlags);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
 
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
@@ -193,6 +235,12 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
+  toggleRTSFlagsModeChannel.onReceive(() => {
+    const flagsToSet = isEqual(currentRtsFlags, RTS_FLAGS) ? [] : RTS_FLAGS;
+    storeRtsFlagsSettings(environment.network, flagsToSet);
+    return handleWindowClose();
+  });
+
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -209,13 +257,7 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  mainWindow.on('close', async (event) => {
-    logger.info(
-      'mainWindow received <close> event. Safe exiting Daedalus now.'
-    );
-    event.preventDefault();
-    await safeExit(cardanoNode);
-  });
+  mainWindow.on('close', handleWindowClose);
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
@@ -242,7 +284,7 @@ const onAppReady = async () => {
             keepLocalClusterRunning,
           }
         );
-        return safeExitDaedalusWithCode(0);
+        return safeExitWithCode(0);
       }
 
       const exitSelfnodeDialogOptions = {
@@ -262,12 +304,12 @@ const onAppReady = async () => {
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus'
         );
-        return safeExitDaedalusWithCode(0);
+        return safeExitWithCode(0);
       }
       logger.info('ipcMain: Exiting local cluster together with Daedalus');
     }
 
-    await safeExit(cardanoNode);
+    await safeExit();
   });
 };
 

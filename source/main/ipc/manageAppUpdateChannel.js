@@ -12,7 +12,7 @@ import type {
 } from '../../common/ipc/api';
 import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appUpdateConfig';
 import { environment } from '../environment';
-import { safeExitDaedalusWithCode } from '../utils/safeExitDaedalusWithCode';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
 
@@ -152,7 +152,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
           logger.error('exit without success');
           return reject();
         }
-        safeExitDaedalusWithCode(20);
+        safeExitWithCode(20);
         return resolve(response(true, functionPrefix));
       });
     });

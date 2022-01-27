@@ -14,7 +14,7 @@ import {
   promisedCondition,
 } from './utils';
 import { getProcess } from '../utils/processes';
-import { safeExitDaedalusWithCode } from '../utils/safeExitDaedalusWithCode';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type {
   CardanoNodeImplementations,
   CardanoNodeState,
@@ -526,7 +526,7 @@ export class CardanoNode {
         _log.info('Daedalus:safeExit: exiting Daedalus with code 0', {
           code: 0,
         });
-        safeExitDaedalusWithCode(0);
+        safeExitWithCode(0);
       } else {
         await this.start(isForced);
       }

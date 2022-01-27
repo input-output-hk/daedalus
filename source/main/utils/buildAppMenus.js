@@ -4,13 +4,11 @@ import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { logger } from './logging';
+import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { storeRtsFlagsSettings } from './rtsFlagsSettings';
-import { RTS_FLAGS } from '../config';
-import { safeExit } from './safeExit';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -20,7 +18,12 @@ export const buildAppMenus = async (
     isNavigationEnabled: boolean,
   }
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
+  const {
+    ABOUT,
+    DAEDALUS_DIAGNOSTICS,
+    ITN_REWARDS_REDEMPTION,
+    TOGGLE_RTS_FLAGS_MODE,
+  } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isNavigationEnabled } = data;
 
@@ -49,14 +52,16 @@ export const buildAppMenus = async (
 
   const restartWithBlankScreenFix = async () => {
     logger.info('Restarting in BlankScreenFix...');
+    if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 21', { code: 21 });
-    return safeExit(cardanoNode, 21);
+    safeExitWithCode(21);
   };
 
   const restartWithoutBlankScreenFix = async () => {
     logger.info('Restarting without BlankScreenFix...');
+    if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 22', { code: 22 });
-    return safeExit(cardanoNode, 22);
+    safeExitWithCode(22);
   };
 
   const toggleBlankScreenFix = async (item) => {
@@ -92,43 +97,8 @@ export const buildAppMenus = async (
     item.checked = isBlankScreenFixActive;
   };
 
-  const setRtsFlags = async (enable: boolean): Promise<void> => {
-    const translation = getTranslation(translations, 'menu');
-    const rtsFlagsDialogOptions = {
-      buttons: [
-        translation('helpSupport.rtsFlagsDialogConfirm'),
-        translation('helpSupport.rtsFlagsDialogCancel'),
-      ],
-      type: 'warning',
-      title: enable
-        ? translation('helpSupport.enableRtsFlagsDialogTitle')
-        : translation('helpSupport.disableRtsFlagsDialogTitle'),
-      message: enable
-        ? translation('helpSupport.enableRtsFlagsDialogMessage')
-        : translation('helpSupport.disableRtsFlagsDialogMessage'),
-      defaultId: 1,
-      cancelId: 1,
-      noLink: true,
-    };
-
-    const { response } = await dialog.showMessageBox(
-      mainWindow,
-      rtsFlagsDialogOptions
-    );
-
-    if (response !== 0) {
-      return;
-    }
-
-    const flagsToSet = enable ? RTS_FLAGS : [];
-    storeRtsFlagsSettings(environment.network, flagsToSet);
-
-    // TODO
-    if (isBlankScreenFixActive) {
-      restartWithBlankScreenFix();
-    } else {
-      restartWithoutBlankScreenFix();
-    }
+  const openToggleRTSFlagsModeDialog = () => {
+    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
   };
 
   const menuActions = {
@@ -138,7 +108,7 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
-    setRtsFlags,
+    openToggleRTSFlagsModeDialog,
   };
 
   // Build app menus

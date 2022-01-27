@@ -32,7 +32,7 @@ import {
   setCachedCardanoStatusChannel,
   exportWalletsChannel,
 } from '../ipc/cardano.ipc';
-import { safeExitDaedalusWithCode } from '../utils/safeExitDaedalusWithCode';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 const restartCardanoNode = async (node: CardanoNode) => {
   try {
@@ -163,7 +163,7 @@ export const setupCardanoNode = (
       logger.info(
         'CardanoNode applied an update. Exiting Daedalus with code 20.'
       );
-      safeExitDaedalusWithCode(20);
+      safeExitWithCode(20);
     });
     return Promise.resolve();
   });

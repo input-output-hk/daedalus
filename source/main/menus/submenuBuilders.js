@@ -35,8 +35,10 @@ export const buildKnownIssueFixesSubmenu = (
       label: translate('helpSupport.usingRtsFlags'),
       type: 'checkbox',
       checked: rtsFlagsEnabled,
-      click() {
-        actions.setRtsFlags(!rtsFlagsEnabled);
+      click(item) {
+        actions.openToggleRTSFlagsModeDialog(!rtsFlagsEnabled);
+        // keep previous setting until app restart
+        item.checked = rtsFlagsEnabled;
       },
     },
   ];
