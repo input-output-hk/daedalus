@@ -2088,7 +2088,7 @@ export default class HardwareWalletsStore extends Store {
       publicKey = Buffer.from(witness.pubKey, 'hex');
       // @ts-ignore ts-migrate(2339) FIXME: Property 'signature' does not exist on type 'Trezo... Remove this comment to see the full error message
       witnessSignatureHex = witness.signature;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'TrezorWitn... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'TrezorWitn... Remove this comment to see the full error message
     } else if (witness.path && witness.witnessSignatureHex) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'TrezorWitn... Remove this comment to see the full error message
       const xpub = await this._deriveXpub(witness.path, xpubHex);

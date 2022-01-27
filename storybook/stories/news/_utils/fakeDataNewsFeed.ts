@@ -8,7 +8,7 @@ export const getNewsItem = (
   type: NewsType,
   locale: string,
   read?: boolean
-// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News =>
   new News.News({
     id,
