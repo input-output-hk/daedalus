@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StepWalletTypeContainer from './wallet-restore/StepWalletTypeContainer';
@@ -8,13 +7,15 @@ import StepSuccessContainer from './wallet-restore/StepSuccessContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { RESTORE_WALLET_STEPS } from '../../../config/walletRestoreConfig';
 import ConfirmationDialog from '../../../components/wallet/wallet-restore/widgets/ConfirmationDialog';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class WalletRestoreContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   get containers() {
     return {
@@ -61,4 +62,4 @@ class WalletRestoreContainer extends Component<Props> {
   }
 }
 
-export default WalletRestoreContainer
+export default WalletRestoreContainer;

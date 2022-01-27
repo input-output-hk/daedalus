@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -10,7 +9,6 @@ import type { FilterDialogProps } from './FilterDialog';
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
 import downloadIcon from '../../../assets/images/download-icon.inline.svg';
-
 export const messages = defineMessages({
   transactions: {
     id: 'wallet.transactions.header.transactions',
@@ -23,14 +21,13 @@ export const messages = defineMessages({
     description: 'Label for the "Export CSV" button.',
   },
 });
-
 type Props = {
-  isFilterDisabled: boolean,
-  isScrolling: boolean,
-  filterDialogProps: FilterDialogProps,
-  numberOfFilterDimensionsApplied: number,
-  numberOfTransactions: number,
-  onRequestCSVFile: Function,
+  isFilterDisabled: boolean;
+  isScrolling: boolean;
+  filterDialogProps: FilterDialogProps;
+  numberOfFilterDimensionsApplied: number;
+  numberOfTransactions: number;
+  onRequestCSVFile: (...args: Array<any>) => any;
 };
 
 @observer
@@ -50,20 +47,16 @@ class WalletTransactionsHeader extends Component<Props> {
       onRequestCSVFile,
     } = this.props;
     const hasAny = true;
-
     const componentClassnames = classnames([
       styles.component,
       isScrolling ? styles.isScrolling : null,
     ]);
-
     const isCsvButtonDisabled = numberOfTransactions === 0;
-
     const cvsButtonClassnames = classnames([
       styles.csvButton,
       isCsvButtonDisabled ? styles.csvButtonDisabled : null,
       'flat',
     ]);
-
     return (
       <div className={componentClassnames}>
         <div className={styles.numberOfTransactions}>
@@ -105,4 +98,4 @@ class WalletTransactionsHeader extends Component<Props> {
   }
 }
 
-export default WalletTransactionsHeader
+export default WalletTransactionsHeader;

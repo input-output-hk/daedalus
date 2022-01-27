@@ -1,4 +1,3 @@
-// @flow
 import { times } from 'lodash-es/util';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
@@ -9,11 +8,9 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
-
 type TippyElement = Element & {
-  _tippy: Instance,
+  _tippy: Instance;
 };
-
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
 const POOL_THUMB_SIZE = 80;
@@ -24,8 +21,8 @@ const POOL_THUMB_GRID_GAP = 10;
  * This is used to hide the pool tooltips on scrolling the list
  */
 function hidePoolPopOver() {
-  const popOver: TippyElement | null = (document.querySelector('.PoolPopOver')
-    ?.parentElement: any);
+  const popOver: TippyElement | null = document.querySelector('.PoolPopOver')
+    ?.parentElement as any;
 
   if (popOver) {
     popOver?._tippy.hide();
@@ -38,24 +35,22 @@ function hidePoolPopOver() {
  * initial rendering performance) or StakePoolTiles (if there are only
  * a few stake pools OR if the simulated "preloading" is done)
  */
-
 type StakePoolsListProps = {
-  stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  highlightOnHover?: boolean,
-  highlightWithDelay?: boolean,
-  onSelect?: (poolId: string) => void,
-  selectOnClick?: boolean,
-  showWithSelectButton?: boolean,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  selectedPoolId?: ?string,
-  disabledStakePoolId?: ?string,
-  isGridRewardsView?: boolean,
-  scrollElementRef?: ?ElementRef<*>,
+  stakePoolsList: Array<StakePool>;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  currentTheme: string;
+  highlightOnHover?: boolean;
+  highlightWithDelay?: boolean;
+  onSelect?: (poolId: string) => void;
+  selectOnClick?: boolean;
+  showWithSelectButton?: boolean;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  selectedPoolId?: string | null | undefined;
+  disabledStakePoolId?: string | null | undefined;
+  isGridRewardsView?: boolean;
+  scrollElementRef?: ElementRef<any> | null | undefined;
 };
-
 export const StakePoolsList = observer((props: StakePoolsListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -65,9 +60,11 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     const scrollContainer = props.scrollElementRef
       ? props.scrollElementRef.current
       : null;
+
     if (scrollContainer !== null) {
       scrollContainer.addEventListener('scroll', hidePoolPopOver, true);
     }
+
     setTimeout(() => setIsLoading(false));
     return () => {
       if (scrollContainer !== null) {
@@ -75,6 +72,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       }
     };
   });
+
   if (props.stakePoolsList.length > PRELOADER_THRESHOLD && isLoading) {
     return (
       <div className={styles.preloadingBlockWrapper}>
@@ -82,6 +80,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       </div>
     );
   }
+
   const stakePoolsCount = props.stakePoolsList.length;
 
   function rowRenderer(itemsPerRow, { index, key, style }) {
@@ -134,6 +133,7 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
             if (!stakePoolsCount || !width) {
               return null;
             }
+
             const itemsPerRow = Math.floor(
               width / (POOL_THUMB_SIZE + POOL_THUMB_GRID_GAP)
             );
@@ -159,7 +159,6 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     </WindowScroller>
   );
 });
-
 StakePoolsList.defaultProps = {
   showWithSelectButton: false,
   highlightWithDelay: false,

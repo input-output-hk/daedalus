@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -13,7 +12,6 @@ import type {
   FutureEpoch,
 } from '../../../api/network/types';
 import { generateFieldPanel } from './helpers';
-
 const messages = defineMessages({
   epoch: {
     id: 'staking.delegationCenter.epoch',
@@ -47,21 +45,23 @@ const messages = defineMessages({
     description: 'Delegation description for the Delegation center.',
   },
 });
-
 type Props = {
-  networkTip: ?TipInfo,
-  epochLength: ?number,
-  nextEpoch: ?NextEpoch,
-  futureEpoch: ?FutureEpoch,
-  currentLocale: string,
+  networkTip: TipInfo | null | undefined;
+  epochLength: number | null | undefined;
+  nextEpoch: NextEpoch | null | undefined;
+  futureEpoch: FutureEpoch | null | undefined;
+  currentLocale: string;
 };
-type State = { timeUntilFutureEpoch: number };
+type State = {
+  timeUntilFutureEpoch: number;
+};
 
 @observer
 class DelegationCenterHeader extends Component<Props, State> {
-  intervalHandler: ?IntervalID = null;
-  state = { timeUntilFutureEpoch: 0 };
-
+  intervalHandler: IntervalID | null | undefined = null;
+  state = {
+    timeUntilFutureEpoch: 0,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -77,17 +77,19 @@ class DelegationCenterHeader extends Component<Props, State> {
       EPOCH_COUNTDOWN_INTERVAL
     );
   };
-
   updateTimeUntilFutureEpoch = () => {
     const { futureEpoch } = this.props;
     if (!futureEpoch) return;
     const { epochStart } = futureEpoch;
+
     if (epochStart) {
       const timeUntilFutureEpoch = Math.max(
         0,
         new Date(epochStart).getTime() - new Date().getTime()
       );
-      this.setState({ timeUntilFutureEpoch });
+      this.setState({
+        timeUntilFutureEpoch,
+      });
     }
   };
 
@@ -111,14 +113,9 @@ class DelegationCenterHeader extends Component<Props, State> {
       currentSlotLabel,
       totalSlotsLabel,
     ];
-
     const values = [epoch, slots, totalSlots];
     const keys = ['epoch', 'slots', 'totalSlots'];
-
-    return labels.map<any>((
-      label: string, // eslint-disable-line
-      index: number
-    ) => (
+    return labels.map<any>((label: string, index: number) => (
       <Fragment key={keys[index]}>
         {generateFieldPanel(labels, values, index)}
       </Fragment>
@@ -152,7 +149,6 @@ class DelegationCenterHeader extends Component<Props, State> {
       epochLength
     );
     const showNextEpochCountdown = nextEpochNumber > 0;
-
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -180,4 +176,4 @@ class DelegationCenterHeader extends Component<Props, State> {
   }
 }
 
-export default DelegationCenterHeader
+export default DelegationCenterHeader;

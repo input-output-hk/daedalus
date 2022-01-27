@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
 import {
@@ -13,10 +11,8 @@ import {
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
-
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
-
 const allAssets = [
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -65,7 +61,6 @@ const allAssets = [
     }
   ),
 ];
-
 const assets = {
   available: [
     {
@@ -128,12 +123,12 @@ const assets = {
     },
   ],
 };
-
 const walletAssets = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
   let fingerprint;
+
   if (!assetData || !assetData.fingerprint) {
     fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
       0,
@@ -175,7 +170,6 @@ storiesOf('Wallets|Summary', module)
       'fetched',
       'Currency'
     );
-
     let currencyIsFetchingRate = false;
     let currencyIsActive = true;
     let currencyLastFetched = new Date();
@@ -197,9 +191,7 @@ storiesOf('Wallets|Summary', module)
       },
       'Currency'
     );
-
     const [firstAsset] = walletAssets;
-
     return (
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}

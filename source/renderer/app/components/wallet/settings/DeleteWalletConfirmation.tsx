@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
@@ -7,15 +5,14 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { submitOnEnter } from '../../../utils/form';
 import styles from './DeleteWalletConfirmationDialog.scss';
-
 type Props = {
-  isBackupNoticeAccepted: boolean,
-  confirmationValue: string,
-  onAcceptBackupNotice: Function,
-  onConfirmationValueChange: Function,
-  handleSubmit: Function,
-  inputLabel: string,
-  checkboxLabel: string,
+  isBackupNoticeAccepted: boolean;
+  confirmationValue: string;
+  onAcceptBackupNotice: (...args: Array<any>) => any;
+  onConfirmationValueChange: (...args: Array<any>) => any;
+  handleSubmit: (...args: Array<any>) => any;
+  inputLabel: string;
+  checkboxLabel: string;
 };
 
 const DeleteWalletConfirmation = ({

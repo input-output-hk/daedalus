@@ -1,4 +1,3 @@
-// @flow
 import * as bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
 import { blake2b } from 'blakejs';
@@ -24,36 +23,42 @@ import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
   |  224  |  7 |   231  |  21  |
   |  256  |  8 |   264  |  24  |
 */
-export const generateMnemonic = (ms: ?number = 15) => {
+export const generateMnemonic = (ms: number | null | undefined = 15) => {
   let ent;
+
   switch (ms) {
     case 9:
       ent = 96;
       break;
+
     case 15:
       ent = 160;
       break;
+
     case 18:
       ent = 192;
       break;
+
     case 21:
       ent = 224;
       break;
+
     case 24:
       ent = 256;
       break;
+
     default:
       ent = 128;
   }
 
   return bip39.generateMnemonic(ent, null, validWords);
 };
-
 export const scramblePaperWalletMnemonic = (
   passphrase: string,
   input: string
 ) => {
   let iv;
+
   if (typeof window !== 'undefined') {
     iv = new Uint8Array(8);
     window.crypto.getRandomValues(iv);
@@ -69,15 +74,18 @@ export const scramblePaperWalletMnemonic = (
   );
   return scrambledInput.split(' ');
 };
-
 export const getScrambledInput = (mnemonics: Array<string>) => {
   const chunked = chunk(mnemonics, ADA_CERTIFICATE_MNEMONIC_LENGTH);
   const scrambledInput = chunked[0].join(' '); // first 18 mnemonics
-  const certificatePassword = chunked[1]; // last 9 mnemonics
-  const passphrase = mnemonicToSeedHex(certificatePassword.join(' '));
-  return { passphrase, scrambledInput };
-};
 
+  const certificatePassword = chunked[1]; // last 9 mnemonics
+
+  const passphrase = mnemonicToSeedHex(certificatePassword.join(' '));
+  return {
+    passphrase,
+    scrambledInput,
+  };
+};
 export const unscramblePaperWalletMnemonic = (
   passphrase: string,
   scrambledInput: string
@@ -88,22 +96,20 @@ export const unscramblePaperWalletMnemonic = (
   );
   return input.split(' ');
 };
-
-export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
+export const mnemonicToSeedHex = (
+  mnemonic: string,
+  password: string | null | undefined
+) => {
   const mnemonicBuffer = Buffer.from(unorm.nfkd(mnemonic), 'utf8');
   const salt = `mnemonic${unorm.nfkd(password) || ''}`;
   const saltBuffer = Buffer.from(salt, 'utf8');
   return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 32, 'sha512').toString('hex');
 };
-
 export const blake2b224 = (data: Buffer): Buffer => blake2b(data, null, 28);
-
 export const decodeBech32 = (data: string): Buffer =>
   Buffer.from(bech32.fromWords(bech32.decode(data).words));
-
 export const encodeBech32 = (prefix: string, data: Buffer): string =>
   bech32.encode(prefix, bech32.toWords(data));
-
 export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
   const { isMainnet, isStaging, isSelfnode } = global.environment;
   const isMainnetLikeNetwork = isMainnet || isStaging || isSelfnode;

@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Step2ConfirmationDialog from '../../../../components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -23,7 +21,6 @@ class Step2ConfirmationContainer extends Component<Props> {
     } = stores.staking;
     const { onConfirmationContinue } = actions.staking;
     if (!redeemWallet) throw new Error('Redeem wallet required');
-
     return (
       <Step2ConfirmationDialog
         wallet={redeemWallet}
@@ -38,4 +35,4 @@ class Step2ConfirmationContainer extends Component<Props> {
   }
 }
 
-export default Step2ConfirmationContainer
+export default Step2ConfirmationContainer;

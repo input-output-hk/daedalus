@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -16,12 +15,11 @@ import type { Intl } from '../../../types/i18nTypes';
 import styles from './CurrentPhase.scss';
 import { messages } from './TallyingPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
-
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  intl: Intl;
 };
 
 function TallyingPhase({
@@ -35,17 +33,14 @@ function TallyingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-
   const endDated = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   const resultsDate = formattedDateTime(VOTING_RESULTS_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>

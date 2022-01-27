@@ -1,8 +1,6 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { Transaction } from '../types';
 import { request } from '../../utils/request';
-
 export const getTransaction = (
   config: RequestConfig,
   walletId: string,

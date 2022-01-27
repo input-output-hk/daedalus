@@ -1,14 +1,12 @@
-// @flow
 import React, { Component } from 'react';
 import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
 import styles from './VirtualAddressesList.scss';
-
 type Props = {
-  rows: Array<WalletAddress>,
-  renderRow: Function,
+  rows: Array<WalletAddress>;
+  renderRow: (...args: Array<any>) => any;
 };
 
 /**
@@ -21,7 +19,6 @@ type Props = {
  */
 const BREAKPOINT_1_LINE = 1108;
 const BREAKPOINT_2_LINES = 635;
-
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
 const ADDRESS_SELECTOR = '.Address';
@@ -54,6 +51,7 @@ class VirtualAddressesList extends Component<Props> {
     const { list, addressHeight } = this;
     if (!list) return;
     const firstAddress = document.querySelector(ADDRESS_SELECTOR);
+
     if (firstAddress instanceof HTMLElement) {
       this.addressHeight = firstAddress.offsetHeight;
     } else {
@@ -64,6 +62,7 @@ class VirtualAddressesList extends Component<Props> {
       // the update and hope that DOM is rendered then (for exact measurements)
       setTimeout(this.updateRowHeights, 100);
     }
+
     if (addressHeight !== this.addressHeight) {
       list.recomputeRowHeights(0);
     }
@@ -76,15 +75,16 @@ class VirtualAddressesList extends Component<Props> {
     this.listWidth = width;
     this.updateRowHeights();
   };
-
   rowRenderer = ({
-    index, // Index of row
-    key, // Unique key within array of rendered rows
+    index,
+    // Index of row
+    key,
+    // Unique key within array of rendered rows
     style, // Style object to be applied to row (to position it);
   }: {
-    index: number,
-    key: string,
-    style: string,
+    index: number;
+    key: string;
+    style: string;
   }) => {
     const { rows, renderRow } = this.props;
     const address = rows[index];
@@ -112,7 +112,9 @@ class VirtualAddressesList extends Component<Props> {
               rowCount={rows.length}
               rowHeight={() => this.addressHeight}
               rowRenderer={this.rowRenderer}
-              style={{ overflowY: 'scroll' }}
+              style={{
+                overflowY: 'scroll',
+              }}
             />
           )}
         </AutoSizer>
@@ -121,4 +123,4 @@ class VirtualAddressesList extends Component<Props> {
   }
 }
 
-export { VirtualAddressesList }
+export { VirtualAddressesList };

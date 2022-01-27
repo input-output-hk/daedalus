@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -10,7 +9,6 @@ import ItemDropdownOption from '../../widgets/forms/ItemDropdownOption';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
@@ -33,20 +31,18 @@ const messages = defineMessages({
     description: 'buttonLabel in the transfer funds form.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onContinue: Function,
-  onSetSourceWallet: Function,
-  targetWalletId: string,
-  sourceWallet: $Shape<Wallet>,
-  wallets: Array<$Shape<Wallet>>,
-  numberOfStakePools: number,
-  getStakePoolById: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
+  onClose: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onSetSourceWallet: (...args: Array<any>) => any;
+  targetWalletId: string;
+  sourceWallet: Partial<Wallet>;
+  wallets: Array<Partial<Wallet>>;
+  numberOfStakePools: number;
+  getStakePoolById: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
 };
-
 export default class TransferFundsStep1Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -66,9 +62,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
-
     const onClick = error ? onClose : onContinue;
-
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}

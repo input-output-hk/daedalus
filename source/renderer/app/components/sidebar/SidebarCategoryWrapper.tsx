@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import type { Node } from 'react';
 import { FormattedHTMLMessage } from 'react-intl';
@@ -8,10 +7,9 @@ import NotificationDot from '../widgets/notification-dot/NotificationDot';
 import DiscreetModeFeatureInject from '../../features/discreet-mode/ui/DiscreetModeFeatureInject';
 import { messages } from './SidebarCategoryWrapper.messages';
 import styles from './SidebarCategoryWrapper.scss';
-
 type Props = {
-  children: Node,
-  categoryName: string,
+  children: Node;
+  categoryName: string;
 };
 
 const SidebarCategoryWrapper = ({ children, categoryName }: Props) => {

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
@@ -8,7 +7,6 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsQrCode.scss';
-
 const messages = defineMessages({
   qrCodeTitle: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeTitle',
@@ -62,39 +60,32 @@ const messages = defineMessages({
       '"Save as PDF" button label on the voting registration "qr code" step.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onDownloadPDF: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  qrCode: ?string,
+  onClose: (...args: Array<any>) => any;
+  onDownloadPDF: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  qrCode: string | null | undefined;
 };
-
 type State = {
-  isCheckbox1Accepted: boolean,
-  isCheckbox2Accepted: boolean,
+  isCheckbox1Accepted: boolean;
+  isCheckbox2Accepted: boolean;
 };
 
 @observer
-class VotingRegistrationStepsQrCode extends Component<
-  Props,
-  State
-> {
+class VotingRegistrationStepsQrCode extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isCheckbox1Accepted: false,
     isCheckbox2Accepted: false,
   };
-
   toggleAcceptance = (param: 'isCheckbox1Accepted' | 'isCheckbox2Accepted') =>
     this.setState((currentState) => set({}, param, !currentState[param]));
-
   handleClose = () => {
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
+
     if (isCheckbox1Accepted && isCheckbox2Accepted) {
       this.props.onClose();
     }
@@ -104,7 +95,6 @@ class VotingRegistrationStepsQrCode extends Component<
     const { intl } = this.context;
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
     const { stepsList, activeStep, qrCode, onDownloadPDF } = this.props;
-
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription1 = intl.formatMessage(messages.qrCodeDescription1);
     const qrCodeDescription2 = intl.formatMessage(messages.qrCodeDescription2);
@@ -117,10 +107,8 @@ class VotingRegistrationStepsQrCode extends Component<
     const saveAsPdfButtonLabel = intl.formatMessage(
       messages.saveAsPdfButtonLabel
     );
-
     const areBothCheckboxesAccepted =
       isCheckbox1Accepted && isCheckbox2Accepted;
-
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(
@@ -132,7 +120,6 @@ class VotingRegistrationStepsQrCode extends Component<
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     const actions = [
       {
         label: closeButtonLabel,
@@ -145,7 +132,6 @@ class VotingRegistrationStepsQrCode extends Component<
         primary: true,
       },
     ];
-
     return (
       <VotingRegistrationDialog
         onClose={this.handleClose}
@@ -191,4 +177,4 @@ class VotingRegistrationStepsQrCode extends Component<
   }
 }
 
-export default VotingRegistrationStepsQrCode
+export default VotingRegistrationStepsQrCode;

@@ -1,16 +1,12 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { getUtxoChartData } from '../../../../source/renderer/app/utils/utxoUtils';
-
 // Screens
 import WalletUtxo from '../../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
-
 const cfg = {
   range: true,
   step: 1,
@@ -20,10 +16,7 @@ const cfg = {
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)
-  .addDecorator(WalletsWrapper)
-
-  // ====== Stories ======
-
+  .addDecorator(WalletsWrapper) // ====== Stories ======
   .add('UTXO Distribution', () => (
     <WalletUtxo
       walletAmount={

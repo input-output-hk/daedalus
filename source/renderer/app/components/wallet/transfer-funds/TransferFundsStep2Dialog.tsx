@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -20,7 +19,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog2.title',
@@ -79,21 +77,19 @@ const messages = defineMessages({
     description: 'passphraseLabel in the transfer funds form.',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  onFinish: Function,
-  onClose: Function,
-  onBack: Function,
-  onOpenExternalLink: Function,
-  feesAmount: BigNumber,
-  leftoversAmount: BigNumber,
-  sourceWalletAmount: BigNumber,
-  sourceWalletName: string,
-  targetWalletName: string,
-  isSubmitting?: boolean,
-  error?: ?LocalizableError,
+  onFinish: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  feesAmount: BigNumber;
+  leftoversAmount: BigNumber;
+  sourceWalletAmount: BigNumber;
+  sourceWalletName: string;
+  targetWalletName: string;
+  isSubmitting?: boolean;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
@@ -101,7 +97,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -120,6 +115,7 @@ class TransferFundsStep2Dialog extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -127,14 +123,15 @@ class TransferFundsStep2Dialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -144,7 +141,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
@@ -163,7 +159,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
-
     const fees = feesAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const leftovers =
       leftoversAmount && !leftoversAmount.isZero()
@@ -177,14 +172,11 @@ class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletAmount,
       false
     );
-
     const spendingPasswordField = this.form.$('spendingPassword');
-
     const buttonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.submitButtonSpinning : null,
     ]);
-
     const actions = [
       {
         label: intl.formatMessage(messages.buttonLabel),
@@ -194,7 +186,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
         disabled: isSubmitting || !spendingPasswordField.isValid,
       },
     ];
-
     return (
       <Dialog
         className={styles.dialog}
@@ -237,7 +228,7 @@ class TransferFundsStep2Dialog extends Component<Props> {
               {intl.formatMessage(messages.leftoversLabel)}
               <Link
                 className={styles.leftoversLearnMoreLink}
-                onClick={(event: SyntheticMouseEvent<HTMLElement>) =>
+                onClick={(event: React.MouseEvent<HTMLElement>) =>
                   onOpenExternalLink(
                     intl.formatMessage(messages.leftoversLearnMoreUrl, event)
                   )
@@ -274,4 +265,4 @@ class TransferFundsStep2Dialog extends Component<Props> {
   }
 }
 
-export default TransferFundsStep2Dialog
+export default TransferFundsStep2Dialog;

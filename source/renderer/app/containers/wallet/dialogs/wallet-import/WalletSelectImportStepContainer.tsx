@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { map } from 'lodash';
@@ -8,30 +7,22 @@ import { WalletImportStatuses } from '../../../../types/walletExportTypes';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../config/numbersConfig';
 import { isValidWalletName } from '../../../../utils/validations';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
-
 type State = {
-  existingWalletsCount: number,
+  existingWalletsCount: number;
 };
 
 @inject('stores', 'actions')
 @observer
-class WalletSelectImportStepContainer extends Component<
-  Props,
-  State
-> {
+class WalletSelectImportStepContainer extends Component<Props, State> {
   static defaultProps = DefaultProps;
-
   state = {
     existingWalletsCount: this.props.stores.wallets.all.length,
   };
-
-  onWalletNameChange = (params: { index: number, name: string }) => {
+  onWalletNameChange = (params: { index: number; name: string }) => {
     this.props.actions.walletMigration.updateWalletName.trigger(params);
   };
-
   onToggleWalletImportSelection = (params: { index: number }) => {
     this.props.actions.walletMigration.toggleWalletImportSelection.trigger(
       params
@@ -41,15 +32,12 @@ class WalletSelectImportStepContainer extends Component<
   render() {
     const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
-
     const {
       exportedWallets,
       pendingImportWalletsCount,
       isRestorationRunning,
     } = walletMigration;
-
     const { openExternalLink } = app;
-
     let walletsCount =
       this.state.existingWalletsCount + pendingImportWalletsCount;
     map(exportedWallets, (wallet) => {
@@ -60,9 +48,7 @@ class WalletSelectImportStepContainer extends Component<
         walletsCount++;
       }
     });
-
     const isMaxNumberOfWalletsReached = walletsCount >= MAX_ADA_WALLETS_COUNT;
-
     return (
       <WalletSelectImportDialog
         onClose={onClose}
@@ -80,4 +66,4 @@ class WalletSelectImportStepContainer extends Component<
   }
 }
 
-export default WalletSelectImportStepContainer
+export default WalletSelectImportStepContainer;

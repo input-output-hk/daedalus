@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -14,8 +13,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
-
-const messages: { [string]: ReactIntlMessage } = defineMessages({
+const messages: Record<string, ReactIntlMessage> = defineMessages({
   title: {
     id: 'wallet.settings.icoPublicKeyDialog.title',
     defaultMessage: '!!!Reveal ICO public key',
@@ -33,13 +31,12 @@ const messages: { [string]: ReactIntlMessage } = defineMessages({
     description: 'Description on the reveal ICO Id dialog.',
   },
 });
-
 type Props = {
-  onRevealPublicKey: Function,
-  onClose: Function,
-  error: ?LocalizableError,
-  hasReceivedICOPublicKey: boolean,
-  walletName: string,
+  onRevealPublicKey: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  error: LocalizableError | null | undefined;
+  hasReceivedICOPublicKey: boolean;
+  walletName: string;
 };
 
 @observer
@@ -50,6 +47,7 @@ class ICOPublicKeyDialog extends Component<Props> {
 
   componentDidUpdate() {
     const { hasReceivedICOPublicKey, onClose } = this.props;
+
     if (hasReceivedICOPublicKey) {
       onClose();
     }
@@ -77,6 +75,7 @@ class ICOPublicKeyDialog extends Component<Props> {
                   ),
                 ];
               }
+
               return [true];
             },
           ],
@@ -84,24 +83,26 @@ class ICOPublicKeyDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
         const { onRevealPublicKey } = this.props;
-        onRevealPublicKey({ spendingPassword });
+        onRevealPublicKey({
+          spendingPassword,
+        });
       },
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -143,4 +144,4 @@ class ICOPublicKeyDialog extends Component<Props> {
   }
 }
 
-export default ICOPublicKeyDialog
+export default ICOPublicKeyDialog;

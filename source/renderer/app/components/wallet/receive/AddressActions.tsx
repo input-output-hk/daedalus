@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,7 +8,6 @@ import styles from './AddressActions.scss';
 import iconQR from '../../../assets/images/qr-code.inline.svg';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
-
 const messages = defineMessages({
   instructionsTitle: {
     id: 'wallet.receive.page.instructions.instructionsTitle',
@@ -44,12 +42,11 @@ const messages = defineMessages({
     description: 'Label for "Copy address" link on the wallet "Receive page"',
   },
 });
-
 type Props = {
-  address: WalletAddress,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  type?: 'share' | 'copy',
+  address: WalletAddress;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  type?: 'share' | 'copy';
 };
 
 @observer
@@ -60,9 +57,8 @@ class AddressActions extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  addressElement: ?HTMLElement;
-  addressContainerElement: ?HTMLElement;
+  addressElement: HTMLElement | null | undefined;
+  addressContainerElement: HTMLElement | null | undefined;
 
   render() {
     const { intl } = this.context;
@@ -106,4 +102,4 @@ class AddressActions extends Component<Props> {
   }
 }
 
-export default AddressActions
+export default AddressActions;

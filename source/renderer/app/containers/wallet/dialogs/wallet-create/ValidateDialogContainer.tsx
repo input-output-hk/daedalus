@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ValidateDialog from '../../../../components/wallet/wallet-create/ValidateDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -25,4 +23,4 @@ class ValidateDialogContainer extends Component<Props> {
   }
 }
 
-export default ValidateDialogContainer
+export default ValidateDialogContainer;

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { select, withKnobs } from '@storybook/addon-knobs';
@@ -7,7 +6,6 @@ import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
-
 storiesOf('News|Overlays', module)
   .addDecorator((story) => (
     <StoryDecorator>
@@ -43,10 +41,7 @@ storiesOf('News|Overlays', module)
   ))
   .add('Incident - Themed', (props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'theme-default',
-      }}
+      incident={{ ...props, color: 'theme-default' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
@@ -58,10 +53,7 @@ storiesOf('News|Overlays', module)
   ))
   .add('Incident - Grey', (props) => (
     <IncidentOverlay
-      incident={{
-        ...props,
-        color: 'grey',
-      }}
+      incident={{ ...props, color: 'grey' }}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { filter, escapeRegExp } from 'lodash';
@@ -29,10 +28,9 @@ import globalMessages from '../../../i18n/global-messages';
  *
  */
 export type ItemDropdownProps = {
-  options: Array<ItemDropdown>,
-  className?: string,
+  options: Array<ItemDropdown>;
+  className?: string;
 };
-
 export const onSearchItemsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -43,12 +41,10 @@ export const onSearchItemsDropdown = (
     return regex.test(label) || regex.test(detail) || regex.test(value);
   });
 };
-
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     optionRenderer: (optionProps: ItemDropdown) => (
       <ItemDropdownOption {...optionProps} />
@@ -59,6 +55,7 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     onSearch: onSearchItemsDropdown,
     skin: SelectSkin,
   };
+
   render() {
     const { intl } = this.context;
     const { className } = this.props;

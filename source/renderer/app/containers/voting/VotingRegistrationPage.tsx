@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
@@ -12,18 +11,20 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
 import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class VotingRegistrationPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
-  handleGoToCreateWalletClick = () => {
-    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+  static defaultProps = {
+    actions: null,
+    stores: null,
   };
-
+  handleGoToCreateWalletClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
+  };
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
     const { app, networkStatus, wallets, profile, voting } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
@@ -68,13 +69,10 @@ class VotingRegistrationPage extends Component<Props> {
     const { stores } = this.props;
     const { app, uiDialogs } = stores;
     const { openExternalLink } = app;
-
     const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
       VotingRegistrationDialog
     );
-
     const innerContent = this.getInnerContent(isVotingRegistrationDialogOpen);
-
     return (
       <Layout>
         <VerticalFlexContainer>
@@ -90,4 +88,4 @@ class VotingRegistrationPage extends Component<Props> {
   }
 }
 
-export default VotingRegistrationPage
+export default VotingRegistrationPage;

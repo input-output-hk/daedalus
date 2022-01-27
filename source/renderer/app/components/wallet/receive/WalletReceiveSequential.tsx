@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -10,7 +9,6 @@ import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceiveSequential.scss';
 import AddressSequential from './AddressSequential';
-
 const messages = defineMessages({
   instructionsTitle: {
     id: 'wallet.receive.page.instructions.instructionsTitle',
@@ -41,22 +39,19 @@ const messages = defineMessages({
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  walletAddresses: Array<WalletAddress>,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  onToggleSubMenus: Object,
-  showUsed: boolean,
-  onToggleUsedAddresses: Function,
+  walletAddresses: Array<WalletAddress>;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  onToggleSubMenus: Record<string, any>;
+  showUsed: boolean;
+  onToggleUsedAddresses: (...args: Array<any>) => any;
 };
-
 type State = {
-  addressSlice: number,
-  addressWidth: number,
-  charWidth: number,
+  addressSlice: number;
+  addressWidth: number;
+  charWidth: number;
 };
 
 @observer
@@ -64,15 +59,12 @@ class WalletReceiveSequential extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  containerElement: ?HTMLElement;
-
+  containerElement: HTMLElement | null | undefined;
   state = {
     addressSlice: 0,
     addressWidth: 0,
     charWidth: 0,
   };
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -96,7 +88,7 @@ class WalletReceiveSequential extends Component<Props, State> {
   );
 
   get addressLength() {
-    const [address: WalletAddress] = this.props.walletAddresses;
+    const [address] = this.props.walletAddresses;
     return address.id.length;
   }
 
@@ -109,11 +101,16 @@ class WalletReceiveSequential extends Component<Props, State> {
         this.containerElement = containerElement;
         const addressWidth = addressElement.offsetWidth;
         const charWidth = addressWidth / this.addressLength;
-        this.setState({ charWidth, addressWidth }, this.calculateAddressSlice);
+        this.setState(
+          {
+            charWidth,
+            addressWidth,
+          },
+          this.calculateAddressSlice
+        );
       }
     }, 500);
   };
-
   calculateAddressSlice = () => {
     if (this._isMounted) {
       const { charWidth, addressWidth } = this.state;
@@ -129,12 +126,10 @@ class WalletReceiveSequential extends Component<Props, State> {
       });
     }
   };
-
   toggleUsedAddresses = () => {
     const { onToggleUsedAddresses } = this.props;
     onToggleUsedAddresses();
   };
-
   renderRow = (address: WalletAddress, index: number) => {
     const { onShareAddress, onCopyAddress } = this.props;
     const { addressSlice } = this.state;
@@ -149,7 +144,6 @@ class WalletReceiveSequential extends Component<Props, State> {
       />
     );
   };
-
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
@@ -160,7 +154,6 @@ class WalletReceiveSequential extends Component<Props, State> {
   render() {
     const { walletAddresses, showUsed } = this.props;
     const { intl } = this.context;
-
     return (
       <div className={styles.component}>
         <BorderedBox fullHeight>
@@ -200,4 +193,4 @@ class WalletReceiveSequential extends Component<Props, State> {
   }
 }
 
-export default WalletReceiveSequential
+export default WalletReceiveSequential;

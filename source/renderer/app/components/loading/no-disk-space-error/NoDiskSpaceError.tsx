@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import styles from './NoDiskSpaceError.scss';
-
 const messages = defineMessages({
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
@@ -19,11 +17,10 @@ const messages = defineMessages({
     description: 'Title of No disk space overlay',
   },
 });
-
 type Props = {
-  diskSpaceRequired: string,
-  diskSpaceMissing: string,
-  diskSpaceRecommended: string,
+  diskSpaceRequired: string;
+  diskSpaceMissing: string;
+  diskSpaceRecommended: string;
 };
 
 @observer
@@ -39,7 +36,6 @@ class NoDiskSpaceError extends Component<Props> {
       diskSpaceMissing,
       diskSpaceRecommended,
     } = this.props;
-
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />
@@ -61,4 +57,4 @@ class NoDiskSpaceError extends Component<Props> {
   }
 }
 
-export default NoDiskSpaceError
+export default NoDiskSpaceError;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -22,7 +21,6 @@ import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceiveRandom.scss';
 import AddressRandom from './AddressRandom';
 import WalletAddress from '../../../domains/WalletAddress';
-
 const messages = defineMessages({
   walletAddressLabel: {
     id: 'wallet.receive.page.walletAddressLabel',
@@ -66,22 +64,20 @@ const messages = defineMessages({
     description: 'Label for "Copy address" link on the wallet "Receive page"',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  walletAddress: string,
-  isWalletAddressUsed: boolean,
-  walletAddresses: Array<WalletAddress>,
-  onGenerateAddress: Function,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  isSidebarExpanded: boolean,
-  walletHasPassword: boolean,
-  isSubmitting: boolean,
-  error?: ?LocalizableError,
-  showUsed: boolean,
-  onToggleUsedAddresses: Function,
+  walletAddress: string;
+  isWalletAddressUsed: boolean;
+  walletAddresses: Array<WalletAddress>;
+  onGenerateAddress: (...args: Array<any>) => any;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  isSidebarExpanded: boolean;
+  walletHasPassword: boolean;
+  isSubmitting: boolean;
+  error?: LocalizableError | null | undefined;
+  showUsed: boolean;
+  onToggleUsedAddresses: (...args: Array<any>) => any;
 };
 
 @observer
@@ -89,14 +85,11 @@ class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   passwordField: Input;
-
   toggleUsedAddresses = () => {
     const { onToggleUsedAddresses } = this.props;
     onToggleUsedAddresses();
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -115,6 +108,7 @@ class WalletReceiveRandom extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -122,16 +116,18 @@ class WalletReceiveRandom extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
-        validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
+        validationDebounceWait: 0,
+        // Disable debounce to avoid error state after clearing
         validateOnChange: true,
         showErrorsOnBlur: false,
         showErrorsOnClear: false,
       },
     }
   );
-
   renderRow = (address: WalletAddress, index: number) => (
     <AddressRandom
       index={index}
@@ -140,7 +136,6 @@ class WalletReceiveRandom extends Component<Props> {
       onShareAddress={this.props.onShareAddress}
     />
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -150,13 +145,10 @@ class WalletReceiveRandom extends Component<Props> {
       },
       onError: () => {},
     });
-
     // eslint-disable-next-line no-unused-expressions
     this.passwordField && this.passwordField.focus();
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
@@ -178,28 +170,22 @@ class WalletReceiveRandom extends Component<Props> {
       showUsed,
     } = this.props;
     const { intl } = this.context;
-
     const walletAddressClasses = classnames([
       styles.hash,
       isWalletAddressUsed ? styles.usedHash : null,
     ]);
-
     const generateAddressWrapperClasses = classnames([
       styles.generateAddressWrapper,
       isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
     ]);
-
     const generateAddressButtonClasses = classnames([
       'primary',
       'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
     ]);
-
     const passwordField = form.$('spendingPassword');
-
     const canSubmit = !isSubmitting && passwordField.value;
-
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
         {walletHasPassword && (
@@ -224,7 +210,6 @@ class WalletReceiveRandom extends Component<Props> {
         />
       </div>
     );
-
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
       ? document.documentElement.style.getPropertyValue(
@@ -236,7 +221,6 @@ class WalletReceiveRandom extends Component<Props> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     return (
       <div className={styles.component}>
         <BorderedBox fullHeight>
@@ -258,8 +242,7 @@ class WalletReceiveRandom extends Component<Props> {
                   <div className={walletAddressClasses}>
                     {walletAddress}
                     <CopyToClipboard
-                      text={walletAddress}
-                      // eslint-disable-next-line react/jsx-no-bind
+                      text={walletAddress} // eslint-disable-next-line react/jsx-no-bind
                       onCopy={onCopyAddress.bind(this, walletAddress)}
                     >
                       <SVGInline
@@ -318,4 +301,4 @@ class WalletReceiveRandom extends Component<Props> {
   }
 }
 
-export default WalletReceiveRandom
+export default WalletReceiveRandom;

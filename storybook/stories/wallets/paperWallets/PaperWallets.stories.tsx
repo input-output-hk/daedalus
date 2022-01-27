@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -9,12 +8,8 @@ import PrintDialog from '../../../../source/renderer/app/components/wallet/paper
 import SecuringPasswordDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
 import VerificationDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
 import CompletionDialog from '../../../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
-
 storiesOf('Wallets|Paper Wallets', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-
-  // ====== Stories ======
-
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Instructions', () => (
     <div>
       <InstructionsDialog
@@ -26,7 +21,6 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Verify', () => (
     <div>
       <PrintDialog
@@ -35,7 +29,6 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Complete Mnemonics', () => (
     <div>
       <SecuringPasswordDialog
@@ -45,7 +38,6 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Confirm Mnemonics', () => (
     <div>
       <VerificationDialog
@@ -59,7 +51,6 @@ storiesOf('Wallets|Paper Wallets', module)
       />
     </div>
   ))
-
   .add('Completion', () => (
     <div>
       <CompletionDialog

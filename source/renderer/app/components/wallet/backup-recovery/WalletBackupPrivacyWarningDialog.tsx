@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,7 +10,6 @@ import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
-
 const messages = defineMessages({
   recoveryPhraseInstructions1: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1',
@@ -47,14 +45,13 @@ const messages = defineMessages({
       'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
   },
 });
-
 type Props = {
-  countdownRemaining: number,
-  canPhraseBeShown: boolean,
-  isPrivacyNoticeAccepted: boolean,
-  onAcceptPrivacyNotice: Function,
-  onContinue: Function,
-  onCancelBackup: Function,
+  countdownRemaining: number;
+  canPhraseBeShown: boolean;
+  isPrivacyNoticeAccepted: boolean;
+  onAcceptPrivacyNotice: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
 };
 
 @observer
@@ -79,7 +76,6 @@ class WalletBackupPrivacyWarningDialog extends Component<Props> {
       styles.component,
       'WalletBackupPrivacyWarningDialog',
     ]);
-
     const actions = [
       {
         label:
@@ -89,7 +85,6 @@ class WalletBackupPrivacyWarningDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -130,4 +125,4 @@ class WalletBackupPrivacyWarningDialog extends Component<Props> {
   }
 }
 
-export default WalletBackupPrivacyWarningDialog
+export default WalletBackupPrivacyWarningDialog;

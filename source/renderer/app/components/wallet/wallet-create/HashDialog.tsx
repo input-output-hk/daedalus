@@ -1,13 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
 import commonStyles from './WalletCreateStyles.scss';
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
-
 export default class HashDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;

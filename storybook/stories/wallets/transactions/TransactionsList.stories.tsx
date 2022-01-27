@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -15,8 +14,7 @@ import { formattedWalletAmount } from '../../../../source/renderer/app/utils/for
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
 import {
-  DATE_ENGLISH_OPTIONS,
-  // LANGUAGE_OPTIONS,
+  DATE_ENGLISH_OPTIONS, // LANGUAGE_OPTIONS,
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
@@ -26,17 +24,15 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 import Asset from '../../../../source/renderer/app/domains/Asset';
-
 type Props = {
-  defaultFilterOptions: TransactionFilterOptionsType,
-  filterOptions: TransactionFilterOptionsType,
-  locale: string,
-  onFilter: Function,
-  populatedFilterOptions: TransactionFilterOptionsType,
-  transactions: Array<WalletTransaction>,
-  totalAvailable: number,
+  defaultFilterOptions: TransactionFilterOptionsType;
+  filterOptions: TransactionFilterOptionsType;
+  locale: string;
+  onFilter: (...args: Array<any>) => any;
+  populatedFilterOptions: TransactionFilterOptionsType;
+  transactions: Array<WalletTransaction>;
+  totalAvailable: number;
 };
-
 const assetDetails = {
   '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c': generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -107,7 +103,6 @@ const assetDetails = {
     }
   ),
 };
-
 const assets = {
   available: [
     {
@@ -143,8 +138,10 @@ const assets = {
   ],
 };
 
-const getAsset = (policyId: string, assetName: string): ?Asset =>
-  assetDetails[`${policyId}${assetName}`];
+const getAsset = (
+  policyId: string,
+  assetName: string
+): Asset | null | undefined => assetDetails[`${policyId}${assetName}`];
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Transactions', module)
@@ -170,10 +167,7 @@ storiesOf('Wallets|Transactions', module)
       />
     );
   })
-  .addDecorator(WalletsWrapper)
-
-  // ====== Stories ======
-
+  .addDecorator(WalletsWrapper) // ====== Stories ======
   .add('Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,

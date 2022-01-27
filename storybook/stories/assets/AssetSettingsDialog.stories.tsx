@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { storiesOf } from '@storybook/react';
@@ -7,7 +6,6 @@ import { withKnobs, number } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import AssetSettingsDialog from '../../../source/renderer/app/components/assets/AssetSettingsDialog';
-
 const asset = {
   policyId: '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf38979086',
   assetName: '6861707079636f696e',
@@ -19,17 +17,13 @@ const asset = {
   recommendedDecimals: null,
   metadata: null,
 };
-
 storiesOf('Assets|AssetSettingsDialog', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Default', () => (
     <AssetSettingsDialog
       asset={asset}
@@ -38,7 +32,6 @@ storiesOf('Assets|AssetSettingsDialog', module)
       onCancel={action('onCancel')}
     />
   ))
-
   .add('With recommended decimal precision', () => (
     <AssetSettingsDialog
       asset={{

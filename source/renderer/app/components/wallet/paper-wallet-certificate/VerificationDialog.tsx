@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
@@ -21,7 +20,6 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
 } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.verification.dialog.headline',
@@ -87,19 +85,17 @@ const messages = defineMessages({
       '"Paper wallet create certificate verification dialog" recovering understandance confirmation.',
   },
 });
-
 type State = {
-  storingConfirmed: boolean,
-  recoveringConfirmed: boolean,
-  isRecoveryPhraseValid: boolean,
+  storingConfirmed: boolean;
+  recoveringConfirmed: boolean;
+  isRecoveryPhraseValid: boolean;
 };
-
 type Props = {
-  walletCertificateRecoveryPhrase: string,
-  additionalMnemonicWords: string,
-  suggestedMnemonics: Array<string>,
-  onContinue: Function,
-  onClose: Function,
+  walletCertificateRecoveryPhrase: string;
+  additionalMnemonicWords: string;
+  suggestedMnemonics: Array<string>;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
 };
 
 @observer
@@ -107,27 +103,22 @@ class VerificationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     storingConfirmed: false,
     recoveringConfirmed: false,
     isRecoveryPhraseValid: false,
   };
-
   onStoringConfirmation = () => {
     this.setState((prevState) => ({
       storingConfirmed: !prevState.storingConfirmed,
     }));
   };
-
   onRecoveringConfirmation = () => {
     this.setState((prevState) => ({
       recoveringConfirmed: !prevState.recoveringConfirmed,
     }));
   };
-
   recoveryPhraseAutocomplete: Autocomplete;
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -146,6 +137,7 @@ class VerificationDialog extends Component<Props, State> {
               } = this.props;
               const { storingConfirmed, recoveringConfirmed } = this.state;
               const enteredWordsArray = field.value;
+
               if (
                 enteredWordsArray.length <
                 PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
@@ -158,6 +150,7 @@ class VerificationDialog extends Component<Props, State> {
                   }),
                 ];
               }
+
               const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
               const enteredRecoveryPhrase = join(enteredWordsArray, ' ');
               const isRecoveryPhraseValid =
@@ -182,35 +175,35 @@ class VerificationDialog extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { recoveryPhrase } = form.values();
-        this.props.onContinue({ recoveryPhrase });
+        this.props.onContinue({
+          recoveryPhrase,
+        });
       },
       onError: () => {},
     });
   };
-
   resetForm = () => {
     const { form } = this;
     const autocomplete = this.recoveryPhraseAutocomplete;
-
     // Cancel all debounced field validations
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
     form.showErrors(false);
-
     // Autocomplete has to be reset manually
     autocomplete.clear();
 
@@ -233,21 +226,16 @@ class VerificationDialog extends Component<Props, State> {
       recoveringConfirmed,
       isRecoveryPhraseValid,
     } = this.state;
-
     const recoveryPhraseField = form.$('recoveryPhrase');
-
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
-
     const storingUnderstandanceCheckboxClasses = classnames([
       styles.checkbox,
       'storingUnderstandance',
     ]);
-
     const recoveringUnderstandanceCheckboxClasses = classnames([
       styles.checkbox,
       'recoveringUnderstandance',
     ]);
-
     const actions = [
       {
         className: 'clearButton',
@@ -262,7 +250,6 @@ class VerificationDialog extends Component<Props, State> {
         onClick: this.submit.bind(this),
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -326,4 +313,4 @@ class VerificationDialog extends Component<Props, State> {
   }
 }
 
-export default VerificationDialog
+export default VerificationDialog;

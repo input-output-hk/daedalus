@@ -1,4 +1,3 @@
-// @flow
 import path from 'path';
 import { intlShape, defineMessages } from 'react-intl';
 import { includes } from 'lodash';
@@ -15,7 +14,6 @@ import {
 } from './formatters';
 import { WALLET_ASSETS_ENABLED } from '../config/walletsConfig';
 import { filterAssets } from './assets';
-
 const messages = defineMessages({
   columnID: {
     id: 'wallet.transactions.csv.column.id',
@@ -103,14 +101,13 @@ const messages = defineMessages({
     description: 'Transactions CSV "Transactions" filename',
   },
 });
-
 type Params = {
-  desktopDirectoryPath: string,
-  intl: intlShape,
-  transactions: Array<WalletTransaction>,
-  walletName: string,
-  getAsset: Function,
-  isInternalAddress: Function,
+  desktopDirectoryPath: string;
+  intl: intlShape;
+  transactions: Array<WalletTransaction>;
+  walletName: string;
+  getAsset: (...args: Array<any>) => any;
+  isInternalAddress: (...args: Array<any>) => any;
 };
 
 const transactionsCsvGenerator = async ({
@@ -137,10 +134,8 @@ const transactionsCsvGenerator = async ({
     ],
   };
   const { filePath } = await showSaveDialogChannel.send(params);
-
   // if cancel button is clicked or path is empty
   if (!filePath) return false;
-
   const columns = [
     intl.formatMessage(messages.columnID),
     intl.formatMessage(messages.columnType),
@@ -160,7 +155,6 @@ const transactionsCsvGenerator = async ({
   }
 
   const fileContent = [columns];
-
   transactions.forEach(
     ({
       id,
@@ -181,12 +175,14 @@ const transactionsCsvGenerator = async ({
       let valueSentAmount = '';
       let valueDepositAmount = '';
       let valueTransactionFee = '';
+
       if (type === TransactionTypes.EXPEND) {
         const amountWithoutFees = -amount.minus(-fee);
         valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
         valueDepositAmount = formattedWalletAmount(deposit, false);
         valueTransactionFee = formattedWalletAmount(fee, false);
       }
+
       const valueTokens = filterAssets(assets, type, isInternalAddress)
         .map(({ policyId, assetName, quantity }) => {
           const { fingerprint, metadata } = getAsset(policyId, assetName);
@@ -221,14 +217,18 @@ const transactionsCsvGenerator = async ({
         valueAddressesTo,
         valueWithdrawals,
       ];
+
       if (WALLET_ASSETS_ENABLED) {
         txValues.splice(6, 0, valueTokens);
       }
+
       fileContent.push(txValues);
     }
   );
-
-  await downloadCsv({ filePath, fileContent });
+  await downloadCsv({
+    filePath,
+    fileContent,
+  });
   return true;
 };
 

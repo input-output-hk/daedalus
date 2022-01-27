@@ -1,16 +1,13 @@
-// @flow
 import React, { Component } from 'react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyCheckbox.scss';
-
-type Props = $Exact<{
-  checked?: boolean,
-  label?: string,
-  onChange?: Function,
-}>;
-
+type Props = {
+  checked?: boolean;
+  label?: string;
+  onChange?: (...args: Array<any>) => any;
+};
 export default class TinyCheckbox extends Component<Props> {
   render() {
     return (

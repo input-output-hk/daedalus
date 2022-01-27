@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
@@ -13,7 +12,6 @@ import gridIcon from '../../../assets/images/grid-ic.inline.svg';
 import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
 import listIcon from '../../../assets/images/list-ic.inline.svg';
 import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
-
 const messages = defineMessages({
   searchInputPlaceholder: {
     id: 'staking.stakePools.search.searchInputPlaceholder',
@@ -51,28 +49,24 @@ const messages = defineMessages({
     description: '"clearTooltip" for the Stake Pools search.',
   },
 });
-
 type Props = {
-  label?: string,
-  placeholder?: string,
-  isListView?: boolean,
-  isGridView?: boolean,
-  isGridRewardsView?: boolean,
-  onSearch: Function,
-  onClearSearch: Function,
-  onGridView?: Function,
-  onGridRewardsView?: Function,
-  onListView?: Function,
-  search: string,
+  label?: string;
+  placeholder?: string;
+  isListView?: boolean;
+  isGridView?: boolean;
+  isGridRewardsView?: boolean;
+  onSearch: (...args: Array<any>) => any;
+  onClearSearch: (...args: Array<any>) => any;
+  onGridView?: (...args: Array<any>) => any;
+  onGridRewardsView?: (...args: Array<any>) => any;
+  onListView?: (...args: Array<any>) => any;
+  search: string;
 };
-
 export class StakePoolsSearch extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  searchInput: ?Object = null;
-
+  searchInput: Record<string, any> | null | undefined = null;
   autoSelectOnFocus = () =>
     this.searchInput ? this.searchInput.inputElement.current.select() : false;
 
@@ -82,6 +76,7 @@ export class StakePoolsSearch extends Component<Props> {
 
   handleClearSearch = () => {
     this.props.onClearSearch();
+
     if (this.searchInput) {
       this.searchInput.focus();
     }
@@ -101,36 +96,29 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView,
       isGridRewardsView,
     } = this.props;
-
     const gridButtonClasses = classnames([
       styles.gridView,
       isGridView ? styles.selected : null,
     ]);
-
     const gridRewardsButtonClasses = classnames([
       styles.gridRewardsView,
       isGridRewardsView ? styles.selected : null,
     ]);
-
     const listButtonClasses = classnames([
       styles.listView,
       isListView ? styles.selected : null,
     ]);
-
     const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
-
     const searchInputClases = classnames([
       styles.searchInput,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
       IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
-
     const clearSearchClasses = classnames([
       styles.inputExtras,
       isBigSearchComponent ? styles.inputExtrasSearch : null,
       IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.container}>

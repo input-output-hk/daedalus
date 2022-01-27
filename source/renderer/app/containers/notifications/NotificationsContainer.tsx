@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
@@ -11,12 +10,10 @@ import type {
   NotificationId,
 } from '../../types/notificationTypes';
 import type { NotificationDataProps } from '../../components/notifications/Notification';
-
 const ICONS = {
   successIcon,
   spinnerIcon,
 };
-
 const messages = defineMessages({
   downloadLogsProgress: {
     id: 'notification.downloadLogsProgress',
@@ -99,7 +96,10 @@ const messages = defineMessages({
 @inject('stores', 'actions')
 @observer
 class NotificationsContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   constructor(props: InjectedProps) {
     super(props);
@@ -167,27 +167,24 @@ class NotificationsContainer extends Component<InjectedProps> {
         .copyAssetParamNotification,
     },
   ];
-
-  notificationsData: {
-    [key: NotificationId]: $Exact<NotificationDataProps>,
-  } = {
+  notificationsData: Record<NotificationId, NotificationDataProps> = {
     downloadLogsProgress: {
       icon: 'spinner',
       hasEllipsis: true,
       clickToClose: false,
     },
   };
-
   registerNotifications = () => {
     const { registerNotification } = this.props.actions.notifications;
     this.notificationsConfig.forEach((notificationConfig: NotificationConfig) =>
       registerNotification.trigger(notificationConfig)
     );
   };
-
-  getIcon = (icon?: string = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
-
-  getLabel = (id: string, labelValues?: ?Object) => {
+  getIcon = (icon: string = 'success') => (icon ? ICONS[`${icon}Icon`] : icon);
+  getLabel = (
+    id: string,
+    labelValues?: Record<string, any> | null | undefined
+  ) => {
     const values = typeof labelValues === 'object' ? labelValues : {};
     return <FormattedHTMLMessage {...messages[id]} values={values} />;
   };
@@ -210,7 +207,11 @@ class NotificationsContainer extends Component<InjectedProps> {
             <Notification
               key={id}
               {...data}
-              onClose={() => closeNotification.trigger({ id })}
+              onClose={() =>
+                closeNotification.trigger({
+                  id,
+                })
+              }
               icon={this.getIcon(icon)}
               isVisible={isVisible}
               hasSpinner={hasSpinner}
@@ -225,4 +226,4 @@ class NotificationsContainer extends Component<InjectedProps> {
   }
 }
 
-export default NotificationsContainer
+export default NotificationsContainer;

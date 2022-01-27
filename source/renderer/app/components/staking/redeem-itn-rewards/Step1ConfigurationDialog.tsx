@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -33,7 +32,6 @@ import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoCon
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.step1.title',
@@ -128,19 +126,18 @@ const messages = defineMessages({
       'Error message shown when invalid recovery phrase was entered.',
   },
 });
-
 type Props = {
-  error?: ?LocalizableError,
-  isCalculatingReedemFees: boolean,
-  mnemonicValidator: Function,
-  onClose: Function,
-  onContinue: Function,
-  onSelectWallet: Function,
-  openExternalLink: Function,
-  wallet: ?Wallet,
-  suggestedMnemonics: Array<string>,
-  recoveryPhrase?: ?Array<string>,
-  wallets: Array<Wallet>,
+  error?: LocalizableError | null | undefined;
+  isCalculatingReedemFees: boolean;
+  mnemonicValidator: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  openExternalLink: (...args: Array<any>) => any;
+  wallet: Wallet | null | undefined;
+  suggestedMnemonics: Array<string>;
+  recoveryPhrase?: Array<string> | null | undefined;
+  wallets: Array<Wallet>;
 };
 
 @observer
@@ -148,14 +145,11 @@ class Step1ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     error: null,
     recoveryPhrase: [],
   };
-
   recoveryPhraseAutocomplete: Autocomplete;
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -190,14 +184,15 @@ class Step1ConfigurationDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: () => this.props.onContinue(),
@@ -238,11 +233,9 @@ class Step1ConfigurationDialog extends Component<Props> {
       recoveryPhrase,
       error,
     } = this.props;
-
     const calculatedMinRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
-
     let errorMessage;
     if (
       !isCalculatingReedemFees &&
@@ -252,7 +245,6 @@ class Step1ConfigurationDialog extends Component<Props> {
       errorMessage = (
         <p className={styles.error}>{intl.formatMessage(error)}</p>
       );
-
     if (
       !isCalculatingReedemFees &&
       error &&
@@ -262,29 +254,26 @@ class Step1ConfigurationDialog extends Component<Props> {
         <p className={styles.errorMessage}>
           <FormattedHTMLMessage
             {...error}
-            values={{ calculatedMinRewardsReceiverBalance }}
+            values={{
+              calculatedMinRewardsReceiverBalance,
+            }}
           />
         </p>
       );
-
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-
     const validRecoveryPhase = recoveryPhraseField.isValid;
-
     const buttonClasses = classnames([
       'primary',
       isCalculatingReedemFees ? styles.isSubmitting : null,
     ]);
-
     const walletsDropdownClasses = classnames([
       styles.walletsDropdown,
       !validRecoveryPhase ? styles.disabled : null,
     ]);
-
     const actions = {
       direction: 'column',
       items: [
@@ -305,7 +294,6 @@ class Step1ConfigurationDialog extends Component<Props> {
         },
       ],
     };
-
     const itnLink = (
       <Link
         className={styles.itnLink}
@@ -318,7 +306,6 @@ class Step1ConfigurationDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -326,7 +313,6 @@ class Step1ConfigurationDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -403,4 +389,4 @@ class Step1ConfigurationDialog extends Component<Props> {
   }
 }
 
-export default Step1ConfigurationDialog
+export default Step1ConfigurationDialog;

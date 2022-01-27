@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -9,7 +8,6 @@ import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../conf
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsConfirm.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
-
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.confirm.step.description',
@@ -67,17 +65,18 @@ const messages = defineMessages({
       'Label for number of confirmations on the voting registration "confirm" step.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  isTransactionPending: boolean,
-  isTransactionConfirmed: boolean,
-  transactionConfirmations: number,
-  transactionError: ?boolean | ?LocalizableError,
-  onConfirm: Function,
-  onRestart: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  isTransactionPending: boolean;
+  isTransactionConfirmed: boolean;
+  transactionConfirmations: number;
+  transactionError:
+    | (boolean | null | undefined)
+    | (LocalizableError | null | undefined);
+  onConfirm: (...args: Array<any>) => any;
+  onRestart: (...args: Array<any>) => any;
 };
 
 @observer
@@ -99,16 +98,13 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
       transactionError,
       onClose,
     } = this.props;
-
     const description = intl.formatMessage(messages.description);
     const descriptionRestart = (
       <FormattedHTMLMessage {...messages.descriptionRestart} />
     );
     const errorMessage = intl.formatMessage(messages.errorMessage);
-
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
-
     const actions = [
       transactionError
         ? {
@@ -124,7 +120,6 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
             primary: true,
           },
     ];
-
     let progressBarLeftLabelMessage;
     if (isTransactionConfirmed)
       progressBarLeftLabelMessage = messages.transactionConfirmedLabel;
@@ -134,7 +129,6 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
     const progressBarLeftLabel = intl.formatMessage(
       progressBarLeftLabelMessage
     );
-
     const progressBarRightLabel = isTransactionPending
       ? ''
       : intl.formatMessage(messages.confirmationsCountLabel, {
@@ -144,11 +138,9 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
           ),
           expectedCount: VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
         });
-
     const progress =
       (transactionConfirmations * 100) /
       VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS;
-
     return (
       <VotingRegistrationDialog
         onClose={() => {
@@ -190,4 +182,4 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsConfirm
+export default VotingRegistrationStepsConfirm;

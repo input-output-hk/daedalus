@@ -1,11 +1,8 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { boolean } from '@storybook/addon-knobs';
-
 // Screens
 import WalletAdd from '../../../../source/renderer/app/components/wallet/WalletAdd';
-
 const wrapperStyles = {
   alignItems: 'center',
   backgroundColor: 'var(--theme-main-body-background-color)',
@@ -14,9 +11,9 @@ const wrapperStyles = {
   height: '100%',
   justifyContent: 'center',
 };
+
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Add Wallet', module)
-  // ====== Stories ======
+storiesOf('Wallets|Add Wallet', module) // ====== Stories ======
   .add('Add', () => (
     <div style={wrapperStyles}>
       <WalletAdd

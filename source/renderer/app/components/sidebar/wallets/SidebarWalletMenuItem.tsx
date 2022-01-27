@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -12,22 +11,21 @@ import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import { DiscreetWalletAmount } from '../../../features/discreet-mode';
-
 type Props = {
-  title: string,
-  amount: number,
-  active: boolean,
-  className: string,
-  onClick: Function,
-  isRestoreActive?: boolean,
-  isShelleyActivated: boolean,
-  restoreProgress?: number,
-  isLegacy: boolean,
-  isNotResponding: boolean,
-  hasNotification: boolean,
-  isHardwareWalletDisconnected?: boolean,
-  isHardwareWallet: boolean,
-  searchValue: string,
+  title: string;
+  amount: number;
+  active: boolean;
+  className: string;
+  onClick: (...args: Array<any>) => any;
+  isRestoreActive?: boolean;
+  isShelleyActivated: boolean;
+  restoreProgress?: number;
+  isLegacy: boolean;
+  isNotResponding: boolean;
+  hasNotification: boolean;
+  isHardwareWalletDisconnected?: boolean;
+  isHardwareWallet: boolean;
+  searchValue: string;
 };
 
 @observer
@@ -49,9 +47,7 @@ class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWallet,
       searchValue,
     } = this.props;
-
     const showLegacyBadge = isLegacy && isShelleyActivated;
-
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
@@ -60,7 +56,6 @@ class SidebarWalletMenuItem extends Component<Props> {
       hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
     ]);
-
     const hwIconStyles = classNames([
       styles.hardwareWalletsIcon,
       isHardwareWallet &&
@@ -69,12 +64,10 @@ class SidebarWalletMenuItem extends Component<Props> {
         ? styles.disconnected
         : styles.connected,
     ]);
-
     const chunks = highlightWords({
       text: title,
       query: `/(${searchValue.split('').join('|')})/i`,
     });
-
     return (
       <button
         className={componentStyles}
@@ -116,4 +109,4 @@ class SidebarWalletMenuItem extends Component<Props> {
   }
 }
 
-export default SidebarWalletMenuItem
+export default SidebarWalletMenuItem;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AlertsOverlay from '../../components/news/AlertsOverlay';
@@ -8,7 +7,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class NewsOverlayContainer extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { stores } = this.props;
@@ -25,8 +27,8 @@ class NewsOverlayContainer extends Component<InjectedProps> {
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
     const { currentDateFormat } = profile;
-
     const alertToOpen = [];
+
     if (openedAlert) {
       alertToOpen.push(openedAlert);
     }
@@ -52,6 +54,7 @@ class NewsOverlayContainer extends Component<InjectedProps> {
           currentDateFormat={currentDateFormat}
         />
       );
+
     if (alertToOpen.length > 0) {
       return (
         <AlertsOverlay
@@ -66,8 +69,9 @@ class NewsOverlayContainer extends Component<InjectedProps> {
         />
       );
     }
+
     return null;
   }
 }
 
-export default NewsOverlayContainer
+export default NewsOverlayContainer;

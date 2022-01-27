@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable } from 'mobx';
@@ -8,6 +7,7 @@ import StakingChartTooltip from '../../../source/renderer/app/components/staking
 
 const generateRandomSlots = (count: number) => {
   const slots = [];
+
   for (let i = 0; i < count; i += 1) {
     const numberOfTransactions =
       i < count / 2 ? Math.floor(Math.random() * 50) : 0;
@@ -22,16 +22,18 @@ const generateRandomSlots = (count: number) => {
       time: new Date(),
     });
   }
+
   return slots;
 };
 
 storiesOf('StakingChart', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-
-  // ====== Stories ======
-
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Tooltip only', () => (
-    <div style={{ padding: '50px' }}>
+    <div
+      style={{
+        padding: '50px',
+      }}
+    >
       <StakingChartTooltip
         slot={2848104}
         shares="CC"
@@ -44,7 +46,6 @@ storiesOf('StakingChart', module)
       />
     </div>
   ))
-
   .add('Chart with Tooltips', () => {
     const options = observable({
       data: generateRandomSlots(30),

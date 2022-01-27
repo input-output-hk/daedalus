@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
@@ -7,7 +6,6 @@ import StoryDecorator from '../../../../../../../storybook/stories/_support/Stor
 import StoryProvider from '../../../../../../../storybook/stories/_support/StoryProvider';
 import { generateHash } from '../../../../../../../storybook/stories/_support/utils';
 import WalletTokenPicker from './WalletTokenPicker';
-
 const assets = [
   {
     policyId: generateHash(),
@@ -57,7 +55,6 @@ const assets = [
     uniqueId: generateHash(),
   },
 ];
-
 storiesOf('Wallets|Tokens', module)
   .addDecorator((story) => (
     <StoryProvider>
@@ -69,7 +66,9 @@ storiesOf('Wallets|Tokens', module)
     <WalletTokenPicker
       assets={assets}
       walletName="My Wallet"
-      tokenFavorites={{ [assets[0].uniqueId]: true }}
+      tokenFavorites={{
+        [assets[0].uniqueId]: true,
+      }}
       onAdd={() => {}}
       onCancel={() => {}}
     />

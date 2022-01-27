@@ -1,7 +1,5 @@
-// @flow
-
 export type ReactIntlMessageShape = {
-  id: string,
-  defaultMessage: string,
-  values?: Object,
+  id: string;
+  defaultMessage: string;
+  values?: Record<string, any>;
 };

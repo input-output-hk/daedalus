@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -14,12 +13,10 @@ import {
   TransactionTypes,
   TransactionStates,
 } from '../../../domains/WalletTransaction';
-
 type Props = {
-  exceedsPendingTimeLimit: boolean,
-  iconType: string,
+  exceedsPendingTimeLimit: boolean;
+  iconType: string;
 };
-
 export default class TransactionTypeIcon extends Component<Props> {
   applyIconStyles = (iconType: string): string => {
     if (iconType !== TransactionStates.PENDING) {
@@ -29,16 +26,16 @@ export default class TransactionTypeIcon extends Component<Props> {
     if (!this.props.exceedsPendingTimeLimit) {
       return `${iconType}_regular`;
     }
+
     return `${iconType}_warning`;
   };
-
   renderPendingIcon = () => {
     if (!this.props.exceedsPendingTimeLimit) {
       return this.renderPendingRegularIcon();
     }
+
     return this.renderPendingWarningIcon();
   };
-
   renderPendingRegularIcon = () => (
     <div className={styles.pendingTxnIconWrapper}>
       <LoadingSpinner
@@ -47,7 +44,6 @@ export default class TransactionTypeIcon extends Component<Props> {
       />
     </div>
   );
-
   renderPendingWarningIcon = () => (
     <div className={styles.pendingTxnIconWrapper}>
       <LoadingSpinner
@@ -57,15 +53,14 @@ export default class TransactionTypeIcon extends Component<Props> {
       <SVGInline svg={pendingIcon} className={styles.pendingTxnIcon} />
     </div>
   );
-
   renderFailedIcon = () => {
     return (
       <SVGInline svg={pendingIcon} className={styles.transactionTypeIcon} />
     );
   };
-
   renderIcon = (icon: string) => {
     let iconType;
+
     if (this.props.iconType === TransactionStates.PENDING) {
       iconType = this.renderPendingIcon();
     } else if (this.props.iconType === TransactionStates.FAILED) {
@@ -75,28 +70,31 @@ export default class TransactionTypeIcon extends Component<Props> {
         <SVGInline svg={icon} className={styles.transactionTypeIcon} />
       );
     }
+
     return iconType;
   };
 
   render() {
     const { iconType } = this.props;
-
     const transactionTypeIconClasses = classNames([
       styles.transactionTypeIconWrapper,
       styles[this.applyIconStyles(iconType)],
     ]);
-
     let icon;
+
     switch (iconType) {
       case TransactionTypes.EXPEND:
         icon = expendIcon;
         break;
+
       case TransactionTypes.INCOME:
         icon = incomeIcon;
         break;
+
       case TransactionTypes.EXCHANGE:
         icon = exchangeIcon;
         break;
+
       default:
         icon = '';
         break;

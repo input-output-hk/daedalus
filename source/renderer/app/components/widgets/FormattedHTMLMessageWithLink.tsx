@@ -1,22 +1,17 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { intlShape } from 'react-intl';
 import type { ReactIntlMessageShape } from '../../i18n/types';
-
-type ReactIntlMessageShapeWithLink = {
-  ...ReactIntlMessageShape,
+type ReactIntlMessageShapeWithLink = ReactIntlMessageShape & {
   values: {
-    linkPosition?: string,
-    linkLabel: string,
-    linkURL: string,
-  },
+    linkPosition?: string;
+    linkLabel: string;
+    linkURL: string;
+  };
 };
-
 type Props = {
-  message: ReactIntlMessageShapeWithLink,
-  onExternalLinkClick: Function,
+  message: ReactIntlMessageShapeWithLink;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
-
 export class FormattedHTMLMessageWithLink extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -26,7 +21,6 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
     const { intl } = this.context;
     const { message, onExternalLinkClick } = this.props;
     const { linkPosition, linkLabel, linkURL } = message.values;
-
     const MainMessage = (
       <Fragment key="mainMessage">
         &nbsp;{intl.formatMessage(message)}&nbsp;
@@ -40,7 +34,6 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
         </a>
       </Fragment>
     );
-
     return linkPosition === 'before'
       ? [Link, MainMessage]
       : [MainMessage, Link];

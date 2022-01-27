@@ -1,20 +1,23 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import type { AssetToken } from '../../api/assets/types';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class AssetSettingsDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSubmit = (asset: AssetToken, decimals: number) => {
     const { onAssetSettingsSubmit } = this.props.actions.assets;
-    onAssetSettingsSubmit.trigger({ asset, decimals });
+    onAssetSettingsSubmit.trigger({
+      asset,
+      decimals,
+    });
   };
 
   render() {
@@ -33,4 +36,4 @@ class AssetSettingsDialogContainer extends Component<Props> {
   }
 }
 
-export default AssetSettingsDialogContainer
+export default AssetSettingsDialogContainer;

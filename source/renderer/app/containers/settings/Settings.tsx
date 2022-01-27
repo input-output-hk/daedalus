@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { intlShape } from 'react-intl';
@@ -14,14 +13,17 @@ class Settings extends Component<InjectedContainerProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   isActivePage = (route: string) => {
     const { location } = this.props.stores.router;
+
     if (location) {
       return location.pathname === buildRoute(route);
     }
+
     return false;
   };
 
@@ -32,13 +34,16 @@ class Settings extends Component<InjectedContainerProps> {
     const { isSynced } = networkStatus;
     const { currentRoute } = app;
     const { location } = router;
-
     const menu = (
       <SettingsMenu
         isSyncing={!isSynced}
         isFlight={isFlight}
         currentRoute={currentRoute}
-        onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
+        onItemClick={(route) =>
+          actions.router.goToRoute.trigger({
+            route,
+          })
+        }
         isActiveItem={this.isActivePage}
       />
     );
@@ -52,4 +57,4 @@ class Settings extends Component<InjectedContainerProps> {
   }
 }
 
-export default Settings
+export default Settings;

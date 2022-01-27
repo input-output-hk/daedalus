@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { noop } from 'lodash/fp';
@@ -9,7 +8,6 @@ import { observer } from 'mobx-react';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
 import styles from './WalletSearch.scss';
-
 const messages = defineMessages({
   placeholder: {
     id: 'sidebar.wallets.search.placeholder',
@@ -17,11 +15,10 @@ const messages = defineMessages({
     description: 'Search placeholder for the sidebar wallet menu',
   },
 });
-
 type Props = {
-  intl: intlShape.isRequired,
-  onSearch?: Function,
-  searchValue?: string,
+  intl: intlShape.isRequired;
+  onSearch?: (...args: Array<any>) => any;
+  searchValue?: string;
 };
 
 const WalletSearchComponent = ({

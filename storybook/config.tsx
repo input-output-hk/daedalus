@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { configure, addDecorator } from '@storybook/react';
 import timemachine from 'timemachine';
@@ -14,7 +13,6 @@ function loadStories() {
 }
 
 configure(loadStories, module);
-
 timemachine.config({
   dateString: 'Sat, 01 Jan 2022 10:00:00 GMT',
 });

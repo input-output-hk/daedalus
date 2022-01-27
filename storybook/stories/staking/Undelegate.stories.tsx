@@ -1,10 +1,8 @@
-// @flow
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
 import { number, boolean } from '@storybook/addon-knobs';
-
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import {
   generateHash,
@@ -14,7 +12,6 @@ import {
 // Screens
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
-
 const assets = {
   available: [
     {
@@ -49,7 +46,6 @@ const assets = {
     },
   ],
 };
-
 const generalWallet = generateWallet(
   'Wallet 1',
   '1000000000',
@@ -67,10 +63,9 @@ const hardwareWallet = generateWallet(
   'ready',
   true
 );
-
 export const StakingUndelegateConfirmationStory = (props: {
-  unknownStakePool?: boolean,
-  isHardwareWallet?: boolean,
+  unknownStakePool?: boolean;
+  isHardwareWallet?: boolean;
 }) => (
   <UndelegateWalletConfirmationDialog
     selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
@@ -93,11 +88,10 @@ export const StakingUndelegateConfirmationStory = (props: {
     isTrezor={boolean('isTrezor', false)}
   />
 );
-
 export const StakingUndelegateConfirmationResultStory = ({
   locale,
 }: {
-  locale: string,
+  locale: string;
 }) => (
   <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"

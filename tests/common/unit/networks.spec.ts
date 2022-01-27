@@ -1,5 +1,4 @@
-import { getNetworkExplorerUri } from '../../../source/renderer/app/utils/network';
-
+import { getNetworkExplorerUri } from "../../../source/renderer/app/utils/network";
 describe('Function getNetworkExplorerUri returns:', () => {
   it('the correct Url for TESTNET', () => {
     // getNetworkExplorerUri
@@ -17,7 +16,6 @@ describe('Function getNetworkExplorerUri returns:', () => {
     expect(result).toBe('explorer.staging.cardano.org');
   });
 });
-
 describe('Function getNetworkExplorerUri passing no arguments', () => {
   it('should return MAINNET_EXPLORER_URL', () => {
     // getNetworkExplorerUri

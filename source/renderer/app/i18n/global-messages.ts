@@ -1,6 +1,4 @@
-// @flow
 import { defineMessages } from 'react-intl';
-
 export default defineMessages({
   adaName: {
     id: 'global.ada.name',

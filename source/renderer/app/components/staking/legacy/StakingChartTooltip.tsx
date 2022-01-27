@@ -1,13 +1,10 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import StakingChartTooltipItem from './StakingChartTooltipItem';
 import styles from './StakingChartTooltip.scss';
-
 const dateFormat = 'YYYY-MM-DD-HH:mm';
-
 const messages = defineMessages({
   slot: {
     id: 'staking.chart.tooltip.slot.label',
@@ -40,16 +37,15 @@ const messages = defineMessages({
     description: '"shares" label on staking chart tooltip.',
   },
 });
-
 type Props = {
-  slot: number,
-  time: Date,
-  hash: string,
-  numberOfTransactions: number,
-  mpcPhase: string,
-  commitments: string,
-  openings: string,
-  shares: string,
+  slot: number;
+  time: Date;
+  hash: string;
+  numberOfTransactions: number;
+  mpcPhase: string;
+  commitments: string;
+  openings: string;
+  shares: string;
 };
 
 @observer
@@ -107,4 +103,4 @@ class StakingChartTooltip extends Component<Props> {
   }
 }
 
-export default StakingChartTooltip
+export default StakingChartTooltip;

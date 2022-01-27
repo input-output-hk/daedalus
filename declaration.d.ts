@@ -9,18 +9,18 @@ declare module '*.scss' {
 }
 
 type Daedalus = {
-    actions: ActionsMap,
-    api: Api,
-    environment: Object,
-    reset: Function,
-    stores: StoresMap,
-    translations: Object,
-    utils: {
-      crypto: {
-        generateMnemonic: Function
-      }
-    },
+  actions: ActionsMap;
+  api: Api;
+  environment: Object;
+  reset: Function;
+  stores: StoresMap;
+  translations: Object;
+  utils: {
+    crypto: {
+      generateMnemonic: Function;
+    };
   };
+};
 
 export type $ElementType<
   T extends { [P in K & any]: any },
@@ -43,4 +43,3 @@ declare global {
 }
 
 export {};
-

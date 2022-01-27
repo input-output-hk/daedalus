@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { Provider, observer } from 'mobx-react';
@@ -7,18 +6,16 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
-import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet.js';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 import {
   DiscreetModeFeatureProvider,
   BrowserLocalStorageBridge,
 } from '../../../source/renderer/app/features';
 import { DiscreetModeToggleKnob } from './DiscreetModeToggleKnob';
 import { DiscreetModeNotificationKnob } from './DiscreetModeNotificationKnob';
-
 type Props = {
-  children: Node,
+  children: Node;
 };
-
 export const WALLETS = [
   {
     id: '0',
@@ -27,7 +24,9 @@ export const WALLETS = [
     reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment().subtract(1, 'month').toDate(),
-    syncState: { status: WalletSyncStateStatuses.READY },
+    syncState: {
+      status: WalletSyncStateStatuses.READY,
+    },
     isNotResponding: false,
     isRestoring: false,
     isLegacy: false,
@@ -41,7 +40,9 @@ export const WALLETS = [
     reward: new BigNumber(0),
     hasPassword: false,
     passwordUpdateDate: new Date(),
-    syncState: { status: WalletSyncStateStatuses.READY },
+    syncState: {
+      status: WalletSyncStateStatuses.READY,
+    },
     isNotResponding: false,
     isRestoring: false,
     isLegacy: false,
@@ -55,7 +56,9 @@ export const WALLETS = [
     reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment().subtract(1, 'month').toDate(),
-    syncState: { status: WalletSyncStateStatuses.READY },
+    syncState: {
+      status: WalletSyncStateStatuses.READY,
+    },
     isNotResponding: false,
     isRestoring: false,
     isLegacy: true,
@@ -69,7 +72,9 @@ export const WALLETS = [
     reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment().subtract(1, 'month').toDate(),
-    syncState: { status: WalletSyncStateStatuses.READY },
+    syncState: {
+      status: WalletSyncStateStatuses.READY,
+    },
     isNotResponding: false,
     isRestoring: false,
     isLegacy: true,
@@ -101,7 +106,9 @@ export const WALLETS = [
     reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment().subtract(1, 'month').toDate(),
-    syncState: { status: WalletSyncStateStatuses.NOT_RESPONDING },
+    syncState: {
+      status: WalletSyncStateStatuses.NOT_RESPONDING,
+    },
     isNotResponding: true,
     isRestoring: false,
     isLegacy: false,
@@ -109,7 +116,6 @@ export const WALLETS = [
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
 ];
-
 export const WALLETS_V2 = [
   {
     id: '1',
@@ -149,9 +155,11 @@ export const WALLETS_V2 = [
 
 @observer
 class StoryProvider extends Component<Props> {
-  @observable activeWalletId = '0';
+  @observable
+  activeWalletId = '0';
 
-  @computed get storiesProps(): {} {
+  @computed
+  get storiesProps(): {} {
     return {
       wallets: WALLETS,
       activeWalletId: this.activeWalletId,
@@ -159,7 +167,8 @@ class StoryProvider extends Component<Props> {
     };
   }
 
-  @computed get stores(): {} {
+  @computed
+  get stores(): {} {
     return {
       wallets: {
         active: WALLETS[parseInt(this.activeWalletId, 10)],
@@ -198,4 +207,4 @@ class StoryProvider extends Component<Props> {
   }
 }
 
-export default StoryProvider
+export default StoryProvider;

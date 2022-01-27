@@ -1,4 +1,3 @@
-// @flow
 import { app } from 'electron';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
@@ -27,27 +26,26 @@ import type {
   DownloadDataUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
-
 export const downloads = {};
-
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
-
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories
 ) => {
   const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
+
   switch (directoryName) {
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
+
     case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
       return app.getPath('downloads');
+
     default:
       if (!fs.existsSync(downloadsDirectory)) fs.mkdirSync(downloadsDirectory);
       return downloadsDirectory;
   }
 };
-
 export const getOriginalFilename = ({
   fileUrl,
   options,
@@ -63,7 +61,10 @@ export const getOriginalFilename = ({
 
 const getPath = (
   info: DownloadInfo
-): { temporaryPath: string, newPath: string } => {
+): {
+  temporaryPath: string;
+  newPath: string;
+} => {
   const { destinationPath, temporaryFilename, originalFilename } = info;
   const temporaryPath = `${destinationPath}/${temporaryFilename}`;
   const newPath = `${destinationPath}/${originalFilename}`;
@@ -80,7 +81,7 @@ export const getEventActions = async (
     DownloadRendererRequest,
     DownloadMainResponse
   >
-): Promise<Object> => {
+): Promise<Record<string, any>> => {
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
@@ -99,6 +100,7 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const downloadEvent = async ({
     totalSize,
     downloadedSize: diskFileSize,
@@ -123,6 +125,7 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const progressEvent = async ({
     total,
     downloaded: downloadSize,
@@ -148,16 +151,21 @@ export const getEventActions = async (
       },
       window.webContents
     );
+
     if (progress === 100) {
       // Checks if the file was delete while the download was in progress
       checkNoEndEvent = setTimeout(() => {
         const { temporaryPath, newPath } = getPath(info);
+
         if (!fs.existsSync(temporaryPath) || !fs.existsSync(newPath)) {
-          errorEvent({ message: 'The download file was manually deleted' });
+          errorEvent({
+            message: 'The download file was manually deleted',
+          });
         }
       }, ERROR_TIME_AFTER_NO_END_EVENT);
     }
   };
+
   const endEvent = async ({
     totalSize: downloadSize,
     onDiskSize: diskFileSize,
@@ -188,6 +196,7 @@ export const getEventActions = async (
     const { persistLocalData } = info.options;
     if (!persistLocalData) await localStorage.unset(downloadId);
   };
+
   const pauseEvent = async () => {
     logger.info('DownloadManager:pauseEvent.');
     const newState: DownloadDataUpdate = {
@@ -203,8 +212,11 @@ export const getEventActions = async (
       window.webContents
     );
   };
+
   const errorEvent = async ({ message }: DownloadInfoError) => {
-    logger.error('DownloadManager:errorEvent', { error: message });
+    logger.error('DownloadManager:errorEvent', {
+      error: message,
+    });
     const rawData: DownloadDataUpdate = {
       ...{
         message,

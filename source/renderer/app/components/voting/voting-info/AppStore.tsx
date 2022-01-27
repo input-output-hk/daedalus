@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -8,11 +7,10 @@ import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-s
 import type { Intl } from '../../../types/i18nTypes';
 import styles from './AppStore.scss';
 import { messages } from './AppStore.messages';
-
 type Props = {
-  onAppleStoreLinkClick: Function,
-  onAndroidStoreLinkClick: Function,
-  intl: Intl,
+  onAppleStoreLinkClick: (...args: Array<any>) => any;
+  onAndroidStoreLinkClick: (...args: Array<any>) => any;
+  intl: Intl;
 };
 
 function AppStore({
@@ -22,7 +20,6 @@ function AppStore({
 }: Props) {
   const appleAppButtonUrl = intl.formatMessage(messages.appleAppButtonUrl);
   const androidAppButtonUrl = intl.formatMessage(messages.androidAppButtonUrl);
-
   return (
     <div className={styles.component}>
       <div className={styles.appStoreItem}>

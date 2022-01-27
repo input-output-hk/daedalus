@@ -1,18 +1,16 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import styles from './SettingsLayout.scss';
-
 type Props = {
-  children: Node,
-  menu: Node,
-  activePage: string,
+  children: Node;
+  menu: Node;
+  activePage: string;
 };
 
 @observer
 class SettingsLayout extends Component<Props> {
-  scrollableDomElement: ?HTMLElement = null;
+  scrollableDomElement: HTMLElement | null | undefined = null;
 
   componentDidMount() {
     this.scrollableDomElement = document.querySelector(
@@ -22,6 +20,7 @@ class SettingsLayout extends Component<Props> {
 
   componentDidUpdate(prevProps: Props) {
     const didActivePageChange = this.props.activePage !== prevProps.activePage;
+
     if (
       this.scrollableDomElement instanceof HTMLElement &&
       didActivePageChange
@@ -43,4 +42,4 @@ class SettingsLayout extends Component<Props> {
   }
 }
 
-export default SettingsLayout
+export default SettingsLayout;

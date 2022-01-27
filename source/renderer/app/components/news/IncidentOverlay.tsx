@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
@@ -9,12 +8,11 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './IncidentOverlay.scss';
-
 type Props = {
-  incident: News.News,
-  onOpenExternalLink: Function,
-  onProceedNewsAction: Function,
-  currentDateFormat: string,
+  incident: News.News;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onProceedNewsAction: (...args: Array<any>) => any;
+  currentDateFormat: string;
 };
 
 @observer
@@ -25,20 +23,20 @@ class IncidentOverlay extends Component<Props> {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
-  contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
+  contentClickHandler(event: React.MouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
+
     if (linkUrl) {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
     }
   }
 
-  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+  onProceedNewsAction = (event: React.MouseEvent<HTMLElement>) => {
     const { incident, onProceedNewsAction } = this.props;
     onProceedNewsAction(incident, event);
   };
-
-  renderAction = (action: Object) => {
+  renderAction = (action: Record<string, any>) => {
     if (action && (action.url || action.event)) {
       return (
         <ButtonLink
@@ -54,6 +52,7 @@ class IncidentOverlay extends Component<Props> {
         />
       );
     }
+
     return null;
   };
 
@@ -83,4 +82,4 @@ class IncidentOverlay extends Component<Props> {
   }
 }
 
-export default IncidentOverlay
+export default IncidentOverlay;

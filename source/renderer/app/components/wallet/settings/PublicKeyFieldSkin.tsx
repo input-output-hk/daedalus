@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import type { ElementRef } from 'react';
 import classnames from 'classnames';
@@ -11,16 +10,14 @@ import type { InputProps } from 'react-polymorph/lib/components/Input';
 import { pickDOMProps } from 'react-polymorph/lib/utils/props';
 import copyImage from '../../../assets/images/copy.inline.svg';
 import styles from './PublicKeyField.scss';
-
 type Props = InputProps & {
-  inputRef: ElementRef<'input'>,
-  theme: Object,
-  themeId: string,
-  tooltip: Node,
-  valueVisible: boolean,
-  onCopyValue: Function,
+  inputRef: ElementRef<'input'>;
+  theme: Record<string, any>;
+  themeId: string;
+  tooltip: Node;
+  valueVisible: boolean;
+  onCopyValue: (...args: Array<any>) => any;
 };
-
 export default (props: Props) => {
   const renderInput = () => (
     <input
@@ -38,13 +35,16 @@ export default (props: Props) => {
         if (props.onFocus) {
           props.onFocus();
         }
+
         if (props.inputRef && props.inputRef.current) {
           props.inputRef.current.select();
         }
+
         props.onCopyValue();
       }}
     />
   );
+
   const render = () =>
     props.valueVisible ? (
       <PopOver content={props.tooltip}>
@@ -56,6 +56,7 @@ export default (props: Props) => {
               if (props.inputRef && props.inputRef.current) {
                 props.inputRef.current.select();
               }
+
               props.onCopyValue();
             }}
           >

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
@@ -19,7 +18,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.step2.title',
@@ -66,15 +64,14 @@ const messages = defineMessages({
       'Label for the back button in the wallet send confirmation dialog.',
   },
 });
-
 type Props = {
-  wallet: Wallet,
-  transactionFees: BigNumber,
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  isSubmitting: boolean,
-  error?: ?LocalizableError,
+  wallet: Wallet;
+  transactionFees: BigNumber;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
@@ -82,11 +79,9 @@ class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     error: null,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -118,24 +113,26 @@ class Step2ConfirmationDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
         const { onContinue } = this.props;
-        onContinue({ spendingPassword });
+        onContinue({
+          spendingPassword,
+        });
       },
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -150,9 +147,7 @@ class Step2ConfirmationDialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
-
     const { amount } = wallet || {};
-
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
@@ -162,11 +157,8 @@ class Step2ConfirmationDialog extends Component<Props> {
     )
       ? amount
       : transactionFees;
-
     const { name: walletName } = wallet;
-
     const spendingPasswordField = form.$('spendingPassword');
-
     const actions = {
       direction: 'column',
       items: [
@@ -185,7 +177,6 @@ class Step2ConfirmationDialog extends Component<Props> {
         },
       ],
     };
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -193,7 +184,6 @@ class Step2ConfirmationDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -239,4 +229,4 @@ class Step2ConfirmationDialog extends Component<Props> {
   }
 }
 
-export default Step2ConfirmationDialog
+export default Step2ConfirmationDialog;

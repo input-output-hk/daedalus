@@ -1,10 +1,9 @@
-// @flow
 export type MenuActions = {
-  toggleBlankScreenFix: Function,
-  setRtsFlags: Function,
-  openAboutDialog: Function,
-  openDaedalusDiagnosticsDialog: Function,
-  openItnRewardsRedemptionDialog: Function,
-  openSettingsPage: Function,
-  openWalletSettingsPage: Function,
+  toggleBlankScreenFix: (...args: Array<any>) => any;
+  setRtsFlags: (...args: Array<any>) => any;
+  openAboutDialog: (...args: Array<any>) => any;
+  openDaedalusDiagnosticsDialog: (...args: Array<any>) => any;
+  openItnRewardsRedemptionDialog: (...args: Array<any>) => any;
+  openSettingsPage: (...args: Array<any>) => any;
+  openWalletSettingsPage: (...args: Array<any>) => any;
 };

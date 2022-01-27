@@ -1,7 +1,4 @@
-// @flow
-
 export type WalletExportTypeChoices = 'full' | 'readOnly' | 'paperWallet';
-
 export type WalletImportStatus =
   | 'unstarted'
   | 'pending'
@@ -9,14 +6,13 @@ export type WalletImportStatus =
   | 'completed'
   | 'exists'
   | 'errored';
-
 export const WalletImportStatuses: {
-  UNSTARTED: WalletImportStatus,
-  PENDING: WalletImportStatus,
-  RUNNING: WalletImportStatus,
-  COMPLETED: WalletImportStatus,
-  EXISTS: WalletImportStatus,
-  ERRORED: WalletImportStatus,
+  UNSTARTED: WalletImportStatus;
+  PENDING: WalletImportStatus;
+  RUNNING: WalletImportStatus;
+  COMPLETED: WalletImportStatus;
+  EXISTS: WalletImportStatus;
+  ERRORED: WalletImportStatus;
 } = {
   UNSTARTED: 'unstarted',
   PENDING: 'pending',
@@ -25,29 +21,25 @@ export const WalletImportStatuses: {
   EXISTS: 'exists',
   ERRORED: 'errored',
 };
-
 export type ExportedByronWallet = {
   // Export tool wallet props
-  encrypted_root_private_key: string,
-  name: ?string,
-  id: string,
-  passphrase_hash: string,
-  isEmptyPassphrase: boolean,
-
+  encrypted_root_private_key: string;
+  name: string | null | undefined;
+  id: string;
+  passphrase_hash: string;
+  isEmptyPassphrase: boolean;
   // Daedalus derived wallet props
-  hasName: boolean,
+  hasName: boolean;
   import: {
-    status: WalletImportStatus,
-    error: string,
-  },
-  index: number,
+    status: WalletImportStatus;
+    error: string;
+  };
+  index: number;
 };
-
 export type ImportFromOption = 'stateDir' | 'secretFile';
-
 export const ImportFromOptions: {
-  STATE_DIR: ImportFromOption,
-  SECRET_FILE: ImportFromOption,
+  STATE_DIR: ImportFromOption;
+  SECRET_FILE: ImportFromOption;
 } = {
   STATE_DIR: 'stateDir',
   SECRET_FILE: 'secretFile',

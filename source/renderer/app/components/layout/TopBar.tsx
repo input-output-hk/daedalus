@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
@@ -11,17 +10,16 @@ import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
-
 type Props = {
-  onLeftIconClick?: ?Function,
-  leftIcon?: ?string,
-  children?: ?Node,
-  activeWallet?: ?Wallet,
-  onTransferFunds?: Function,
-  onWalletAdd?: Function,
-  hasRewardsWallets?: boolean,
-  onLearnMore?: Function,
-  isShelleyActivated: boolean,
+  onLeftIconClick?: ((...args: Array<any>) => any) | null | undefined;
+  leftIcon?: string | null | undefined;
+  children?: Node | null | undefined;
+  activeWallet?: Wallet | null | undefined;
+  onTransferFunds?: (...args: Array<any>) => any;
+  onWalletAdd?: (...args: Array<any>) => any;
+  hasRewardsWallets?: boolean;
+  onLearnMore?: (...args: Array<any>) => any;
+  isShelleyActivated: boolean;
 };
 
 @observer
@@ -42,7 +40,6 @@ class TopBar extends Component<Props> {
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
-
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
@@ -50,14 +47,11 @@ class TopBar extends Component<Props> {
       activeWallet.amount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
-
     const onTransferFundsFn =
       onTransferFunds && activeWallet
         ? () => onTransferFunds(activeWallet.id)
         : () => {};
-
     const isRestoreActive = activeWallet ? activeWallet.isRestoring : false;
-
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
         <span className={styles.walletName}>
@@ -78,11 +72,9 @@ class TopBar extends Component<Props> {
         </span>
       </span>
     ) : null;
-
     const leftIconSVG = leftIcon && (
       <SVGInline svg={leftIcon} className={styles.sidebarIcon} />
     );
-
     return (
       <header>
         <div className={topBarStyles}>
@@ -114,4 +106,4 @@ class TopBar extends Component<Props> {
   }
 }
 
-export default TopBar
+export default TopBar;

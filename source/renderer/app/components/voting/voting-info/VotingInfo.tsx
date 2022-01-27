@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -13,16 +12,14 @@ import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
 import { FundPhases } from '../../../stores/VotingStore';
 import type { FundPhase } from '../../../stores/VotingStore';
-
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  fundPhase: FundPhase,
-  onRegisterToVoteClick: Function,
-  onExternalLinkClick: Function,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  fundPhase: FundPhase;
+  onRegisterToVoteClick: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
-
 const phaseToComponentMap = {
   [FundPhases.SNAPSHOT]: SnapshotPhase,
   [FundPhases.VOTING]: VotingPhase,
@@ -39,7 +36,6 @@ const VotingInfo = ({
   onExternalLinkClick,
 }: Props) => {
   const PhaseComponent = phaseToComponentMap[fundPhase || FundPhases.SNAPSHOT];
-
   return (
     <div className={styles.component}>
       <BorderedBox>

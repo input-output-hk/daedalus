@@ -1,6 +1,4 @@
-// @flow
 import { defineMessages } from 'react-intl';
-
 export const messages = defineMessages({
   label: {
     id: 'sidebar.category.settings.notification.label',

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -6,7 +5,6 @@ import SVGInline from 'react-svg-inline';
 import insecureWalletIcon from '../../../assets/images/insecure-wallet.inline.svg';
 import styles from './SetWalletPassword.scss';
 import ChangeSpendingPasswordDialogContainer from '../../../containers/wallet/dialogs/settings/ChangeSpendingPasswordDialogContainer';
-
 const messages = defineMessages({
   setPasswordButton: {
     id: 'wallet.settings.setWalletPassword.dialog.setPasswordButton',
@@ -28,10 +26,9 @@ const messages = defineMessages({
       'Title for the "Set wallet password" dialog when there is not password set.',
   },
 });
-
 type Props = {
-  isSetWalletPasswordDialogOpen: boolean,
-  onSetWalletPassword: Function,
+  isSetWalletPasswordDialogOpen: boolean;
+  onSetWalletPassword: (...args: Array<any>) => any;
 };
 
 @observer
@@ -43,7 +40,6 @@ class SetWalletPassword extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { isSetWalletPasswordDialogOpen, onSetWalletPassword } = this.props;
-
     return (
       <>
         <div className={styles.component}>
@@ -77,4 +73,4 @@ class SetWalletPassword extends Component<Props> {
   }
 }
 
-export default SetWalletPassword
+export default SetWalletPassword;

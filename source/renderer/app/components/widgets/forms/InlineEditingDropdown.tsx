@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
@@ -10,7 +9,6 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
-
 const messages = defineMessages({
   changesSaved: {
     id: 'inline.editing.dropdown.changesSaved',
@@ -19,18 +17,20 @@ const messages = defineMessages({
       'Message "Your changes have been saved" for inline editing (eg. on Wallet Settings page).',
   },
 });
-
 type Props = {
-  className?: string,
-  isActive: boolean,
-  label: string,
-  tooltip?: string | Node,
-  options: Array<{ value: number | string, label: string }>,
-  value: number | string,
-  onSubmit: Function,
-  onStartEditing: Function,
-  onStopEditing: Function,
-  successfullyUpdated: boolean,
+  className?: string;
+  isActive: boolean;
+  label: string;
+  tooltip?: string | Node;
+  options: Array<{
+    value: number | string;
+    label: string;
+  }>;
+  value: number | string;
+  onSubmit: (...args: Array<any>) => any;
+  onStartEditing: (...args: Array<any>) => any;
+  onStopEditing: (...args: Array<any>) => any;
+  successfullyUpdated: boolean;
 };
 
 @observer
@@ -38,7 +38,6 @@ class InlineEditingDropdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   onChange = (value: number | string) => {
     this.props.onStartEditing();
     this.props.onSubmit(value);
@@ -60,7 +59,6 @@ class InlineEditingDropdown extends Component<Props> {
     const dropdownStyles = classnames([
       successfullyUpdated ? 'dropdown_animateSuccess' : null,
     ]);
-
     const labelText = [
       label,
       !!tooltip && (
@@ -72,7 +70,6 @@ class InlineEditingDropdown extends Component<Props> {
         </PopOver>
       ),
     ];
-
     return (
       <div className={componentClasses}>
         <Select
@@ -95,4 +92,4 @@ class InlineEditingDropdown extends Component<Props> {
   }
 }
 
-export default InlineEditingDropdown
+export default InlineEditingDropdown;

@@ -1,13 +1,11 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SyncingConnectingBackground.scss';
-
 type Props = {
-  hasLoadedCurrentTheme: boolean,
-  isConnecting: boolean,
-  isSyncing: boolean,
+  hasLoadedCurrentTheme: boolean;
+  isConnecting: boolean;
+  isSyncing: boolean;
 };
 
 @observer
@@ -24,4 +22,4 @@ class SyncingConnectingBackground extends Component<Props> {
   }
 }
 
-export default SyncingConnectingBackground
+export default SyncingConnectingBackground;

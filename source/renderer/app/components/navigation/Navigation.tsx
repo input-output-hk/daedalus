@@ -1,30 +1,28 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './Navigation.scss';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
-
 export type NavButtonProps = {
-  type?: 'button',
-  id: string,
-  label: string,
-  icon?: string,
-  hasNotification?: boolean,
+  type?: 'button';
+  id: string;
+  label: string;
+  icon?: string;
+  hasNotification?: boolean;
 };
-
-export type NavDropdownProps = {
-  ...$Exact<NavButtonProps>,
-  type: 'dropdown',
-  options: Array<{ value: number | string, label: string }>,
-  hasNotification?: boolean,
+export type NavDropdownProps = NavButtonProps & {
+  type: 'dropdown';
+  options: Array<{
+    value: number | string;
+    label: string;
+  }>;
+  hasNotification?: boolean;
 };
-
 type Props = {
-  activeItem: string,
-  isActiveNavItem?: Function,
-  onNavItemClick: Function,
-  items: Array<NavButtonProps | NavDropdownProps>,
+  activeItem: string;
+  isActiveNavItem?: (...args: Array<any>) => any;
+  onNavItemClick: (...args: Array<any>) => any;
+  items: Array<NavButtonProps | NavDropdownProps>;
 };
 
 @observer
@@ -34,9 +32,11 @@ class Navigation extends Component<Props> {
     item: NavButtonProps | NavDropdownProps | {}
   ) => {
     let result = false;
+
     if (!item) {
       result = id === this.props.activeItem;
     }
+
     return result;
   };
 
@@ -47,7 +47,6 @@ class Navigation extends Component<Props> {
       activeItem,
       items,
     } = this.props;
-
     return (
       <div className={styles.component}>
         {items.map(({ id, icon, label, hasNotification, ...item }) =>
@@ -79,4 +78,4 @@ class Navigation extends Component<Props> {
   }
 }
 
-export default Navigation
+export default Navigation;

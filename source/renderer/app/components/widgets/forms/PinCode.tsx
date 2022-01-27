@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
@@ -7,32 +6,28 @@ import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import styles from './PinCode.scss';
-
-type Props = $Exact<{
-  id: string,
-  name: string,
-  type: string,
-  autoFocus: boolean,
-  onChange?: Function,
-  label: string,
-  length: number,
-  disabled: boolean,
-  value: Array<string>,
-  error: string | null,
-}>;
-
+type Props = {
+  id: string;
+  name: string;
+  type: string;
+  autoFocus: boolean;
+  onChange?: (...args: Array<any>) => any;
+  label: string;
+  length: number;
+  disabled: boolean;
+  value: Array<string>;
+  error: string | null;
+};
 export default class PinCode extends Component<Props> {
   static defaultProps = {
     length: 4,
     disabled: false,
     value: [],
   };
-
   inputsRef = [];
   focusKey = 0;
   add = false;
-
-  onChange = (inputValue: ?number, key: number) => {
+  onChange = (inputValue: number | null | undefined, key: number) => {
     const { value, onChange } = this.props;
     const inputNewValue =
       inputValue !== null && inputValue !== undefined
@@ -46,9 +41,11 @@ export default class PinCode extends Component<Props> {
     ) {
       const newValue = value;
       newValue[key] = inputNewValue;
+
       if (onChange) {
         onChange(newValue);
       }
+
       this.focusKey = key;
       this.add = inputValue !== null && inputValue !== undefined;
     }
@@ -57,6 +54,7 @@ export default class PinCode extends Component<Props> {
   componentDidUpdate() {
     const { value, length } = this.props;
     const key = value.join('').length;
+
     if (key > 0 && key < length) {
       const inputFocusKey = this.add ? this.focusKey + 1 : this.focusKey - 1;
       if (
@@ -78,12 +76,10 @@ export default class PinCode extends Component<Props> {
       value,
       disabled,
     } = this.props;
-
     const pinCodeClasses = classNames([
       styles.pinCode,
       error ? styles.error : null,
     ]);
-
     return (
       <div className={styles.pinCodeInput}>
         {map(Array(length).fill(), (action, key) => {
@@ -122,9 +118,7 @@ export default class PinCode extends Component<Props> {
 
   render() {
     const { label, error } = this.props;
-
     const pinCode = this.generatePinCodeInput();
-
     return (
       <div className={styles.component} role="button">
         <label htmlFor="firstName" className="SimpleFormField_label">

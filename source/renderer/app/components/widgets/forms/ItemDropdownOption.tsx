@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
@@ -7,7 +6,6 @@ import { intlShape, defineMessages } from 'react-intl';
 import classnames from 'classnames';
 import styles from './ItemDropdownOption.scss';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
-
 const messages = defineMessages({
   syncingLabel: {
     id: 'widgets.itemsDropdown.syncingLabel',
@@ -20,33 +18,31 @@ const messages = defineMessages({
     description: 'syncingLabel for WalletsDropdown',
   },
 });
-
 export type ItemDropdown = {
-  label: string | Node,
-  detail?: string | Node,
-  selected?: boolean,
-  isSyncing?: boolean,
-  syncingLabel?: string,
-  syncingProgress?: number,
+  label: string | Node;
+  detail?: string | Node;
+  selected?: boolean;
+  isSyncing?: boolean;
+  syncingLabel?: string;
+  syncingProgress?: number;
 };
-
 export default class ItemDropdownOption extends Component<ItemDropdown> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   renderDetail = () => {
     const { detail, isSyncing } = this.props;
     if (!detail || isSyncing) return null;
     return <div className={styles.detail}>{detail}</div>;
   };
-
   renderSyncingSpinner = () => {
     const { intl } = this.context;
     const { syncingProgress } = this.props;
     const defaultSyncingLabel =
       typeof syncingProgress === 'number' || typeof syncingProgress === 'string'
-        ? intl.formatMessage(messages.syncingLabelProgress, { syncingProgress })
+        ? intl.formatMessage(messages.syncingLabelProgress, {
+            syncingProgress,
+          })
         : intl.formatMessage(messages.syncingLabel);
     const { isSyncing, syncingLabel = defaultSyncingLabel } = this.props;
     if (!isSyncing) return null;

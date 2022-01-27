@@ -1,8 +1,6 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { NetworkClockResponse } from '../types';
 import { request } from '../../utils/request';
-
 export const getNetworkClock = (
   config: RequestConfig,
   isForceCheck: boolean
@@ -13,5 +11,7 @@ export const getNetworkClock = (
       path: '/v2/network/clock',
       ...config,
     },
-    { forceNtpCheck: isForceCheck }
+    {
+      forceNtpCheck: isForceCheck,
+    }
   );

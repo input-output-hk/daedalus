@@ -1,4 +1,3 @@
-// @flow
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -22,7 +21,6 @@ import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
-
 const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.dialog.title',
@@ -101,21 +99,19 @@ const messages = defineMessages({
       '"Calculating fees" message in the "Undelegate wallet" dialog.',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  selectedWallet: ?Wallet,
-  stakePoolName: ?string,
-  stakePoolTicker: ?string,
-  onConfirm: Function,
-  onCancel: Function,
-  onExternalLinkClick: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
-  fees: ?DelegationCalculateFeeResponse,
-  hwDeviceStatus: HwDeviceStatus,
-  isTrezor: boolean,
+  selectedWallet: Wallet | null | undefined;
+  stakePoolName: string | null | undefined;
+  stakePoolTicker: string | null | undefined;
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
+  fees: DelegationCalculateFeeResponse | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  isTrezor: boolean;
 };
 
 @observer
@@ -123,7 +119,6 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -141,6 +136,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -159,6 +155,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -179,12 +176,14 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
                 'isHardwareWallet'
               );
               if (isHardwareWallet) return [true];
+
               if (field.value === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -192,14 +191,15 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   confirmationDisabled = () => {
     const { form } = this;
     const { fees, isSubmitting, hwDeviceStatus, selectedWallet } = this.props;
@@ -226,7 +226,6 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       !passphraseIsValid
     );
   };
-
   handleSubmit = () => {
     if (this.confirmationDisabled()) {
       return false;
@@ -242,10 +241,8 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       onError: () => null,
     });
   };
-
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     submitOnEnter(this.handleSubmit, event);
-
   generateErrorElement = () => {
     const { error, onExternalLinkClick } = this.props;
 
@@ -262,7 +259,6 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
     ) : (
       this.context.intl.formatMessage(error)
     );
-
     return result;
   };
 
@@ -304,7 +300,6 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       },
     ];
     const errorElement = this.generateErrorElement();
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -321,7 +316,11 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
           {stakePoolTicker ? (
             <FormattedHTMLMessage
               {...messages.descriptionWithTicker}
-              values={{ walletName, stakePoolName, stakePoolTicker }}
+              values={{
+                walletName,
+                stakePoolName,
+                stakePoolTicker,
+              }}
             />
           ) : (
             <FormattedHTMLMessage
@@ -407,4 +406,4 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   }
 }
 
-export default UndelegateWalletConfirmationDialog
+export default UndelegateWalletConfirmationDialog;

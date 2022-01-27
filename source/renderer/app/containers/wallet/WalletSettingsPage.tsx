@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
@@ -20,14 +19,15 @@ import {
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class WalletSettingsPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleCopyWalletPublicKey = (walletPublicKey: string) => {
     const { wallets } = this.props.actions;
     const publicKey = ellipsis(
@@ -35,9 +35,10 @@ class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyWalletPublicKey.trigger({ publicKey });
+    wallets.copyWalletPublicKey.trigger({
+      publicKey,
+    });
   };
-
   handleCopyICOPublicKey = (icoPublicKey: string) => {
     const { wallets } = this.props.actions;
     const publicKey = ellipsis(
@@ -45,12 +46,15 @@ class WalletSettingsPage extends Component<Props> {
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
-    wallets.copyICOPublicKey.trigger({ publicKey });
+    wallets.copyICOPublicKey.trigger({
+      publicKey,
+    });
   };
-
   handleDelegateClick = () => {
     const { goToRoute } = this.props.actions.router;
-    goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
+    goToRoute.trigger({
+      route: ROUTES.STAKING.DELEGATION_CENTER,
+    });
   };
 
   render() {
@@ -71,7 +75,6 @@ class WalletSettingsPage extends Component<Props> {
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
-
     const { isLegacy, isHardwareWallet } = activeWallet;
     const isTrezor = checkIsTrezorByWalletId(activeWallet.id);
     const { actions } = this.props;
@@ -102,7 +105,6 @@ class WalletSettingsPage extends Component<Props> {
     const wordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
       : WALLET_RECOVERY_PHRASE_WORD_COUNT;
-
     return (
       <VerticalFlexContainer>
         <WalletSettings
@@ -138,9 +140,16 @@ class WalletSettingsPage extends Component<Props> {
           showExportLink={!isProduction}
           lastUpdatedField={lastUpdatedWalletField}
           onFieldValueChange={(field, value) =>
-            updateWalletField.trigger({ field, value })
+            updateWalletField.trigger({
+              field,
+              value,
+            })
           }
-          onStartEditing={(field) => startEditingWalletField.trigger({ field })}
+          onStartEditing={(field) =>
+            startEditingWalletField.trigger({
+              field,
+            })
+          }
           onStopEditing={stopEditingWalletField.trigger}
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
@@ -182,4 +191,4 @@ class WalletSettingsPage extends Component<Props> {
   }
 }
 
-export default WalletSettingsPage
+export default WalletSettingsPage;

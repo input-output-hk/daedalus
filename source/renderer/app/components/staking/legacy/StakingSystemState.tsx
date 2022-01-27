@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import StakingSystemStateElement from './StakingSystemStateElement';
@@ -22,4 +21,4 @@ class StakingSystemState extends Component<any> {
   }
 }
 
-export default StakingSystemState
+export default StakingSystemState;

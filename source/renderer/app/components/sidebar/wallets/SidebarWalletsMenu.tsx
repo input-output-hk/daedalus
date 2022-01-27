@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -20,7 +19,6 @@ import type {
 import { WalletSortBy, WalletSortOrder } from '../../../types/sidebarTypes';
 import { WalletSortButton } from './WalletSortButton';
 import { WalletSearch } from './WalletSearch';
-
 const messages = defineMessages({
   addAdaWallet: {
     id: 'sidebar.wallets.addWallet',
@@ -58,23 +56,22 @@ const messages = defineMessages({
     description: 'Tooltip message for Name sort button',
   },
 });
-
 type Props = {
-  wallets: Array<SidebarWalletType>,
-  isActiveWallet: Function,
-  onAddWallet: Function,
-  onWalletItemClick: Function,
-  visible: boolean,
-  isAddWalletButtonActive: boolean,
-  isShelleyActivated: boolean,
-  onWalletSortBy?: ({
-    sortBy: WalletSortByOptions,
-    sortOrder: WalletSortOrderOptions,
-  }) => void,
-  sortBy?: WalletSortByOptions,
-  sortOrder?: WalletSortOrderOptions,
-  searchValue?: string,
-  onSearch?: (term: string) => void,
+  wallets: Array<SidebarWalletType>;
+  isActiveWallet: (...args: Array<any>) => any;
+  onAddWallet: (...args: Array<any>) => any;
+  onWalletItemClick: (...args: Array<any>) => any;
+  visible: boolean;
+  isAddWalletButtonActive: boolean;
+  isShelleyActivated: boolean;
+  onWalletSortBy?: (arg0: {
+    sortBy: WalletSortByOptions;
+    sortOrder: WalletSortOrderOptions;
+  }) => void;
+  sortBy?: WalletSortByOptions;
+  sortOrder?: WalletSortOrderOptions;
+  searchValue?: string;
+  onSearch?: (term: string) => void;
 };
 
 @observer
@@ -82,23 +79,19 @@ class SidebarWalletsMenu extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   renderThumb = (props: any) => (
     <div {...props} className={styles.scrollbarThumb} />
   );
-
   walletSort = (sortBy: WalletSortByOptions) => {
     const {
       sortOrder = WalletSortOrder.asc,
       onWalletSortBy = noop,
     } = this.props;
-
     return onWalletSortBy({
       sortBy,
       sortOrder,
     });
   };
-
   filterWalletsBySearchValue = (
     searchValue: string,
     wallets: SidebarWalletType[]
@@ -118,7 +111,6 @@ class SidebarWalletsMenu extends Component<Props> {
           threshold: FUZZY_SEARCH_THRESHOLD,
         }
       );
-
       return fuse.search(searchValue).map((r) => r.item);
     }
 
@@ -139,17 +131,14 @@ class SidebarWalletsMenu extends Component<Props> {
       searchValue = '',
       onSearch = noop,
     } = this.props;
-
     const addWalletButtonStyles = classNames([
       styles.addWalletButton,
       isAddWalletButtonActive ? styles.active : null,
     ]);
-
     const filteredWallets = this.filterWalletsBySearchValue(
       searchValue,
       wallets
     );
-
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.walletSearchContainer}>
@@ -220,4 +209,4 @@ class SidebarWalletsMenu extends Component<Props> {
   }
 }
 
-export default SidebarWalletsMenu
+export default SidebarWalletsMenu;

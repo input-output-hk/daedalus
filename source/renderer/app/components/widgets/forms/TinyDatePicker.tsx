@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Element } from 'react';
 import Datetime from 'react-datetime';
@@ -9,35 +8,31 @@ import globalMessages from '../../../i18n/global-messages';
 import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';
 import styles from './TinyDatePicker.scss';
-
 type PickerPanelPosition = 'left' | 'right';
-
-type Props = $Exact<{
-  onBlur?: Function,
-  onChange?: Function,
-  onReset?: Function,
-  onClick?: Function,
-  onFocus?: Function,
-  onKeyDown?: Function,
-  isValidDate?: Function,
-  locale?: string,
-  dateFormat: string,
-  disablePaste?: boolean,
-  value: string,
-  label?: string | Element<any>,
-  placeholder?: string,
-  innerLabelPrefix: string,
-  innerValue: string | Element<any>,
-  pickerPanelPosition: PickerPanelPosition,
-  useReadMode?: boolean,
-  error?: string | Element<any>,
-}>;
-
+type Props = {
+  onBlur?: (...args: Array<any>) => any;
+  onChange?: (...args: Array<any>) => any;
+  onReset?: (...args: Array<any>) => any;
+  onClick?: (...args: Array<any>) => any;
+  onFocus?: (...args: Array<any>) => any;
+  onKeyDown?: (...args: Array<any>) => any;
+  isValidDate?: (...args: Array<any>) => any;
+  locale?: string;
+  dateFormat: string;
+  disablePaste?: boolean;
+  value: string;
+  label?: string | Element<any>;
+  placeholder?: string;
+  innerLabelPrefix: string;
+  innerValue: string | Element<any>;
+  pickerPanelPosition: PickerPanelPosition;
+  useReadMode?: boolean;
+  error?: string | Element<any>;
+};
 export default class TinyDatePicker extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     onReset: () => null,
     onChange: () => null,

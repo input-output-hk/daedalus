@@ -1,4 +1,3 @@
-// @flow
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -31,10 +30,8 @@ import {
   DeviceModels,
   DeviceTypes,
 } from '../../../../common/types/hardware-wallets.types';
-
 import type { TransportDevice } from '../../../../common/types/hardware-wallets.types';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.connect.dialog.title',
@@ -76,14 +73,13 @@ const messages = defineMessages({
     description: 'Link to support article',
   },
 });
-
 type Props = {
-  onClose: Function,
-  isSubmitting: boolean,
-  hwDeviceStatus: HwDeviceStatus,
-  transportDevice: ?TransportDevice,
-  error: ?LocalizableError,
-  onExternalLinkClick: Function,
+  onClose: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  hwDeviceStatus: HwDeviceStatus;
+  transportDevice: TransportDevice | null | undefined;
+  error: LocalizableError | null | undefined;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -102,20 +98,16 @@ class WalletConnectDialog extends Component<Props> {
       onExternalLinkClick,
       error,
     } = this.props;
-
     const deviceType = get(transportDevice, 'deviceType');
     const deviceModel = get(transportDevice, 'deviceModel');
-
     const isLedger = deviceType === DeviceTypes.LEDGER;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
-
     const buttonLabel = !isSubmitting ? (
       this.context.intl.formatMessage(messages.cancelButton)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         disabled: isSubmitting,
@@ -127,6 +119,7 @@ class WalletConnectDialog extends Component<Props> {
 
     const renderUnknownDevice = () => {
       let unknownDeviceElement;
+
       if (isTrezorEnabled && !isLedgerEnabled) {
         unknownDeviceElement = (
           <div className={styles.hardwareWalletTrezor}>
@@ -149,13 +142,13 @@ class WalletConnectDialog extends Component<Props> {
           </div>
         );
       }
+
       return unknownDeviceElement;
     };
 
     const instructions = isLedgerEnabled
       ? messages.instructions
       : messages.instructionsTrezorOnly;
-
     const supportLink = (
       <Link
         className={styles.externalLink}
@@ -168,7 +161,6 @@ class WalletConnectDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <Dialog
         className={dialogClasses}
@@ -215,7 +207,9 @@ class WalletConnectDialog extends Component<Props> {
                 <p>
                   <FormattedMessage
                     {...messages.connectingIssueSupportLabel}
-                    values={{ supportLink }}
+                    values={{
+                      supportLink,
+                    }}
                   />
                 </p>
               </div>
@@ -227,4 +221,4 @@ class WalletConnectDialog extends Component<Props> {
   }
 }
 
-export default WalletConnectDialog
+export default WalletConnectDialog;

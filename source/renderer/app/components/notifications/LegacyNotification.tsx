@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -8,7 +7,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './LegacyNotification.scss';
-
 const messages = defineMessages({
   moveFundsTitle: {
     id: 'wallet.byron.notification.moveFundsTitle',
@@ -78,13 +76,12 @@ const messages = defineMessages({
     description: '"Learn more" link URL',
   },
 });
-
 type Props = {
-  activeWalletName: string,
-  onLearnMore: Function,
-  onTransferFunds: Function,
-  hasRewardsWallets?: boolean,
-  onWalletAdd?: Function,
+  activeWalletName: string;
+  onLearnMore: (...args: Array<any>) => any;
+  onTransferFunds: (...args: Array<any>) => any;
+  hasRewardsWallets?: boolean;
+  onWalletAdd?: (...args: Array<any>) => any;
 };
 
 @observer
@@ -92,17 +89,15 @@ class LegacyNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   onLearnMore = () => {
     const { intl } = this.context;
     const learnMoreLinkUrl = intl.formatMessage(messages.learnMoreLinkUrl);
     this.props.onLearnMore(learnMoreLinkUrl);
   };
-
   getValue = (
     messageHasRewardsWallets: string,
     messageNoRewardsWallets: string,
-    _values?: Object
+    _values?: Record<string, any>
   ) => {
     const { hasRewardsWallets, activeWalletName } = this.props;
     const message = hasRewardsWallets
@@ -129,7 +124,6 @@ class LegacyNotification extends Component<Props> {
         hasIconAfter={false}
       />
     );
-
     const title = getValue(messages.moveFundsTitle, messages.addWalletTitle);
     const description1 = getValue(
       messages.moveFundsDescriptionLine1,
@@ -144,7 +138,6 @@ class LegacyNotification extends Component<Props> {
     );
     const buttonLabel = getValue(messages.actionMove, messages.addWallet);
     const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
-
     return (
       <div className={styles.component}>
         <div className={styles.title}>{title}</div>
@@ -178,4 +171,4 @@ class LegacyNotification extends Component<Props> {
   }
 }
 
-export default LegacyNotification
+export default LegacyNotification;

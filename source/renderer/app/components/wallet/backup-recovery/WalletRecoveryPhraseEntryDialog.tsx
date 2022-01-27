@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -24,7 +23,6 @@ import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 const messages = defineMessages({
   verificationInstructions: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.verification.instructions',
@@ -85,20 +83,19 @@ const messages = defineMessages({
       'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
   },
 });
-
 type Props = {
-  enteredPhrase: Array<string>,
-  isValid: boolean,
-  isTermOfflineAccepted: boolean,
-  isTermRecoveryAccepted: boolean,
-  isSubmitting: boolean,
-  onUpdateVerificationPhrase: Function,
-  canFinishBackup: boolean,
-  onAcceptTermOffline: Function,
-  onAcceptTermRecovery: Function,
-  onRestartBackup: Function,
-  onCancelBackup: Function,
-  onFinishBackup: Function,
+  enteredPhrase: Array<string>;
+  isValid: boolean;
+  isTermOfflineAccepted: boolean;
+  isTermRecoveryAccepted: boolean;
+  isSubmitting: boolean;
+  onUpdateVerificationPhrase: (...args: Array<any>) => any;
+  canFinishBackup: boolean;
+  onAcceptTermOffline: (...args: Array<any>) => any;
+  onAcceptTermRecovery: (...args: Array<any>) => any;
+  onRestartBackup: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
+  onFinishBackup: (...args: Array<any>) => any;
 };
 
 @observer
@@ -106,7 +103,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -132,7 +128,9 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
@@ -167,7 +165,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: buttonLabel,
@@ -176,7 +173,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -258,4 +254,4 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseEntryDialog
+export default WalletRecoveryPhraseEntryDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
@@ -20,7 +19,6 @@ import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   title: {
     id: 'wallet.import.file.dialog.title',
@@ -90,22 +88,20 @@ const messages = defineMessages({
     description: "Daedalus 'secret.key' file",
   },
 });
-
 type Props = {
-  exportErrors: string,
-  isSubmitting: boolean,
-  onOpen: Function,
-  onContinue: Function,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  onSelectExportSourcePath: Function,
-  onResetExportSourcePath: Function,
-  exportSourcePath: string,
-  defaultExportSourcePath: string,
+  exportErrors: string;
+  isSubmitting: boolean;
+  onOpen: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onSelectExportSourcePath: (...args: Array<any>) => any;
+  onResetExportSourcePath: (...args: Array<any>) => any;
+  exportSourcePath: string;
+  defaultExportSourcePath: string;
 };
-
 type State = {
-  importFrom: ImportFromOption,
+  importFrom: ImportFromOption;
 };
 
 @observer
@@ -113,11 +109,9 @@ class WalletImportFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     importFrom: ImportFromOptions.STATE_DIR,
   };
-
   importPathInput: Input;
 
   componentDidMount() {
@@ -127,7 +121,9 @@ class WalletImportFileDialog extends Component<Props, State> {
   onSetImportFromOption = (importFrom: ImportFromOption) => {
     if (this.state.importFrom !== importFrom) {
       this.props.onResetExportSourcePath();
-      this.setState({ importFrom });
+      this.setState({
+        importFrom,
+      });
     }
   };
 
@@ -141,7 +137,6 @@ class WalletImportFileDialog extends Component<Props, State> {
 
   isImportFromStateDir = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.STATE_DIR;
-
   isImportFromSecretFile = (importFrom: ImportFromOption) =>
     importFrom === ImportFromOptions.SECRET_FILE;
 
@@ -158,7 +153,6 @@ class WalletImportFileDialog extends Component<Props, State> {
       exportSourcePath,
       defaultExportSourcePath,
     } = this.props;
-
     const title = intl.formatMessage(messages.title);
     const description = <FormattedHTMLMessage {...messages.description} />;
     const stateFolderLabel = intl.formatMessage(messages.stateFolderLabel);
@@ -172,16 +166,15 @@ class WalletImportFileDialog extends Component<Props, State> {
     const noWalletError = intl.formatMessage(
       messages[`${importFrom}NoWallets`]
     );
+
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
     const error = exportErrors !== '';
-
     const inputClasses = classNames([
       styles.stateFolderInput,
       error ? styles.error : null,
     ]);
-
     const buttonClasses = classNames(styles.actionButton, [
       isSubmitting ||
       error ||
@@ -189,7 +182,6 @@ class WalletImportFileDialog extends Component<Props, State> {
         ? styles.disabled
         : null,
     ]);
-
     return (
       <Dialog
         className={styles.dialog}
@@ -258,7 +250,11 @@ class WalletImportFileDialog extends Component<Props, State> {
                 />
                 <Button
                   className={styles.selectStateDirectoryButton}
-                  onClick={() => onSelectExportSourcePath({ importFrom })}
+                  onClick={() =>
+                    onSelectExportSourcePath({
+                      importFrom,
+                    })
+                  }
                   label={<SVGInline svg={penIcon} className={styles.penIcon} />}
                   skin={ButtonSkin}
                 />
@@ -291,4 +287,4 @@ class WalletImportFileDialog extends Component<Props, State> {
   }
 }
 
-export default WalletImportFileDialog
+export default WalletImportFileDialog;

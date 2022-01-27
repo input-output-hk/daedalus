@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import JSONBigInt from 'json-bigint';
 import type {
@@ -12,15 +11,19 @@ function flattenMetadata(data: MetadataValue) {
   if (data.int) {
     return data.int;
   }
+
   if (data.string != null) {
     return data.string;
   }
+
   if (data.bytes) {
     return `0x${data.bytes}`;
   }
+
   if (data.list) {
     return data.list.map((v: MetadataValue) => flattenMetadata(v));
   }
+
   if (data.map) {
     return data.map.map((v: MetadataMapValue) => {
       if (v.k.list || v.k.map) {
@@ -29,18 +32,29 @@ function flattenMetadata(data: MetadataValue) {
           value: flattenMetadata(v.v),
         };
       }
+
       if (v.k.int) {
-        return { [v.k.int]: flattenMetadata(v.v) };
+        return {
+          [v.k.int]: flattenMetadata(v.v),
+        };
       }
+
       if (v.k.string) {
-        return { [v.k.string]: flattenMetadata(v.v) };
+        return {
+          [v.k.string]: flattenMetadata(v.v),
+        };
       }
+
       if (v.k.bytes) {
-        return { [v.k.bytes]: flattenMetadata(v.v) };
+        return {
+          [v.k.bytes]: flattenMetadata(v.v),
+        };
       }
+
       return null;
     });
   }
+
   return null;
 }
 

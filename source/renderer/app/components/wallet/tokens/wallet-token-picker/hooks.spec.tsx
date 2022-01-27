@@ -6,10 +6,12 @@ const generateAssets = (n) => [...Array(n).keys()].map(tokenGenerator);
 
 const setup = (useHook, args) => {
   const returnVal = {};
+
   function TestComponent() {
     Object.assign(returnVal, useHook(args));
     return null;
   }
+
   render(<TestComponent />);
   return returnVal;
 };
@@ -26,7 +28,6 @@ describe('WalletTokenPicker hooks', () => {
       currentAssets: assets,
       previouslyCheckedIds: [],
     });
-
     expect(hook.checkboxes).toMatchObject({});
     expect(hook.checkedIds.length).toEqual(0);
     expect(hook.totalCheckedCount).toBe(0);
@@ -35,24 +36,45 @@ describe('WalletTokenPicker hooks', () => {
     expect(hook.isToggleAllDisabled).toEqual(false);
     expect(hook.isClearAllMode).toEqual(false);
   });
-
   const toggleCases = [
     // testId, assets, sequence, expected [checkedCount, checkedIds]
-    ['toggle sequence [1]', generateAssets(10), ['1'], [{ 1: true }, ['1']]],
+    [
+      'toggle sequence [1]',
+      generateAssets(10),
+      ['1'],
+      [
+        {
+          1: true,
+        },
+        ['1'],
+      ],
+    ],
     [
       'toggle sequence [1, 2]',
       generateAssets(10),
       ['1', '2'],
-      [{ 1: true, 2: true }, ['1', '2']],
+      [
+        {
+          1: true,
+          2: true,
+        },
+        ['1', '2'],
+      ],
     ],
     [
       'toggle sequence [1, 1, 2, 3]',
       generateAssets(10),
       ['1', '1', '2', '3'],
-      [{ 1: false, 2: true, 3: true }, ['2', '3']],
+      [
+        {
+          1: false,
+          2: true,
+          3: true,
+        },
+        ['2', '3'],
+      ],
     ],
   ];
-
   test.each(toggleCases)(
     'useCheckboxes toogle checkbox for %s',
     (testId, assets, sequence, expected) => {
@@ -76,7 +98,6 @@ describe('WalletTokenPicker hooks', () => {
       expect(hook.isClearAllMode).toEqual(false);
     }
   );
-
   const toogleAllFnCases = [
     // testId, [assets, previouslyCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
@@ -104,7 +125,6 @@ describe('WalletTokenPicker hooks', () => {
       [30, [...Array(28).keys()].map(String)],
     ],
   ];
-
   test.each(toogleAllFnCases)(
     'useCheckboxes toogle toogleAllFn for %s',
     (testId, [assets, previouslyCheckedIds], alreadyChecked, expected) => {
@@ -123,7 +143,6 @@ describe('WalletTokenPicker hooks', () => {
       act(() => {
         hook.toogleAllFn();
       });
-
       expect(hook.totalCheckedCount).toBe(expected[0]);
       expect(hook.checkedIds).toEqual(expected[1]);
       expect(hook.isMaxTotalCount).toBe(true);

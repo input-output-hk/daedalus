@@ -1,14 +1,10 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { number, withKnobs, boolean } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
-
 // Screens
 import DaedalusDiagnostics from '../../../../source/renderer/app/components/status/DaedalusDiagnostics';
-
 const systemInfo = {
   platform: 'macOS',
   platformVersion: '17.7.0',
@@ -16,7 +12,6 @@ const systemInfo = {
   ram: '32.0 GB',
   availableDiskSpace: '500 GB',
 };
-
 const coreInfo = {
   daedalusVersion: '0.14.0',
   daedalusBuildNumber: '12500',
@@ -32,13 +27,9 @@ const coreInfo = {
   daedalusStateDirectoryPath:
     '/Users/daedalus/Library/Application Support/Daedalus Demo',
 };
-
 storiesOf('Nodes|Status', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Daedalus Diagnostics', () => (
     <DaedalusDiagnostics
       systemInfo={systemInfo}
@@ -67,8 +58,16 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
-      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
-      networkTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      localTip={{
+        epoch: 123,
+        slot: 13400,
+        absoluteSlotNumber: 15000000,
+      }}
+      networkTip={{
+        epoch: 123,
+        slot: 13400,
+        absoluteSlotNumber: 15000000,
+      }}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}
       isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
@@ -109,7 +108,11 @@ storiesOf('Nodes|Status', module)
         280719
       )}
       nodeConnectionError={null}
-      localTip={{ epoch: 123, slot: 13400, absoluteSlotNumber: 15000000 }}
+      localTip={{
+        epoch: 123,
+        slot: 13400,
+        absoluteSlotNumber: 15000000,
+      }}
       networkTip={null}
       localBlockHeight={number('localBlockHeight', 280719)}
       networkBlockHeight={number('networkBlockHeight', 42539)}

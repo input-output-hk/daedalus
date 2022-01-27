@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -8,7 +7,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './VotingNoWallets.scss';
 import icon from '../../assets/images/attention-big-thin.inline.svg';
 import { NEXT_VOTING_FUND_NUMBER } from '../../config/votingConfig';
-
 const messages = defineMessages({
   headLine: {
     id: 'voting.info.noWallets.headLine',
@@ -29,12 +27,10 @@ const messages = defineMessages({
       'Label for "Create New Wallet" button on the voting info page.',
   },
 });
-
 type Props = {
-  onGoToCreateWalletClick: Function,
-  minVotingFunds: number,
+  onGoToCreateWalletClick: (...args: Array<any>) => any;
+  minVotingFunds: number;
 };
-
 export default class VotingNoWallets extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -43,7 +39,6 @@ export default class VotingNoWallets extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onGoToCreateWalletClick, minVotingFunds } = this.props;
-
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />

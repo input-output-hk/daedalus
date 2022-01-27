@@ -1,4 +1,3 @@
-// @flow
 import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
@@ -32,54 +31,61 @@ import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
 
 /* eslint-disable consistent-return */
-
 type Actions = {
-  spawn: typeof spawn,
-  exec: typeof exec,
-  readFileSync: (path: string) => Buffer,
-  createWriteStream: (path: string, options?: Object) => WriteStream,
-  broadcastTlsConfig: (config: ?TlsConfig) => void,
-  broadcastStateChange: (state: CardanoNodeState) => void,
+  spawn: typeof spawn;
+  exec: typeof exec;
+  readFileSync: (path: string) => Buffer;
+  createWriteStream: (
+    path: string,
+    options?: Record<string, any>
+  ) => WriteStream;
+  broadcastTlsConfig: (config: TlsConfig | null | undefined) => void;
+  broadcastStateChange: (state: CardanoNodeState) => void;
 };
-
 type StateTransitions = {
-  onStarting: () => void,
-  onRunning: () => void,
-  onStopping: () => void,
-  onStopped: () => void,
-  onUpdating: () => void,
-  onUpdated: () => void,
-  onCrashed: (code: number, signal: string) => void,
-  onError: (code: number, signal: string) => void,
-  onUnrecoverable: () => void,
+  onStarting: () => void;
+  onRunning: () => void;
+  onStopping: () => void;
+  onStopped: () => void;
+  onUpdating: () => void;
+  onUpdated: () => void;
+  onCrashed: (code: number, signal: string) => void;
+  onError: (code: number, signal: string) => void;
+  onUnrecoverable: () => void;
 };
-
 type CardanoNodeIpcMessage = {
-  Started?: Array<any>,
-  ReplyPort?: number,
-  FInjects?: FaultInjectionIpcResponse,
+  Started?: Array<any>;
+  ReplyPort?: number;
+  FInjects?: FaultInjectionIpcResponse;
 };
-
 export type CardanoNodeConfig = {
-  stateDir: string, // Path to the state directory
-  nodeImplementation: CardanoNodeImplementations,
-  nodeConfig: NodeConfig,
-  logFilePath: string, // Log file path for cardano-sl
-  tlsPath: string, // Path to cardano-node TLS folder
-  startupTimeout: number, // Milliseconds to wait for cardano-node to startup
-  startupMaxRetries: number, // Maximum number of retries for re-starting then ode
-  shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
-  killTimeout: number, // Milliseconds to wait for cardano-node to be killed
-  updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
-  cluster: string,
-  configPath: string,
-  syncTolerance: string,
-  cliBin: string, // Path to cardano-cli executable
-  isStaging: boolean,
-  metadataUrl?: string,
-  rtsFlags: Array<string>,
+  stateDir: string;
+  // Path to the state directory
+  nodeImplementation: CardanoNodeImplementations;
+  nodeConfig: NodeConfig;
+  logFilePath: string;
+  // Log file path for cardano-sl
+  tlsPath: string;
+  // Path to cardano-node TLS folder
+  startupTimeout: number;
+  // Milliseconds to wait for cardano-node to startup
+  startupMaxRetries: number;
+  // Maximum number of retries for re-starting then ode
+  shutdownTimeout: number;
+  // Milliseconds to wait for cardano-node to gracefully shutdown
+  killTimeout: number;
+  // Milliseconds to wait for cardano-node to be killed
+  updateTimeout: number;
+  // Milliseconds to wait for cardano-node to update itself
+  cluster: string;
+  configPath: string;
+  syncTolerance: string;
+  cliBin: string;
+  // Path to cardano-cli executable
+  isStaging: boolean;
+  metadataUrl?: string;
+  rtsFlags: Array<string>;
 };
-
 const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
 const network = String(environment.network);
@@ -96,7 +102,6 @@ const { CARDANO_PROCESS_NAME } = deriveProcessNames(
 );
 // create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
-
 export class CardanoNode {
   /**
    * The config used to spawn cardano-node
@@ -108,7 +113,7 @@ export class CardanoNode {
    * The managed cardano-node child process
    * @private
    */
-  _node: ?Launcher;
+  _node: Launcher | null | undefined;
 
   /**
    * The ipc channel used for broadcasting messages to the outside world
@@ -145,7 +150,7 @@ export class CardanoNode {
    * on each startup and is broadcasted over ipc channel
    * @private
    */
-  _tlsConfig: ?TlsConfig = null;
+  _tlsConfig: TlsConfig | null | undefined = null;
 
   /**
    * The current state of the node, used for making decisions
@@ -163,7 +168,7 @@ export class CardanoNode {
    * @type {CardanoStatus}
    * @private
    */
-  _status: ?CardanoStatus = null;
+  _status: CardanoStatus | null | undefined = null;
 
   /**
    * Number of retries to startup the node (without ever reaching running state)
@@ -205,7 +210,7 @@ export class CardanoNode {
    * Getter which returns the PID of the child process of cardano-node
    * @returns {TlsConfig} // I think this returns a number...
    */
-  get pid(): ?number {
+  get pid(): number | null | undefined {
     return get(this, '_node.pid', null);
   }
 
@@ -221,7 +226,7 @@ export class CardanoNode {
    * Getter for the cached status of the node.
    * @returns {CardanoStatus}
    */
-  get status(): ?CardanoStatus {
+  get status(): CardanoStatus | null | undefined {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
@@ -267,7 +272,6 @@ export class CardanoNode {
    */
   start = async (isForced: boolean = false): Promise<void> => {
     const { _log } = this;
-
     // Guards
     const nodeCanBeStarted = await this._canBeStarted();
 
@@ -275,20 +279,27 @@ export class CardanoNode {
       _log.error('CardanoNode#start: Cannot be started', {
         startupTries: this._startupTries,
       });
+
       return Promise.reject(new Error('CardanoNode: Cannot be started'));
     }
+
     if (this._isUnrecoverable(this._config) && !isForced) {
       _log.error('CardanoNode#start: Too many startup retries', {
         startupTries: this._startupTries,
       });
+
       return Promise.reject(new Error('CardanoNode: Too many startup retries'));
     }
 
     this._startupTries++;
+
     this._changeToState(CardanoNodeStates.STARTING);
+
     _log.info(
       `CardanoNode#start: trying to start cardano-node for the ${this._startupTries} time`,
-      { startupTries: this._startupTries }
+      {
+        startupTries: this._startupTries,
+      }
     );
 
     return new Promise(async (resolve, reject) => {
@@ -306,7 +317,6 @@ export class CardanoNode {
         }
       );
       this._cardanoNodeLogFile = nodeLogFile;
-
       const walletLogFile = rfs(
         (time) => {
           // The module works by writing to the one file name before it is rotated out.
@@ -331,18 +341,29 @@ export class CardanoNode {
             processName: CARDANO_PROCESS_NAME,
             onStop: this._ensureProcessIsNotRunning,
           });
+
           _log.info(
             `CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`,
-            { pid: node.pid }
+            {
+              pid: node.pid,
+            }
           );
+
           this._node = node;
-          this._handleCardanoNodeMessage({ ReplyPort: replyPort });
+
+          this._handleCardanoNodeMessage({
+            ReplyPort: replyPort,
+          });
+
           resolve();
         } catch (error) {
           _log.error(
             'CardanoNode#start: Unable to initialize cardano-launcher',
-            { error }
+            {
+              error,
+            }
           );
+
           const { code, signal } = error || {};
           await this._handleCardanoNodeError(code, signal);
           reject(
@@ -359,7 +380,6 @@ export class CardanoNode {
             nodeLogFile,
             walletLogFile,
           });
-
           this._node = node;
 
           _log.info('Starting cardano-node now...');
@@ -369,39 +389,48 @@ export class CardanoNode {
           });
 
           // await promisedCondition(() => node.connected, startupTimeout);
-
           node
             .start()
             .then((api) => {
               const processes: {
-                wallet: ChildProcess,
-                node: ChildProcess,
+                wallet: ChildProcess;
+                node: ChildProcess;
               } = {
                 wallet: node.walletService.getProcess(),
                 node: node.nodeService.getProcess(),
               };
-
               // Setup event handling
               node.walletBackend.events.on('exit', (exitStatus) => {
-                _log.info('CardanoNode#exit', { exitStatus });
+                _log.info('CardanoNode#exit', {
+                  exitStatus,
+                });
+
                 const { code, signal } = exitStatus.wallet;
+
                 this._handleCardanoNodeExit(code, signal);
               });
-
               node.pid = processes.node.pid;
               node.wpid = processes.wallet.pid;
               node.connected = true; // TODO: use processes.wallet.connected here
+
               _log.info(
                 `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
-                { pid: processes.node.pid }
+                {
+                  pid: processes.node.pid,
+                }
               );
+
               _log.info(
                 `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
-                { pid: processes.wallet.pid }
+                {
+                  pid: processes.wallet.pid,
+                }
               );
+
               this._handleCardanoNodeMessage({
                 ReplyPort: api.requestParams.port,
               });
+
               resolve();
             })
             .catch(async (exitStatus) => {
@@ -411,6 +440,7 @@ export class CardanoNode {
                   exitStatus,
                 }
               );
+
               const { code, signal } = exitStatus.wallet || {};
               await this._handleCardanoNodeError(code, signal);
               reject(
@@ -426,6 +456,7 @@ export class CardanoNode {
               error,
             }
           );
+
           const { code, signal } = error || {};
           await this._handleCardanoNodeError(code, signal);
           reject(
@@ -447,23 +478,32 @@ export class CardanoNode {
    */
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
+
     if (await this._isDead()) {
       _log.info('CardanoNode#stop: process is not running anymore');
+
       return Promise.resolve();
     }
+
     _log.info('CardanoNode#stop: stopping cardano-node process');
+
     try {
       this._changeToState(CardanoNodeStates.STOPPING);
+
       if (_node) await _node.stop(_config.shutdownTimeout / 1000);
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
       await this._storeProcessStates();
+
       this._changeToState(CardanoNodeStates.STOPPED);
+
       this._reset();
+
       return Promise.resolve();
     } catch (error) {
       _log.error('CardanoNode#stop: cardano-node did not stop correctly', {
         error,
       });
+
       try {
         await this.kill();
       } catch (killError) {
@@ -483,20 +523,29 @@ export class CardanoNode {
     return new Promise(async (resolve, reject) => {
       if (await this._isDead()) {
         _log.info('CardanoNode#kill: process is already dead');
+
         return Promise.resolve();
       }
+
       try {
         _log.info('CardanoNode#kill: killing cardano-node process');
+
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
+
         this._changeToState(CardanoNodeStates.STOPPED);
+
         this._reset();
+
         resolve();
       } catch (_) {
         _log.info('CardanoNode#kill: could not kill cardano-node');
+
         await this._storeProcessStates();
+
         this._reset();
+
         reject(new Error('Could not kill cardano-node.'));
       }
     });
@@ -511,30 +560,39 @@ export class CardanoNode {
    */
   async restart(isForced: boolean = false): Promise<void> {
     const { _log } = this;
+
     try {
       // Stop cardano nicely if it is still awake
       if (this._isConnected()) {
         _log.info('CardanoNode#restart: stopping current node');
+
         await this.stop();
       }
+
       _log.info('CardanoNode#restart: restarting node with previous config', {
         isForced,
       });
+
       await this._waitForCardanoToExitOrKillIt();
+
       if (this._exitOnStop) {
         _log.info('Daedalus:safeExit: exiting Daedalus with code 0', {
           code: 0,
         });
+
         safeExitWithCode(0);
       } else {
         await this.start(isForced);
       }
     } catch (error) {
       _log.error('CardanoNode#restart: Could not restart cardano-node', error);
+
       if (this._state !== CardanoNodeStates.UNRECOVERABLE) {
         const { code, signal } = error || {};
+
         this._changeToState(CardanoNodeStates.ERRORED, code, signal);
       }
+
       return Promise.reject(error);
     }
   }
@@ -555,8 +613,11 @@ export class CardanoNode {
    */
   async expectNodeUpdate(): Promise<void> {
     const { _log, _config } = this;
+
     this._changeToState(CardanoNodeStates.UPDATING);
+
     _log.info('CardanoNode: waiting for node to apply update');
+
     try {
       await promisedCondition(
         () => this._state === CardanoNodeStates.UPDATED,
@@ -565,6 +626,7 @@ export class CardanoNode {
       await this._waitForNodeProcessToExit(_config.updateTimeout);
     } catch (error) {
       _log.info('CardanoNode: did not apply update as expected, killing it...');
+
       return this.kill();
     }
   }
@@ -583,10 +645,15 @@ export class CardanoNode {
     if (!this._node) return;
     const fault = request[0];
     const isEnabled = request[1];
-    this._node.send({ SetFInject: request });
+
+    this._node.send({
+      SetFInject: request,
+    });
+
     try {
       return await promisedCondition(() => {
         const hasFault = this._injectedFaults.includes(fault);
+
         return isEnabled ? hasFault : !hasFault;
       });
     } catch (error) {
@@ -596,7 +663,7 @@ export class CardanoNode {
     }
   };
 
-  saveStatus(status: ?CardanoStatus) {
+  saveStatus(status: CardanoStatus | null | undefined) {
     this._status = status;
   }
 
@@ -606,8 +673,8 @@ export class CardanoNode {
   exitOnStop = () => {
     this._exitOnStop = true;
   };
-
   // ================================= PRIVATE ===================================
+
   /**
    * Handles node ipc messages sent by the cardano-node process.
    * Updates the tls config where possible and broadcasts it to
@@ -620,7 +687,11 @@ export class CardanoNode {
    */
   _handleCardanoNodeMessage = (msg: CardanoNodeIpcMessage) => {
     if (msg == null) return;
-    this._log.info('CardanoNode: received message', { msg });
+
+    this._log.info('CardanoNode: received message', {
+      msg,
+    });
+
     if (msg.ReplyPort != null)
       this._handleCardanoReplyPortMessage(msg.ReplyPort);
     if (msg.FInjects != null)
@@ -642,9 +713,9 @@ export class CardanoNode {
     const { tlsPath } = this._config;
     this._tlsConfig = environment.isSelfnode
       ? {
-          ca: ('': any),
-          key: ('': any),
-          cert: ('': any),
+          ca: '' as any,
+          key: '' as any,
+          cert: '' as any,
           hostname: 'localhost',
           port,
         }
@@ -658,6 +729,7 @@ export class CardanoNode {
 
     if (this._state === CardanoNodeStates.STARTING) {
       this._changeToState(CardanoNodeStates.RUNNING);
+
       this.broadcastTlsConfig();
       // Reset the startup tries when we managed to get the node running
       this._startupTries = 0;
@@ -675,41 +747,58 @@ export class CardanoNode {
     this._log.info('CardanoNode: the following injected faults are active', {
       injectedFaults: response,
     });
+
     this._injectedFaults = response;
   };
-
   _handleCardanoNodeError = async (code: number, signal: string) => {
     const { _log, _config } = this;
-    _log.error('CardanoNode: error', { code, signal });
+
+    _log.error('CardanoNode: error', {
+      code,
+      signal,
+    });
+
     if (this._isUnrecoverable(_config)) {
       this._changeToState(CardanoNodeStates.UNRECOVERABLE);
     } else {
       this._changeToState(CardanoNodeStates.ERRORED);
+
       this._transitionListeners.onError(code, signal);
+
       try {
         _log.info('CardanoNode: restarting');
+
         await this.restart();
       } catch (error) {
         _log.error('CardanoNode: cannot be restarted', error);
       }
     }
   };
-
   _handleCardanoNodeExit = async (code: number, signal: string) => {
     const { _log, _config, _node } = this;
-    _log.info('CardanoNode exited', { code, signal });
+
+    _log.info('CardanoNode exited', {
+      code,
+      signal,
+    });
+
     // We don't know yet what happened but we can be sure cardano-node is exiting
     if (this._state === CardanoNodeStates.RUNNING) {
       this._changeToState(CardanoNodeStates.EXITING);
     }
+
     try {
       // Before proceeding with exit procedures, wait until the node is really dead.
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
     } catch (_) {
       _log.error(
         `CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`,
-        { code, shutdownTimeout: _config.shutdownTimeout }
+        {
+          code,
+          shutdownTimeout: _config.shutdownTimeout,
+        }
       );
+
       try {
         if (_node)
           await this._ensureProcessIsNotRunning(
@@ -720,7 +809,12 @@ export class CardanoNode {
         _log.info('CardanoNode: did not exit correctly');
       }
     }
-    _log.info('CardanoNode: process really exited', { code, signal });
+
+    _log.info('CardanoNode: process really exited', {
+      code,
+      signal,
+    });
+
     // Handle various exit scenarios
     if (this._state === CardanoNodeStates.STOPPING) {
       this._changeToState(CardanoNodeStates.STOPPED);
@@ -734,10 +828,11 @@ export class CardanoNode {
     } else {
       this._changeToState(CardanoNodeStates.CRASHED, code, signal);
     }
+
     await this._storeProcessStates();
+
     this._reset();
   };
-
   _reset = () => {
     if (this._cardanoNodeLogFile) this._cardanoNodeLogFile.end();
     if (this._cardanoWalletLogFile) this._cardanoWalletLogFile.end();
@@ -747,28 +842,43 @@ export class CardanoNode {
 
   _changeToState(state: CardanoNodeState, ...args: Array<any>) {
     const { _log, _transitionListeners } = this;
-    _log.info(`CardanoNode: transitions to <${state}>`, { state });
+
+    _log.info(`CardanoNode: transitions to <${state}>`, {
+      state,
+    });
+
     this._state = state;
+
     this._actions.broadcastStateChange(state);
+
     switch (state) {
       case CardanoNodeStates.STARTING:
         return _transitionListeners.onStarting();
+
       case CardanoNodeStates.RUNNING:
         return _transitionListeners.onRunning();
+
       case CardanoNodeStates.STOPPING:
         return _transitionListeners.onStopping();
+
       case CardanoNodeStates.STOPPED:
         return _transitionListeners.onStopped();
+
       case CardanoNodeStates.UPDATING:
         return _transitionListeners.onUpdating();
+
       case CardanoNodeStates.UPDATED:
         return _transitionListeners.onUpdated();
+
       case CardanoNodeStates.CRASHED:
         return _transitionListeners.onCrashed(...args);
+
       case CardanoNodeStates.ERRORED:
         return _transitionListeners.onError(...args);
+
       case CardanoNodeStates.UNRECOVERABLE:
         return _transitionListeners.onUnrecoverable();
+
       default:
     }
   }
@@ -798,6 +908,7 @@ export class CardanoNode {
     if (this._isConnected() || this.state === CardanoNodeStates.STARTING) {
       return false;
     }
+
     try {
       await this._ensurePreviousCardanoNodeIsNotRunning();
       return true;
@@ -805,101 +916,133 @@ export class CardanoNode {
       return false;
     }
   };
-
   _ensureProcessIsNotRunning = async (pid: number, name: string) => {
     const { _log } = this;
+
     _log.info(
       `CardanoNode: checking if ${name} process (PID: ${pid}) is still running`,
-      { name, pid }
+      {
+        name,
+        pid,
+      }
     );
+
     if (await this._isProcessRunning(pid, name)) {
       _log.info(`CardanoNode: killing ${name} process (PID: ${pid})`, {
         name,
         pid,
       });
+
       try {
         await this._killProcessWithName(pid, name);
         return Promise.resolve();
       } catch (error) {
         _log.error(
           `CardanoNode: could not kill ${name} process (PID: ${pid})`,
-          { name, pid, error }
+          {
+            name,
+            pid,
+            error,
+          }
         );
+
         return Promise.reject();
       }
     }
+
     this._log.info(`CardanoNode: no ${name} process (PID: ${pid}) is running`, {
       name,
       pid,
     });
   };
-
   _ensureCurrentCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log, _node } = this;
+
     _log.info(
       'CardanoNode: checking if current cardano-node process is still running'
     );
+
     if (_node == null) {
       return Promise.resolve();
     }
+
     return this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
   };
-
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log } = this;
-    const previousPID: ?number = await this._retrieveData(PREVIOUS_CARDANO_PID);
+    const previousPID: number | null | undefined = await this._retrieveData(
+      PREVIOUS_CARDANO_PID
+    );
+
     _log.info(
       'CardanoNode: checking if previous cardano-node process is still running',
-      { previousPID }
+      {
+        previousPID,
+      }
     );
+
     if (previousPID == null) {
       return Promise.resolve();
     }
+
     return this._ensureProcessIsNotRunning(previousPID, CARDANO_PROCESS_NAME);
   };
-
   _isProcessRunning = async (
     previousPID: number,
     processName: string
   ): Promise<boolean> => {
     const { _log } = this;
+
     try {
       const previousProcess = await getProcess(previousPID, processName);
+
       if (!previousProcess) {
         _log.info(
           `CardanoNode: No previous ${processName} process is running anymore`,
-          { processName }
+          {
+            processName,
+          }
         );
+
         return false;
       }
+
       _log.info(`CardanoNode: previous ${processName} process found`, {
         processName,
         previousProcess,
       });
+
       return true;
     } catch (error) {
-      _log.error('CardanoNode: _isProcessRunning error', { error });
+      _log.error('CardanoNode: _isProcessRunning error', {
+        error,
+      });
+
       return false;
     }
   };
-
   // kills running process which did not shut down properly between sessions
   _killProcessWithName = async (pid: number, name: string): Promise<void> => {
     const { _config } = this;
+
     try {
       if (!environment.isWindows) {
         this._log.info(`CardanoNode: using "process.kill(${pid})" to kill it`, {
           pid,
         });
+
         process.kill(pid);
       } else {
         // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
         const windowsKillCmd = `taskkill /pid ${pid} /t /f`;
+
         this._log.info('CardanoNode (Windows): using kill command to kill it', {
           windowsKillCmd,
         });
+
         this._actions.exec(windowsKillCmd);
       }
+
       await promisedCondition(
         async () => (await this._isProcessRunning(pid, name)) === false,
         _config.killTimeout
@@ -907,23 +1050,37 @@ export class CardanoNode {
 
       this._log.info(
         `CardanoNode: successfully killed ${name} process (PID: ${pid})`,
-        { name, pid }
+        {
+          name,
+          pid,
+        }
       );
+
       return Promise.resolve();
     } catch (error) {
       this._log.error(
         `CardanoNode: _killProcessWithName returned an error attempting to kill ${name} process (PID: ${pid})`,
-        { processName: name, pid, error }
+        {
+          processName: name,
+          pid,
+          error,
+        }
       );
+
       return Promise.reject(error);
     }
   };
 
   async _storeProcessStates() {
     const { _log } = this;
+
     if (this._node != null) {
       const { pid } = this._node;
-      _log.info('CardanoNode: storing last cardano-node PID', { pid });
+
+      _log.info('CardanoNode: storing last cardano-node PID', {
+        pid,
+      });
+
       await this._storeData(PREVIOUS_CARDANO_PID, pid);
     }
   }
@@ -934,58 +1091,61 @@ export class CardanoNode {
       try {
         // saves current port/pid in file system
         store.set(identifier, data);
+
         this._log.info(`CardanoNode: ${identifier} stored successfully`);
+
         resolve();
       } catch (error) {
         this._log.error(`CardanoNode: failed to store ${identifier}`, {
           error,
         });
+
         reject(error);
       }
     });
-
   // retrieves the last known port/pid on which cardano-node or Daedalus was running
-  _retrieveData = (identifier: string): Promise<?number> =>
+  _retrieveData = (identifier: string): Promise<number | null | undefined> =>
     new Promise((resolve, reject) => {
       try {
         // retrieves previous port/pid from file system
-        const data: ?number = store.get(identifier);
+        const data: number | null | undefined = store.get(identifier);
 
         if (!data) {
           this._log.info(`CardanoNode: get ${identifier} returned null`);
+
           resolve(null);
         }
 
         this._log.info(`CardanoNode: get ${identifier} success`, {
           [`${identifier}`]: data,
         });
+
         resolve(toInteger(data));
       } catch (error) {
-        this._log.error(`CardanoNode: get ${identifier} failed`, { error });
+        this._log.error(`CardanoNode: get ${identifier} failed`, {
+          error,
+        });
+
         reject(error);
       }
     });
-
   _isNodeProcessStillRunning = async (): Promise<boolean> =>
     this._node != null &&
     this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
-
   _isNodeProcessNotRunningAnymore = async () =>
     (await this._isNodeProcessStillRunning()) === false;
-
   _waitForNodeProcessToExit = async (timeout: number) =>
     promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
-
   _waitForCardanoToExitOrKillIt = async () => {
     const { _config } = this;
     if (this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
+
     try {
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
     } catch (_) {
       await this._ensureCurrentCardanoNodeIsNotRunning();
     }
   };
-
   _isUnrecoverable = (config: CardanoNodeConfig) =>
     this._startupTries >= config.startupMaxRetries;
 }

@@ -1,20 +1,16 @@
-// @flow
 import React, { Component, Children } from 'react';
 import { linkTo } from '@storybook/addon-links';
 import { get } from 'lodash';
 import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
-
 // Context has many changeable props but "kind" is required
 type contextType = {
-  kind: string,
+  kind: string;
 };
-
 type Props = {
-  context: contextType,
-  children?: any | Node,
-  stores?: ?{},
+  context: contextType;
+  children?: any | Node;
+  stores?: {} | null | undefined;
 };
-
 const walletStories = {
   send: 'Wallets|Send',
   receive: 'Wallets|Receive',
@@ -22,10 +18,11 @@ const walletStories = {
   summary: 'Wallets|Summary',
   settings: 'Wallets|Settings',
 };
-
 export default class WalletWithNavigationLayout extends Component<Props> {
-  static defaultProps = { stores: null, storiesProps: null };
-
+  static defaultProps = {
+    stores: null,
+    storiesProps: null,
+  };
   getItemFromContext = (context: contextType) => {
     return context.kind.replace('Wallets|', '').toLocaleLowerCase();
   };
@@ -37,7 +34,6 @@ export default class WalletWithNavigationLayout extends Component<Props> {
     const contextItem = context.kind
       .replace('Wallets|', '')
       .toLocaleLowerCase();
-
     return (
       <WalletWithNavigation
         activeItem={contextItem}

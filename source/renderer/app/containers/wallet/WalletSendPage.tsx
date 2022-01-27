@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -11,20 +10,21 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class WalletSendPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   calculateTransactionFee = async (params: {
-    walletId: string,
-    address: string,
-    amount: number,
-    isHardwareWallet: boolean,
-    selectedAssets?: ApiTokens,
+    walletId: string;
+    address: string;
+    amount: number;
+    isHardwareWallet: boolean;
+    selectedAssets?: ApiTokens;
   }) => {
     const {
       walletId,
@@ -35,6 +35,7 @@ class WalletSendPage extends Component<Props> {
     } = params;
     let fee;
     let minimumAda;
+
     if (isHardwareWallet) {
       const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
         {
@@ -56,11 +57,14 @@ class WalletSendPage extends Component<Props> {
         assets: selectedAssets,
       }));
     }
-    return { fee, minimumAda };
-  };
 
+    return {
+      fee,
+      minimumAda,
+    };
+  };
   openDialog = (
-    dialog: Function,
+    dialog: (...args: Array<any>) => any,
     isHardwareWallet: boolean,
     walletId: string
   ) => {
@@ -68,11 +72,13 @@ class WalletSendPage extends Component<Props> {
     this.props.actions.dialogs.open.trigger({
       dialog,
     });
+
     if (isHardwareWallet && !isFlight) {
-      this.props.stores.hardwareWallets.initiateTransaction({ walletId });
+      this.props.stores.hardwareWallets.initiateTransaction({
+        walletId,
+      });
     }
   };
-
   getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
     return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };
@@ -94,15 +100,12 @@ class WalletSendPage extends Component<Props> {
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets, activeAsset, getAsset, favorites } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
-
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, allAssets)
       : null;
-
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
-
     const { isHardwareWallet, name: walletName } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
@@ -110,7 +113,6 @@ class WalletSendPage extends Component<Props> {
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
-
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -154,4 +156,4 @@ class WalletSendPage extends Component<Props> {
   }
 }
 
-export default WalletSendPage
+export default WalletSendPage;

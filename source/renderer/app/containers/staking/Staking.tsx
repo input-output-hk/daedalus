@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
@@ -12,13 +11,15 @@ import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../../config/stakingConfig';
-
 type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
 class Staking extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   componentDidMount() {
     this.handleDelegationRoute();
@@ -44,10 +45,10 @@ class Staking extends Component<Props> {
 
     return true;
   };
-
   isActiveNavItem = (page: string, item: NavDropdownProps) => {
     const { app } = this.props.stores;
     const { options } = item;
+
     if (options && options.length) {
       options.forEach((option) => {
         if (
@@ -58,16 +59,18 @@ class Staking extends Component<Props> {
         }
       });
     }
+
     const screenRoute = buildRoute(ROUTES.STAKING.PAGE, {
       page,
     });
     return app.currentRoute === screenRoute;
   };
-
   handleNavItemClick = (page: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.PAGE,
-      params: { page },
+      params: {
+        page,
+      },
     });
   };
 
@@ -84,11 +87,9 @@ class Staking extends Component<Props> {
     } = networkStatus;
     const { isStakingDelegationCountdown } = staking;
     const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
-
     const isDelegationWizardOpen = uiDialogs.isOpen(
       DelegationSetupWizardDialog
     );
-
     const isUndelegationWizardOpen = uiDialogs.isOpen(
       UndelegateWalletConfirmationDialog
     );
@@ -122,4 +123,4 @@ class Staking extends Component<Props> {
   }
 }
 
-export default Staking
+export default Staking;

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { discreetWalletTokenAmount } from '../replacers/discreetWalletTokenAmount';

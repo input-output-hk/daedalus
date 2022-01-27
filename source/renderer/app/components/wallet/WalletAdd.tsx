@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,7 +10,6 @@ import connectIcon from '../../assets/images/connect-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 import { isHardwareWalletSupportEnabled } from '../../config/hardwareWalletsConfig';
-
 const messages = defineMessages({
   title: {
     id: 'wallet.add.dialog.title.label',
@@ -95,16 +93,15 @@ const messages = defineMessages({
       '"Maximum number of wallets reached" notification message shown on the wallet add screen if user has 50 wallets.',
   },
 });
-
 type Props = {
-  onCreate: Function,
-  onRestore: Function,
-  onImport: Function,
-  onConnect: Function,
-  isMaxNumberOfWalletsReached: boolean,
-  isMainnet: boolean,
-  isTestnet: boolean,
-  isProduction: boolean,
+  onCreate: (...args: Array<any>) => any;
+  onRestore: (...args: Array<any>) => any;
+  onImport: (...args: Array<any>) => any;
+  onConnect: (...args: Array<any>) => any;
+  isMaxNumberOfWalletsReached: boolean;
+  isMainnet: boolean;
+  isTestnet: boolean;
+  isProduction: boolean;
 };
 
 @observer
@@ -112,7 +109,6 @@ class WalletAdd extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isMainnet: false,
     isTestnet: false,
@@ -130,10 +126,9 @@ class WalletAdd extends Component<Props> {
       isTestnet,
       isProduction,
     } = this.props;
-
     const componentClasses = classnames([styles.component, 'WalletAdd']);
-
     let activeNotification = null;
+
     if (isMaxNumberOfWalletsReached) {
       activeNotification = 'maxNumberOfWalletsNotificationMessage';
     }
@@ -188,7 +183,9 @@ class WalletAdd extends Component<Props> {
             <div className={styles.notification}>
               <FormattedHTMLMessage
                 {...messages[activeNotification]}
-                values={{ maxWalletsCount: MAX_ADA_WALLETS_COUNT }}
+                values={{
+                  maxWalletsCount: MAX_ADA_WALLETS_COUNT,
+                }}
               />
             </div>
           ) : null}
@@ -198,4 +195,4 @@ class WalletAdd extends Component<Props> {
   }
 }
 
-export default WalletAdd
+export default WalletAdd;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -15,27 +14,25 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
-
 type Props = {
-  className?: string,
-  isActive: boolean,
-  isDisabled: boolean,
-  placeholder?: string,
-  inputFieldLabel?: string,
-  inputFieldValue: string,
-  onStartEditing?: Function,
-  onStopEditing?: Function,
-  onCancelEditing?: Function,
-  onSubmit: Function,
-  isValid: Function,
-  validationErrorMessage: string,
-  successfullyUpdated: boolean,
-  inputBlocked?: boolean,
-  maxLength?: number,
+  className?: string;
+  isActive: boolean;
+  isDisabled: boolean;
+  placeholder?: string;
+  inputFieldLabel?: string;
+  inputFieldValue: string;
+  onStartEditing?: (...args: Array<any>) => any;
+  onStopEditing?: (...args: Array<any>) => any;
+  onCancelEditing?: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
+  isValid: (...args: Array<any>) => any;
+  validationErrorMessage: string;
+  successfullyUpdated: boolean;
+  inputBlocked?: boolean;
+  maxLength?: number;
 };
-
 type State = {
-  isActive: boolean,
+  isActive: boolean;
 };
 
 @observer
@@ -43,13 +40,11 @@ class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
   };
-
   static defaultProps = {
     onStartEditing: () => {},
     onStopEditing: () => {},
     onCancelEditing: () => {},
   };
-
   validator = new ReactToolboxMobxForm(
     {
       fields: {
@@ -65,64 +60,75 @@ class InlineEditingSmallInput extends Component<Props, State> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
-        this.setState({ isActive: false });
+        this.setState({
+          isActive: false,
+        });
+
         if (inputField !== this.props.inputFieldValue) {
           this.props.onStopEditing();
           this.props.onSubmit(inputField);
         } else {
           this.props.onCancelEditing();
         }
+
         this.input.blur();
       },
       onError: (form) => {
         const { inputField } = form.values();
+
         if (!inputField || !form.isValid) {
-          this.setState({ isActive: false });
+          this.setState({
+            isActive: false,
+          });
           this.props.onSubmit(inputField);
         }
       },
     });
   };
-
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.which === 13) {
       // ENTER key
       this.onBlur();
     }
+
     if (event.which === 27) {
       // ESCAPE key
       this.onCancel();
     }
   };
-
   onFocus = () => {
-    this.setState({ isActive: true });
+    this.setState({
+      isActive: true,
+    });
     if (this.props.onStartEditing) this.props.onStartEditing();
   };
-
   onBlur = () => {
     if (this.state.isActive) {
-      this.setState({ isActive: false });
+      this.setState({
+        isActive: false,
+      });
       this.submit();
     }
   };
-
   onCancel = () => {
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
-    this.setState({ isActive: false });
+    this.setState({
+      isActive: false,
+    });
     if (this.props.onCancelEditing) this.props.onCancelEditing();
     this.input.blur();
   };
@@ -176,12 +182,10 @@ class InlineEditingSmallInput extends Component<Props, State> {
       successfullyUpdated ? 'input_animateSuccess' : null,
       isActive ? null : 'input_cursorPointer',
     ]);
-
     const leftButtonStyles = classnames([
       styles.leftButton,
       !arrowIconIsVisible ? styles.withoutRightButton : null,
     ]);
-
     return (
       <div
         className={componentStyles}
@@ -221,11 +225,13 @@ class InlineEditingSmallInput extends Component<Props, State> {
                   <SVGInline
                     svg={penIcon}
                     className={styles.penIcon}
-                    style={{ pointerEvents: 'none' }}
+                    style={{
+                      pointerEvents: 'none',
+                    }}
                   />
                 }
                 onMouseUp={() => this.input.focus()}
-                onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                   event.persist();
                   event.preventDefault();
                   event.stopPropagation();
@@ -240,14 +246,16 @@ class InlineEditingSmallInput extends Component<Props, State> {
                     <SVGInline
                       svg={crossIcon}
                       className={styles.crossIcon}
-                      style={{ pointerEvents: 'none' }}
+                      style={{
+                        pointerEvents: 'none',
+                      }}
                     />
                   }
                   onMouseUp={() => {
                     this.onCancel();
                     this.input.blur();
                   }}
-                  onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                  onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                     event.persist();
                     event.preventDefault();
                     event.stopPropagation();
@@ -261,11 +269,13 @@ class InlineEditingSmallInput extends Component<Props, State> {
                       <SVGInline
                         svg={arrowIcon}
                         className={styles.arrowIcon}
-                        style={{ pointerEvents: 'none' }}
+                        style={{
+                          pointerEvents: 'none',
+                        }}
                       />
                     }
                     onMouseUp={() => this.input.blur()}
-                    onMouseDown={(event: SyntheticMouseEvent<HTMLElement>) => {
+                    onMouseDown={(event: React.MouseEvent<HTMLElement>) => {
                       event.persist();
                       event.preventDefault();
                       event.stopPropagation();
@@ -282,4 +292,4 @@ class InlineEditingSmallInput extends Component<Props, State> {
   }
 }
 
-export default InlineEditingSmallInput
+export default InlineEditingSmallInput;

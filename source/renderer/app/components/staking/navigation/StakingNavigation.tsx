@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Navigation from '../../navigation/Navigation';
-
 const messages = defineMessages({
   delegation_center: {
     id: 'staking.navigation.delegation_center',
@@ -33,12 +31,11 @@ const messages = defineMessages({
     description: 'Label for the "Info" nav button in the staking navigation.',
   },
 });
-
 type Props = {
-  activeItem: string,
-  showInfoTab: boolean,
-  onNavItemClick: Function,
-  isActiveNavItem: Function,
+  activeItem: string;
+  showInfoTab: boolean;
+  onNavItemClick: (...args: Array<any>) => any;
+  isActiveNavItem: (...args: Array<any>) => any;
 };
 
 @observer
@@ -67,8 +64,7 @@ class StakingNavigation extends Component<Props> {
       {
         id: 'rewards',
         label: intl.formatMessage(messages.rewards),
-      },
-      // {
+      }, // {
       //   id: 'epochs',
       //   label: intl.formatMessage(messages.epochs),
       // },
@@ -92,4 +88,4 @@ class StakingNavigation extends Component<Props> {
   }
 }
 
-export default StakingNavigation
+export default StakingNavigation;

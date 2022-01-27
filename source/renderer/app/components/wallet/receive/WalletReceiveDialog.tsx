@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
@@ -26,10 +25,8 @@ import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-
 const messages = defineMessages({
   inputLabel: {
     id: 'wallet.receive.dialog.inputLabel',
@@ -136,29 +133,26 @@ const messages = defineMessages({
     description: 'Invalid address "Warning" description',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  address: WalletAddress,
-  isHardwareWallet: boolean,
-  walletName: string,
-  hwDeviceStatus: HwDeviceStatus,
-  isAddressDerived: boolean,
-  isAddressChecked: boolean,
-  onCopyAddress: Function,
-  onDownloadPDF: Function,
-  onSaveQRCodeImage: Function,
-  onClose: Function,
-  onChangeVerificationStatus: Function,
-  onSupportRequestClick: Function,
-  isTrezor: boolean,
+  address: WalletAddress;
+  isHardwareWallet: boolean;
+  walletName: string;
+  hwDeviceStatus: HwDeviceStatus;
+  isAddressDerived: boolean;
+  isAddressChecked: boolean;
+  onCopyAddress: (...args: Array<any>) => any;
+  onDownloadPDF: (...args: Array<any>) => any;
+  onSaveQRCodeImage: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onChangeVerificationStatus: (...args: Array<any>) => any;
+  onSupportRequestClick: (...args: Array<any>) => any;
+  isTrezor: boolean;
 };
-
 type State = {
-  selectedVerificationStatus: ?AddressVerificationCheckStatus,
-  isInvalidAddressConfirmed: boolean,
-  isReverifying: boolean,
+  selectedVerificationStatus: AddressVerificationCheckStatus | null | undefined;
+  isInvalidAddressConfirmed: boolean;
+  isReverifying: boolean;
 };
 
 @observer
@@ -166,13 +160,11 @@ class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     selectedVerificationStatus: null,
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
-
   form = new ReactToolboxMobxForm({
     fields: {
       noteInput: {
@@ -182,7 +174,6 @@ class WalletReceiveDialog extends Component<Props, State> {
       },
     },
   });
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -195,11 +186,9 @@ class WalletReceiveDialog extends Component<Props, State> {
       },
     });
   };
-
   handleChange = (field: { value: string }) => {
     field.value = field.value.replace(/\n/g, '');
   };
-
   constructPaths = (address: WalletAddress) => {
     const hardenedSpendingPath = utils.str_to_path(address.spendingPath);
     const derivationSpendingPath = hardenedPathToDerivationPath(
@@ -210,15 +199,16 @@ class WalletReceiveDialog extends Component<Props, State> {
       (constructeSpendingPathChunk, index) => {
         const isChangeablePart =
           index >= derivationSpendingPath.constructed.length - 2;
+
         if (isChangeablePart) {
           return <b key={`chunk-${index}`}>/{constructeSpendingPathChunk}</b>;
         }
+
         return index === 0
           ? constructeSpendingPathChunk
           : `/${constructeSpendingPathChunk}`;
       }
     );
-
     const derivationStakingPath = hardenedPathToDerivationPath(
       HW_SHELLEY_CONFIG.DEFAULT_DERIVATION_PATH
     );
@@ -227,21 +217,21 @@ class WalletReceiveDialog extends Component<Props, State> {
       (constructeStakingPathChunk, index) => {
         const isLastIndex =
           index === derivationStakingPath.constructed.length - 1;
+
         if (isLastIndex) {
           return <b key={`chunk-${index}`}>/{constructeStakingPathChunk}</b>;
         }
+
         return index === 0
           ? constructeStakingPathChunk
           : `/${constructeStakingPathChunk}`;
       }
     );
-
     return {
       stakingPath,
       spendingPath,
     };
   };
-
   onChangeVerificationStatus = (status: AddressVerificationCheckStatus) => {
     this.setState({
       selectedVerificationStatus:
@@ -251,7 +241,6 @@ class WalletReceiveDialog extends Component<Props, State> {
     });
     this.props.onChangeVerificationStatus(status);
   };
-
   handleConfirmInvalidAddress = (isConfirmed: boolean) => {
     this.setState({
       isInvalidAddressConfirmed: isConfirmed,
@@ -292,8 +281,8 @@ class WalletReceiveDialog extends Component<Props, State> {
     );
     const isSupportRequestButton =
       selectedVerificationStatus === AddressVerificationCheckStatuses.INVALID;
-
     let actions;
+
     if (isSupportRequestButton) {
       const supportRequestLinkUrl = intl.formatMessage(
         messages.supportRequestLinkUrl
@@ -333,9 +322,7 @@ class WalletReceiveDialog extends Component<Props, State> {
           '--theme-receive-qr-code-foreground-color'
         )
       : '#000';
-
     const constructedPaths = this.constructPaths(address);
-
     const verificationOptions = [
       {
         status: AddressVerificationCheckStatuses.VALID,
@@ -352,12 +339,12 @@ class WalletReceiveDialog extends Component<Props, State> {
         }),
       },
     ];
-
     const filteredVerificationOptions = filter(
       verificationOptions,
       (option) => {
         const isInvalidOption =
           option.status === AddressVerificationCheckStatuses.INVALID;
+
         if (
           (!selectedVerificationStatus &&
             (!isInvalidOption || (isInvalidOption && isReverifying))) ||
@@ -366,10 +353,10 @@ class WalletReceiveDialog extends Component<Props, State> {
         ) {
           return option;
         }
+
         return null;
       }
     );
-
     const showActions =
       !isHardwareWallet ||
       (isHardwareWallet &&
@@ -377,12 +364,10 @@ class WalletReceiveDialog extends Component<Props, State> {
           AddressVerificationCheckStatuses.INVALID ||
           selectedVerificationStatus ===
             AddressVerificationCheckStatuses.VALID));
-
     const isAddressConfirmed =
       isAddressChecked &&
       isAddressDerived &&
       selectedVerificationStatus !== null;
-
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -456,7 +441,9 @@ class WalletReceiveDialog extends Component<Props, State> {
               <p className={styles.verificationInstructions}>
                 <FormattedHTMLMessage
                   {...messages.addressVerificationInstructions}
-                  values={{ deviceType }}
+                  values={{
+                    deviceType,
+                  }}
                 />
               </p>
 
@@ -489,7 +476,9 @@ class WalletReceiveDialog extends Component<Props, State> {
               <Checkbox
                 label={intl.formatMessage(
                   messages.invalidAddressConfirmationLabel,
-                  { deviceType }
+                  {
+                    deviceType,
+                  }
                 )}
                 onChange={this.handleConfirmInvalidAddress}
                 checked={isInvalidAddressConfirmed}
@@ -502,7 +491,9 @@ class WalletReceiveDialog extends Component<Props, State> {
                 <p className={styles.warningDescription}>
                   {intl.formatMessage(
                     messages.invalidAddressWarningDescription,
-                    { deviceType }
+                    {
+                      deviceType,
+                    }
                   )}
                 </p>
               </div>
@@ -528,4 +519,4 @@ class WalletReceiveDialog extends Component<Props, State> {
   }
 }
 
-export default WalletReceiveDialog
+export default WalletReceiveDialog;

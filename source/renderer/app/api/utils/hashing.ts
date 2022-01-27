@@ -1,5 +1,3 @@
-// @flow
-
 // From: https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
 export const getSHA256HexForString = async (str: string): Promise<string> => {
   const data = new TextEncoder().encode(str);

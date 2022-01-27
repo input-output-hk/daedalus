@@ -1,9 +1,7 @@
-// @flow
 import React from 'react';
 import { select, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
-
 // Screens
 import Step1ConfigurationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
 import Step2ConfirmationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
@@ -11,7 +9,6 @@ import Step3SuccessDialog from '../../../source/renderer/app/components/staking/
 import Step3FailureDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
 import NoWalletsDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog';
 import RedemptionUnavailableDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
-
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
 import validWords from '../../../source/common/config/crypto/valid-words.en';
@@ -20,7 +17,6 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
-
 const assets = {
   available: [
     {
@@ -55,7 +51,6 @@ const assets = {
     },
   ],
 };
-
 const WALLETS = [
   generateWallet('First Wallet', '1000000000', assets),
   generateWallet(
@@ -71,7 +66,6 @@ const WALLETS = [
   generateWallet('Fourth Wallet', '50000000', assets),
   generateWallet('Fifth Wallet', '7000000', assets),
 ];
-
 // 'Dummy2',
 // '2000000000000',
 // assets,
@@ -79,7 +73,6 @@ const WALLETS = [
 // undefined,
 // true,
 // WalletSyncStateStatuses.SYNCING
-
 export const Step1ConfigurationDialogStory = () => {
   const redeemWallet = select(
     'Redeem Wallet',
@@ -154,7 +147,6 @@ export const Step3FailureDialogStory = () => {
     <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
   );
 };
-
 export const NoWalletsDialogDialogStory = () => {
   return (
     <NoWalletsDialog
@@ -163,7 +155,6 @@ export const NoWalletsDialogDialogStory = () => {
     />
   );
 };
-
 export const RedemptionUnavailableDialogDialogStory = () => {
   return (
     <RedemptionUnavailableDialog

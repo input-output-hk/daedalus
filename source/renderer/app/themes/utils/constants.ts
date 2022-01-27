@@ -1,4 +1,3 @@
-// @flow
 import { createBackgroundShades, createErrorShades } from './createShades';
 import {
   createReactPolymorphTheme,
@@ -6,7 +5,6 @@ import {
 } from './createTheme';
 import type { PartialThemeParts } from './createTheme';
 import type { CreateThemeParams } from '../types';
-
 export const DEFAULT_FONTS = {
   black: 'NotoSans-Black, NotoSansCJKjp-Black',
   bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
@@ -19,7 +17,6 @@ export const DEFAULT_FONTS = {
   thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
   ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
 };
-
 export const THEME_LOGGING_COLORS = {
   'cardano.ts': '#2cbb69',
   'dark-blue.ts': '#2874a6',
@@ -31,7 +28,6 @@ export const THEME_LOGGING_COLORS = {
   'white.ts': '#29b595',
   'yellow.ts': '#fdcd68',
 };
-
 const CREATE_THEME_MOCK_PARAMS: PartialThemeParts = {
   colors: {
     border: '#eee',
@@ -48,7 +44,6 @@ const CREATE_THEME_MOCK_PARAMS: PartialThemeParts = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -65,7 +60,6 @@ const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -82,7 +76,6 @@ const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -99,7 +92,6 @@ const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -116,7 +108,6 @@ const CREATE_FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -133,7 +124,6 @@ const CREATE_INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -150,7 +140,6 @@ const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -167,7 +156,6 @@ const CREATE_SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -184,7 +172,6 @@ const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
@@ -201,7 +188,6 @@ const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
-
 export const CREATE_THEME_PARAMS = [
   ['cardano.ts', CREATE_CARDANO_THEME_PARAMS],
   ['dark-blue.ts', CREATE_DARK_BLUE_THEME_PARAMS],
@@ -213,7 +199,6 @@ export const CREATE_THEME_PARAMS = [
   ['white.ts', CREATE_WHITE_THEME_PARAMS],
   ['yellow.ts', CREATE_YELLOW_THEME_PARAMS],
 ];
-
 export const CREATE_THEME_OBJ = {
   ...createReactPolymorphTheme(CREATE_THEME_MOCK_PARAMS),
   ...createDaedalusComponentsTheme(CREATE_THEME_MOCK_PARAMS),

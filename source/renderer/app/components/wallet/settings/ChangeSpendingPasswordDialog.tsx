@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -21,7 +20,6 @@ import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
-
 const messages = defineMessages({
   dialogTitleSetPassword: {
     id: 'wallet.settings.changePassword.dialog.title.setPassword',
@@ -84,19 +82,18 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
-
 type Props = {
-  currentPasswordValue: string,
-  newPasswordValue: string,
-  repeatedPasswordValue: string,
-  onSave: Function,
-  onCancel: Function,
-  onDataChange: Function,
-  isSubmitting: boolean,
-  error: ?LocalizableError,
-  isSpendingPasswordSet: boolean,
-  walletName: string,
-  currentLocale: string,
+  currentPasswordValue: string;
+  newPasswordValue: string;
+  repeatedPasswordValue: string;
+  onSave: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
+  onDataChange: (...args: Array<any>) => any;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
+  isSpendingPasswordSet: boolean;
+  walletName: string;
+  currentLocale: string;
 };
 
 @observer
@@ -106,11 +103,9 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
     newPasswordValue: '',
     repeatedPasswordValue: '',
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -132,6 +127,7 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
                   ),
                 ];
               }
+
               return [true];
             },
           ],
@@ -188,7 +184,9 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -196,7 +194,6 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -210,11 +207,11 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
       onError: () => {},
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   handleDataChange = (key: string, value: string) => {
-    this.props.onDataChange({ [key]: value });
+    this.props.onDataChange({
+      [key]: value,
+    });
   };
 
   render() {
@@ -232,28 +229,21 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
       styles.dialog,
       isSpendingPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
     ]);
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.isSubmitting : null,
     ]);
-
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
-
     const currentPasswordField = form.$('currentPassword');
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
-
     const canSubmit = !isSubmitting && form.isValid;
-
     const currentPasswordError =
       canSubmit && error && error.code === 'wrong_encryption_passphrase';
-
     const actions = [
       {
         className: confirmButtonClasses,
@@ -263,7 +253,6 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         title={intl.formatMessage(
@@ -272,7 +261,9 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
               ? 'dialogTitleSetPassword'
               : 'dialogTitleChangePassword'
           ],
-          { walletName }
+          {
+            walletName,
+          }
         )}
         subtitle={walletName}
         actions={actions}
@@ -339,4 +330,4 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
   }
 }
 
-export default ChangeSpendingPasswordDialog
+export default ChangeSpendingPasswordDialog;

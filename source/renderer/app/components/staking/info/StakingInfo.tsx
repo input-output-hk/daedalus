@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfo.scss';
-
 const messages = defineMessages({
   heading: {
     id: 'staking.info.heading',
@@ -37,30 +35,30 @@ const messages = defineMessages({
     description: '"Learn more" link URL in the staking info page',
   },
 });
-
 type Props = {
-  percentage: number,
-  onLearnMoreClick: Function,
+  percentage: number;
+  onLearnMoreClick: (...args: Array<any>) => any;
 };
-type State = { progressLabelClassName: string };
+type State = {
+  progressLabelClassName: string;
+};
 
 @observer
 class StakingInfo extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
   };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   progressRef: any;
 
   constructor(props: Props) {
     super(props);
-
     this.progressRef = React.createRef();
-    this.state = { progressLabelClassName: styles.progressLabelWhite };
+    this.state = {
+      progressLabelClassName: styles.progressLabelWhite,
+    };
   }
 
   componentDidMount() {
@@ -82,8 +80,9 @@ class StakingInfo extends Component<Props, State> {
       progressComponent.clientWidth >= 50
         ? styles.progressLabelWhite
         : styles.progressLabel;
-
-    this.setState({ progressLabelClassName });
+    this.setState({
+      progressLabelClassName,
+    });
   };
 
   render() {
@@ -102,7 +101,9 @@ class StakingInfo extends Component<Props, State> {
           <div className={styles.description}>
             <FormattedMessage
               {...messages.percentage}
-              values={{ percentage }}
+              values={{
+                percentage,
+              }}
             />
           </div>
           <div className={styles.progressBar}>
@@ -110,7 +111,9 @@ class StakingInfo extends Component<Props, State> {
               <div
                 className={styles.progress}
                 ref={this.progressRef}
-                style={{ width: `${percentage}%` }}
+                style={{
+                  width: `${percentage}%`,
+                }}
               >
                 <div className={progressLabelClassName}>{percentage}%</div>
               </div>
@@ -135,4 +138,4 @@ class StakingInfo extends Component<Props, State> {
   }
 }
 
-export default StakingInfo
+export default StakingInfo;

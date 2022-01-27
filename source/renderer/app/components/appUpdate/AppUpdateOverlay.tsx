@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
@@ -19,7 +18,6 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   title: {
     id: 'appUpdate.overlay.title',
@@ -114,30 +112,28 @@ const messages = defineMessages({
       '"manualUpdateButtonUrl" for the App Update Overlay on Testnet',
   },
 });
-
 type Props = {
-  update: News.News,
-  onClose: Function,
-  downloadTimeLeft: string,
-  totalDownloaded: string,
-  totalDownloadSize: string,
-  availableAppVersion: string,
-  currentAppVersion: string,
-  downloadProgress: number,
-  isUpdateDownloaded: boolean,
-  isAutomaticUpdateFailed: boolean,
-  isWaitingToQuitDaedalus: boolean,
-  onInstallUpdate: Function,
-  onExternalLinkClick: Function,
-  onPostponeUpdate: Function,
-  installationProgress: number,
-  isLinux: boolean,
-  isFlight: boolean,
-  isTestnet: boolean,
+  update: News.News;
+  onClose: (...args: Array<any>) => any;
+  downloadTimeLeft: string;
+  totalDownloaded: string;
+  totalDownloadSize: string;
+  availableAppVersion: string;
+  currentAppVersion: string;
+  downloadProgress: number;
+  isUpdateDownloaded: boolean;
+  isAutomaticUpdateFailed: boolean;
+  isWaitingToQuitDaedalus: boolean;
+  onInstallUpdate: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onPostponeUpdate: (...args: Array<any>) => any;
+  installationProgress: number;
+  isLinux: boolean;
+  isFlight: boolean;
+  isTestnet: boolean;
 };
-
 type State = {
-  areTermsOfUseAccepted: boolean,
+  areTermsOfUseAccepted: boolean;
 };
 
 @observer
@@ -145,19 +141,18 @@ class AppUpdateOverlay extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     areTermsOfUseAccepted: this.props.isLinux,
   };
-
   toggleAcceptance = () => {
     this.setState((prevState) => ({
       areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
     }));
   };
 
-  contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
+  contentClickHandler(event: React.MouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
+
     if (linkUrl) {
       event.preventDefault();
       event.stopPropagation();
@@ -190,7 +185,6 @@ class AppUpdateOverlay extends Component<Props, State> {
       </div>
     );
   };
-
   openInstallerAction = () => {
     const { intl } = this.context;
     const {
@@ -273,7 +267,6 @@ class AppUpdateOverlay extends Component<Props, State> {
       </div>
     );
   };
-
   manualUpdateAction = () => {
     const { intl } = this.context;
     const {
@@ -348,7 +341,6 @@ class AppUpdateOverlay extends Component<Props, State> {
     if (isAutomaticUpdateFailed) actions = this.manualUpdateAction();
     else if (!isUpdateDownloaded) actions = this.progressActions();
     else actions = this.openInstallerAction();
-
     return (
       <div
         className={styles.component}
@@ -386,4 +378,4 @@ class AppUpdateOverlay extends Component<Props, State> {
   }
 }
 
-export default AppUpdateOverlay
+export default AppUpdateOverlay;

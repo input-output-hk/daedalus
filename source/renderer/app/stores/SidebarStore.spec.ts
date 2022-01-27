@@ -1,45 +1,41 @@
-// @flow
 import BigNumber from 'bignumber.js';
-
 import type { Api } from '../api/index';
 import type { ActionsMap } from '../actions/index';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type { SidebarWalletType } from '../types/sidebarTypes';
-
 import SidebarStore from './SidebarStore';
-
 describe('Sidebar Store', () => {
-  const api: Api = ({
+  const api: Api = {
     ada: jest.fn(),
     localStorage: jest.fn(),
-  }: any);
-
-  const actions: ActionsMap = (jest.fn(): any);
+  } as any;
+  const actions: ActionsMap = jest.fn() as any;
 
   function setupStore({
     wallets,
   }: {
     wallets: Array<{
-      id: string,
-      name: string,
-      amount: BigNumber,
-      isLegacy?: boolean,
-    }>,
+      id: string;
+      name: string;
+      amount: BigNumber;
+      isLegacy?: boolean;
+    }>;
   }) {
     const sidebarStore = new SidebarStore(api, actions);
-    sidebarStore.stores = ({
-      wallets: { all: wallets },
+    sidebarStore.stores = {
+      wallets: {
+        all: wallets,
+      },
       hardwareWallets: jest.fn(),
       walletSettings: {
-        getWalletsRecoveryPhraseVerificationData: jest
-          .fn()
-          .mockReturnValue({ hasNotification: false }),
+        getWalletsRecoveryPhraseVerificationData: jest.fn().mockReturnValue({
+          hasNotification: false,
+        }),
       },
       networkStatus: {
         isConnected: true,
       },
-    }: any);
-
+    } as any;
     return sidebarStore;
   }
 
@@ -69,7 +65,6 @@ describe('Sidebar Store', () => {
         },
       ],
     });
-
     expect(pickAssertionProps(sidebarStore.wallets)).toEqual([
       {
         id: '1',
@@ -85,7 +80,6 @@ describe('Sidebar Store', () => {
       },
     ]);
   });
-
   const defaultSortingCases = [
     // Sort wallets by NAME from A-Z as default order
     [
@@ -108,8 +102,7 @@ describe('Sidebar Store', () => {
         ['7', 'Jormungand', 0, true],
         ['6', 'Odin', 246, true],
       ],
-    ],
-    // Sort wallets by BALANCE from from higher to lower as default order
+    ], // Sort wallets by BALANCE from from higher to lower as default order
     [
       WalletSortBy.Balance,
       [
@@ -122,7 +115,6 @@ describe('Sidebar Store', () => {
       ],
     ],
   ];
-
   test.each(defaultSortingCases)(
     `should set default sorting for %s`,
     (sortBy, wallets, expected) => {
@@ -134,9 +126,7 @@ describe('Sidebar Store', () => {
           isLegacy,
         })),
       });
-
       sidebarStore.onChangeWalletSortType(sortBy);
-
       expect(pickAssertionProps(sidebarStore.wallets)).toEqual(
         expected.map(([id, title, amount, isLegacy = false]) => ({
           id,
@@ -147,7 +137,6 @@ describe('Sidebar Store', () => {
       );
     }
   );
-
   it('should move Byron wallets at the bottom', () => {
     const sidebarStore = setupStore({
       wallets: [
@@ -177,9 +166,7 @@ describe('Sidebar Store', () => {
         },
       ],
     });
-
     sidebarStore.onChangeWalletSortType(WalletSortBy.Balance);
-
     expect(pickAssertionProps(sidebarStore.wallets)).toEqual([
       {
         id: '3',
@@ -207,7 +194,6 @@ describe('Sidebar Store', () => {
       },
     ]);
   });
-
   const reverseSortingOrderCases = [
     // Sort wallets by DATE by reversing from ASC to DESC
     [
@@ -221,8 +207,7 @@ describe('Sidebar Store', () => {
         ['2', 'Wallet B', 2],
         ['1', 'Wallet A', 1],
       ],
-    ],
-    // Sort wallets by NAME by reversing from A-Z to Z-A
+    ], // Sort wallets by NAME by reversing from A-Z to Z-A
     [
       WalletSortBy.Name,
       WalletSortOrder.Asc,
@@ -234,8 +219,7 @@ describe('Sidebar Store', () => {
         ['2', 'Wallet B', 2],
         ['1', 'Wallet A', 1],
       ],
-    ],
-    // Sort wallets by BALANCE by reversing from higher amount to lower ones
+    ], // Sort wallets by BALANCE by reversing from higher amount to lower ones
     [
       WalletSortBy.Balance,
       WalletSortOrder.Desc,
@@ -249,7 +233,6 @@ describe('Sidebar Store', () => {
       ],
     ],
   ];
-
   test.each(reverseSortingOrderCases)(
     `should reverse sorting for %s on %s order`,
     (sortBy, sortOrder, wallets, expected) => {
@@ -261,14 +244,11 @@ describe('Sidebar Store', () => {
           isLegacy,
         })),
       });
-
       sidebarStore.walletSortConfig = {
         sortBy,
         sortOrder,
       };
-
       sidebarStore.onChangeWalletSortType(sortBy);
-
       expect(pickAssertionProps(sidebarStore.wallets)).toEqual(
         expected.map(([id, title, amount, isLegacy = false]) => ({
           id,

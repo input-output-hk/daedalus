@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -13,7 +12,6 @@ import {
   DeviceModels,
   DeviceTypes,
 } from '../../../../source/common/types/hardware-wallets.types';
-
 const ledgerDevice = {
   deviceId: '1',
   deviceType: DeviceTypes.LEDGER,
@@ -22,7 +20,6 @@ const ledgerDevice = {
   path: null,
   firmwareVersion: MINIMAL_LEDGER_FIRMWARE_VERSION,
 };
-
 const trezorDevice = {
   deviceId: '2',
   deviceType: DeviceTypes.TREZOR,
@@ -31,12 +28,8 @@ const trezorDevice = {
   path: null,
   firmwareVersion: MINIMAL_TREZOR_FIRMWARE_VERSION,
 };
-
 storiesOf('Wallets|Hardware Wallets', module)
-  .addDecorator(HardwareWalletsWrapper)
-
-  // ====== Stories ======
-
+  .addDecorator(HardwareWalletsWrapper) // ====== Stories ======
   .add('Hardware wallet connect Ledger step 1', () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
@@ -47,7 +40,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Ledger step 2', () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
@@ -58,7 +50,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Ledger step 3', () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
@@ -69,7 +60,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Ledger step 4', () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
@@ -80,7 +70,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Ledger step 5', () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
@@ -91,7 +80,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Trezor step 1', () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
@@ -102,7 +90,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Trezor step 2', () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
@@ -113,7 +100,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Trezor step 3', () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
@@ -124,7 +110,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Trezor step 4', () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
@@ -135,7 +120,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       error={null}
     />
   ))
-
   .add('Hardware wallet connect Trezor step 5', () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}

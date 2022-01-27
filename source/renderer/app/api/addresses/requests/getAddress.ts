@@ -1,12 +1,9 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { Address } from '../types';
 import { request } from '../../utils/request';
-
 export type GetAddressParams = {
-  address: string,
+  address: string;
 };
-
 export const getAddress = (
   config: RequestConfig,
   { address }: GetAddressParams

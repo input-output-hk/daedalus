@@ -1,23 +1,23 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletConnectDialog from '../../../components/wallet/WalletConnectDialog';
 import type { InjectedStoresProps } from '../../../types/injectedPropsType';
-
-type Props = {
-  ...InjectedStoresProps,
-  onClose: Function,
+type Props = InjectedStoresProps & {
+  onClose: (...args: Array<any>) => any;
 };
 
 @inject('stores')
 @observer
 class WalletConnectDialogContainer extends Component<Props> {
-  static defaultProps = { stores: null };
-
+  static defaultProps = {
+    stores: null,
+  };
   onClose = () => {
     const { stores, onClose } = this.props;
     const { resetInitializedConnection } = stores.hardwareWallets;
-    resetInitializedConnection({ cancelDeviceAction: true });
+    resetInitializedConnection({
+      cancelDeviceAction: true,
+    });
     onClose();
   };
 
@@ -26,7 +26,6 @@ class WalletConnectDialogContainer extends Component<Props> {
     const { hardwareWallets, wallets, app } = stores;
     const { hwDeviceStatus, transportDevice } = hardwareWallets;
     const { createHardwareWalletRequest } = wallets;
-
     return (
       <WalletConnectDialog
         isSubmitting={createHardwareWalletRequest.isExecuting}
@@ -40,4 +39,4 @@ class WalletConnectDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletConnectDialogContainer
+export default WalletConnectDialogContainer;

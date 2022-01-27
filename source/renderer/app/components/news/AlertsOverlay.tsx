@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
@@ -10,20 +9,18 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './AlertsOverlay.scss';
-
 type State = {
-  showOverlay: boolean,
+  showOverlay: boolean;
 };
-
 type Props = {
-  alerts: Array<News.News>,
-  onCloseOpenAlert: Function,
-  onMarkNewsAsRead: Function,
-  onOpenExternalLink: Function,
-  onProceedNewsAction: Function,
-  allAlertsCount: number,
-  hideCounter?: boolean,
-  currentDateFormat: string,
+  alerts: Array<News.News>;
+  onCloseOpenAlert: (...args: Array<any>) => any;
+  onMarkNewsAsRead: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onProceedNewsAction: (...args: Array<any>) => any;
+  allAlertsCount: number;
+  hideCounter?: boolean;
+  currentDateFormat: string;
 };
 
 @observer
@@ -41,8 +38,9 @@ class AlertsOverlay extends Component<Props, State> {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
-  contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
+  contentClickHandler(event: React.MouseEvent<HTMLElement>) {
     const linkUrl = get(event, ['target', 'href']);
+
     if (linkUrl) {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
@@ -51,21 +49,23 @@ class AlertsOverlay extends Component<Props, State> {
 
   onClose = () => {
     const { alerts, onMarkNewsAsRead, onCloseOpenAlert } = this.props;
+
     if (alerts.length <= 1) {
       onMarkNewsAsRead([alerts[0].id]);
       onCloseOpenAlert();
-      this.setState({ showOverlay: false });
+      this.setState({
+        showOverlay: false,
+      });
       return;
     }
+
     onMarkNewsAsRead([alerts[0].id]);
   };
-
-  onProceedNewsAction = (event: SyntheticMouseEvent<HTMLElement>) => {
+  onProceedNewsAction = (event: React.MouseEvent<HTMLElement>) => {
     const { onProceedNewsAction, alerts } = this.props;
     onProceedNewsAction(alerts[0], event);
   };
-
-  renderAction = (action: Object) => {
+  renderAction = (action: Record<string, any>) => {
     if (action && (action.url || action.event)) {
       return (
         <ButtonLink
@@ -81,11 +81,12 @@ class AlertsOverlay extends Component<Props, State> {
         />
       );
     }
+
     return null;
   };
-
   renderCounter = (alerts: Array<News.News>) => {
     const { allAlertsCount, hideCounter } = this.props;
+
     if (!hideCounter && allAlertsCount > 1) {
       return (
         <span className={styles.counter}>
@@ -93,6 +94,7 @@ class AlertsOverlay extends Component<Props, State> {
         </span>
       );
     }
+
     return null;
   };
 
@@ -129,4 +131,4 @@ class AlertsOverlay extends Component<Props, State> {
   }
 }
 
-export default AlertsOverlay
+export default AlertsOverlay;

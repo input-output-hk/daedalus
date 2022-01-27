@@ -1,24 +1,22 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
 import styles from './AddressSequential.scss';
 import WalletAddress from '../../../domains/WalletAddress';
-
 type Props = {
-  address: WalletAddress,
-  onShareAddress: Function,
-  onCopyAddress: Function,
-  shouldRegisterAddressElement: boolean,
-  onRegisterHTMLElements: Function,
-  addressSlice: number,
+  address: WalletAddress;
+  onShareAddress: (...args: Array<any>) => any;
+  onCopyAddress: (...args: Array<any>) => any;
+  shouldRegisterAddressElement: boolean;
+  onRegisterHTMLElements: (...args: Array<any>) => any;
+  addressSlice: number;
 };
 
 @observer
 class AddressSequential extends Component<Props> {
-  addressElement: ?HTMLElement;
-  addressContainerElement: ?HTMLElement;
+  addressElement: HTMLElement | null | undefined;
+  addressContainerElement: HTMLElement | null | undefined;
 
   componentDidMount() {
     if (this.props.shouldRegisterAddressElement) {
@@ -28,6 +26,7 @@ class AddressSequential extends Component<Props> {
       );
     }
   }
+
   get rawAddress() {
     return this.props.address.id;
   }
@@ -92,4 +91,4 @@ class AddressSequential extends Component<Props> {
   }
 }
 
-export default AddressSequential
+export default AddressSequential;

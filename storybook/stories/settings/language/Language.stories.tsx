@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -9,12 +8,8 @@ import {
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
-
 storiesOf('Settings|Language', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-
-  // ====== Stories ======
-
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Select Language - initial', ({ locale }: { locale: string }) => (
     <div>
       <InitialSettings
@@ -27,7 +22,6 @@ storiesOf('Settings|Language', module)
       />
     </div>
   ))
-
   .add('Select Language - submitting', ({ locale }: { locale: string }) => (
     <div>
       <InitialSettings

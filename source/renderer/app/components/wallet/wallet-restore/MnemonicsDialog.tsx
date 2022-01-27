@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -19,7 +18,6 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../../../types/walletRestoreTypes';
-
 const messages = defineMessages({
   autocompletePlaceholder: {
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.placeholder',
@@ -50,20 +48,19 @@ const messages = defineMessages({
     description: 'Label for invalid recovery phrase',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onSetWalletMnemonics: Function,
-  onValidateMnemonics: Function,
-  mnemonics: Array<string>,
-  walletKind: ?WalletKind,
-  walletKindDaedalus: ?WalletDaedalusKind,
-  walletKindYoroi: ?WalletYoroiKind,
-  walletKindHardware: ?WalletHardwareKind,
-  expectedWordCount: Array<number> | number,
-  maxWordCount: number,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onSetWalletMnemonics: (...args: Array<any>) => any;
+  onValidateMnemonics: (...args: Array<any>) => any;
+  mnemonics: Array<string>;
+  walletKind: WalletKind | null | undefined;
+  walletKindDaedalus: WalletDaedalusKind | null | undefined;
+  walletKindYoroi: WalletYoroiKind | null | undefined;
+  walletKindHardware: WalletHardwareKind | null | undefined;
+  expectedWordCount: Array<number> | number;
+  maxWordCount: number;
 };
 
 @observer
@@ -71,7 +68,6 @@ class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -90,13 +86,14 @@ class MnemonicsDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: this.props.onContinue,
@@ -174,4 +171,4 @@ class MnemonicsDialog extends Component<Props> {
   }
 }
 
-export default MnemonicsDialog
+export default MnemonicsDialog;

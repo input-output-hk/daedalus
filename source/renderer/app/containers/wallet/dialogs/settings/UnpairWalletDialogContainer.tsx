@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
 import WalletSettingsActionConfirmationDialog from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { WalletSettingRemoveMessages } from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
-
 type Props = InjectedProps;
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {
@@ -30,7 +28,10 @@ const messages: WalletSettingRemoveMessages = defineMessages({
 @inject('actions', 'stores')
 @observer
 class UnpairWalletDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -42,13 +43,11 @@ class UnpairWalletDialogContainer extends Component<Props> {
     const {
       environment: { isTest },
     } = app;
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error(
         'Active wallet required for DeleteWalletDialogContainer.'
       );
-
     return (
       <WalletSettingsActionConfirmationDialog
         isTest={isTest}
@@ -60,7 +59,9 @@ class UnpairWalletDialogContainer extends Component<Props> {
         messages={Object.freeze(messages)}
         onAcceptBackupNotice={() =>
           updateDataForActiveDialog.trigger({
-            data: { isBackupNoticeAccepted: true },
+            data: {
+              isBackupNoticeAccepted: true,
+            },
           })
         }
         onContinue={() => {
@@ -76,7 +77,9 @@ class UnpairWalletDialogContainer extends Component<Props> {
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={(confirmationValue) =>
           updateDataForActiveDialog.trigger({
-            data: { confirmationValue },
+            data: {
+              confirmationValue,
+            },
           })
         }
         isSubmitting={isDeleting}
@@ -85,4 +88,4 @@ class UnpairWalletDialogContainer extends Component<Props> {
   }
 }
 
-export default UnpairWalletDialogContainer
+export default UnpairWalletDialogContainer;

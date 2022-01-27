@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -10,7 +9,6 @@ import globalMessages from '../../../i18n/global-messages';
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
-
 const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.result.dialog.title',
@@ -30,23 +28,22 @@ const messages = defineMessages({
     description: 'Description 2 for the "Undelegate Result" dialog.',
   },
 });
-
 type Props = {
-  walletName: string,
-  futureEpochStartTime: string,
-  currentLocale: string,
-  onClose: Function,
+  walletName: string;
+  futureEpochStartTime: string;
+  currentLocale: string;
+  onClose: (...args: Array<any>) => any;
 };
-type State = { timeUntilNextEpochStart: number };
+type State = {
+  timeUntilNextEpochStart: number;
+};
 
 @observer
-class UndelegateWalletSuccessDialog extends Component<
-  Props,
-  State
-> {
-  intervalHandler: ?IntervalID = null;
-  state = { timeUntilNextEpochStart: 0 };
-
+class UndelegateWalletSuccessDialog extends Component<Props, State> {
+  intervalHandler: IntervalID | null | undefined = null;
+  state = {
+    timeUntilNextEpochStart: 0,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,7 +62,9 @@ class UndelegateWalletSuccessDialog extends Component<
       0,
       new Date(futureEpochStartTime).getTime() - new Date().getTime()
     );
-    this.setState({ timeUntilNextEpochStart });
+    this.setState({
+      timeUntilNextEpochStart,
+    });
   };
 
   componentWillUnmount() {
@@ -84,12 +83,10 @@ class UndelegateWalletSuccessDialog extends Component<
         primary: true,
       },
     ];
-
     const timeUntilNextEpochStart = humanizeDurationByLocale(
       this.state.timeUntilNextEpochStart,
       currentLocale
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -126,4 +123,4 @@ class UndelegateWalletSuccessDialog extends Component<
   }
 }
 
-export default UndelegateWalletSuccessDialog
+export default UndelegateWalletSuccessDialog;

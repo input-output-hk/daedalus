@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import NoWalletsDialog from '../../../../components/staking/redeem-itn-rewards/NoWalletsDialog';
 import { ROUTES } from '../../../../routes-config';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -16,8 +14,11 @@ class NoWalletsContainer extends Component<Props> {
 
   render() {
     const { onClose, actions } = this.props;
+
     const onAddWallet = () => {
-      actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+      actions.router.goToRoute.trigger({
+        route: ROUTES.WALLETS.ADD,
+      });
       onClose();
     };
 
@@ -25,4 +26,4 @@ class NoWalletsContainer extends Component<Props> {
   }
 }
 
-export default NoWalletsContainer
+export default NoWalletsContainer;

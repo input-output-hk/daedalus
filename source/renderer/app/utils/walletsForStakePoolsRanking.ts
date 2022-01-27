@@ -1,8 +1,6 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import Wallet from '../domains/Wallet';
 import { MIN_DELEGATION_FUNDS } from '../config/stakingConfig';
-
 export const getFilteredWallets = (wallets: Array<Wallet>): Array<Wallet> => {
   return wallets.filter(
     (w: Wallet) =>
@@ -10,9 +8,9 @@ export const getFilteredWallets = (wallets: Array<Wallet>): Array<Wallet> => {
       !w.isLegacy
   );
 };
-
 export const getAllAmounts = (wallets: Array<Wallet>): BigNumber => {
   const filteredWallets = getFilteredWallets(wallets);
+
   if (filteredWallets.length > 0) {
     return filteredWallets
       .map((w: Wallet) => w.amount)

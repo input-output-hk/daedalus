@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletTestEnvironmentLabel.scss';
 import type { networkType } from '../../types/networkTypes';
-
 const messages = defineMessages({
   flight: {
     id: 'test.environment.daedalusFlightLabel',
@@ -41,11 +39,9 @@ const messages = defineMessages({
     description: 'Label for development with version.',
   },
 });
-
 type Props = {
-  network: networkType,
+  network: networkType;
 };
-
 export default class WalletTestEnvironmentLabel extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

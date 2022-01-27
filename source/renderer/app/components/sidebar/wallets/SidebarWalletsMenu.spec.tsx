@@ -1,20 +1,16 @@
-// @flow
 import React from 'react';
 import { IntlProvider } from 'react-intl';
-
 import { render, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider as MobxProvider } from 'mobx-react';
 import translations from '../../../i18n/locales/en-US.json';
 import StoryDecorator from '../../../../../../storybook/stories/_support/StoryDecorator';
-
 import {
   DiscreetModeFeatureProvider,
   BrowserLocalStorageBridge,
 } from '../../../features';
 import type { SidebarWalletType } from '../../../types/sidebarTypes';
 import SidebarWalletsMenu from './SidebarWalletsMenu';
-
 describe('Sidebar Wallets Menu', () => {
   afterEach(cleanup);
 
@@ -22,8 +18,8 @@ describe('Sidebar Wallets Menu', () => {
     wallets,
     searchValue,
   }: {
-    wallets: Array<SidebarWalletType>,
-    searchValue: string,
+    wallets: Array<SidebarWalletType>;
+    searchValue: string;
   }) {
     return (
       <StoryDecorator>
@@ -70,7 +66,6 @@ describe('Sidebar Wallets Menu', () => {
   }
 
   const wallet = createWallet();
-
   const wallets = [
     wallet('Loki'),
     wallet('Ledger Nano X'),
@@ -79,7 +74,6 @@ describe('Sidebar Wallets Menu', () => {
     wallet('byron'),
     wallet('byron new new1'),
   ];
-
   test.each([
     [' ', ['Ledger Nano X', 'Ledger Nano S', 'byron new new1']],
     ['OKI', ['Loki', 'Odin']],
@@ -93,11 +87,8 @@ describe('Sidebar Wallets Menu', () => {
       const assertVisibleItems = 1;
       const assertSearchResult = results.length;
       expect.assertions(assertSearchResult + assertVisibleItems);
-
       render(<TestDecorator wallets={wallets} searchValue={searchValue} />);
-
       results.forEach((r) => expect(screen.queryByTestId(r)).toBeVisible());
-
       expect(screen.queryAllByTestId('walletMenu')).toHaveLength(
         assertSearchResult
       );

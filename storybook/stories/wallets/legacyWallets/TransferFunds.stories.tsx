@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,29 +9,18 @@ import TransferFundsStep2Dialog from '../../../../source/renderer/app/components
 import { WALLETS_V2 } from '../../_support/StoryProvider';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
-
 storiesOf('Wallets|Legacy Wallets', module)
   .addDecorator(WalletsWrapper)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Transfer Funds - Step1', () => {
     const walletOptions = WALLETS_V2.reduce(
-      (options, wallet) => ({
-        ...options,
-        ...set({}, wallet.name, wallet),
-      }),
+      (options, wallet) => ({ ...options, ...set({}, wallet.name, wallet) }),
       {}
     );
     const walletIdOptions = WALLETS_V2.reduce(
-      (options, wallet) => ({
-        ...options,
-        ...set({}, wallet.name, wallet.id),
-      }),
+      (options, wallet) => ({ ...options, ...set({}, wallet.name, wallet.id) }),
       {}
     );
     const sourceWalletSelect = select(

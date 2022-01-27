@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { set } from 'lodash';
 import { IntlProvider, addLocaleData } from 'react-intl';
@@ -12,24 +11,19 @@ import {
   locales,
   osMinWindowHeights,
 } from './config';
-
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
 import WindowSizeManager from '../../../source/renderer/app/WindowSizeManager';
-
 // // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
-
 type Props = {
-  children: any,
+  children: any;
 };
-
 type State = {
-  themeName: string,
-  localeName: string,
-  osName: string,
+  themeName: string;
+  localeName: string;
+  osName: string;
 };
-
 export default class StoryWrapper extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -47,8 +41,8 @@ export default class StoryWrapper extends Component<Props, State> {
     param,
     value,
   }: {
-    param: Array<*> | string,
-    value: *,
+    param: Array<any> | string;
+    value: any;
   }) => this.setState(set({}, param, value));
 
   render() {
@@ -59,13 +53,16 @@ export default class StoryWrapper extends Component<Props, State> {
     const themeId = themesIds[themeName];
     const locale = locales[localeName];
     const minScreenHeight = osMinWindowHeights[osName];
-
     return (
       <Fragment>
         <ThemeManager variables={theme} />
         <WindowSizeManager minScreenHeight={minScreenHeight} />
         <IntlProvider
-          {...{ locale, key: locale, messages: translations[locale] }}
+          {...{
+            locale,
+            key: locale,
+            messages: translations[locale],
+          }}
         >
           <Story
             osName={this.state.osName}

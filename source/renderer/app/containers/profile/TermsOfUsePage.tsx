@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
@@ -9,8 +8,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class TermsOfUsePage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   onSubmit = () => {
     this.props.actions.profile.acceptTermsOfUse.trigger();
   };
@@ -28,7 +29,6 @@ class TermsOfUsePage extends Component<InjectedProps> {
         isShelleyActivated={isShelleyActivated}
       />
     );
-
     return (
       <TopBarLayout topbar={topbar}>
         <TermsOfUseForm
@@ -43,4 +43,4 @@ class TermsOfUsePage extends Component<InjectedProps> {
   }
 }
 
-export default TermsOfUsePage
+export default TermsOfUsePage;

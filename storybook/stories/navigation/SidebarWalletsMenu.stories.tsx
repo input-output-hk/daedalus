@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -11,7 +10,6 @@ import {
   WalletSortOrder,
 } from '../../../source/renderer/app/types/sidebarTypes';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
-
 const wallets = [
   {
     id: '1',
@@ -66,19 +64,22 @@ const wallets = [
     hasNotification: false,
   },
 ];
-
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => (
     <StoryDecorator>
       <StoryProvider>
-        <div style={{ width: '100%', height: '100%' }}>{story()}</div>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {story()}
+        </div>
       </StoryProvider>
     </StoryDecorator>
-  ))
-
-  // // ====== Stories ======
-
+  )) // // ====== Stories ======
   .add('Empty', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
@@ -92,10 +93,20 @@ storiesOf('Navigation|Wallets Menu', module)
       sortOrder={WalletSortOrder.Desc}
     />
   ))
-
   .add('With Wallets', (props: { currentTheme: string }) => (
-    <div style={{ display: 'flex', height: '100%' }}>
-      <div style={{ position: 'relative', height: '100%', width: '196px' }}>
+    <div
+      style={{
+        display: 'flex',
+        height: '100%',
+      }}
+    >
+      <div
+        style={{
+          position: 'relative',
+          height: '100%',
+          width: '196px',
+        }}
+      >
         <SidebarWalletsMenu
           wallets={wallets}
           isActiveWallet={(id) => id === '2'}
@@ -108,7 +119,13 @@ storiesOf('Navigation|Wallets Menu', module)
           sortOrder={WalletSortOrder.Asc}
         />
       </div>
-      <div style={{ position: 'relative', height: '100%', width: '196px' }}>
+      <div
+        style={{
+          position: 'relative',
+          height: '100%',
+          width: '196px',
+        }}
+      >
         <SidebarWalletsMenu
           wallets={wallets}
           isActiveWallet={(id) => id === '2'}

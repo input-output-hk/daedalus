@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -7,25 +6,23 @@ import AssetContent from '../../../assets/AssetContent';
 import type { AssetToken } from '../../../../api/assets/types';
 import WalletTokenFooter from './WalletTokenFooter';
 import WalletTokenHeader from './WalletTokenHeader';
-
 type Props = {
-  anyAssetWasHovered: boolean,
-  asset: AssetToken,
-  assetSettingsDialogWasOpened: boolean,
-  className?: string,
-  headerClassName?: string,
-  footerClassName?: string,
-  fullFingerprint?: boolean,
-  isFavorite: boolean,
-  isInsertingAsset: boolean,
-  isLoading: boolean,
-  isRemovingAsset: boolean,
-  onAssetSettings?: Function,
-  onCopyAssetParam?: Function,
-  onOpenAssetSend?: Function,
-  onToggleFavorite?: Function,
+  anyAssetWasHovered: boolean;
+  asset: AssetToken;
+  assetSettingsDialogWasOpened: boolean;
+  className?: string;
+  headerClassName?: string;
+  footerClassName?: string;
+  fullFingerprint?: boolean;
+  isFavorite: boolean;
+  isInsertingAsset: boolean;
+  isLoading: boolean;
+  isRemovingAsset: boolean;
+  onAssetSettings?: (...args: Array<any>) => any;
+  onCopyAssetParam?: (...args: Array<any>) => any;
+  onOpenAssetSend?: (...args: Array<any>) => any;
+  onToggleFavorite?: (...args: Array<any>) => any;
 };
-
 const WalletToken = observer((props: Props) => {
   const {
     anyAssetWasHovered,
@@ -59,7 +56,6 @@ const WalletToken = observer((props: Props) => {
       ),
     [className, styles, isExpanded, isInsertingAsset, isRemovingAsset]
   );
-
   return (
     <div className={componentStyles}>
       <WalletTokenHeader
@@ -92,5 +88,4 @@ const WalletToken = observer((props: Props) => {
     </div>
   );
 });
-
 export default WalletToken;

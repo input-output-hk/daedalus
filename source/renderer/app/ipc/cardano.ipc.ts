@@ -1,4 +1,3 @@
-// @flow
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -21,44 +20,35 @@ import type {
   ExportWalletsMainResponse,
   ExportWalletsRendererRequest,
 } from '../../../common/ipc/api';
-
 // IpcChannel<Incoming, Outgoing>
-
 export const cardanoTlsConfigChannel: RendererIpcChannel<
   CardanoTlsConfigMainResponse,
   CardanoTlsConfigRendererRequest
 > = new RendererIpcChannel(CARDANO_TLS_CONFIG_CHANNEL);
-
 export const restartCardanoNodeChannel: RendererIpcChannel<
   void,
   void
 > = new RendererIpcChannel(CARDANO_RESTART_CHANNEL);
-
 export const cardanoStateChangeChannel: RendererIpcChannel<
   CardanoNodeState,
   void
 > = new RendererIpcChannel(CARDANO_STATE_CHANNEL);
-
 export const awaitUpdateChannel: RendererIpcChannel<
   void,
   void
 > = new RendererIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL);
-
 export const cardanoFaultInjectionChannel: RendererIpcChannel<
   void,
   FaultInjectionIpcRequest
 > = new RendererIpcChannel(CARDANO_FAULT_INJECTION_CHANNEL);
-
 export const getCachedCardanoStatusChannel: RendererIpcChannel<
-  ?CardanoStatus,
-  ?CardanoStatus
+  CardanoStatus | null | undefined,
+  CardanoStatus | null | undefined
 > = new RendererIpcChannel(GET_CACHED_CARDANO_STATUS_CHANNEL);
-
 export const setCachedCardanoStatusChannel: RendererIpcChannel<
-  ?CardanoStatus,
-  ?CardanoStatus
+  CardanoStatus | null | undefined,
+  CardanoStatus | null | undefined
 > = new RendererIpcChannel(SET_CACHED_CARDANO_STATUS_CHANNEL);
-
 export const exportWalletsChannel: RendererIpcChannel<
   ExportWalletsMainResponse,
   ExportWalletsRendererRequest

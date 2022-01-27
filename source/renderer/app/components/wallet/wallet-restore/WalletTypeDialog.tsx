@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { set } from 'lodash';
@@ -22,7 +21,6 @@ import type {
   WalletHardwareKind,
   HardwareWalletAcceptance,
 } from '../../../types/walletRestoreTypes';
-
 const messages = defineMessages({
   labelWalletKind: {
     id: 'wallet.restore.dialog.step.walletKind.label.walletKind',
@@ -148,39 +146,31 @@ const messages = defineMessages({
     description: 'Label for the "hardwareWalletCheckbox2" disclaimer.',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onSetWalletKind: Function,
-  walletKind: ?WalletKind,
-  walletKindDaedalus: ?WalletDaedalusKind,
-  walletKindYoroi: ?WalletYoroiKind,
-  walletKindHardware: ?WalletHardwareKind,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onSetWalletKind: (...args: Array<any>) => any;
+  walletKind: WalletKind | null | undefined;
+  walletKindDaedalus: WalletDaedalusKind | null | undefined;
+  walletKindYoroi: WalletYoroiKind | null | undefined;
+  walletKindHardware: WalletHardwareKind | null | undefined;
 };
-
-type State = {
-  [key: HardwareWalletAcceptance]: boolean,
-};
-
+type State = Record<HardwareWalletAcceptance, boolean>;
 export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     hardwareWalletAcceptance1: false,
     hardwareWalletAcceptance2: false,
     hardwareWalletAcceptance3: false,
   };
-
   toggleAcceptance = (param: HardwareWalletAcceptance) =>
     this.setState((currentState) => set({}, param, !currentState[param]));
-
   getWalletKind = (
-    kinds: Object,
+    kinds: Record<string, any>,
     message: string,
-    value: ?string,
+    value: string | null | undefined,
     kindParam?: string
   ) => (
     <RadioSet
@@ -189,9 +179,11 @@ export default class WalletTypeDialog extends Component<Props, State> {
         const kind: WalletKinds = kinds[key];
         const messageParam = `label${kindParam || ''}WalletKind${kind}`;
         const msg = messages[messageParam];
+
         if (!msg) {
           throw new Error(`Missing ${messageParam} message`);
         }
+
         return {
           key: kind,
           disabled: false,

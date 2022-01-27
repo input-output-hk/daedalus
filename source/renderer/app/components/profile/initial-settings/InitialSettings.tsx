@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './InitialSettings.scss';
@@ -39,4 +38,4 @@ class InitialSettings extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default InitialSettings
+export default InitialSettings;

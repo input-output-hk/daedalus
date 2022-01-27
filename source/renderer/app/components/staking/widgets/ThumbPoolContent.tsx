@@ -1,4 +1,3 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -15,11 +14,10 @@ import {
 } from '../../../config/stakingConfig';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
-
 type Props = {
-  stakePool: StakePool,
-  numberOfRankedStakePools: number,
-  isGridRewardsView?: boolean,
+  stakePool: StakePool;
+  numberOfRankedStakePools: number;
+  isGridRewardsView?: boolean;
 };
 
 @observer
@@ -27,15 +25,19 @@ class ThumbPoolContent extends Component<Props> {
   formattedRewards = (potentialRewards: BigNumber) => {
     const potentialRewardsAsString = formattedWalletAmount(potentialRewards);
     let targetLength = 4;
+
     if (potentialRewardsAsString.includes('.')) {
       targetLength++;
     }
+
     if (potentialRewardsAsString.includes(',')) {
       targetLength++;
     }
+
     if (potentialRewardsAsString.includes(' ')) {
       targetLength++;
     }
+
     return potentialRewardsAsString.substring(0, targetLength);
   };
 
@@ -54,17 +56,14 @@ class ThumbPoolContent extends Component<Props> {
       potentialRewards,
     } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
-
     const componentClassnames = classnames([
       styles.component,
       !IS_SATURATION_DATA_AVAILABLE ? styles.hideSaturation : null,
     ]);
-
     const saturationClassnames = classnames([
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
-
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
@@ -81,7 +80,12 @@ class ThumbPoolContent extends Component<Props> {
           ))}
         {!isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE ? (
-            <div className={styles.ranking} style={{ color }}>
+            <div
+              className={styles.ranking}
+              style={{
+                color,
+              }}
+            >
               {nonMyopicMemberRewards ? (
                 ranking
               ) : (
@@ -127,4 +131,4 @@ class ThumbPoolContent extends Component<Props> {
   }
 }
 
-export default ThumbPoolContent
+export default ThumbPoolContent;

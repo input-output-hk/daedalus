@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
@@ -21,15 +20,19 @@ class MainLayout extends Component<InjectedContainerProps> {
     children: null,
     onClose: () => {},
   };
-
   handleActivateCategory = (category: string) => {
     const { actions } = this.props;
+
     if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
-      actions.dialogs.open.trigger({ dialog: InstructionsDialog });
+      actions.dialogs.open.trigger({
+        dialog: InstructionsDialog,
+      });
     } else if (category === ROUTES.NETWORK_INFO) {
       actions.networkStatus.toggleSplash.trigger();
     } else {
-      actions.sidebar.activateSidebarCategory.trigger({ category });
+      actions.sidebar.activateSidebarCategory.trigger({
+        category,
+      });
     }
   };
 
@@ -49,7 +52,6 @@ class MainLayout extends Component<InjectedContainerProps> {
     const {
       environment: { network },
     } = app;
-
     const appWallets =
       sidebar.wallets.length > 0
         ? {
@@ -57,7 +59,9 @@ class MainLayout extends Component<InjectedContainerProps> {
             activeWalletId,
             actions: {
               onWalletItemClick: (walletId: string) => {
-                actions.sidebar.walletSelected.trigger({ walletId });
+                actions.sidebar.walletSelected.trigger({
+                  walletId,
+                });
               },
               onWalletSortBy: ({ sortBy }: WalletSortConfig) => {
                 sidebar.onChangeWalletSortType(sortBy);
@@ -71,11 +75,9 @@ class MainLayout extends Component<InjectedContainerProps> {
             searchValue: sidebar.searchValue,
           }
         : null;
-
     const sidebarMenus = {
       wallets: appWallets,
     };
-
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
@@ -85,17 +87,20 @@ class MainLayout extends Component<InjectedContainerProps> {
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onActivateCategory={this.handleActivateCategory}
         onAddWallet={() =>
-          actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
+          actions.router.goToRoute.trigger({
+            route: ROUTES.WALLETS.ADD,
+          })
         }
         onSubmitSupportRequest={() =>
-          actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
+          actions.router.goToRoute.trigger({
+            route: ROUTES.SETTINGS.SUPPORT,
+          })
         }
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
       />
     );
-
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
@@ -115,4 +120,4 @@ class MainLayout extends Component<InjectedContainerProps> {
   }
 }
 
-export default MainLayout
+export default MainLayout;

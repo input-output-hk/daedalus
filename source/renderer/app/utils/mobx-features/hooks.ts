@@ -1,5 +1,3 @@
-// @flow
-
 import { useContext, useEffect, useLayoutEffect } from 'react';
 import type { Context } from 'react';
 import { Feature } from './feature';
@@ -16,7 +14,6 @@ export const useFeature = (feature: Feature) => {
     // Start feature store before first render is done
     feature.start();
   }, []);
-
   useEffect(() => {
     // Stop store on unmount
     return () => {
@@ -33,8 +30,10 @@ export const useFeature = (feature: Feature) => {
  */
 export function getFeatureFromContext<T>(context: Context<T | null>): T {
   const instance = useContext(context);
+
   if (!instance) {
     throw new Error(`You need to provide a context before using it.`);
   }
+
   return instance;
 }

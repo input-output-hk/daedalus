@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
@@ -12,7 +11,6 @@ import {
 } from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
-
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
@@ -30,7 +28,6 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TYPES,
 } from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
-
 import {
   ICO_PUBLIC_KEY_DERIVATION_PATH,
   WALLET_PUBLIC_KEY_DERIVATION_PATH,
@@ -38,7 +35,6 @@ import {
 import type { ReactIntlMessage } from '../../../../source/renderer/app/types/i18nTypes';
 
 /* eslint-disable react/display-name  */
-
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
 const undelegateWalletId = 'Undelegate Wallet';
@@ -46,7 +42,6 @@ const deleteWalletId = 'Delete Wallet';
 const walletPublicKeyId = 'Wallet Public Key';
 const icoPublicKeyId = 'ICO Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
-
 const recoveryPhraseVerificationDateOptions = {
   'Never Checked - Ok': {
     type: RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
@@ -73,7 +68,6 @@ const recoveryPhraseVerificationDateOptions = {
     status: RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION,
   },
 };
-
 const recoveryDialogOptions = {
   None: 0,
   'Step 1 - Explanation': 1,
@@ -81,7 +75,6 @@ const recoveryDialogOptions = {
   'Step 3 - Verification successful': 3,
   'Step 4 - Verification failure': 4,
 };
-
 const assets = {
   available: [
     {
@@ -116,7 +109,6 @@ const assets = {
     },
   ],
 };
-
 const selectedWallet = generateWallet(
   'Wallet 1',
   '1000000000',
@@ -135,10 +127,8 @@ const getWalletDates = (type: string, status: string) => {
     date = moment()
       .subtract(RECOVERY_PHRASE_VERIFICATION_TIMES.notification + 10, 'days')
       .toDate();
-
   const recoveryPhraseVerificationDate = date;
   const creationDate = date;
-
   return {
     recoveryPhraseVerificationDate,
     creationDate,
@@ -147,26 +137,22 @@ const getWalletDates = (type: string, status: string) => {
 
 export default (props: { locale: Locale }) => {
   const { locale } = props;
-
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
     recoveryPhraseVerificationDateOptions,
     'Already Checked - Ok',
     recoveryPhraseId
   );
-
   const { recoveryPhraseVerificationDate, creationDate } = getWalletDates(
     type,
     status
   );
-
   const recoveryDialog = select(
     'Active dialog',
     recoveryDialogOptions,
     'None',
     recoveryPhraseId
   );
-
   const delegationStakePoolStatus = select(
     'Delegation status',
     {
@@ -176,10 +162,7 @@ export default (props: { locale: Locale }) => {
     'delegating',
     undelegateWalletId
   );
-
-  const walletMessages: {
-    [string]: ReactIntlMessage,
-  } = defineMessages({
+  const walletMessages: Record<string, ReactIntlMessage> = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.walletPublicKey',
       defaultMessage: '!!!Wallet Public Key',
@@ -191,10 +174,7 @@ export default (props: { locale: Locale }) => {
       description: 'Copy public key label.',
     },
   });
-
-  const icoMessages: {
-    [string]: ReactIntlMessage,
-  } = defineMessages({
+  const icoMessages: Record<string, ReactIntlMessage> = defineMessages({
     dialogTitle: {
       id: 'wallet.settings.icoPublicKey',
       defaultMessage: '!!!ICO Public Key',
@@ -206,7 +186,6 @@ export default (props: { locale: Locale }) => {
       description: 'Copy public key label.',
     },
   });
-
   return (
     <WalletSettings
       isLegacy={boolean('isLegacy', false)}
@@ -218,21 +197,27 @@ export default (props: { locale: Locale }) => {
             changePasswordId
           );
         }
+
         if (dialog === WalletSettingsRemoveConfirmationDialog) {
           return boolean('Delete Wallet - Show dialog', false, deleteWalletId);
         }
+
         if (dialog === WalletRecoveryPhraseStep1Dialog) {
           return recoveryDialog === 1;
         }
+
         if (dialog === WalletRecoveryPhraseStep2Dialog) {
           return recoveryDialog === 2;
         }
+
         if (dialog === WalletRecoveryPhraseStep3Dialog) {
           return recoveryDialog === 3;
         }
+
         if (dialog === WalletRecoveryPhraseStep4Dialog) {
           return recoveryDialog === 4;
         }
+
         return false;
       }}
       activeField={null}

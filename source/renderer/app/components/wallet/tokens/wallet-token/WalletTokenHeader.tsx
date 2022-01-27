@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -12,19 +11,18 @@ import arrow from '../../../../assets/images/collapse-arrow-small.inline.svg';
 import starNotFilledIcon from '../../../../assets/images/star-not-filled.inline.svg';
 import starFilledIcon from '../../../../assets/images/star-filled.inline.svg';
 import { isRecommendedDecimal } from './helpers';
-
 type Props = {
-  anyAssetWasHovered: boolean,
-  asset: AssetToken,
-  assetSettingsDialogWasOpened: boolean,
-  className?: String,
-  fullFingerprint?: boolean,
-  isExpanded: boolean,
-  isFavorite: boolean,
-  isLoading: boolean,
-  onClick: Function,
-  onCopyAssetParam: Function,
-  onToggleFavorite?: Function,
+  anyAssetWasHovered: boolean;
+  asset: AssetToken;
+  assetSettingsDialogWasOpened: boolean;
+  className?: String;
+  fullFingerprint?: boolean;
+  isExpanded: boolean;
+  isFavorite: boolean;
+  isLoading: boolean;
+  onClick: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onToggleFavorite?: (...args: Array<any>) => any;
 };
 
 const WalletTokenHeader = (props: Props) => {
@@ -43,7 +41,10 @@ const WalletTokenHeader = (props: Props) => {
   } = props;
   const { decimals, uniqueId, recommendedDecimals } = asset;
   const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
-  const hasWarning = isRecommendedDecimal({ decimals, recommendedDecimals });
+  const hasWarning = isRecommendedDecimal({
+    decimals,
+    recommendedDecimals,
+  });
   const rootStyles = classNames(
     styles.root,
     isExpanded && styles.isExpanded,
@@ -53,7 +54,6 @@ const WalletTokenHeader = (props: Props) => {
     styles.favoriteIcon,
     isFavorite && styles.isFavorite
   );
-
   return (
     <div className={rootStyles} onClick={onClick}>
       {onToggleFavorite && (
@@ -62,7 +62,10 @@ const WalletTokenHeader = (props: Props) => {
           onClick={(event) => {
             event.persist();
             event.stopPropagation();
-            onToggleFavorite({ uniqueId, isFavorite });
+            onToggleFavorite({
+              uniqueId,
+              isFavorite,
+            });
           }}
         >
           <SVGInline svg={starIcon} />

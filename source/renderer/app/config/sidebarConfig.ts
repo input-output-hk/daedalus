@@ -1,4 +1,3 @@
-// @flow
 import { ROUTES } from '../routes-config';
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
@@ -7,13 +6,11 @@ import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
 import delegationProgressIcon from '../assets/images/sidebar/delegation-progress-ic.inline.svg';
 import networkInfoLogo from '../assets/images/sidebar/network-info-logo-cardano-ic.inline.svg';
 import votingIcon from '../assets/images/sidebar/voting-ic.inline.svg';
-
 export type SidebarCategoryInfo = {
-  name: string,
-  icon: string,
-  route: string,
+  name: string;
+  icon: string;
+  route: string;
 };
-
 export const CATEGORIES_BY_NAME = {
   WALLETS: {
     name: 'WALLETS',
@@ -51,21 +48,18 @@ export const CATEGORIES_BY_NAME = {
     route: ROUTES.VOTING.REGISTRATION,
   },
 };
-
 export const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];
-
 export const CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];
-
 export const CATEGORIES_LIST = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
@@ -74,10 +68,8 @@ export const CATEGORIES_LIST = [
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];
-
 export const sidebarConfig = {
   CATEGORIES_BY_NAME,
   CATEGORIES_LIST,
 };
-
 export const FUZZY_SEARCH_THRESHOLD = 0.5;

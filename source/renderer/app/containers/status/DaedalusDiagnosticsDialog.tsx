@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
@@ -7,7 +6,6 @@ import styles from './DaedalusDiagnosticsDialog.scss';
 import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import formatCpuInfo from '../../utils/formatCpuInfo';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -19,10 +17,8 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
     children: null,
     onClose: () => {},
   };
-
   handleForceCheckNetworkClock = () =>
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
-
   handleCopyStateDirectoryPath = () =>
     this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
 
@@ -59,7 +55,6 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
-
     const systemInfo = {
       platform: environment.os,
       platformVersion: environment.platformVersion,
@@ -67,7 +62,6 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
       ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };
-
     const {
       network,
       version,
@@ -78,7 +72,6 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
       apiVersion,
       build,
     } = environment;
-
     const coreInfo = {
       daedalusVersion: version,
       daedalusBuildNumber: build,
@@ -93,7 +86,6 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
       cardanoWalletApiPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: network,
     };
-
     return (
       <ReactModal
         isOpen
@@ -129,7 +121,9 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
             !getNetworkClockRequest.result || getNetworkClockRequest.isExecuting
           }
           isForceCheckingSystemTime={getNetworkClockRequest.isExecutingWithArgs(
-            { isForceCheck: true }
+            {
+              isForceCheck: true,
+            }
           )}
           onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
@@ -143,4 +137,4 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
   }
 }
 
-export default DaedalusDiagnosticsDialog
+export default DaedalusDiagnosticsDialog;

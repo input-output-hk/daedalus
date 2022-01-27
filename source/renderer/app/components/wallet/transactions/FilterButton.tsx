@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
@@ -8,11 +7,10 @@ import TinyButton from '../../widgets/forms/TinyButton';
 import filterIcon from '../../../assets/images/filter-dis-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterButton.scss';
-
 type Props = {
-  disabled: boolean,
-  numberOfFilterDimensionsApplied: number,
-  onClick?: Function,
+  disabled: boolean;
+  numberOfFilterDimensionsApplied: number;
+  onClick?: (...args: Array<any>) => any;
 };
 
 @observer
@@ -38,7 +36,6 @@ class FilterButton extends Component<Props> {
       </>
     );
     const buttonClasses = classNames(['primary', styles.actionButton]);
-
     return (
       <div className={styles.component}>
         <TinyButton
@@ -53,4 +50,4 @@ class FilterButton extends Component<Props> {
   }
 }
 
-export default FilterButton
+export default FilterButton;

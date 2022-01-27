@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,7 +10,6 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 const messages = defineMessages({
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
@@ -28,12 +26,11 @@ const messages = defineMessages({
       'Label for button "Yes, I have written down my wallet recovery phrase." on wallet backup dialog',
   },
 });
-
 type Props = {
-  recoveryPhrase: string,
-  onStartWalletBackup: Function,
-  onCancelBackup: Function,
-  isSubmitting: boolean,
+  recoveryPhrase: string;
+  onStartWalletBackup: (...args: Array<any>) => any;
+  onCancelBackup: (...args: Array<any>) => any;
+  isSubmitting: boolean;
 };
 
 @observer
@@ -54,13 +51,11 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
     ]);
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelIHaveWrittenItDown)
     ) : (
       <LoadingSpinner />
     );
-
     const actions = [
       {
         label: buttonLabel,
@@ -68,7 +63,6 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -94,4 +88,4 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseDisplayDialog
+export default WalletRecoveryPhraseDisplayDialog;

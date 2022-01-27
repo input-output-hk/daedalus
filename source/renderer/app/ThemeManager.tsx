@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { Component, Fragment } from 'react';
 import { map } from 'lodash';
-
 export default class ThemeManager extends Component {
   componentDidMount() {
     this.updateCSSVariables(this.props.variables);

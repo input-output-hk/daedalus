@@ -1,4 +1,3 @@
-// @flow
 import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
 import AppUpdateActions from './app-update-actions';
@@ -20,31 +19,29 @@ import WalletBackupActions from './wallet-backup-actions';
 import WalletMigrationActions from './wallet-migration-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
-
 export type ActionsMap = {
-  addresses: AddressesActions,
-  app: AppActions,
-  appUpdate: AppUpdateActions,
-  assets: AssetsActions,
-  dialogs: DialogsActions,
-  currency: CurrencyActions,
-  hardwareWallets: HardwareWalletsActions,
-  networkStatus: NetworkStatusActions,
-  notifications: NotificationsActions,
-  profile: ProfileActions,
-  router: RouterActions,
-  sidebar: SidebarActions,
-  staking: StakingActions,
-  transactions: TransactionsActions,
-  voting: VotingActions,
-  wallets: WalletsActions,
-  walletsLocal: WalletsLocalAction,
-  walletBackup: WalletBackupActions,
-  walletMigration: WalletMigrationActions,
-  walletSettings: WalletSettingsActions,
-  window: WindowActions,
+  addresses: AddressesActions;
+  app: AppActions;
+  appUpdate: AppUpdateActions;
+  assets: AssetsActions;
+  dialogs: DialogsActions;
+  currency: CurrencyActions;
+  hardwareWallets: HardwareWalletsActions;
+  networkStatus: NetworkStatusActions;
+  notifications: NotificationsActions;
+  profile: ProfileActions;
+  router: RouterActions;
+  sidebar: SidebarActions;
+  staking: StakingActions;
+  transactions: TransactionsActions;
+  voting: VotingActions;
+  wallets: WalletsActions;
+  walletsLocal: WalletsLocalAction;
+  walletBackup: WalletBackupActions;
+  walletMigration: WalletMigrationActions;
+  walletSettings: WalletSettingsActions;
+  window: WindowActions;
 };
-
 const actionsMap: ActionsMap = {
   addresses: new AddressesActions(),
   app: new AppActions(),
@@ -68,5 +65,4 @@ const actionsMap: ActionsMap = {
   walletSettings: new WalletSettingsActions(),
   window: new WindowActions(),
 };
-
 export default actionsMap;

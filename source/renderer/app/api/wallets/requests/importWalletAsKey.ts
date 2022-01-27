@@ -1,13 +1,10 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
-
 export type ImportWalletAsKey = {
-  filePath: string,
-  spendingPassword: string,
+  filePath: string;
+  spendingPassword: string;
 };
-
 export const importWalletAsKey = (
   config: RequestConfig,
   walletImportData: ImportWalletAsKey

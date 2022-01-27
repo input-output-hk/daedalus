@@ -1,16 +1,11 @@
-// @flow
-
 /**
  *
  * This file imports the external currency API used
  *
  */
-
 import { omit, map } from 'lodash';
-
 // Available APIS
 import coingeckoConfig from './currencyConfig.coingecko';
-
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
 import { LOCALES } from '../../../common/types/locales.types';
@@ -20,14 +15,10 @@ import type {
   LocalizedCurrency,
 } from '../types/currencyTypes';
 import type { Locale } from '../../../common/types/locales.types';
-
-export const REQUESTS: {
-  [key: string]: RequestName,
-} = {
+export const REQUESTS: Record<string, RequestName> = {
   LIST: 'list',
   RATE: 'rate',
 };
-
 // Definitions
 export const currencyConfig = coingeckoConfig;
 export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
@@ -37,11 +28,13 @@ export const CURRENCY_REQUEST_RATE_INTERVAL = 60 * 1000; // 1 minute | unit: mil
 // Generic function for all the Currency requests
 export const genericCurrencyRequest = (
   requestName: RequestName
-): Function => async (payload?: any): any => {
+): ((...args: Array<any>) => any) => async (payload?: any): any => {
   const request = currencyConfig.requests[requestName];
   let response;
+
   if (Array.isArray(request)) {
     response = [];
+
     for (const req of request) {
       const responseItem = await externalRequest(req);
       response.push(responseItem);
@@ -52,9 +45,9 @@ export const genericCurrencyRequest = (
   } else if (request) {
     response = await externalRequest(request);
   }
+
   return response;
 };
-
 export const getLocalizedCurrenciesList = (
   rawCurrencyList: Array<Currency>,
   currentLocale: Locale
@@ -62,7 +55,6 @@ export const getLocalizedCurrenciesList = (
   map(rawCurrencyList, (rawCurrency) =>
     getLocalizedCurrency(rawCurrency, currentLocale)
   );
-
 export const getLocalizedCurrency = (
   rawCurrency: Currency,
   currentLocale: Locale
@@ -70,6 +62,5 @@ export const getLocalizedCurrency = (
   ...omit(rawCurrency, ['name']),
   name: rawCurrency.name[currentLocale] || rawCurrency.name[LOCALES.english],
 });
-
 export const getCurrencyFromCode = (code: string): Currency =>
   currenciesList[code];

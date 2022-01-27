@@ -1,10 +1,6 @@
-// @flow
 import BigNumber from 'bignumber.js';
-
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
-
 import { sortWallets } from './walletSorting';
-
 describe('Wallet Sorting', () => {
   const cases = [
     // Sort wallets by DATE from ASC to DESC
@@ -19,8 +15,7 @@ describe('Wallet Sorting', () => {
         ['2', 'Wallet B', 2],
         ['1', 'Wallet A', 1],
       ],
-    ],
-    // // Sort wallets by DATE from ASC to DESC
+    ], // // Sort wallets by DATE from ASC to DESC
     [
       WalletSortBy.Date,
       WalletSortOrder.Asc,
@@ -32,8 +27,7 @@ describe('Wallet Sorting', () => {
         ['1', 'Wallet A', 1],
         ['2', 'Wallet B', 2],
       ],
-    ],
-    // Sort wallets by NAME from A-Z to Z-A
+    ], // Sort wallets by NAME from A-Z to Z-A
     [
       WalletSortBy.Name,
       WalletSortOrder.Desc,
@@ -45,8 +39,7 @@ describe('Wallet Sorting', () => {
         ['2', 'Wallet B', 2],
         ['1', 'Wallet A', 1],
       ],
-    ],
-    // Sort wallets by NAME from Z-A to A-Z
+    ], // Sort wallets by NAME from Z-A to A-Z
     [
       WalletSortBy.Name,
       WalletSortOrder.Asc,
@@ -58,8 +51,7 @@ describe('Wallet Sorting', () => {
         ['1', 'Wallet A', 1],
         ['2', 'Wallet B', 2],
       ],
-    ],
-    // Sort wallets by BALANCE from higher to lower
+    ], // Sort wallets by BALANCE from higher to lower
     [
       WalletSortBy.Balance,
       WalletSortOrder.Desc,
@@ -71,8 +63,7 @@ describe('Wallet Sorting', () => {
         ['2', 'Wallet B', 2],
         ['1', 'Wallet A', 1],
       ],
-    ],
-    // Sort wallets by BALANCE from lower to higher
+    ], // Sort wallets by BALANCE from lower to higher
     [
       WalletSortBy.Balance,
       WalletSortOrder.Asc,
@@ -84,8 +75,7 @@ describe('Wallet Sorting', () => {
         ['1', 'Wallet A', 1],
         ['2', 'Wallet B', 2],
       ],
-    ],
-    // Sort wallet with same NAME
+    ], // Sort wallet with same NAME
     [
       WalletSortBy.Name,
       WalletSortOrder.Asc,
@@ -97,8 +87,7 @@ describe('Wallet Sorting', () => {
         ['1', 'Wallet A', 1],
         ['2', 'Wallet A', 2],
       ],
-    ],
-    // Sort wallet with same BALANCE
+    ], // Sort wallet with same BALANCE
     [
       WalletSortBy.Balance,
       WalletSortOrder.Asc,
@@ -110,8 +99,7 @@ describe('Wallet Sorting', () => {
         ['1', 'Wallet A', 1],
         ['2', 'Wallet B', 1],
       ],
-    ],
-    // Sort wallets with same NAME & BALANCE
+    ], // Sort wallets with same NAME & BALANCE
     [
       WalletSortBy.Balance,
       WalletSortOrder.Desc,
@@ -125,7 +113,6 @@ describe('Wallet Sorting', () => {
       ],
     ],
   ];
-
   test.each(cases)(
     `should sort wallets from test case %# by %s on %s order`,
     (sortBy, sortOrder, wallets, expected) => {
@@ -138,7 +125,6 @@ describe('Wallet Sorting', () => {
         sortBy,
         sortOrder,
       });
-
       expect(sortedWallets).toEqual(
         expected.map(([id, name, amount]) => ({
           id,

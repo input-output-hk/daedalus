@@ -1,4 +1,3 @@
-// @flow
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
 import { searchAssets } from '../../../../utils/assets';
@@ -26,7 +25,6 @@ import type {
   UseFilters,
   BooleanMap,
 } from './types';
-
 export const useCheckboxes = ({
   assets,
   currentAssets,
@@ -40,11 +38,18 @@ export const useCheckboxes = ({
   );
   const currentAssetIds = useMemo(
     () =>
-      getEnabledAssetIds({ assets: currentAssets, previouslyCheckedIdsSet }),
+      getEnabledAssetIds({
+        assets: currentAssets,
+        previouslyCheckedIdsSet,
+      }),
     [currentAssets, previouslyCheckedIdsSet]
   );
   const currentCheckedIds = useMemo(
-    () => getCurrentCheckedIds({ checkboxes, currentAssetIds }),
+    () =>
+      getCurrentCheckedIds({
+        checkboxes,
+        currentAssetIds,
+      }),
     [checkboxes, currentAssetIds]
   );
   const currentCheckedCount = currentCheckedIds.length;
@@ -54,7 +59,13 @@ export const useCheckboxes = ({
   const isMaxCurrentCount =
     currentCheckedCount === Math.min(MAX_TOKENS, currentAssetIds.length);
   const clearAll = useCallback(
-    () => setCheckboxes(clearSelection({ checkboxes, currentAssetIds })),
+    () =>
+      setCheckboxes(
+        clearSelection({
+          checkboxes,
+          currentAssetIds,
+        })
+      ),
     [setCheckboxes, checkboxes, currentAssetIds]
   );
   const checkMax = useCallback(() => {
@@ -83,16 +94,13 @@ export const useCheckboxes = ({
   const toggleCheckbox = useCallback(
     (assetId: string) => {
       const newValue = !checkboxes[assetId];
+
       if (totalCheckedCount < MAX_TOKENS || !newValue) {
-        setCheckboxes({
-          ...checkboxes,
-          [assetId]: newValue,
-        });
+        setCheckboxes({ ...checkboxes, [assetId]: newValue });
       }
     },
     [checkboxes]
   );
-
   return {
     checkboxes,
     totalCheckedCount,
@@ -105,14 +113,12 @@ export const useCheckboxes = ({
     isClearAllMode,
   };
 };
-
 export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [currentAssets, setCurrentAssets] = useState<Assets>(assets);
   const [filterOption, setFilterOption] = useState<FilterSelectOptions>(
     FilterSelectOptionsEnum.ALL
   );
-
   useEffect(() => {
     const searchedAssets = searchAssets(searchValue, assets);
     const filterdAssets = filterAssets({
@@ -122,7 +128,6 @@ export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
     });
     setCurrentAssets(filterdAssets);
   }, [assets, searchValue, filterOption, tokenFavorites]);
-
   return {
     searchValue,
     setSearchValue,
@@ -131,18 +136,22 @@ export const useFilters = ({ assets, tokenFavorites }: UseFilters) => {
     setFilterOption,
   };
 };
-
 export const useScrollPosition = () => {
   const [scrollPosition, setScrollPosition] = useState<ScrollPosition>(
     ScrollPositionEnum.TOP
   );
+
   const setPosition = (target: EventTarget) =>
     setScrollPosition(getScrollPosition(target));
+
   const debouncedSetPosition = useCallback(
-    debounce(setPosition, 100, { leading: true }),
+    debounce(setPosition, 100, {
+      leading: true,
+    }),
     [setPosition]
   );
-  const onScroll = (evt: SyntheticMouseEvent<HTMLElement>) => {
+
+  const onScroll = (evt: React.MouseEvent<HTMLElement>) => {
     evt.persist();
     debouncedSetPosition(evt.target);
   };

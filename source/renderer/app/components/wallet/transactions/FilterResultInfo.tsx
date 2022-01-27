@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import styles from './FilterResultInfo.scss';
-
 const messages = defineMessages({
   resultInfo: {
     id: 'wallet.transaction.filter.resultInfo',
@@ -12,10 +10,9 @@ const messages = defineMessages({
     description: 'Filter result info.',
   },
 });
-
 type Props = {
-  filtered: number,
-  total: number,
+  filtered: number;
+  total: number;
 };
 
 @observer
@@ -26,13 +23,15 @@ class FilterResultInfo extends Component<Props> {
       <div className={styles.resultInfo}>
         <FormattedHTMLMessage
           {...messages.resultInfo}
-          values={{ filtered, total }}
+          values={{
+            filtered,
+            total,
+          }}
         />
       </div>
     );
-
     return <div className={styles.component}>{resultInfo}</div>;
   }
 }
 
-export default FilterResultInfo
+export default FilterResultInfo;
