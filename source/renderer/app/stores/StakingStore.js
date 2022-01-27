@@ -418,7 +418,6 @@ export default class StakingStore extends Store {
     };
     const { filePath } = await showSaveDialogChannel.send(params);
 
-    console.log(filePath);
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
