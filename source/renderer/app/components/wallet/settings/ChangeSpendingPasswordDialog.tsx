@@ -100,7 +100,7 @@ type Props = {
 };
 
 @observer
-export default class ChangeSpendingPasswordDialog extends Component<Props> {
+class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
     currentPasswordValue: '',
     newPasswordValue: '',
@@ -338,3 +338,5 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     );
   }
 }
+
+export default ChangeSpendingPasswordDialog

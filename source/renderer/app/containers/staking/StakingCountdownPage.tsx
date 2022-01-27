@@ -17,7 +17,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingCountdownPage extends Component<Props> {
+class StakingCountdownPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -48,3 +48,5 @@ export default class StakingCountdownPage extends Component<Props> {
     );
   }
 }
+
+export default StakingCountdownPage

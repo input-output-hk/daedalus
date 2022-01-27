@@ -39,7 +39,7 @@ type State = {
 };
 
 @observer
-export default class InlineEditingSmallInput extends Component<Props, State> {
+class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
   };
@@ -281,3 +281,5 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     );
   }
 }
+
+export default InlineEditingSmallInput

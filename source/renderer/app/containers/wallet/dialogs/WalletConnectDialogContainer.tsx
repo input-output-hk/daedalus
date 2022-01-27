@@ -11,7 +11,7 @@ type Props = {
 
 @inject('stores')
 @observer
-export default class WalletConnectDialogContainer extends Component<Props> {
+class WalletConnectDialogContainer extends Component<Props> {
   static defaultProps = { stores: null };
 
   onClose = () => {
@@ -39,3 +39,5 @@ export default class WalletConnectDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletConnectDialogContainer

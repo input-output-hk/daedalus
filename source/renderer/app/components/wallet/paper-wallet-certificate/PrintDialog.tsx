@@ -71,7 +71,7 @@ type Props = {
 };
 
 @observer
-export default class PrintDialog extends Component<Props, State> {
+class PrintDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -184,3 +184,5 @@ export default class PrintDialog extends Component<Props, State> {
     );
   }
 }
+
+export default PrintDialog

@@ -10,7 +10,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class TransferFundsStep1Container extends Component<Props> {
+class TransferFundsStep1Container extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -46,3 +46,5 @@ export default class TransferFundsStep1Container extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsStep1Container

@@ -64,7 +64,7 @@ type State = {
 };
 
 @observer
-export default class InlineEditingInput extends Component<Props, State> {
+class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
     validateOnChange: true,
     valueErrorMessage: '',
@@ -363,3 +363,5 @@ export default class InlineEditingInput extends Component<Props, State> {
     );
   }
 }
+
+export default InlineEditingInput

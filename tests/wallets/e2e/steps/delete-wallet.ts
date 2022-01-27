@@ -1,8 +1,6 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I see delete wallet dialog$/, function() {
   return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');

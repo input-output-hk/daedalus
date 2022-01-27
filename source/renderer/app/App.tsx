@@ -22,7 +22,7 @@ import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 
 @observer
-export default class App extends Component<{
+class App extends Component<{
   stores: StoresMap,
   actions: ActionsMap,
   history: Object,
@@ -89,3 +89,5 @@ export default class App extends Component<{
     );
   }
 }
+
+export default App

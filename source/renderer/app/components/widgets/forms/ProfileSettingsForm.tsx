@@ -58,7 +58,7 @@ export type ProfileSettingsFormProps = {
 };
 
 @observer
-export default class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
+class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     onChangeItem: () => {},
   };
@@ -141,3 +141,5 @@ export default class ProfileSettingsForm extends Component<ProfileSettingsFormPr
     );
   }
 }
+
+export default ProfileSettingsForm

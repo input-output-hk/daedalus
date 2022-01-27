@@ -81,7 +81,7 @@ type State = {
 };
 
 @observer
-export default class AssetSettingsDialog extends Component<Props, State> {
+class AssetSettingsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -225,3 +225,5 @@ export default class AssetSettingsDialog extends Component<Props, State> {
     );
   }
 }
+
+export default AssetSettingsDialog

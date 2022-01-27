@@ -35,7 +35,7 @@ type Props = {
 };
 
 @observer
-export default class SetWalletPassword extends Component<Props> {
+class SetWalletPassword extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -76,3 +76,5 @@ export default class SetWalletPassword extends Component<Props> {
     );
   }
 }
+
+export default SetWalletPassword

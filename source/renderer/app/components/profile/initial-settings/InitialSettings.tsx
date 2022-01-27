@@ -6,7 +6,7 @@ import ProfileSettingsForm from '../../widgets/forms/ProfileSettingsForm';
 import type { ProfileSettingsFormProps } from '../../widgets/forms/ProfileSettingsForm';
 
 @observer
-export default class InitialSettings extends Component<ProfileSettingsFormProps> {
+class InitialSettings extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     error: null,
   };
@@ -38,3 +38,5 @@ export default class InitialSettings extends Component<ProfileSettingsFormProps>
     );
   }
 }
+
+export default InitialSettings

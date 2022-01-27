@@ -24,7 +24,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class WalletAddPage extends Component<Props> {
+class WalletAddPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   onClose = () => {
@@ -98,3 +98,5 @@ export default class WalletAddPage extends Component<Props> {
     );
   }
 }
+
+export default WalletAddPage

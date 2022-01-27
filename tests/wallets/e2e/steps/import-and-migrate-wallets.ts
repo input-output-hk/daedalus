@@ -5,9 +5,7 @@ import { When, Then, Given } from 'cucumber';
 import { expect } from 'chai';
 import { difference } from 'lodash';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const IMPORT_WALLETS_OVERLAY_SELECTOR = '.WalletImportFileDialog_overlay';
 const IMPORT_WALLETS_OVERLAY_IMPORT_CHOICE_LABEL_SELECTOR = '.WalletImportFileDialog_stateFolderLabel';

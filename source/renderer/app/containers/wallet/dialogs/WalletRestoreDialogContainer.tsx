@@ -13,7 +13,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRestoreContainer extends Component<Props> {
+class WalletRestoreContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   get containers() {
@@ -60,3 +60,5 @@ export default class WalletRestoreContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletRestoreContainer

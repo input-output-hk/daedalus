@@ -2,9 +2,7 @@
 import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
 import { last } from 'lodash';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 let walletsTickers = [];
 
@@ -71,7 +69,7 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
       });
       modifiedWallets.push(modifiedWallet);
     }
-    // $FlowFixMe
+    // @ts-ignore
     daedalus.api.ada.setTestingWallets(modifiedWallets);
     done(walletsTickers);
   }, delegationScenarios);

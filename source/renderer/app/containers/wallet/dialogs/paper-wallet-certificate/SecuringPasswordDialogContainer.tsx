@@ -8,7 +8,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SecuringPasswordDialogContainer extends Component<Props> {
+class SecuringPasswordDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -35,3 +35,5 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default SecuringPasswordDialogContainer

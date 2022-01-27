@@ -29,7 +29,7 @@ type State = {
 };
 
 @observer
-export default class NewsItem extends Component<Props, State> {
+class NewsItem extends Component<Props, State> {
   static defaultProps = {
     onNewsItemActionClick: null,
     expandWithoutTransition: false,
@@ -166,3 +166,5 @@ export default class NewsItem extends Component<Props, State> {
     );
   }
 }
+
+export default NewsItem

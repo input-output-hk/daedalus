@@ -51,7 +51,7 @@ type Props = {
 };
 
 @observer
-export default class SyncingConnecting extends Component<Props, State> {
+class SyncingConnecting extends Component<Props, State> {
   state = {
     connectingTime: 0,
   };
@@ -221,3 +221,5 @@ export default class SyncingConnecting extends Component<Props, State> {
     );
   }
 }
+
+export default SyncingConnecting

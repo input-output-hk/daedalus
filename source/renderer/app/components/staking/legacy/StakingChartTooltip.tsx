@@ -53,7 +53,7 @@ type Props = {
 };
 
 @observer
-export default class StakingChartTooltip extends Component<Props> {
+class StakingChartTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -106,3 +106,5 @@ export default class StakingChartTooltip extends Component<Props> {
     );
   }
 }
+
+export default StakingChartTooltip

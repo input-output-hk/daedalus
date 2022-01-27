@@ -27,7 +27,7 @@ type TableBodyProps = {
 };
 
 @observer
-export class StakePoolsTableBody extends Component<TableBodyProps> {
+class StakePoolsTableBody extends Component<TableBodyProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -129,3 +129,5 @@ export class StakePoolsTableBody extends Component<TableBodyProps> {
     });
   }
 }
+
+export { StakePoolsTableBody }

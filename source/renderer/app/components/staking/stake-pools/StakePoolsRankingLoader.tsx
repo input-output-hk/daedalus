@@ -5,7 +5,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsRankingLoader.scss';
 
 @observer
-export default class StakePoolsRankingLoader extends Component<any> {
+class StakePoolsRankingLoader extends Component<any> {
   render() {
     return (
       <div className={styles.component}>
@@ -14,3 +14,5 @@ export default class StakePoolsRankingLoader extends Component<any> {
     );
   }
 }
+
+export default StakePoolsRankingLoader

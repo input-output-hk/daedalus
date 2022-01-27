@@ -30,7 +30,7 @@ type Props = {
 
 @inject('actions', 'stores')
 @observer
-export default class WalletSendConfirmationDialogContainer extends Component<Props> {
+class WalletSendConfirmationDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleWalletSendFormSubmit = (values: Object) => {
@@ -179,3 +179,5 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     );
   }
 }
+
+export default WalletSendConfirmationDialogContainer

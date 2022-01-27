@@ -60,7 +60,7 @@ storiesOf('Wallets|Import File', module)
         <WalletSelectImportDialog
           isSubmitting={boolean('isSubmitting', false)}
           nameValidator={(name) => isValidWalletName(name)}
-          // $FlowFixMe
+          // @ts-ignore
           exportedWallets={[...namedWallets, ...unnamedWallets]}
           pendingImportWalletsCount={number('pendingImportWalletsCount', 0)}
           onContinue={action('onContinue')}

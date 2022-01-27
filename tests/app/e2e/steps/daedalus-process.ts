@@ -3,9 +3,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 import { refreshClient, waitForCardanoNodeToExit, waitForDaedalusToExit } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const CONNECTING_TITLE = '.SyncingConnectingStatus_headline';
 
 Given(/^Daedalus is running$/, function() {

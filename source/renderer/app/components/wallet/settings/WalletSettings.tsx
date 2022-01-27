@@ -145,7 +145,7 @@ type State = {
 };
 
 @observer
-export default class WalletSettings extends Component<Props, State> {
+class WalletSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -410,3 +410,5 @@ export default class WalletSettings extends Component<Props, State> {
     );
   }
 }
+
+export default WalletSettings

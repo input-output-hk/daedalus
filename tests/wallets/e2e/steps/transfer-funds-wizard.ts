@@ -3,11 +3,9 @@ import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
-import type { Daedalus } from '../../../types';
 
 import { noWalletsErrorMessage, getFixedAmountByName } from './helpers';
 
-declare var daedalus: Daedalus;
 
 When(/^I click "Byron" wallet top bar notification action$/, function() {
   return this.waitAndClick('.LegacyNotification_actions button:nth-child(2)');

@@ -56,7 +56,7 @@ function generatStakePoolsFakeData() {
 const fakeStakePools = generatStakePoolsFakeData();
 // @TODO - remove flow fix and move fs to main process
 /* eslint-disable no-undef */
-// $FlowFixMe
+// @ts-ignore
 fs.writeFileSync(
   `${path.join(__dirname, '/')}stakingStakePools.dummy.json`,
   JSON.stringify(fakeStakePools, null, '\t')

@@ -101,7 +101,7 @@ const initialWalletRowState = {
   highlightedPoolId: false,
 };
 @observer
-export default class WalletRow extends Component<Props, WalletRowState> {
+class WalletRow extends Component<Props, WalletRowState> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -486,3 +486,5 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     );
   }
 }
+
+export default WalletRow

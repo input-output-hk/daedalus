@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class SettingsLayout extends Component<Props> {
+class SettingsLayout extends Component<Props> {
   scrollableDomElement: ?HTMLElement = null;
 
   componentDidMount() {
@@ -42,3 +42,5 @@ export default class SettingsLayout extends Component<Props> {
     );
   }
 }
+
+export default SettingsLayout

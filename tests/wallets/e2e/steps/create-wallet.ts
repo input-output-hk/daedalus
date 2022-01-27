@@ -1,9 +1,7 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { addWalletPage } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I see the add wallet page/, function() {
   return addWalletPage.waitForVisible(this.client);

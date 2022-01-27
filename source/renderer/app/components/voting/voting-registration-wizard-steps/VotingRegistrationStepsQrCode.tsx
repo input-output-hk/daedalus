@@ -77,7 +77,7 @@ type State = {
 };
 
 @observer
-export default class VotingRegistrationStepsQrCode extends Component<
+class VotingRegistrationStepsQrCode extends Component<
   Props,
   State
 > {
@@ -190,3 +190,5 @@ export default class VotingRegistrationStepsQrCode extends Component<
     );
   }
 }
+
+export default VotingRegistrationStepsQrCode

@@ -23,7 +23,7 @@ type Props = {
 };
 
 @observer
-export default class LegacyBadge extends Component<Props> {
+class LegacyBadge extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -40,3 +40,5 @@ export default class LegacyBadge extends Component<Props> {
     return <div className={stylesClassName}>{label}</div>;
   }
 }
+
+export default LegacyBadge

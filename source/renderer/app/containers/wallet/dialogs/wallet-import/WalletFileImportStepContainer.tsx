@@ -11,7 +11,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletFileImportStepContainer extends Component<Props> {
+class WalletFileImportStepContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onSelectExportSourcePath = (params: { importFrom: ImportFromOption }) => {
@@ -58,3 +58,5 @@ export default class WalletFileImportStepContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletFileImportStepContainer

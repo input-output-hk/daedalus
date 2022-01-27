@@ -33,7 +33,7 @@ type Props = {
 };
 
 @observer
-export default class DelegationCenter extends Component<Props> {
+class DelegationCenter extends Component<Props> {
   render() {
     const {
       wallets,
@@ -89,3 +89,5 @@ export default class DelegationCenter extends Component<Props> {
     );
   }
 }
+
+export default DelegationCenter

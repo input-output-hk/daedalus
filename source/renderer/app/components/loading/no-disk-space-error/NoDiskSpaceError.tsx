@@ -27,7 +27,7 @@ type Props = {
 };
 
 @observer
-export default class NoDiskSpaceError extends Component<Props> {
+class NoDiskSpaceError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -60,3 +60,5 @@ export default class NoDiskSpaceError extends Component<Props> {
     );
   }
 }
+
+export default NoDiskSpaceError

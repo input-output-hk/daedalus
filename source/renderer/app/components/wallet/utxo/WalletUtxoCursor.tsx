@@ -14,7 +14,7 @@ const OFFSET_TOP = 20;
 const OFFSET_BOTTOM = 60;
 
 @observer
-export default class WalletUtxoCursor extends Component<CursorProps> {
+class WalletUtxoCursor extends Component<CursorProps> {
   render() {
     let { x, width, height } = this.props;
     const { offsetWidth } = this.props;
@@ -41,3 +41,5 @@ export default class WalletUtxoCursor extends Component<CursorProps> {
     );
   }
 }
+
+export default WalletUtxoCursor

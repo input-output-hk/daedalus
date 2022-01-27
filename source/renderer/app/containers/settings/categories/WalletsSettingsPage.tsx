@@ -6,7 +6,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class WalletsSettingsPage extends Component<InjectedProps> {
+class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   handleSelectCurrency = (code: string) => {
@@ -40,3 +40,5 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default WalletsSettingsPage

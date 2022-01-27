@@ -7,9 +7,7 @@ import {
   getWalletByName,
 } from './helpers';
 import { waitUntilTextInSelector, scrollIntoView } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I see the restore wallet dialog$/, function() {
   return this.client.waitForVisible('.WalletRestoreDialog_component');

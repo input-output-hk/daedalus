@@ -129,7 +129,7 @@ type Props = {
 };
 
 @observer
-export default class WalletSelectImportDialog extends Component<Props> {
+class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -490,3 +490,5 @@ export default class WalletSelectImportDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletSelectImportDialog

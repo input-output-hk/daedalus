@@ -49,7 +49,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class DelegationSetupWizardDialogContainer extends Component<
+class DelegationSetupWizardDialogContainer extends Component<
   Props,
   State
 > {
@@ -296,3 +296,5 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     }
   }
 }
+
+export default DelegationSetupWizardDialogContainer

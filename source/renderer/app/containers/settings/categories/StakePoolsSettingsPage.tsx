@@ -6,7 +6,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class StakePoolsSettingsPage extends Component<InjectedProps> {
+class StakePoolsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   handleSelectSmashServerUrl = (smashServerUrl: string) => {
@@ -37,3 +37,5 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default StakePoolsSettingsPage

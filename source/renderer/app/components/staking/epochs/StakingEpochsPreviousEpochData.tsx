@@ -59,7 +59,7 @@ type State = {
 };
 
 @observer
-export default class StakingEpochsPreviousEpochData extends Component<
+class StakingEpochsPreviousEpochData extends Component<
   Props,
   State
 > {
@@ -179,3 +179,5 @@ export default class StakingEpochsPreviousEpochData extends Component<
     );
   }
 }
+
+export default StakingEpochsPreviousEpochData

@@ -286,7 +286,7 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  // $FlowFixMe
+  // @ts-ignore
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();

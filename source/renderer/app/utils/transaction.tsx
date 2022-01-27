@@ -281,12 +281,12 @@ export const validateFilterForm = (values: {
 
 class List {
   constructor(xs) {
-    // $FlowFixMe
+    // @ts-ignore
     this.elems = xs;
   }
   encodeCBOR(encoder) {
     encoder.push(rawBuffer('9F')); // Begin Indefinite list
-    // $FlowFixMe
+    // @ts-ignore
     this.elems.forEach((el) => encoder.pushAny(el));
     encoder.push(rawBuffer('FF')); // Break Indefinite list
     return true;

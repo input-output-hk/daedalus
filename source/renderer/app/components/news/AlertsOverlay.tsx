@@ -27,7 +27,7 @@ type Props = {
 };
 
 @observer
-export default class AlertsOverlay extends Component<Props, State> {
+class AlertsOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -128,3 +128,5 @@ export default class AlertsOverlay extends Component<Props, State> {
     );
   }
 }
+
+export default AlertsOverlay

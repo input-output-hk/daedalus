@@ -45,7 +45,7 @@ type Props = {
 type State = { progressLabelClassName: string };
 
 @observer
-export default class StakingInfo extends Component<Props, State> {
+class StakingInfo extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
   };
@@ -134,3 +134,5 @@ export default class StakingInfo extends Component<Props, State> {
     );
   }
 }
+
+export default StakingInfo

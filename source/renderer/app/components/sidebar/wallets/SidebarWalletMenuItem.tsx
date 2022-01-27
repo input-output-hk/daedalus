@@ -31,7 +31,7 @@ type Props = {
 };
 
 @observer
-export default class SidebarWalletMenuItem extends Component<Props> {
+class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const {
       title,
@@ -115,3 +115,5 @@ export default class SidebarWalletMenuItem extends Component<Props> {
     );
   }
 }
+
+export default SidebarWalletMenuItem

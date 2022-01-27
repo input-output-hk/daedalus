@@ -56,7 +56,7 @@ export default class Request<Result, Error> {
                 isObservableArray(this.result) &&
                 Array.isArray(result)
               ) {
-                // $FlowFixMe
+                // @ts-ignore
                 this.result.replace(result);
               } else {
                 this.result = result;

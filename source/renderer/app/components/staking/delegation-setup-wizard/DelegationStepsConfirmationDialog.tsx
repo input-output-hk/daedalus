@@ -53,7 +53,7 @@ type Props = {
 };
 
 @observer
-export default class DelegationStepsConfirmationDialog extends Component<Props> {
+class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -296,3 +296,5 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     );
   }
 }
+
+export default DelegationStepsConfirmationDialog

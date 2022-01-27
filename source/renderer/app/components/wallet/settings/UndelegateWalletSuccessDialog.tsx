@@ -40,7 +40,7 @@ type Props = {
 type State = { timeUntilNextEpochStart: number };
 
 @observer
-export default class UndelegateWalletSuccessDialog extends Component<
+class UndelegateWalletSuccessDialog extends Component<
   Props,
   State
 > {
@@ -125,3 +125,5 @@ export default class UndelegateWalletSuccessDialog extends Component<
     );
   }
 }
+
+export default UndelegateWalletSuccessDialog

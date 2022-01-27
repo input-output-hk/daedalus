@@ -33,7 +33,7 @@ type State = {
 };
 
 @observer
-export default class StakingChart extends Component<Props, State> {
+class StakingChart extends Component<Props, State> {
   state = {
     isHovered: false,
     hoveredBarData: null,
@@ -129,3 +129,5 @@ export default class StakingChart extends Component<Props, State> {
     );
   }
 }
+
+export default StakingChart

@@ -79,7 +79,7 @@ type State = {
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
-export default class WalletTransactionsList extends Component<Props, State> {
+class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -378,3 +378,5 @@ export default class WalletTransactionsList extends Component<Props, State> {
     );
   }
 }
+
+export default WalletTransactionsList

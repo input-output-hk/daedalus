@@ -11,7 +11,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class NoWalletsContainer extends Component<Props> {
+class NoWalletsContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -24,3 +24,5 @@ export default class NoWalletsContainer extends Component<Props> {
     return <NoWalletsDialog onClose={onClose} onAddWallet={onAddWallet} />;
   }
 }
+
+export default NoWalletsContainer

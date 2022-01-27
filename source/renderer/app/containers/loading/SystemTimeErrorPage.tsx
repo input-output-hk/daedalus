@@ -8,7 +8,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SystemTimeErrorPage extends Component<Props> {
+class SystemTimeErrorPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
@@ -36,3 +36,5 @@ export default class SystemTimeErrorPage extends Component<Props> {
     );
   }
 }
+
+export default SystemTimeErrorPage

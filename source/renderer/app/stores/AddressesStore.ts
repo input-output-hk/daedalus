@@ -172,7 +172,7 @@ export default class AddressesStore extends Store {
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
-    // $FlowFixMe
+    // @ts-ignore
     const result = await this.api.ada.getAddresses({
       walletId,
       isLegacy: true,

@@ -98,7 +98,7 @@ type State = {
 };
 
 @observer
-export default class WalletCreateDialog extends Component<Props, State> {
+class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -299,3 +299,5 @@ export default class WalletCreateDialog extends Component<Props, State> {
     );
   }
 }
+
+export default WalletCreateDialog

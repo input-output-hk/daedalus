@@ -88,7 +88,7 @@ type Props = {
 };
 
 @observer
-export default class LegacyNotification extends Component<Props> {
+class LegacyNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -177,3 +177,5 @@ export default class LegacyNotification extends Component<Props> {
     );
   }
 }
+
+export default LegacyNotification

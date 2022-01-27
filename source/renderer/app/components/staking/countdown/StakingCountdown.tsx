@@ -38,7 +38,7 @@ type Props = {
 };
 
 @observer
-export default class StakingCountdown extends Component<Props> {
+class StakingCountdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -81,3 +81,5 @@ export default class StakingCountdown extends Component<Props> {
     );
   }
 }
+
+export default StakingCountdown

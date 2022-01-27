@@ -31,7 +31,7 @@ type Props = {
 };
 
 @observer
-export default class RedemptionUnavailableDialog extends Component<Props> {
+class RedemptionUnavailableDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -78,3 +78,5 @@ export default class RedemptionUnavailableDialog extends Component<Props> {
     );
   }
 }
+
+export default RedemptionUnavailableDialog

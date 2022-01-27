@@ -12,9 +12,7 @@ import {
   getWalletType,
   restoreWallet,
 } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 // Create shelley or byron wallets
 Given(/^I have (created )?the following (byron )?wallets:$/, async function(mode, _type, table) {

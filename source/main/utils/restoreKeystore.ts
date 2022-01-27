@@ -76,7 +76,7 @@ const $isEmptyPassphrase = (pwd: Buffer): boolean => {
   const cborEmptyBytes = Buffer.from('40', 'hex');
   const [logN, r, p, salt, hashA] = pwd.toString('utf8').split('|');
   const opts = { N: 2 ** Number(logN), r: Number(r), p: Number(p) };
-  // $FlowFixMe
+  // @ts-ignore
   const hashB = crypto
     .scryptSync(cborEmptyBytes, Buffer.from(salt, 'base64'), 32, opts)
     .toString('base64');

@@ -8,7 +8,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class SplashNetworkPage extends Component<Props> {
+class SplashNetworkPage extends Component<Props> {
   static defaultProps = { actions: null, stores: {} };
 
   render() {
@@ -25,3 +25,5 @@ export default class SplashNetworkPage extends Component<Props> {
     return null;
   }
 }
+
+export default SplashNetworkPage

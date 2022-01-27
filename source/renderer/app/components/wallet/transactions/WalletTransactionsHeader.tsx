@@ -34,7 +34,7 @@ type Props = {
 };
 
 @observer
-export default class WalletTransactionsHeader extends Component<Props> {
+class WalletTransactionsHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -104,3 +104,5 @@ export default class WalletTransactionsHeader extends Component<Props> {
     );
   }
 }
+
+export default WalletTransactionsHeader

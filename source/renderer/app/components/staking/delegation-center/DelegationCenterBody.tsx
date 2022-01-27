@@ -48,7 +48,7 @@ type Props = {
 };
 
 @observer
-export default class DelegationCenterBody extends Component<Props> {
+class DelegationCenterBody extends Component<Props> {
   loadingSpinner: ?LoadingSpinner;
 
   static contextTypes = {
@@ -145,3 +145,5 @@ export default class DelegationCenterBody extends Component<Props> {
     );
   }
 }
+
+export default DelegationCenterBody

@@ -3,9 +3,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 import { waitUntilWaletNamesEqual } from '../../../wallets/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I am on the settings screen$/, async function() {
   await navigateTo.call(this, '/settings');

@@ -60,7 +60,7 @@ type State = {
 };
 
 @observer
-export default class WalletReceiveSequential extends Component<Props, State> {
+class WalletReceiveSequential extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -199,3 +199,5 @@ export default class WalletReceiveSequential extends Component<Props, State> {
     );
   }
 }
+
+export default WalletReceiveSequential

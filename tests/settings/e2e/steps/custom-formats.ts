@@ -7,9 +7,7 @@ import {
   getValueFromSelector,
   doesMatchExpectedValue,
 } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I choose the following custom formats:$/, async function(formatsTable) {
   const chosenFormats = formatsTable.hashes();

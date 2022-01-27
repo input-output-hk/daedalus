@@ -4,9 +4,7 @@ import { expect } from 'chai';
 import { find } from 'lodash';
 import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   ADDRESS_ACTIVE: '.WalletReceive_hash',
   ADDRESS_COMPONENT: '.Address',

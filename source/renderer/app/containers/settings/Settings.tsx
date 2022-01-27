@@ -10,7 +10,7 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class Settings extends Component<InjectedContainerProps> {
+class Settings extends Component<InjectedContainerProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -51,3 +51,5 @@ export default class Settings extends Component<InjectedContainerProps> {
     );
   }
 }
+
+export default Settings

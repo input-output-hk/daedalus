@@ -7,7 +7,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class DataLayerMigrationPage extends Component<InjectedProps> {
+class DataLayerMigrationPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = () => {
@@ -28,3 +28,5 @@ export default class DataLayerMigrationPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default DataLayerMigrationPage
