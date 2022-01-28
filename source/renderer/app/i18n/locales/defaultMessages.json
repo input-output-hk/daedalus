@@ -2209,13 +2209,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 17
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 10
+          "line": 13
         }
       },
       {
@@ -2223,13 +2223,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.startingCardanoDescription",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 18
         }
       },
       {
@@ -2237,13 +2237,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 28
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 24
         }
       },
       {
@@ -2251,13 +2251,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 34
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppingCardanoDescription",
         "start": {
           "column": 23,
-          "line": 26
+          "line": 29
         }
       },
       {
@@ -2265,13 +2265,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 35
         }
       },
       {
@@ -2279,13 +2279,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 44
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -2293,13 +2293,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 49
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 42
+          "line": 45
         }
       },
       {
@@ -2307,13 +2307,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 54
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 47
+          "line": 50
         }
       },
       {
@@ -2321,13 +2321,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 61
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 52
+          "line": 55
         }
       },
       {
@@ -2335,13 +2335,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 66
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 59
+          "line": 62
         }
       },
       {
@@ -2349,13 +2349,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 72
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 64
+          "line": 67
         }
       },
       {
@@ -2363,13 +2363,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 77
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 70
+          "line": 73
         }
       },
       {
@@ -2377,27 +2377,55 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 82
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 75
+          "line": 78
         }
       },
       {
-        "defaultMessage": "!!!Cardano node is currently syncing. This process can take several hours",
-        "description": "Message on the loading screen informing that sync process could be very long",
+        "defaultMessage": "!!!Verifying the blockchain ({verificationProgress}% complete)",
+        "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 89
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.verifyingBlockchainMessage",
         "start": {
           "column": 23,
-          "line": 80
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Validating blocks ({verificationProgress}% complete)",
+        "description": "Message \"Validating blocks (65% complete) ...\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 95
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.validatingChunk",
+        "start": {
+          "column": 19,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Applying a block to ledger ({verificationProgress}% complete)",
+        "description": "Message \"Applying a block to ledger (65% complete) ...\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.pushingLedgerState",
+        "start": {
+          "column": 22,
+          "line": 96
         }
       }
     ],
