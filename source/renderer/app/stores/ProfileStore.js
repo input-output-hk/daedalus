@@ -103,14 +103,6 @@ export default class ProfileStore extends Store {
   @observable setThemeRequest: Request<string> = new Request(
     this.api.localStorage.setUserTheme
   );
-  @observable
-  getRTSModeRecommendationAcknowledgedRequest: Request<string> = new Request(
-    this.api.localStorage.getRTSModeRecommendationAcknowledged
-  );
-  @observable
-  setRTSModeRecommendationAcknowledgedRequest: Request<string> = new Request(
-    this.api.localStorage.setRTSModeRecommendationAcknowledged
-  );
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFilePath: ?string = null;
@@ -118,6 +110,7 @@ export default class ProfileStore extends Store {
   @observable desktopDirectoryPath: string = '';
   @observable isSubmittingBugReport: boolean = false;
   @observable isInitialScreen: boolean = false;
+  @observable isRTSModeRecommendationAcknowledged: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -152,7 +145,6 @@ export default class ProfileStore extends Store {
     this._getDataLayerMigrationAcceptance();
     this._getDesktopDirectoryPath();
     this._getSystemLocale();
-    this._getRTSFlagsModeRecommendationAcknowledgement();
   }
 
   _updateBigNumberFormat = () => {
@@ -256,10 +248,6 @@ export default class ProfileStore extends Store {
     );
   }
 
-  @computed get isRTSModeRecommendationAcknowledged(): boolean {
-    return this.getRTSModeRecommendationAcknowledgedRequest.result === true;
-  }
-
   @computed get isDataLayerMigrationAccepted(): boolean {
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
@@ -327,13 +315,8 @@ export default class ProfileStore extends Store {
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
 
-  _getRTSFlagsModeRecommendationAcknowledgement = () => {
-    this.getRTSModeRecommendationAcknowledgedRequest.execute();
-  };
-
-  _acknowledgeRTSFlagsModeRecommendation = async () => {
-    await this.setRTSModeRecommendationAcknowledgedRequest.execute();
-    await this.getRTSModeRecommendationAcknowledgedRequest.execute();
+  _acknowledgeRTSFlagsModeRecommendation = () => {
+    this.isRTSModeRecommendationAcknowledged = true;
   };
 
   _getDataLayerMigrationAcceptance = () => {
