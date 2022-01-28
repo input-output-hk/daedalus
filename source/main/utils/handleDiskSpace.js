@@ -154,7 +154,7 @@ export const handleDiskSpace = (
             logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
-            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
+            logger.error('[DISK-SPACE-DEBUGCannot stop cardano node', error);
           }
           break;
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
@@ -181,8 +181,7 @@ export const handleDiskSpace = (
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
-    const diskReport = await getDiskCheckReport(stateDirectoryPath);
-    getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
   };
 
