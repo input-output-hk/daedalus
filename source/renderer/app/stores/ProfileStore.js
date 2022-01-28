@@ -315,7 +315,7 @@ export default class ProfileStore extends Store {
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
 
-  _acknowledgeRTSFlagsModeRecommendation = () => {
+  @action _acknowledgeRTSFlagsModeRecommendation = () => {
     this.isRTSModeRecommendationAcknowledged = true;
   };
 

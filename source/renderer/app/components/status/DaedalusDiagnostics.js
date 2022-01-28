@@ -92,7 +92,7 @@ const messages = defineMessages({
     id:
       'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
     defaultMessage:
-      '!!!Your current system requirements are low to run Daedalus. We suggest using a machine with at least 16 gb of RAM',
+      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
     description:
       'Visible on hovering over Recommended system requirement status when status is Low',
   },
@@ -100,7 +100,7 @@ const messages = defineMessages({
     id:
       'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
     defaultMessage:
-      '!!!Your current system requirements are good enough to run Daedalus',
+      '!!!Your system specifications meet Daedalus’ recommended hardware requirements',
     description:
       'Visible on hovering over Recommended system requirement status when status is Good',
   },

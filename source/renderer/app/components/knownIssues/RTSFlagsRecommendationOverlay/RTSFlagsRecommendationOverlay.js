@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -17,13 +17,13 @@ type Props = {
 const messages = defineMessages({
   title: {
     id: 'knownIssues.rtsRecommendationOverlay.title',
-    defaultMessage: '!!!RTS flag warning',
+    defaultMessage: '!!!Recommended hardware requirements status',
     description: 'Title of the RTS flags recommendation overlay',
   },
   content: {
     id: 'knownIssues.rtsRecommendationOverlay.content',
     defaultMessage:
-      '!!!WARNING/REMINDER: You are running Daedalus with less memory than recommended. You can try these experimental settings to improve performance.',
+      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements.<br />You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.',
     description: 'Content of the RTS flags recommendation overlay',
   },
   enableAndQuitButtonLabel: {
@@ -59,7 +59,7 @@ export default class RTSFlagsRecommendationOverlay extends Component<Props> {
         />
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <div className={styles.content}>
-          {intl.formatMessage(messages.content)}
+          <FormattedHTMLMessage {...messages.content} />
         </div>
         <Button
           className={styles.actionBtn}
