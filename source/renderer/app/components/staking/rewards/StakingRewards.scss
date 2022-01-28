@@ -180,6 +180,12 @@
           visibility: visible;
         }
       }
+
+      &.total,
+      &.unspent {
+        padding-right: 10px;
+        text-align: right;
+      }
     }
 
     td {
@@ -209,12 +215,9 @@
 
       .syncingProgress {
         position: absolute;
-        right: 10px;
-        top: 0;
-
+        right: 22px;
+        top: 10px;
         :global .LoadingSpinner_component.LoadingSpinner_medium {
-          margin: 10px auto !important;
-
           .LoadingSpinner_icon svg path {
             fill: var(--theme-loading-spinner-color);
             opacity: 0.3;
@@ -319,6 +322,12 @@
             }
           }
         }
+      }
+
+      &.rewardTotal,
+      &.rewardUnspent {
+        text-align: right;
+        padding-right: 23px;
       }
     }
   }

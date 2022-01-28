@@ -333,6 +333,7 @@ export default class StakingRewards extends Component<Props, State> {
 
                       return (
                         <th
+                          className={styles[tableHeader.name]}
                           key={tableHeader.name}
                           onClick={() =>
                             this.handleRewardsSort(tableHeader.name)
@@ -412,9 +413,7 @@ export default class StakingRewards extends Component<Props, State> {
                           )}
                         </td>
                         <td className={styles.rewardTotal}>
-                          {isRestoring ? (
-                            '-'
-                          ) : (
+                          {!isRestoring && (
                             <RewardAmount amount={rewardTotal} />
                           )}
                           {isRestoring && (
