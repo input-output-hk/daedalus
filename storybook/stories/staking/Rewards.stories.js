@@ -13,7 +13,8 @@ import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.js
 const rewards = map(REWARDS, (reward) => {
   return {
     ...reward,
-    reward: new BigNumber(reward.reward),
+    total: new BigNumber(reward.total),
+    unspent: new BigNumber(reward.unspent),
   };
 });
 
