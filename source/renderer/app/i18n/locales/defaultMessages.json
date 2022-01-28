@@ -7399,7 +7399,7 @@
           "line": 78
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatus",
+        "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatus",
         "start": {
           "column": 34,
           "line": 73
@@ -7413,7 +7413,7 @@
           "line": 84
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowValue",
+        "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowValue",
         "start": {
           "column": 43,
           "line": 79
@@ -7427,7 +7427,7 @@
           "line": 90
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodValue",
+        "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodValue",
         "start": {
           "column": 44,
           "line": 85
@@ -7441,7 +7441,7 @@
           "line": 97
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowTooltip",
+        "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip",
         "start": {
           "column": 45,
           "line": 91
@@ -7455,7 +7455,7 @@
           "line": 105
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodTooltip",
+        "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip",
         "start": {
           "column": 46,
           "line": 98
@@ -7469,7 +7469,7 @@
           "line": 110
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.rtsFlagsModeEnabled",
+        "id": "daedalus.diagnostics.dialog.isRTSFlagsModeEnabled",
         "start": {
           "column": 23,
           "line": 106

@@ -12,7 +12,7 @@ export const buildSystemInfo = (
   platformVersion: environment.platformVersion,
   cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
   ram: formattedBytesToSize(environment.ram),
-  meetsHardwareRequirements: environment.meetsHardwareRequirements,
+  hasMetHardwareRequirements: environment.hasMetHardwareRequirements,
   availableDiskSpace: networkStatus.diskSpaceAvailable,
-  rtsFlagsModeEnabled: networkStatus.rtsFlagsModeEnabled,
+  isRTSFlagsModeEnabled: networkStatus.isRTSFlagsModeEnabled,
 });

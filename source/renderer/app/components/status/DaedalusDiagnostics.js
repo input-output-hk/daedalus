@@ -70,41 +70,42 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc',
     description: '"Support" link URL while disk space is unknown',
   },
-  meetsHardwareRequirementsLabel: {
-    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatus',
+  hasMetHardwareRequirementsLabel: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatus',
     defaultMessage: '!!!Recommended system requirements status',
     description:
       'Displayed on the left of the Recommended system requirements status row',
   },
-  meetsHardwareRequirementsStatusLowValue: {
-    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowValue',
+  hasMetHardwareRequirementsStatusLowValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowValue',
     defaultMessage: '!!!Low',
     description:
       'Displayed on the right of the Recommended system requirements status row when hardware requirements are insufficient',
   },
-  meetsHardwareRequirementsStatusGoodValue: {
-    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodValue',
+  hasMetHardwareRequirementsStatusGoodValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodValue',
     defaultMessage: '!!!Good',
     description:
       'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
   },
-  meetsHardwareRequirementsStatusLowTooltip: {
-    id: 'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusLowTooltip',
+  hasMetHardwareRequirementsStatusLowTooltip: {
+    id:
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
     defaultMessage:
       '!!!Your current system requirements are low to run Daedalus. We suggest using a machine with at least 16 gb of RAM',
     description:
       'Visible on hovering over Recommended system requirement status when status is Low',
   },
-  meetsHardwareRequirementsStatusGoodTooltip: {
+  hasMetHardwareRequirementsStatusGoodTooltip: {
     id:
-      'daedalus.diagnostics.dialog.meetsHardwareRequirementsStatusGoodTooltip',
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
     defaultMessage:
       '!!!Your current system requirements are good enough to run Daedalus',
     description:
       'Visible on hovering over Recommended system requirement status when status is Good',
   },
-  rtsFlagsModeEnabled: {
-    id: 'daedalus.diagnostics.dialog.rtsFlagsModeEnabled',
+  isRTSFlagsModeEnabled: {
+    id: 'daedalus.diagnostics.dialog.isRTSFlagsModeEnabled',
     defaultMessage: '!!!RTS Flags Mode',
     description: 'Indicates whether RTS Flags Mode is enabled or not',
   },
@@ -534,8 +535,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cpu: cpuInOriginalFormat,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
-      meetsHardwareRequirements,
-      rtsFlagsModeEnabled,
+      hasMetHardwareRequirements,
+      isRTSFlagsModeEnabled,
     } = systemInfo;
 
     const cpu = formattedCpuModel(cpuInOriginalFormat);
@@ -614,32 +615,32 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 )
               )}
               {getRow(
-                'meetsHardwareRequirementsLabel',
+                'hasMetHardwareRequirementsLabel',
                 <PopOver
                   content={intl.formatMessage(
-                    meetsHardwareRequirements
-                      ? messages.meetsHardwareRequirementsStatusGoodTooltip
-                      : messages.meetsHardwareRequirementsStatusLowTooltip
+                    hasMetHardwareRequirements
+                      ? messages.hasMetHardwareRequirementsStatusGoodTooltip
+                      : messages.hasMetHardwareRequirementsStatusLowTooltip
                   )}
                 >
                   <div
                     className={classNames(
                       styles.layoutData,
-                      meetsHardwareRequirements ? styles.green : styles.red
+                      hasMetHardwareRequirements ? styles.green : styles.red
                     )}
                   >
                     {intl.formatMessage(
-                      meetsHardwareRequirements
-                        ? messages.meetsHardwareRequirementsStatusGoodValue
-                        : messages.meetsHardwareRequirementsStatusLowValue
+                      hasMetHardwareRequirements
+                        ? messages.hasMetHardwareRequirementsStatusGoodValue
+                        : messages.hasMetHardwareRequirementsStatusLowValue
                     )}
                   </div>
                 </PopOver>
               )}
               {getRow(
-                'rtsFlagsModeEnabled',
+                'isRTSFlagsModeEnabled',
                 intl.formatMessage(
-                  rtsFlagsModeEnabled
+                  isRTSFlagsModeEnabled
                     ? messages.statusOnForUserSettings
                     : messages.statusOffForUserSettings
                 )

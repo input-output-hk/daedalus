@@ -25,7 +25,7 @@ export type Environment = {
   os: string,
   cpu: string,
   ram: number,
-  meetsHardwareRequirements: boolean,
+  hasMetHardwareRequirements: boolean,
   installerVersion: string,
   version: string,
   isWindows: boolean,

@@ -81,7 +81,7 @@ export default class NetworkStatusStore extends Store {
   @observable cardanoNodeState: CardanoNodeState = 'unknown';
   @observable cardanoNodePID: number = 0;
   @observable cardanoWalletPID: number = 0;
-  @observable rtsFlagsModeEnabled: boolean = false;
+  @observable isRTSFlagsModeEnabled: boolean = false;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
@@ -343,7 +343,7 @@ export default class NetworkStatusStore extends Store {
       hasBeenConnected,
       cardanoNodePID,
       cardanoWalletPID,
-      rtsFlagsModeEnabled,
+      isRTSFlagsModeEnabled,
     } = from;
 
     return {
@@ -353,7 +353,7 @@ export default class NetworkStatusStore extends Store {
       hasBeenConnected,
       cardanoNodePID,
       cardanoWalletPID,
-      rtsFlagsModeEnabled,
+      isRTSFlagsModeEnabled: isRTSFlagsModeEnabled,
     };
   };
 

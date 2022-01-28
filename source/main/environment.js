@@ -52,7 +52,7 @@ const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const cpu = os.cpus();
 const ram = os.totalmem();
-const meetsHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
+const hasMetHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
@@ -101,7 +101,7 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
-    meetsHardwareRequirements,
+    hasMetHardwareRequirements: hasMetHardwareRequirements,
   },
   process.env
 );

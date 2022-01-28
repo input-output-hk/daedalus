@@ -11,40 +11,41 @@ import styles from './ToggleRTSFlagsDialog.scss';
 const messages = defineMessages({
   enableRTSFlagsModeHeadline: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.title',
-    defaultMessage: 'Enable RTS flags (RAM management system)',
+    defaultMessage: '!!!Enable RTS flags (RAM management system)',
     description: 'Headline for the RTS flags dialog - when enabling',
   },
   enableRTSFlagsModeExplanation: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.explanation',
     defaultMessage:
-      'When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.',
+      '!!!When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.',
     description: 'Main body of the dialog - when enabling',
   },
   enableRTSFlagsModeActionButton: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.actionButton',
-    defaultMessage: 'Enable and quit',
+    defaultMessage: '!!!Enable and quit',
     description: 'Enable RTS flags button label',
   },
   disableRTSFlagsModeHeadline: {
     id: 'knownIssues.dialog.disableRtsFlagsMode.title',
-    defaultMessage: 'Disable RTS flags (RAM management system)',
+    defaultMessage: '!!!Disable RTS flags (RAM management system)',
     description: 'Headline for the RTS flags dialog - when disabling',
   },
   disableRTSFlagsModeExplanation: {
     id: 'knownIssues.dialog.disableRtsFlagsMode.explanation',
     defaultMessage:
-      'When disabled, the Cardano node will start in default mode. You will need to restart Daedalus for this change to take effect.',
+      '!!!When disabled, the Cardano node will start in default mode. You will need to restart Daedalus for this change to take effect.',
     description: 'Main body of the dialog - when disabling',
   },
   disableRTSFlagsModeActionButton: {
     id: 'knownIssues.dialog.disableRtsFlagsMode.actionButton',
-    defaultMessage: 'Disable and quit',
+    defaultMessage: '!!!Disable and quit',
     description: 'Disable RTS flags button label',
   },
   manualRelaunchConfirmationCheckboxLabel: {
     id:
       'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
-    defaultMessage: 'I understand that I will need to launch Daedalus manually',
+    defaultMessage:
+      '!!!I understand that I will need to launch Daedalus manually',
     description: 'Manual relaunch confirmation checkbox label',
   },
 });
@@ -52,11 +53,11 @@ const messages = defineMessages({
 type Props = {
   onClose: () => void,
   onConfirm: () => void,
-  rtsFlagsModeEnabled: boolean,
+  isRTSFlagsModeEnabled: boolean,
 };
 
 type State = {
-  confirmationCheckboxChecked: boolean,
+  isConfirmationCheckboxChecked: boolean,
 };
 
 @observer
@@ -66,19 +67,19 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
   };
 
   state = {
-    confirmationCheckboxChecked: false,
+    isConfirmationCheckboxChecked: false,
   };
 
   handleCheckboxToggle = () => {
     this.setState((prevState) => ({
-      confirmationCheckboxChecked: !prevState.confirmationCheckboxChecked,
+      isConfirmationCheckboxChecked: !prevState.isConfirmationCheckboxChecked,
     }));
   };
 
   render() {
     const { intl } = this.context;
-    const { rtsFlagsModeEnabled, onClose, onConfirm } = this.props;
-    const { confirmationCheckboxChecked } = this.state;
+    const { isRTSFlagsModeEnabled, onClose, onConfirm } = this.props;
+    const { isConfirmationCheckboxChecked } = this.state;
 
     const actions = [
       {
@@ -87,13 +88,13 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
       },
       {
         label: intl.formatMessage(
-          rtsFlagsModeEnabled
+          isRTSFlagsModeEnabled
             ? messages.disableRTSFlagsModeActionButton
             : messages.enableRTSFlagsModeActionButton
         ),
         primary: true,
         onClick: onConfirm,
-        disabled: !confirmationCheckboxChecked,
+        disabled: !isConfirmationCheckboxChecked,
       },
     ];
 
@@ -101,7 +102,7 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
       <Dialog
         className={styles.dialog}
         title={intl.formatMessage(
-          rtsFlagsModeEnabled
+          isRTSFlagsModeEnabled
             ? messages.disableRTSFlagsModeHeadline
             : messages.enableRTSFlagsModeHeadline
         )}
@@ -112,7 +113,7 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
       >
         <p>
           {intl.formatMessage(
-            rtsFlagsModeEnabled
+            isRTSFlagsModeEnabled
               ? messages.disableRTSFlagsModeExplanation
               : messages.enableRTSFlagsModeExplanation
           )}
@@ -122,7 +123,7 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
             messages.manualRelaunchConfirmationCheckboxLabel
           )}
           onChange={this.handleCheckboxToggle}
-          checked={confirmationCheckboxChecked}
+          checked={isConfirmationCheckboxChecked}
         />
       </Dialog>
     );

@@ -56,6 +56,7 @@ import {
   storeRtsFlagsSettings,
 } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
+import { containsRTSFlags } from './utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 
@@ -117,9 +118,7 @@ const safeExit = async () => {
 
 const handleWindowClose = async (event: ?Event) => {
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
-  if (event) {
-    event.preventDefault();
-  }
+  event?.preventDefault();
   await safeExit();
 };
 
@@ -236,7 +235,7 @@ const onAppReady = async () => {
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   toggleRTSFlagsModeChannel.onReceive(() => {
-    const flagsToSet = isEqual(currentRtsFlags, RTS_FLAGS) ? [] : RTS_FLAGS;
+    const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
     return handleWindowClose();
   });

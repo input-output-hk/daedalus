@@ -27,9 +27,9 @@ export default class RTSFlagsRecommendationOverlayContainer extends Component<Pr
 
   shouldRender = () => {
     if (
-      this.props.stores.networkStatus.environment.meetsHardwareRequirements ||
+      this.props.stores.networkStatus.environment.hasMetHardwareRequirements ||
       !this.props.stores.profile.areTermsOfUseAccepted ||
-      this.props.stores.networkStatus.rtsFlagsModeEnabled
+      this.props.stores.networkStatus.isRTSFlagsModeEnabled
     ) {
       return false;
     }
@@ -44,8 +44,8 @@ export default class RTSFlagsRecommendationOverlayContainer extends Component<Pr
 
     return (
       <RTSFlagsRecommendationOverlay
-        rtsFlagsModeEnabled={
-          this.props.stores.networkStatus.rtsFlagsModeEnabled
+        isRTSFlagsModeEnabled={
+          this.props.stores.networkStatus.isRTSFlagsModeEnabled
         }
         onClose={this.onClose}
         onConfirm={this.onConfirm}

@@ -13,7 +13,7 @@ export const buildKnownIssueFixesSubmenu = (
 ): MenuItem[] => {
   const { isBlankScreenFixActive, network } = environment;
   const rtsFlags = getRtsFlagsSettings(network);
-  const rtsFlagsEnabled = !!rtsFlags?.length && rtsFlags.length > 0;
+  const areRTSFlagsEnabled = !!rtsFlags?.length && rtsFlags.length > 0;
 
   return [
     {
@@ -34,11 +34,11 @@ export const buildKnownIssueFixesSubmenu = (
     {
       label: translate('helpSupport.usingRtsFlags'),
       type: 'checkbox',
-      checked: rtsFlagsEnabled,
+      checked: areRTSFlagsEnabled,
       click(item) {
-        actions.openToggleRTSFlagsModeDialog(!rtsFlagsEnabled);
+        actions.openToggleRTSFlagsModeDialog(!areRTSFlagsEnabled);
         // keep previous setting until app restart
-        item.checked = rtsFlagsEnabled;
+        item.checked = areRTSFlagsEnabled;
       },
     },
   ];

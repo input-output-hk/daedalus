@@ -27,8 +27,8 @@ export default class ToggleRTSFlagsDialogContainer extends Component<Props> {
   render() {
     return (
       <ToggleRTSFlagsDialog
-        rtsFlagsModeEnabled={
-          this.props.stores.networkStatus.rtsFlagsModeEnabled
+        isRTSFlagsModeEnabled={
+          this.props.stores.networkStatus.isRTSFlagsModeEnabled
         }
         onClose={this.onClose}
         onConfirm={this.onConfirm}

@@ -16,8 +16,8 @@ const systemInfo = {
   ram: '32.0 GB',
   availableDiskSpace: '500 GB',
   // TODO add one more example with low RAM
-  meetsHardwareRequirements: true,
-  rtsFlagsModeEnabled: false,
+  hasMetHardwareRequirements: true,
+  isRTSFlagsModeEnabled: false,
 };
 
 const coreInfo = {

@@ -17,23 +17,23 @@ type Props = {
 const messages = defineMessages({
   title: {
     id: 'knownIssues.rtsRecommendationOverlay.title',
-    defaultMessage: 'RTS flag warning',
+    defaultMessage: '!!!RTS flag warning',
     description: 'Title of the RTS flags recommendation overlay',
   },
   content: {
     id: 'knownIssues.rtsRecommendationOverlay.content',
     defaultMessage:
-      'WARNING/REMINDER: You are running Daedalus with less memory than recommended. You can try these experimental settings to improve performance.',
+      '!!!WARNING/REMINDER: You are running Daedalus with less memory than recommended. You can try these experimental settings to improve performance.',
     description: 'Content of the RTS flags recommendation overlay',
   },
   enableAndQuitButtonLabel: {
     id: 'knownIssues.rtsRecommendationOverlay.enableAndQuitButtonLabel',
-    defaultMessage: 'Enable and quit',
+    defaultMessage: '!!!Enable and quit',
     description: 'Enable and quit button label',
   },
   decideLaterButtonLabel: {
     id: 'knownIssues.rtsRecommendationOverlay.decideLaterButtonLabel',
-    defaultMessage: 'Decide later',
+    defaultMessage: '!!!Decide later',
     description: 'Decide later button label',
   },
 });
