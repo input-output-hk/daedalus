@@ -88,8 +88,8 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
       {
         label: intl.formatMessage(
           rtsFlagsModeEnabled
-            ? messages.enableRTSFlagsModeActionButton
-            : messages.disableRTSFlagsModeActionButton
+            ? messages.disableRTSFlagsModeActionButton
+            : messages.enableRTSFlagsModeActionButton
         ),
         primary: true,
         onClick: onConfirm,
@@ -113,8 +113,8 @@ export default class ToggleRTSFlagsDialog extends Component<Props, State> {
         <p>
           {intl.formatMessage(
             rtsFlagsModeEnabled
-              ? messages.enableRTSFlagsModeExplanation
-              : messages.disableRTSFlagsModeExplanation
+              ? messages.disableRTSFlagsModeExplanation
+              : messages.enableRTSFlagsModeExplanation
           )}
         </p>
         <Checkbox
