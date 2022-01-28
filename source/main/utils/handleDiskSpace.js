@@ -154,7 +154,7 @@ export const handleDiskSpace = (
             logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
-            logger.error('[DISK-SPACE-DEBUGCannot stop cardano node', error);
+            logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
           }
           break;
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
