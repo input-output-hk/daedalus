@@ -46,6 +46,7 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
+    blockSync={{ progress: 0, type: 'replayedBlock' }}
   />
 );
 
@@ -54,7 +55,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    verificationProgress={0}
+    blockSync={{ progress: 0, type: 'replayedBlock' }}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -93,7 +94,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    verificationProgress={0}
+    blockSync={{ progress: 0, type: 'replayedBlock' }}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

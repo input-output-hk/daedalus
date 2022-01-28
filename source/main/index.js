@@ -241,8 +241,8 @@ const onAppReady = async () => {
     }
   };
   mainErrorHandler(onMainError);
-  await handleCheckDiskSpace();
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+  await handleCheckDiskSpace();
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

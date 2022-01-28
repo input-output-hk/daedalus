@@ -4,7 +4,10 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import styles from './SyncingConnectingStatus.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
-import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
+import type {
+  CardanoNodeState,
+  BlockSyncType,
+} from '../../../../../common/types/cardano-node.types';
 
 const messages = defineMessages({
   starting: {
@@ -80,15 +83,28 @@ const messages = defineMessages({
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
     defaultMessage:
-      '!!!Cardano node is currently syncing. This process can take several hours',
+      '!!!Verifying the blockchain ({verificationProgress}% complete)',
     description:
-      'Message on the loading screen informing that sync process could be very long',
+      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+  },
+  validatingChunk: {
+    id: 'loading.screen.validatingChunk',
+    defaultMessage: '!!!Validating blocks ({verificationProgress}% complete)',
+    description:
+      'Message "Validating blocks (65% complete) ..." on the loading screen.',
+  },
+  pushingLedgerState: {
+    id: 'loading.screen.pushingLedgerState',
+    defaultMessage:
+      '!!!Applying a block to ledger ({verificationProgress}% complete)',
+    description:
+      'Message "Applying a block to ledger (65% complete) ..." on the loading screen.',
   },
 });
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
-  verificationProgress: number,
+  blockSync: { type: BlockSyncType, progress: number },
   hasLoadedCurrentLocale: boolean,
   hasBeenConnected: boolean,
   isTlsCertInvalid: boolean,
@@ -159,10 +175,22 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isTlsCertInvalid && isConnectingMessage) {
       connectingMessage = messages.tlsCertificateNotValidError;
     } else if (isVerifyingBlockchain && isConnectingMessage) {
-      connectingMessage = messages.verifyingBlockchain;
+      connectingMessage = this.getBlockSyncMessage();
       connectingDescription = messages.startingDescription;
     }
     return { connectingMessage, connectingDescription };
+  };
+
+  getBlockSyncMessage = () => {
+    switch (this.props.blockSync.type) {
+      case 'replayedBlock':
+        return messages.verifyingBlockchain;
+      case 'pushingLedger':
+        return messages.pushingLedgerState;
+      case 'validatingChunk':
+      default:
+        return messages.validatingChunk;
+    }
   };
 
   render() {
@@ -173,7 +201,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopped,
       isTlsCertInvalid,
       hasLoadedCurrentLocale,
-      verificationProgress,
+      blockSync,
     } = this.props;
 
     if (!hasLoadedCurrentLocale) return null;
@@ -200,7 +228,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
           {intl.formatMessage(connectingMessage, {
-            verificationProgress,
+            verificationProgress: blockSync.progress,
           })}
         </h1>
         <div className={styles.description}>
