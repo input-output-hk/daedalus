@@ -6,7 +6,7 @@ import type {
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
-export const getBlockReplayProgressChannel: // IpcChannel<Incoming, Outgoing>
+export const getBlockSyncProgressChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetBlockSyncProgressMainResponse,
   GetBlockSyncProgressRendererRequest

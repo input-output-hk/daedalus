@@ -8,7 +8,7 @@ import type {
 
 // IpcChannel<Incoming, Outgoing>
 
-export const getBlockReplayProgressChannel: MainIpcChannel<
+export const getBlockSyncProgressChannel: MainIpcChannel<
   GetBlockSyncProgressRendererRequest,
   GetBlockSyncProgressMainResponse
 > = new MainIpcChannel(GET_BLOCK_SYNC_STATUS_CHANNEL);

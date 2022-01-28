@@ -3,7 +3,7 @@ import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 import path from 'path';
-import { getBlockReplayProgressChannel } from '../ipc/get-block-sync-progress';
+import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
 
@@ -73,7 +73,7 @@ export const handleCheckBlockReplayProgress = (
     const finalProgressPercentage = parseFloat(percentage);
 
     // Send result to renderer process (NetworkStatusStore)
-    getBlockReplayProgressChannel.send(
+    getBlockSyncProgressChannel.send(
       { progress: finalProgressPercentage, type: progressType },
       mainWindow.webContents
     );

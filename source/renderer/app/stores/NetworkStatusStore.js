@@ -28,7 +28,7 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
-import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
+import { getBlockSyncProgressChannel } from '../ipc/getBlockSyncChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   FutureEpoch,
@@ -181,7 +181,7 @@ export default class NetworkStatusStore extends Store {
     this._getStateDirectoryPath();
 
     // Blockchain verification checking
-    getBlockReplayProgressChannel.onReceive(this._onCheckBlockSyncProgress);
+    getBlockSyncProgressChannel.onReceive(this._onCheckBlockSyncProgress);
   }
 
   _restartNode = async () => {
