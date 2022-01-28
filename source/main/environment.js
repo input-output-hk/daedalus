@@ -22,6 +22,7 @@ import {
 } from '../common/utils/environmentCheckers';
 
 // TODO figure out better place for it - can't import from config.js as it would be a circular dep
+// https://input-output.atlassian.net/browse/DDW-928
 export const RECOMMENDED_RAM_IN_BYTES = 16 * 1024 * 1024 * 1024;
 
 /* ==================================================================

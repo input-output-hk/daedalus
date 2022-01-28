@@ -5,7 +5,6 @@ import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
-import { isEqual } from 'lodash';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {

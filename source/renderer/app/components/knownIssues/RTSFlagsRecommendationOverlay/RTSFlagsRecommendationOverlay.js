@@ -49,6 +49,7 @@ export default class RTSFlagsRecommendationOverlay extends Component<Props> {
     const { onClose, onConfirm } = this.props;
 
     // TODO reduce duplication with AlertsOverlay
+    // https://input-output.atlassian.net/browse/DDW-928
     return (
       <div className={styles.component}>
         <DialogCloseButton
