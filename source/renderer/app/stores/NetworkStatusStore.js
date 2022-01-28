@@ -353,7 +353,7 @@ export default class NetworkStatusStore extends Store {
       hasBeenConnected,
       cardanoNodePID,
       cardanoWalletPID,
-      isRTSFlagsModeEnabled: isRTSFlagsModeEnabled,
+      isRTSFlagsModeEnabled,
     };
   };
 
