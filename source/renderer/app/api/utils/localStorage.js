@@ -178,16 +178,10 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
 
   getRTSModeRecommendationAcknowledged = (): Promise<boolean> =>
-    LocalStorageApi.get(
-      keys.RTS_MODE_RECOMMENDATION_ACKNOWLEDGEMENT_STATUS,
-      false
-    );
+    LocalStorageApi.get(keys.RTS_MODE_RECOMMENDATION_ACKNOWLEDGED, false);
 
   setRTSModeRecommendationAcknowledged = (): Promise<void> =>
-    LocalStorageApi.set(
-      keys.RTS_MODE_RECOMMENDATION_ACKNOWLEDGEMENT_STATUS,
-      true
-    );
+    LocalStorageApi.set(keys.RTS_MODE_RECOMMENDATION_ACKNOWLEDGED, true);
 
   getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.THEME);
 

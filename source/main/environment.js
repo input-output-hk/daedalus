@@ -101,7 +101,7 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
-    hasMetHardwareRequirements: hasMetHardwareRequirements,
+    hasMetHardwareRequirements,
   },
   process.env
 );
