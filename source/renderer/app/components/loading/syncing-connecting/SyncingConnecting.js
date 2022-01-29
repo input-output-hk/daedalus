@@ -9,7 +9,10 @@ import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnecting.scss';
-import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
+import type {
+  CardanoNodeState,
+  BlockSyncType,
+} from '../../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
 import NewsFeedIcon from '../../widgets/NewsFeedIcon';
 
@@ -21,7 +24,7 @@ type State = {
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
-  verificationProgress: number,
+  blockSync: { type: BlockSyncType, progress: number },
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
   isConnected: boolean,
@@ -163,7 +166,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
       isVerifyingBlockchain,
-      verificationProgress,
+      blockSync,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -206,7 +209,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isVerifyingBlockchain={isVerifyingBlockchain}
-          verificationProgress={verificationProgress}
+          blockSync={blockSync}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

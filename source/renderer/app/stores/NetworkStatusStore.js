@@ -24,10 +24,11 @@ import type {
   CardanoNodeState,
   CardanoStatus,
   TlsConfig,
+  BlockSyncType,
 } from '../../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
-import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
+import { getBlockSyncProgressChannel } from '../ipc/getBlockSyncChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   FutureEpoch,
@@ -37,6 +38,7 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../api/network/types';
+import type { GetBlockSyncProgressMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
@@ -130,7 +132,10 @@ export default class NetworkStatusStore extends Store {
   @observable isAlonzoActivated: boolean = false;
   @observable isAlonzoPending: boolean = false;
   @observable alonzoActivationTime: string = '';
-  @observable verificationProgress: number = 0;
+  @observable blockSync: {
+    type: BlockSyncType,
+    progress: number,
+  } = { progress: 0, type: 'validatingChunk' };
 
   @observable epochLength: ?number = null; // unit: 1 slot
   @observable slotLength: ?number = null; // unit: 1 second
@@ -179,7 +184,7 @@ export default class NetworkStatusStore extends Store {
     this._getStateDirectoryPath();
 
     // Blockchain verification checking
-    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
+    getBlockSyncProgressChannel.onReceive(this._onCheckBlockSyncProgress);
   }
 
   _restartNode = async () => {
@@ -709,10 +714,11 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onCheckVerificationProgress = (
-    verificationProgress: number
-  ): Promise<void> => {
-    this.verificationProgress = verificationProgress;
+  @action _onCheckBlockSyncProgress = ({
+    progress,
+    type,
+  }: GetBlockSyncProgressMainResponse): Promise<void> => {
+    this.blockSync = { progress, type };
     return Promise.resolve();
   };
 
@@ -767,6 +773,6 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isVerifyingBlockchain(): boolean {
-    return !this.isConnected && this.verificationProgress < 100;
+    return !this.isConnected && this.blockSync.progress < 100;
   }
 }
