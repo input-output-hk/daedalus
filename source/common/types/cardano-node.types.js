@@ -149,6 +149,7 @@ export type CardanoStatus = {
   hasBeenConnected: boolean,
   cardanoNodePID: number,
   cardanoWalletPID: number,
+  isRTSFlagsModeEnabled: boolean,
 };
 
 export type NetworkMagicType = Array<?number>;

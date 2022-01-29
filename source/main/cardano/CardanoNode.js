@@ -30,6 +30,7 @@ import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
+import { containsRTSFlags } from '../utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 
@@ -225,6 +226,7 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
   }
 

@@ -21,6 +21,10 @@ import {
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
 
+// TODO figure out better place for it - can't import from config.js as it would be a circular dep
+// https://input-output.atlassian.net/browse/DDW-928
+export const RECOMMENDED_RAM_IN_BYTES = 16 * 1024 * 1024 * 1024;
+
 /* ==================================================================
 =                           Evaluations                             =
 ================================================================== */
@@ -49,6 +53,7 @@ const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const cpu = os.cpus();
 const ram = os.totalmem();
+const hasMetHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
@@ -97,6 +102,7 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
+    hasMetHardwareRequirements,
   },
   process.env
 );

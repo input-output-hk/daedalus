@@ -42,6 +42,7 @@ import type { GetBlockSyncProgressMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import { toggleRTSFlagsModeChannel } from '../ipc/toggleRTSFlagsModeChannel';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -82,6 +83,7 @@ export default class NetworkStatusStore extends Store {
   @observable cardanoNodeState: CardanoNodeState = 'unknown';
   @observable cardanoNodePID: number = 0;
   @observable cardanoWalletPID: number = 0;
+  @observable isRTSFlagsModeEnabled: boolean = false;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeInSync = false; // Is 'true' if syncing & local/network blocks diff within limit
@@ -149,6 +151,7 @@ export default class NetworkStatusStore extends Store {
     networkStatusActions.forceCheckNetworkClock.listen(
       this._forceCheckNetworkClock
     );
+    networkStatusActions.toggleRTSFlagsMode.listen(this._toggleRTSFlagsMode);
 
     // Request node state
     this._requestCardanoState();
@@ -345,6 +348,7 @@ export default class NetworkStatusStore extends Store {
       hasBeenConnected,
       cardanoNodePID,
       cardanoWalletPID,
+      isRTSFlagsModeEnabled,
     } = from;
 
     return {
@@ -354,7 +358,12 @@ export default class NetworkStatusStore extends Store {
       hasBeenConnected,
       cardanoNodePID,
       cardanoWalletPID,
+      isRTSFlagsModeEnabled,
     };
+  };
+
+  @action _toggleRTSFlagsMode = async () => {
+    await toggleRTSFlagsModeChannel.send();
   };
 
   // DEFINE ACTIONS

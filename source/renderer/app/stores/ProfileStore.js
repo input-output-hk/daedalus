@@ -10,7 +10,6 @@ import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import { formattedBytesToSize } from '../utils/formatters';
 import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
@@ -43,6 +42,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
+import { buildSystemInfo } from '../utils/buildSystemInfo';
 
 export default class ProfileStore extends Store {
   @observable systemLocale: Locale = LOCALES.english;
@@ -110,6 +110,7 @@ export default class ProfileStore extends Store {
   @observable desktopDirectoryPath: string = '';
   @observable isSubmittingBugReport: boolean = false;
   @observable isInitialScreen: boolean = false;
+  @observable isRTSModeRecommendationAcknowledged: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -127,6 +128,9 @@ export default class ProfileStore extends Store {
     profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
     profileActions.downloadLogs.listen(this._downloadLogs);
     profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
+    profileActions.acknowledgeRTSModeRecommendation.listen(
+      this._acknowledgeRTSFlagsModeRecommendation
+    );
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
@@ -311,6 +315,10 @@ export default class ProfileStore extends Store {
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
 
+  @action _acknowledgeRTSFlagsModeRecommendation = () => {
+    this.isRTSModeRecommendationAcknowledged = true;
+  };
+
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
   };
@@ -484,7 +492,6 @@ export default class ProfileStore extends Store {
         cardanoWalletPID,
         tlsConfig,
         stateDirectoryPath,
-        diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
         isNodeInSync,
@@ -501,7 +508,6 @@ export default class ProfileStore extends Store {
         network,
         apiVersion,
         nodeVersion,
-        cpu,
         version,
         mainProcessID,
         rendererProcessID,
@@ -510,18 +516,9 @@ export default class ProfileStore extends Store {
         isMainnet,
         isStaging,
         isTestnet,
-        os,
-        platformVersion,
-        ram,
       } = this.environment;
 
-      const systemInfo = {
-        platform: os,
-        platformVersion,
-        cpu: Array.isArray(cpu) ? cpu[0].model : '',
-        ram: formattedBytesToSize(ram),
-        availableDiskSpace: diskSpaceAvailable,
-      };
+      const systemInfo = buildSystemInfo(this.environment, networkStatus);
 
       const coreInfo = {
         daedalusVersion: version,

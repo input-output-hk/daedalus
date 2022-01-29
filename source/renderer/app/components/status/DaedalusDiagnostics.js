@@ -70,6 +70,45 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc',
     description: '"Support" link URL while disk space is unknown',
   },
+  hasMetHardwareRequirementsLabel: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatus',
+    defaultMessage: '!!!Recommended system requirements status',
+    description:
+      'Displayed on the left of the Recommended system requirements status row',
+  },
+  hasMetHardwareRequirementsStatusLowValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowValue',
+    defaultMessage: '!!!Low',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are insufficient',
+  },
+  hasMetHardwareRequirementsStatusGoodValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodValue',
+    defaultMessage: '!!!Good',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
+  },
+  hasMetHardwareRequirementsStatusLowTooltip: {
+    id:
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
+    defaultMessage:
+      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Low',
+  },
+  hasMetHardwareRequirementsStatusGoodTooltip: {
+    id:
+      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
+    defaultMessage:
+      '!!!Your system specifications meet Daedalus’ recommended hardware requirements',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Good',
+  },
+  isRTSFlagsModeEnabled: {
+    id: 'daedalus.diagnostics.dialog.isRTSFlagsModeEnabled',
+    defaultMessage: '!!!RTS Flags Mode',
+    description: 'Indicates whether RTS Flags Mode is enabled or not',
+  },
   coreInfo: {
     id: 'daedalus.diagnostics.dialog.coreInfo',
     defaultMessage: '!!!CORE INFO',
@@ -297,13 +336,23 @@ const messages = defineMessages({
   },
   statusOn: {
     id: 'daedalus.diagnostics.dialog.statusOn',
-    defaultMessage: '!!!YES',
-    description: 'YES',
+    defaultMessage: '!!!Yes',
+    description: 'Yes',
   },
   statusOff: {
     id: 'daedalus.diagnostics.dialog.statusOff',
-    defaultMessage: '!!!NO',
-    description: 'NO',
+    defaultMessage: '!!!No',
+    description: 'No',
+  },
+  statusOnForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOnForUserSettings',
+    defaultMessage: '!!!On',
+    description: 'On',
+  },
+  statusOffForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOffForUserSettings',
+    defaultMessage: '!!!Off',
+    description: 'Off',
   },
   serviceUnreachable: {
     id: 'daedalus.diagnostics.dialog.serviceUnreachable',
@@ -486,6 +535,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       cpu: cpuInOriginalFormat,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
+      hasMetHardwareRequirements,
+      isRTSFlagsModeEnabled,
     } = systemInfo;
 
     const cpu = formattedCpuModel(cpuInOriginalFormat);
@@ -563,6 +614,37 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   />
                 )
               )}
+              {getRow(
+                'hasMetHardwareRequirementsLabel',
+                <PopOver
+                  content={intl.formatMessage(
+                    hasMetHardwareRequirements
+                      ? messages.hasMetHardwareRequirementsStatusGoodTooltip
+                      : messages.hasMetHardwareRequirementsStatusLowTooltip
+                  )}
+                >
+                  <div
+                    className={classNames(
+                      styles.layoutData,
+                      hasMetHardwareRequirements ? styles.green : styles.red
+                    )}
+                  >
+                    {intl.formatMessage(
+                      hasMetHardwareRequirements
+                        ? messages.hasMetHardwareRequirementsStatusGoodValue
+                        : messages.hasMetHardwareRequirementsStatusLowValue
+                    )}
+                  </div>
+                </PopOver>
+              )}
+              {getRow(
+                'isRTSFlagsModeEnabled',
+                intl.formatMessage(
+                  isRTSFlagsModeEnabled
+                    ? messages.statusOnForUserSettings
+                    : messages.statusOffForUserSettings
+                )
+              )}
             </div>
             <div>
               {getSectionRow('coreInfo')}
@@ -573,8 +655,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'blankScreenFix',
                 isBlankScreenFixActive
-                  ? intl.formatMessage(messages.statusOn)
-                  : intl.formatMessage(messages.statusOff)
+                  ? intl.formatMessage(messages.statusOnForUserSettings)
+                  : intl.formatMessage(messages.statusOffForUserSettings)
               )}
               {getRow(
                 'stateDirectoryPath',

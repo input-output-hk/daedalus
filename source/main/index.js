@@ -2,6 +2,7 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import type { Event } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
 import { requestElectronStore } from './ipc/electronStoreConversation';
@@ -21,16 +22,14 @@ import mainErrorHandler from './utils/mainErrorHandler';
 import {
   launcherConfig,
   pubLogsFolderPath,
-  stateDirectoryPath,
   RTS_FLAGS,
-  MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS,
+  stateDirectoryPath,
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import { getRtsFlags, setRtsFlagsAndRestart } from './utils/rtsFlags';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
@@ -51,6 +50,12 @@ import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import {
+  getRtsFlagsSettings,
+  storeRtsFlagsSettings,
+} from './utils/rtsFlagsSettings';
+import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
+import { containsRTSFlags } from './utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 
@@ -110,6 +115,12 @@ const safeExit = async () => {
   }
 };
 
+const handleWindowClose = async (event: ?Event) => {
+  logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  event?.preventDefault();
+  await safeExit();
+};
+
 const onAppReady = async () => {
   setupLogging();
   logUsedVersion(
@@ -166,23 +177,12 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  const getCurrentRtsFlags = () => {
-    const rtsFlagsFromStorage = getRtsFlags(network);
-    if (!rtsFlagsFromStorage) {
-      if (os.totalmem() < MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS) {
-        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
-        return RTS_FLAGS;
-      }
-      return [];
-    }
-    return rtsFlagsFromStorage;
-  };
+  const currentRtsFlags = getRtsFlagsSettings(network) || [];
 
-  const rtsFlags = getCurrentRtsFlags();
   logger.info(
-    `Setting up Cardano Node... with flags: ${JSON.stringify(rtsFlags)}`
+    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
   );
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, rtsFlags);
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
 
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
@@ -233,6 +233,12 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
+  toggleRTSFlagsModeChannel.onReceive(() => {
+    const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
+    storeRtsFlagsSettings(environment.network, flagsToSet);
+    return handleWindowClose();
+  });
+
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -249,13 +255,7 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  mainWindow.on('close', async (event) => {
-    logger.info(
-      'mainWindow received <close> event. Safe exiting Daedalus now.'
-    );
-    event.preventDefault();
-    await safeExit();
-  });
+  mainWindow.on('close', handleWindowClose);
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
