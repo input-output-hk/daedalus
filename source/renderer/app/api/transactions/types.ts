@@ -5,8 +5,10 @@ import type { DelegationAction } from '../../types/stakingTypes';
 import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
 import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
+
 export type TransactionAmount = {
   quantity: number;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type TransactionDepth = {
@@ -22,19 +24,19 @@ export type Transaction = {
   amount: TransactionAmount;
   fee: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   deposit: {
     quantity: number;
+    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
   inserted_at?: {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Date'.
     time: Date;
     block: TransactionInsertionBlock;
   };
   pending_since?: {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Date'.
     time: Date;
     block: TransactionInsertionBlock & {
       height: {
@@ -45,16 +47,12 @@ export type Transaction = {
   };
   depth: TransactionDepth;
   direction: 'outgoing' | 'incoming';
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   inputs: Array<TransactionInputs>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   outputs: Array<TransactionOutputs>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawals: Array<TransactionWithdrawals>;
   status: TransactionState;
   metadata?: TransactionMetadata;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
   address: string;
@@ -72,15 +70,11 @@ export type TransactionWithdrawals = {
   stake_address: string;
   amount: TransactionAmount;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type TransactionWithdrawalType = 'self' | Array<string>;
 export type TransactionState = 'pending' | 'in_ledger' | 'expired';
 export type TransactionAddresses = {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   from: Array<string | null | undefined>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   to: Array<string>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawals: Array<string>;
 };
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
@@ -113,7 +107,6 @@ export type GetTransactionFeeRequest = {
   availableBalance: BigNumber;
   rewardsBalance: BigNumber;
   isLegacy: boolean;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawal?: 'self' | Array<string>;
 };
 export type GetTransactionFeeResponse = {
@@ -127,9 +120,7 @@ export type CreateTransactionRequest = {
   passphrase: string;
   isLegacy: boolean;
   assets?: ApiTokens;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawal?: 'self' | Array<string>;
-  hasAssetsRemainingAfterTransaction?: boolean;
 };
 export type DeleteTransactionRequest = {
   walletId: string;
@@ -137,26 +128,24 @@ export type DeleteTransactionRequest = {
   isLegacy: boolean;
 };
 export type GetTransactionsResponse = {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   transactions: Array<WalletTransaction>;
   total: number;
 };
 export type TransactionParams = {
   walletId: string;
   data: {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     payments: Array<TransactionPaymentData>;
     passphrase: string;
   };
 };
 export type TransactionFeeAmount = {
   quantity: number;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type GetTransactionFeeParams = {
   walletId: string;
   data: {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     payments: Array<TransactionPaymentData>;
   };
 };
@@ -169,11 +158,11 @@ export type TransactionFee = {
   estimated_min: TransactionFeeAmount;
   estimated_max: TransactionFeeAmount;
   deposit: TransactionFeeAmount;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   minimum_coins: Array<TransactionFeeAmount>;
 };
 export type CoinSelectionAmount = {
   quantity: number;
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type CoinSelectionInput = {
@@ -181,7 +170,6 @@ export type CoinSelectionInput = {
   amount: CoinSelectionAmount;
   id: string;
   index: number;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   derivationPath: Array<string>;
 };
 export type Asset = {
@@ -192,9 +180,7 @@ export type Asset = {
 export type CoinSelectionOutput = {
   address: string;
   amount: CoinSelectionAmount;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   derivationPath: Array<string>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   assets?: Array<Asset>;
 };
 export type CertificateType =
@@ -204,18 +190,14 @@ export type CertificateType =
 export type CoinSelectionCertificate = {
   pool: string;
   certificateType: CertificateType;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   rewardAccountPath: Array<string>;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
 export type CoinSelectionWithdrawal = {
   stakeAddress: string;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   derivationPath: Array<string>;
   amount: CoinSelectionAmount;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type CoinSelectionWithdrawals = Array<CoinSelectionWithdrawal>;
 export type CoinSelectionsDelegationRequestType = {
   walletId: string;
@@ -233,20 +215,16 @@ export type CoinSelectionsRequest =
   | CoinSelectionsPaymentRequestType
   | CoinSelectionsDelegationRequestType;
 export type CoinSelectionsResponse = {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   inputs: Array<CoinSelectionInput>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   outputs: Array<CoinSelectionOutput>;
   certificates: CoinSelectionCertificates;
   deposits: BigNumber;
   depositsReclaimed: BigNumber;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawals: Array<CoinSelectionWithdrawal>;
   fee: BigNumber;
   metadata: string | null | undefined;
 };
 export type CreateExternalTransactionRequest = {
-  // @ts-ignore ts-migrate(2580) FIXME: Cannot find name 'Buffer'. Do you need to install ... Remove this comment to see the full error message
   signedTransactionBlob: Buffer;
 };
 export type CreateExternalTransactionResponse = {
@@ -267,7 +245,6 @@ export type ICOPublicKeyParams = {
     purpose: string;
   };
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type CoinSelectionAssetsType = Array<Asset>;
 export type VotingMetaIndexType = 61284 | 61285;
 export const VotingMetaIndexes: {
@@ -288,11 +265,9 @@ export type VotingMetaKeyValuePair = {
     | VotingMetaKeyValuePairInt
     | VotingMetaKeyValuePairBytes;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export type VotingMetaRegistrationType = {
   [key in 'map']?: Array<VotingMetaKeyValuePair>;
 };
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
 export type VotingMetadataType = Record<
   VotingMetaIndexType,
   VotingMetaRegistrationType

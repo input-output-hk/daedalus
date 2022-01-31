@@ -7,7 +7,6 @@ export const notYetImplemented = async () =>
     reject(new ApiMethodNotYetImplementedError());
   });
 // helper code for testing async APIs
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export const testAsync = async (apiMethod: (...args: Array<any>) => any) => {
   const result = await apiMethod();
   // eslint-disable-next-line no-console
@@ -15,7 +14,6 @@ export const testAsync = async (apiMethod: (...args: Array<any>) => any) => {
   return result;
 };
 // helper code for testing sync APIs
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
 export const testSync = (apiMethod: (...args: Array<any>) => any) => {
   const result = apiMethod();
   // eslint-disable-next-line no-console
