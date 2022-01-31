@@ -2,10 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AnalyticsDialog.scss' or its... Remove this comment to see the full error message
 import styles from './AnalyticsDialog.scss';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import { Intl } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
+
 const messages = defineMessages({
   title: {
     id: 'analytics.dialog.title',
@@ -66,6 +68,7 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
       (prevAllowDataCollection) => !prevAllowDataCollection
     );
   }, [setAllowDataCollection]);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const getShowDataCollectionDetailsToggleLabel = useCallback(
     (isVisible: boolean) =>
       isVisible
@@ -107,6 +110,7 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
           onChange={toggleAllowDataCollection}
           checked={allowDataCollection}
           label={intl.formatMessage(messages.dataCollectionSwitchButton)}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           className={styles.switchButton}
         />
         <Button
