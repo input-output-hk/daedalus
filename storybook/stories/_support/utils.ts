@@ -1,4 +1,3 @@
-// @flow
 import hash from 'hash.js';
 import faker from 'faker';
 import JSONBigInt from 'json-bigint';
@@ -36,9 +35,9 @@ import type {
 import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
-
-const random = seedrandom('daedalus', { global: false });
-
+const random = seedrandom('daedalus', {
+  global: false,
+});
 export const EXAMPLE_METADATA = JSONBigInt.parse(`{
       "0": {
         "string": "some string"
@@ -84,11 +83,9 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
         ]
       }
     }`);
-
 export const generateHash = () => {
   return hash.sha512().update(random().toString()).digest('hex');
 };
-
 export const generatePolicyIdHash = () => {
   return hash.sha224().update(random().toString()).digest('hex');
 };
@@ -106,13 +103,16 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
-  assets?: WalletTokens = { available: [], total: [] },
-  reward?: string | number = 0,
+  assets: WalletTokens = {
+    available: [],
+    total: [],
+  },
+  reward: string | number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  isHardwareWallet?: boolean = false,
-  id?: string = generateHash()
+  status: SyncStateStatus = WalletSyncStateStatuses.READY,
+  isHardwareWallet: boolean = false,
+  id: string = generateHash()
 ) =>
   new Wallet({
     id,
@@ -125,7 +125,10 @@ export const generateWallet = (
     name,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
-    syncState: { status, ...statusProgress(status) },
+    syncState: {
+      status,
+      ...statusProgress(status),
+    },
     isLegacy: false,
     isHardwareWallet,
     discovery: 'random',
@@ -135,7 +138,6 @@ export const generateWallet = (
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
-
 export const generateRewardForWallet = (
   wallet: Wallet,
   unspent: string | number = '0'
@@ -147,12 +149,11 @@ export const generateRewardForWallet = (
   syncingProgress: 100,
   rewardsAddress: 'stake_fake_address',
 });
-
 export const generateAssetDomain = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
-  metadata?: AssetMetadata = {}
+  metadata: AssetMetadata = {}
 ): Asset =>
   new Asset({
     policyId,
@@ -163,15 +164,14 @@ export const generateAssetDomain = (
     recommendedDecimals: null,
     uniqueId: `${policyId}${assetName}`,
   });
-
 export const generateAssetToken = (
   policyId: string,
   assetName: string = '',
   fingerprint: string = '',
   quantity: number,
-  metadata: ?AssetMetadata,
-  decimals: ?number,
-  recommendedDecimals: ?number
+  metadata: AssetMetadata | null | undefined,
+  decimals: number | null | undefined,
+  recommendedDecimals: number | null | undefined
 ): AssetToken => ({
   policyId,
   assetName,
@@ -183,7 +183,6 @@ export const generateAssetToken = (
   recommendedDecimals,
   uniqueId: `${policyId}${assetName}`,
 });
-
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
@@ -195,7 +194,7 @@ export const generateTransaction = (
   noWithdrawals: boolean = true,
   fee: BigNumber = new BigNumber(faker.finance.amount()),
   assets?: Tokens,
-  metadata?: TransactionMetadata = EXAMPLE_METADATA
+  metadata: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -232,34 +231,29 @@ export const generateTransaction = (
     },
     metadata,
   });
-
 export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
   );
-
 export const generateMultipleTransactions = (
   amount: number
 ): WalletTransaction[] =>
   Array.from(Array(amount).keys()).map((key: number) =>
     generateRandomTransaction(Math.round(Math.random() * key))
   );
-
 export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,
     spendingPath: "1852'/1815'/0'/0/19",
   });
-
 export const promise = (returnValue: any): (() => Promise<any>) => () =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve(returnValue);
     }, 2000);
   });
-
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';

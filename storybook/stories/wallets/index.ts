@@ -1,5 +1,3 @@
-// @flow
-
 // Screens sets
 import './summary/WalletSummary.stories';
 import './summary/WalletSummaryHeader.stories';
