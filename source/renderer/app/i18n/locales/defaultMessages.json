@@ -13165,7 +13165,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Number of transactions",
+        "defaultMessage": "!!!{total} transactions, {pending} pending",
         "description": "\"Number of transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
@@ -13176,20 +13176,6 @@
         "start": {
           "column": 21,
           "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Number of pending transactions",
-        "description": "\"Number of pending transactions\" label on Wallet summary header page",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.tsx",
-        "id": "wallet.summary.header.pendingTransactionsLabel",
-        "start": {
-          "column": 28,
-          "line": 23
         }
       }
     ],
