@@ -6,9 +6,8 @@ import makeReactionCallback from './makeReactionCallback';
 import type { StoresOfInterest } from './types';
 
 class MenuUpdaterFeature extends Feature {
-  constructor({ profile, router, uiDialogs }: StoresOfInterest) {
+  constructor(stores: StoresOfInterest) {
     super();
-    const stores = { profile, router, uiDialogs };
     const reactions = createReactions([
       makeReactionCallback({ stores, rebuildApplicationMenu }),
     ]);

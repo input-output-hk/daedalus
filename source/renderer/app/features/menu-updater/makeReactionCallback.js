@@ -7,7 +7,7 @@ import type { MakeReactionCallbackArgs } from './types';
 const walletRoutes = Object.values(ROUTES.WALLETS);
 
 const makeReactionCallback = ({
-  stores: { profile, router, uiDialogs },
+  stores: { app, profile, router, staking, uiDialogs },
   rebuildApplicationMenu,
 }: MakeReactionCallbackArgs) => () => {
   let walletSettingsState = WalletSettingsStateEnum.hidden;
@@ -21,8 +21,11 @@ const makeReactionCallback = ({
       path: ROUTES.WALLETS.SETTINGS,
     })?.isExact;
 
+    const anyDialogOpen =
+      uiDialogs.activeDialog || app.activeDialog || staking.redeemStep;
+
     walletSettingsState =
-      uiDialogs.activeDialog || itIsTheWalletSettingsPage
+      anyDialogOpen || itIsTheWalletSettingsPage
         ? WalletSettingsStateEnum.disabled
         : WalletSettingsStateEnum.enabled;
   }

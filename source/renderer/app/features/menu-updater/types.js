@@ -1,14 +1,14 @@
 // @flow
-import { RouterStore } from 'mobx-react-router';
 import type { Node } from 'react';
 import type { RebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
-import ProfileStore from '../../stores/ProfileStore';
-import UiDialogsStore from '../../stores/UiDialogsStore';
+import type { StoresMap } from '../../stores';
 
 export type StoresOfInterest = {
-  profile: ProfileStore,
-  router: RouterStore,
-  uiDialogs: UiDialogsStore,
+  app: $PropertyType<StoresMap, 'app'>,
+  profile: $PropertyType<StoresMap, 'profile'>,
+  router: $PropertyType<StoresMap, 'router'>,
+  staking: $PropertyType<StoresMap, 'staking'>,
+  uiDialogs: $PropertyType<StoresMap, 'uiDialogs'>,
 };
 
 export type MakeReactionCallbackArgs = {
