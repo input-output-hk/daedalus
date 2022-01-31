@@ -293,7 +293,7 @@
           "column": 3,
           "line": 120
         },
-        "file": "source/renderer/app/api/errors.js",
+        "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens",
         "start": {
           "column": 26,
