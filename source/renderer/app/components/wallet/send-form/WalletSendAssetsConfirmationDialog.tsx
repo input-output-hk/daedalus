@@ -1,37 +1,37 @@
-import React, { Component, Fragment } from "react";
-import { observer } from "mobx-react";
-import { Input } from "react-polymorph/lib/components/Input";
-import { InputSkin } from "react-polymorph/lib/skins/simple/InputSkin";
-import { Checkbox } from "react-polymorph/lib/components/Checkbox";
-import { CheckboxSkin } from "react-polymorph/lib/skins/simple/CheckboxSkin";
-import { PopOver } from "react-polymorph/lib/components/PopOver";
-import { get } from "lodash";
-import BigNumber from "bignumber.js";
-import SVGInline from "react-svg-inline";
-import { intlShape, FormattedHTMLMessage } from "react-intl";
-import vjf from "mobx-react-form/lib/validators/VJF";
-import ReactToolboxMobxForm from "../../../utils/ReactToolboxMobxForm";
-import Dialog from "../../widgets/Dialog";
-import DialogCloseButton from "../../widgets/DialogCloseButton";
-import LocalizableError from "../../../i18n/LocalizableError";
+import React, { Component, Fragment } from 'react';
+import { observer } from 'mobx-react';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { get } from 'lodash';
+import BigNumber from 'bignumber.js';
+import SVGInline from 'react-svg-inline';
+import { intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import LocalizableError from '../../../i18n/LocalizableError';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendAssetsConfirmation... Remove this comment to see the full error message
-import styles from "./WalletSendAssetsConfirmationDialog.scss";
+import styles from './WalletSendAssetsConfirmationDialog.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
-import questionMarkIcon from "../../../assets/images/question-mark.inline.svg";
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from "../../../config/timingConfig";
-import { submitOnEnter } from "../../../utils/form";
-import { formattedTokenWalletAmount } from "../../../utils/formatters";
-import { FormattedHTMLMessageWithLink } from "../../widgets/FormattedHTMLMessageWithLink";
-import HardwareWalletStatus from "../../hardware-wallet/HardwareWalletStatus";
-import LoadingSpinner from "../../widgets/LoadingSpinner";
-import Wallet, { HwDeviceStatuses } from "../../../domains/Wallet";
-import Asset from "../../assets/Asset";
-import type { HwDeviceStatus } from "../../../domains/Wallet";
-import type { AssetToken } from "../../../api/assets/types";
-import { getMessages } from "./WalletSendAssetsConfirmationDialog.messages";
-import { shouldShowEmptyWalletWarning } from "../../../utils/walletUtils";
-import { hasTokensLeftAfterTransaction } from "../../../utils/assets";
-import globalMessages from "../../../i18n/global-messages";
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
+import { formattedTokenWalletAmount } from '../../../utils/formatters';
+import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
+import Asset from '../../assets/Asset';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+import type { AssetToken } from '../../../api/assets/types';
+import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
+import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
+import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
+import globalMessages from '../../../i18n/global-messages';
 
 const SHOW_TOTAL_AMOUNT = false;
 type Props = {
@@ -77,12 +77,12 @@ const messages = getMessages();
 @observer
 class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
   state = {
     selectedAssets: [],
     assetsAmounts: [],
-    areTermsAccepted: false
+    areTermsAccepted: false,
   };
 
   componentDidMount() {
@@ -90,66 +90,69 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     // value to avoid losing them after the transaction is confirmed
     // (this affects only hardware wallets for which we close the dialog
     // after transaction has been confirmed)
-    const {
-      selectedAssets,
-      assetsAmounts
-    } = this.props;
+    const { selectedAssets, assetsAmounts } = this.props;
     this.setState({
       selectedAssets,
-      assetsAmounts
+      assetsAmounts,
     });
   }
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      passphrase: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.passphraseLabel),
-        placeholder: this.context.intl.formatMessage(messages.passphraseFieldPlaceholder),
-        value: '',
-        validators: [({
-          field
-        }) => {
-          if (this.props.isHardwareWallet) return [true];
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        passphrase: {
+          type: 'password',
+          label: this.context.intl.formatMessage(messages.passphraseLabel),
+          placeholder: this.context.intl.formatMessage(
+            messages.passphraseFieldPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (this.props.isHardwareWallet) return [true];
 
-          if (field.value === '') {
-            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          }
+              if (field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
 
-          return [true];
-        }]
+              return [true];
+            },
+          ],
+        },
+        flightCandidateCheckbox: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(
+            messages.flightCandidateCheckboxLabel
+          ),
+        },
       },
-      flightCandidateCheckbox: {
-        type: 'checkbox',
-        label: this.context.intl.formatMessage(messages.flightCandidateCheckboxLabel)
-      }
-    }
-  }, {
-    plugins: {
-      vjf: vjf()
     },
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT
+    {
+      plugins: {
+        vjf: vjf(),
+      },
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
     }
-  });
+  );
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
-        const {
-          selectedAssets,
-          assetsAmounts
-        } = this.state;
+      onSuccess: (form) => {
+        const { selectedAssets, assetsAmounts } = this.state;
         const {
           receiver,
           amount,
           amountToNaturalUnits,
-          isHardwareWallet
+          isHardwareWallet,
         } = this.props;
-        const {
-          passphrase
-        } = form.values();
-        const hasAssetsRemainingAfterTransaction = this.props.allAvailableTokens?.length > 0;
+        const { passphrase } = form.values();
+        const hasAssetsRemainingAfterTransaction =
+          this.props.allAvailableTokens?.length > 0;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
@@ -157,46 +160,60 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
           isHardwareWallet,
           assets: selectedAssets,
           assetsAmounts,
-          hasAssetsRemainingAfterTransaction
+          hasAssetsRemainingAfterTransaction,
         };
         this.props.onSubmit(transactionData);
       },
-      onError: () => {}
+      onError: () => {},
     });
   };
-  handleSubmitOnEnter = (event: KeyboardEvent) => (this.props.isHardwareWallet || this.form.$('passphrase').isValid) && submitOnEnter(this.submit, event);
-  renderConfirmationElement = (isHardwareWallet: boolean): React.ReactElement<React.ComponentProps<any>, any> | null => {
+  handleSubmitOnEnter = (event: KeyboardEvent) =>
+    (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
+    submitOnEnter(this.submit, event);
+  renderConfirmationElement = (
+    isHardwareWallet: boolean
+  ): React.ReactElement<React.ComponentProps<any>, any> | null => {
     const passphraseField = this.form.$('passphrase');
-    const {
-      areTermsAccepted
-    } = this.state;
+    const { areTermsAccepted } = this.state;
     const {
       hwDeviceStatus,
       isFlight,
       onExternalLinkClick,
       wallet,
-      isTrezor
+      isTrezor,
     } = this.props;
     let returnJSX = null;
 
-    if (!isFlight || isFlight && areTermsAccepted) {
-      const {
-        name
-      } = wallet;
-      returnJSX = isHardwareWallet ? <div className={styles.hardwareWalletStatusWrapper}>
-          <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} walletName={name} isTrezor={isTrezor} onExternalLinkClick={onExternalLinkClick} />
-        </div> : <Input type="password" className={styles.passphrase} {...passphraseField.bind()} error={passphraseField.error} skin={InputSkin} onKeyPress={this.handleSubmitOnEnter} autoFocus />;
+    if (!isFlight || (isFlight && areTermsAccepted)) {
+      const { name } = wallet;
+      returnJSX = isHardwareWallet ? (
+        <div className={styles.hardwareWalletStatusWrapper}>
+          <HardwareWalletStatus
+            hwDeviceStatus={hwDeviceStatus}
+            walletName={name}
+            isTrezor={isTrezor}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        </div>
+      ) : (
+        <Input
+          type="password"
+          className={styles.passphrase}
+          {...passphraseField.bind()}
+          error={passphraseField.error}
+          skin={InputSkin}
+          onKeyPress={this.handleSubmitOnEnter}
+          autoFocus
+        />
+      );
     }
 
     return returnJSX;
   };
   onCheckboxClick = (areTermsAccepted: boolean) => {
-    const {
-      isHardwareWallet,
-      onInitiateTransaction
-    } = this.props;
+    const { isHardwareWallet, onInitiateTransaction } = this.props;
     this.setState({
-      areTermsAccepted
+      areTermsAccepted,
     });
 
     if (isHardwareWallet) {
@@ -204,31 +221,25 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     }
   };
   getAssetAmount = (index: number) => {
-    const {
-      assetsAmounts
-    } = this.state;
+    const { assetsAmounts } = this.state;
     return get(assetsAmounts, index, 0);
   };
-  getFormattedAssetAmount = ({
-    metadata,
-    decimals
-  }: AssetToken, index: number) => {
+  getFormattedAssetAmount = (
+    { metadata, decimals }: AssetToken,
+    index: number
+  ) => {
     const assetAmount = this.getAssetAmount(index);
-    return formattedTokenWalletAmount(new BigNumber(assetAmount), metadata, decimals);
+    return formattedTokenWalletAmount(
+      new BigNumber(assetAmount),
+      metadata,
+      decimals
+    );
   };
 
   render() {
-    const {
-      form
-    } = this;
-    const {
-      intl
-    } = this.context;
-    const {
-      selectedAssets,
-      areTermsAccepted,
-      assetsAmounts
-    } = this.state;
+    const { form } = this;
+    const { intl } = this.context;
+    const { selectedAssets, areTermsAccepted, assetsAmounts } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
@@ -246,36 +257,78 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
       onCopyAssetParam,
       wallet,
       formattedTotalAmount,
-      totalAmount
+      totalAmount,
     } = this.props;
-    const buttonLabel = !isSubmitting ? intl.formatMessage(messages.sendButtonLabel) : <LoadingSpinner />;
-    const actions = [{
-      label: intl.formatMessage(messages.backButtonLabel),
-      onClick: !isSubmitting ? onCancel : () => {}
-    }, {
-      label: buttonLabel,
-      onClick: this.submit,
-      primary: true,
-      className: 'confirmButton',
-      disabled: !!error || !isHardwareWallet && !passphraseField.isValid || isHardwareWallet && hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED || !areTermsAccepted && isFlight
-    }];
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.sendButtonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
+    const actions = [
+      {
+        label: intl.formatMessage(messages.backButtonLabel),
+        onClick: !isSubmitting ? onCancel : () => {},
+      },
+      {
+        label: buttonLabel,
+        onClick: this.submit,
+        primary: true,
+        className: 'confirmButton',
+        disabled:
+          !!error ||
+          (!isHardwareWallet && !passphraseField.isValid) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          (!areTermsAccepted && isFlight),
+      },
+    ];
     const assetsSeparatorBasicHeight = 27;
     // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type '{}'.
-    const assetsSeparatorCalculatedHeight = selectedAssets.length ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18 : assetsSeparatorBasicHeight;
+    const assetsSeparatorCalculatedHeight = selectedAssets.length
+      ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18
+      : assetsSeparatorBasicHeight;
     let errorElement = null;
 
     if (error) {
       const errorHasLink = !!error.values.linkLabel;
-      errorElement = errorHasLink ? <FormattedHTMLMessageWithLink message={error} onExternalLinkClick={onExternalLinkClick} /> : <FormattedHTMLMessage {...error} />;
+      errorElement = errorHasLink ? (
+        <FormattedHTMLMessageWithLink
+          message={error}
+          onExternalLinkClick={onExternalLinkClick}
+        />
+      ) : (
+        <FormattedHTMLMessage {...error} />
+      );
     }
 
-    const {
-      name
-    } = wallet;
-    return <Dialog title={intl.formatMessage(messages.dialogTitle)} subtitle={name} actions={actions} closeOnOverlayClick primaryButtonAutoFocus onClose={!isSubmitting ? onCancel : () => {}} className={styles.dialog} closeButton={<DialogCloseButton />}>
-        {shouldShowEmptyWalletWarning(totalAmount, wallet, !!allAvailableTokens?.length && allAvailableTokens.length > 0 && hasTokensLeftAfterTransaction(allAvailableTokens, selectedAssets, assetsAmounts)) && <div className={styles.warning}>
+    const { name } = wallet;
+    return (
+      <Dialog
+        title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={name}
+        actions={actions}
+        closeOnOverlayClick
+        primaryButtonAutoFocus
+        onClose={!isSubmitting ? onCancel : () => {}}
+        className={styles.dialog}
+        closeButton={<DialogCloseButton />}
+      >
+        {shouldShowEmptyWalletWarning(
+          totalAmount,
+          wallet,
+          !!allAvailableTokens?.length &&
+            allAvailableTokens.length > 0 &&
+            hasTokensLeftAfterTransaction(
+              allAvailableTokens,
+              selectedAssets,
+              assetsAmounts
+            )
+        ) && (
+          <div className={styles.warning}>
             <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
-          </div>}
+          </div>
+        )}
 
         <div className={styles.addressToLabelWrapper}>
           <div className={styles.receiverRow}>
@@ -284,11 +337,14 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
               <div className={styles.receiverRowItemAddresses}>
                 <p className={styles.addressTo}>{receiver}</p>
                 <div className={styles.assetsWrapper}>
-                  <div className={styles.assetsSeparator} style={{
-                  height: `${assetsSeparatorCalculatedHeight}px`,
-                  top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                  marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`
-                }} />
+                  <div
+                    className={styles.assetsSeparator}
+                    style={{
+                      height: `${assetsSeparatorCalculatedHeight}px`,
+                      top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                      marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`,
+                    }}
+                  />
                   <div className={styles.assetsContainer}>
                     <h3>
                       <span>{intl.formatMessage(globalMessages.adaName)}</span>
@@ -301,15 +357,23 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                   </div>
                   {/* @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type '{}'. */}
                   {selectedAssets.map((asset, assetIndex) => {
-                  const assetAmount = this.getFormattedAssetAmount(asset, assetIndex);
-                  return <Fragment key={asset.uniqueId}>
+                    const assetAmount = this.getFormattedAssetAmount(
+                      asset,
+                      assetIndex
+                    );
+                    return (
+                      <Fragment key={asset.uniqueId}>
                         <div className={styles.assetsContainer}>
                           <h3>
                             <span>
                               {intl.formatMessage(messages.assetLabel)}
                               &nbsp;#{assetIndex + 1}
                             </span>
-                            <Asset asset={asset} onCopyAssetParam={onCopyAssetParam} className={styles.assetToken} />
+                            <Asset
+                              asset={asset}
+                              onCopyAssetParam={onCopyAssetParam}
+                              className={styles.assetToken}
+                            />
                           </h3>
                           <div className={styles.amountFeesWrapper}>
                             <div className={styles.amount}>{assetAmount}</div>
@@ -318,10 +382,24 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                         <div className={styles.assetsContainer}>
                           <div className={styles.unformattedAmountLine} />
                           <div className={styles.unformattedAmountLabel}>
-                            {intl.formatMessage(messages.unformattedAmountLabel)}
-                            <PopOver content={<div className="UnformattedAmountTooltip">
-                                  <FormattedHTMLMessage {...messages[isHardwareWallet ? 'unformattedAmountMessageForHardwareWallets' : 'unformattedAmountMessageForSoftwareWallets']} tagName="div" />
-                                </div>} key="tooltip">
+                            {intl.formatMessage(
+                              messages.unformattedAmountLabel
+                            )}
+                            <PopOver
+                              content={
+                                <div className="UnformattedAmountTooltip">
+                                  <FormattedHTMLMessage
+                                    {...messages[
+                                      isHardwareWallet
+                                        ? 'unformattedAmountMessageForHardwareWallets'
+                                        : 'unformattedAmountMessageForSoftwareWallets'
+                                    ]}
+                                    tagName="div"
+                                  />
+                                </div>
+                              }
+                              key="tooltip"
+                            >
                               <div className={styles.questionMark}>
                                 <SVGInline svg={questionMarkIcon} />
                               </div>
@@ -332,15 +410,17 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                             {this.getAssetAmount(assetIndex)}
                           </div>
                         </div>
-                      </Fragment>;
-                })}
+                      </Fragment>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {SHOW_TOTAL_AMOUNT ? <>
+        {SHOW_TOTAL_AMOUNT ? (
+          <>
             <div className={styles.adaAmountFeesWrapper}>
               <div className={styles.adaAmountWrapper}>
                 <div className={styles.adaAmountLabel}>
@@ -374,7 +454,9 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
               {formattedTotalAmount}
               <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
-          </> : <div className={styles.feesWrapper}>
+          </>
+        ) : (
+          <div className={styles.feesWrapper}>
             <div className={styles.feesLabel}>
               {intl.formatMessage(messages.feesLabel)}
             </div>
@@ -382,17 +464,30 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
               +{transactionFee}
               <span>&nbsp;{intl.formatMessage(globalMessages.adaUnit)}</span>
             </div>
-          </div>}
+          </div>
+        )}
 
-        {isFlight && <div className={styles.flightCandidateWarning}>
-            <FormattedHTMLMessage {...messages.flightCandidateWarning} tagName="p" />
-            <Checkbox {...flightCandidateCheckboxField.bind()} error={flightCandidateCheckboxField.error} skin={CheckboxSkin} disabled={areTermsAccepted} onChange={this.onCheckboxClick} checked={areTermsAccepted} />
-          </div>}
+        {isFlight && (
+          <div className={styles.flightCandidateWarning}>
+            <FormattedHTMLMessage
+              {...messages.flightCandidateWarning}
+              tagName="p"
+            />
+            <Checkbox
+              {...flightCandidateCheckboxField.bind()}
+              error={flightCandidateCheckboxField.error}
+              skin={CheckboxSkin}
+              disabled={areTermsAccepted}
+              onChange={this.onCheckboxClick}
+              checked={areTermsAccepted}
+            />
+          </div>
+        )}
         {this.renderConfirmationElement(isHardwareWallet)}
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
-      </Dialog>;
+      </Dialog>
+    );
   }
-
 }
 
 export default WalletSendAssetsConfirmationDialog;

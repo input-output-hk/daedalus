@@ -1,40 +1,63 @@
-import { observable, action, computed, runInAction, flow } from "mobx";
-import { get, find, findIndex, isEqual, includes } from "lodash";
-import { BigNumber } from "bignumber.js";
-import Store from "./lib/Store";
-import Request from "./lib/LocalizedRequest";
-import Wallet, { WalletSyncStateStatuses } from "../domains/Wallet";
-import WalletAddress from "../domains/WalletAddress";
-import { WalletTransaction } from "../domains/WalletTransaction";
-import { MAX_ADA_WALLETS_COUNT } from "../config/numbersConfig";
-import { i18nContext } from "../utils/i18nContext";
-import { mnemonicToSeedHex, getScrambledInput } from "../utils/crypto";
-import { paperWalletPdfGenerator } from "../utils/paperWalletPdfGenerator";
-import { addressPDFGenerator } from "../utils/addressPDFGenerator";
-import { downloadCsv } from "../utils/csvGenerator";
-import { buildRoute, matchRoute } from "../utils/routing";
-import { logger } from "../utils/logging";
-import { ROUTES } from "../routes-config";
-import { formattedWalletAmount } from "../utils/formatters";
-import { ellipsis } from "../utils/strings";
-import { bech32EncodePublicKey, isReceiverAddressType } from "../utils/hardwareWalletUtils";
-import { WalletPaperWalletOpenPdfError, WalletRewardsOpenCsvError } from "../i18n/errors";
-import { WALLET_KINDS, WALLET_DAEDALUS_KINDS, WALLET_YOROI_KINDS, WALLET_HARDWARE_KINDS, RESTORE_WALLET_STEPS } from "../config/walletRestoreConfig";
-import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from "../config/walletsConfig";
-import { introspectAddressChannel } from "../ipc/introspect-address";
-import { saveQRCodeImageChannel } from "../ipc/saveQRCodeImageChannel";
-import type { AddressStyle } from "../../../common/types/address-introspection.types";
-import type { AssetToken } from "../api/assets/types";
-import type { WalletKind, WalletDaedalusKind, WalletYoroiKind, WalletHardwareKind } from "../types/walletRestoreTypes";
-import type { CsvFileContent } from "../../../common/types/csv-request.types";
-import type { WalletExportTypeChoices } from "../types/walletExportTypes";
+import { observable, action, computed, runInAction, flow } from 'mobx';
+import { get, find, findIndex, isEqual, includes } from 'lodash';
+import { BigNumber } from 'bignumber.js';
+import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
+import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
+import WalletAddress from '../domains/WalletAddress';
+import { WalletTransaction } from '../domains/WalletTransaction';
+import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
+import { i18nContext } from '../utils/i18nContext';
+import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
+import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
+import { addressPDFGenerator } from '../utils/addressPDFGenerator';
+import { downloadCsv } from '../utils/csvGenerator';
+import { buildRoute, matchRoute } from '../utils/routing';
+import { logger } from '../utils/logging';
+import { ROUTES } from '../routes-config';
+import { formattedWalletAmount } from '../utils/formatters';
+import { ellipsis } from '../utils/strings';
+import {
+  bech32EncodePublicKey,
+  isReceiverAddressType,
+} from '../utils/hardwareWalletUtils';
+import {
+  WalletPaperWalletOpenPdfError,
+  WalletRewardsOpenCsvError,
+} from '../i18n/errors';
+import {
+  WALLET_KINDS,
+  WALLET_DAEDALUS_KINDS,
+  WALLET_YOROI_KINDS,
+  WALLET_HARDWARE_KINDS,
+  RESTORE_WALLET_STEPS,
+} from '../config/walletRestoreConfig';
+import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
+import { introspectAddressChannel } from '../ipc/introspect-address';
+import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
+import type { AddressStyle } from '../../../common/types/address-introspection.types';
+import type { AssetToken } from '../api/assets/types';
+import type {
+  WalletKind,
+  WalletDaedalusKind,
+  WalletYoroiKind,
+  WalletHardwareKind,
+} from '../types/walletRestoreTypes';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../actions/wallets-actions' or... Remove this comment to see the full error message
-import type { WalletImportFromFileParams } from "../actions/wallets-actions";
-import type LocalizableError from "../i18n/LocalizableError";
-import type { TransferFundsCalculateFeeRequest, TransferFundsRequest } from "../api/wallets/types";
-import type { QuitStakePoolRequest } from "../api/staking/types";
-import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from "../../../common/types/hardware-wallets.types";
-import { NetworkMagics } from "../../../common/types/cardano-node.types";
+import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import type LocalizableError from '../i18n/LocalizableError';
+import type {
+  TransferFundsCalculateFeeRequest,
+  TransferFundsRequest,
+} from '../api/wallets/types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
+import { NetworkMagics } from '../../../common/types/cardano-node.types';
 /* eslint-disable consistent-return */
 
 /**
@@ -53,64 +76,102 @@ export default class WalletsStore extends Store {
   walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  accountPublicKeyRequest: Request<string> = new Request(this.api.ada.getAccountPublicKey);
+  accountPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getAccountPublicKey
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  icoPublicKeyRequest: Request<string> = new Request(this.api.ada.getICOPublicKey);
+  icoPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getICOPublicKey
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
+  importFromFileRequest: Request<Wallet> = new Request(
+    this.api.ada.importWalletFromFile
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
   createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletAddressesRequest: Request<Array<WalletAddress>> = new Request(this.api.ada.getAddresses);
+  getWalletAddressesRequest: Request<Array<WalletAddress>> = new Request(
+    this.api.ada.getAddresses
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);
+  deleteWalletRequest: Request<boolean> = new Request(
+    this.api.ada.deleteWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  sendMoneyRequest: Request<WalletTransaction> = new Request(this.api.ada.createTransaction);
+  sendMoneyRequest: Request<WalletTransaction> = new Request(
+    this.api.ada.createTransaction
+  );
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  getWalletRecoveryPhraseRequest: Request<Array<string>> = new Request(
+    this.api.ada.getWalletRecoveryPhrase
+  );
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletCertificateAdditionalMnemonicsRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  getWalletCertificateAdditionalMnemonicsRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletCertificateRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  getWalletCertificateRecoveryPhraseRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletRecoveryPhraseFromCertificateRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
+  getWalletRecoveryPhraseFromCertificateRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreDaedalusRequest: Request<Wallet> = new Request(this.api.ada.restoreWallet);
+  restoreDaedalusRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreLegacyRequest: Request<Wallet> = new Request(this.api.ada.restoreLegacyWallet);
+  restoreLegacyRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreLegacyWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreByronRandomWalletRequest: Request<Wallet> = new Request(this.api.ada.restoreByronRandomWallet);
+  restoreByronRandomWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronRandomWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreByronIcarusWalletRequest: Request<Wallet> = new Request(this.api.ada.restoreByronIcarusWallet);
+  restoreByronIcarusWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronIcarusWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreByronTrezorWalletRequest: Request<Wallet> = new Request(this.api.ada.restoreByronTrezorWallet);
+  restoreByronTrezorWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronTrezorWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  restoreByronLedgerWalletRequest: Request<Wallet> = new Request(this.api.ada.restoreByronLedgerWallet);
+  restoreByronLedgerWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreByronLedgerWallet
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> = new Request(this.api.ada.transferFundsCalculateFee);
+  transferFundsCalculateFeeRequest: Request<
+    TransferFundsCalculateFeeRequest
+  > = new Request(this.api.ada.transferFundsCalculateFee);
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  transferFundsRequest: Request<TransferFundsRequest> = new Request(this.api.ada.transferFunds);
+  transferFundsRequest: Request<TransferFundsRequest> = new Request(
+    this.api.ada.transferFunds
+  );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  createHardwareWalletRequest: Request<Wallet> = new Request(this.api.ada.createHardwareWallet);
+  createHardwareWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.createHardwareWallet
+  );
 
   /* ----------  Active Wallet  ---------- */
   @observable
@@ -220,7 +281,7 @@ export default class WalletsStore extends Store {
   } = {
     name: '',
     mnemonic: '',
-    spendingPassword: ''
+    spendingPassword: '',
   };
   _pollingBlocked = false;
 
@@ -233,8 +294,8 @@ export default class WalletsStore extends Store {
       walletBackup,
       wallets: walletsActions,
       app,
-      networkStatus
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
+      networkStatus,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     } = this.actions;
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
@@ -248,15 +309,23 @@ export default class WalletsStore extends Store {
     walletsActions.restoreWallet.listen(this._restore);
     walletsActions.restoreWalletBegin.listen(this._restoreWalletBegin);
     walletsActions.restoreWalletEnd.listen(this._restoreWalletEnd);
-    walletsActions.restoreWalletChangeStep.listen(this._restoreWalletChangeStep);
+    walletsActions.restoreWalletChangeStep.listen(
+      this._restoreWalletChangeStep
+    );
     walletsActions.restoreWalletClose.listen(this._restoreWalletClose);
-    walletsActions.restoreWalletCancelClose.listen(this._restoreWalletCancelClose);
+    walletsActions.restoreWalletCancelClose.listen(
+      this._restoreWalletCancelClose
+    );
     walletsActions.restoreWalletSetKind.listen(this._restoreWalletSetKind);
-    walletsActions.restoreWalletSetMnemonics.listen(this._restoreWalletSetMnemonics);
+    walletsActions.restoreWalletSetMnemonics.listen(
+      this._restoreWalletSetMnemonics
+    );
     walletsActions.restoreWalletSetConfig.listen(this._restoreWalletSetConfig);
     walletsActions.deleteWallet.listen(this._deleteWallet);
     walletsActions.undelegateWallet.listen(this._undelegateWallet);
-    walletsActions.setUndelegateWalletSubmissionSuccess.listen(this._setUndelegateWalletSubmissionSuccess);
+    walletsActions.setUndelegateWalletSubmissionSuccess.listen(
+      this._setUndelegateWalletSubmissionSuccess
+    );
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
@@ -266,9 +335,13 @@ export default class WalletsStore extends Store {
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
     walletsActions.saveQRCodeImage.listen(this._saveQRCodeImage);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
-    walletsActions.closeCertificateGeneration.listen(this._closeCertificateGeneration);
+    walletsActions.closeCertificateGeneration.listen(
+      this._closeCertificateGeneration
+    );
     walletsActions.generateCsv.listen(this._generateCsv);
-    walletsActions.closeRewardsCsvGeneration.listen(this._closeRewardsCsvGeneration);
+    walletsActions.closeRewardsCsvGeneration.listen(
+      this._closeRewardsCsvGeneration
+    );
     walletsActions.setCertificateTemplate.listen(this._setCertificateTemplate);
     walletsActions.finishCertificate.listen(this._finishCertificate);
     walletsActions.finishRewardsCsv.listen(this._finishRewardsCsv);
@@ -280,17 +353,23 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsNextStep.listen(this._transferFundsNextStep);
     walletsActions.transferFundsPrevStep.listen(this._transferFundsPrevStep);
     walletsActions.transferFunds.listen(this._transferFunds);
-    walletsActions.transferFundsSetSourceWalletId.listen(this._transferFundsSetSourceWalletId);
-    walletsActions.transferFundsSetTargetWalletId.listen(this._transferFundsSetTargetWalletId);
+    walletsActions.transferFundsSetSourceWalletId.listen(
+      this._transferFundsSetSourceWalletId
+    );
+    walletsActions.transferFundsSetTargetWalletId.listen(
+      this._transferFundsSetTargetWalletId
+    );
     walletsActions.transferFundsRedeem.listen(this._transferFundsRedeem);
     walletsActions.transferFundsClose.listen(this._transferFundsClose);
-    walletsActions.transferFundsCalculateFee.listen(this._transferFundsCalculateFee);
+    walletsActions.transferFundsCalculateFee.listen(
+      this._transferFundsCalculateFee
+    );
   }
 
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _getAccountPublicKey = async ({
-    spendingPassword: passphrase
+    spendingPassword: passphrase,
   }: {
     spendingPassword: string;
   }) => {
@@ -307,7 +386,7 @@ export default class WalletsStore extends Store {
         walletId,
         index,
         passphrase,
-        extended
+        extended,
       }).promise;
       runInAction('update account public key', () => {
         this.activePublicKey = accountPublicKey;
@@ -319,7 +398,7 @@ export default class WalletsStore extends Store {
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _getICOPublicKey = async ({
-    spendingPassword: passphrase
+    spendingPassword: passphrase,
   }: {
     spendingPassword: string;
   }) => {
@@ -339,8 +418,8 @@ export default class WalletsStore extends Store {
         data: {
           passphrase,
           format,
-          purpose
-        }
+          purpose,
+        },
       }).promise;
       runInAction('update ICO public key', () => {
         this.icoPublicKey = icoPublicKey;
@@ -350,21 +429,22 @@ export default class WalletsStore extends Store {
     }
   };
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
-  _create = async (params: {
-    name: string;
-    spendingPassword: string;
-  }) => {
+  _create = async (params: { name: string; spendingPassword: string }) => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Object'.
     Object.assign(this._newWalletDetails, params);
 
     try {
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const recoveryPhrase: Array<string> | null | undefined = await this.getWalletRecoveryPhraseRequest.execute().promise;
+      const recoveryPhrase:
+        | Array<string>
+        | null
+        | undefined = await this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
 
       if (recoveryPhrase != null) {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
         this.actions.walletBackup.initiateWalletBackup.trigger({
-          recoveryPhrase
+          recoveryPhrase,
         });
       }
     } catch (error) {
@@ -384,7 +464,10 @@ export default class WalletsStore extends Store {
   @action
   _createWalletChangeStep = (isBack: boolean = false) => {
     const currrentCreateWalletStep = this.createWalletStep || 0;
-    this.createWalletStep = isBack === true ? currrentCreateWalletStep - 1 : currrentCreateWalletStep + 1;
+    this.createWalletStep =
+      isBack === true
+        ? currrentCreateWalletStep - 1
+        : currrentCreateWalletStep + 1;
     this.createWalletShowAbortConfirmation = false;
   };
   @action
@@ -406,9 +489,7 @@ export default class WalletsStore extends Store {
   _restoreWalletEnd = async () => {
     this._resumePolling();
 
-    const {
-      restoredWallet
-    } = this;
+    const { restoredWallet } = this;
 
     if (restoredWallet) {
       await this._patchWalletRequestWithNewWallet(restoredWallet);
@@ -431,20 +512,22 @@ export default class WalletsStore extends Store {
       this._restoreWalletResetData();
     }
 
-    this.restoreWalletStep = isBack === true ? currrentRestoreWalletStep - 1 : currrentRestoreWalletStep + 1;
+    this.restoreWalletStep =
+      isBack === true
+        ? currrentRestoreWalletStep - 1
+        : currrentRestoreWalletStep + 1;
     this.restoreWalletShowAbortConfirmation = false;
   };
   @action
   _restoreWalletClose = () => {
     this._resumePolling();
 
-    const {
-      mnemonics,
-      walletName,
-      spendingPassword
-    } = this;
+    const { mnemonics, walletName, spendingPassword } = this;
     // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type 'string'.
-    const shouldDisplayAbortAlert = (mnemonics.length || walletName.length || spendingPassword.length) && this.restoreWalletStep !== null && this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1;
+    const shouldDisplayAbortAlert =
+      (mnemonics.length || walletName.length || spendingPassword.length) &&
+      this.restoreWalletStep !== null &&
+      this.restoreWalletStep < RESTORE_WALLET_STEPS.length - 1;
 
     if (shouldDisplayAbortAlert && !this.restoreWalletShowAbortConfirmation) {
       this.restoreWalletShowAbortConfirmation = true;
@@ -486,7 +569,7 @@ export default class WalletsStore extends Store {
   @action
   _restoreWalletSetKind = ({
     param,
-    kind
+    kind,
   }: {
     param?: string;
     kind: string;
@@ -496,7 +579,7 @@ export default class WalletsStore extends Store {
   };
   @action
   _restoreWalletSetMnemonics = ({
-    mnemonics
+    mnemonics,
   }: {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     mnemonics: Array<string>;
@@ -506,7 +589,7 @@ export default class WalletsStore extends Store {
   @action
   _restoreWalletSetConfig = ({
     param,
-    value
+    value,
   }: {
     param: string;
     value: string;
@@ -526,33 +609,24 @@ export default class WalletsStore extends Store {
     extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
     device: TransportDevice;
   }) => {
-    const {
-      walletName,
-      extendedPublicKey,
-      device
-    } = params;
-    const {
-      deviceId,
-      deviceType,
-      deviceModel,
-      deviceName,
-      path
-    } = device;
-    const accountPublicKey = extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
+    const { walletName, extendedPublicKey, device } = params;
+    const { deviceId, deviceType, deviceModel, deviceName, path } = device;
+    const accountPublicKey =
+      extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
     logger.debug('[HW-DEBUG] HWStore - Execute HW create / restore', {
       deviceId,
       deviceType,
       deviceModel,
       deviceName,
       path,
-      walletName
+      walletName,
     });
 
     try {
       await this._pausePolling();
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName,
-        accountPublicKey
+        accountPublicKey,
       });
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
       await this.stores.hardwareWallets._setHardwareWalletLocalData({
@@ -560,8 +634,8 @@ export default class WalletsStore extends Store {
         data: {
           device,
           extendedPublicKey,
-          disconnected: false
-        }
+          disconnected: false,
+        },
       });
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
       await this.stores.hardwareWallets._setHardwareWalletDevice({
@@ -573,9 +647,8 @@ export default class WalletsStore extends Store {
           path,
           paired: wallet.id,
           // device paired with software wallet
-          disconnected: false // device physically disconnected
-
-        }
+          disconnected: false, // device physically disconnected
+        },
       });
 
       if (wallet) {
@@ -594,8 +667,12 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _finishWalletBackup = async () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
-    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
+      ' '
+    );
+    const wallet = await this.createWalletRequest.execute(
+      this._newWalletDetails
+    ).promise;
 
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
@@ -606,10 +683,7 @@ export default class WalletsStore extends Store {
     }
   };
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
-  _deleteWallet = async (params: {
-    walletId: string;
-    isLegacy: boolean;
-  }) => {
+  _deleteWallet = async (params: { walletId: string; isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     runInAction('AdaWalletsStore::isDeleting set', () => {
       this.isDeleting = true;
@@ -627,9 +701,9 @@ export default class WalletsStore extends Store {
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({
       walletId: params.walletId,
-      isLegacy: params.isLegacy || false
+      isLegacy: params.isLegacy || false,
     });
-    await this.walletsRequest.patch(result => {
+    await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
     });
     runInAction('AdaWalletsStore::_deleteWallet', () => {
@@ -645,7 +719,7 @@ export default class WalletsStore extends Store {
         this.activeValue = null;
         // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
         this.actions.router.goToRoute.trigger({
-          route: ROUTES.WALLETS.ADD
+          route: ROUTES.WALLETS.ADD,
         });
       }
     });
@@ -653,11 +727,11 @@ export default class WalletsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
-      walletId: params.walletId
+      walletId: params.walletId,
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     await this.stores.hardwareWallets._unsetHardwareWalletLocalData({
-      walletId: params.walletId
+      walletId: params.walletId,
     });
 
     this._resumePolling();
@@ -668,12 +742,12 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _undelegateWallet = async (params: QuitStakePoolRequest) => {
     const {
-      quitStakePoolRequest
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      quitStakePoolRequest,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.staking;
     const {
-      quitStakePool
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
+      quitStakePool,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     } = this.actions.staking;
     const walletToUndelegate = this.getWalletById(params.walletId);
 
@@ -684,34 +758,34 @@ export default class WalletsStore extends Store {
     await quitStakePool.trigger(params);
 
     this._setUndelegateWalletSubmissionSuccess({
-      result: true
+      result: true,
     });
 
     quitStakePoolRequest.reset();
     this.refreshWalletsData();
   };
-  _setUndelegateWalletSubmissionSuccess = ({
-    result
-  }: {
-    result: boolean;
-  }) => {
-    runInAction('AdaWalletsStore::_setUndelegateWalletSubmissionSuccess', () => {
-      this.undelegateWalletSubmissionSuccess = result;
-    });
+  _setUndelegateWalletSubmissionSuccess = ({ result }: { result: boolean }) => {
+    runInAction(
+      'AdaWalletsStore::_setUndelegateWalletSubmissionSuccess',
+      () => {
+        this.undelegateWalletSubmissionSuccess = result;
+      }
+    );
   };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  _getUnscrambledMnemonics = async (mnemonics: Array<string>): Array<string> => {
+  _getUnscrambledMnemonics = async (
+    mnemonics: Array<string>
+  ): Array<string> => {
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-    const {
-      passphrase,
-      scrambledInput
-    } = getScrambledInput(mnemonics);
+    const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute({
-      passphrase,
-      scrambledInput
-    }).promise;
+    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+      {
+        passphrase,
+        scrambledInput,
+      }
+    ).promise;
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     // @ts-ignore
     return unscrambledRecoveryPhrase;
@@ -730,11 +804,14 @@ export default class WalletsStore extends Store {
     const data = {
       recoveryPhrase: this.mnemonics,
       walletName: this.walletName,
-      spendingPassword: this.spendingPassword
+      spendingPassword: this.spendingPassword,
     };
     const request = this.restoreRequest;
 
-    if (this.walletKind === WALLET_KINDS.DAEDALUS && this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD) {
+    if (
+      this.walletKind === WALLET_KINDS.DAEDALUS &&
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD
+    ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
       data.recoveryPhrase = await this._getUnscrambledMnemonics(this.mnemonics);
@@ -743,7 +820,8 @@ export default class WalletsStore extends Store {
     try {
       const restoredWallet = await request.execute(data).promise;
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
-      if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
+      if (!restoredWallet)
+        throw new Error('Restored wallet was not received correctly');
       runInAction('set restoredWallet', () => {
         this.restoredWallet = restoredWallet;
         this.restoreWalletStep = 3;
@@ -761,7 +839,7 @@ export default class WalletsStore extends Store {
     passphrase,
     assets,
     assetsAmounts: assetsAmountsStr,
-    hasAssetsRemainingAfterTransaction
+    hasAssetsRemainingAfterTransaction,
   }: {
     receiver: string;
     amount: string;
@@ -772,16 +850,20 @@ export default class WalletsStore extends Store {
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
   }) => {
-    const assetsAmounts = assetsAmountsStr ? assetsAmountsStr.map(assetAmount => new BigNumber(assetAmount)) : null;
-    const formattedAssets = assets && assets.length ? assets.map( // eslint-disable-next-line
-    ({
-      policyId: policy_id,
-      assetName: asset_name
-    }, index) => ({
-      policy_id,
-      asset_name,
-      quantity: get(assetsAmounts, index, 0)
-    })) : null;
+    const assetsAmounts = assetsAmountsStr
+      ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
+      : null;
+    const formattedAssets =
+      assets && assets.length
+        ? assets.map(
+            // eslint-disable-next-line
+            ({ policyId: policy_id, assetName: asset_name }, index) => ({
+              policy_id,
+              asset_name,
+              quantity: get(assetsAmounts, index, 0),
+            })
+          )
+        : null;
     const wallet = this.active;
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     if (!wallet) throw new Error('Active wallet required before sending.');
@@ -793,7 +875,7 @@ export default class WalletsStore extends Store {
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
       assets: formattedAssets,
-      hasAssetsRemainingAfterTransaction
+      hasAssetsRemainingAfterTransaction,
     });
     this.refreshWalletsData();
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
@@ -807,7 +889,7 @@ export default class WalletsStore extends Store {
     const {
       transferFundsStep,
       transferFundsSourceWalletId,
-      transferFundsTargetWalletId
+      transferFundsTargetWalletId,
     } = this;
     let nextStep = 0;
 
@@ -815,9 +897,13 @@ export default class WalletsStore extends Store {
       nextStep = 1;
     }
 
-    if (transferFundsStep === 1 && transferFundsSourceWalletId && transferFundsTargetWalletId) {
+    if (
+      transferFundsStep === 1 &&
+      transferFundsSourceWalletId &&
+      transferFundsTargetWalletId
+    ) {
       await this._transferFundsCalculateFee({
-        sourceWalletId: transferFundsSourceWalletId
+        sourceWalletId: transferFundsSourceWalletId,
       });
       nextStep = 2;
     }
@@ -828,33 +914,30 @@ export default class WalletsStore extends Store {
   };
   @action
   _transferFundsPrevStep = () => {
-    const {
-      transferFundsStep
-    } = this;
+    const { transferFundsStep } = this;
     const prevStep = transferFundsStep > 0 ? transferFundsStep - 1 : 0;
     this.transferFundsStep = prevStep;
   };
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _transferFunds = async ({
-    spendingPassword
+    spendingPassword,
   }: {
     spendingPassword: string;
   }) => {
-    const {
-      transferFundsSourceWalletId,
-      transferFundsTargetWalletId
-    } = this;
+    const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
     const targetWalletAddresses = await this.getWalletAddressesRequest.execute({
       walletId: transferFundsTargetWalletId,
       queryParams: {
-        state: 'unused'
-      }
+        state: 'unused',
+      },
     }).promise;
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
-      targetWalletAddresses: targetWalletAddresses ? targetWalletAddresses.map(address => address.id).slice(0, 20) : null,
-      passphrase: spendingPassword
+      targetWalletAddresses: targetWalletAddresses
+        ? targetWalletAddresses.map((address) => address.id).slice(0, 20)
+        : null,
+      passphrase: spendingPassword,
     });
     this.refreshWalletsData();
 
@@ -865,22 +948,20 @@ export default class WalletsStore extends Store {
   };
   @action
   _transferFundsSetSourceWalletId = ({
-    sourceWalletId
+    sourceWalletId,
   }: {
     sourceWalletId: string;
   }) => {
     this.transferFundsSourceWalletId = sourceWalletId;
     // Sets the target wallet to the first wallet
-    const {
-      allWallets
-    } = this;
+    const { allWallets } = this;
     this.transferFundsTargetWalletId = get(allWallets, [0, 'id'], '');
     // Sets to first step
     this.transferFundsStep = 1;
   };
   @action
   _transferFundsSetTargetWalletId = ({
-    targetWalletId
+    targetWalletId,
   }: {
     targetWalletId: string;
   }) => {
@@ -899,15 +980,15 @@ export default class WalletsStore extends Store {
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _transferFundsCalculateFee = async ({
-    sourceWalletId
+    sourceWalletId,
   }: {
     sourceWalletId: string;
   }) => {
     const {
       fee,
-      leftovers
+      leftovers,
     } = await this.transferFundsCalculateFeeRequest.execute({
-      sourceWalletId
+      sourceWalletId,
     }).promise;
     runInAction('set migration fee and leftovers', () => {
       this.transferFundsFee = fee;
@@ -930,7 +1011,9 @@ export default class WalletsStore extends Store {
   @computed
   get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
-    return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+    return (
+      this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0
+    );
   }
 
   @computed
@@ -952,17 +1035,17 @@ export default class WalletsStore extends Store {
   @computed
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   get allWallets(): Array<Wallet> {
-    return this.walletsRequest.result ? this.walletsRequest.result.filter(({
-      isLegacy
-    }: Wallet) => !isLegacy) : [];
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
+      : [];
   }
 
   @computed
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   get allLegacyWallets(): Array<Wallet> {
-    return this.walletsRequest.result ? this.walletsRequest.result.filter(({
-      isLegacy
-    }: Wallet) => isLegacy) : [];
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
+      : [];
   }
 
   @computed
@@ -984,8 +1067,8 @@ export default class WalletsStore extends Store {
   @computed
   get isWalletRoute(): boolean {
     const {
-      currentRoute
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      currentRoute,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
@@ -994,7 +1077,10 @@ export default class WalletsStore extends Store {
   get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD || this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD) {
+        if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD ||
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD
+        ) {
           return this.restoreDaedalusRequest;
         }
 
@@ -1019,19 +1105,22 @@ export default class WalletsStore extends Store {
     }
   }
 
-  getWalletById = (id: string): Wallet | null | undefined => this.all.find(w => w.id === id);
-  getWalletByName = (name: string): Wallet | null | undefined => this.all.find(w => w.name === name);
-  getWalletRoute = (walletId: string, page: string = 'summary'): string => buildRoute(ROUTES.WALLETS.PAGE, {
-    id: walletId,
-    page
-  });
+  getWalletById = (id: string): Wallet | null | undefined =>
+    this.all.find((w) => w.id === id);
+  getWalletByName = (name: string): Wallet | null | undefined =>
+    this.all.find((w) => w.name === name);
+  getWalletRoute = (walletId: string, page: string = 'summary'): string =>
+    buildRoute(ROUTES.WALLETS.PAGE, {
+      id: walletId,
+      page,
+    });
 
   // ACTIONS
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.router.goToRoute.trigger({
-      route
+      route,
     });
   }
 
@@ -1039,8 +1128,8 @@ export default class WalletsStore extends Store {
   @computed
   get _canRedirectToWallet(): boolean {
     const {
-      currentRoute
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      currentRoute,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.app;
     const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
     const isAddWalletRoute = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
@@ -1050,10 +1139,12 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
-    await this.walletsRequest.patch(result => {
-      if (!find(result, {
-        id: wallet.id
-      })) {
+    await this.walletsRequest.patch((result) => {
+      if (
+        !find(result, {
+          id: wallet.id,
+        })
+      ) {
         if (wallet.isLegacy) {
           // Legacy wallets are always added to the end of the list!
           result.push(wallet);
@@ -1071,36 +1162,40 @@ export default class WalletsStore extends Store {
   };
   _pollRefresh = async () => {
     const {
-      isConnected
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      isConnected,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.networkStatus;
     return isConnected && this.refreshWalletsData();
   };
   _updateActiveWalletOnRouteChanges = () => {
     const {
-      currentRoute
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      currentRoute,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
-      if (isWalletAddPage || !hasAnyWalletLoaded) return this._unsetActiveWallet();
-      const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
+      if (isWalletAddPage || !hasAnyWalletLoaded)
+        return this._unsetActiveWallet();
+      const match = matchRoute(
+        `${ROUTES.WALLETS.ROOT}/:id(*page)`,
+        currentRoute
+      );
 
       if (match) {
         // We have a route for a specific wallet -> let's try to find it
-        const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+        const walletForCurrentRoute = this.all.find((w) => w.id === match.id);
 
         if (walletForCurrentRoute) {
           // The wallet exists, we are done
           this._setActiveWallet({
-            walletId: walletForCurrentRoute.id
+            walletId: walletForCurrentRoute.id,
           });
         } else if (hasAnyWalletLoaded) {
           // There is no wallet with given id -> pick first wallet
           this._setActiveWallet({
-            walletId: this.all[0].id
+            walletId: this.all[0].id,
           });
 
           if (this.active) this.goToWalletRoute(this.active.id);
@@ -1109,7 +1204,7 @@ export default class WalletsStore extends Store {
         // The route does not specify any wallet -> pick first wallet
         if (!this.hasActiveWallet && hasAnyWalletLoaded) {
           this._setActiveWallet({
-            walletId: this.all[0].id
+            walletId: this.all[0].id,
           });
         }
 
@@ -1121,8 +1216,8 @@ export default class WalletsStore extends Store {
   };
   isValidAddress = async (address: string) => {
     const {
-      network
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
+      network,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
     } = this.environment;
     const expectedNetworkTag = get(NetworkMagics, [network]);
     const validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
@@ -1135,26 +1230,39 @@ export default class WalletsStore extends Store {
 
     try {
       const response = await introspectAddressChannel.send({
-        input: address
+        input: address,
       });
 
-      if (response === 'Invalid' || !isReceiverAddressType(response.introspection.address_type)) {
+      if (
+        response === 'Invalid' ||
+        !isReceiverAddressType(response.introspection.address_type)
+      ) {
         return false;
       }
 
       runInAction('check if address is from the same wallet', () => {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-        const walletAddresses = this.stores.addresses.all.slice().map(addr => addr.id);
-        this.isAddressFromSameWallet = !!walletAddresses.filter(addr => addr === address).length;
+        const walletAddresses = this.stores.addresses.all
+          .slice()
+          .map((addr) => addr.id);
+        this.isAddressFromSameWallet = !!walletAddresses.filter(
+          (addr) => addr === address
+        ).length;
       });
       // @ts-ignore ts-migrate(2339) FIXME: Property 'includes' does not exist on type '{}'.
-      return validAddressStyles.includes(response.introspection.address_style) && (Array.isArray(expectedNetworkTag) && includes(expectedNetworkTag, response.introspection.network_tag) || expectedNetworkTag === response.introspection.network_tag);
+      return (
+        validAddressStyles.includes(response.introspection.address_style) &&
+        ((Array.isArray(expectedNetworkTag) &&
+          includes(expectedNetworkTag, response.introspection.network_tag)) ||
+          expectedNetworkTag === response.introspection.network_tag)
+      );
     } catch (error) {
       logger.error(error);
     }
   };
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  isValidCertificateMnemonic = (mnemonic: string) => this.api.ada.isValidCertificateMnemonic(mnemonic);
+  isValidCertificateMnemonic = (mnemonic: string) =>
+    this.api.ada.isValidCertificateMnemonic(mnemonic);
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   refreshWalletsData = async () => {
@@ -1165,24 +1273,27 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      const walletIds = result.filter(({
-        syncState
-      }: Wallet) => syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING).map((wallet: Wallet) => wallet.id);
+      const walletIds = result
+        .filter(
+          ({ syncState }: Wallet) =>
+            syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
+        )
+        .map((wallet: Wallet) => wallet.id);
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({
-            walletId: this.active.id
+            walletId: this.active.id,
           });
         }
       });
       runInAction('refresh address data', () => {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+        this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
           walletId,
           // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId)
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
         }));
 
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
@@ -1190,15 +1301,23 @@ export default class WalletsStore extends Store {
       });
       runInAction('refresh transaction data', () => {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
-          walletId,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-          withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(walletId)
-        }));
+        this.stores.transactions.transactionsRequests = walletIds.map(
+          (walletId) => ({
+            walletId,
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
+              walletId
+            ),
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+            allRequest: this.stores.transactions._getTransactionsAllRequest(
+              walletId
+            ),
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
+              walletId
+            ),
+          })
+        );
 
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
         this.stores.transactions._refreshTransactionData();
@@ -1219,18 +1338,15 @@ export default class WalletsStore extends Store {
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _importWalletFromFile = async (params: WalletImportFromFileParams) => {
-    const {
-      filePath,
-      walletName,
-      spendingPassword
-    } = params;
+    const { filePath, walletName, spendingPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
       filePath,
       walletName,
-      spendingPassword
+      spendingPassword,
     }).promise;
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
-    if (!importedWallet) throw new Error('Imported wallet was not received correctly');
+    if (!importedWallet)
+      throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -1239,23 +1355,23 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
   @action
-  _setActiveWallet = ({
-    walletId
-  }: {
-    walletId: string;
-  }) => {
+  _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
-      const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      const newActiveWallet = this.all.find((wallet) => wallet.id === walletId);
 
-      if ((!this.active || !this.active.isNotResponding) && newActiveWallet && newActiveWallet.isNotResponding) {
+      if (
+        (!this.active || !this.active.isNotResponding) &&
+        newActiveWallet &&
+        newActiveWallet.isNotResponding
+      ) {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
         this.actions.router.goToRoute.trigger({
           route: ROUTES.WALLETS.PAGE,
           params: {
             id: newActiveWallet.id,
-            page: 'summary'
-          }
+            page: 'summary',
+          },
         });
       }
 
@@ -1273,15 +1389,16 @@ export default class WalletsStore extends Store {
 
           if (this.active && this.active.isHardwareWallet) {
             const {
-              hardwareWalletsConnectionData
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+              hardwareWalletsConnectionData,
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
             } = this.stores.hardwareWallets;
-            const hardwareWalletConnectionData = get(hardwareWalletsConnectionData, this.active.id);
+            const hardwareWalletConnectionData = get(
+              hardwareWalletsConnectionData,
+              this.active.id
+            );
 
             if (hardwareWalletConnectionData) {
-              const {
-                extendedPublicKey
-              } = hardwareWalletConnectionData;
+              const { extendedPublicKey } = hardwareWalletConnectionData;
               const extendedPublicKeyHex = `${extendedPublicKey.publicKeyHex}${extendedPublicKey.chainCodeHex}`;
               // @ts-ignore ts-migrate(2580) FIXME: Cannot find name 'Buffer'. Do you need to install ... Remove this comment to see the full error message
               const xpub = Buffer.from(extendedPublicKeyHex, 'hex');
@@ -1315,7 +1432,9 @@ export default class WalletsStore extends Store {
     params: Record<string, any> | null | undefined;
   }) => {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
-    if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
+    if (
+      matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))
+    ) {
       this.sendMoneyRequest.reset();
       this.isAddressFromSameWallet = false;
     }
@@ -1352,7 +1471,7 @@ export default class WalletsStore extends Store {
   _generateCertificate = flow(function* generateCertificate(params: {
     filePath: string;
     timestamp: string;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Generator'.
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Generator'.
   }): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
@@ -1363,25 +1482,31 @@ export default class WalletsStore extends Store {
 
       // Generate wallet recovery phrase
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute().promise;
+      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
       // Generate 9-words (additional) mnemonic
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise;
+      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
+        .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
       // Generate spending password from 9-word mnemonic and save to store
       const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
       this.walletCertificatePassword = spendingPassword;
       // Generate paper wallet scrambled mnemonic
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute({
-        passphrase: spendingPassword,
-        input: recoveryPhrase.join(' ')
-      }).promise;
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(' ');
+      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
+        {
+          passphrase: spendingPassword,
+          input: recoveryPhrase.join(' '),
+        }
+      ).promise;
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(
+        ' '
+      );
       // Create temporary wallet
       const walletData = {
         name: 'Paper Wallet',
-        mnemonic: recoveryPhrase.join(' ')
+        mnemonic: recoveryPhrase.join(' '),
       };
       const wallet = yield this.createWalletRequest.execute(walletData).promise;
       // Get temporary wallet address
@@ -1389,12 +1514,12 @@ export default class WalletsStore extends Store {
 
       if (wallet) {
         walletAddresses = yield this.getWalletAddressesRequest.execute({
-          walletId: wallet.id
+          walletId: wallet.id,
         }).promise;
         // delete temporary wallet
         yield this.deleteWalletRequest.execute({
           walletId: wallet.id,
-          isLegacy: wallet.isLegacy
+          isLegacy: wallet.isLegacy,
         });
       }
 
@@ -1402,26 +1527,36 @@ export default class WalletsStore extends Store {
       const walletAddress = get(walletAddresses, ['0', 'id'], null);
       this.walletCertificateAddress = walletAddress;
       // download pdf certificate
-      yield this._downloadCertificate(walletAddress, walletCertificateRecoveryPhrase, params.filePath, params.timestamp);
+      yield this._downloadCertificate(
+        walletAddress,
+        walletCertificateRecoveryPhrase,
+        params.filePath,
+        params.timestamp
+      );
     } catch (error) {
       throw error;
     } finally {
       this._resumePolling();
     }
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'bind' does not exist on type '(params: {... Remove this comment to see the full error message
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'bind' does not exist on type '(params: {... Remove this comment to see the full error message
   }).bind(this);
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
-  _downloadCertificate = async (address: string, recoveryPhrase: Array<string>, filePath: string, timestamp: string) => {
+  _downloadCertificate = async (
+    address: string,
+    recoveryPhrase: Array<string>,
+    filePath: string,
+    timestamp: string
+  ) => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
     const {
-      isMainnet
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
+      isMainnet,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
     } = this.environment;
     const {
-      buildLabel
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
+      buildLabel,
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
     } = global;
 
     try {
@@ -1432,7 +1567,7 @@ export default class WalletsStore extends Store {
         filePath,
         isMainnet,
         buildLabel,
-        timestamp
+        timestamp,
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress
@@ -1452,7 +1587,7 @@ export default class WalletsStore extends Store {
   _generateAddressPDF = async ({
     note,
     address,
-    filePath
+    filePath,
   }: {
     note: string;
     address: string;
@@ -1461,13 +1596,13 @@ export default class WalletsStore extends Store {
     const {
       currentLocale,
       currentDateFormat,
-      currentTimeFormat
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
+      currentTimeFormat,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
     } = this.stores.profile;
     const {
       network,
-      isMainnet
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
+      isMainnet,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
     } = this.environment;
     const intl = i18nContext(currentLocale);
 
@@ -1481,12 +1616,12 @@ export default class WalletsStore extends Store {
         currentTimeFormat,
         network,
         isMainnet,
-        intl
+        intl,
       });
       const walletAddress = ellipsis(address, 15, 15);
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.wallets.generateAddressPDFSuccess.trigger({
-        walletAddress
+        walletAddress,
       });
     } catch (error) {
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
@@ -1496,7 +1631,7 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _saveQRCodeImage = async ({
     address,
-    filePath
+    filePath,
   }: {
     address: string;
     filePath: string;
@@ -1504,12 +1639,12 @@ export default class WalletsStore extends Store {
     try {
       await saveQRCodeImageChannel.send({
         address,
-        filePath
+        filePath,
       });
       const walletAddress = ellipsis(address, 15, 15);
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.wallets.saveQRCodeImageSuccess.trigger({
-        walletAddress
+        walletAddress,
       });
     } catch (error) {
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
@@ -1517,20 +1652,24 @@ export default class WalletsStore extends Store {
     }
   };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
-  _updateCertificateCreationState = action((state: boolean, error?: Record<string, any> | null | undefined) => {
-    this.generatingCertificateInProgress = state;
+  _updateCertificateCreationState = action(
+    (state: boolean, error?: Record<string, any> | null | undefined) => {
+      this.generatingCertificateInProgress = state;
 
-    this._updateGeneratingCertificateError(error);
-  });
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
-  _updateGeneratingCertificateError = action((error?: Record<string, any> | null | undefined) => {
-    if (error && error.syscall && error.syscall === 'open') {
-      // User tries to replace a file that is open
-      this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
-    } else {
-      this.generatingCertificateError = null;
+      this._updateGeneratingCertificateError(error);
     }
-  });
+  );
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
+  _updateGeneratingCertificateError = action(
+    (error?: Record<string, any> | null | undefined) => {
+      if (error && error.syscall && error.syscall === 'open') {
+        // User tries to replace a file that is open
+        this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+      } else {
+        this.generatingCertificateError = null;
+      }
+    }
+  );
 
   /**
    * Generates a rewards csv and saves it to the user selected file location.
@@ -1540,7 +1679,7 @@ export default class WalletsStore extends Store {
    */
   _generateCsv = flow(function* generateCsv({
     fileContent,
-    filePath
+    filePath,
   }: {
     fileContent: CsvFileContent;
     filePath: string;
@@ -1558,14 +1697,17 @@ export default class WalletsStore extends Store {
     } finally {
       this._resumePolling();
     }
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'bind' does not exist on type '(args_0: {... Remove this comment to see the full error message
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'bind' does not exist on type '(args_0: {... Remove this comment to see the full error message
   }).bind(this);
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
-  _downloadRewardsCsv = async (fileContent: CsvFileContent, filePath: string) => {
+  _downloadRewardsCsv = async (
+    fileContent: CsvFileContent,
+    filePath: string
+  ) => {
     try {
       await downloadCsv({
         fileContent,
-        filePath
+        filePath,
       });
       runInAction('handle successful rewards csv download', () => {
         this._updateRewardsCsvCreationState(false);
@@ -1577,24 +1719,26 @@ export default class WalletsStore extends Store {
     }
   };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
-  _updateRewardsCsvCreationState = action((state: boolean, error?: Record<string, any> | null | undefined) => {
-    this.generatingRewardsCsvInProgress = state;
+  _updateRewardsCsvCreationState = action(
+    (state: boolean, error?: Record<string, any> | null | undefined) => {
+      this.generatingRewardsCsvInProgress = state;
 
-    this._updateGeneratingRewardsCsvError(error);
-  });
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
-  _updateGeneratingRewardsCsvError = action((error?: Record<string, any> | null | undefined) => {
-    if (error && error.syscall && error.syscall === 'open') {
-      // User tries to replace a file that is open
-      this.generatingRewardsCsvError = new WalletRewardsOpenCsvError();
-    } else {
-      this.generatingRewardsCsvError = null;
+      this._updateGeneratingRewardsCsvError(error);
     }
-  });
+  );
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
+  _updateGeneratingRewardsCsvError = action(
+    (error?: Record<string, any> | null | undefined) => {
+      if (error && error.syscall && error.syscall === 'open') {
+        // User tries to replace a file that is open
+        this.generatingRewardsCsvError = new WalletRewardsOpenCsvError();
+      } else {
+        this.generatingRewardsCsvError = null;
+      }
+    }
+  );
   @action
-  _setCertificateTemplate = (params: {
-    selectedTemplate: string;
-  }) => {
+  _setCertificateTemplate = (params: { selectedTemplate: string }) => {
     this.certificateTemplate = params.selectedTemplate;
 
     this._updateCertificateStep();
@@ -1616,7 +1760,9 @@ export default class WalletsStore extends Store {
     this._updateGeneratingCertificateError();
 
     const currrentCertificateStep = this.certificateStep || 0;
-    this.certificateStep = isBack ? currrentCertificateStep - 1 : currrentCertificateStep + 1;
+    this.certificateStep = isBack
+      ? currrentCertificateStep - 1
+      : currrentCertificateStep + 1;
   };
   @action
   _closeCertificateGeneration = () => {

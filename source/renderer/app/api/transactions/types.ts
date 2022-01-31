@@ -1,17 +1,17 @@
-import BigNumber from "bignumber.js";
-import { WalletTransaction } from "../../domains/WalletTransaction";
-import { WalletUnits } from "../../domains/Wallet";
-import type { DelegationAction } from "../../types/stakingTypes";
-import type { ApiTokens } from "../assets/types";
-import type { TransactionMetadata } from "../../types/TransactionMetadata";
-import type { PathRoleIdentityType } from "../../utils/hardwareWalletUtils";
+import BigNumber from 'bignumber.js';
+import { WalletTransaction } from '../../domains/WalletTransaction';
+import { WalletUnits } from '../../domains/Wallet';
+import type { DelegationAction } from '../../types/stakingTypes';
+import type { ApiTokens } from '../assets/types';
+import type { TransactionMetadata } from '../../types/TransactionMetadata';
+import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
 export type TransactionAmount = {
   quantity: number;
   unit: WalletUnits.LOVELACE;
 };
 export type TransactionDepth = {
   quantity: number;
-  unit: "block";
+  unit: 'block';
 };
 export type TransactionInsertionBlock = {
   slot_number: number;
@@ -44,7 +44,7 @@ export type Transaction = {
     };
   };
   depth: TransactionDepth;
-  direction: "outgoing" | "incoming";
+  direction: 'outgoing' | 'incoming';
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   inputs: Array<TransactionInputs>;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
@@ -73,8 +73,8 @@ export type TransactionWithdrawals = {
   amount: TransactionAmount;
 };
 // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-export type TransactionWithdrawalType = "self" | Array<string>;
-export type TransactionState = "pending" | "in_ledger" | "expired";
+export type TransactionWithdrawalType = 'self' | Array<string>;
+export type TransactionState = 'pending' | 'in_ledger' | 'expired';
 export type TransactionAddresses = {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   from: Array<string | null | undefined>;
@@ -83,11 +83,11 @@ export type TransactionAddresses = {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   withdrawals: Array<string>;
 };
-export type TransactionType = "card" | "expend" | "income" | "exchange";
+export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 // Req / Res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string;
-  order?: "ascending" | "descending";
+  order?: 'ascending' | 'descending';
   fromDate: string | null | undefined;
   toDate: string | null | undefined;
   isLegacy: boolean;
@@ -99,7 +99,6 @@ export type GetTransactionsRequest = {
   // isRestoreActive: boolean,
   // isRestoreCompleted: boolean,
   // cachedTransactions: Array<WalletTransaction>,
-
 };
 export type GetTransactionRequest = {
   walletId: string;
@@ -115,7 +114,7 @@ export type GetTransactionFeeRequest = {
   rewardsBalance: BigNumber;
   isLegacy: boolean;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  withdrawal?: "self" | Array<string>;
+  withdrawal?: 'self' | Array<string>;
 };
 export type GetTransactionFeeResponse = {
   fee: BigNumber;
@@ -129,7 +128,7 @@ export type CreateTransactionRequest = {
   isLegacy: boolean;
   assets?: ApiTokens;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  withdrawal?: "self" | Array<string>;
+  withdrawal?: 'self' | Array<string>;
   hasAssetsRemainingAfterTransaction?: boolean;
 };
 export type DeleteTransactionRequest = {
@@ -198,7 +197,10 @@ export type CoinSelectionOutput = {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   assets?: Array<Asset>;
 };
-export type CertificateType = "register_reward_account" | "quit_pool" | "join_pool";
+export type CertificateType =
+  | 'register_reward_account'
+  | 'quit_pool'
+  | 'join_pool';
 export type CoinSelectionCertificate = {
   pool: string;
   certificateType: CertificateType;
@@ -227,7 +229,9 @@ export type CoinSelectionsPaymentRequestType = {
   assets?: ApiTokens;
   metadata?: VotingMetadataType;
 };
-export type CoinSelectionsRequest = CoinSelectionsPaymentRequestType | CoinSelectionsDelegationRequestType;
+export type CoinSelectionsRequest =
+  | CoinSelectionsPaymentRequestType
+  | CoinSelectionsDelegationRequestType;
 export type CoinSelectionsResponse = {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   inputs: Array<CoinSelectionInput>;
@@ -259,7 +263,7 @@ export type ICOPublicKeyParams = {
   index: string;
   data: {
     passphrase: string;
-    format: "extended" | "non_extended";
+    format: 'extended' | 'non_extended';
     purpose: string;
   };
 };
@@ -271,18 +275,28 @@ export const VotingMetaIndexes: {
   VOTING_SIGNATURE: VotingMetaIndexType;
 } = {
   VOTING_REGISTRATION: 61284,
-  VOTING_SIGNATURE: 61285
+  VOTING_SIGNATURE: 61285,
 };
-export type VotingMetaKeyValuePairString = { [key in "string"]?: string };
-export type VotingMetaKeyValuePairInt = { [key in "int"]?: number };
-export type VotingMetaKeyValuePairBytes = { [key in "bytes"]?: string };
-export type VotingMetaKeyValuePairMap = { [key in "int"]?: number };
-export type VotingMetaKeyType = "string" | "int" | "bytes" | "list" | "map";
-export type VotingMetaKeyValuePair = { [key in "k" | "v"]?: VotingMetaKeyValuePairString | VotingMetaKeyValuePairInt | VotingMetaKeyValuePairBytes };
+export type VotingMetaKeyValuePairString = { [key in 'string']?: string };
+export type VotingMetaKeyValuePairInt = { [key in 'int']?: number };
+export type VotingMetaKeyValuePairBytes = { [key in 'bytes']?: string };
+export type VotingMetaKeyValuePairMap = { [key in 'int']?: number };
+export type VotingMetaKeyType = 'string' | 'int' | 'bytes' | 'list' | 'map';
+export type VotingMetaKeyValuePair = {
+  [key in 'k' | 'v']?:
+    | VotingMetaKeyValuePairString
+    | VotingMetaKeyValuePairInt
+    | VotingMetaKeyValuePairBytes;
+};
 // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-export type VotingMetaRegistrationType = { [key in "map"]?: Array<VotingMetaKeyValuePair> };
+export type VotingMetaRegistrationType = {
+  [key in 'map']?: Array<VotingMetaKeyValuePair>;
+};
 // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
-export type VotingMetadataType = Record<VotingMetaIndexType, VotingMetaRegistrationType>;
+export type VotingMetadataType = Record<
+  VotingMetaIndexType,
+  VotingMetaRegistrationType
+>;
 export type VotingDataType = {
   stakeAddress: string;
   stakeAddressHex: string;

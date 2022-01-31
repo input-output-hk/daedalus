@@ -1,9 +1,12 @@
-import Action from "./lib/Action";
-import type { WalletExportTypeChoices } from "../types/walletExportTypes";
-import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from "../../../common/types/hardware-wallets.types";
-import type { CsvFileContent } from "../../../common/types/csv-request.types";
-import type { QuitStakePoolRequest } from "../api/staking/types";
-import type { AssetToken } from "../api/assets/types";
+import Action from './lib/Action';
+import type { WalletExportTypeChoices } from '../types/walletExportTypes';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
+import type { AssetToken } from '../api/assets/types';
 
 export type WalletImportFromFileParams = {
   filePath: string;
