@@ -220,6 +220,7 @@
     "gulp": "4.0.2",
     "highlight-words": "1.2.0",
     "history": "4.10.1",
+    "html-attributes": "1.1.0",
     "humanize-duration": "3.23.1",
     "inquirer": "7.3.3",
     "json-bigint": "1.0.0",
