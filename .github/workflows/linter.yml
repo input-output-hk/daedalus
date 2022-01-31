@@ -10,6 +10,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: '14'
       - run: yarn install --frozen-lockfile
-      - run: yarn prettier:check && yarn lint && yarn stylelint
+      - run: yarn prettier:check && yarn compile && yarn lint && yarn stylelint
