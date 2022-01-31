@@ -6,6 +6,7 @@ import { action } from '@storybook/addon-actions';
 import StakingRewards from '../../../source/renderer/app/components/staking/rewards/StakingRewards';
 // Dummy data initialization
 import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.json';
+
 const rewards = map(REWARDS, (reward) => {
   return {
     ...reward,
@@ -15,6 +16,7 @@ const rewards = map(REWARDS, (reward) => {
 });
 export const StakingRewardsStory = () => (
   <StakingRewards
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ total: BigNumber; unspent: BigNumber; date... Remove this comment to see the full error message
     rewards={rewards}
     isLoading={false}
     isExporting={false}

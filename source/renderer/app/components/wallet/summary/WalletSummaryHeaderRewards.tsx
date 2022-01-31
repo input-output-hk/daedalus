@@ -8,11 +8,14 @@ import {
 } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import { useDiscreetModeFeature } from '../../../features';
 import type { ReplacerFn } from '../../../features/discreet-mode/types';
 import { formattedWalletAmount } from '../../../utils/formatters';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryHeaderRewards.s... Remove this comment to see the full error message
 import styles from './WalletSummaryHeaderRewards.scss';
+
 const messages = defineMessages({
   rewards: {
     id: 'wallet.summary.header.rewardsSummary',
