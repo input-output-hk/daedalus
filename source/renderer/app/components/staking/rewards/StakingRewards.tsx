@@ -124,7 +124,7 @@ type State = {
 };
 
 @observer
-export default class StakingRewards extends Component<Props, State> {
+class StakingRewards extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -478,3 +478,5 @@ export default class StakingRewards extends Component<Props, State> {
     });
   };
 }
+
+export default StakingRewards
