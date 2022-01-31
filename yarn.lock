@@ -15014,14 +15014,15 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@1.0.1-next.3:
-  version "1.0.1-next.3"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.1-next.3.tgz#a46916d2411a3d8b56bdb2ef09efc65c200a3b68"
+react-polymorph@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.2.tgz#c4a36e32744fa7c2c0cfbf78aff02382cece3017"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
     fast-password-entropy "1.1.1"
     filter-invalid-dom-props "2.1.0"
+    html-attributes "1.1.0"
     popper.js "1.16.1"
     react-modal "3.1.12"
     react-scrollbars-custom "4.0.21"
