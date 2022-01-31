@@ -287,6 +287,9 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] HWStore - Refresh LC');
       await this._refreshHardwareWalletsLocalData();
       await this._refreshHardwareWalletDevices();
+
+      logger.debug('[HW-DEBUG] HWStore - INIT Ledger listeners');
+      await handleInitLedgerConnectChannel.request();
       await this.getAvailableDevices({ isTrezor: false });
     }
   };
