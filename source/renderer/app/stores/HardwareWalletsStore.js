@@ -37,9 +37,6 @@ import {
   showAddressChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
-  createWalletChannel,
-} from '../ipc/getLightWalletChannel';
-import {
   prepareLedgerInput,
   prepareLedgerOutput,
   prepareTxAux,
@@ -291,17 +288,6 @@ export default class HardwareWalletsStore extends Store {
       await this._refreshHardwareWalletsLocalData();
       await this._refreshHardwareWalletDevices();
       await this.getAvailableDevices({ isTrezor: false });
-    }
-  };
-
-  testLightWallets = async () => {
-    console.debug('[SDK-DEBUG] HWStore - Create Light Wallet');
-    try {
-      const LightTest = await createWalletChannel.request();
-      // console.debug('>>> LightTest: ', JSON.parse(LightTest));
-      console.debug('[SDK-DEBUG] HWStore - Create Light Wallet - SUCCESS', { response: LightTest });
-    } catch (e) {
-      console.debug('[SDK-DEBUG] HWStore - Create Light Wallet - FAILED');
     }
   };
 
