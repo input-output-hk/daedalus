@@ -17,9 +17,9 @@ import type { AssetMetadata } from '../api/assets/types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true,
-  long: boolean = true,
-  currency: string = 'ADA',
+  withCurrency = true,
+  long = true,
+  currency = 'ADA',
   decimalPlaces: number = DECIMAL_PLACES_IN_ADA
 ): string => {
   let formattedAmount = long
@@ -225,6 +225,7 @@ export const formattedDownloadData = (
     timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     progress = parseInt(rawProgress, 10);
   }
 

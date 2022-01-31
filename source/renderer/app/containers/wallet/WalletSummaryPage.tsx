@@ -137,6 +137,7 @@ class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}

@@ -232,6 +232,7 @@ storiesOf('Wallets|Summary', module)
         currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currencySelected={currencySelected}
         currencyRate={0.321}
         onToggleFavorite={action('onToggleFavorite')}

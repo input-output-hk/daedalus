@@ -392,6 +392,7 @@ class StakingRewards extends Component<Props, State> {
                               </CopyToClipboard>
                               {IS_EXPLORER_LINK_BUTTON_ENABLED && (
                                 <ButtonLink
+                                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                                   className={explorerButtonClasses}
                                   onClick={() =>
                                     onOpenExternalLink(rewardsAddress)
