@@ -43,6 +43,7 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 import formatCpuInfo from '../utils/formatCpuInfo';
+
 export default class ProfileStore extends Store {
   @observable
   systemLocale: Locale = LOCALES.english;
@@ -147,17 +148,17 @@ export default class ProfileStore extends Store {
   @observable
   error: LocalizableError | null | undefined = null;
   @observable
-  logFiles: LogFiles = {};
+  logFiles: LogFiles = null;
   @observable
   compressedLogsFilePath: string | null | undefined = null;
   @observable
   compressedLogsStatus: CompressedLogStatus = {};
   @observable
-  desktopDirectoryPath: string = '';
+  desktopDirectoryPath = '';
   @observable
-  isSubmittingBugReport: boolean = false;
+  isSubmittingBugReport = false;
   @observable
-  isInitialScreen: boolean = false;
+  isInitialScreen = false;
 
   /* eslint-enable max-len */
   setup() {

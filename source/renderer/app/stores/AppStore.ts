@@ -26,7 +26,7 @@ export default class AppStore extends Store {
   @observable
   activeDialog: ApplicationDialog = null;
   @observable
-  newsFeedIsOpen: boolean = false;
+  newsFeedIsOpen = false;
 
   setup() {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
