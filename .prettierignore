@@ -13,10 +13,6 @@
 !*.js
 !*.ts
 !*.tsx
-!*.ts
-!*.tsx
-!*.ts
-!*.tsx
 !*.scss
 !*.json
 
