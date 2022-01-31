@@ -17,7 +17,7 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class AnalyticsSettingsPage extends Component<InjectedProps> {
+class AnalyticsSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,3 +65,5 @@ export default class AnalyticsSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default AnalyticsSettingsPage

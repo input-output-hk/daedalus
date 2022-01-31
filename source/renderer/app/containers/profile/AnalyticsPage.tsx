@@ -8,7 +8,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class AnalyticsPage extends Component<InjectedProps> {
+class AnalyticsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = () => {
@@ -39,3 +39,5 @@ export default class AnalyticsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default AnalyticsPage

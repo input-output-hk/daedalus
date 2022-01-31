@@ -80,7 +80,7 @@ type Props = {
 
 // TODO
 @observer
-export default class AnalyticsSettings extends Component<Props> {
+class AnalyticsSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -168,3 +168,5 @@ export default class AnalyticsSettings extends Component<Props> {
     );
   }
 }
+
+export default AnalyticsSettings
