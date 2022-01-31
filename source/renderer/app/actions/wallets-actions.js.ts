@@ -4,6 +4,7 @@ import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from ".
 import type { CsvFileContent } from "../../../common/types/csv-request.types";
 import type { QuitStakePoolRequest } from "../api/staking/types";
 import type { AssetToken } from "../api/assets/types";
+
 export type WalletImportFromFileParams = {
   filePath: string;
   walletName: string | null | undefined;
@@ -34,6 +35,7 @@ export default class WalletsActions {
     kind: string;
   }> = new Action();
   restoreWalletSetMnemonics: Action<{
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     mnemonics: Array<string>;
   }> = new Action();
   restoreWalletSetConfig: Action<{
@@ -54,7 +56,9 @@ export default class WalletsActions {
     receiver: string;
     amount: string;
     passphrase: string;
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     assets?: Array<AssetToken>;
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
   }> = new Action();

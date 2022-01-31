@@ -11,6 +11,7 @@ import ReactToolboxMobxForm from "../../../utils/ReactToolboxMobxForm";
 import Dialog from "../../widgets/Dialog";
 import DialogCloseButton from "../../widgets/DialogCloseButton";
 import LocalizableError from "../../../i18n/LocalizableError";
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendConfirmationDialog... Remove this comment to see the full error message
 import styles from "./WalletSendConfirmationDialog.scss";
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from "../../../config/timingConfig";
 import { submitOnEnter } from "../../../utils/form";
@@ -23,22 +24,28 @@ import { getMessages } from "./WalletSendAssetsConfirmationDialog.messages";
 import { shouldShowEmptyWalletWarning } from "../../../utils/walletUtils";
 import type { AssetToken } from "../../../api/assets/types";
 import globalMessages from "../../../i18n/global-messages";
+
 type Props = {
   amount: string;
   receiver: string;
   wallet: Wallet;
   totalAmount: BigNumber;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   allAvailableTokens?: Array<AssetToken>;
   transactionFee: string | null | undefined;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onSubmit: (...args: Array<any>) => any;
   amountToNaturalUnits: (amountWithFractions: string) => string;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onCancel: (...args: Array<any>) => any;
   isSubmitting: boolean;
   isFlight: boolean;
   error: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   isHardwareWallet: boolean;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onInitiateTransaction: (...args: Array<any>) => any;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onExternalLinkClick: (...args: Array<any>) => any;
   isTrezor: boolean;
   formattedTotalAmount: string;
