@@ -15,8 +15,10 @@ import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
 // IpcChannel<Incoming, Outgoing>
-const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
-  new MainIpcChannel(MANAGE_APP_UPDATE);
+const manageAppUpdateChannel: MainIpcChannel<
+  Request,
+  Response
+> = new MainIpcChannel(MANAGE_APP_UPDATE);
 const logPrefix = 'appUpdateInstall';
 
 const getMessage = (functionPrefix: string, message?: string): string => {

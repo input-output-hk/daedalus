@@ -402,8 +402,12 @@ export default class Transaction extends Component<Props, State> {
   }
 
   get assetsList(): Array<AssetToken> {
-    const { assetTokens, data, isInternalAddress, hasAssetsEnabled } =
-      this.props;
+    const {
+      assetTokens,
+      data,
+      isInternalAddress,
+      hasAssetsEnabled,
+    } = this.props;
 
     if (!hasAssetsEnabled) {
       return [];
@@ -420,8 +424,9 @@ export default class Transaction extends Component<Props, State> {
     const type = this.hasAssets ? data.type : null;
 
     if (addresses && addresses.length > 0) {
-      const hasUnresolvedAddresses =
-        this.includesUnresolvedAddresses(addresses);
+      const hasUnresolvedAddresses = this.includesUnresolvedAddresses(
+        addresses
+      );
       return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
         <div className={styles.explorerLinkRow}>
           <Link

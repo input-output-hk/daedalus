@@ -67,8 +67,10 @@ import { NetworkMagics } from '../../../common/types/cardano-node.types';
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
-  @observable undelegateWalletSubmissionSuccess: boolean | null | undefined =
-    null;
+  @observable undelegateWalletSubmissionSuccess:
+    | boolean
+    | null
+    | undefined = null;
 
   @observable isAddressFromSameWallet = false;
 
@@ -98,8 +100,9 @@ export default class WalletsStore extends Store {
   @observable sendMoneyRequest: Request<WalletTransaction> = new Request(
     this.api.ada.createTransaction
   );
-  @observable getWalletRecoveryPhraseRequest: Request<Array<string>> =
-    new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable getWalletRecoveryPhraseRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletRecoveryPhrase);
   @observable getWalletCertificateAdditionalMnemonicsRequest: Request<
     Array<string>
   > = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
@@ -128,8 +131,9 @@ export default class WalletsStore extends Store {
     this.api.ada.restoreByronLedgerWallet
   );
   @observable
-  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> =
-    new Request(this.api.ada.transferFundsCalculateFee);
+  transferFundsCalculateFeeRequest: Request<
+    TransferFundsCalculateFeeRequest
+  > = new Request(this.api.ada.transferFundsCalculateFee);
   @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
   );
@@ -182,11 +186,15 @@ export default class WalletsStore extends Store {
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
-  @observable generatingCertificateError: LocalizableError | null | undefined =
-    null;
+  @observable generatingCertificateError:
+    | LocalizableError
+    | null
+    | undefined = null;
   @observable generatingRewardsCsvInProgress = false;
-  @observable generatingRewardsCsvError: LocalizableError | null | undefined =
-    null;
+  @observable generatingRewardsCsvError:
+    | LocalizableError
+    | null
+    | undefined = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
@@ -359,8 +367,11 @@ export default class WalletsStore extends Store {
   _create = async (params: { name: string; spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: Array<string> | null | undefined =
-        await this.getWalletRecoveryPhraseRequest.execute().promise;
+      const recoveryPhrase:
+        | Array<string>
+        | null
+        | undefined = await this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
       if (recoveryPhrase != null) {
         this.actions.walletBackup.initiateWalletBackup.trigger({
           recoveryPhrase,
@@ -571,8 +582,9 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletBackup = async () => {
-    this._newWalletDetails.mnemonic =
-      this.stores.walletBackup.recoveryPhrase.join(' ');
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
+      ' '
+    );
     const wallet = await this.createWalletRequest.execute(
       this._newWalletDetails
     ).promise;
@@ -666,11 +678,12 @@ export default class WalletsStore extends Store {
     const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
 
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-    const unscrambledRecoveryPhrase: Array<string> =
-      await this.getWalletRecoveryPhraseFromCertificateRequest.execute({
+    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+      {
         passphrase,
         scrambledInput,
-      }).promise;
+      }
+    ).promise;
 
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
 
@@ -1122,12 +1135,15 @@ export default class WalletsStore extends Store {
         this.stores.transactions.transactionsRequests = walletIds.map(
           (walletId) => ({
             walletId,
-            recentRequest:
-              this.stores.transactions._getTransactionsRecentRequest(walletId),
-            allRequest:
-              this.stores.transactions._getTransactionsAllRequest(walletId),
-            withdrawalsRequest:
-              this.stores.transactions._getWithdrawalsRequest(walletId),
+            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
+              walletId
+            ),
+            allRequest: this.stores.transactions._getTransactionsAllRequest(
+              walletId
+            ),
+            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
+              walletId
+            ),
           })
         );
         this.stores.transactions._refreshTransactionData();
@@ -1187,8 +1203,9 @@ export default class WalletsStore extends Store {
           // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
           this.activeValue = formattedWalletAmount(this.active.amount);
           if (this.active && this.active.isHardwareWallet) {
-            const { hardwareWalletsConnectionData } =
-              this.stores.hardwareWallets;
+            const {
+              hardwareWalletsConnectionData,
+            } = this.stores.hardwareWallets;
             const hardwareWalletConnectionData = get(
               hardwareWalletsConnectionData,
               this.active.id
@@ -1273,13 +1290,12 @@ export default class WalletsStore extends Store {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
-      const recoveryPhrase: Array<string> =
-        yield this.getWalletRecoveryPhraseRequest.execute().promise;
+      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
 
       // Generate 9-words (additional) mnemonic
-      const additionalMnemonicWords: Array<string> =
-        yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
-          .promise;
+      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
+        .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
 
       // Generate spending password from 9-word mnemonic and save to store
@@ -1288,13 +1304,15 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: Array<string> =
-        yield this.getWalletCertificateRecoveryPhraseRequest.execute({
+      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
+        {
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
-        }).promise;
-      this.walletCertificateRecoveryPhrase =
-        walletCertificateRecoveryPhrase.join(' ');
+        }
+      ).promise;
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(
+        ' '
+      );
 
       // Create temporary wallet
       const walletData = {
@@ -1379,8 +1397,11 @@ export default class WalletsStore extends Store {
     address: string;
     filePath: string;
   }) => {
-    const { currentLocale, currentDateFormat, currentTimeFormat } =
-      this.stores.profile;
+    const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    } = this.stores.profile;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
     try {

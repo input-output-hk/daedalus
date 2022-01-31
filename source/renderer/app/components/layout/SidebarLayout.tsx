@@ -20,8 +20,13 @@ class SidebarLayout extends Component<Props> {
   };
 
   render() {
-    const { children, sidebar, topbar, notification, contentDialogs } =
-      this.props;
+    const {
+      children,
+      sidebar,
+      topbar,
+      notification,
+      contentDialogs,
+    } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>{sidebar}</div>

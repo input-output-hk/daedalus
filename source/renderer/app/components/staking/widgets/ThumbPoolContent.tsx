@@ -47,8 +47,11 @@ class ThumbPoolContent extends Component<Props> {
   };
 
   render() {
-    const { stakePool, numberOfRankedStakePools, isGridRewardsView } =
-      this.props;
+    const {
+      stakePool,
+      numberOfRankedStakePools,
+      isGridRewardsView,
+    } = this.props;
     const {
       ranking,
       nonMyopicMemberRewards,

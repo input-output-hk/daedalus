@@ -238,11 +238,10 @@ class WalletRow extends Component<Props, WalletRowState> {
     const nextPendingDelegatedStakePool = nextPendingDelegatedStakePoolId
       ? getStakePoolById(nextPendingDelegatedStakePoolId)
       : null;
-    const futurePendingDelegatedStakePoolId =
-      this.getPendingDelegatedStakePoolId(
-        futureEpochNumber,
-        nextPendingDelegatedStakePoolId
-      );
+    const futurePendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
+      futureEpochNumber,
+      nextPendingDelegatedStakePoolId
+    );
     const futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
       ? getStakePoolById(futurePendingDelegatedStakePoolId)
       : null;

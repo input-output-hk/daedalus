@@ -24,8 +24,15 @@ const TopBarContainer = (
     stores: null,
   }
 ) => {
-  const { sidebar, app, networkStatus, wallets, newsFeed, appUpdate, staking } =
-    stores;
+  const {
+    sidebar,
+    app,
+    networkStatus,
+    wallets,
+    newsFeed,
+    appUpdate,
+    staking,
+  } = stores;
   const {
     isSynced,
     syncPercentage,

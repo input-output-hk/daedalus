@@ -19,8 +19,11 @@ const WalletTokensPage = inject(
       insertingAssetUniqueId,
       removingAssetUniqueId,
     } = assets;
-    const { onAssetSettingsOpen, onOpenAssetSend, onToggleFavorite } =
-      actions.assets;
+    const {
+      onAssetSettingsOpen,
+      onOpenAssetSend,
+      onToggleFavorite,
+    } = actions.assets;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
     // Guard against potential null values

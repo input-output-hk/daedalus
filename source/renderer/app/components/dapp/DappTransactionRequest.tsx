@@ -93,8 +93,9 @@ type Props = {
   wallets: Array<Wallet>;
 };
 const DappTransactionRequest = observer((props: Props) => {
-  const [isAdditionalDataVisible, toggleAdditionalData] =
-    useState<boolean>(false);
+  const [isAdditionalDataVisible, toggleAdditionalData] = useState<boolean>(
+    false
+  );
   const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const getToggleLabel = useCallback((isVisible: boolean) =>
@@ -133,8 +134,9 @@ const DappTransactionRequest = observer((props: Props) => {
     [assets, selectedWallet]
   );
   const adaBalanceRequired = adaAmount.plus(transactionFee);
-  const walletsDropdownHasError =
-    selectedWallet?.amount.isLessThan(adaBalanceRequired);
+  const walletsDropdownHasError = selectedWallet?.amount.isLessThan(
+    adaBalanceRequired
+  );
 
   if (walletsDropdownHasError) {
     hasAmountError = true;

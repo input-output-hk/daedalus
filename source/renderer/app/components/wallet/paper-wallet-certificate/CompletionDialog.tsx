@@ -111,8 +111,12 @@ class CompletionDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, walletCertificateAddress, onOpenExternalLink, network } =
-      this.props;
+    const {
+      onClose,
+      walletCertificateAddress,
+      onOpenExternalLink,
+      network,
+    } = this.props;
     const { showCopyNotification } = this.state;
     const dialogClasses = classnames([styles.component, 'completionDialog']);
     const actions = [

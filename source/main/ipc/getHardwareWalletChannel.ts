@@ -748,11 +748,12 @@ export const handleHardwareWalletRequests = async (
         });
 
         if (deviceFeatures.success) {
-          const extendedPublicKeyResponse =
-            await TrezorConnect.cardanoGetPublicKey({
+          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
+            {
               path: `m/${path}`,
               showOnTrezor: true,
-            });
+            }
+          );
 
           if (!extendedPublicKeyResponse.success) {
             throw extendedPublicKeyResponse.payload;
