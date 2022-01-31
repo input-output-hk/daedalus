@@ -999,7 +999,7 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    // console.debug('>>> _pollRefresh');
+    console.debug('>>> _pollRefresh');
     const { isConnected } = this.stores.networkStatus;
     return isConnected && this.refreshWalletsData();
   };

@@ -301,8 +301,6 @@ export default class AdaApi {
         });
       });
 
-      console.debug('>>> API::getWallets: ', wallets)
-
       // @TODO - Remove this once we get hardware wallet flag from WBE
       return await Promise.all(
         wallets.map(async (wallet) => {

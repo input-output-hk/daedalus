@@ -834,15 +834,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _test = async () => {
-    // const LW = await handleInitLedgerConnectChannel.request();
-    // console.debug('>>> Res 1: ', LW);
-    const res = await getCardanoAdaAppChannel.request({ path: 'abc' });
-    console.debug('>>> RES - full: ', res);
-    // const parsed = JSON.parse(res);
-    // console.debug('>>> RES - PARSED: ', parsed);
-  }
-
   // Ledger method only
   @action getCardanoAdaApp = async (params: {
     path: ?string,

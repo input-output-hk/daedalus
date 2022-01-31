@@ -29,7 +29,5 @@ export const getLegacyWalletId = (rawWalletId: string): string =>
 export const getRawWalletId = (legacyWalletId: string): string =>
   legacyWalletId.replace(LEGACY_WALLET_ID_PREFIX, '');
 
-export const isLegacyWalletId = (walletId: string): boolean => {
-  console.debug('>>> Check IS LEGACY: ', {walletId, LEGACY_WALLET_ID_PREFIX});
+export const isLegacyWalletId = (walletId: string): boolean =>
   walletId.startsWith(LEGACY_WALLET_ID_PREFIX);
-}
