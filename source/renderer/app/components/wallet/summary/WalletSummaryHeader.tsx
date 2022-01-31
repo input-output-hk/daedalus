@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import type { Reward } from '../../../api/staking/types';
 import globalMessages from '../../../i18n/global-messages';
@@ -16,14 +16,8 @@ import { DiscreetValue } from '../../../features/discreet-mode';
 const messages = defineMessages({
   transactionsLabel: {
     id: 'wallet.summary.header.transactionsLabel',
-    defaultMessage: '!!!Number of transactions',
+    defaultMessage: '!!!{total} transactions, {pending} pending',
     description: '"Number of transactions" label on Wallet summary header page',
-  },
-  pendingTransactionsLabel: {
-    id: 'wallet.summary.header.pendingTransactionsLabel',
-    defaultMessage: '!!!Number of pending transactions',
-    description:
-      '"Number of pending transactions" label on Wallet summary header page',
   },
 });
 type Props = {
@@ -58,9 +52,6 @@ class WalletSummaryHeader extends Component<Props> {
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
-    const numberOfPendingTransactionsStyles = classnames([
-      styles.numberOfPendingTransactions,
-    ]);
     const walletNameStyles = classnames([styles.walletName]);
     const walletAmountStyles = classnames([styles.walletAmount]);
     const isRestoreActive = wallet.isRestoring;
@@ -92,21 +83,16 @@ class WalletSummaryHeader extends Component<Props> {
               )}
               {!isLoadingTransactions && (
                 <div className={styles.transactionsCountWrapper}>
-                  <div className={numberOfPendingTransactionsStyles}>
-                    <span>
-                      {intl.formatMessage(messages.pendingTransactionsLabel)}
-                    </span>
-                    :&nbsp;
-                    <span>{numberOfPendingTransactions}</span>
-                  </div>
                   <div className={numberOfTransactionsStyles}>
-                    <span>
-                      {intl.formatMessage(messages.transactionsLabel)}
-                    </span>
-                    :&nbsp;
-                    <span>
-                      {numberOfTransactions || numberOfRecentTransactions}
-                    </span>
+                    <FormattedHTMLMessage
+                      {...messages.transactionsLabel}
+                      tagName="p"
+                      values={{
+                        total:
+                          numberOfTransactions || numberOfRecentTransactions,
+                        pending: numberOfPendingTransactions,
+                      }}
+                    />
                   </div>
                 </div>
               )}

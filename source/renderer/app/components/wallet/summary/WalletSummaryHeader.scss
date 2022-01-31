@@ -60,20 +60,12 @@
 }
 
 .transactionsCountWrapper {
-  .numberOfTransactions,
-  .numberOfPendingTransactions {
+  .numberOfTransactions {
     @extend %smallText;
-
-    span:first-child {
+    font-family: var(--font-light);
+    span {
       font-family: var(--font-medium);
-      opacity: 0.7;
     }
-
-    span:last-child {
-      font-family: var(--font-light);
-      opacity: 1;
-    }
-
     &.isLoadingNumberOfTransactions {
       @include animated-ellipsis($width: 16px);
     }
