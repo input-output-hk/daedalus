@@ -1,8 +1,6 @@
-// @flow
 import React from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { ROUTES } from './routes-config';
-
 // PAGES
 import Root from './containers/Root';
 import InitialSettingsPage from './containers/profile/InitialSettingsPage';
@@ -38,7 +36,6 @@ import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsPage from './containers/profile/AnalyticsPage';
 import AnalyticsSettingsPage from './containers/settings/categories/AnalyticsSettingsPage';
-
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
     <Root>

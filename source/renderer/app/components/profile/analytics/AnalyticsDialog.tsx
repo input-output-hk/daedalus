@@ -1,4 +1,3 @@
-// @flow
 import React, { useCallback, useState } from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -7,7 +6,6 @@ import styles from './AnalyticsDialog.scss';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import { Intl } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
-
 const messages = defineMessages({
   title: {
     id: 'analytics.dialog.title',
@@ -16,8 +14,8 @@ const messages = defineMessages({
   },
   description: {
     id: 'analytics.dialog.description',
+    // TODO Terms and Conditions link
     defaultMessage:
-      // TODO Terms and Conditions link
       '!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.',
     description: 'Analytics data collection description',
   },
@@ -47,11 +45,10 @@ const messages = defineMessages({
     description: 'Analytics data collection confirmation button text',
   },
 });
-
 type Props = {
-  intl: Intl,
-  loading: boolean,
-  onConfirm: Function,
+  intl: Intl;
+  loading: boolean;
+  onConfirm: (...args: Array<any>) => any;
 };
 
 const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
@@ -75,7 +72,6 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
         ? intl.formatMessage(globalMessages.hide)
         : intl.formatMessage(globalMessages.view)
   );
-
   return (
     <div className={styles.component}>
       <div className={styles.centeredBox}>

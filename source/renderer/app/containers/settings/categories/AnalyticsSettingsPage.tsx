@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import AnalyticsSettings from '../../../components/settings/categories/AnalyticsSettings';
-
 const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',
@@ -21,11 +19,12 @@ class AnalyticsSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSupportRequestClick = async (
-    event: SyntheticEvent<HTMLButtonElement>
+    event: React.SyntheticEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -42,7 +41,6 @@ class AnalyticsSettingsPage extends Component<InjectedProps> {
     );
     this.props.stores.app.openExternalLink(supportUrl);
   };
-
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
@@ -51,7 +49,6 @@ class AnalyticsSettingsPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
-
     return (
       // TODO
       <AnalyticsSettings
@@ -66,4 +63,4 @@ class AnalyticsSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default AnalyticsSettingsPage
+export default AnalyticsSettingsPage;

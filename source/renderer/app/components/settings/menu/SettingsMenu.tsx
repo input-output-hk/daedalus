@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -8,12 +7,11 @@ import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';
 import type { Intl } from '../../../types/i18nTypes';
 import SecurityMenuItem from './SecurityMenuItem';
-
 type Props = {
-  intl: Intl,
-  isFlight: boolean,
-  isActiveItem: Function,
-  onItemClick: Function,
+  intl: Intl;
+  isFlight: boolean;
+  isActiveItem: (...args: Array<any>) => any;
+  onItemClick: (...args: Array<any>) => any;
 };
 
 const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
