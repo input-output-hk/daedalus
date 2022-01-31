@@ -7,6 +7,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
   it('should not throw if error.code is not "cannot_cover_fee"', () => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     const error = new Error();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'other_error';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() =>
@@ -19,6 +20,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     const error = new Error(
       'I cannot proceed with transaction, I need approximately 1.6 ada to proceed'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'cannot_cover_fee';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error)).not.toThrow();
@@ -27,6 +29,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
   it('should not throw error if error code is "cannot_cover_fee" but message does not match reegex', () => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     const error = new Error('other message');
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'cannot_cover_fee';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() =>
@@ -39,6 +42,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     const error = new Error(
       'I cannot proceed with transaction, I need approximately 1.6 ada to proceed'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'other_code';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() =>
@@ -49,6 +53,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
   it('should not throw if there are no tokens remaining in wallet after transaction', () => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     const error = new Error();
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'cannot_cover_fee';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() =>
@@ -61,11 +66,13 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     const error = new Error(
       'I am unable to finalize the transaction, as there is not enough ada available to pay for the fee and also pay for the minimum ada quantities of all change outputs. I need approximately 0.629344 ada to proceed. Try increasing your wallet balance or sending a smaller amount.'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'cannot_cover_fee';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(() =>
       throwErrorIfNotEnoughAdaToSupportTokens(error, true)
     ).toThrowError(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ additionalValues: { adaToRemai... Remove this comment to see the full error message
       new Error({
         additionalValues: {
           adaToRemain: 1,

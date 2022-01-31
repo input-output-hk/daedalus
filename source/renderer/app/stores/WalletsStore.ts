@@ -69,7 +69,7 @@ export default class WalletsStore extends Store {
   @observable
   undelegateWalletSubmissionSuccess: boolean | null | undefined = null;
   @observable
-  isAddressFromSameWallet: boolean = false;
+  isAddressFromSameWallet = false;
   // REQUESTS
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
@@ -212,11 +212,11 @@ export default class WalletsStore extends Store {
   mnemonics: Array<string> = [];
   // STEP: CONFIGURATION
   @observable
-  walletName: string = '';
+  walletName = '';
   @observable
-  spendingPassword: string = '';
+  spendingPassword = '';
   @observable
-  repeatPassword: string = '';
+  repeatPassword = '';
   // TODO: Remove once the new restore creation process is ready
   @observable
   restoreWalletUseNewProcess = true;
@@ -231,11 +231,11 @@ export default class WalletsStore extends Store {
 
   /* ----------  Delete Wallet  ---------- */
   @observable
-  isDeleting: boolean = false;
+  isDeleting = false;
 
   /* ----------  Restore Wallet  ---------- */
   @observable
-  isRestoring: boolean = false;
+  isRestoring = false;
 
   /* ----------  Paper Wallet  ---------- */
   @observable
@@ -263,11 +263,11 @@ export default class WalletsStore extends Store {
 
   /* ----------  Transfer Funds  ---------- */
   @observable
-  transferFundsSourceWalletId: string = '';
+  transferFundsSourceWalletId = '';
   @observable
-  transferFundsTargetWalletId: string = '';
+  transferFundsTargetWalletId = '';
   @observable
-  transferFundsStep: number = 0;
+  transferFundsStep = 0;
   @observable
   transferFundsFee: BigNumber | null | undefined = null;
   @observable
@@ -462,7 +462,7 @@ export default class WalletsStore extends Store {
     this.createWalletShowAbortConfirmation = false;
   };
   @action
-  _createWalletChangeStep = (isBack: boolean = false) => {
+  _createWalletChangeStep = (isBack = false) => {
     const currrentCreateWalletStep = this.createWalletStep || 0;
     this.createWalletStep =
       isBack === true
@@ -502,7 +502,7 @@ export default class WalletsStore extends Store {
     }
   };
   @action
-  _restoreWalletChangeStep = (isBack: boolean = false) => {
+  _restoreWalletChangeStep = (isBack = false) => {
     // Reset restore requests to clear previous errors
     const currrentRestoreWalletStep = this.restoreWalletStep || 0;
 
@@ -624,6 +624,7 @@ export default class WalletsStore extends Store {
 
     try {
       await this._pausePolling();
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName,
         accountPublicKey,
@@ -699,10 +700,12 @@ export default class WalletsStore extends Store {
     }
 
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.deleteWalletRequest.execute({
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
     });
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
     });
@@ -775,6 +778,7 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   _getUnscrambledMnemonics = async (
     mnemonics: Array<string>
+    // @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
   ): Array<string> => {
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
     const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
@@ -867,6 +871,7 @@ export default class WalletsStore extends Store {
     const wallet = this.active;
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     if (!wallet) throw new Error('Active wallet required before sending.');
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.sendMoneyRequest.execute({
       address: receiver,
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'parseInt'.
@@ -932,6 +937,7 @@ export default class WalletsStore extends Store {
         state: 'unused',
       },
     }).promise;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
       targetWalletAddresses: targetWalletAddresses
@@ -985,7 +991,9 @@ export default class WalletsStore extends Store {
     sourceWalletId: string;
   }) => {
     const {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'fee' does not exist on type 'TransferFun... Remove this comment to see the full error message
       fee,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'leftovers' does not exist on type 'Trans... Remove this comment to see the full error message
       leftovers,
     } = await this.transferFundsCalculateFeeRequest.execute({
       sourceWalletId,
@@ -1074,6 +1082,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed
+  // @ts-ignore ts-migrate(2314) FIXME: Generic type 'LocalizedRequest<Result>' requires 1... Remove this comment to see the full error message
   get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
@@ -1109,7 +1118,7 @@ export default class WalletsStore extends Store {
     this.all.find((w) => w.id === id);
   getWalletByName = (name: string): Wallet | null | undefined =>
     this.all.find((w) => w.name === name);
-  getWalletRoute = (walletId: string, page: string = 'summary'): string =>
+  getWalletRoute = (walletId: string, page = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, {
       id: walletId,
       page,
@@ -1139,6 +1148,7 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.walletsRequest.patch((result) => {
       if (
         !find(result, {
@@ -1257,6 +1267,7 @@ export default class WalletsStore extends Store {
           expectedNetworkTag === response.introspection.network_tag)
       );
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error(error);
     }
   };
@@ -1385,6 +1396,7 @@ export default class WalletsStore extends Store {
         this.stores.addresses.lastGeneratedAddress = null;
 
         if (this.active) {
+          // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
           this.activeValue = formattedWalletAmount(this.active.amount);
 
           if (this.active && this.active.isHardwareWallet) {
@@ -1450,6 +1462,7 @@ export default class WalletsStore extends Store {
   @action
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _pausePolling = async () => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     if (this.walletsRequest.isExecuting) await this.walletsRequest;
     runInAction('AdaWalletsStore::_pausePolling', () => {
       this._pollingBlocked = true;
@@ -1490,6 +1503,7 @@ export default class WalletsStore extends Store {
         .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
       // Generate spending password from 9-word mnemonic and save to store
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
       this.walletCertificatePassword = spendingPassword;
       // Generate paper wallet scrambled mnemonic
@@ -1555,6 +1569,7 @@ export default class WalletsStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Wal... Remove this comment to see the full error message
     } = this.environment;
     const {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'buildLabel' does not exist on type 'type... Remove this comment to see the full error message
       buildLabel,
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
     } = global;
@@ -1756,7 +1771,7 @@ export default class WalletsStore extends Store {
     this._closeRewardsCsvGeneration();
   };
   @action
-  _updateCertificateStep = (isBack: boolean = false) => {
+  _updateCertificateStep = (isBack = false) => {
     this._updateGeneratingCertificateError();
 
     const currrentCertificateStep = this.certificateStep || 0;
