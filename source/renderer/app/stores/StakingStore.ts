@@ -104,7 +104,7 @@ export default class StakingStore extends Store {
     const {
       staking: stakingActions,
       networkStatus: networkStatusActions,
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     } = this.actions;
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
@@ -166,7 +166,7 @@ export default class StakingStore extends Store {
   @observable
   calculateDelegationFeeRequest: Request<
     DelegationCalculateFeeResponse
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
   > = new Request(this.api.ada.calculateDelegationFee);
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable
@@ -615,7 +615,7 @@ export default class StakingStore extends Store {
       isConnected,
       isSynced,
       isShelleyActivated,
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     } = this.stores.networkStatus;
 
     if (!isShelleyActivated || !isConnected || !isSynced) {
