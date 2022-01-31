@@ -67,7 +67,7 @@ type State = {
 const messages = getMessages();
 
 @observer
-export default class WalletSendAssetsConfirmationDialog extends Component<
+class WalletSendAssetsConfirmationDialog extends Component<
   Props,
   State
 > {
@@ -481,3 +481,5 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     );
   }
 }
+
+export default WalletSendAssetsConfirmationDialog
