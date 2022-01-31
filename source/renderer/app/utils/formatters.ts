@@ -19,7 +19,8 @@ export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency = true,
   long = true,
-  currency = 'ADA'
+  currency = 'ADA',
+  decimalPlaces: number = DECIMAL_PLACES_IN_ADA
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)

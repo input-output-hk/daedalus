@@ -36,9 +36,7 @@ export function getFormattedRewardAmount(amount: BigNumber): string {
     ? '< 0.1 ADA'
     : formattedWalletAmount(amount, true, false, 'ADA', 1);
 }
-export function discreetRewardsAmount(
-  isRestoring: boolean = false
-): ReplacerFn {
+export function discreetRewardsAmount(isRestoring = false): ReplacerFn {
   return (isDiscreetMode, symbol, value) => {
     if (isRestoring) {
       return '-';
@@ -68,10 +66,12 @@ function WalletSummaryHeaderRewards(props: WalletSummaryHeaderRewardsProps) {
         values={{
           total: discreetModeFeature.discreetValue({
             replacer: discreetRewardsAmount(isRestoring),
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
             value: total,
           }),
           unspent: discreetModeFeature.discreetValue({
             replacer: discreetRewardsAmount(isRestoring),
+            // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
             value: unspent,
           }),
         }}
