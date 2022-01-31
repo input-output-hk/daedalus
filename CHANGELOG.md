@@ -10,7 +10,7 @@
 
 ### Chores
 
-- Updated check-disk-space version ([PR 2844](https://github.com/input-output-hk/daedalus/pull/2844))
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
 
 ### Fixes
