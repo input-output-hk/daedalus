@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, createRef } from 'react';
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
@@ -39,7 +39,8 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
-import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
+import WalletTokenPickerDialogContainer from '../../containers/tokens/WalletTokenPickerDialogContainer';
+import type { Api } from '../../containers/tokens/WalletTokenPickerDialogContainer';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -99,7 +100,6 @@ type State = {
   isResetButtonDisabled: boolean,
   isReceiverAddressValid: boolean,
   isTransactionFeeCalculated: boolean,
-  isTokenPickerOpen: boolean,
   isCalculatingTransactionFee: boolean,
   adaInputState: AdaInputState,
 };
@@ -121,7 +121,6 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
-    isTokenPickerOpen: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
   };
@@ -185,6 +184,8 @@ export default class WalletSendForm extends Component<Props, State> {
   get hasAvailableAssets(): boolean {
     return this.availableAssets.length > 0;
   }
+
+  walletTokenPickerRef = createRef<Api>();
 
   getAssetByUniqueId = (uniqueId: string): ?AssetToken => {
     const { assets: allAssets } = this.props;
@@ -1016,7 +1017,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.setState({ isTokenPickerOpen: true });
+                  this.walletTokenPickerRef?.current?.open?.();
                 }}
               />
             </div>
@@ -1046,7 +1047,6 @@ export default class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
-      isTokenPickerOpen,
       selectedAssetUniqueIds,
     } = this.state;
     const {
@@ -1170,21 +1170,20 @@ export default class WalletSendForm extends Component<Props, State> {
           />
         ) : null}
 
-        {isTokenPickerOpen && (
-          <WalletTokenPicker
-            assets={assets}
-            previouslyCheckedIds={selectedAssetUniqueIds}
-            tokenFavorites={tokenFavorites}
-            walletName={walletName}
-            onCancel={() => {
-              this.setState({ isTokenPickerOpen: false });
-            }}
-            onAdd={(checked) => {
-              this.setState({ isTokenPickerOpen: false });
-              checked.forEach(this.addAssetRow);
-            }}
-          />
-        )}
+        <WalletTokenPickerDialogContainer
+          ref={this.walletTokenPickerRef}
+          assets={assets}
+          previouslyCheckedIds={selectedAssetUniqueIds}
+          tokenFavorites={tokenFavorites}
+          walletName={walletName}
+          onCancel={() => {
+            this.walletTokenPickerRef?.current?.close?.();
+          }}
+          onAdd={(checked) => {
+            this.walletTokenPickerRef?.current?.close?.();
+            checked.forEach(this.addAssetRow);
+          }}
+        />
       </div>
     );
   }
