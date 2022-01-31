@@ -37,7 +37,7 @@ export const handleLightWalletRequests = async (
   const networkId = 0;
   const isTestnet = networkId === 0;
   // TODO: CHANGE next line and hide keys
-  let projectId = 'testnetQLRvAnmAEQK3q5OESvtc6ybtTtxFPA8d'// BLOCKFROST_API_KEY;
+  let projectId = 'BLOCKFROST_API_KEY';
 
   const testSingleAddressWallet = async () => {
     // Log SDK
