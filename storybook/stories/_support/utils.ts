@@ -35,6 +35,7 @@ import type {
 import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
+
 const random = seedrandom('daedalus', {
   global: false,
 });
