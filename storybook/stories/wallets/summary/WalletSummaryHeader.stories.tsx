@@ -1,5 +1,5 @@
 import React from 'react';
-import { withKnobs, text } from '@storybook/addon-knobs';
+import { withKnobs, text, number, boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import WalletSummaryHeader from '../../../../source/renderer/app/components/wallet/summary/WalletSummaryHeader';
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -33,9 +33,23 @@ storiesOf('Wallets|Summary', module)
       <WalletSummaryHeader
         wallet={wallet}
         reward={reward}
-        numberOfRecentTransactions={0}
-        numberOfPendingTransactions={0}
-        isLoadingTransactions={false}
+        numberOfRecentTransactions={number(
+          'numberOfRecentTransactions',
+          0,
+          {},
+          rewardsGroup
+        )}
+        numberOfPendingTransactions={number(
+          'numberOfPendingTransactions',
+          0,
+          {},
+          rewardsGroup
+        )}
+        isLoadingTransactions={boolean(
+          'isLoadingTransactions',
+          false,
+          rewardsGroup
+        )}
       />
     );
   });
