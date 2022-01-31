@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
@@ -12,7 +11,6 @@ import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DiscreetValue } from '../../../features/discreet-mode';
 import WalletSummaryHeaderRewards from './WalletSummaryHeaderRewards';
-
 const messages = defineMessages({
   transactionsLabel: {
     id: 'wallet.summary.header.transactionsLabel',
@@ -26,15 +24,14 @@ const messages = defineMessages({
       '"Number of pending transactions" label on Wallet summary header page',
   },
 });
-
 type Props = {
-  wallet: Wallet,
-  reward: Reward,
-  numberOfRecentTransactions: number,
-  numberOfTransactions?: number,
-  numberOfPendingTransactions: number,
-  isLoadingTransactions: boolean,
-  currency?: Node,
+  wallet: Wallet;
+  reward: Reward;
+  numberOfRecentTransactions: number;
+  numberOfTransactions?: number;
+  numberOfPendingTransactions: number;
+  isLoadingTransactions: boolean;
+  currency?: Node;
 };
 
 @observer
@@ -60,21 +57,15 @@ class WalletSummaryHeader extends Component<Props> {
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
-
     const numberOfPendingTransactionsStyles = classnames([
       styles.numberOfPendingTransactions,
     ]);
-
     const walletNameStyles = classnames([styles.walletName]);
-
     const walletAmountStyles = classnames([styles.walletAmount]);
-
     const isRestoreActive = wallet.isRestoring;
-
     const walletAmount = isRestoreActive
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
-
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -126,4 +117,4 @@ class WalletSummaryHeader extends Component<Props> {
   }
 }
 
-export default WalletSummaryHeader
+export default WalletSummaryHeader;

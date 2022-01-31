@@ -1,10 +1,8 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import {
   discreetRewardsAmount,
   getFormattedRewardAmount,
 } from './WalletSummaryHeaderRewards';
-
 describe('getFormattedRewardAmount', () => {
   it('should render integer amounts without decimal places', () => {
     expect(getFormattedRewardAmount(new BigNumber(1))).toEqual('1 ADA');
@@ -16,7 +14,6 @@ describe('getFormattedRewardAmount', () => {
     expect(getFormattedRewardAmount(new BigNumber(0.05))).toEqual('< 0.1 ADA');
   });
 });
-
 describe('discreetRewardsAmount', () => {
   const symbol = '***';
   it('should replace the amount with a dash while restoring', () => {
