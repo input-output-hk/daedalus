@@ -264,7 +264,7 @@ export default class AdaApi {
     this.config = config;
   }
 
-  tomoTest = async () => {
+  lightWalletTest = async () => {
     return 'adaAPI Test';
   };
 
@@ -300,6 +300,8 @@ export default class AdaApi {
           ...extraLegacyWalletProps,
         });
       });
+
+      console.debug('>>> API::getWallets: ', wallets)
 
       // @TODO - Remove this once we get hardware wallet flag from WBE
       return await Promise.all(

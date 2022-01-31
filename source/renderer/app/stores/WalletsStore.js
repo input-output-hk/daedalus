@@ -135,8 +135,8 @@ export default class WalletsStore extends Store {
   @observable createHardwareWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createHardwareWallet
   );
-  @observable tomoTestRequest: Request<Wallet> = new Request(
-    this.api.ada.tomoTest
+  @observable lightWalletTestRequest: Request<Wallet> = new Request(
+    this.api.ada.lightWalletTest
   );
 
   /* ----------  Active Wallet  ---------- */
@@ -298,10 +298,10 @@ export default class WalletsStore extends Store {
   }
 
   _test = () => {
-    console.debug('>>>> tomoTestRequest: ', this.tomoTestRequest);
-    const res = this.tomoTestRequest.execute();
-    console.debug('>>>> tomoTestRequest 2: ', res);
-    console.debug('>>>> tomoTestRequest 3: ', this.tomoTestRequest);
+    console.debug('>>>> lightWalletTestRequest: ', this.lightWalletTestRequest);
+    const res = this.lightWalletTestRequest.execute();
+    console.debug('>>>> lightWalletTestRequest 2: ', res);
+    console.debug('>>>> lightWalletTestRequest 3: ', this.lightWalletTestRequest);
   }
 
   @action _getAccountPublicKey = async ({
@@ -1089,40 +1089,47 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
-
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
-
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
       });
-      runInAction('refresh address data', () => {
-        this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
-          walletId,
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
-        }));
-        this.stores.addresses._refreshAddresses();
-      });
-      runInAction('refresh transaction data', () => {
-        this.stores.transactions.transactionsRequests = walletIds.map(
-          (walletId) => ({
+
+      // TODO - enable step by step when Light Wallets will support that
+      console.debug('>> IS_LIGHT_WALLET_MODE: ', this.stores.app.isLightWalletMode)
+      if (!this.stores.app.isLightWalletMode) {
+        runInAction('refresh address data', () => {
+          this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
             walletId,
-            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
-              walletId
-            ),
-            allRequest: this.stores.transactions._getTransactionsAllRequest(
-              walletId
-            ),
-            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
-              walletId
-            ),
-          })
-        );
-        this.stores.transactions._refreshTransactionData();
-      });
-      this.actions.wallets.refreshWalletsDataSuccess.trigger();
+            allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
+          }));
+          this.stores.addresses._refreshAddresses();
+        });
+
+        runInAction('refresh transaction data', () => {
+          this.stores.transactions.transactionsRequests = walletIds.map(
+            (walletId) => ({
+              walletId,
+              recentRequest: this.stores.transactions._getTransactionsRecentRequest(
+                walletId
+              ),
+              allRequest: this.stores.transactions._getTransactionsAllRequest(
+                walletId
+              ),
+              withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
+                walletId
+              ),
+            })
+          );
+          this.stores.transactions._refreshTransactionData();
+        });
+        this.actions.wallets.refreshWalletsDataSuccess.trigger();
+      }
     }
+    // TODO - Remove - polling paused because of potential errors on refetch
+    console.debug('>>> Stop Polling');
+    this._pausePolling();
   };
 
   @action resetWalletsData = () => {

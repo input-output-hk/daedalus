@@ -127,12 +127,14 @@ export const handleLightWalletRequests = async (
       console.debug('>>> SDK:: WALLET: ', {
         wallet,
       });
-      return 'success';
+      return wallet;
     } catch (e) {
       console.debug('>>> SDK:: FAILED: ', e);
       throw e;
     }
   };
+
+  const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   const createWalletFromSdkData = (singleAddressWallet) => {
     // Types from api/wallet/types
@@ -163,7 +165,7 @@ export const handleLightWalletRequests = async (
     // };
 
     // Mocked Data
-    const currentTimestamp = new Date().getTime();
+    const currentTimestamp = new Date().getTime().toString(16);
     const mockedBalance = {
       quantity: 0,
       unit: 'lovelace',
@@ -186,11 +188,10 @@ export const handleLightWalletRequests = async (
       //     epoch_start_time: '2020-01-22T10:06:39.037Z',
       //   },
       // },
-    }
+    };
 
-    // TODO - remove mocked data
-    return {
-      id: currentTimestamp,
+    const walletData = {
+      id: genRanHex(40),
       name: singleAddressWallet.name,
       address_pool_gap: 20, // TODO - check this (Number of consecutive unused addresses allowed)
       balance: {
@@ -213,9 +214,16 @@ export const handleLightWalletRequests = async (
       discovery: 'sequential', // TODO - check this
       isHardwareWallet: false,
       isLightWallet: true
-    }
-  }
+    };
 
+    console.debug('>>> walletData: ', walletData)
+    console.debug('>>> walletData - JSON: ', JSON.stringify(walletData))
+
+    // TODO - remove mocked data
+    return walletData;
+  };
+
+  // {"id":1643382680401,"name":"Test Wallet","address_pool_gap":20,"balance":{"available":{"quantity":0,"unit":"lovelace"},"total":{"quantity":0,"unit":"lovelace"},"reward":{"quantity":0,"unit":"lovelace"}},"assets":{"available":[{"policy_id":"65ab82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b","asset_name":"test_asset","quantity":0}],"total":[{"policy_id":"65ab82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b","asset_name":"test_asset","quantity":0}]},"passphrase":{"last_updated_at":1643382680401},"delegation":{"active":{"status":"delegating","target":"1423856bc91c49e928f6f30f4e8d665d53eb4ab6028bd0ac971809d514c92db1"}},"state":{"status":"ready"},"isLegacy":false,"discovery":"sequential","isHardwareWallet":false,"isLightWallet":true}
   createWalletChannel.onRequest(async () => {
     console.debug('>>> SDK::Create Light Wallet');
     logger.info('>>> SDK::Create Light Wallet');
@@ -223,8 +231,8 @@ export const handleLightWalletRequests = async (
       const singleAddressWallet = await testSingleAddressWallet();
       console.debug('>>> SDK::Create Light Wallet SUCCESS', singleAddressWallet);
       logger.info('>>> SDK::Create Light Wallet SUCCESS', singleAddressWallet);
-      // return singleAddressWallet;
-      return 'success';
+      return singleAddressWallet;
+      // return 'success';
     } catch (e) {
       console.debug('>>> SDK::Create Light Wallet FAILED: ', e);
       logger.info('>>> SDK::Create Light Wallet FAILED: ', e);

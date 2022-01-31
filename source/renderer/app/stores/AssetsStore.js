@@ -169,6 +169,7 @@ export default class AssetsStore extends Store {
   @action _createWalletTokensRequest = (
     walletId: string
   ): Request<GetAssetsResponse> => {
+    console.debug('>>> GET ASSETS');
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
     return this.assetsRequests[walletId];
   };
