@@ -429,9 +429,8 @@ class WalletSendForm extends Component<Props, State> {
   calculateTransactionFee = async () => {
     const { form } = this;
     const emptyAssetFieldValue = '0';
-    const hasEmptyAssetFields = this.selectedAssetsAmounts.includes(
-      emptyAssetFieldValue
-    );
+    const hasEmptyAssetFields =
+      this.selectedAssetsAmounts.includes(emptyAssetFieldValue);
 
     // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     if (!form.isValid || hasEmptyAssetFields) {

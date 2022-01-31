@@ -6,7 +6,5 @@ import type {
 } from '../../common/ipc/api';
 
 export const rebuildApplicationMenu: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  RebuildAppMenuRendererRequest,
-  RebuildAppMenuMainResponse
-> = new MainIpcChannel(REBUILD_APP_MENU_CHANNEL);
+MainIpcChannel<RebuildAppMenuRendererRequest, RebuildAppMenuMainResponse> =
+  new MainIpcChannel(REBUILD_APP_MENU_CHANNEL);

@@ -145,18 +145,10 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
   };
 
   render() {
-    const {
-      selectedWalletId,
-      transactionFee,
-      transactionFeeError,
-    } = this.state;
-    const {
-      wallets,
-      staking,
-      voting,
-      app,
-      hardwareWallets,
-    } = this.props.stores;
+    const { selectedWalletId, transactionFee, transactionFeeError } =
+      this.state;
+    const { wallets, staking, voting, app, hardwareWallets } =
+      this.props.stores;
     const { closeConfirmationDialog, saveAsPDF } = this.props.actions.voting;
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
@@ -241,14 +233,8 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
   }
 
   async _handleCalculateTransactionFee() {
-    const {
-      transactions,
-      addresses,
-      app,
-      wallets,
-      hardwareWallets,
-      voting,
-    } = this.props.stores;
+    const { transactions, addresses, app, wallets, hardwareWallets, voting } =
+      this.props.stores;
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;

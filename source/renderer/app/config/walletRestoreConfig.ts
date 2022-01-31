@@ -27,21 +27,19 @@ export const WALLET_KINDS: EnumMap<string, WalletKind> = {
   YOROI: 'Yoroi', // HARDWARE: 'Hardware',
 };
 
-export const WALLET_DAEDALUS_KINDS: EnumMap<
-  string,
-  WalletDaedalusKind
-> = isMainnet
-  ? {
-      BYRON_12_WORD: '12WordByron',
-      SHELLEY_24_WORD: '24WordShelley',
-      BYRON_27_WORD: '27WordPaper',
-    }
-  : {
-      BYRON_12_WORD: '12WordByron',
-      SHELLEY_15_WORD: '15WordShelley',
-      SHELLEY_24_WORD: '24WordShelley',
-      BYRON_27_WORD: '27WordPaper',
-    };
+export const WALLET_DAEDALUS_KINDS: EnumMap<string, WalletDaedalusKind> =
+  isMainnet
+    ? {
+        BYRON_12_WORD: '12WordByron',
+        SHELLEY_24_WORD: '24WordShelley',
+        BYRON_27_WORD: '27WordPaper',
+      }
+    : {
+        BYRON_12_WORD: '12WordByron',
+        SHELLEY_15_WORD: '15WordShelley',
+        SHELLEY_24_WORD: '24WordShelley',
+        BYRON_27_WORD: '27WordPaper',
+      };
 
 export const WALLET_YOROI_KINDS: EnumMap<string, WalletYoroiKind> = {
   BYRON_15_WORD: '15WordByron',

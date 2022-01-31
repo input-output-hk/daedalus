@@ -141,9 +141,8 @@ export type StakingBlockchainPointer = {
   txIndex: number;
   certificateIndex: number;
 };
-export type LedgerSignTransactionInputsType = Array<
-  LedgerSignTransactionInputType
->;
+export type LedgerSignTransactionInputsType =
+  Array<LedgerSignTransactionInputType>;
 export type LedgerSignTransactionOutputsType =
   | []
   | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
@@ -189,9 +188,8 @@ export type TrezorOutputTypeChange = {
     stakingPath: string;
   };
 };
-export type TrezorSignTransactionInputsType = Array<
-  TrezorSignTransactionInputType
->;
+export type TrezorSignTransactionInputsType =
+  Array<TrezorSignTransactionInputType>;
 export type TrezorSignTransactionOutputsType = Array<
   TrezorOutputTypeAddress | TrezorOutputTypeChange
 >;

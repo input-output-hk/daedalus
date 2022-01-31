@@ -61,15 +61,8 @@ class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
-    const {
-      app,
-      wallets,
-      addresses,
-      transactions,
-      profile,
-      assets,
-      currency,
-    } = stores;
+    const { app, wallets, addresses, transactions, profile, assets, currency } =
+      stores;
     const { all, getAsset, assetSettingsDialogWasOpened, favorites } = assets;
     const { isInternalAddress } = addresses;
     const {

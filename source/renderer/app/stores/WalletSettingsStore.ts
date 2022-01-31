@@ -39,10 +39,8 @@ export default class WalletSettingsStore extends Store {
   pollingApiInterval: IntervalID | null | undefined = null;
 
   setup() {
-    const {
-      walletSettings: walletSettingsActions,
-      sidebar: sidebarActions,
-    } = this.actions;
+    const { walletSettings: walletSettingsActions, sidebar: sidebarActions } =
+      this.actions;
     walletSettingsActions.startEditingWalletField.listen(
       this._startEditingWalletField
     );
@@ -305,12 +303,8 @@ export default class WalletSettingsStore extends Store {
       throw new Error(
         'Active wallet required before checking show used addresses statuses.'
       );
-    const localWalletData:
-      | WalletLocalData
-      | null
-      | undefined = this.getLocalWalletDataById(
-      activeWallet ? activeWallet.id : ''
-    );
+    const localWalletData: WalletLocalData | null | undefined =
+      this.getLocalWalletDataById(activeWallet ? activeWallet.id : '');
     const { showUsedAddresses } = localWalletData || {};
     await this.actions.walletsLocal.setWalletLocalData.trigger({
       walletId: activeWallet.id,

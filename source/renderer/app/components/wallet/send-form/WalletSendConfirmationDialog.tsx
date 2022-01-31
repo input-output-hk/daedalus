@@ -106,12 +106,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
-        const {
-          receiver,
-          amount,
-          amountToNaturalUnits,
-          isHardwareWallet,
-        } = this.props;
+        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } =
+          this.props;
         const { passphrase } = form.values();
         const transactionData = {
           receiver,
@@ -134,13 +130,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
-    const {
-      hwDeviceStatus,
-      isFlight,
-      onExternalLinkClick,
-      wallet,
-      isTrezor,
-    } = this.props;
+    const { hwDeviceStatus, isFlight, onExternalLinkClick, wallet, isTrezor } =
+      this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
       const { name } = wallet;

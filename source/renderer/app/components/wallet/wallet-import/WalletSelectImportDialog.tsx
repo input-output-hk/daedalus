@@ -187,8 +187,8 @@ class WalletSelectImportDialog extends Component<Props> {
         );
 
         if (checkboxes[index] && topWrapper.length) {
-          const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
-            .top;
+          const checkboxTopOffset =
+            checkboxes[index].getBoundingClientRect().top;
           const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
           const topPart = topWrapperTopOffset + 121;
           const spaceForTooltip = checkboxTopOffset - topPart;

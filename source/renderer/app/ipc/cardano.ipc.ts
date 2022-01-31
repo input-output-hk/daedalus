@@ -25,18 +25,14 @@ export const cardanoTlsConfigChannel: RendererIpcChannel<
   CardanoTlsConfigMainResponse,
   CardanoTlsConfigRendererRequest
 > = new RendererIpcChannel(CARDANO_TLS_CONFIG_CHANNEL);
-export const restartCardanoNodeChannel: RendererIpcChannel<
-  void,
-  void
-> = new RendererIpcChannel(CARDANO_RESTART_CHANNEL);
+export const restartCardanoNodeChannel: RendererIpcChannel<void, void> =
+  new RendererIpcChannel(CARDANO_RESTART_CHANNEL);
 export const cardanoStateChangeChannel: RendererIpcChannel<
   CardanoNodeState,
   void
 > = new RendererIpcChannel(CARDANO_STATE_CHANNEL);
-export const awaitUpdateChannel: RendererIpcChannel<
-  void,
-  void
-> = new RendererIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL);
+export const awaitUpdateChannel: RendererIpcChannel<void, void> =
+  new RendererIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL);
 export const cardanoFaultInjectionChannel: RendererIpcChannel<
   void,
   FaultInjectionIpcRequest

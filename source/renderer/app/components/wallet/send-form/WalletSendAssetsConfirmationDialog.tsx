@@ -136,12 +136,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { selectedAssets, assetsAmounts } = this.state;
-        const {
-          receiver,
-          amount,
-          amountToNaturalUnits,
-          isHardwareWallet,
-        } = this.props;
+        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } =
+          this.props;
         const { passphrase } = form.values();
         const transactionData = {
           receiver,
@@ -166,13 +162,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
-    const {
-      hwDeviceStatus,
-      isFlight,
-      onExternalLinkClick,
-      wallet,
-      isTrezor,
-    } = this.props;
+    const { hwDeviceStatus, isFlight, onExternalLinkClick, wallet, isTrezor } =
+      this.props;
     let returnJSX = null;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {

@@ -49,8 +49,7 @@ const messages = defineMessages({
     description: 'Error message shown when repeat pin code is invalid.',
   },
   invalidRepeatPinCode: {
-    id:
-      'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
+    id: 'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
     defaultMessage: '!!!PIN doesn’t match',
     description: 'Error message shown when repeat pin code is invalid.',
   },

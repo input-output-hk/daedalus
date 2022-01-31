@@ -183,9 +183,7 @@ const requestResumeDownload = async (
 
 const deleteDownloadedFile = async ({
   id,
-}: DeleteDownloadedFileRendererRequest): Promise<
-  DeleteDownloadedFileMainResponse
-> => {
+}: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
   const downloadLocalData = await getDownloadLocalData({
     id,
   });
@@ -201,9 +199,7 @@ const deleteDownloadedFile = async ({
 const getDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: DownloadLocalDataRendererRequest): Promise<
-  DownloadLocalDataMainResponse
-> => {
+}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.get(downloadId);
@@ -216,9 +212,7 @@ const getDownloadsLocalData =
 const clearDownloadLocalData = async ({
   fileName,
   id = fileName,
-}: ClearDownloadLocalDataRendererRequest): Promise<
-  ClearDownloadLocalDataMainResponse
-> => {
+}: ClearDownloadLocalDataRendererRequest): Promise<ClearDownloadLocalDataMainResponse> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
   return localStorage.unset(downloadId);
@@ -241,15 +235,11 @@ const checkFileExists = async ({
 };
 
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  DownloadRendererRequest,
-  DownloadMainResponse
-> = new MainIpcChannel(REQUEST_DOWNLOAD);
+MainIpcChannel<DownloadRendererRequest, DownloadMainResponse> =
+  new MainIpcChannel(REQUEST_DOWNLOAD);
 const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  ResumeDownloadRendererRequest,
-  ResumeDownloadMainResponse
-> = new MainIpcChannel(RESUME_DOWNLOAD);
+MainIpcChannel<ResumeDownloadRendererRequest, ResumeDownloadMainResponse> =
+  new MainIpcChannel(RESUME_DOWNLOAD);
 const deleteDownloadedFileChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DeleteDownloadedFileRendererRequest,
@@ -271,10 +261,8 @@ MainIpcChannel<
   ClearDownloadLocalDataMainResponse
 > = new MainIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);
 const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  CheckFileExistsRendererRequest,
-  CheckFileExistsMainResponse
-> = new MainIpcChannel(CHECK_FILE_EXISTS);
+MainIpcChannel<CheckFileExistsRendererRequest, CheckFileExistsMainResponse> =
+  new MainIpcChannel(CHECK_FILE_EXISTS);
 export const downloadManagerChannel = (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>

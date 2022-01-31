@@ -236,11 +236,13 @@ export const generateAddress = (used = false): WalletAddress =>
     used,
     spendingPath: "1852'/1815'/0'/0/19",
   });
-export const promise = (returnValue: any): (() => Promise<any>) => () =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(returnValue);
-    }, 2000);
-  });
+export const promise =
+  (returnValue: any): (() => Promise<any>) =>
+  () =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(returnValue);
+      }, 2000);
+    });
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';
