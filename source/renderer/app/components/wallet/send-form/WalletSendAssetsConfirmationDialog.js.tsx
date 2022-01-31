@@ -299,7 +299,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                       </div>
                     </div>
                   </div>
-                  // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type '{}'.
+                  {/* @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type '{}'. */}
                   {selectedAssets.map((asset, assetIndex) => {
                   const assetAmount = this.getFormattedAssetAmount(asset, assetIndex);
                   return <Fragment key={asset.uniqueId}>
