@@ -106,7 +106,7 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setUserTimeFormat
   );
   @observable
-  getTermsOfUseAcceptanceRequest: Request<string> = new Request(
+  getTermsOfUseAcceptanceRequest: Request<boolean> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getTermsOfUseAcceptance
   );
@@ -116,7 +116,7 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
-  getAnalyticsAcceptanceRequest: Request<string> = new Request(
+  getAnalyticsAcceptanceRequest: Request<boolean> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getAnalyticsAcceptance
   );
@@ -126,7 +126,7 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setAnalyticsAcceptance
   );
   @observable
-  getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
+  getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getDataLayerMigrationAcceptance
   );
@@ -389,15 +389,20 @@ export default class ProfileStore extends Store {
     }
   };
   _updateTheme = async ({ theme }: { theme: string }) => {
+    // @ts-ignore
     await this.setThemeRequest.execute(theme);
+    // @ts-ignore
     await this.getThemeRequest.execute();
   };
   _acceptTermsOfUse = async () => {
+    // @ts-ignore
     await this.setTermsOfUseAcceptanceRequest.execute();
+    // @ts-ignore
     await this.getTermsOfUseAcceptanceRequest.execute();
     await enableApplicationMenuNavigationChannel.send();
   };
   _getTermsOfUseAcceptance = async () => {
+    // @ts-ignore
     await this.getTermsOfUseAcceptanceRequest.execute();
 
     if (this.getTermsOfUseAcceptanceRequest.result) {
@@ -405,11 +410,14 @@ export default class ProfileStore extends Store {
     }
   };
   _acceptAnalytics = async () => {
+    // @ts-ignore
     await this.setAnalyticsAcceptanceRequest.execute();
+    // @ts-ignore
     await this.getAnalyticsAcceptanceRequest.execute();
     await enableApplicationMenuNavigationChannel.send();
   };
   _getAnalyticsAcceptance = async () => {
+    // @ts-ignore
     await this.getAnalyticsAcceptanceRequest.execute();
 
     if (this.getAnalyticsAcceptanceRequest.result) {
@@ -417,7 +425,9 @@ export default class ProfileStore extends Store {
     }
   };
   _acceptDataLayerMigration = async () => {
+    // @ts-ignore
     await this.setDataLayerMigrationAcceptanceRequest.execute();
+    // @ts-ignore
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
   _getDataLayerMigrationAcceptance = () => {

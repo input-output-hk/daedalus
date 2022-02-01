@@ -23,6 +23,7 @@ class AnalyticsPage extends Component<InjectedProps> {
     const { isShelleyActivated } = networkStatus;
     const topbar = (
       <TopBar
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currentRoute={currentRoute}
         showSubMenuToggle={false}
         isShelleyActivated={isShelleyActivated}
