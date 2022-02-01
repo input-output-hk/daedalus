@@ -22,7 +22,6 @@ type Props = {
   numberOfStakePools: number;
   onSearch?: (...args: Array<any>) => any;
   wallets?: Array<Partial<Wallet>>;
-  disabled?: boolean;
 };
 export const onSearchWalletsDropdown = (
   searchValue: string,
@@ -41,7 +40,6 @@ function WalletsDropdown({
   numberOfStakePools,
   onSearch = onSearchWalletsDropdown,
   wallets = [],
-  disabled,
   ...props
 }: Props) {
   const discreetModeFeature = useDiscreetModeFeature();
@@ -81,7 +79,6 @@ function WalletsDropdown({
   });
   return (
     <ItemsDropdown
-      disabled={disabled}
       className={className}
       options={formattedOptions}
       {...itemsDropdownProps}

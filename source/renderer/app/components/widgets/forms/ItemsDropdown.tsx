@@ -33,7 +33,6 @@ export type ItemDropdownProps = {
   className?: string;
   disabled?: boolean;
 };
-
 export const onSearchItemsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -44,7 +43,6 @@ export const onSearchItemsDropdown = (
     return regex.test(label) || regex.test(detail) || regex.test(value);
   });
 };
-
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
