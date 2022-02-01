@@ -70,11 +70,7 @@ describe('useMenuUpdater', () => {
     expect(send).toHaveBeenCalledTimes(1);
     expect(send).toHaveBeenNthCalledWith(1, {
       isNavigationEnabled: expect.any(Boolean),
-      walletSettingsState: expect.stringMatching(
-        new RegExp(
-          `(${WalletSettingsStateEnum.enabled}|${WalletSettingsStateEnum.disabled}|${WalletSettingsStateEnum.hidden})`
-        )
-      ),
+      walletSettingsState: expect.any(String),
     });
   });
 
