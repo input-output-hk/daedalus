@@ -18,7 +18,7 @@ type Props = PickerProps & {
   forwardedRef: any,
   onAdd: () => void,
   // will be removed and omitted in PickerProps after migrating to TS
-  onCancel: undefined,
+  onCancel: any,
   stores: StoresMap,
 };
 

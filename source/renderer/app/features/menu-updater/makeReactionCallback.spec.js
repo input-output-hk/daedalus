@@ -9,7 +9,7 @@ import ProfileStore from '../../stores/ProfileStore';
 import UiDialogsStore from '../../stores/UiDialogsStore';
 import makeReactionCallback from './makeReactionCallback';
 import { ROUTES } from '../../routes-config';
-import { MakeReactionCallbackArgs } from './types';
+import type { MakeReactionCallbackArgs } from './types';
 
 const makeApp = ({ activeDialog = false } = {}): AppStore =>
   ({ activeDialog: activeDialog ? 'SOME_DIALOG' : null }: any);
