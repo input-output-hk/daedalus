@@ -161,34 +161,34 @@ export class StakePoolsSearch extends Component<Props> {
               </PopOver>
             </div>
           )}
-          {isBigSearchComponent && (
-            <div className={styles.viewButtons}>
-              <span className={styles.separator}>|</span>
-              <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
-                <button className={gridButtonClasses} onClick={onGridView}>
-                  <SVGInline svg={gridIcon} />
-                </button>
-              </PopOver>
-              {IS_GRID_REWARDS_VIEW_AVAILABLE && (
-                <PopOver
-                  content={intl.formatMessage(messages.gridRewardsIconTooltip)}
-                >
-                  <button
-                    className={gridRewardsButtonClasses}
-                    onClick={onGridRewardsView}
-                  >
-                    <SVGInline svg={gridRewardsIcon} />
-                  </button>
-                </PopOver>
-              )}
-              <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
-                <button className={listButtonClasses} onClick={onListView}>
-                  <SVGInline svg={listIcon} />
-                </button>
-              </PopOver>
-            </div>
-          )}
         </div>
+
+        {isBigSearchComponent && (
+          <div className={styles.viewButtons}>
+            <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
+              <button className={gridButtonClasses} onClick={onGridView}>
+                <SVGInline svg={gridIcon} />
+              </button>
+            </PopOver>
+            {IS_GRID_REWARDS_VIEW_AVAILABLE && (
+              <PopOver
+                content={intl.formatMessage(messages.gridRewardsIconTooltip)}
+              >
+                <button
+                  className={gridRewardsButtonClasses}
+                  onClick={onGridRewardsView}
+                >
+                  <SVGInline svg={gridRewardsIcon} />
+                </button>
+              </PopOver>
+            )}
+            <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
+              <button className={listButtonClasses} onClick={onListView}>
+                <SVGInline svg={listIcon} />
+              </button>
+            </PopOver>
+          </div>
+        )}
       </div>
     );
   }
