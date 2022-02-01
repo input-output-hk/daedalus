@@ -3656,25 +3656,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
-        "description": "Label of settings sidebar category popover notification",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.ts",
-        "id": "sidebar.category.settings.notification.label",
-        "start": {
-          "column": 9,
-          "line": 4
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
@@ -17971,53 +17952,6 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Toggle discreet mode on.",
-        "description": "Text for the tooltip on \"discreet mode\" button when mode is on",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.ts",
-        "id": "discreetMode.discreetToggle.on",
-        "start": {
-          "column": 6,
-          "line": 4
-        }
-      },
-      {
-        "defaultMessage": "!!!Toggle discreet mode off.",
-        "description": "Text for the tooltip on \"discreet mode\" button when mode is off",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.ts",
-        "id": "discreetMode.discreetToggle.off",
-        "start": {
-          "column": 7,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!You can toggle auto discreet mode in <b>Settings</b>.",
-        "description": "Text for the tooltip on \"discreet mode\" button description",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.ts",
-        "id": "discreetMode.discreetToggle.description",
-        "start": {
-          "column": 15,
-          "line": 16
-        }
-      }
-    ],
-    "path": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.json"
   },
   {
     "descriptors": [

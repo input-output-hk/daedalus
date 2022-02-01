@@ -26,17 +26,3 @@
     }
   }
 }
-
-.popOverRoot {
-  pointer-events: all;
-  width: 210px;
-
-  .content {
-    font-family: var(--font-regular);
-    font-size: 14px;
-
-    b {
-      font-family: var(--font-semibold);
-    }
-  }
-}
