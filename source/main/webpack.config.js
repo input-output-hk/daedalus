@@ -6,8 +6,8 @@ module.exports = {
   mode: 'development',
   devtool: 'cheap-module-source-map',
   entry: {
-    index: './source/main/index.js',
-    preload: './source/main/preload.js',
+    index: './source/main/index.ts',
+    preload: './source/main/preload.ts',
   },
   optimization: {
     // https://github.com/webpack/webpack/issues/7470
@@ -35,13 +35,27 @@ module.exports = {
     'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
     'trezor-connect': 'commonjs2 trezor-connect',
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
-        use: (isCi ? [] : ['cache-loader']).concat(['babel-loader']),
+        use: (isCi ? [] : ['cache-loader']).concat([
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
+            },
+          },
+        ]),
       },
       {
         test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,

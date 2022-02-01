@@ -10,7 +10,7 @@ const isCi = process.env.CI && process.env.CI !== '';
 module.exports = {
   mode: 'development',
   devtool: 'inline-cheap-module-source-map',
-  entry: './source/renderer/index.js',
+  entry: './source/renderer/index.ts',
   optimization: {
     // https://github.com/webpack/webpack/issues/7470
     nodeEnv: false,
@@ -22,14 +22,26 @@ module.exports = {
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: isTestEnv ? 'electron-renderer' : 'web',
   cache: true,
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/main/,
         use: (isCi ? [] : ['cache-loader', 'thread-loader']).concat([
-          'babel-loader',
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
+            },
+          },
         ]),
       },
       {

@@ -65,9 +65,23 @@ module.exports = async ({ config }) => {
     optimization: {
       minimize: false,
     },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js', '.json'],
+    },
     module: {
       rules: [
         jsxRule,
+        {
+          test: /.tsx?$/,
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
+          },
+        },
         {
           test: /\.scss/,
           use: [
