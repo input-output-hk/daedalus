@@ -1,5 +1,4 @@
 // @flow
-import type { Node } from 'react';
 import type { RebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { StoresMap } from '../../stores';
 
@@ -11,11 +10,11 @@ export type StoresOfInterest = {
   uiDialogs: $PropertyType<StoresMap, 'uiDialogs'>,
 };
 
-export type MakeReactionCallbackArgs = {
+export type UseMenuUpdaterArgs = {
   stores: StoresOfInterest,
   rebuildApplicationMenu: RebuildApplicationMenu,
 };
 
-export type MenuUpdaterProps = StoresOfInterest & {
-  children: Node,
+export type MenuUpdaterProps = {
+  stores: StoresMap,
 };
