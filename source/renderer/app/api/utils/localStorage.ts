@@ -398,6 +398,10 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
   unsetHardwareWalletDevicesAll = async (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES);
+  setStakePoolsListViewTooltip = async (visited: boolean): Promise<void> =>
+    LocalStorageApi.set(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, visited);
+  getStakePoolsListViewTooltip = async (): Promise<boolean> =>
+    LocalStorageApi.get(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, true);
   reset = async () => {
     await LocalStorageApi.reset();
   };

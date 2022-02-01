@@ -60,6 +60,7 @@ type Props = {
   label?: string;
   placeholder?: string;
   isListView?: boolean;
+  isListViewTooltipVisible?: boolean;
   isGridView?: boolean;
   isGridRewardsView?: boolean;
   onSearch: (...args: Array<any>) => any;
@@ -100,6 +101,7 @@ export class StakePoolsSearch extends Component<Props> {
       placeholder,
       search,
       isListView,
+      isListViewTooltipVisible,
       isGridView,
       isGridRewardsView,
     } = this.props;
@@ -182,7 +184,10 @@ export class StakePoolsSearch extends Component<Props> {
                 </button>
               </PopOver>
             )}
-            <PopOver content={intl.formatMessage(messages.listIconTooltip)}>
+            <PopOver
+              visible={isListViewTooltipVisible}
+              content={intl.formatMessage(messages.listIconTooltip)}
+            >
               <button className={listButtonClasses} onClick={onListView}>
                 <SVGInline svg={listIcon} />
               </button>
