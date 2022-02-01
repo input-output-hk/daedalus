@@ -130,7 +130,7 @@ describe('wallet/Wallet Send Form', () => {
     return async () => {
       fireEvent.mouseEnter(token);
       const removeTokenButton = await screen.findByTestId(
-        `remove-asset-${uniqueId}`
+        `removeAsset:${uniqueId}`
       );
       fireEvent.click(removeTokenButton);
     };
