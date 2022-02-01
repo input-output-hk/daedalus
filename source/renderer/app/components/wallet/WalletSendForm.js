@@ -1176,11 +1176,7 @@ export default class WalletSendForm extends Component<Props, State> {
           previouslyCheckedIds={selectedAssetUniqueIds}
           tokenFavorites={tokenFavorites}
           walletName={walletName}
-          onCancel={() => {
-            this.walletTokenPickerRef?.current?.close?.();
-          }}
           onAdd={(checked) => {
-            this.walletTokenPickerRef?.current?.close?.();
             checked.forEach(this.addAssetRow);
           }}
         />

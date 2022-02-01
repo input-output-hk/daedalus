@@ -2,26 +2,31 @@
 
 import { observer, inject } from 'mobx-react';
 import React, { forwardRef, useCallback, useImperativeHandle } from 'react';
-import type { StatelessFunctionalComponent, Ref } from 'react';
+import type { StatelessFunctionalComponent } from 'react';
 import type { ActionsMap } from '../../actions';
 import type { Props as PickerProps } from '../../components/wallet/tokens/wallet-token-picker/types';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import type { StoresMap } from '../../stores';
 
 export type Api = {
-  close: () => void,
   open: () => void,
 };
 
 type Props = PickerProps & {
   actions: ActionsMap,
-  forwardedRef: Ref<Api>,
+  // will be changed to correct type after migrating to TS
+  forwardedRef: any,
+  onAdd: () => void,
+  // will be removed and omitted in PickerProps after migrating to TS
+  onCancel: undefined,
   stores: StoresMap,
 };
 
 const WalletTokenPickerDialogContainer: StatelessFunctionalComponent<Props> = ({
   actions,
   forwardedRef,
+  onAdd,
+  onCancel,
   stores,
   ...pickerProps
 }: Props) => {
@@ -34,11 +39,18 @@ const WalletTokenPickerDialogContainer: StatelessFunctionalComponent<Props> = ({
     actions.dialogs.closeActiveDialog.trigger();
   }, [actions, isOpen]);
 
+  const add = useCallback(
+    (checked) => {
+      onAdd(checked);
+      close();
+    },
+    [close, onAdd]
+  );
+
   useImperativeHandle(
     forwardedRef,
     () =>
       ({
-        close,
         open: () => {
           actions.dialogs.open.trigger({
             dialog: WalletTokenPicker,
@@ -48,7 +60,9 @@ const WalletTokenPickerDialogContainer: StatelessFunctionalComponent<Props> = ({
     [actions, close]
   );
 
-  return isOpen() ? <WalletTokenPicker {...pickerProps} /> : null;
+  return isOpen() ? (
+    <WalletTokenPicker {...pickerProps} onAdd={add} onCancel={close} />
+  ) : null;
 };
 
 export default inject(
