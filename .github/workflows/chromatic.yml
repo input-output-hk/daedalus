@@ -8,6 +8,8 @@ on:
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
+    env:
+      STORYBOOK_FREEZE_DATE: "true"
     steps:
       - uses: actions/checkout@v1
       - name: Setup Node.js
