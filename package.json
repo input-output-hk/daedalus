@@ -42,7 +42,7 @@
     "stylelint:fix": "yarn stylelint --fix",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && ts-node ./translations/translation-runner.ts",
     "storybook": "start-storybook -p 6006 -c storybook --ci /",
-    "storybook:build": "build-storybook -c storybook -o dist/storybook",
+    "storybook:build": "STORYBOOK_FREEZE_DATE=true build-storybook -c storybook -o dist/storybook",
     "themes:check:createTheme": "gulp build:themes && ts-node -r esm ./dist/scripts/check.js",
     "themes:update": "gulp build:themes && ts-node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.ts",
     "themes:copy": "ts-node -r @babel/register -r @babel/polyfill source/renderer/app/themes/utils/copyTheme.ts && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.ts",
