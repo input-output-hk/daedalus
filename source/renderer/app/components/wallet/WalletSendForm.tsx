@@ -42,8 +42,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
-import WalletTokenPickerDialogContainer from '../../containers/tokens/WalletTokenPickerDialogContainer';
-import type { Api } from '../../containers/tokens/WalletTokenPickerDialogContainer';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -71,12 +70,14 @@ type Props = {
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
-  onOpenDialogAction: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
   tokenFavorites: Record<string, boolean>;
   walletName: string;
+  onTokenPickerDialogOpen: (...args: Array<any>) => any;
+  onTokenPickerDialogClose: (...args: Array<any>) => any;
 };
 type State = {
   formFields: {
@@ -180,7 +181,6 @@ class WalletSendForm extends Component<Props, State> {
     return this.availableAssets.length > 0;
   }
 
-  walletTokenPickerRef = createRef<Api>();
   getAssetByUniqueId = (uniqueId: string): AssetToken | null | undefined => {
     const { assets: allAssets } = this.props;
     return allAssets.find((asset) => asset.uniqueId === uniqueId);
@@ -211,10 +211,7 @@ class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-
-    this.props.onOpenDialogAction({
-      dialog: WalletSendAssetsConfirmationDialog,
-    });
+    this.props.onSubmit();
   };
   handleOnReset = () => {
     // Cancel all debounced field validations
@@ -846,7 +843,12 @@ class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount } = this.props;
+    const {
+      currencyMaxFractionalDigits,
+      walletAmount,
+      onTokenPickerDialogOpen,
+    } = this.props;
+
     const {
       adaAmount: adaAmountField,
       receiver: receiverField,
@@ -1030,9 +1032,7 @@ class WalletSendForm extends Component<Props, State> {
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
-                onClick={() => {
-                  this.walletTokenPickerRef?.current?.open?.();
-                }}
+                onClick={onTokenPickerDialogOpen}
               />
             </div>
           </>
@@ -1072,6 +1072,7 @@ class WalletSendForm extends Component<Props, State> {
       onExternalLinkClick,
       tokenFavorites,
       walletName,
+      onTokenPickerDialogClose,
     } = this.props;
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
@@ -1181,17 +1182,19 @@ class WalletSendForm extends Component<Props, State> {
           />
         ) : null}
 
-        <WalletTokenPickerDialogContainer
-          ref={this.walletTokenPickerRef}
-          // @ts-ignore ts-migrate(2322) FIXME: Type '{ ref: RefObject<Api>; assets: any[]; previo... Remove this comment to see the full error message
-          assets={assets}
-          previouslyCheckedIds={selectedAssetUniqueIds}
-          tokenFavorites={tokenFavorites}
-          walletName={walletName}
-          onAdd={(checked) => {
-            checked.forEach(this.addAssetRow);
-          }}
-        />
+        {isDialogOpen(WalletTokenPicker) && (
+          <WalletTokenPicker
+            assets={assets}
+            previouslyCheckedIds={selectedAssetUniqueIds}
+            tokenFavorites={tokenFavorites}
+            walletName={walletName}
+            onCancel={onTokenPickerDialogClose}
+            onAdd={(checked) => {
+              onTokenPickerDialogClose();
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }

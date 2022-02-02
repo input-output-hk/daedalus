@@ -68,7 +68,7 @@ describe('wallet/Wallet Send Form', () => {
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onOpenDialogAction={jest.fn()}
+                onSubmit={jest.fn()}
                 isDialogOpen={jest.fn()}
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
@@ -81,6 +81,8 @@ describe('wallet/Wallet Send Form', () => {
                 isAddressFromSameWallet={false}
                 tokenFavorites={{}}
                 walletName={faker.name.firstName()}
+                onTokenPickerDialogClose={jest.fn()}
+                onTokenPickerDialogOpen={jest.fn()}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
