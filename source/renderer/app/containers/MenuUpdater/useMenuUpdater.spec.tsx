@@ -10,6 +10,7 @@ import UiDialogsStore from '../../stores/UiDialogsStore';
 import useMenuUpdater from './useMenuUpdater';
 import { ROUTES } from '../../routes-config';
 import type { UseMenuUpdaterArgs } from './types';
+import StakingStore from '../../stores/StakingStore';
 
 const makeApp = ({ activeDialog = false } = {}): AppStore =>
   ({
@@ -36,7 +37,7 @@ const makeRouter = ({ pathname = ROUTES.WALLETS.ROOT } = {}): RouterStore =>
     },
   } as any);
 
-const makeStaking = ({ redeemOpen = false } = {}): RouterStore =>
+const makeStaking = ({ redeemOpen = false } = {}): StakingStore =>
   ({
     redeemStep: redeemOpen ? REDEEM_ITN_REWARDS_STEPS.CONFIGURATION : null,
   } as any);

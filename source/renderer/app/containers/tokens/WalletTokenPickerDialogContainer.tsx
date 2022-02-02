@@ -6,6 +6,7 @@ import type { ActionsMap } from '../../actions';
 import type { Props as PickerProps } from '../../components/wallet/tokens/wallet-token-picker/types';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import type { StoresMap } from '../../stores';
+
 export type Api = {
   open: () => void;
 };
