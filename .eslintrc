@@ -84,7 +84,9 @@
     "react/no-did-update-set-state": 1,
     "react/sort-comp": 0,
     "react/state-in-constructor": 0,
-    "react/static-property-placement": 0
+    "react/static-property-placement": 0,
+    "no-useless-constructor": 0,
+    "@typescript-eslint/no-useless-constructor": 2
   },
   "plugins": ["@typescript-eslint", "import", "promise", "react", "jest"],
   "globals": {
