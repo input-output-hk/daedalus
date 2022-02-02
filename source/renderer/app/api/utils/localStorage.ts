@@ -402,6 +402,8 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, visited);
   getStakePoolsListViewTooltip = async (): Promise<boolean> =>
     LocalStorageApi.get(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, true);
+  unsetStakePoolsListViewTooltip = async (): Promise<void> =>
+    LocalStorageApi.unset(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP);
   reset = async () => {
     await LocalStorageApi.reset();
   };

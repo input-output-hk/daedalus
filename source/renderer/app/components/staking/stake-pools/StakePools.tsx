@@ -80,7 +80,7 @@ type Props = {
   isRanking: boolean;
   maxDelegationFunds: number;
   onDelegate: (...args: Array<any>) => any;
-  onListViewClick: (...args: Array<any>) => any;
+  onListViewVisited: () => void;
   onOpenExternalLink: (...args: Array<any>) => any;
   onSmashSettingsClick: (...args: Array<any>) => any;
   rankStakePools: (...args: Array<any>) => any;
@@ -143,7 +143,6 @@ class StakePools extends Component<Props, State> {
       isGridRewardsView: false,
       isListView: true,
     });
-    this.props.onListViewClick();
   };
   handleSetListActive = (selectedList: string) =>
     this.setState({
@@ -173,6 +172,7 @@ class StakePools extends Component<Props, State> {
       selectedDelegationWalletId,
       stake,
       onOpenExternalLink,
+      onListViewVisited,
       currentTheme,
       isFetching,
       isListViewTooltipVisible,
@@ -274,6 +274,7 @@ class StakePools extends Component<Props, State> {
               onGridView={this.handleGridView}
               onGridRewardsView={this.handleGridRewardsView}
               onListView={this.handleListView}
+              onListViewVisited={onListViewVisited}
               isListView={isListView}
               isListViewTooltipVisible={isListViewTooltipVisible}
               isGridView={isGridView}
