@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import type { AssetToken } from '../../api/assets/types';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

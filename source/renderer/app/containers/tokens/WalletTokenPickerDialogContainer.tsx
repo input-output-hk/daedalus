@@ -1,5 +1,6 @@
 import { observer, inject } from 'mobx-react';
 import React, { forwardRef, useCallback, useImperativeHandle } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Stateless... Remove this comment to see the full error message
 import type { StatelessFunctionalComponent } from 'react';
 import type { ActionsMap } from '../../actions';
 import type { Props as PickerProps } from '../../components/wallet/tokens/wallet-token-picker/types';

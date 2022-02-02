@@ -20,6 +20,7 @@ import {
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
   CURRENCY_DEFAULT_SELECTED,
 } from '../../config/currencyConfig';
+
 export type WalletLocalData = {
   id: string;
   recoveryPhraseVerificationDate?: Date | null | undefined;

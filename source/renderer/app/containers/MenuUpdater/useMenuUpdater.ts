@@ -3,6 +3,7 @@ import { matchPath } from 'react-router-dom';
 import { WalletSettingsStateEnum } from '../../../../common/ipc/api';
 import { ROUTES } from '../../routes-config';
 import type { UseMenuUpdaterArgs } from './types';
+
 const walletRoutes = Object.values(ROUTES.WALLETS);
 
 const useMenuUpdater = ({

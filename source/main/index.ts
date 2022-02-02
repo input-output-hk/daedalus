@@ -198,7 +198,9 @@ const onAppReady = async () => {
           isNavigationEnabled,
           walletSettingsState,
         });
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
         mainWindow.updateTitle(locale);
+        // @ts-ignore ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         resolve();
       })
   );

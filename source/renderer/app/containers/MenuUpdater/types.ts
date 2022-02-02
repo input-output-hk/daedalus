@@ -1,5 +1,6 @@
 import type { RebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { StoresMap } from '../../stores';
+
 export type StoresOfInterest = {
   app: StoresMap['app'];
   profile: StoresMap['profile'];

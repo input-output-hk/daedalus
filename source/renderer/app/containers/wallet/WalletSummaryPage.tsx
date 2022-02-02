@@ -15,6 +15,7 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.page.no.transactions',

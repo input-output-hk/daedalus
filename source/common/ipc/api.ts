@@ -178,6 +178,7 @@ export type SubmitBugReportRequestMainResponse = void;
  * Channel to rebuild the electron application menu after the language setting changes
  */
 export type WalletSettingsStateValue = 'hidden' | 'disabled' | 'enabled';
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const WalletSettingsStateEnum: EnumMap<
   WalletSettingsStateValue,
   WalletSettingsStateValue

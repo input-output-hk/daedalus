@@ -6,6 +6,7 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
+
 type WalletId = string;
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
@@ -13,6 +14,7 @@ export default class AssetsStore extends Store {
   // REQUESTS
   @observable
   favoritesRequest: Request<Record<string, any>> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     this.api.localStorage.getWalletTokenFavorites
   );
   @observable
@@ -28,6 +30,7 @@ export default class AssetsStore extends Store {
 
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
     assetsActions.setEditedAsset.listen(this._onEditedAssetSet);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
@@ -45,6 +48,7 @@ export default class AssetsStore extends Store {
   // ==================== PUBLIC ==================
   @computed
   get all(): Array<Asset> {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     const wallet = this.stores.wallets.active;
 
     if (!wallet) {
@@ -101,6 +105,7 @@ export default class AssetsStore extends Store {
 
     this._refreshAssetsData();
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
@@ -111,6 +116,7 @@ export default class AssetsStore extends Store {
   };
   @action
   _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     const { stores, actions } = this;
     const { wallets } = stores;
     const { active } = wallets;
@@ -137,6 +143,7 @@ export default class AssetsStore extends Store {
     fullValue: string;
   }) => {
     const shortValue = ellipsis(fullValue, 15, 15);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     this.actions.assets.copyAssetParamNotification.trigger({
       param,
       shortValue,
@@ -144,7 +151,9 @@ export default class AssetsStore extends Store {
   };
   @action
   _refreshAssetsData = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     if (this.stores.networkStatus.isConnected) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
       const { all } = this.stores.wallets;
 
       for (const wallet of all) {
@@ -168,6 +177,7 @@ export default class AssetsStore extends Store {
   _createWalletTokensRequest = (
     walletId: string
   ): Request<GetAssetsResponse> => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
     return this.assetsRequests[walletId];
   };
@@ -179,6 +189,7 @@ export default class AssetsStore extends Store {
     uniqueId: string;
     isFavorite: boolean;
   }) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     await this.api.localStorage.toggleWalletTokenFavorite(
       uniqueId,
       !isFavorite

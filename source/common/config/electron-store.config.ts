@@ -1,4 +1,5 @@
 import type { StorageType, StorageKey } from '../types/electron-store.types';
+
 export const STORAGE_TYPES: Record<string, StorageType> = {
   GET: 'get',
   SET: 'set',

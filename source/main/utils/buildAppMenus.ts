@@ -11,6 +11,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 import { setRtsFlagsAndRestart } from './rtsFlags';
 import { RTS_FLAGS } from '../config';
+
 type Data = {
   isNavigationEnabled: boolean;
   walletSettingsState: WalletSettingsStateValue;
@@ -145,6 +146,7 @@ export const buildAppMenus = async (
 
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ label: any; submenu: ({ label... Remove this comment to see the full error message
       osxMenu(
         app,
         mainWindow,
@@ -158,6 +160,7 @@ export const buildAppMenus = async (
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ label: any; submenu: ({ label... Remove this comment to see the full error message
       winLinuxMenu(
         app,
         mainWindow,

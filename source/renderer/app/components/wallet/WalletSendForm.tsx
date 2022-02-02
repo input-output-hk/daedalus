@@ -1,4 +1,5 @@
 import React, { Component, Fragment, createRef } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
@@ -16,7 +17,9 @@ import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/question-m... Remove this comment to see the full error message
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeIcon from '../../assets/images/close-cross.inline.svg';
 import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
@@ -32,6 +35,7 @@ import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
 import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendForm.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
@@ -42,6 +46,7 @@ import WalletTokenPickerDialogContainer from '../../containers/tokens/WalletToke
 import type { Api } from '../../containers/tokens/WalletTokenPickerDialogContainer';
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 const AdaInputStateType: EnumMap<string, AdaInputState> = {
   Restored: 'restored',
   Updated: 'updated',
@@ -99,6 +104,7 @@ class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+  // @ts-ignore ts-migrate(2416) FIXME: Property 'state' in type 'WalletSendForm' is not a... Remove this comment to see the full error message
   state = {
     formFields: {},
     minimumAda: new BigNumber(0),
@@ -268,6 +274,7 @@ class WalletSendForm extends Component<Props, State> {
         },
       });
     } else if (uniqueId) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
       const { assetFields, assetsDropdown } = this.state.formFields.receiver;
       const assetField = formFields.get(`asset_${uniqueId}`);
 
@@ -548,6 +555,7 @@ class WalletSendForm extends Component<Props, State> {
               return;
             }
 
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ minimumAda: BigNumber; isCalculatingTransa... Remove this comment to see the full error message
             nextState = { ...nextState, minimumAda: new BigNumber(minimumAda) };
           }
         }
@@ -613,6 +621,7 @@ class WalletSendForm extends Component<Props, State> {
     minimumAda: BigNumber
   ) => {
     const { formFields } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { adaAmount: adaAmountField } = formFields.receiver;
 
     switch (adaInputState) {
@@ -648,6 +657,7 @@ class WalletSendForm extends Component<Props, State> {
   };
   onAdaAmountFieldChange = (value: string) => {
     const { formFields } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { adaAmount: adaAmountField } = formFields.receiver;
     adaAmountField.onChange(value != null ? value : '');
     const adaAmount = new BigNumber(value != null ? value : 0);
@@ -686,6 +696,7 @@ class WalletSendForm extends Component<Props, State> {
   };
   removeAssetRow = (uniqueId: string) => {
     const { formFields, selectedAssetUniqueIds } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { receiver } = formFields;
     const assetFields = omit(receiver.assetFields, uniqueId);
     const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
@@ -816,6 +827,7 @@ class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     } = formFields.receiver;
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = selectedAssetUniqueIds.length
@@ -1071,6 +1083,7 @@ class WalletSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletSendForm}>
+              {/* @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'. */}
               {formFields.receiver && this.renderReceiverRow()}
               <div className={estimatedFeeInputClasses}>
                 <ReadOnlyInput
@@ -1143,6 +1156,7 @@ class WalletSendForm extends Component<Props, State> {
 
         <WalletTokenPickerDialogContainer
           ref={this.walletTokenPickerRef}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ ref: RefObject<Api>; assets: any[]; previo... Remove this comment to see the full error message
           assets={assets}
           previouslyCheckedIds={selectedAssetUniqueIds}
           tokenFavorites={tokenFavorites}

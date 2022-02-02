@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Stateless... Remove this comment to see the full error message
 import type { StatelessFunctionalComponent } from 'react';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { MenuUpdaterProps } from './types';

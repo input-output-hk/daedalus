@@ -10,6 +10,7 @@ import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import type { WalletSettingsStateValue } from '../../common/ipc/api';
 import { getRtsFlags } from '../utils/rtsFlags';
+
 const id = 'menu';
 const { isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
@@ -157,6 +158,7 @@ export const osxMenu = (
       {
         label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Command+I',
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleDevTools' does not exist on type '... Remove this comment to see the full error message
         click: () => window.toggleDevTools(),
       },
     ],

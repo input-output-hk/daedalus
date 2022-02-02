@@ -5,6 +5,7 @@ import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import WalletTokens from '../../components/wallet/tokens/wallet-tokens/WalletTokens';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { getAssetTokens } from '../../utils/assets';
+
 type Props = InjectedProps;
 type OpenAssetSettingsDialogArgs = {
   asset: AssetToken;
