@@ -1,6 +1,8 @@
 import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { includes, camelCase } from 'lodash';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -43,6 +45,7 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 import formatCpuInfo from '../utils/formatCpuInfo';
+import { AnalyticsClient } from '../analytics';
 
 export default class ProfileStore extends Store {
   @observable

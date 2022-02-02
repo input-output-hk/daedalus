@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { includes, without, get } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { toJS } from '../../../../common/utils/helper';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
@@ -140,11 +141,27 @@ export default class LocalStorageApi {
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
   getAnalyticsAcceptance = (): Promise<boolean> =>
-    LocalStorageApi.get(keys.ANALYTICS_ACCEPTANCE, false);
+    LocalStorageApi.get(keys.ANALYTICS_ACCEPTED, false);
   setAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, true);
+    LocalStorageApi.set(keys.ANALYTICS_ACCEPTED, true);
   unsetAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, false);
+    LocalStorageApi.set(keys.ANALYTICS_ACCEPTED, false);
+  getAnalyticsMachineSpecSent = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.ANALYTICS_MACHINE_SPEC_SENT, false);
+  setAnalyticsMachineSpecSent = (): Promise<void> =>
+    LocalStorageApi.set(keys.ANALYTICS_MACHINE_SPEC_SENT, true);
+  unsetAnalyticsMachineSpecSent = (): Promise<void> =>
+    LocalStorageApi.set(keys.ANALYTICS_MACHINE_SPEC_SENT, false);
+  getUserUID = async (): Promise<string> => {
+    let userUUID: string = await LocalStorageApi.get(keys.USER_UUID, null);
+
+    if (!userUUID) {
+      userUUID = uuidv4();
+      await LocalStorageApi.set(keys.USER_UUID, userUUID);
+    }
+
+    return userUUID;
+  };
   getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.THEME);
   setUserTheme = (theme: string): Promise<void> =>
     LocalStorageApi.set(keys.THEME, theme);

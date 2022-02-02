@@ -188,6 +188,7 @@
     "@cardano-foundation/ledgerjs-hw-app-cardano": "4.0.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "@ledgerhq/hw-transport-node-hid": "5.51.1",
+    "@types/uuid": "8.3.4",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
@@ -267,6 +268,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.2.4-extended",
     "unorm": "1.6.0",
+    "uuid": "8.3.2",
     "validator": "13.7.0"
   },
   "devEngines": {
