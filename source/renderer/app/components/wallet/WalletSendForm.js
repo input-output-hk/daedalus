@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment, createRef } from 'react';
+import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
@@ -39,8 +39,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
-import WalletTokenPickerDialogContainer from '../../containers/tokens/WalletTokenPickerDialogContainer';
-import type { Api } from '../../containers/tokens/WalletTokenPickerDialogContainer';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
@@ -70,12 +69,14 @@ type Props = {
   isRestoreActive: boolean,
   isHardwareWallet: boolean,
   hwDeviceStatus: HwDeviceStatus,
-  onOpenDialogAction: Function,
+  onSubmit: Function,
   onUnsetActiveAsset: Function,
   onExternalLinkClick: Function,
   isAddressFromSameWallet: boolean,
   tokenFavorites: { [key: string]: boolean },
   walletName: string,
+  onTokenPickerDialogOpen: Function,
+  onTokenPickerDialogClose: Function,
 };
 
 type State = {
@@ -185,8 +186,6 @@ export default class WalletSendForm extends Component<Props, State> {
     return this.availableAssets.length > 0;
   }
 
-  walletTokenPickerRef = createRef<Api>();
-
   getAssetByUniqueId = (uniqueId: string): ?AssetToken => {
     const { assets: allAssets } = this.props;
     return allAssets.find((asset) => asset.uniqueId === uniqueId);
@@ -223,9 +222,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-    this.props.onOpenDialogAction({
-      dialog: WalletSendAssetsConfirmationDialog,
-    });
+    this.props.onSubmit();
   };
 
   handleOnReset = () => {
@@ -828,7 +825,11 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount } = this.props;
+    const {
+      currencyMaxFractionalDigits,
+      walletAmount,
+      onTokenPickerDialogOpen,
+    } = this.props;
 
     const {
       adaAmount: adaAmountField,
@@ -1016,9 +1017,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
-                onClick={() => {
-                  this.walletTokenPickerRef?.current?.open?.();
-                }}
+                onClick={onTokenPickerDialogOpen}
               />
             </div>
           </>
@@ -1059,6 +1058,7 @@ export default class WalletSendForm extends Component<Props, State> {
       onExternalLinkClick,
       tokenFavorites,
       walletName,
+      onTokenPickerDialogClose,
     } = this.props;
 
     const receiverField = form.$('receiver');
@@ -1170,16 +1170,19 @@ export default class WalletSendForm extends Component<Props, State> {
           />
         ) : null}
 
-        <WalletTokenPickerDialogContainer
-          ref={this.walletTokenPickerRef}
-          assets={assets}
-          previouslyCheckedIds={selectedAssetUniqueIds}
-          tokenFavorites={tokenFavorites}
-          walletName={walletName}
-          onAdd={(checked) => {
-            checked.forEach(this.addAssetRow);
-          }}
-        />
+        {isDialogOpen(WalletTokenPicker) && (
+          <WalletTokenPicker
+            assets={assets}
+            previouslyCheckedIds={selectedAssetUniqueIds}
+            tokenFavorites={tokenFavorites}
+            walletName={walletName}
+            onCancel={onTokenPickerDialogClose}
+            onAdd={(checked) => {
+              onTokenPickerDialogClose();
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }
