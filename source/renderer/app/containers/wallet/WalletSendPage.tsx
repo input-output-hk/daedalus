@@ -60,6 +60,7 @@ class WalletSendPage extends Component<Props> {
         assets: selectedAssets,
       }));
     }
+  };
 
   submit = (isHardwareWallet: boolean, walletId: string) => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
