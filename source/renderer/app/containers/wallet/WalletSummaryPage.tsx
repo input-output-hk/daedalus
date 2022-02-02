@@ -153,6 +153,7 @@ class WalletSummaryPage extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           getUrlByType={getUrlByType}
           onShowMoreTransactions={this.handleShowMoreTransaction}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
@@ -175,6 +176,7 @@ class WalletSummaryPage extends Component<Props> {
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           isLoadingAssets={isLoadingAssets}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currentLocale={currentLocale}
           currencyIsActive={isActive}

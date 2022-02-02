@@ -3,15 +3,14 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const shell = require('gulp-shell');
 const electronConnect = require('electron-connect');
-const flowRemoveTypes = require('gulp-flow-remove-types');
 const mainWebpackConfig = require('./source/main/webpack.config');
 const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
 // Setup electron-connect server to start the app in development mode
 let electronServer;
 // Gulp input sources for main and renderer compilation
-const mainInputSource = () => gulp.src('source/main/index.js');
-const rendererInputSource = () => gulp.src('source/renderer/index.js');
+const mainInputSource = () => gulp.src('source/main/index.ts');
+const rendererInputSource = () => gulp.src('source/renderer/index.ts');
 // Webpack watch configs
 const mainWebpackWatchConfig = Object.assign({}, mainWebpackConfig, {
   watch: true,
@@ -125,44 +124,41 @@ gulp.task('build', gulp.series('clean:dist', 'build:main', 'build:renderer'));
 gulp.task('prepare:themes:utils', () =>
   gulp
     .src([
-      'source/renderer/app/themes/utils/checkCreateTheme.js',
-      'source/renderer/app/themes/utils/constants.js',
-      'source/renderer/app/themes/utils/createShades.js',
-      'source/renderer/app/themes/utils/createTheme.js',
-      'source/renderer/app/themes/utils/findUpdates.js',
-      'source/renderer/app/themes/utils/updateThemes.js',
-      'source/renderer/app/themes/utils/updateThemesCLI.js',
-      'source/renderer/app/themes/utils/writeThemeUpdate.js',
+      'source/renderer/app/themes/utils/checkCreateTheme.ts',
+      'source/renderer/app/themes/utils/constants.ts',
+      'source/renderer/app/themes/utils/createShades.ts',
+      'source/renderer/app/themes/utils/createTheme.ts',
+      'source/renderer/app/themes/utils/findUpdates.ts',
+      'source/renderer/app/themes/utils/updateThemes.ts',
+      'source/renderer/app/themes/utils/updateThemesCLI.ts',
+      'source/renderer/app/themes/utils/writeThemeUpdate.ts',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/utils'))
 );
 
 gulp.task('prepare:themes:daedalus', () =>
   gulp
     .src([
-      'source/renderer/app/themes/daedalus/cardano.js',
-      'source/renderer/app/themes/daedalus/dark-blue.js',
-      'source/renderer/app/themes/daedalus/dark-cardano.js',
-      'source/renderer/app/themes/daedalus/flight-candidate.js',
-      'source/renderer/app/themes/daedalus/incentivized-testnet.js',
-      'source/renderer/app/themes/daedalus/index.js',
-      'source/renderer/app/themes/daedalus/light-blue.js',
-      'source/renderer/app/themes/daedalus/shelley-testnet.js',
-      'source/renderer/app/themes/daedalus/white.js',
-      'source/renderer/app/themes/daedalus/yellow.js',
+      'source/renderer/app/themes/daedalus/cardano.ts',
+      'source/renderer/app/themes/daedalus/dark-blue.ts',
+      'source/renderer/app/themes/daedalus/dark-cardano.ts',
+      'source/renderer/app/themes/daedalus/flight-candidate.ts',
+      'source/renderer/app/themes/daedalus/incentivized-testnet.ts',
+      'source/renderer/app/themes/daedalus/index.ts',
+      'source/renderer/app/themes/daedalus/light-blue.ts',
+      'source/renderer/app/themes/daedalus/shelley-testnet.ts',
+      'source/renderer/app/themes/daedalus/white.ts',
+      'source/renderer/app/themes/daedalus/yellow.ts',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/daedalus'))
 );
 
 gulp.task('prepare:themes:scripts', () =>
   gulp
     .src([
-      'source/renderer/app/themes/scripts/check.js',
-      'source/renderer/app/themes/scripts/update.js',
+      'source/renderer/app/themes/scripts/check.ts',
+      'source/renderer/app/themes/scripts/update.ts',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/scripts'))
 );
 

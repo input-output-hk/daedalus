@@ -29,26 +29,32 @@ export const buildAppMenus = async (
   const translations = require(`../locales/${locale}`);
 
   const openAboutDialog = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
   };
 
   const openDaedalusDiagnosticsDialog = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
   const openItnRewardsRedemptionDialog = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(ITN_REWARDS_REDEMPTION, mainWindow);
   };
 
   const openSettingsPage = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(SETTINGS, mainWindow);
   };
 
   const openWalletSettingsPage = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(WALLET_SETTINGS, mainWindow);
   };
 
   const restartWithBlankScreenFix = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 21', {
@@ -58,6 +64,7 @@ export const buildAppMenus = async (
   };
 
   const restartWithoutBlankScreenFix = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     logger.info('Exiting Daedalus with code 22', {

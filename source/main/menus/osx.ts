@@ -223,6 +223,7 @@ export const osxMenu = (
         label: translation('helpSupport.downloadLogs'),
 
         click() {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },

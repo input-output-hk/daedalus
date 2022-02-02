@@ -48,7 +48,6 @@ export default class AssetsStore extends Store {
   // ==================== PUBLIC ==================
   @computed
   get all(): Array<Asset> {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     const wallet = this.stores.wallets.active;
 
     if (!wallet) {
@@ -105,7 +104,6 @@ export default class AssetsStore extends Store {
 
     this._refreshAssetsData();
 
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
@@ -151,7 +149,6 @@ export default class AssetsStore extends Store {
   };
   @action
   _refreshAssetsData = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     if (this.stores.networkStatus.isConnected) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
       const { all } = this.stores.wallets;
@@ -194,6 +191,7 @@ export default class AssetsStore extends Store {
       uniqueId,
       !isFavorite
     );
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.favoritesRequest.execute();
   };
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
