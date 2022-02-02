@@ -9,6 +9,10 @@
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 - Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791))
 
+### Fixes
+
+- Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
+  
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
