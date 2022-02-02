@@ -33,6 +33,7 @@ const WalletTokenPickerDialogContainer: StatelessFunctionalComponent<Props> = ({
   ]);
   const close = useCallback(() => {
     if (!isOpen()) return;
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     actions.dialogs.closeActiveDialog.trigger();
   }, [actions, isOpen]);
   const add = useCallback(
