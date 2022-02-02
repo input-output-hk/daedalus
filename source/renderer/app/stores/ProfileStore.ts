@@ -585,7 +585,7 @@ export default class ProfileStore extends Store {
         os,
         platformVersion,
         ram,
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
       } = this.environment;
       const systemInfo = {
         platform: os,
