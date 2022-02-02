@@ -1,23 +1,25 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import type { AssetToken } from '../../api/assets/types';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class AssetSettingsDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSubmit = (asset: AssetToken, decimals: number) => {
     const { assets, dialogs } = this.props.actions;
-    assets.onAssetSettingsSubmit.trigger({ asset, decimals });
+    assets.onAssetSettingsSubmit.trigger({
+      asset,
+      decimals,
+    });
     dialogs.closeActiveDialog.trigger();
   };
-
   handleCancel = () => {
     const { assets, dialogs } = this.props.actions;
     assets.unsetEditedAsset.trigger();
@@ -29,7 +31,6 @@ class AssetSettingsDialogContainer extends Component<Props> {
     const { assets, uiDialogs } = stores;
     const { editedAsset } = assets;
     if (!uiDialogs.isOpen(AssetSettingsDialog) || !editedAsset) return null;
-
     return (
       <AssetSettingsDialog
         asset={editedAsset}
@@ -40,4 +41,4 @@ class AssetSettingsDialogContainer extends Component<Props> {
   }
 }
 
-export default AssetSettingsDialogContainer
+export default AssetSettingsDialogContainer;

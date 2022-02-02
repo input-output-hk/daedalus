@@ -1,4 +1,3 @@
-// @flow
 import { inject, observer } from 'mobx-react';
 import type { StatelessFunctionalComponent } from 'react';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
@@ -9,7 +8,13 @@ const MenuUpdater: StatelessFunctionalComponent<MenuUpdaterProps> = ({
   stores: { app, profile, router, staking, uiDialogs },
 }) => {
   useMenuUpdater({
-    stores: { app, profile, router, staking, uiDialogs },
+    stores: {
+      app,
+      profile,
+      router,
+      staking,
+      uiDialogs,
+    },
     rebuildApplicationMenu,
   });
   return null;

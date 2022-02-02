@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -8,12 +7,10 @@ import { observer } from 'mobx-react';
 import styles from './Asset.scss';
 import { ellipsis } from '../../utils/strings';
 import AssetContent from './AssetContent';
-
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import { ASSET_TOKEN_DISPLAY_DELAY } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
-
 const messages = defineMessages({
   fingerprintItem: {
     id: 'assets.assetToken.param.fingerprint',
@@ -69,27 +66,25 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  asset: AssetProps,
-  small?: boolean,
-  hidePopOver?: boolean,
-  onCopyAssetParam?: Function,
-  onClickSettings?: Function,
-  assetSettingsDialogWasOpened?: ?boolean,
-  anyAssetWasHovered?: ?boolean,
-  fullFingerprint?: ?boolean,
-  hasWarning?: ?boolean,
-  className?: string,
+  asset: AssetProps;
+  small?: boolean;
+  hidePopOver?: boolean;
+  onCopyAssetParam?: (...args: Array<any>) => any;
+  onClickSettings?: (...args: Array<any>) => any;
+  assetSettingsDialogWasOpened?: boolean | null | undefined;
+  anyAssetWasHovered?: boolean | null | undefined;
+  fullFingerprint?: boolean | null | undefined;
+  hasWarning?: boolean | null | undefined;
+  className?: string;
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
-  metadataNameChars?: number,
-  hasError?: boolean,
+  metadataNameChars?: number;
+  hasError?: boolean;
 };
-
 type State = {
-  isPillPopOverVisible: boolean,
-  isHoveringSettingsIcon: boolean,
+  isPillPopOverVisible: boolean;
+  isHoveringSettingsIcon: boolean;
 };
 
 @observer
@@ -97,15 +92,12 @@ class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   copyNotificationTimeout: TimeoutID;
   displayDelayTimeout: TimeoutID;
-
   state = {
     isPillPopOverVisible: false,
     isHoveringSettingsIcon: false,
   };
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -129,7 +121,6 @@ class Asset extends Component<Props, State> {
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
-
   handleHidePillPopOver = () => {
     clearTimeout(this.displayDelayTimeout);
     this.displayDelayTimeout = setTimeout(() => {
@@ -140,13 +131,11 @@ class Asset extends Component<Props, State> {
       }
     }, ASSET_TOKEN_DISPLAY_DELAY);
   };
-
   handleSettingsMouseEnter = () => {
     this.setState({
       isHoveringSettingsIcon: true,
     });
   };
-
   handleSettingsMouseLeave = () => {
     this.setState({
       isHoveringSettingsIcon: false,
@@ -156,15 +145,18 @@ class Asset extends Component<Props, State> {
   get isSettingsPopOverVisible() {
     const { assetSettingsDialogWasOpened, anyAssetWasHovered } = this.props;
     const { isHoveringSettingsIcon } = this.state;
+
     if (isHoveringSettingsIcon) {
       return true;
     }
+
     if (
       assetSettingsDialogWasOpened === false &&
       anyAssetWasHovered === false
     ) {
       return true;
     }
+
     return false;
   }
 
@@ -186,12 +178,14 @@ class Asset extends Component<Props, State> {
     ]);
     const [startCharAmount, endCharAmoout] = small ? [9, 4] : [12, 12];
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage =
         typeof decimals === 'number'
           ? messages.settingsWarningPopOverNotUsing
           : messages.settingsWarningPopOverAvailable;
     }
+
     return (
       <div className={contentStyles}>
         <div className={styles.fingerprint}>
@@ -263,7 +257,6 @@ class Asset extends Component<Props, State> {
       </div>
     );
   };
-
   renderSettingsContent = () => {
     const { intl } = this.context;
     const { asset, onClickSettings, hasWarning } = this.props;
@@ -273,15 +266,19 @@ class Asset extends Component<Props, State> {
       handleSettingsMouseEnter,
       handleSettingsMouseLeave,
     } = this;
+
     const onClickSettingsBind = () => onClickSettings && onClickSettings(asset);
+
     const { decimals, recommendedDecimals } = asset;
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage =
         typeof decimals === 'number'
           ? messages.settingsWarningPopOverNotUsing
           : messages.settingsWarningPopOverAvailable;
     }
+
     return (
       <button className={styles.settingsButton} onClick={onClickSettingsBind}>
         <PopOver
@@ -311,12 +308,10 @@ class Asset extends Component<Props, State> {
 
   render() {
     const { hidePopOver, className } = this.props;
-
     const content = hidePopOver
       ? this.renderPillContent()
       : this.renderPillPopOverContainer();
     const settingsContent = this.renderSettingsContent();
-
     const componentClassnames = classnames([styles.component, className]);
     return (
       <div className={componentClassnames}>
@@ -327,4 +322,4 @@ class Asset extends Component<Props, State> {
   }
 }
 
-export default Asset
+export default Asset;

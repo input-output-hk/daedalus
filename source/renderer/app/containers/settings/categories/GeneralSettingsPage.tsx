@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
@@ -7,12 +6,17 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class GeneralSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleSelectItem = async (param: string, value: string) => {
     const { actions } = this.props;
     const { updateUserLocalSetting } = actions.profile;
-    updateUserLocalSetting.trigger({ param, value });
+    updateUserLocalSetting.trigger({
+      param,
+      value,
+    });
   };
 
   render() {
@@ -36,4 +40,4 @@ class GeneralSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default GeneralSettingsPage
+export default GeneralSettingsPage;

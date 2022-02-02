@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
@@ -16,7 +15,6 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
-
 export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.page.no.transactions',
@@ -25,46 +23,52 @@ export const messages = defineMessages({
       'Message shown when wallet has no transactions on wallet summary page.',
   },
 });
-
 type Props = InjectedProps;
-
 type OpenAssetSettingsDialogArgs = {
-  asset: AssetToken,
+  asset: AssetToken;
 };
 
 @inject('stores', 'actions')
 @observer
 class WalletSummaryPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   handleShowMoreTransaction = (walletId: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: walletId, page: 'transactions' },
+      params: {
+        id: walletId,
+        page: 'transactions',
+      },
     });
   };
-
   handleCurrencySettingsClick = () => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.SETTINGS.WALLETS,
     });
   };
-
   handleViewAllButtonClick = (walletId: string) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: walletId, page: 'tokens' },
+      params: {
+        id: walletId,
+        page: 'tokens',
+      },
     });
   };
-
   openAssetSettingsDialog = ({ asset }: OpenAssetSettingsDialogArgs) => {
     const { assets, dialogs } = this.props.actions;
-    assets.setEditedAsset.trigger({ asset });
-    dialogs.open.trigger({ dialog: AssetSettingsDialog });
+    assets.setEditedAsset.trigger({
+      asset,
+    });
+    dialogs.open.trigger({
+      dialog: AssetSettingsDialog,
+    });
   };
 
   get assetSettingsDialogWasOpened() {
@@ -107,13 +111,11 @@ class WalletSummaryPage extends Component<Props> {
     const { isActive, isFetchingRate, lastFetched, rate, selected } = currency;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-
     const walletTokens = wallet.assets.total;
     const assetTokens = getAssetTokens(all, walletTokens).sort(
       sortAssets('token', 'asc')
@@ -196,4 +198,4 @@ class WalletSummaryPage extends Component<Props> {
   }
 }
 
-export default WalletSummaryPage
+export default WalletSummaryPage;

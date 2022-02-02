@@ -1,4 +1,3 @@
-// @flow
 import { compact } from 'lodash';
 import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
@@ -11,12 +10,10 @@ import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import type { WalletSettingsStateValue } from '../../common/ipc/api';
 import { getRtsFlags } from '../utils/rtsFlags';
-
 const id = 'menu';
 const { isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlags(network);
 const rtsFlagsEnabled: boolean = !!rtsFlags?.length && rtsFlags.length > 0;
-
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
@@ -25,48 +22,62 @@ export const osxMenu = (
   locale: string,
   isNavigationEnabled: boolean,
   walletSettingsState: WalletSettingsStateValue,
-  translation: Function = getTranslation(translations, id)
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
     submenu: compact([
       {
         label: translation('daedalus.about'),
+
         click() {
           actions.openAboutDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Command+T',
+
         click() {
           actions.openItnRewardsRedemptionDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.settings'),
         accelerator: 'Command+,',
+
         click() {
           actions.openSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
         accelerator: 'Command+;',
+
         click() {
           actions.openWalletSettingsPage();
         },
+
         enabled:
           isNavigationEnabled &&
           walletSettingsState === WalletSettingsStateEnum.enabled,
         visible: walletSettingsState !== WalletSettingsStateEnum.hidden,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.hideDaedalus'),
         role: 'hide',
@@ -79,10 +90,13 @@ export const osxMenu = (
         label: translation('daedalus.showAll'),
         role: 'unhide',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.quit'),
         accelerator: 'Command+Q',
+
         click() {
           app.quit();
         },
@@ -102,7 +116,9 @@ export const osxMenu = (
         accelerator: 'Shift+Command+Z',
         role: 'redo',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('edit.cut'),
         accelerator: 'Command+X',
@@ -150,6 +166,7 @@ export const osxMenu = (
     submenu: compact([
       {
         label: translation('helpSupport.knownIssues'),
+
         click() {
           const faqLink = translation('helpSupport.knownIssuesUrl');
           shell.openExternal(faqLink);
@@ -159,6 +176,7 @@ export const osxMenu = (
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isBlankScreenFixActive,
+
         click(item) {
           actions.toggleBlankScreenFix(item);
         },
@@ -167,14 +185,18 @@ export const osxMenu = (
         label: translation('helpSupport.usingRtsFlags'),
         type: 'checkbox',
         checked: rtsFlagsEnabled,
+
         click(item) {
           actions.setRtsFlags(!rtsFlagsEnabled);
           item.checked = rtsFlagsEnabled;
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.safetyTips'),
+
         click() {
           const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
           shell.openExternal(safetyTipsLinkUrl);
@@ -182,6 +204,7 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.supportRequest'),
+
         click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
@@ -196,17 +219,22 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
+
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Command+D',
+
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+
         enabled: isNavigationEnabled,
       },
     ]),

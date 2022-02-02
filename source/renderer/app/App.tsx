@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
@@ -24,9 +23,9 @@ import { MenuUpdater } from './containers/MenuUpdater';
 
 @observer
 class App extends Component<{
-  stores: StoresMap,
-  actions: ActionsMap,
-  history: Object,
+  stores: StoresMap;
+  actions: ActionsMap;
+  history: Record<string, any>;
 }> {
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
@@ -41,14 +40,16 @@ class App extends Component<{
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
-    const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
-    const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
+    const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
+
+    const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
       !isNodeStopping && // Daedalus is not shutting down
-      !isNodeStopped; // Daedalus is not shutting down
+      !isNodeStopped;
 
+    // Daedalus is not shutting down
     if (document.documentElement) {
       document.documentElement.lang = locale;
     }
@@ -65,7 +66,11 @@ class App extends Component<{
             themeOverrides={themeOverrides}
           >
             <IntlProvider
-              {...{ locale, key: locale, messages: translations[locale] }}
+              {...{
+                locale,
+                key: locale,
+                messages: translations[locale],
+              }}
             >
               <Fragment>
                 <Router history={history}>
@@ -92,4 +97,4 @@ class App extends Component<{
   }
 }
 
-export default App
+export default App;

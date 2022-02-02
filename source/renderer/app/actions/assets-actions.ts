@@ -1,24 +1,28 @@
-// @flow
 import Action from './lib/Action';
-import type { AssetToken } from '../api/assets/types';
-
-// ======= ASSETS ACTIONS =======
+import type { AssetToken } from '../api/assets/types'; // ======= ASSETS ACTIONS =======
 
 export default class AssetsActions {
-  setEditedAsset: Action<{ asset: AssetToken }> = new Action();
+  setEditedAsset: Action<{
+    asset: AssetToken;
+  }> = new Action();
   onAssetSettingsSubmit: Action<{
-    asset: AssetToken,
-    decimals: number,
+    asset: AssetToken;
+    decimals: number;
   }> = new Action();
   unsetEditedAsset: Action<any> = new Action();
-  onOpenAssetSend: Action<{ uniqueId: string }> = new Action();
-  onCopyAssetParam: Action<{ param: string, fullValue: string }> = new Action();
+  onOpenAssetSend: Action<{
+    uniqueId: string;
+  }> = new Action();
+  onCopyAssetParam: Action<{
+    param: string;
+    fullValue: string;
+  }> = new Action();
   onToggleFavorite: Action<{
-    uniqueId: string,
-    isFavorite: boolean,
+    uniqueId: string;
+    isFavorite: boolean;
   }> = new Action();
   copyAssetParamNotification: Action<{
-    param: string,
-    shortValue: string,
+    param: string;
+    shortValue: string;
   }> = new Action();
 }

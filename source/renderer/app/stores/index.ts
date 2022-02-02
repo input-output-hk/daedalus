@@ -1,4 +1,4 @@
-// @flow
+import { Class } from 'utility-types';
 import { observable, action } from 'mobx';
 import { RouterStore } from 'mobx-react-router';
 import type Store from './lib/Store';
@@ -23,7 +23,6 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
@@ -47,33 +46,31 @@ export const storeClasses = {
   walletSettings: WalletSettingsStore,
   window: WindowStore,
 };
-
 export type StoresMap = {
-  addresses: AddressesStore,
-  app: AppStore,
-  appUpdate: AppUpdateStore,
-  currency: CurrencyStore,
-  assets: AssetsStore,
-  hardwareWallets: HardwareWalletsStore,
-  networkStatus: NetworkStatusStore,
-  newsFeed: NewsFeedStore,
-  profile: ProfileStore,
-  router: RouterStore,
-  sidebar: SidebarStore,
-  staking: StakingStore,
-  transactions: TransactionsStore,
-  uiDialogs: UiDialogsStore,
-  uiNotifications: UiNotificationsStore,
-  voting: VotingStore,
-  wallets: WalletsStore,
-  walletsLocal: WalletsLocalStore,
-  walletBackup: WalletBackupStore,
-  walletMigration: WalletMigrationStore,
-  walletSettings: WalletSettingsStore,
-  window: WindowStore,
+  addresses: AddressesStore;
+  app: AppStore;
+  appUpdate: AppUpdateStore;
+  currency: CurrencyStore;
+  assets: AssetsStore;
+  hardwareWallets: HardwareWalletsStore;
+  networkStatus: NetworkStatusStore;
+  newsFeed: NewsFeedStore;
+  profile: ProfileStore;
+  router: RouterStore;
+  sidebar: SidebarStore;
+  staking: StakingStore;
+  transactions: TransactionsStore;
+  uiDialogs: UiDialogsStore;
+  uiNotifications: UiNotificationsStore;
+  voting: VotingStore;
+  wallets: WalletsStore;
+  walletsLocal: WalletsLocalStore;
+  walletBackup: WalletBackupStore;
+  walletMigration: WalletMigrationStore;
+  walletSettings: WalletSettingsStore;
+  window: WindowStore;
 };
-
-let stores: ?StoresMap = null;
+let stores: StoresMap | null | undefined = null;
 const storeNames = Object.keys(storeClasses);
 
 // Helpers
@@ -81,46 +78,48 @@ function executeOnEveryStore(fn: (store: Store) => void) {
   storeNames.forEach((name) => {
     if (stores && stores[name]) fn(stores[name]);
   });
-}
+} // Set up and return the stores for this app -> also used to reset all stores to defaults
 
-// Set up and return the stores for this app -> also used to reset all stores to defaults
-export default action((api, actions, router): StoresMap => {
-  function createStoreInstanceOf<T: Store>(StoreSubClass: Class<T>): T {
-    return new StoreSubClass(api, actions);
+export default action(
+  (api, actions, router): StoresMap => {
+    function createStoreInstanceOf<T extends Store>(
+      StoreSubClass: Class<T>
+    ): T {
+      return new StoreSubClass(api, actions);
+    }
+
+    // Teardown existing stores
+    if (stores) executeOnEveryStore((store) => store.teardown());
+    // Create fresh instances of all stores
+    stores = observable({
+      addresses: createStoreInstanceOf(AddressesStore),
+      app: createStoreInstanceOf(AppStore),
+      assets: createStoreInstanceOf(AssetsStore),
+      currency: createStoreInstanceOf(CurrencyStore),
+      appUpdate: createStoreInstanceOf(AppUpdateStore),
+      hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
+      networkStatus: createStoreInstanceOf(NetworkStatusStore),
+      newsFeed: createStoreInstanceOf(NewsFeedStore),
+      profile: createStoreInstanceOf(ProfileStore),
+      router,
+      sidebar: createStoreInstanceOf(SidebarStore),
+      staking: createStoreInstanceOf(StakingStore),
+      transactions: createStoreInstanceOf(TransactionsStore),
+      uiDialogs: createStoreInstanceOf(UiDialogsStore),
+      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+      voting: createStoreInstanceOf(VotingStore),
+      wallets: createStoreInstanceOf(WalletsStore),
+      walletsLocal: createStoreInstanceOf(WalletsLocalStore),
+      walletBackup: createStoreInstanceOf(WalletBackupStore),
+      walletMigration: createStoreInstanceOf(WalletMigrationStore),
+      walletSettings: createStoreInstanceOf(WalletSettingsStore),
+      window: createStoreInstanceOf(WindowStore),
+    });
+    // Configure and initialize all stores
+    executeOnEveryStore((store) => {
+      if (stores) store.configure(stores);
+    });
+    executeOnEveryStore((store) => store.initialize());
+    return stores;
   }
-
-  // Teardown existing stores
-  if (stores) executeOnEveryStore((store) => store.teardown());
-
-  // Create fresh instances of all stores
-  stores = observable({
-    addresses: createStoreInstanceOf(AddressesStore),
-    app: createStoreInstanceOf(AppStore),
-    assets: createStoreInstanceOf(AssetsStore),
-    currency: createStoreInstanceOf(CurrencyStore),
-    appUpdate: createStoreInstanceOf(AppUpdateStore),
-    hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
-    networkStatus: createStoreInstanceOf(NetworkStatusStore),
-    newsFeed: createStoreInstanceOf(NewsFeedStore),
-    profile: createStoreInstanceOf(ProfileStore),
-    router,
-    sidebar: createStoreInstanceOf(SidebarStore),
-    staking: createStoreInstanceOf(StakingStore),
-    transactions: createStoreInstanceOf(TransactionsStore),
-    uiDialogs: createStoreInstanceOf(UiDialogsStore),
-    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
-    voting: createStoreInstanceOf(VotingStore),
-    wallets: createStoreInstanceOf(WalletsStore),
-    walletsLocal: createStoreInstanceOf(WalletsLocalStore),
-    walletBackup: createStoreInstanceOf(WalletBackupStore),
-    walletMigration: createStoreInstanceOf(WalletMigrationStore),
-    walletSettings: createStoreInstanceOf(WalletSettingsStore),
-    window: createStoreInstanceOf(WindowStore),
-  });
-  // Configure and initialize all stores
-  executeOnEveryStore((store) => {
-    if (stores) store.configure(stores);
-  });
-  executeOnEveryStore((store) => store.initialize());
-  return stores;
-});
+);
