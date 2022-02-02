@@ -23,7 +23,7 @@ import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import { MenuUpdater } from './containers/MenuUpdater';
 
 @observer
-export default class App extends Component<{
+class App extends Component<{
   stores: StoresMap,
   actions: ActionsMap,
   history: Object,
@@ -91,3 +91,5 @@ export default class App extends Component<{
     );
   }
 }
+
+export default App

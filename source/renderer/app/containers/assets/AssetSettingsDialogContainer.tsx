@@ -9,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class AssetSettingsDialogContainer extends Component<Props> {
+class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleSubmit = (asset: AssetToken, decimals: number) => {
@@ -39,3 +39,5 @@ export default class AssetSettingsDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default AssetSettingsDialogContainer

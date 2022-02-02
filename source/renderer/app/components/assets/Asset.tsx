@@ -93,7 +93,7 @@ type State = {
 };
 
 @observer
-export default class Asset extends Component<Props, State> {
+class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -326,3 +326,5 @@ export default class Asset extends Component<Props, State> {
     );
   }
 }
+
+export default Asset

@@ -34,7 +34,7 @@ type OpenAssetSettingsDialogArgs = {
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSummaryPage extends Component<Props> {
+class WalletSummaryPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   static contextTypes = {
@@ -195,3 +195,5 @@ export default class WalletSummaryPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSummaryPage
