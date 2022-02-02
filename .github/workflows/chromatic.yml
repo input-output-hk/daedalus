@@ -9,7 +9,7 @@ on:
 
 jobs:
   chromatic-deployment:
-    if: contains(github.event.pull_request.labels.*.name, 'run-VR')
+    if: contains(github.event.pull_request.labels.*.name, 'run Chromatic')
     runs-on: ubuntu-latest
     env:
       STORYBOOK_FREEZE_DATE: "true"
