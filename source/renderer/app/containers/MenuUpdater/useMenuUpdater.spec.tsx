@@ -18,15 +18,11 @@ const makeApp = ({ activeDialog = false } = {}): AppStore =>
   } as any);
 
 const makeProfile = ({
-  currentLocaleCallback = () => {},
+  currentLocale = 'en',
   areTermsOfUseAccepted = false,
 } = {}): ProfileStore =>
   ({
-    get currentLocale() {
-      currentLocaleCallback();
-      return 'en';
-    },
-
+    currentLocale,
     areTermsOfUseAccepted,
   } as any);
 
@@ -54,13 +50,16 @@ const makeRebuildApplicationMenu = ({
     send,
   } as any);
 
-const renderComponent = (args) => {
-  const Component = () => {
-    useMenuUpdater(args);
-    return null;
-  };
+const Component = (props) => {
+  useMenuUpdater(props);
+  return null;
+};
 
-  render(<Component />);
+const renderComponent = (props) => {
+  const { rerender } = render(<Component {...props} />);
+  return {
+    rerender: (nextProps) => rerender(<Component {...nextProps} />),
+  };
 };
 
 const defaultArgs: UseMenuUpdaterArgs = {
@@ -116,20 +115,23 @@ describe('useMenuUpdater', () => {
   });
   // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('watches on the profile.currentLocale property changes', () => {
-    let currentLocaleMentioned = false;
-    renderComponent({
+    const send = jest.fn();
+    const makeArgs = (profile) => ({
       ...defaultArgs,
       stores: {
         ...defaultArgs.stores,
-        profile: makeProfile({
-          currentLocaleCallback: () => {
-            currentLocaleMentioned = true;
-          },
-        }),
+        profile,
       },
+      rebuildApplicationMenu: makeRebuildApplicationMenu({
+        send,
+      }),
     });
+
+    const { rerender } = renderComponent(makeArgs(makeProfile()));
+    rerender(makeArgs(makeProfile({ currentLocale: 'jp' })));
+
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
-    expect(currentLocaleMentioned).toEqual(true);
+    expect(send).toHaveBeenCalledTimes(2);
   });
   // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends walletSettingsState hidden when it is not a wallet page', () => {
