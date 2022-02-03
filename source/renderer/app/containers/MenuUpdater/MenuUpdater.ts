@@ -4,7 +4,7 @@ import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { MenuUpdaterProps } from './types';
 import useMenuUpdater from './useMenuUpdater';
 
-const MenuUpdater: FC<MenuUpdaterProps> = ({
+const MenuUpdaterComponent: FC<MenuUpdaterProps> = ({
   stores: { app, profile, router, staking, uiDialogs },
 }) => {
   useMenuUpdater({
@@ -20,4 +20,6 @@ const MenuUpdater: FC<MenuUpdaterProps> = ({
   return null;
 };
 
-export default inject('stores')(observer(MenuUpdater));
+const MenuUpdater: FC = inject('stores')(observer(MenuUpdaterComponent));
+
+export default MenuUpdater;
