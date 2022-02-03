@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { addLocaleData } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Provider as MobxProvider } from 'mobx-react';
@@ -19,6 +19,7 @@ import { NUMBER_OPTIONS } from '../../config/profileConfig';
 import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm from './WalletSendForm';
 
 describe('wallet/Wallet Send Form', () => {
@@ -53,6 +54,8 @@ describe('wallet/Wallet Send Form', () => {
     calculateTransactionFee: (...args: Array<any>) => any;
     currentNumberFormat?: string;
   }) {
+    const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
+
     return (
       <TestDecorator>
         <BrowserLocalStorageBridge>
@@ -69,7 +72,9 @@ describe('wallet/Wallet Send Form', () => {
                 assets={assets}
                 addressValidator={() => true}
                 onSubmit={jest.fn()}
-                isDialogOpen={jest.fn()}
+                isDialogOpen={(dialog) =>
+                  dialog === WalletTokenPicker && tokenPickerOpen
+                }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
                 isHardwareWallet={false}
@@ -81,8 +86,8 @@ describe('wallet/Wallet Send Form', () => {
                 isAddressFromSameWallet={false}
                 tokenFavorites={{}}
                 walletName={faker.name.firstName()}
-                onTokenPickerDialogClose={jest.fn()}
-                onTokenPickerDialogOpen={jest.fn()}
+                onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
+                onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
