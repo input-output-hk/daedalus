@@ -66,12 +66,10 @@ function WalletSummaryHeaderRewards(props: WalletSummaryHeaderRewardsProps) {
         values={{
           total: discreetModeFeature.discreetValue({
             replacer: discreetRewardsAmount(isRestoring),
-            // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
             value: total,
           }),
           unspent: discreetModeFeature.discreetValue({
             replacer: discreetRewardsAmount(isRestoring),
-            // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
             value: unspent,
           }),
         }}
