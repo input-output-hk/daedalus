@@ -58,6 +58,12 @@ class WalletSummaryHeader extends Component<Props> {
     const walletAmount = isRestoreActive
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
+    const totalTransactions = isRestoreActive
+      ? '-'
+      : numberOfTransactions ?? numberOfRecentTransactions;
+    const pendingTransactions = isRestoreActive
+      ? '-'
+      : numberOfPendingTransactions;
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -88,9 +94,8 @@ class WalletSummaryHeader extends Component<Props> {
                       {...messages.transactionsLabel}
                       tagName="p"
                       values={{
-                        total:
-                          numberOfTransactions || numberOfRecentTransactions,
-                        pending: numberOfPendingTransactions,
+                        total: totalTransactions,
+                        pending: pendingTransactions,
                       }}
                     />
                   </div>
