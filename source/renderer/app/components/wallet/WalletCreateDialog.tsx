@@ -96,6 +96,12 @@ type State = {
   isSubmitting: boolean;
 };
 
+interface Fields {
+  repeatPassword: string;
+  spendingPassword: string;
+  walletName: string;
+}
+
 @observer
 class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
@@ -112,8 +118,7 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 
   walletNameInput: Input;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         walletName: {
@@ -223,13 +228,9 @@ class WalletCreateDialog extends Component<Props, State> {
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
     const buttonLabel = !isSubmitting ? (
       this.context.intl.formatMessage(messages.createPersonalWallet)

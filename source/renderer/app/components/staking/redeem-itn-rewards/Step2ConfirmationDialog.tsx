@@ -77,6 +77,10 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
+interface Fields {
+  spendingPassword: string;
+}
+
 @observer
 class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
@@ -85,8 +89,7 @@ class Step2ConfirmationDialog extends Component<Props> {
   static defaultProps = {
     error: null,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         spendingPassword: {
@@ -163,7 +166,6 @@ class Step2ConfirmationDialog extends Component<Props> {
       ? amount
       : transactionFees;
     const { name: walletName } = wallet;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const actions = {
       direction: 'column',

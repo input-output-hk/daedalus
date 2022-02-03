@@ -43,6 +43,8 @@ import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
+import { ClearButton } from './widgets/ClearButton';
+import { Divider } from './widgets/Divider';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -79,6 +81,13 @@ type Props = {
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
 };
+
+interface Fields {
+  receiver: string;
+  adaAmount: string;
+  [assets: string]: string;
+}
+
 type State = {
   formFields: {
     receiver: {
@@ -96,6 +105,7 @@ type State = {
   selectedAssetUniqueIds: Array<string>;
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
+  isReceiverAddressValidOnce: boolean;
   isTransactionFeeCalculated: boolean;
   isCalculatingTransactionFee: boolean;
   adaInputState: AdaInputState;
@@ -117,6 +127,7 @@ class WalletSendForm extends Component<Props, State> {
     selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
+    isReceiverAddressValidOnce: false,
     isTransactionFeeCalculated: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
@@ -186,7 +197,7 @@ class WalletSendForm extends Component<Props, State> {
     return allAssets.find((asset) => asset.uniqueId === uniqueId);
   };
   focusableFields: Record<string, Field> = {};
-  addFocusableField = (field: Field | null | undefined) => {
+  addFocusableField = (field: Input | null | undefined) => {
     if (field) {
       const { name: fieldName } = field.props;
       this.focusableFields[fieldName] = field;
@@ -215,13 +226,10 @@ class WalletSendForm extends Component<Props, State> {
   };
   handleOnReset = () => {
     // Cancel all debounced field validations
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     this.form.each((field) => {
       field.debouncedValidation.cancel();
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     this.form.reset();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     this.form.showErrors(false);
     this.clearReceiverFieldValue();
     this.clearAdaAmountFieldValue();
@@ -231,10 +239,10 @@ class WalletSendForm extends Component<Props, State> {
       adaAmountInputTrack: new BigNumber(0),
       isResetButtonDisabled: true,
       adaInputState: AdaInputStateType.None,
+      isReceiverAddressValidOnce: false,
     });
   };
   clearReceiverFieldValue = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = this.form.$('receiver');
 
     if (receiverField) {
@@ -244,7 +252,6 @@ class WalletSendForm extends Component<Props, State> {
     }
   };
   clearAdaAmountFieldValue = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const adaAmountField = this.form.$('adaAmount');
 
     if (adaAmountField) {
@@ -305,13 +312,15 @@ class WalletSendForm extends Component<Props, State> {
     }
   };
   hasReceiverValue = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = this.form.$('receiver');
     return receiverField.value.length > 0;
   };
+  hasAdaAmountValue = () => {
+    const adaAmountField = this.form.$('adaAmount');
+    return adaAmountField.value.length > 0;
+  };
   isAddressFromSameWallet = () => {
     const { isAddressFromSameWallet } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = this.form.$('receiver');
     return (
       this.hasReceiverValue() &&
@@ -322,12 +331,9 @@ class WalletSendForm extends Component<Props, State> {
   isDisabled = () =>
     this.state.isCalculatingTransactionFee ||
     !this.state.isTransactionFeeCalculated ||
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     !this.form.isValid ||
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'validating' does not exist on type 'Reac... Remove this comment to see the full error message
     this.form.validating;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         receiver: {
@@ -431,9 +437,10 @@ class WalletSendForm extends Component<Props, State> {
 
   setReceiverValidity(isValid: boolean) {
     if (this._isMounted) {
-      this.setState({
+      this.setState(({ isReceiverAddressValidOnce }) => ({
         isReceiverAddressValid: isValid,
-      });
+        isReceiverAddressValidOnce: isValid ? true : isReceiverAddressValidOnce,
+      }));
     }
   }
 
@@ -448,19 +455,20 @@ class WalletSendForm extends Component<Props, State> {
         return quantity.isZero();
       })
       .forEach(({ uniqueId }) => {
-        // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
         this.form.$(`asset_${uniqueId}`).validate({
           showErrors: true,
         });
       });
   };
   calculateTransactionFee = async (shouldUpdateMinimumAdaAmount = false) => {
+    if (!this.state.isReceiverAddressValid) {
+      return;
+    }
+
     this.validateEmptyAssets();
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
     const receiver = receiverField.value;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const adaAmountField = form.$('adaAmount');
     const adaAmount = formattedAmountToLovelace(adaAmountField.value);
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ policy_id: string; asset_name: string; qua... Remove this comment to see the full error message
@@ -660,7 +668,6 @@ class WalletSendForm extends Component<Props, State> {
       return;
     }
 
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$('adaAmount').onChange(formattedMinimumAda);
     this.setState({
       adaInputState: AdaInputStateType.None,
@@ -679,7 +686,6 @@ class WalletSendForm extends Component<Props, State> {
     });
   };
   isAdaAmountLessThanMinimumRequired = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const adaAmountField = this.form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
     return adaAmount.lt(this.state.minimumAda);
@@ -729,18 +735,15 @@ class WalletSendForm extends Component<Props, State> {
   };
   addAssetFields = (uniqueId: string) => {
     const newAsset = `asset_${uniqueId}`;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'add' does not exist on type 'ReactToolbo... Remove this comment to see the full error message
     this.form.add({
       name: newAsset,
       value: null,
       key: newAsset,
     });
     this.form
-      // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
       .$(newAsset)
       .set('label', this.context.intl.formatMessage(messages.assetLabel));
     this.form
-      // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
       .$(newAsset)
       .set(
         'placeholder',
@@ -748,7 +751,6 @@ class WalletSendForm extends Component<Props, State> {
           this.props.currencyMaxFractionalDigits
         )}`
       );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$(newAsset).set('validators', [
       async ({ field }) => {
         const { value } = field;
@@ -792,21 +794,17 @@ class WalletSendForm extends Component<Props, State> {
       },
     ]);
     const assetsDropdown = `assetsDropdown_${uniqueId}`;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'add' does not exist on type 'ReactToolbo... Remove this comment to see the full error message
     this.form.add({
       name: assetsDropdown,
       value: null,
       key: assetsDropdown,
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$(assetsDropdown).set('type', 'select');
   };
   removeAssetFields = (uniqueId: string) => {
     const assetFieldToDelete = `asset_${uniqueId}`;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'del' does not exist on type 'ReactToolbo... Remove this comment to see the full error message
     this.form.del(assetFieldToDelete);
     const assetsDropdownFieldToDelete = `assetsDropdown_${uniqueId}`;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'del' does not exist on type 'ReactToolbo... Remove this comment to see the full error message
     this.form.del(assetsDropdownFieldToDelete);
   };
   onChangeAsset = async (currentUniqueId: string, newUniqueId: string) => {
@@ -841,7 +839,7 @@ class WalletSendForm extends Component<Props, State> {
       formFields,
       transactionFeeError,
       selectedAssetUniqueIds,
-      isReceiverAddressValid,
+      isReceiverAddressValidOnce,
     } = this.state;
     const {
       currencyMaxFractionalDigits,
@@ -907,25 +905,14 @@ class WalletSendForm extends Component<Props, State> {
           />
           {this.hasReceiverValue() && (
             <div className={styles.clearReceiverContainer}>
-              <PopOver
-                content={intl.formatMessage(messages.clearLabel)}
-                placement="top"
-              >
-                <button
-                  onClick={() => this.handleOnReset()}
-                  className={styles.clearReceiverButton}
-                  tabIndex={-1}
-                >
-                  <SVGInline
-                    svg={closeIcon}
-                    className={styles.clearReceiverIcon}
-                  />
-                </button>
-              </PopOver>
+              <ClearButton
+                label={intl.formatMessage(messages.clearLabel)}
+                onClick={this.clearReceiverFieldValue}
+              />
             </div>
           )}
         </div>
-        {this.hasReceiverValue() && isReceiverAddressValid && (
+        {isReceiverAddressValidOnce && (
           <>
             <div
               className={styles.fieldsLine}
@@ -946,24 +933,37 @@ class WalletSendForm extends Component<Props, State> {
                 <div className={styles.adaAmountLabel}>
                   {intl.formatMessage(globalMessages.adaUnit)}
                 </div>
-                <NumericInput
-                  {...adaAmountField.bind()}
-                  ref={(field) => {
-                    this.addFocusableField(field);
-                  }}
-                  className="adaAmount"
-                  bigNumberFormat={this.getCurrentNumberFormat()}
-                  decimalPlaces={currencyMaxFractionalDigits}
-                  numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
-                  }}
-                  onChange={this.onAdaAmountFieldChange}
-                  currency={globalMessages.adaUnit}
-                  error={adaAmountField.error || transactionFeeError}
-                  onKeyPress={this.handleSubmitOnEnter}
-                  allowSigns={false}
-                  autoFocus={this._isAutoFocusEnabled}
-                />
+                <div className={styles.adaInput}>
+                  <NumericInput
+                    {...adaAmountField.bind()}
+                    ref={(field) => {
+                      this.addFocusableField(field);
+                    }}
+                    className="adaAmount"
+                    bigNumberFormat={this.getCurrentNumberFormat()}
+                    decimalPlaces={currencyMaxFractionalDigits}
+                    numberLocaleOptions={{
+                      minimumFractionDigits: currencyMaxFractionalDigits,
+                    }}
+                    onChange={this.onAdaAmountFieldChange}
+                    currency={globalMessages.adaUnit}
+                    error={adaAmountField.error || transactionFeeError}
+                    onKeyPress={this.handleSubmitOnEnter}
+                    allowSigns={false}
+                    autoFocus={this._isAutoFocusEnabled}
+                  />
+                  {this.hasAdaAmountValue() && (
+                    <div className={styles.clearAdaContainer}>
+                      <ClearButton
+                        label={intl.formatMessage(messages.clearLabel)}
+                        onClick={this.clearAdaAmountFieldValue}
+                      />
+                      <div className={styles.dividerContainer}>
+                        <Divider />
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div
                   className={styles.minAdaRequired}
                   data-testid="minimumAdaRequiredMsg"
@@ -1074,10 +1074,8 @@ class WalletSendForm extends Component<Props, State> {
       walletName,
       onTokenPickerDialogClose,
     } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
     const receiver = receiverField.value;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const adaAmountField = form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
     let fees = '0';

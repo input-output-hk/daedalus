@@ -65,6 +65,10 @@ type State = {
   successfullyUpdated: boolean;
 };
 
+interface Fields {
+  inputField: string;
+}
+
 @observer
 class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
@@ -79,8 +83,7 @@ class InlineEditingInput extends Component<Props, State> {
     hasChanged: false,
     successfullyUpdated: false,
   };
-  validator = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  validator = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         inputField: {
@@ -170,7 +173,6 @@ class InlineEditingInput extends Component<Props, State> {
   };
   onCancel = () => {
     const { value, onCancel, errorMessage } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     const newValue = !errorMessage ? value : '';
     inputField.set(newValue);
@@ -193,7 +195,6 @@ class InlineEditingInput extends Component<Props, State> {
     this.setState({
       hasChanged: true,
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     // @ts-ignore ts-migrate(2488) FIXME: Type 'KeyboardEvent' must have a '[Symbol.iterator... Remove this comment to see the full error message
     inputField.onChange(...props);
@@ -201,7 +202,6 @@ class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
     const { value: nextValue, errorMessage: nextError } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
 
     // If there's an error, we focus the input again
@@ -262,7 +262,6 @@ class InlineEditingInput extends Component<Props, State> {
     }
 
     const { intl } = this.context;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     let error;
     if (inputField.error) error = inputField.error;

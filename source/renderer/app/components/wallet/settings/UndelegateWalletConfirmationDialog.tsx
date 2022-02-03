@@ -17,7 +17,6 @@ import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UndelegateWalletConfirmation... Remove this comment to see the full error message
 import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -116,13 +115,18 @@ type Props = {
   isTrezor: boolean;
 };
 
+interface Fields {
+  confirmUnsupportChecked: string;
+  confirmIneligibleChecked: string;
+  passphrase: string;
+}
+
 @observer
 class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         confirmUnsupportChecked: {
@@ -206,15 +210,12 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   confirmationDisabled = () => {
     const { form } = this;
     const { fees, isSubmitting, hwDeviceStatus, selectedWallet } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'confirmUnsupportChecked'
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: ineligibleCheckboxIsValid } = form.$(
       'confirmIneligibleChecked'
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: passphraseIsValid } = form.$('passphrase');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
 
@@ -273,11 +274,8 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const unsupportCheckboxField = form.$('confirmUnsupportChecked');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const ineligibleCheckboxField = form.$('confirmIneligibleChecked');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = form.$('passphrase');
     const {
       selectedWallet,

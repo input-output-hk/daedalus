@@ -40,6 +40,10 @@ type State = {
   isActive: boolean;
 };
 
+interface Fields {
+  inputField: string;
+}
+
 @observer
 class InlineEditingSmallInput extends Component<Props, State> {
   state = {
@@ -50,8 +54,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     onStopEditing: () => {},
     onCancelEditing: () => {},
   };
-  validator = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  validator = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         inputField: {
@@ -131,7 +134,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   };
   onCancel = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
     this.setState({
@@ -171,7 +173,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     } = this.props;
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([

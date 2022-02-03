@@ -117,6 +117,16 @@ export type FilterDialogProps = {
 };
 type Props = FilterDialogProps & InjectedProps;
 
+interface Fields {
+  incomingChecked: boolean;
+  outgoingChecked: boolean;
+  dateRange: string;
+  fromDate: string;
+  toDate: string;
+  fromAmount: string;
+  toAmount: string;
+}
+
 @observer
 class FilterDialog extends Component<Props> {
   static contextTypes = {
@@ -126,7 +136,7 @@ class FilterDialog extends Component<Props> {
     label: string;
     value: string;
   }>;
-  form: ReactToolboxMobxForm;
+  form: ReactToolboxMobxForm<Fields>;
   popoverTippyInstance: ElementRef<any> = createRef();
 
   constructor(props: Props, context: Record<string, any>) {
@@ -165,8 +175,7 @@ class FilterDialog extends Component<Props> {
         value: DateRangeTypes.CUSTOM,
       },
     ];
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
-    this.form = new ReactToolboxMobxForm({
+    this.form = new ReactToolboxMobxForm<Fields>({
       fields: {
         incomingChecked: {
           type: 'checkbox',
@@ -208,13 +217,11 @@ class FilterDialog extends Component<Props> {
     field: 'incomingChecked' | 'outgoingChecked',
     value: boolean
   ) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select(field).set(value);
 
     if (value === false) {
       const otherFieldName =
         field === 'incomingChecked' ? 'outgoingChecked' : 'incomingChecked';
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       const otherField = this.form.select(otherFieldName);
 
       if (otherField.value === false) {
@@ -235,23 +242,16 @@ class FilterDialog extends Component<Props> {
       incomingChecked,
       outgoingChecked,
     } = filterOptions;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('dateRange').set(dateRange);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('fromDate').set(fromDate);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('toDate').set(toDate);
     this.form
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       .select('fromAmount')
       .set(reset ? fromAmount : this.getFromAmountValue(fromAmount));
     this.form
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
       .select('toAmount')
       .set(reset ? toAmount : this.getToAmountValue(toAmount));
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('incomingChecked').set(incomingChecked);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
   getFromAmountValue = (fromAmount?: string) => {
@@ -289,7 +289,6 @@ class FilterDialog extends Component<Props> {
     );
   };
   getComposedFormValues = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const formValues = this.form.values();
     return {
       ...formValues,
@@ -321,7 +320,6 @@ class FilterDialog extends Component<Props> {
     return date.isSameOrBefore(moment().endOf('day'));
   };
   isValidToDate = (date: Record<string, any>) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { fromDate } = this.form.values();
     return (
       date.isSameOrBefore(moment().endOf('day')) &&
@@ -330,9 +328,7 @@ class FilterDialog extends Component<Props> {
   };
   renderTypeField = () => {
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const incomingCheckboxField = form.$('incomingChecked');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const outgoingCheckboxField = form.$('outgoingChecked');
     return (
       <div className={styles.type}>
@@ -359,9 +355,7 @@ class FilterDialog extends Component<Props> {
   };
   renderDateRangeField = () => {
     const { intl } = this.context;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const dateRangeFieldBindProps = this.form.$('dateRange').bind();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { fromDate, toDate } = this.form.values();
     return (
       <div className={styles.dateRange}>
@@ -373,9 +367,7 @@ class FilterDialog extends Component<Props> {
               fromDate,
               toDate,
             });
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
             this.form.select('fromDate').set(calculatedDateRange.fromDate);
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
             this.form.select('toDate').set(calculatedDateRange.toDate);
           }}
           placeholder={intl.formatMessage(messages.selectTimeRange)}
@@ -389,9 +381,7 @@ class FilterDialog extends Component<Props> {
     const { intl } = this.context;
     const { locale, dateFormat } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const fromDateFieldBindProps = form.$('fromDate').bind();
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const toDateFieldBindProps = form.$('toDate').bind();
     const fromDateLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseFromDateInput : null;
@@ -456,9 +446,7 @@ class FilterDialog extends Component<Props> {
     const { intl } = this.context;
     const { locale, numberFormat } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const fromAmountField = form.$('fromAmount');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const toAmountField = form.$('toAmount');
     const fromAmountLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseFromAmountInput : null;

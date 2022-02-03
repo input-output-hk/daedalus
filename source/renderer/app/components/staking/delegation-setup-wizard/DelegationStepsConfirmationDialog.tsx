@@ -51,13 +51,16 @@ type Props = {
   oversaturationPercentage: number;
 };
 
+interface Fields {
+  spendingPassword: string;
+}
+
 @observer
 class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         spendingPassword: {
@@ -136,7 +139,6 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const selectedPoolId = get(selectedPool, 'id');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.confirmButtonLabel)

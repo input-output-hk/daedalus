@@ -13,7 +13,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VerificationDialog.scss' or ... Remove this comment to see the full error message
 import styles from './VerificationDialog.scss';
 import {
   PAPER_WALLET_PRINTED_WORDS_COUNT,
@@ -100,6 +99,10 @@ type Props = {
   onClose: (...args: Array<any>) => any;
 };
 
+interface Fields {
+  recoveryPhrase: string;
+}
+
 @observer
 class VerificationDialog extends Component<Props, State> {
   static contextTypes = {
@@ -121,8 +124,7 @@ class VerificationDialog extends Component<Props, State> {
     }));
   };
   recoveryPhraseAutocomplete: Autocomplete;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         recoveryPhrase: {
@@ -233,7 +235,6 @@ class VerificationDialog extends Component<Props, State> {
       recoveringConfirmed,
       isRecoveryPhraseValid,
     } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
     const storingUnderstandanceCheckboxClasses = classnames([

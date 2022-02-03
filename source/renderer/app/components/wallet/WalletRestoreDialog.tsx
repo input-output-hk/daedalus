@@ -209,6 +209,13 @@ type State = {
   walletType: string;
 };
 
+interface Fields {
+  repeatPassword: string;
+  spendingPassword: string;
+  recoveryPhrase: string;
+  walletName: string;
+}
+
 @observer
 class WalletRestoreDialog extends Component<Props, State> {
   static contextTypes = {
@@ -228,8 +235,7 @@ class WalletRestoreDialog extends Component<Props, State> {
     }
   }
 
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         walletName: {
@@ -354,13 +360,10 @@ class WalletRestoreDialog extends Component<Props, State> {
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     form.reset();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     form.showErrors(false);
   };
   resetMnemonics = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     recoveryPhraseField.debouncedValidation.cancel();
     recoveryPhraseField.reset();
@@ -383,13 +386,9 @@ class WalletRestoreDialog extends Component<Props, State> {
       'walletName',
       styles.walletName,
     ]);
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
     const label = this.isCertificate()
       ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)

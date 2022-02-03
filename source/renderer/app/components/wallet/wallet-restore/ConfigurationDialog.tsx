@@ -93,6 +93,12 @@ type Props = {
   currentLocale: string;
 };
 
+interface Fields {
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
@@ -108,8 +114,7 @@ class ConfigurationDialog extends Component<Props> {
     }
   }
 
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         walletName: {
@@ -223,11 +228,8 @@ class ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPasswordField = form.$('repeatPassword');
     const walletNameFieldClasses = classnames([
       styles.walletName,

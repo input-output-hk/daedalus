@@ -94,13 +94,16 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
+interface Fields {
+  spendingPassword: string;
+}
+
 @observer
 class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         spendingPassword: {
@@ -146,7 +149,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
     });
   };
   handleSubmitOnEnter = (event: KeyboardEvent) =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
 
@@ -177,7 +179,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletAmount,
       false
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = this.form.$('spendingPassword');
     const buttonClasses = classnames([
       'confirmButton',

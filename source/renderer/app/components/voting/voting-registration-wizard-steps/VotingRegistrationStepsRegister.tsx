@@ -87,13 +87,16 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 
+interface Fields {
+  spendingPassword: string;
+}
+
 @observer
 class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         spendingPassword: {
@@ -157,7 +160,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       isTrezor,
       isHardwareWallet,
     } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);

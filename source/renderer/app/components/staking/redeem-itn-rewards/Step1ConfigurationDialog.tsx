@@ -143,6 +143,13 @@ type Props = {
   wallets: Array<Wallet>;
 };
 
+interface Fields {
+  checkboxAcceptance1: string;
+  checkboxAcceptance2: string;
+  walletsDropdown: string;
+  recoveryPhrase: string;
+}
+
 @observer
 class Step1ConfigurationDialog extends Component<Props> {
   static contextTypes = {
@@ -153,8 +160,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     recoveryPhrase: [],
   };
   recoveryPhraseAutocomplete: Autocomplete;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<Fields>(
     {
       fields: {
         recoveryPhrase: {
@@ -207,11 +213,9 @@ class Step1ConfigurationDialog extends Component<Props> {
   get canSubmit() {
     const { isCalculatingReedemFees, wallet, error } = this.props;
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance2isChecked } = form.$(
       'checkboxAcceptance2'
     );
@@ -270,13 +274,9 @@ class Step1ConfigurationDialog extends Component<Props> {
           />
         </p>
       );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletsDropdownField = form.$('walletsDropdown');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
     const validRecoveryPhase = recoveryPhraseField.isValid;

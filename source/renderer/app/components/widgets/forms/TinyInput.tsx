@@ -7,6 +7,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TinyInput.scss' or its corre... Remove this comment to see the full error message
 import styles from './TinyInput.scss';
+import { NumberFormat } from '../../../../../common/types/number.types';
 // TODO: Extend react-polymorph Input component props when they are available
 type Props = {
   autoFocus?: boolean;
@@ -41,6 +42,9 @@ type Props = {
   themeOverrides?: Record<string, any>;
   themeVariables?: Record<string, any>;
   value: string;
+  bigNumberFormat?: NumberFormat;
+  decimalPlaces?: number;
+  allowSigns?: boolean;
 };
 type State = {
   isEditMode: boolean;
