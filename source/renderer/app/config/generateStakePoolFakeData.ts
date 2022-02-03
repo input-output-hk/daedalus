@@ -2,14 +2,11 @@
  * It generates stake pool dummy json content
  * Command to run: node source/renderer/app/config/generateStakePoolFakeData.js
  */
-const faker = require('faker');
+import faker from '@faker-js/faker';
+import path from 'path';
+import BigNumber from 'bignumber.js';
 
-// const fs = require('fs');
-const path = require('path');
-
-const BigNumber = require('bignumber.js');
-
-function generatStakePoolsFakeData() {
+function generateStakePoolsFakeData() {
   const stakePools = [];
 
   for (let i = 1; i <= 300; i++) {
@@ -56,7 +53,7 @@ function generatStakePoolsFakeData() {
   return stakePools;
 }
 
-const fakeStakePools = generatStakePoolsFakeData();
+const fakeStakePools = generateStakePoolsFakeData();
 // @TODO - remove flow fix and move fs to main process
 
 /* eslint-disable no-undef */

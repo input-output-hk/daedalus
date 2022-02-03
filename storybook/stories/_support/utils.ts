@@ -1,5 +1,5 @@
 import hash from 'hash.js';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import JSONBigInt from 'json-bigint';
 import moment from 'moment';
 import { get } from 'lodash';

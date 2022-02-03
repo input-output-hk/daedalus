@@ -2,7 +2,7 @@ import React from 'react';
 import { addLocaleData } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Provider as MobxProvider } from 'mobx-react';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import {
   render,
   fireEvent,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { Provider, observer } from 'mobx-react';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
