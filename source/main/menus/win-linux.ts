@@ -8,7 +8,6 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
-import type { WalletSettingsStateValue } from '../../common/ipc/api';
 import { getRtsFlags } from '../utils/rtsFlags';
 
 const id = 'menu';
@@ -22,7 +21,7 @@ export const winLinuxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  walletSettingsState: WalletSettingsStateValue,
+  walletSettingsState: WalletSettingsStateEnum,
   translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {

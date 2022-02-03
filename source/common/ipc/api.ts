@@ -177,20 +177,15 @@ export type SubmitBugReportRequestMainResponse = void;
 /**
  * Channel to rebuild the electron application menu after the language setting changes
  */
-export type WalletSettingsStateValue = 'hidden' | 'disabled' | 'enabled';
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
-export const WalletSettingsStateEnum: EnumMap<
-  WalletSettingsStateValue,
-  WalletSettingsStateValue
-> = {
-  hidden: 'hidden',
-  disabled: 'disabled',
-  enabled: 'enabled',
-};
+export enum WalletSettingsStateEnum {
+  hidden = 'hidden',
+  disabled = 'disabled',
+  enabled = 'enabled',
+}
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
   isNavigationEnabled: boolean;
-  walletSettingsState: WalletSettingsStateValue;
+  walletSettingsState: WalletSettingsStateEnum;
 };
 export type RebuildAppMenuMainResponse = void;
 

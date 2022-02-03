@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
-import type { WalletSettingsStateValue } from '../../common/ipc/api';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -12,10 +12,10 @@ import { getTranslation } from './getTranslation';
 import { setRtsFlagsAndRestart } from './rtsFlags';
 import { RTS_FLAGS } from '../config';
 
-type Data = {
+interface Data {
   isNavigationEnabled: boolean;
-  walletSettingsState: WalletSettingsStateValue;
-};
+  walletSettingsState: WalletSettingsStateEnum;
+}
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode | null | undefined,
