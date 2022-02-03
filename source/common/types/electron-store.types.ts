@@ -29,7 +29,7 @@ export type StorageKey =
   | 'WALLETS'
   | 'ANALYTICS-ACCEPTED'
   | 'ANALYTICS-MACHINE-SPEC-SENT'
-  | 'USER-UUID'
+  | 'USER-ID'
   | 'WINDOW-BOUNDS';
 export type StoreMessage = {
   type: StorageType;

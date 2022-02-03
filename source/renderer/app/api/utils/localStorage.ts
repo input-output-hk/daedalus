@@ -152,15 +152,15 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.ANALYTICS_MACHINE_SPEC_SENT, true);
   unsetAnalyticsMachineSpecSent = (): Promise<void> =>
     LocalStorageApi.set(keys.ANALYTICS_MACHINE_SPEC_SENT, false);
-  getUserUID = async (): Promise<string> => {
-    let userUUID: string = await LocalStorageApi.get(keys.USER_UUID, null);
+  getUserID = async (): Promise<string> => {
+    let userId: string = await LocalStorageApi.get(keys.USER_ID, null);
 
-    if (!userUUID) {
-      userUUID = uuidv4();
-      await LocalStorageApi.set(keys.USER_UUID, userUUID);
+    if (!userId) {
+      userId = uuidv4();
+      await LocalStorageApi.set(keys.USER_ID, userId);
     }
 
-    return userUUID;
+    return userId;
   };
   getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.THEME);
   setUserTheme = (theme: string): Promise<void> =>

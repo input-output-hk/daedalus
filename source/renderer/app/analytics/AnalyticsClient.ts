@@ -5,7 +5,7 @@ const AnalyticsClient = new GoogleAnalytics(
   GOOGLE_ANALYTICS_TRACKING_ID,
   global.environment.network,
   // TODO
-  // daedalus.api.localStorage.getUserUID()
+  // daedalus.api.localStorage.getUserID()
   'UID_test'
 );
 
