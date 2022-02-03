@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -10,8 +10,6 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
-  VOTING_CAST_START_DATE,
-  VOTING_CAST_END_DATE,
   VOTING_RESULTS_DATE,
   VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
@@ -25,6 +23,7 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
+import type { CatalystFund } from '../api/voting/types';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -69,12 +68,14 @@ export default class VotingStore extends Store {
   isConfirmationDialogOpen = false;
   @observable
   fundPhase: FundPhase = FundPhases.SNAPSHOT;
+  @observable
+  catalystFund: CatalystFund | null = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   fundPhaseInterval: IntervalID | null | undefined = null;
 
-  setup() {
+  async setup() {
     const { voting: votingActions } = this.actions;
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
@@ -89,6 +90,14 @@ export default class VotingStore extends Store {
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
 
     this._initializeFundPhaseInterval();
+
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+    await this.getCatalystFundRequest.execute();
+    const catalystFund = this.getCatalystFundRequest.result;
+    runInAction('Initialize fund', () => {
+      this.catalystFund = catalystFund;
+      this._checkFundPhase(new Date());
+    });
   }
 
   // REQUESTS
@@ -108,6 +117,11 @@ export default class VotingStore extends Store {
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
     this.api.ada.getTransaction
   );
+  @observable
+  getCatalystFundRequest: Request<CatalystFund> = new Request(
+    this.api.ada.getCatalystFund
+  );
+
   // ACTIONS
   @action
   _showConfirmationDialog = () => {
@@ -463,17 +477,19 @@ export default class VotingStore extends Store {
   @action
   _checkFundPhase = (now: Date) => {
     const phaseValidation = {
-      [FundPhases.SNAPSHOT]: (date: Date) => date < VOTING_CAST_START_DATE,
+      [FundPhases.SNAPSHOT]: (date: Date) =>
+        date < this.catalystFund?.fundStartTime,
       [FundPhases.VOTING]: (date: Date) =>
-        now >= VOTING_CAST_START_DATE && date < VOTING_CAST_END_DATE,
+        date >= this.catalystFund?.fundStartTime &&
+        date < this.catalystFund?.fundEndTime,
       [FundPhases.TALLYING]: (date: Date) =>
-        now >= VOTING_CAST_END_DATE && date < VOTING_RESULTS_DATE,
+        date >= this.catalystFund?.fundEndTime && date < VOTING_RESULTS_DATE,
       [FundPhases.RESULTS]: (date: Date) => date >= VOTING_RESULTS_DATE,
     };
     this.fundPhase =
-      Object.keys(FundPhases)
-        .map((key) => FundPhases[key])
-        .find((phase) => phaseValidation[phase](now)) || FundPhases.SNAPSHOT;
+      Object.values(FundPhases).find((phase: FundPhase) =>
+        phaseValidation[phase](now)
+      ) || FundPhases.SNAPSHOT;
   };
   _generateVotingRegistrationKey = async () => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;

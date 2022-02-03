@@ -40,6 +40,7 @@ import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
+import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
 import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
@@ -204,6 +205,8 @@ import type {
 import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
+  GetCatalystFundResponse,
+  CatalystFund,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -2931,6 +2934,35 @@ export default class AdaApi {
     fakeStakePoolsJson: Array<StakePool>
   ) => void;
   setStakePoolsFetchingFailed: () => void;
+  getCatalystFund = async (): Promise<CatalystFund> => {
+    logger.debug('AdaApi::getCatalystFund called', {});
+
+    try {
+      const catalystFundRaw = await getCatalystFund();
+      const catalystFund: GetCatalystFundResponse = JSON.parse(catalystFundRaw);
+
+      logger.debug('AdaApi::getCatalystFund success', {
+        catalystFund,
+      });
+      return {
+        fundEndTime: new Date(catalystFund.fund_end_time),
+        fundStartTime: new Date(catalystFund.fund_start_time),
+        nextFundStartTime: new Date(catalystFund.next_fund_start_time),
+        nextRegistrationSnapshotTime: new Date(
+          catalystFund.next_registration_snapshot_time
+        ),
+        registrationSnapshotTime: new Date(
+          catalystFund.registration_snapshot_time
+        ),
+        fundName: catalystFund.fund_name,
+      };
+    } catch (error) {
+      logger.error('AdaApi::getCatalystFund error', {
+        error,
+      });
+      throw new Error('Unable to fetch news');
+    }
+  };
 } // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletFromServerData = action(
