@@ -141,6 +141,7 @@ const onAppReady = async () => {
   const cpu = os.cpus();
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
+
   const startTime = new Date().toISOString();
   // first checks for Japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();

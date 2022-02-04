@@ -176,6 +176,18 @@ export default class SyncingConnectingStatus extends Component<Props> {
     };
   };
 
+  getBlockSyncMessage = () => {
+    switch (this.props.blockSync.type) {
+      case 'replayedBlock':
+        return messages.verifyingBlockchain;
+      case 'pushingLedger':
+        return messages.pushingLedgerState;
+      case 'validatingChunk':
+      default:
+        return messages.validatingChunk;
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {

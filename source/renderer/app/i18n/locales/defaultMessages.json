@@ -2233,17 +2233,17 @@
         }
       },
       {
-        "defaultMessage": "!!!This process validates the integrity of local blockchain data and could take several minutes.",
+        "defaultMessage": "!!!This process validates the integrity of local blockchain data.",
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.startingCardanoDescription",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 18
         }
       },
       {

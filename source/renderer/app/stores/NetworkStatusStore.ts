@@ -430,6 +430,10 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
+  @action _toggleRTSFlagsMode = async () => {
+    await toggleRTSFlagsModeChannel.send();
+  };
+
   // DEFINE ACTIONS
   @action _toggleRTSFlagsMode = async () => {
     await toggleRTSFlagsModeChannel.send();
