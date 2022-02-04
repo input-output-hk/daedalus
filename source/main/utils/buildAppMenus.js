@@ -1,5 +1,5 @@
 // @flow
-import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -18,7 +18,12 @@ export const buildAppMenus = async (
     isNavigationEnabled: boolean,
   }
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
+  const {
+    ABOUT,
+    DAEDALUS_DIAGNOSTICS,
+    ITN_REWARDS_REDEMPTION,
+    TOGGLE_RTS_FLAGS_MODE,
+  } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isNavigationEnabled } = data;
 
@@ -92,6 +97,10 @@ export const buildAppMenus = async (
     item.checked = isBlankScreenFixActive;
   };
 
+  const openToggleRTSFlagsModeDialog = () => {
+    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
+  };
+
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
@@ -99,6 +108,7 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
+    openToggleRTSFlagsModeDialog,
   };
 
   // Build app menus

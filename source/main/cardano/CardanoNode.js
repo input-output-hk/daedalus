@@ -30,6 +30,7 @@ import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
+import { containsRTSFlags } from '../utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 
@@ -77,6 +78,7 @@ export type CardanoNodeConfig = {
   cliBin: string, // Path to cardano-cli executable
   isStaging: boolean,
   metadataUrl?: string,
+  rtsFlags: Array<string>,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -224,6 +226,7 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
   }
 

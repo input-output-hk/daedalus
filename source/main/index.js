@@ -2,6 +2,7 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import type { Event } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
 import { requestElectronStore } from './ipc/electronStoreConversation';
@@ -21,6 +22,7 @@ import mainErrorHandler from './utils/mainErrorHandler';
 import {
   launcherConfig,
   pubLogsFolderPath,
+  RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
@@ -48,6 +50,12 @@ import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import {
+  getRtsFlagsSettings,
+  storeRtsFlagsSettings,
+} from './utils/rtsFlagsSettings';
+import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
+import { containsRTSFlags } from './utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 
@@ -107,6 +115,12 @@ const safeExit = async () => {
   }
 };
 
+const handleWindowClose = async (event: ?Event) => {
+  logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  event?.preventDefault();
+  await safeExit();
+};
+
 const onAppReady = async () => {
   setupLogging();
   logUsedVersion(
@@ -117,6 +131,7 @@ const onAppReady = async () => {
   const cpu = os.cpus();
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
+
   const startTime = new Date().toISOString();
   // first checks for Japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
@@ -162,8 +177,12 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
-  logger.info('Setting up Cardano Node...');
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+  const currentRtsFlags = getRtsFlagsSettings(network) || [];
+
+  logger.info(
+    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
+  );
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
 
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
@@ -172,7 +191,8 @@ const onAppReady = async () => {
   enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        const locale = getLocale(network);
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: true,
         });
         resolve();
@@ -182,10 +202,11 @@ const onAppReady = async () => {
   rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, userLocale, {
+        const locale = getLocale(network);
+        buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
-        mainWindow.updateTitle(userLocale);
+        mainWindow.updateTitle(locale);
         resolve();
       })
   );
@@ -212,6 +233,12 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
+  toggleRTSFlagsModeChannel.onReceive(() => {
+    const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
+    storeRtsFlagsSettings(environment.network, flagsToSet);
+    return handleWindowClose();
+  });
+
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -220,21 +247,15 @@ const onAppReady = async () => {
     }
   };
   mainErrorHandler(onMainError);
-  await handleCheckDiskSpace();
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+  await handleCheckDiskSpace();
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
 
-  mainWindow.on('close', async (event) => {
-    logger.info(
-      'mainWindow received <close> event. Safe exiting Daedalus now.'
-    );
-    event.preventDefault();
-    await safeExit();
-  });
+  mainWindow.on('close', handleWindowClose);
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows

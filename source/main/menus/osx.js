@@ -8,9 +8,9 @@ import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
+import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
 
 const id = 'menu';
-const { isBlankScreenFixActive } = environment;
 
 export const osxMenu = (
   app: App,
@@ -139,21 +139,7 @@ export const osxMenu = (
   {
     label: translation('helpSupport'),
     submenu: compact([
-      {
-        label: translation('helpSupport.knownIssues'),
-        click() {
-          const faqLink = translation('helpSupport.knownIssuesUrl');
-          shell.openExternal(faqLink);
-        },
-      },
-      {
-        label: translation('helpSupport.blankScreenFix'),
-        type: 'checkbox',
-        checked: isBlankScreenFixActive,
-        click(item) {
-          actions.toggleBlankScreenFix(item);
-        },
-      },
+      ...buildKnownIssueFixesSubmenu(actions, translations, translation),
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),
@@ -162,15 +148,6 @@ export const osxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
-      /* {
-        label: translation('helpSupport.featureRequest'),
-        click() {
-          const featureRequestLinkUrl = translation(
-            'helpSupport.featureRequestUrl'
-          );
-          shell.openExternal(featureRequestLinkUrl);
-        },
-      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {

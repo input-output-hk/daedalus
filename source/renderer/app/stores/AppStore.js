@@ -45,6 +45,13 @@ export default class AppStore extends Store {
       this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
 
+    this.actions.app.closeToggleRTSFlagsModeDialog.listen(() => {
+      this._closeActiveDialog();
+    });
+    this.actions.app.openToggleRTSFlagsModeDialog.listen(() => {
+      this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
+    });
+
     this.actions.app.downloadLogs.listen(this._downloadLogs);
     this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
 
@@ -102,6 +109,9 @@ export default class AppStore extends Store {
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
+        break;
+      case DIALOGS.TOGGLE_RTS_FLAGS_MODE:
+        this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
         break;
       case DIALOGS.ITN_REWARDS_REDEMPTION:
         this.actions.staking.onRedeemStart.trigger();
