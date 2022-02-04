@@ -281,6 +281,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-fullsize-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#2d2d2d',
     '--theme-dialog-fullsize-title-text-color': 'rgba(45, 45, 45, 1)',
+    // #2d2d2d
+    '--theme-dialog-fullsize-secondary-text-action-color': '45, 45, 45',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
