@@ -580,9 +580,8 @@ class WalletSendForm extends Component<Props, State> {
             />
           );
         } else {
-          transactionFeeError = this.context.intl.formatMessage(
-            localizableError,
-            values
+          transactionFeeError = (
+            <FormattedHTMLMessage {...localizableError} values={values} />
           );
         }
 
@@ -612,7 +611,7 @@ class WalletSendForm extends Component<Props, State> {
       !isEmpty(selectedAssetUniqueIds)
     ) {
       const isValid = await this.props.validateAmount(
-        formattedAmountToNaturalUnits(minimumAda.toFormat())
+        formattedAmountToNaturalUnits(minimumAda.toString())
       );
 
       if (!isValid) {
@@ -651,7 +650,7 @@ class WalletSendForm extends Component<Props, State> {
   };
   updateAdaAmount = async () => {
     const { minimumAda } = this.state;
-    const formattedMinimumAda = minimumAda.toFormat();
+    const formattedMinimumAda = minimumAda.toString();
     const isValid = await this.props.validateAmount(
       formattedAmountToNaturalUnits(formattedMinimumAda)
     );
