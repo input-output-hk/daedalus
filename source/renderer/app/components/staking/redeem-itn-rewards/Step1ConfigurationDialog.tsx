@@ -204,7 +204,6 @@ class Step1ConfigurationDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: () => this.props.onContinue(),
     });
@@ -225,7 +224,6 @@ class Step1ConfigurationDialog extends Component<Props> {
       !error &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
       form.isValid
     );
   }

@@ -136,7 +136,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { spendingPassword } = this.form.values();
     this.props.onConfirm(spendingPassword);
   };

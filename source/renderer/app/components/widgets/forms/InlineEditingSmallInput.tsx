@@ -79,7 +79,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();

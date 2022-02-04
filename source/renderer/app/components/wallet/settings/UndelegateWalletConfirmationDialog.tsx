@@ -238,7 +238,6 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       return false;
     }
 
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     return this.form.submit({
       onSuccess: (form) => {
         const { selectedWallet, onConfirm } = this.props;

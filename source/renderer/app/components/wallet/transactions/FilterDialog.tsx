@@ -281,7 +281,6 @@ class FilterDialog extends Component<Props> {
   isFormValuesEqualTo = (
     comparedFilterOptions: TransactionFilterOptionsType
   ) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'fields' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const formFieldNames = Object.keys(this.form.fields.toJSON());
     return isEqual(
       this.getComposedFormValues(),
@@ -297,7 +296,6 @@ class FilterDialog extends Component<Props> {
     };
   };
   handleSubmit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: () => {
         const { onFilter } = this.props;
@@ -405,13 +403,11 @@ class FilterDialog extends Component<Props> {
               {...fromDateFieldBindProps}
               onChange={(...args) => {
                 fromDateFieldBindProps.onChange(...args);
-                // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
                 this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
               }}
               label={intl.formatMessage(globalMessages.rangeFrom)}
               pickerPanelPosition="left"
               closeOnSelect
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
               onReset={() => form.select('fromDate').set('')}
               isValidDate={this.isValidFromDate}
               locale={locale}
@@ -423,13 +419,11 @@ class FilterDialog extends Component<Props> {
               {...toDateFieldBindProps}
               onChange={(...args) => {
                 toDateFieldBindProps.onChange(...args);
-                // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
                 this.form.select('dateRange').set(DateRangeTypes.CUSTOM);
               }}
               label={intl.formatMessage(globalMessages.rangeTo)}
               pickerPanelPosition="right"
               closeOnSelect
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'select' does not exist on type 'ReactToo... Remove this comment to see the full error message
               onReset={() => form.select('toDate').set('')}
               isValidDate={this.isValidToDate}
               locale={locale}

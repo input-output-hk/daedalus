@@ -180,7 +180,6 @@ class WalletReceiveDialog extends Component<Props, State> {
     },
   });
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { noteInput } = form.values();
@@ -188,6 +187,7 @@ class WalletReceiveDialog extends Component<Props, State> {
         onDownloadPDF(noteInput);
       },
       onError: (err) => {
+        // @ts-ignore Argument of type 'MobxReactForm<Fields>' is not assignable to parameter of type 'string'.
         throw new Error(err);
       },
     });

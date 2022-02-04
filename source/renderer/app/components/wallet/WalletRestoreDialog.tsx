@@ -333,7 +333,6 @@ class WalletRestoreDialog extends Component<Props, State> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { onSubmit } = this.props;
@@ -356,7 +355,6 @@ class WalletRestoreDialog extends Component<Props, State> {
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     form.each((field) => {
       field.debouncedValidation.cancel();
     });

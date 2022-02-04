@@ -176,7 +176,6 @@ class WalletFileImportDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { walletFilePath, spendingPassword, walletName } = form.values();

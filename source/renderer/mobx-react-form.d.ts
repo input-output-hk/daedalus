@@ -58,6 +58,15 @@ declare module 'mobx-react-form' {
     del: (field: string) => void;
     values: () => T;
     select: (fieldName: string) => Field;
+    submit: (opt: {
+      onSuccess?: (form: MobxReactForm<T>) => void;
+      onError?: (form: MobxReactForm<T>) => void;
+    }) => void;
+    clear: () => void;
+    fields: {
+      get: (fieldName: keyof T) => Field;
+      toJSON(): T;
+    };
   }
 
   export default MobxReactForm;

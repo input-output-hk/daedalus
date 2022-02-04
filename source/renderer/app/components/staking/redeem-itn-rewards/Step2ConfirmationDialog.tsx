@@ -130,7 +130,6 @@ class Step2ConfirmationDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -172,7 +171,6 @@ class Step2ConfirmationDialog extends Component<Props> {
       items: [
         {
           className: isSubmitting ? styles.isSubmitting : null,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
           disabled: !form.isValid,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),

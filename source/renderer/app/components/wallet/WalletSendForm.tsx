@@ -17,10 +17,7 @@ import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/question-m... Remove this comment to see the full error message
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
-import closeIcon from '../../assets/images/close-cross.inline.svg';
 import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
@@ -35,7 +32,6 @@ import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
 import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendForm.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
@@ -116,9 +112,8 @@ class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  // @ts-ignore ts-migrate(2416) FIXME: Property 'state' in type 'WalletSendForm' is not a... Remove this comment to see the full error message
   state = {
-    formFields: {},
+    formFields: {} as State['formFields'],
     minimumAda: new BigNumber(0),
     adaAmountInputTrack: new BigNumber(0),
     feeCalculationRequestQue: 0,
@@ -267,7 +262,6 @@ class WalletSendForm extends Component<Props, State> {
     this.resetTransactionFee();
   };
   updateFormFields = (resetFormFields: boolean, uniqueId?: string) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'fields' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const formFields = this.form.fields;
     const receiverField = formFields.get('receiver');
     const adaAmountField = formFields.get('adaAmount');
@@ -285,7 +279,6 @@ class WalletSendForm extends Component<Props, State> {
         },
       });
     } else if (uniqueId) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
       const { assetFields, assetsDropdown } = this.state.formFields.receiver;
       const assetField = formFields.get(`asset_${uniqueId}`);
 
@@ -640,7 +633,6 @@ class WalletSendForm extends Component<Props, State> {
     minimumAda: BigNumber
   ) => {
     const { formFields } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { adaAmount: adaAmountField } = formFields.receiver;
 
     switch (adaInputState) {
@@ -676,7 +668,6 @@ class WalletSendForm extends Component<Props, State> {
   };
   onAdaAmountFieldChange = (value: string) => {
     const { formFields } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { adaAmount: adaAmountField } = formFields.receiver;
     adaAmountField.onChange(value != null ? value : '');
     const adaAmount = new BigNumber(value != null ? value : 0);
@@ -715,7 +706,6 @@ class WalletSendForm extends Component<Props, State> {
   };
   removeAssetRow = (uniqueId: string) => {
     const { formFields, selectedAssetUniqueIds } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     const { receiver } = formFields;
     const assetFields = omit(receiver.assetFields, uniqueId);
     const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
@@ -851,7 +841,6 @@ class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     } = formFields.receiver;
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = selectedAssetUniqueIds.length
@@ -1109,7 +1098,6 @@ class WalletSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletSendForm}>
-              {/* @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'. */}
               {formFields.receiver && this.renderReceiverRow()}
               <div className={estimatedFeeInputClasses}>
                 <ReadOnlyInput
