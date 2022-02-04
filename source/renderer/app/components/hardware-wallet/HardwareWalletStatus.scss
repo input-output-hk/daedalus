@@ -51,6 +51,7 @@
     margin-right: 6px;
     object-fit: contain;
     width: 14px;
+    flex-shrink: 0;
   }
 
   &.isReady {

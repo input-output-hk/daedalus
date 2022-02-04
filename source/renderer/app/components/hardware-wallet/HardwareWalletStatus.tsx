@@ -49,10 +49,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Exporting the public key failed',
     description: '"Exporting public key failed" device state',
   },
+  unrecognized_wallet: {
+    id: 'wallet.hardware.deviceStatus.unrecognized_wallet',
+    defaultMessage:
+      '!!!Unrecognized hardware wallet. Make sure you are not using a different device or a passphrase.',
+    description: '"Unrecognized wallet" device state',
+  },
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
-      '!!!Disconnect and reconnect your device to restart the process.',
+      '!!!Exporting public key failed. Make sure the provided passphrase is correct. Disconnect and reconnect the device to retry.',
     description:
       '"Disconnect and reconnect your device to start the process again" device state',
   },
@@ -230,7 +236,8 @@ class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED ||
+      hwDeviceStatus === HwDeviceStatuses.UNRECOGNIZED_WALLET;
     const hasPassphraseLabel =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
