@@ -439,7 +439,7 @@ class WalletSendForm extends Component<Props, State> {
     if (this._isMounted) {
       this.setState(({ isReceiverAddressValidOnce }) => ({
         isReceiverAddressValid: isValid,
-        isReceiverAddressValidOnce: isValid ? true : isReceiverAddressValidOnce,
+        isReceiverAddressValidOnce: isValid || isReceiverAddressValidOnce,
       }));
     }
   }
