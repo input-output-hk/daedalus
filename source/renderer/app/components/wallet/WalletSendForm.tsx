@@ -246,7 +246,7 @@ class WalletSendForm extends Component<Props, State> {
     const receiverField = this.form.$('receiver');
 
     if (receiverField) {
-      receiverField.clear();
+      receiverField.onChange('');
       this.setReceiverValidity(false);
       this.focusField(receiverField);
     }
