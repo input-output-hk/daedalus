@@ -1652,7 +1652,7 @@ export default class HardwareWalletsStore extends Store {
         // Keep isTransactionInitiated active & Set new device listener by initiating transaction
         // Show message to reconnect proper software wallet device pair
         runInAction(
-          'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
+          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
           () => {
             this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
             this.activeDevicePath = null;
@@ -1773,6 +1773,13 @@ export default class HardwareWalletsStore extends Store {
             }
           );
         }
+      } else if (error.code === 'Device_InvalidState') {
+        runInAction(
+          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+          }
+        );
       } else {
         runInAction(
           'HardwareWalletsStore:: Cannot export extended public key',
