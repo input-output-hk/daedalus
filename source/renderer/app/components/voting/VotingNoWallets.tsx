@@ -8,7 +8,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './VotingNoWallets.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/attention-... Remove this comment to see the full error message
 import icon from '../../assets/images/attention-big-thin.inline.svg';
-import { NEXT_VOTING_FUND_NUMBER } from '../../config/votingConfig';
 
 const messages = defineMessages({
   headLine: {
@@ -33,6 +32,7 @@ const messages = defineMessages({
 type Props = {
   onGoToCreateWalletClick: (...args: Array<any>) => any;
   minVotingFunds: number;
+  nextFundNumber?: number;
 };
 export default class VotingNoWallets extends Component<Props> {
   static contextTypes = {
@@ -41,13 +41,17 @@ export default class VotingNoWallets extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onGoToCreateWalletClick, minVotingFunds } = this.props;
+    const {
+      onGoToCreateWalletClick,
+      minVotingFunds,
+      nextFundNumber,
+    } = this.props;
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />
         <h1>
           {intl.formatMessage(messages.headLine, {
-            nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+            nextVotingFundNumber: nextFundNumber,
           })}
         </h1>
         <p>

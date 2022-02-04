@@ -170,6 +170,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
       isTransactionConfirmed,
       transactionConfirmations,
       qrCode,
+      catalystFund,
     } = voting;
     const { openExternalLink } = app;
     const {
@@ -227,9 +228,11 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           onExternalLinkClick={openExternalLink}
           isTrezor={isTrezor}
           isHardwareWallet={isHardwareWallet}
+          nextFundNumber={catalystFund?.nextFundNumber}
         />
         {isConfirmationDialogOpen && (
           <ConfirmationDialog
+            nextFundNumber={catalystFund?.nextFundNumber}
             onConfirm={closeConfirmationDialog.trigger}
             onCancel={() => {
               this.props.actions.dialogs.closeActiveDialog.trigger();

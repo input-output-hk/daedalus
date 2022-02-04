@@ -75,6 +75,7 @@ type Props = {
   selectedWalletId: string | null | undefined;
   isWalletAcceptable: (...args: Array<any>) => any;
   getStakePoolById: (...args: Array<any>) => any;
+  nextFundNumber?: number;
 };
 type State = {
   selectedWalletId: string | null | undefined;
@@ -111,6 +112,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
+      nextFundNumber,
     } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const selectedWallet: Wallet | null | undefined = wallets.find(
@@ -167,6 +169,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage {...messages.description} />

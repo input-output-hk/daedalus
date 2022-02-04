@@ -12,6 +12,7 @@ import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/co
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
 import { FundPhases } from '../../../source/renderer/app/stores/VotingStore';
+import { CatalystFund } from '../../../source/renderer/app/api/voting/types';
 import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
   LANGUAGE_OPTIONS,
@@ -29,6 +30,17 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
+
+const mockFundInfo: CatalystFund = {
+  fundNumber: 7,
+  nextFundNumber: 8,
+  fundEndTime: new Date('Feb 3, 2022, 11:00 UTC'),
+  fundStartTime: new Date('Jan 20, 2022, 11:00 UTC'),
+  fundResults: new Date('Feb 10, 2022'),
+  nextRegistrationSnapshotTime: new Date('Apr 7, 2022, 11:00 UTC'),
+  registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
+  nextFundStartTime: new Date('Jan 6, 2022, 11:00 UTC'),
+};
 
 const assets = {
   available: [
@@ -96,6 +108,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 2', () => (
@@ -104,6 +117,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onBack={action('onBack')}
       stepsList={stepsList}
       activeStep={2}
+      nextFundNumber={8}
       transactionFee={
         new BigNumber(
           number('transactionFee', 0.3, {
@@ -136,6 +150,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onConfirm={action('onConfirm')}
       onRestart={action('onRestart')}
       transactionError={boolean('transactionError', false)}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 4', () => (
@@ -144,6 +159,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={4}
       onSetPinCode={action('onSetPinCode')}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 5', () => (
@@ -153,6 +169,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={2}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
+      nextFundNumber={8}
     />
   ));
 storiesOf('Voting|Voting Info', module)
@@ -161,6 +178,7 @@ storiesOf('Voting|Voting Info', module)
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo
+        fundInfo={mockFundInfo}
         // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
         fundPhase={select('Fund phase', [
           FundPhases.SNAPSHOT,

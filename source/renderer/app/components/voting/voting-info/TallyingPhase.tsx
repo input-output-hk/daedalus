@@ -2,11 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
-  CURRENT_VOTING_FUND_NUMBER,
-  VOTING_RESULTS_DATE,
-  VOTING_CAST_END_DATE,
-} from '../../../config/votingConfig';
-import {
   formattedDateTime,
   mapToLongDateTimeFormat,
 } from '../../../utils/formatters';
@@ -16,11 +11,13 @@ import type { Intl } from '../../../types/i18nTypes';
 import styles from './CurrentPhase.scss';
 import { messages } from './TallyingPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
+import type { CatalystFund } from '../../../api/voting/types';
 
 type Props = {
   currentLocale: Locale;
   currentDateFormat: string;
   currentTimeFormat: string;
+  fundInfo: CatalystFund;
   intl: Intl;
 };
 
@@ -28,6 +25,7 @@ function TallyingPhase({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
+  fundInfo,
   intl,
 }: Props) {
   const mappedFormats = mapToLongDateTimeFormat({
@@ -35,11 +33,11 @@ function TallyingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-  const endDated = formattedDateTime(VOTING_CAST_END_DATE, {
+  const endDated = formattedDateTime(fundInfo.fundEndTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-  const resultsDate = formattedDateTime(VOTING_RESULTS_DATE, {
+  const resultsDate = formattedDateTime(fundInfo.fundResults, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
@@ -47,7 +45,7 @@ function TallyingPhase({
     <section className={styles.root}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+          votingFundNumber: fundInfo.fundNumber,
         })}
       </h1>
       <div className={styles.block}>

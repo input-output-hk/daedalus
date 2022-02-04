@@ -44,6 +44,7 @@ class VotingRegistrationPage extends Component<Props> {
     if (!wallets.allWallets.length) {
       return (
         <VotingNoWallets
+          nextFundNumber={voting.fundInfo?.nextFundNumber}
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
           minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         />
@@ -53,6 +54,7 @@ class VotingRegistrationPage extends Component<Props> {
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     return (
       <VotingInfo
+        fundInfo={voting.catalystFund}
         fundPhase={voting.fundPhase}
         currentLocale={currentLocale}
         currentDateFormat={currentDateFormat}

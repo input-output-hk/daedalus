@@ -10,11 +10,9 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
-  VOTING_RESULTS_DATE,
   VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
-  NEXT_VOTING_FUND_NUMBER,
 } from '../config/votingConfig';
 import { votingPDFGenerator } from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
@@ -69,7 +67,7 @@ export default class VotingStore extends Store {
   @observable
   fundPhase: FundPhase = FundPhases.SNAPSHOT;
   @observable
-  catalystFund: CatalystFund | null = null;
+  catalystFund: Partial<CatalystFund> = {};
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
@@ -420,7 +418,7 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const nextVotingFundNumber = NEXT_VOTING_FUND_NUMBER;
+    const nextVotingFundNumber = this.catalystFund?.nextFundNumber;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
@@ -483,8 +481,10 @@ export default class VotingStore extends Store {
         date >= this.catalystFund?.fundStartTime &&
         date < this.catalystFund?.fundEndTime,
       [FundPhases.TALLYING]: (date: Date) =>
-        date >= this.catalystFund?.fundEndTime && date < VOTING_RESULTS_DATE,
-      [FundPhases.RESULTS]: (date: Date) => date >= VOTING_RESULTS_DATE,
+        date >= this.catalystFund?.fundEndTime &&
+        date < this.catalystFund?.fundResults,
+      [FundPhases.RESULTS]: (date: Date) =>
+        date >= this.catalystFund?.fundResults,
     };
     this.fundPhase =
       Object.values(FundPhases).find((phase: FundPhase) =>

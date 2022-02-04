@@ -28,17 +28,23 @@ export type SignatureParams = {
   };
 };
 export type GetCatalystFundResponse = {
+  id: number;
   fund_end_time: string;
   fund_name: string;
   fund_start_time: string;
   next_fund_start_time: string;
   next_registration_snapshot_time: string;
   registration_snapshot_time: string;
+  chain_vote_plans: Array<{
+    chain_committee_end_time: string;
+  }>;
 };
 export type CatalystFund = {
+  fundNumber: number;
+  nextFundNumber: number;
   fundEndTime: Date;
-  fundName: string;
   fundStartTime: Date;
+  fundResults: Date;
   nextFundStartTime: Date;
   nextRegistrationSnapshotTime: Date;
   registrationSnapshotTime: Date;

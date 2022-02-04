@@ -9,10 +9,7 @@ import {
   isValidRepeatPinCode,
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import {
-  VOTING_REGISTRATION_PIN_CODE_LENGTH,
-  NEXT_VOTING_FUND_NUMBER,
-} from '../../../config/votingConfig';
+import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsEnter... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
@@ -66,6 +63,7 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   onSetPinCode: (...args: Array<any>) => any;
+  nextFundNumber?: number;
 };
 
 @observer
@@ -137,7 +135,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, stepsList, activeStep } = this.props;
+    const { onClose, stepsList, activeStep, nextFundNumber } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
@@ -165,12 +163,13 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
             values={{
-              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+              nextVotingFundNumber: nextFundNumber,
             }}
           />
         </p>

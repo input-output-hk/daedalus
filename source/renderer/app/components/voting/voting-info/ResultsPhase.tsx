@@ -2,10 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import {
-  VOTING_CAST_END_DATE,
-  CURRENT_VOTING_FUND_NUMBER,
-} from '../../../config/votingConfig';
-import {
   formattedDateTime,
   mapToLongDateTimeFormat,
 } from '../../../utils/formatters';
@@ -16,12 +12,14 @@ import { messages } from './ResultsPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CurrentPhase.scss' or its co... Remove this comment to see the full error message
 import styles from './CurrentPhase.scss';
+import type { CatalystFund } from '../../../api/voting/types';
 
 type Props = {
   currentLocale: Locale;
   currentDateFormat: string;
   currentTimeFormat: string;
   onExternalLinkClick: (...args: Array<any>) => any;
+  fundInfo: CatalystFund;
   intl: Intl;
 };
 
@@ -29,6 +27,7 @@ function ResultsPhase({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
+  fundInfo,
   onExternalLinkClick,
   intl,
 }: Props) {
@@ -37,7 +36,7 @@ function ResultsPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-  const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
+  const endDate = formattedDateTime(fundInfo.fundEndTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
     currentTimeFormat: mappedFormats.currentTimeFormat,
@@ -46,7 +45,7 @@ function ResultsPhase({
     <section className={styles.root}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: CURRENT_VOTING_FUND_NUMBER,
+          votingFundNumber: fundInfo.fundNumber,
         })}
       </h1>
 

@@ -13,12 +13,14 @@ import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
 import { FundPhases } from '../../../stores/VotingStore';
 import type { FundPhase } from '../../../stores/VotingStore';
+import type { CatalystFund } from '../../../api/voting/types';
 
 type Props = {
   currentLocale: Locale;
   currentDateFormat: string;
   currentTimeFormat: string;
   fundPhase: FundPhase;
+  fundInfo: CatalystFund;
   onRegisterToVoteClick: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
 };
@@ -34,6 +36,7 @@ const VotingInfo = ({
   currentDateFormat,
   currentTimeFormat,
   fundPhase,
+  fundInfo,
   onRegisterToVoteClick,
   onExternalLinkClick,
 }: Props) => {
@@ -46,6 +49,7 @@ const VotingInfo = ({
         <div className={styles.bottomContent}>
           <div className={styles.leftContent}>
             <PhaseComponent
+              fundInfo={fundInfo}
               currentLocale={currentLocale}
               currentDateFormat={currentDateFormat}
               currentTimeFormat={currentTimeFormat}
@@ -60,6 +64,7 @@ const VotingInfo = ({
           </div>
           <div className={styles.rightContent}>
             <RegisterToVote
+              fundInfo={fundInfo}
               currentLocale={currentLocale}
               currentDateFormat={currentDateFormat}
               currentTimeFormat={currentTimeFormat}

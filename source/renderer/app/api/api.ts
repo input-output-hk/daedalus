@@ -2945,8 +2945,13 @@ export default class AdaApi {
         catalystFund,
       });
       return {
+        fundNumber: catalystFund.id + 1,
+        nextFundNumber: catalystFund.id + 2,
         fundEndTime: new Date(catalystFund.fund_end_time),
         fundStartTime: new Date(catalystFund.fund_start_time),
+        fundResults: new Date(
+          catalystFund.chain_vote_plans?.[0]?.chain_committee_end_time
+        ),
         nextFundStartTime: new Date(catalystFund.next_fund_start_time),
         nextRegistrationSnapshotTime: new Date(
           catalystFund.next_registration_snapshot_time
@@ -2954,7 +2959,6 @@ export default class AdaApi {
         registrationSnapshotTime: new Date(
           catalystFund.registration_snapshot_time
         ),
-        fundName: catalystFund.fund_name,
       };
     } catch (error) {
       logger.error('AdaApi::getCatalystFund error', {
