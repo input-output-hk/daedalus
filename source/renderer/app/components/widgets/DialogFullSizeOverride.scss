@@ -118,7 +118,7 @@
 
     .SimpleLink_root {
       --opacity: 0.8;
-      --mainColor: rgba(
+      --main-color: rgba(
         var(--theme-dialog-fullsize-secondary-text-action-color),
         1
       );
@@ -127,7 +127,7 @@
         var(--theme-dialog-fullsize-secondary-text-action-color),
         calc(0.75 * var(--opacity))
       );
-      color: var(--mainColor);
+      color: var(--main-color);
       opacity: var(--opacity);
 
       &:hover {
@@ -135,7 +135,7 @@
       }
 
       &:after {
-        background-color: var(--mainColor);
+        background-color: var(--main-color);
       }
     }
 

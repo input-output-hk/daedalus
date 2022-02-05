@@ -292,7 +292,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
-    // #fafbfc
     '--theme-dialog-fullsize-secondary-text-action-color': '250, 251, 252',
   },
   errors: {

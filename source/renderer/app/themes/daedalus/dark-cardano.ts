@@ -279,7 +279,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
     '--theme-dialog-fullsize-button-label-color': '#000000',
     '--theme-dialog-fullsize-button-label-color-hover': '#000000',
-    // #ffffff
     '--theme-dialog-fullsize-secondary-text-action-color': '255, 255, 255',
   },
   errors: {
