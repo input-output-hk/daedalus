@@ -1,4 +1,4 @@
-const manageTranslations = require('react-intl-translations-manager').default;
+import manageTranslations from 'react-intl-translations-manager';
 
 manageTranslations({
   messagesDirectory: 'translations/messages',
