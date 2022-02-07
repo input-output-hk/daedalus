@@ -18,7 +18,6 @@ import type {
   CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig,
-  BlockSyncType,
 } from '../types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
@@ -453,13 +452,9 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 /**
  * Channel for checking block replay progress
  */
-export const GET_BLOCK_SYNC_STATUS_CHANNEL = 'GetBlockSyncProgressChannel';
-export type GetBlockSyncProgressType = BlockSyncType;
-export type GetBlockSyncProgressRendererRequest = void;
-export type GetBlockSyncProgressMainResponse = {
-  progress: number;
-  type: GetBlockSyncProgressType;
-};
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices

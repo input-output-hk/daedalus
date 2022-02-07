@@ -90,6 +90,7 @@ const safeExit = async () => {
   pauseActiveDownloads();
 
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
       code: 0,
     });
@@ -105,15 +106,18 @@ const safeExit = async () => {
 
   try {
     const pid = cardanoNode.pid || 'null';
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
       pid,
     });
     await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
       code: 0,
     });
     safeExitWithCode(0);
   } catch (error) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
       error,
     });
