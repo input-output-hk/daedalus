@@ -8092,6 +8092,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Catalyst API unavailable",
+        "description": "Title",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.title",
+        "start": {
+          "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!We could not fetch the API to fetch the Catalyst Project dates",
+        "description": "Description 1",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.description1",
+        "start": {
+          "column": 16,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Please, try again later",
+        "description": "Description 2",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.description2",
+        "start": {
+          "column": 16,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/ApiError.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {

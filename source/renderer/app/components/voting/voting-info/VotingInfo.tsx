@@ -11,6 +11,7 @@ import TallyingPhase from './TallyingPhase';
 import Headline from './Headline';
 import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
+import ApiError from './ApiError';
 import { FundPhases } from '../../../stores/VotingStore';
 import type { FundPhase } from '../../../stores/VotingStore';
 import type { CatalystFund } from '../../../api/voting/types';
@@ -47,30 +48,36 @@ const VotingInfo = ({
         <Headline onExternalLinkClick={onExternalLinkClick} />
         <hr className={styles.separator} />
         <div className={styles.bottomContent}>
-          <div className={styles.leftContent}>
-            <PhaseComponent
-              fundInfo={fundInfo}
-              currentLocale={currentLocale}
-              currentDateFormat={currentDateFormat}
-              currentTimeFormat={currentTimeFormat}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-            <div className={styles.appStoreSpacing}>
-              <AppStore
-                onAppleStoreLinkClick={onExternalLinkClick}
-                onAndroidStoreLinkClick={onExternalLinkClick}
-              />
-            </div>
-          </div>
-          <div className={styles.rightContent}>
-            <RegisterToVote
-              fundInfo={fundInfo}
-              currentLocale={currentLocale}
-              currentDateFormat={currentDateFormat}
-              currentTimeFormat={currentTimeFormat}
-              onRegisterToVoteClick={onRegisterToVoteClick}
-            />
-          </div>
+          {!fundPhase ? (
+            <ApiError />
+          ) : (
+            <>
+              <div className={styles.leftContent}>
+                <PhaseComponent
+                  fundInfo={fundInfo}
+                  currentLocale={currentLocale}
+                  currentDateFormat={currentDateFormat}
+                  currentTimeFormat={currentTimeFormat}
+                  onExternalLinkClick={onExternalLinkClick}
+                />
+                <div className={styles.appStoreSpacing}>
+                  <AppStore
+                    onAppleStoreLinkClick={onExternalLinkClick}
+                    onAndroidStoreLinkClick={onExternalLinkClick}
+                  />
+                </div>
+              </div>
+              <div className={styles.rightContent}>
+                <RegisterToVote
+                  fundInfo={fundInfo}
+                  currentLocale={currentLocale}
+                  currentDateFormat={currentDateFormat}
+                  currentTimeFormat={currentTimeFormat}
+                  onRegisterToVoteClick={onRegisterToVoteClick}
+                />
+              </div>
+            </>
+          )}
         </div>
       </BorderedBox>
     </div>

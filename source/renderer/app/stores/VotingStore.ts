@@ -65,9 +65,9 @@ export default class VotingStore extends Store {
   @observable
   isConfirmationDialogOpen = false;
   @observable
-  fundPhase: FundPhase = FundPhases.SNAPSHOT;
+  fundPhase?: FundPhase;
   @observable
-  catalystFund: Partial<CatalystFund> = {};
+  catalystFund: CatalystFund;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
@@ -92,6 +92,7 @@ export default class VotingStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getCatalystFundRequest.execute();
     const catalystFund = this.getCatalystFundRequest.result;
+
     runInAction('Initialize fund', () => {
       this.catalystFund = catalystFund;
       this._checkFundPhase(new Date());
@@ -486,10 +487,9 @@ export default class VotingStore extends Store {
       [FundPhases.RESULTS]: (date: Date) =>
         date >= this.catalystFund?.fundResults,
     };
-    this.fundPhase =
-      Object.values(FundPhases).find((phase: FundPhase) =>
-        phaseValidation[phase](now)
-      ) || FundPhases.SNAPSHOT;
+    this.fundPhase = Object.values<FundPhase>(FundPhases).find((phase) =>
+      phaseValidation[phase](now)
+    );
   };
   _generateVotingRegistrationKey = async () => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
