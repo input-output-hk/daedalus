@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-const axios = require('axios');
-const https = require('https');
-const fs = require('fs');
-const { sampleSize, shuffle } = require('lodash');
-const { maryMnemonics } = require('./mnemonics');
+import axios from 'axios';
+import https from 'https';
+import fs from 'fs';
+import { sampleSize, shuffle } from 'lodash';
+import { maryMnemonics } from './mnemonics';
 
 const names = [
   'Madelyn',
@@ -22,7 +22,15 @@ const API_PORT = process.env.API_PORT || 8088;
 const IS_HTTPS = process.env.IS_HTTPS || false;
 const WALLET_COUNT = process.env.WALLET_COUNT || 3;
 
-async function main() {
+(async () => {
+function generateImportPayload(mnemonic, name) {
+  return {
+    name,
+    mnemonic_sentence: mnemonic,
+    passphrase: 'Secret1234',
+    address_pool_gap: 20
+  };
+}
   const shuffledMnemonics = shuffle(maryMnemonics);
   const shuffledNames = shuffle(names);
   try {
@@ -48,15 +56,4 @@ async function main() {
   } catch (e) {
     console.log(e);
   }
-}
-
-function generateImportPayload(mnemonic, name) {
-  return {
-    name,
-    mnemonic_sentence: mnemonic,
-    passphrase: 'Secret1234',
-    address_pool_gap: 20
-  };
-}
-
-main();
+})();
