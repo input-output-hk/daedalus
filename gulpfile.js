@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const shell = require('gulp-shell');
 const electronConnect = require('electron-connect');
-const flowRemoveTypes = require('gulp-flow-remove-types');
 const mainWebpackConfig = require('./source/main/webpack.config');
 const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
@@ -134,7 +133,6 @@ gulp.task('prepare:themes:utils', () =>
       'source/renderer/app/themes/utils/updateThemesCLI.js',
       'source/renderer/app/themes/utils/writeThemeUpdate.js',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/utils'))
 );
 
@@ -152,7 +150,6 @@ gulp.task('prepare:themes:daedalus', () =>
       'source/renderer/app/themes/daedalus/white.js',
       'source/renderer/app/themes/daedalus/yellow.js',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/daedalus'))
 );
 
@@ -162,7 +159,6 @@ gulp.task('prepare:themes:scripts', () =>
       'source/renderer/app/themes/scripts/check.js',
       'source/renderer/app/themes/scripts/update.js',
     ])
-    .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/scripts'))
 );
 
