@@ -28,8 +28,8 @@ export const generateFieldPanel = (labels: any, values: any, index: number) => {
       index === 1
         ? parseInt(values[index + 1].toString().length, 10) -
           parseInt(valueStr.length, 10)
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
-        : parseInt(EPOCH_MAX_LENGTH, 10) - parseInt(valueStr.length, 10);
+        : // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
+          parseInt(EPOCH_MAX_LENGTH, 10) - parseInt(valueStr.length, 10);
 
     switch (zerosToAdd) {
       case 1:

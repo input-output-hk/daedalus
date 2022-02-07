@@ -60,8 +60,8 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
     // Note: do not use window here otherwise the pool description cannot be
     // scrolled anymore because it closes the pop over immediately.
     const scrollContainer = props.scrollElementRef
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
-      ? props.scrollElementRef.current
+      ? // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
+        props.scrollElementRef.current
       : null;
 
     if (scrollContainer !== null) {
@@ -127,8 +127,8 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
       scrollElement={
         // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
         props.scrollElementRef && props.scrollElementRef.current
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
-          ? props.scrollElementRef.current
+          ? // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
+            props.scrollElementRef.current
           : window
       }
     >
