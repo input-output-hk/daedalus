@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -15,8 +15,6 @@ import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import gridIcon from '../../../assets/images/grid-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/grid-re... Remove this comment to see the full error message
 import gridRewardsIcon from '../../../assets/images/grid-rewards.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/list-ic... Remove this comment to see the full error message
-import listIcon from '../../../assets/images/list-ic.inline.svg';
 import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './StakePoolsSearch.messages';
@@ -59,9 +57,6 @@ function StakePoolsSearchComponent({
     null
   );
 
-  const [visible, setVisible] = useState(false);
-  const isPopOverVisible = visible || isListViewTooltipVisible;
-
   const autoSelectOnFocus = () =>
     searchInput?.current
       ? searchInput?.current?.inputElement.current.select()
@@ -84,10 +79,6 @@ function StakePoolsSearchComponent({
   const gridRewardsButtonClasses = classnames([
     styles.gridRewardsView,
     isGridRewardsView ? styles.selected : null,
-  ]);
-  const listButtonClasses = classnames([
-    styles.listView,
-    isListView ? styles.selected : null,
   ]);
   const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
   const searchInputClases = classnames([
@@ -140,11 +131,7 @@ function StakePoolsSearchComponent({
             offset={[0, -2]}
             content={intl.formatMessage(messages.gridIconTooltip)}
           >
-            <button
-              className={gridButtonClasses}
-              onClick={onGridView}
-              onMouseEnter={onListViewVisited}
-            >
+            <button className={gridButtonClasses} onClick={onGridView}>
               <SVGInline svg={gridIcon} />
             </button>
           </PopOver>
@@ -156,7 +143,6 @@ function StakePoolsSearchComponent({
               <button
                 className={gridRewardsButtonClasses}
                 onClick={onGridRewardsView}
-                onMouseEnter={onListViewVisited}
               >
                 <SVGInline svg={gridRewardsIcon} />
               </button>
