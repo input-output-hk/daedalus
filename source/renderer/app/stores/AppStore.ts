@@ -15,6 +15,7 @@ import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
+
 export default class AppStore extends Store {
   @observable
   error: LocalizableError | null | undefined = null;
@@ -25,7 +26,7 @@ export default class AppStore extends Store {
   @observable
   activeDialog: ApplicationDialog = null;
   @observable
-  newsFeedIsOpen: boolean = false;
+  newsFeedIsOpen = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -38,6 +39,7 @@ export default class AppStore extends Store {
       this._closeActiveDialog();
     });
     this.actions.app.openAboutDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.ABOUT);
     });
     // Daedalus Diagnostics dialog actions
@@ -45,12 +47,14 @@ export default class AppStore extends Store {
       this._closeActiveDialog();
     });
     this.actions.app.openDaedalusDiagnosticsDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
     this.actions.app.closeToggleRTSFlagsModeDialog.listen(() => {
       this._closeActiveDialog();
     });
     this.actions.app.openToggleRTSFlagsModeDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
     });
     this.actions.app.downloadLogs.listen(this._downloadLogs);
@@ -108,21 +112,25 @@ export default class AppStore extends Store {
 
     switch (uiPart) {
       case DIALOGS.ABOUT:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.ABOUT);
 
         break;
 
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
 
         break;
 
       case DIALOGS.TOGGLE_RTS_FLAGS_MODE:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
 
         break;
 
       case DIALOGS.ITN_REWARDS_REDEMPTION:
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.staking.onRedeemStart.trigger();
         break;
 
@@ -135,6 +143,7 @@ export default class AppStore extends Store {
         this.actions.router.goToRoute.trigger({
           route: ROUTES.SETTINGS.ROOT,
         });
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.dialogs.closeActiveDialog.trigger();
         break;
 
@@ -147,6 +156,7 @@ export default class AppStore extends Store {
               page: 'settings',
             },
           });
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.dialogs.closeActiveDialog.trigger();
         }
 

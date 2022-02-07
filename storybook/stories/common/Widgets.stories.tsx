@@ -13,12 +13,16 @@ import BigButtonForDialogs from '../../../source/renderer/app/components/widgets
 import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import InlineEditingInput from '../../../source/renderer/app/components/widgets/forms/InlineEditingInput';
 import CountdownWidget from '../../../source/renderer/app/components/widgets/CountdownWidget';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
 import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLink';
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
+
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
   messages: enMessages,
@@ -121,6 +125,7 @@ storiesOf('Common|Widgets', module)
           placeholder={text('inputFieldPlaceholder', 'Enter you text here')}
           onSubmit={action('onSubmit')}
           isValid={(value) => value && value.length > 3 && value !== 'error'}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           validationErrorMessage={text('validationErrorMessage', 'Error!')}
           successfullyUpdated={boolean('successfullyUpdated', true)}
           isActive={boolean('isActive', true)}
@@ -128,11 +133,13 @@ storiesOf('Common|Widgets', module)
           inputBlocked={boolean('inputBlocked', false)}
           disabled={boolean('disabled', false)}
           readOnly={boolean('readOnly', false)}
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2-4 arguments, but got 1.
           maxLength={number('maxLength')}
         />
       </div>
     </div>
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('BigButtonForDialogs', (props: { locale: string }) => (
     <div>
       <div
@@ -186,6 +193,7 @@ storiesOf('Common|Widgets', module)
       </div>
     </div>
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('MnemonicInputWidget - 9 words', (props: { locale: string }) => {
     const tokens = observable(['', '', '', '', '', '', '', '', '']);
     return (
@@ -205,12 +213,15 @@ storiesOf('Common|Widgets', module)
     );
   })
   .add('TinySwitch', () => <TinySwitch />)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('TinySwitch - short label', (props: { locale: string }) => (
     <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('ButtonLink', (props: { locale: string }) => (
     <ButtonLink
       label={intl[props.locale].formatMessage(messages.save)}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onClick={action('onClick')}
     />
   ))

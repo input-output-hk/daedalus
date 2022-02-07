@@ -9,6 +9,7 @@ import {
   SHOW_UI_PART_CHANNEL,
   TOGGLE_UI_PART_CHANNEL,
 } from '../../common/ipc/api';
+
 export const showUiPartChannel: MainIpcChannel<
   ShowUiPartRendererResponse,
   ShowUiPartMainRequest

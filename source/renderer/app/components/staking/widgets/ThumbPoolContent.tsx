@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clock-c... Remove this comment to see the full error message
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ThumbPoolContent.scss' or it... Remove this comment to see the full error message
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
@@ -12,8 +15,10 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ada-sym... Remove this comment to see the full error message
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
+
 type Props = {
   stakePool: StakePool;
   numberOfRankedStakePools: number;
@@ -104,6 +109,7 @@ class ThumbPoolContent extends Component<Props> {
           <div className={saturationClassnames}>
             <span
               style={{
+                // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
                 width: `${parseFloat(saturation).toFixed(2)}%`,
               }}
             />

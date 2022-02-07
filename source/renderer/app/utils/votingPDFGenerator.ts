@@ -6,6 +6,7 @@ import type { Network } from '../../../common/types/environment.types';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import globalMessages from '../i18n/global-messages';
+
 const messages = defineMessages({
   title: {
     id: 'voting.votingRegistration.pdf.title',

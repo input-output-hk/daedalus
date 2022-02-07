@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 type Props = {
   enabled: boolean;
   isOnRoute: boolean;

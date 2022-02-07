@@ -4,13 +4,14 @@ import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import type { SidebarWalletType } from '../types/sidebarTypes';
+
 export default class SidebarStore extends Store {
   @observable
   CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable
   activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable
-  isShowingSubMenus: boolean = true;
+  isShowingSubMenus = true;
 
   setup() {
     const { sidebar: sidebarActions } = this.actions;
@@ -68,7 +69,9 @@ export default class SidebarStore extends Store {
   @action
   _configureCategories = () => {
     const {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
       isFlight,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'typ... Remove this comment to see the full error message
       environment: { isDev, isMainnet },
     } = global;
     const {
@@ -95,6 +98,7 @@ export default class SidebarStore extends Store {
           validator = validator();
         }
 
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean | ((...args: any[]) => any)' is not ... Remove this comment to see the full error message
         return validator;
       }
     );

@@ -6,8 +6,11 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ReportIssue.scss' or its cor... Remove this comment to see the full error message
 import styles from './ReportIssue.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/link-ic... Remove this comment to see the full error message
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+
 const messages = defineMessages({
   reportConnectingIssueText: {
     id: 'loading.screen.reportIssue.connecting.text',

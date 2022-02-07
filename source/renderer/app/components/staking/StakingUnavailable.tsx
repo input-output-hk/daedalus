@@ -4,7 +4,9 @@ import { FormattedHTMLMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import globalMessages from '../../i18n/global-messages';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingUnavailable.scss' or ... Remove this comment to see the full error message
 import styles from './StakingUnavailable.scss';
+
 type Props = {
   syncPercentage: number;
 };

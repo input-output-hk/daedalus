@@ -12,6 +12,7 @@ import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+
 type Props = {
   activeStep: number;
   isDisabled: boolean;
@@ -57,6 +58,7 @@ const getOversaturationPercentage = (
   )
     return 0;
   const percentageIncrease = Number(
+    // @ts-ignore ts-migrate(2363) FIXME: The right-hand side of an arithmetic operation mus... Remove this comment to see the full error message
     (100 / maxDelegationFunds) * selectedWallet.availableAmount
   );
   return selectedPool.saturation + percentageIncrease - 100;
@@ -199,6 +201,7 @@ class DelegationSetupWizardDialog extends Component<Props> {
       default:
         content = (
           <DelegationStepsIntroDialog
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             onLearnMoreClick={onLearnMoreClick}
             onClose={onClose}
             onContinue={onContinue}

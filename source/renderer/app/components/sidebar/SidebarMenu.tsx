@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarMenu.scss' or its cor... Remove this comment to see the full error message
 import styles from './SidebarMenu.scss';
+
 type Props = {
   children: Node | null | undefined;
   visible: boolean;

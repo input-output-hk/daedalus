@@ -10,10 +10,12 @@ const getDataFromFunction = props => {
   let isUTC = false;
 
   if (prefix) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'RegExpMat... Remove this comment to see the full error message
     prefix = prefix[0];
   }
 
   if (extension) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'RegExpMat... Remove this comment to see the full error message
     extension = extension[0].replace('.', '');
   }
 
@@ -35,6 +37,7 @@ Given('I dont pass any props to the function', function () {
     extension,
     prefix,
     isUTC
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   } = getDataFromFunction();
   this.context.filename = filename;
   this.context.extension = extension;

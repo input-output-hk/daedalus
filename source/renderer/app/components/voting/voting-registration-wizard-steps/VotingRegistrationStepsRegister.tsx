@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -15,12 +16,14 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsRegis... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
@@ -90,6 +93,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -129,6 +133,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { spendingPassword } = this.form.values();
     this.props.onConfirm(spendingPassword);
   };
@@ -152,6 +157,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       isTrezor,
       isHardwareWallet,
     } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);

@@ -1,4 +1,5 @@
 import React, { Component, Children } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
@@ -6,6 +7,7 @@ import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';
 import { themeOverrides } from '../../../source/renderer/app/themes/overrides';
+
 type Props = {
   children: Node;
   propsForChildren?: any;

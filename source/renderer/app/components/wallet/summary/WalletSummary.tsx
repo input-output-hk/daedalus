@@ -8,6 +8,7 @@ import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletTokensList from '../tokens/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
+
 const messages = defineMessages({
   tokensListTitle: {
     id: 'wallet.summary.assets.tokensTitle',

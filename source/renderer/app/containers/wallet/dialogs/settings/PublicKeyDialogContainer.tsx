@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import WalletPublicKeyDialog from '../../../../components/wallet/settings/WalletPublicKeyDialog';
 import ICOPublicKeyDialog from '../../../../components/wallet/settings/ICOPublicKeyDialog';
+
 type Props = InjectedProps;
 
 @inject('actions', 'stores')

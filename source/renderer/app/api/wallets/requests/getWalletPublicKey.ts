@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
 import type { GetWalletPublicKeyRequest } from '../types';
+
 export const getWalletPublicKey = (
   config: RequestConfig,
   { walletId, role, index }: GetWalletPublicKeyRequest

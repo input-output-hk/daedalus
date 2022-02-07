@@ -5,6 +5,7 @@ import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';
+
 const messages = defineMessages({
   learnMoreLinkUrl: {
     id: 'staking.rewards.learnMore.linkUrl',
@@ -58,6 +59,7 @@ class StakingRewardsPage extends Component<Props> {
         rewards={rewards}
         isLoading={false}
         isExporting={wallets.generatingRewardsCsvInProgress}
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ rewards: any; isLoading: false; isExportin... Remove this comment to see the full error message
         onLearnMoreClick={this.handleLearnMoreClick}
         onExportCsv={requestCSVFile.trigger}
         onCopyAddress={this.handleCopyAddress}

@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
+
 type WalletInitData = {
   name: string;
   account_public_key: string;

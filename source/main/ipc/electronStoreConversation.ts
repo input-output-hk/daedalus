@@ -8,6 +8,7 @@ import {
 } from '../../common/config/electron-store.config';
 import type { ElectronStoreMessage } from '../../common/ipc/api';
 import type { StorageKey } from '../../common/types/electron-store.types';
+
 const store = new ElectronStore();
 // MainIpcChannel<Incoming, Outgoing>
 export const electronStoreConversation: MainIpcConversation<
@@ -74,5 +75,6 @@ export const requestElectronStore = (request: ElectronStoreMessage) => {
   }
 };
 export const handleElectronStoreChannel = () => {
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(request: ElectronStoreMessage) ... Remove this comment to see the full error message
   electronStoreConversation.onRequest(requestElectronStore);
 };

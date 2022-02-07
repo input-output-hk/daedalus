@@ -8,9 +8,13 @@ import type {
   GenerateVotingPDFRendererRequest,
   GenerateVotingPDFMainResponse,
 } from '../../common/ipc/api';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/NotoSa... Remove this comment to see the full error message
 import fontRegularEn from '../../common/assets/pdf/NotoSans-Regular.ttf';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/NotoSa... Remove this comment to see the full error message
 import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/arial-... Remove this comment to see the full error message
 import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
+
 export const generateVotingPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   GenerateVotingPDFRendererRequest,

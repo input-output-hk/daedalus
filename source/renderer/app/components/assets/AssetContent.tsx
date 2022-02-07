@@ -4,12 +4,16 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetContent.scss' or its co... Remove this comment to see the full error message
 import styles from './AssetContent.scss';
 import { hexToString } from '../../utils/strings';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/copy-asset... Remove this comment to see the full error message
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/check-w.in... Remove this comment to see the full error message
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
+
 const messages = defineMessages({
   fingerprintAssetParam: {
     id: 'assets.assetToken.param.fingerprint',
@@ -76,6 +80,7 @@ type Props = {
 type ParamCopied = string | null | undefined;
 const AssetContent = observer((props: Props) => {
   const [paramCopied, setParamCopied] = useState<ParamCopied>(null);
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   let copyNotificationTimeout: TimeoutID;
 
   const handleCopyParam = (

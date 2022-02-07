@@ -26,6 +26,7 @@ import type {
   DownloadDataUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
+
 export const downloads = {};
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
@@ -85,9 +86,11 @@ export const getEventActions = async (
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   let checkNoEndEvent: TimeoutID;
 
   const startEvent = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:startEvent.');
     const eventType = types.START;
     const data = DOWNLOAD_DATA_DEFAULT;
@@ -105,6 +108,7 @@ export const getEventActions = async (
     totalSize,
     downloadedSize: diskFileSize,
   }: DownloadInfoInit) => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:downloadEvent.');
     serverFileSize = totalSize;
     const rawData: DownloadDataUpdate = {
@@ -173,6 +177,7 @@ export const getEventActions = async (
   }: DownloadInfoEnd) => {
     clearTimeout(checkNoEndEvent);
     delete downloads[downloadId];
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:endEvent.');
     const rawData: DownloadDataUpdate = {
       ...{
@@ -198,6 +203,7 @@ export const getEventActions = async (
   };
 
   const pauseEvent = async () => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('DownloadManager:pauseEvent.');
     const newState: DownloadDataUpdate = {
       state: states.PAUSED,

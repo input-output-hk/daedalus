@@ -6,6 +6,7 @@ import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SettingsLayout from '../../../../source/renderer/app/components/settings/SettingsLayout';
 import SettingsMenu from '../../../../source/renderer/app/components/settings/menu/SettingsMenu';
+
 const pageNames = {
   '/settings/index': 'General',
   '/settings/stake-pools': 'Stake Pools',
@@ -36,6 +37,7 @@ export default (story: Record<string, any>, context: Record<string, any>) => {
   return (
     <StoryDecorator>
       <StoryProvider>
+        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <StoryLayout activeSidebarCategory="/settings" {...context}>
           <SettingsLayout menu={menu} activePage="/settings">
             {storyWithKnobs}

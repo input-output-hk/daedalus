@@ -174,12 +174,12 @@ export class CardanoNode {
   /**
    * Number of retries to startup the node (without ever reaching running state)
    */
-  _startupTries: number = 0;
+  _startupTries = 0;
 
   /**
    * Flag which makes cardano node to exit Daedalus after stopping
    */
-  _exitOnStop: boolean = false;
+  _exitOnStop = false;
 
   /**
    * All faults that have been injected and confirmed by cardano-node.
@@ -272,7 +272,7 @@ export class CardanoNode {
    * @param isForced {boolean}
    * @returns {Promise<void>} resolves if the node could be started, rejects with error otherwise.
    */
-  start = async (isForced: boolean = false): Promise<void> => {
+  start = async (isForced = false): Promise<void> => {
     const { _log } = this;
     // Guards
     const nodeCanBeStarted = await this._canBeStarted();
@@ -351,6 +351,7 @@ export class CardanoNode {
             }
           );
 
+          // @ts-ignore ts-migrate(2740) FIXME: Type 'Selfnode' is missing the following propertie... Remove this comment to see the full error message
           this._node = node;
 
           this._handleCardanoNodeMessage({
@@ -384,6 +385,7 @@ export class CardanoNode {
           });
           this._node = node;
 
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           _log.info('Starting cardano-node now...');
 
           _log.info(`Current working directory is: ${process.cwd()}`, {
@@ -411,8 +413,11 @@ export class CardanoNode {
 
                 this._handleCardanoNodeExit(code, signal);
               });
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
               node.pid = processes.node.pid;
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'wpid' does not exist on type 'Launcher'.
               node.wpid = processes.wallet.pid;
+              // @ts-ignore ts-migrate(2339) FIXME: Property 'connected' does not exist on type 'Launc... Remove this comment to see the full error message
               node.connected = true; // TODO: use processes.wallet.connected here
 
               _log.info(
@@ -482,11 +487,13 @@ export class CardanoNode {
     const { _node, _log, _config } = this;
 
     if (await this._isDead()) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       _log.info('CardanoNode#stop: process is not running anymore');
 
       return Promise.resolve();
     }
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     _log.info('CardanoNode#stop: stopping cardano-node process');
 
     try {
@@ -524,14 +531,17 @@ export class CardanoNode {
     const { _node, _log } = this;
     return new Promise(async (resolve, reject) => {
       if (await this._isDead()) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode#kill: process is already dead');
 
         return Promise.resolve();
       }
 
       try {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode#kill: killing cardano-node process');
 
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'kill' does not exist on type 'Launcher'.
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
@@ -542,6 +552,7 @@ export class CardanoNode {
 
         resolve();
       } catch (_) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode#kill: could not kill cardano-node');
 
         await this._storeProcessStates();
@@ -560,12 +571,13 @@ export class CardanoNode {
    * @param isForced {boolean}
    * @returns {Promise<void>} resolves if the node could be restarted, rejects with error otherwise.
    */
-  async restart(isForced: boolean = false): Promise<void> {
+  async restart(isForced = false): Promise<void> {
     const { _log } = this;
 
     try {
       // Stop cardano nicely if it is still awake
       if (this._isConnected()) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode#restart: stopping current node');
 
         await this.stop();
@@ -618,6 +630,7 @@ export class CardanoNode {
 
     this._changeToState(CardanoNodeStates.UPDATING);
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     _log.info('CardanoNode: waiting for node to apply update');
 
     try {
@@ -627,6 +640,7 @@ export class CardanoNode {
       );
       await this._waitForNodeProcessToExit(_config.updateTimeout);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       _log.info('CardanoNode: did not apply update as expected, killing it...');
 
       return this.kill();
@@ -648,6 +662,7 @@ export class CardanoNode {
     const fault = request[0];
     const isEnabled = request[1];
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'send' does not exist on type 'Launcher'.
     this._node.send({
       SetFInject: request,
     });
@@ -768,6 +783,7 @@ export class CardanoNode {
       this._transitionListeners.onError(code, signal);
 
       try {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode: restarting');
 
         await this.restart();
@@ -804,10 +820,12 @@ export class CardanoNode {
       try {
         if (_node)
           await this._ensureProcessIsNotRunning(
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
             _node.pid,
             CARDANO_PROCESS_NAME
           );
       } catch (e) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         _log.info('CardanoNode: did not exit correctly');
       }
     }
@@ -873,9 +891,11 @@ export class CardanoNode {
         return _transitionListeners.onUpdated();
 
       case CardanoNodeStates.CRASHED:
+        // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
         return _transitionListeners.onCrashed(...args);
 
       case CardanoNodeStates.ERRORED:
+        // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
         return _transitionListeners.onError(...args);
 
       case CardanoNodeStates.UNRECOVERABLE:
@@ -889,6 +909,7 @@ export class CardanoNode {
    * Checks if cardano-node child_process is connected and can be interacted with
    * @returns {boolean}
    */
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'connected' does not exist on type 'Launc... Remove this comment to see the full error message
   _isConnected = (): boolean => this._node != null && this._node.connected;
 
   /**
@@ -960,6 +981,7 @@ export class CardanoNode {
   _ensureCurrentCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log, _node } = this;
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     _log.info(
       'CardanoNode: checking if current cardano-node process is still running'
     );
@@ -968,6 +990,7 @@ export class CardanoNode {
       return Promise.resolve();
     }
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
     return this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
   };
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
@@ -1077,6 +1100,7 @@ export class CardanoNode {
     const { _log } = this;
 
     if (this._node != null) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
       const { pid } = this._node;
 
       _log.info('CardanoNode: storing last cardano-node PID', {
@@ -1094,6 +1118,7 @@ export class CardanoNode {
         // saves current port/pid in file system
         store.set(identifier, data);
 
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         this._log.info(`CardanoNode: ${identifier} stored successfully`);
 
         resolve();
@@ -1110,9 +1135,11 @@ export class CardanoNode {
     new Promise((resolve, reject) => {
       try {
         // retrieves previous port/pid from file system
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'unknown' is not assignable to type 'number'.
         const data: number | null | undefined = store.get(identifier);
 
         if (!data) {
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           this._log.info(`CardanoNode: get ${identifier} returned null`);
 
           resolve(null);
@@ -1133,6 +1160,7 @@ export class CardanoNode {
     });
   _isNodeProcessStillRunning = async (): Promise<boolean> =>
     this._node != null &&
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'pid' does not exist on type 'Launcher'.
     this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
   _isNodeProcessNotRunningAnymore = async () =>
     (await this._isNodeProcessStillRunning()) === false;

@@ -8,11 +8,14 @@ import type {
 } from '../api/transactions/types';
 import type { Tokens } from '../api/assets/types';
 import type { TransactionMetadata } from '../types/TransactionMetadata';
+
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
   FAILED: 'expired',
 };
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const TransactionTypes: EnumMap<string, TransactionType> = {
   CARD: 'card',
   EXPEND: 'expend',
@@ -22,11 +25,11 @@ export const TransactionTypes: EnumMap<string, TransactionType> = {
 export const TransactionWithdrawal: TransactionWithdrawalType = 'self';
 export class WalletTransaction {
   @observable
-  id: string = '';
+  id = '';
   @observable
   type: TransactionType;
   @observable
-  title: string = '';
+  title = '';
   @observable
   amount: BigNumber;
   @observable
@@ -38,7 +41,7 @@ export class WalletTransaction {
   @observable
   date: Date | null | undefined;
   @observable
-  description: string = '';
+  description = '';
   @observable
   addresses: TransactionAddresses = {
     from: [],

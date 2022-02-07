@@ -2,6 +2,7 @@ import { Given, When, Then } from "cucumber";
 import { expect } from "chai";
 import { isActiveWalletBeingRestored, waitForActiveRestoreNotification, getWalletByName } from "./helpers";
 import { waitUntilTextInSelector, scrollIntoView } from "../../../common/e2e/steps/helpers";
+
 Given(/^I see the restore wallet dialog$/, function () {
   return this.client.waitForVisible('.WalletRestoreDialog_component');
 });

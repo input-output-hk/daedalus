@@ -24,6 +24,7 @@ import {
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step1ConfigurationDialog.scs... Remove this comment to see the full error message
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -31,7 +32,9 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.step1.title',
@@ -151,6 +154,7 @@ class Step1ConfigurationDialog extends Component<Props> {
   };
   recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         recoveryPhrase: {
@@ -194,6 +198,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: () => this.props.onContinue(),
     });
@@ -202,9 +207,11 @@ class Step1ConfigurationDialog extends Component<Props> {
   get canSubmit() {
     const { isCalculatingReedemFees, wallet, error } = this.props;
     const { form } = this;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance2isChecked } = form.$(
       'checkboxAcceptance2'
     );
@@ -214,6 +221,7 @@ class Step1ConfigurationDialog extends Component<Props> {
       !error &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
       form.isValid
     );
   }
@@ -240,6 +248,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     if (
       !isCalculatingReedemFees &&
       error &&
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'LocalizableE... Remove this comment to see the full error message
       error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet'
     )
       errorMessage = (
@@ -248,6 +257,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     if (
       !isCalculatingReedemFees &&
       error &&
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'LocalizableE... Remove this comment to see the full error message
       error.id === 'staking.redeemItnRewards.step1.errorMessage'
     )
       errorMessage = (
@@ -260,9 +270,13 @@ class Step1ConfigurationDialog extends Component<Props> {
           />
         </p>
       );
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletsDropdownField = form.$('walletsDropdown');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
     const validRecoveryPhase = recoveryPhraseField.isValid;
@@ -316,6 +330,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         actions={actions}
         onContinue={onContinue}
         onClose={onClose}

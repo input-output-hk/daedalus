@@ -1,4 +1,5 @@
 import type { SidebarWalletType } from '../../types/sidebarTypes';
+
 export type SidebarMenus = {
   wallets:
     | {

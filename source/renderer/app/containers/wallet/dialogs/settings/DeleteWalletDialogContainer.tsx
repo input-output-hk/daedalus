@@ -4,6 +4,7 @@ import { defineMessages } from 'react-intl';
 import WalletSettingsActionConfirmationDialog from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { WalletSettingRemoveMessages } from '../../../../components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
+
 type Props = InjectedProps;
 const messages: WalletSettingRemoveMessages = defineMessages({
   dialogTitle: {

@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { createWallets, getWalletByName } from "./helpers";
 import { MAX_ADA_WALLETS_COUNT } from "../../../../source/renderer/app/config/numbersConfig";
 import { sidebarHelpers } from "../../../navigation/e2e/steps/helpers";
+
 Given('I create wallets until I reach the maximum number permitted', async function () {
   const wallets = [...Array(MAX_ADA_WALLETS_COUNT)].map((x, i) => ({
     name: `Wallet ${i + 1}`,
@@ -18,6 +19,7 @@ When('I should see maximum number of wallets in the wallets list', async functio
 });
 When('I delete the last wallet', async function () {
   const wallet = await getWalletByName.call(this, 'Wallet 20');
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute((walletId, isLegacy) => daedalus.actions.wallets.deleteWallet.trigger({
     walletId,
     isLegacy

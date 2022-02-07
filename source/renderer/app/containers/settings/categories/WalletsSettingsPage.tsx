@@ -31,6 +31,7 @@ class WalletsSettingsPage extends Component<InjectedProps> {
     return (
       <WalletsSettings
         currencySelected={selected}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currencyRate={rate}
         currencyList={currencyList}
         currencyIsActive={isActive}

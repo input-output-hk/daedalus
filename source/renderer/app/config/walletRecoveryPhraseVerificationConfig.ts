@@ -2,6 +2,7 @@ import type {
   WalletRecoveryPhraseVerificationStatusesType as Status,
   WalletRecoveryPhraseVerificationTypesType as Type,
 } from '../types/walletRecoveryPhraseVerificationTypes';
+
 export const RECOVERY_PHRASE_VERIFICATION_STATUSES: Record<string, Status> = {
   OK: 'ok',
   OK_TIME_UNTIL: 'okTimeUntil',

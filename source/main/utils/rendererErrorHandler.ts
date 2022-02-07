@@ -1,14 +1,16 @@
 import { BrowserWindow } from 'electron';
 import { logger } from './logging';
+
 export default class RendererErrorHandler {
-  count: number = 0;
-  maxReloads: number = 1;
+  count = 0;
+  maxReloads = 1;
   window: BrowserWindow | null | undefined = null;
   createMainWindow: ((...args: Array<any>) => any) | null | undefined = null;
 
   setup(window: BrowserWindow, createMainWindow: (...args: Array<any>) => any) {
     this.window = window;
     this.createMainWindow = createMainWindow;
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Renderer Error Handler started');
   }
 

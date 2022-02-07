@@ -27,6 +27,7 @@ export const getColorFromRange = (
 
   if (typeof optionsOrNumberOfItems === 'object') {
     options = optionsOrNumberOfItems;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'numberOfItems' does not exist on type '{... Remove this comment to see the full error message
     numberOfItems = options.numberOfItems || numberOfItems;
   } else if (typeof optionsOrNumberOfItems === 'number') {
     numberOfItems = optionsOrNumberOfItems;

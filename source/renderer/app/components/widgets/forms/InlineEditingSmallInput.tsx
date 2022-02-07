@@ -9,11 +9,16 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingSmallInput.scss... Remove this comment to see the full error message
 import styles from './InlineEditingSmallInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/arrow-r... Remove this comment to see the full error message
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
+
 type Props = {
   className?: string;
   isActive: boolean;
@@ -46,6 +51,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     onCancelEditing: () => {},
   };
   validator = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         inputField: {
@@ -70,6 +76,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
@@ -124,6 +131,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   };
   onCancel = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
     this.setState({
@@ -163,6 +171,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     } = this.props;
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([
@@ -225,6 +234,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
                   <SVGInline
                     svg={penIcon}
                     className={styles.penIcon}
+                    // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
                     style={{
                       pointerEvents: 'none',
                     }}
@@ -246,6 +256,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
                     <SVGInline
                       svg={crossIcon}
                       className={styles.crossIcon}
+                      // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
                       style={{
                         pointerEvents: 'none',
                       }}
@@ -269,6 +280,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
                       <SVGInline
                         svg={arrowIcon}
                         className={styles.arrowIcon}
+                        // @ts-ignore ts-migrate(2322) FIXME: Type '{ svg: any; className: any; style: { pointer... Remove this comment to see the full error message
                         style={{
                           pointerEvents: 'none',
                         }}

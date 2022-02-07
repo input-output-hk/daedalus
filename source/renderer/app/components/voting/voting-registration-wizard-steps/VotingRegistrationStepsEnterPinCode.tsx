@@ -13,8 +13,10 @@ import {
   VOTING_REGISTRATION_PIN_CODE_LENGTH,
   NEXT_VOTING_FUND_NUMBER,
 } from '../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsEnter... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
+
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
@@ -72,6 +74,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         pinCode: {
@@ -122,6 +125,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { pinCode } = form.values();
@@ -137,7 +141,9 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const pinCodeField = form.$('pinCode');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
@@ -145,6 +151,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
       {
         label: buttonLabel,
         onClick: this.submit,
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
         disabled: !form.isValid,
         primary: true,
       },

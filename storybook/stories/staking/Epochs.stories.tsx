@@ -6,6 +6,7 @@ import StakingEpochs from '../../../source/renderer/app/components/staking/epoch
 // Dummy data initialization
 import PREVIOUS_EPOCHS from '../../../source/renderer/app/config/stakingPreviousEpoch.dummy.json';
 import CURRENT_EPOCHS from '../../../source/renderer/app/config/stakingCurrentEpoch.dummy.json';
+
 const threeDaysFromToday = moment().add(3, 'days');
 
 const endDateTimeKnob = (name, defaultValue) => {
@@ -16,9 +17,11 @@ const endDateTimeKnob = (name, defaultValue) => {
 export const StakingEpochsStory = () => (
   <StakingEpochs
     currentEpochName={CURRENT_EPOCHS.name}
+    // @ts-ignore ts-migrate(2739) FIXME: Type '{ pool: { id: string; ranking: number; ticke... Remove this comment to see the full error message
     currentEpochData={CURRENT_EPOCHS.data}
     currentEpochEndDateTime={endDateTimeKnob(
       'Current Epoch End DateTime',
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       new Date(threeDaysFromToday)
     )}
     currentEpochProgress={number(
@@ -32,6 +35,7 @@ export const StakingEpochsStory = () => (
       }
     )}
     previousEpochName={PREVIOUS_EPOCHS.name}
+    // @ts-ignore ts-migrate(2739) FIXME: Type '{ pool: { id: string; ranking: number; ticke... Remove this comment to see the full error message
     previousEpochData={PREVIOUS_EPOCHS.data}
     isLoading={false}
   />

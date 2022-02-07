@@ -4,6 +4,7 @@ import type {
   GenerateCsvRendererRequest,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const generateCsvChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GenerateCsvMainResponse,

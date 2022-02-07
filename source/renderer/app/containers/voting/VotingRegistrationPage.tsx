@@ -11,6 +11,7 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
 import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -34,6 +35,7 @@ class VotingRegistrationPage extends Component<Props> {
       return (
         <VotingUnavailable
           syncPercentage={syncPercentage}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ syncPercentage: any; onExternalLinkClick: ... Remove this comment to see the full error message
           onExternalLinkClick={openExternalLink}
         />
       );

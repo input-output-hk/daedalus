@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { Radio } from 'react-polymorph/lib/components/Radio';
 import { RadioSkin } from 'react-polymorph/lib/skins/simple/RadioSkin';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RadioSet.scss' or its corres... Remove this comment to see the full error message
 import styles from './RadioSet.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RadioOverride.scss' or its c... Remove this comment to see the full error message
 import stylesOverride from './RadioOverride.scss';
+
 type Props = {
   label?: Node;
   items: Array<any>;

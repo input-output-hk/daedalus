@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnosticsDialog.sc... Remove this comment to see the full error message
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import { buildSystemInfo } from '../../utils/buildSystemInfo';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -91,6 +93,7 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
           systemInfo={systemInfo}
           coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: SystemInfo; coreInfo: { daedal... Remove this comment to see the full error message
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
           isStaging={environment.isStaging}

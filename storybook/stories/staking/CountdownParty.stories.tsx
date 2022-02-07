@@ -8,6 +8,7 @@ import StakingInfoCountdown from '../../../source/renderer/app/components/stakin
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
+
 storiesOf('Decentralization | Countdown', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
@@ -20,6 +21,7 @@ storiesOf('Decentralization | Countdown', module)
     return (
       <div>
         <TopBar
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onToggleSidebar={action('onToggleSidebar')}
           formattedWalletAmount={1.0}
           currentRoute=""
@@ -34,6 +36,7 @@ storiesOf('Decentralization | Countdown', module)
           <NodeSyncStatusIcon
             isSynced
             syncPercentage={100}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             isProduction
             isMainnet
             hasTadaIcon={isAlonzoActivated}
@@ -55,6 +58,7 @@ storiesOf('Decentralization | Countdown', module)
           onLearnMoreClick={action('onLearnMoreClick')}
           startDateTime={startDateTime}
           onSetStakingInfoWasOpen={action('onSetStakingInfoWasOpen')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAnimating={boolean('isAnimating', false)}
           isAlonzoActivated={boolean('isAlonzoActivated', false)}
           stakingInfoWasOpen={boolean('stakingInfoWasOpen', false)}

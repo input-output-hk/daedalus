@@ -14,15 +14,17 @@ import { momentLocales, LOCALES } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
 import type { AssetMetadata } from '../api/assets/types';
+
 export const formattedWalletAmount = (
   amount: BigNumber,
-  withCurrency: boolean = true,
-  long: boolean = true,
-  currency: string = 'ADA'
+  withCurrency = true,
+  long = true,
+  currency = 'ADA'
 ): string => {
   let formattedAmount = long
     ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   const { decimalSeparator } = BigNumber.config().FORMAT;
 
   if (!long && decimalSeparator !== '.') {
@@ -50,6 +52,7 @@ export const formattedWalletCurrencyAmount = (
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   metadata?: AssetMetadata | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   decimals: number | null | undefined,
   isShort?: boolean
 ): string => {
@@ -62,6 +65,7 @@ export const formattedTokenWalletAmount = (
        * Short formatting for >= 1000
        * E.G.: 1,000,000 prints '1M'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = shortNumber(formattedAmount);
     } else if (formattedAmount.isZero()) {
       return '0';
@@ -70,22 +74,27 @@ export const formattedTokenWalletAmount = (
        * Short formatting for < 0.01
        * E.G.: 0.000009 prints '< 0.01'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = '< 0.01';
     } else {
       /*
        * Short formatting for < 1000 & > 0.01
        * E.G.: 0.999999 prints '0.99'
        */
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       formattedAmount = toFixedWithoutRounding(formattedAmount.toFormat(), 2);
     }
   } else {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     formattedAmount = formattedAmount.toFormat(decimals);
   }
 
   if (ticker) {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     formattedAmount += ` ${ticker}`;
   }
 
+  // @ts-ignore ts-migrate(2322) FIXME: Type 'BigNumber' is not assignable to type 'string... Remove this comment to see the full error message
   return formattedAmount;
 };
 export const formattedTokenDecimals = (
@@ -161,10 +170,12 @@ export const formattedAmountToBigNumber = (amount: string): BigNumber => {
 export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
   const parsedNumber = parseFloat(number).toFixed(digits);
   return new BigNumber(parsedNumber).toFormat(digits);
 };
 export const formattedAmountToLovelace = (amount: string): number =>
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
@@ -174,6 +185,7 @@ export const formattedBytesToSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes === 0) return 'n/a';
   const i = parseInt(
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
     10
   );
@@ -188,6 +200,7 @@ export type FormattedDownloadData = {
 };
 export const formattedDownloadData = (
   downloadData?: DownloadData | null | undefined,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   userLocale: Locale
 ): FormattedDownloadData => {
   let timeLeft = '';
@@ -208,6 +221,7 @@ export const formattedDownloadData = (
     timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
     progress = parseInt(rawProgress, 10);
   }
 

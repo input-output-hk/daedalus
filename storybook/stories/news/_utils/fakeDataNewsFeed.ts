@@ -2,11 +2,13 @@ import { version } from '../../../../package.json';
 import News from '../../../../source/renderer/app/domains/News';
 import { update } from './fakeDataUpdate';
 import type { NewsType } from '../../../../source/renderer/app/api/news/types';
+
 export const getNewsItem = (
   id: number,
   type: NewsType,
   locale: string,
   read?: boolean
+// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News =>
   new News.News({
     id,

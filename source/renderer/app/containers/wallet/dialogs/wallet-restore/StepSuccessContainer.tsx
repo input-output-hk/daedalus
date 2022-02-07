@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import SuccessDialog from '../../../../components/wallet/wallet-restore/SuccessDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 

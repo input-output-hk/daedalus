@@ -36,6 +36,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isDelegating
     };
     const hasAssets = false;
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
   });
   it(`<false> in case of:
@@ -53,6 +54,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isDelegating
     };
     const hasAssets = false;
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
   });
   it(`<true> in case of:
@@ -70,6 +72,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isDelegating
     };
     const hasAssets = false;
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
   });
   it(`<false> in case of:
@@ -87,6 +90,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isDelegating
     };
     const hasAssets = false;
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
   });
   it(`<true> in case of:
@@ -104,6 +108,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isDelegating
     };
     const hasAssets = true;
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
   });
 });

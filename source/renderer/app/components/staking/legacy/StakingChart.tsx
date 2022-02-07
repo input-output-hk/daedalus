@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
 import StakingChartTooltip from './StakingChartTooltip';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingChart.scss' or its co... Remove this comment to see the full error message
 import styles from './StakingChart.scss';
 
 class CustomReferenceLine extends ReferenceLine {
@@ -94,6 +95,7 @@ class StakingChart extends Component<Props, State> {
             ticks={ticks.slice()}
             domain={['dataMin', 'dataMax + 10']}
           />
+          {/* @ts-ignore ts-migrate(2607) FIXME: JSX element class does not support attributes beca... Remove this comment to see the full error message */}
           <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
           <Bar
             dataKey="numberOfTransactions"

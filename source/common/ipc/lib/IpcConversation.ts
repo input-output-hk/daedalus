@@ -1,5 +1,6 @@
 import { isString } from 'lodash';
 import uuid from 'uuid';
+
 export type IpcSender = {
   send: (channel: string, conversationId: string, ...args: Array<any>) => void;
 };

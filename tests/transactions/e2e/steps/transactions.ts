@@ -16,6 +16,7 @@ Given(/^I have made the following transactions:$/, {
     return {
       walletId: sourceWallet.id,
       destinationWalletId: destinationWallet.id,
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
       amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
       passphrase: 'Secret1234',
       isLegacy: sourceWallet.isLegacy
@@ -26,6 +27,7 @@ Given(/^I have made the following transactions:$/, {
   // Sequentially (and async) create transactions with for loop
   for (const tx of txData) {
     const txResponse = await this.client.executeAsync((transaction, done) => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.addresses.getAddressesByWalletId(transaction.destinationWalletId).then(addresses => daedalus.api.ada.createTransaction(window.Object.assign(transaction, {
         address: addresses[0].id // First address of receiving wallet
 
@@ -38,6 +40,7 @@ When(/^I fill out the send form with value equals to "([^"]*)" wallet amount$/, 
   const wallet = await getWalletByName.call(this, walletName);
   const walletId = getRawWalletId(wallet.id);
   const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.getAddresses({
       walletId,
       isLegacy
@@ -46,6 +49,7 @@ When(/^I fill out the send form with value equals to "([^"]*)" wallet amount$/, 
   // Check for pending transactions
   await this.client.executeAsync((wallet, walletAddress, done) => {
     const checkPendingTransactions = () => {
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       if (!daedalus.stores.transactions.pendingTransactionsCount) {
         done();
       } else {
@@ -77,6 +81,7 @@ When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async
   const walletId = getRawWalletId(wallet.id);
   // Get Destination wallet address
   const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.getAddresses({
       walletId,
       isLegacy

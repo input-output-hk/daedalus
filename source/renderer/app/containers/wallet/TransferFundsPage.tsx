@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import TransferFundsStep1Container from './dialogs/transfer-funds/TransferFundsStep1Container';
 import TransferFundsStep2Container from './dialogs/transfer-funds/TransferFundsStep2Container';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 
 @inject('actions', 'stores')

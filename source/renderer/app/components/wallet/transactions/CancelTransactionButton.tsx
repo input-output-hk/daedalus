@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CancelTransactionButton.scss... Remove this comment to see the full error message
 import styles from './CancelTransactionButton.scss';
+
 const messages = defineMessages({
   cancelLabel: {
     id: 'wallet.transaction.pending.cancelTransactionButton',

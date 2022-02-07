@@ -36,6 +36,7 @@ storiesOf('Wallets|Import File', module)
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         defaultExportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         pendingImportWalletsCount={1}
         onOpen={action('onOpen')}
         onContinue={action('onContinue')}
@@ -54,6 +55,7 @@ storiesOf('Wallets|Import File', module)
     );
     const namedWallets = [
       ...Array(number('Wallets with name', 5)),
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
     ].map((x, index: number) => getWallet(index, true, statusSelect));
     const unnamedWallets = [
       ...Array(number('Wallets with no name', 5)),

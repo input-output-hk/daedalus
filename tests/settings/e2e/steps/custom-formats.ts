@@ -1,6 +1,7 @@
 import { Given, When, Then } from "cucumber";
 import { expect } from "chai";
 import { chooseCustomOptionsByValue, getSelectedCustomOptions, getValueFromSelector, doesMatchExpectedValue } from "./helpers";
+
 Given(/^I choose the following custom formats:$/, async function (formatsTable) {
   const chosenFormats = formatsTable.hashes();
   const [{
@@ -18,6 +19,7 @@ Given(/^I have changed the following custom formats:$/, async function (formatsT
     Promise.all(chosenFormats.map(({
       param,
       value
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     }) => daedalus.stores.profile._updateUserLocalSetting({
       param: `${param}Format`,
       value
@@ -26,6 +28,7 @@ Given(/^I have changed the following custom formats:$/, async function (formatsT
 });
 When(/^the "([^"]*)" wallet has received the transaction amount$/, async function (walletName) {
   await this.client.waitUntil(async () => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const walletHasAmount = await this.client.execute(() => daedalus.stores.wallets.active && !daedalus.stores.wallets.active.amount.isZero());
     return walletHasAmount.value;
   });

@@ -4,6 +4,7 @@ import NoWalletsDialog from '../../../../components/staking/redeem-itn-rewards/N
 import { ROUTES } from '../../../../routes-config';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 

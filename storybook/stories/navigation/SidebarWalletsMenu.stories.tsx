@@ -5,6 +5,7 @@ import StoryDecorator from '../_support/StoryDecorator';
 import { isShelleyTestnetTheme } from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
+
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator((story) => (
     <StoryDecorator>
@@ -18,6 +19,7 @@ storiesOf('Navigation|Wallets Menu', module)
     </StoryDecorator>
   ))
   .addDecorator(WalletsWrapper) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Empty', (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
@@ -29,7 +31,9 @@ storiesOf('Navigation|Wallets Menu', module)
       visible
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('With Wallets', (props: { currentTheme: string }) => (
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     <SidebarWalletsMenu
       wallets={[
         {

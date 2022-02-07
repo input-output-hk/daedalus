@@ -1,5 +1,6 @@
 import Action from './lib/Action';
 import type { DelegationAction } from '../types/stakingTypes';
+
 export default class HardwareWalletsActions {
   /* ----------  Get hardware wallet device  ---------- */
   selectCoins: Action<{

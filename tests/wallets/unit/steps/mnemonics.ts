@@ -44,6 +44,7 @@ When('I generate additional mnemonic words', function () {
   this.context.additionalMnemonicWords = generateAdditionalMnemonics().join(' ');
 });
 When('I generate spending password from 9-word mnemonic', function () {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   this.context.spendingPassword = mnemonicToSeedHex(this.context.additionalMnemonicWords);
 });
 When('I generate 18-word scrambled mnemonic', function () {

@@ -4,6 +4,7 @@ import { environment } from './environment';
 import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
 import type { CardanoNodeImplementations } from '../common/types/cardano-node.types';
+
 const {
   isTest,
   isProduction,
@@ -103,6 +104,7 @@ export const windowOptions: WindowOptionsType = {
     webviewTag: false,
     enableRemoteModule: isTest,
     preload: path.join(__dirname, './preload.js'),
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
     additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
   },
   useContentSize: true,

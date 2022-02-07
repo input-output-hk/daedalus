@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import type { Row } from '../types';
 import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SimpleTransactionList.scss' ... Remove this comment to see the full error message
 import styles from './SimpleTransactionList.scss';
+
 type Props = {
   renderRow: (arg0: Row) => Node;
   rows: Row[];

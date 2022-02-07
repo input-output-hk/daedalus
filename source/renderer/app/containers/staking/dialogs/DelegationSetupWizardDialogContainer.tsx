@@ -12,6 +12,7 @@ import {
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import StakePool from '../../../domains/StakePool';
+
 const messages = defineMessages({
   learnMoreLinkUrl: {
     id: 'staking.delegationSetup.intro.step.dialog.learnMore.url',
@@ -70,6 +71,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
 
   handleIsWalletAcceptable = (
     walletAmount?: BigNumber,
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
     walletReward: BigNumber = 0
   ) =>
     walletAmount &&

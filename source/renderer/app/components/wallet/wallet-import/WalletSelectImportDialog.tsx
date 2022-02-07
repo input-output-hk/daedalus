@@ -15,17 +15,21 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSelectImportDialog.scs... Remove this comment to see the full error message
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
+
 const messages = defineMessages({
   title: {
     id: 'wallet.select.import.dialog.title',
@@ -327,6 +331,7 @@ class WalletSelectImportDialog extends Component<Props> {
         className={styles.dialog}
         closeOnOverlayClick={false}
         onClose={onClose}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}

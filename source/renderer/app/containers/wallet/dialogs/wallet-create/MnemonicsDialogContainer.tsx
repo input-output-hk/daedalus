@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import MnemonicsDialog from '../../../../components/wallet/wallet-create/MnemonicsDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -17,6 +18,7 @@ class MnemonicsDialogContainer extends Component<Props> {
       <MnemonicsDialog
         onClose={onClose}
         onContinue={onContinue}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onBack={onBack}
       />
     );

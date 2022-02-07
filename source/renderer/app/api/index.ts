@@ -1,5 +1,6 @@
 import AdaApi from './api';
 import LocalStorageApi from './utils/localStorage';
+
 export type Api = {
   ada: AdaApi;
   localStorage: LocalStorageApi;

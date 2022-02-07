@@ -14,12 +14,14 @@ import type {
   NetworkInfoResponse,
 } from '../network/types';
 import type { GetNewsResponse } from '../news/types';
+
 let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
 let TESTING_NEWSFEED_JSON: GetNewsResponse | null | undefined;
 let TESTING_WALLETS_DATA: Record<string, any> = {};
 export default (api: AdaApi) => {
   api.getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkInfo (PATCHED) called');
 
     try {
@@ -110,7 +112,7 @@ export default (api: AdaApi) => {
 
   api.setTestingWallet = (
     testingWalletData: Record<string, any>,
-    walletIndex: number = 0
+    walletIndex = 0
   ): void => {
     TESTING_WALLETS_DATA[walletIndex] = testingWalletData;
   };
@@ -127,6 +129,7 @@ export default (api: AdaApi) => {
     if (typeof amount !== 'object') amount = new BigNumber(amount);
     if (typeof availableAmount !== 'object')
       availableAmount = new BigNumber(availableAmount);
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: any; availableAmount: ... Remove this comment to see the full error message
     return new Wallet({ ...wallet, amount, availableAmount });
   });
 
@@ -146,7 +149,9 @@ export default (api: AdaApi) => {
     testingStakePoolsData: Array<Record<string, any>>
   ): void => {
     api.getStakePools = (): Array<StakePool> =>
+      // @ts-ignore ts-migrate(2739) FIXME: Type 'StakePool[]' is missing the following proper... Remove this comment to see the full error message
       testingStakePoolsData.map(
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
         (stakePool: Record<string, any>) => new StakePool(stakePool)
       );
   };

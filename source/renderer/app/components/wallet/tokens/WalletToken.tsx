@@ -6,15 +6,21 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletToken.scss' or its cor... Remove this comment to see the full error message
 import styles from './WalletToken.scss';
 import Asset from '../../assets/Asset';
 import AssetAmount from '../../assets/AssetAmount';
 import AssetContent from '../../assets/AssetContent';
 import type { AssetToken } from '../../../api/assets/types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow-small.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/asset-t... Remove this comment to see the full error message
 import warningIcon from '../../../assets/images/asset-token-warning-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/star-no... Remove this comment to see the full error message
 import starNotFilledIcon from '../../../assets/images/star-not-filled.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/star-fi... Remove this comment to see the full error message
 import starFilledIcon from '../../../assets/images/star-filled.inline.svg';
+
 const messages = defineMessages({
   tokenSendButton: {
     id: 'wallet.summary.asset.tokenSendButton',
@@ -93,6 +99,7 @@ const WalletToken = observer((props: Props) => {
         <Asset
           asset={asset}
           onCopyAssetParam={onCopyAssetParam}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           metadataNameChars={get('name', asset.metadata, 0)}
           assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
           anyAssetWasHovered={anyAssetWasHovered}

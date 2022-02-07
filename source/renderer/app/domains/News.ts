@@ -2,6 +2,7 @@ import { observable, computed, runInAction } from 'mobx';
 import { get, filter, orderBy, includes } from 'lodash';
 import semver from 'semver';
 import type { NewsTarget, NewsType } from '../api/news/types';
+
 export type NewsAction = {
   label: string;
   url?: string;
@@ -110,6 +111,7 @@ class NewsCollection {
     });
     const filteredNewsWithoutAppUpdates = filter(
       filteredNewsWithAppUpdates,
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'type' does not exist on type 'number | N... Remove this comment to see the full error message
       (newsItem) => newsItem.type !== NewsTypes.UPDATE
     );
     const orderedNewsWithoutAppUpdates = orderBy(
@@ -123,7 +125,9 @@ class NewsCollection {
       'desc'
     );
     runInAction(() => {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '(number | News | (() => string) | { (...item... Remove this comment to see the full error message
       this.all = orderedNewsWithoutAppUpdates;
+      // @ts-ignore ts-migrate(2322) FIXME: Type '(number | News | (() => string) | { (...item... Remove this comment to see the full error message
       this.allWithAppUpdates = orderedNewsWithAppUpdates;
     });
   }

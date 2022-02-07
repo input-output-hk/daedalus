@@ -16,13 +16,13 @@ const firstTheme = EXISTING_THEME_OUTPUTS[0][1];
 const categories = keys(firstTheme);
 
 const copy = async () => {
-  let fromPrefix: string = '';
-  let fromCategory: string = '';
+  let fromPrefix = '';
+  let fromCategory = '';
   let foundProperties: Array<string> = [];
   let selectedProperties: SimplePropertiesList = [];
   let existingProperties: SimplePropertiesList = [];
-  let toPrefix: string = '';
-  let toCategory: string = '';
+  let toPrefix = '';
+  let toCategory = '';
 
   /**
    * STEP 1
@@ -46,6 +46,7 @@ const copy = async () => {
     ({
       items: foundProperties,
       category: fromCategory,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | { aboutWindow: { '--the... Remove this comment to see the full error message
     } = findPropertiesFromPrefix(firstTheme, fromPrefix));
 
     // No properties found
@@ -117,6 +118,7 @@ const copy = async () => {
     ({
       items: existingProperties,
       category: toCategory,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | { aboutWindow: { '--the... Remove this comment to see the full error message
     } = findPropertiesFromPrefix(firstTheme, toPrefix));
     // Check existing properties with the given new prefix
     const conflictingProperties = existingProperties.filter(
@@ -240,6 +242,7 @@ Should I proceed?
   const step5 = async () => {
     const pendingUpdates = EXISTING_THEME_OUTPUTS.reduce(
       (pending, [themeName, theme]) => {
+        // @ts-ignore ts-migrate(2322) FIXME: Type '[string, unknown][]' is not assignable to ty... Remove this comment to see the full error message
         const fromProperties: CompletePropertiesList = toPairs(
           theme[fromCategory]
         ).filter(([propertyKey]) => selectedProperties.includes(propertyKey));
@@ -249,7 +252,9 @@ Should I proceed?
             fromPropertyValue,
           ]
         );
+        // @ts-ignore ts-migrate(2538) FIXME: Type '{ aboutWindow: { '--theme-about-window-backg... Remove this comment to see the full error message
         pending[themeName] = {};
+        // @ts-ignore ts-migrate(2538) FIXME: Type '{ aboutWindow: { '--theme-about-window-backg... Remove this comment to see the full error message
         pending[themeName][toCategory] = toProperties.reduce(
           (obj, [propertyKey, propertyValue]) => {
             obj[propertyKey] = propertyValue;

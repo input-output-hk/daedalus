@@ -1,6 +1,7 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { DelegationAction } from '../api/staking/types';
+
 export const DelegationActions: {
   CHANGE_DELEGATION: DelegationAction;
   REMOVE_DELEGATION: DelegationAction;
@@ -47,11 +48,11 @@ export default class StakePool {
   @observable
   cost: BigNumber;
   @observable
-  description: string = '';
+  description = '';
   @observable
   isCharity: boolean;
   @observable
-  name: string = '';
+  name = '';
   @observable
   profitMargin: number;
   @observable

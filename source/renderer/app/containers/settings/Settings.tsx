@@ -21,6 +21,7 @@ class Settings extends Component<InjectedContainerProps> {
     const { location } = this.props.stores.router;
 
     if (location) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       return location.pathname === buildRoute(route);
     }
 
@@ -28,6 +29,7 @@ class Settings extends Component<InjectedContainerProps> {
   };
 
   render() {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     const { actions, stores, children } = this.props;
     const { networkStatus, app, router } = stores;

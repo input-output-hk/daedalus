@@ -7,6 +7,7 @@ import LogosDisplay from './LogosDisplay';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnecting.scss' or i... Remove this comment to see the full error message
 import styles from './SyncingConnecting.scss';
 import type {
   CardanoNodeState,
@@ -14,6 +15,7 @@ import type {
 } from '../../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
 import NewsFeedIcon from '../../widgets/NewsFeedIcon';
+
 let connectingInterval = null;
 type State = {
   connectingTime: number;

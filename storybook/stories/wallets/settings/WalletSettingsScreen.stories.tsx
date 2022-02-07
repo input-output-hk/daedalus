@@ -114,6 +114,7 @@ const selectedWallet = generateWallet(
   '1000000000',
   assets,
   0,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
   STAKE_POOLS[0]
 );
 
@@ -137,8 +138,10 @@ const getWalletDates = (type: string, status: string) => {
 
 export default (props: { locale: Locale }) => {
   const { locale } = props;
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'type' does not exist on type 'SelectType... Remove this comment to see the full error message
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ 'Never Checked - Ok': { type: ... Remove this comment to see the full error message
     recoveryPhraseVerificationDateOptions,
     'Already Checked - Ok',
     recoveryPhraseId
@@ -150,6 +153,7 @@ export default (props: { locale: Locale }) => {
   const recoveryDialog = select(
     'Active dialog',
     recoveryDialogOptions,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
     'None',
     recoveryPhraseId
   );
@@ -220,6 +224,7 @@ export default (props: { locale: Locale }) => {
 
         return false;
       }}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       activeField={null}
       isInvalid={false}
       isSubmitting={false}
@@ -257,6 +262,7 @@ export default (props: { locale: Locale }) => {
           )}
           onSave={action('Change Password - onSave')}
           onCancel={action('Change Password - onCancel')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onPasswordSwitchToggle={action(
             'Change Password - onPasswordSwitchToggle'
           )}
@@ -338,6 +344,7 @@ export default (props: { locale: Locale }) => {
             undelegateWalletId
           )}
           error={null}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           fees={new BigNumber(10)}
           hwDeviceStatus="ready"
           isTrezor={boolean('isTrezor', false)}
@@ -352,6 +359,7 @@ export default (props: { locale: Locale }) => {
           )}
           hasWalletFunds={boolean('hasWalletFunds', false, basicSettingsId)}
           countdownFn={() =>
+            // @ts-ignore ts-migrate(2559) FIXME: Type '"Delete Wallet"' has no properties in common... Remove this comment to see the full error message
             number('Delete Wallet Countdown', 9, deleteWalletId)
           }
           isBackupNoticeAccepted={boolean(
@@ -386,6 +394,7 @@ export default (props: { locale: Locale }) => {
           )}
           hasWalletFunds={boolean('hasWalletFunds', false, basicSettingsId)}
           countdownFn={() =>
+            // @ts-ignore ts-migrate(2559) FIXME: Type '"Delete Wallet"' has no properties in common... Remove this comment to see the full error message
             number('Unpair Wallet Countdown', 9, deleteWalletId)
           }
           isBackupNoticeAccepted={boolean(

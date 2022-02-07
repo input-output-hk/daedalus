@@ -1,5 +1,6 @@
 import chroma from 'chroma-js';
 import type { BackgroundShades, ErrorShades } from '../types';
+
 export const createBackgroundShades = (color: string): BackgroundShades => {
   const lightShades = chroma.scale([color, '#fff']);
   const darkShades = chroma.scale([color, '#000']);

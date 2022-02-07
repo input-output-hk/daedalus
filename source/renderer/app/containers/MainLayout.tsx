@@ -81,6 +81,7 @@ class MainLayout extends Component<InjectedContainerProps> {
             route: ROUTES.WALLETS.ADD,
           })
         }
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{ menus: { wallets: { items: any; activeWall... Remove this comment to see the full error message
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({
             route: ROUTES.SETTINGS.SUPPORT,
@@ -94,10 +95,12 @@ class MainLayout extends Component<InjectedContainerProps> {
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
+        // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
         topbar={<TopBarContainer />}
         contentDialogs={[
           <PaperWalletCreateCertificatePage
             key="PaperWalletCreateCertificatePage"
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
           <TransferFundsPage key="TransferFundsPage" />,

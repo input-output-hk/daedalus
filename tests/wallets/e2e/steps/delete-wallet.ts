@@ -1,4 +1,5 @@
 import { Given, When, Then } from "cucumber";
+
 Given(/^I see delete wallet dialog$/, function () {
   return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
 });

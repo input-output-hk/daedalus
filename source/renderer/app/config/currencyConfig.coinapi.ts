@@ -55,6 +55,7 @@ const responses = {
       logger.debug('Currency::CoinAPI::Rate success', {
         rate,
       });
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string | 0' is not assignable to type 'numbe... Remove this comment to see the full error message
       return rate;
     } catch (error) {
       logger.error('Currency::CoinAPI::Rate error', {

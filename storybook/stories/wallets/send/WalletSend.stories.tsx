@@ -21,7 +21,9 @@ import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/
 import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
+
 const allAssets = [
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -39,12 +41,14 @@ const allAssets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     400
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -62,6 +66,7 @@ const allAssets = [
       logo: '',
     }
   ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -83,6 +88,7 @@ const allAssets = [
 const walletTokens: WalletTokens = {
   available: [
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
@@ -90,6 +96,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -97,6 +104,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -104,6 +112,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
@@ -113,6 +122,7 @@ const walletTokens: WalletTokens = {
   ],
   total: [
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
@@ -120,6 +130,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -127,6 +138,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
@@ -134,6 +146,7 @@ const walletTokens: WalletTokens = {
       uniqueId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     },
     {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ id: string; policyId: string; assetName: s... Remove this comment to see the full error message
       id: generateHash(),
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
@@ -347,6 +360,7 @@ storiesOf('Wallets|Send', module)
           amount="20.000000"
           wallet={wallet}
           totalAmount={new BigNumber('21.000000')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }
@@ -385,6 +399,7 @@ storiesOf('Wallets|Send', module)
           amount="20.000000"
           totalAmount={new BigNumber('21.000000')}
           wallet={wallet}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           sender={
             generateWallet('Wallet name', '45119903750165', walletTokens).id
           }

@@ -4,6 +4,7 @@ import {
   SMASH_SERVER_TYPES,
 } from '../config/stakingConfig';
 import type { SmashServerType } from '../types/stakingTypes';
+
 export const getSmashServerNameFromUrl = (smashServerUrl: string): string =>
   reduce(
     SMASH_SERVERS_LIST,
@@ -19,6 +20,7 @@ export const getSmashServerIdFromUrl = (
   reduce(
     SMASH_SERVERS_LIST,
     (result, { url }, id) => {
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'SmashServ... Remove this comment to see the full error message
       if (url === smashServerUrl) result = id;
       return result;
     },
@@ -43,6 +45,7 @@ export const getUrlParts = (
   try {
     return new URL(url);
   } catch (error) {
+    // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
     return {};
   }
 };

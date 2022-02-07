@@ -14,6 +14,7 @@ import type {
   NewsItem,
   MarkNewsAsReadResponse,
 } from '../api/news/types';
+
 const { isTest, version, isDev } = global.environment;
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
@@ -41,13 +42,17 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsUnread
   );
   @observable
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   openedAlert: News.News | null | undefined = null;
   @observable
-  fetchLocalNews: boolean = false;
+  fetchLocalNews = false;
   @observable
   rawNewsJsonQA: GetNewsResponse | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingNewsIntervalId: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingNewsOnErrorIntervalId: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingNewsOnIncidentIntervalId: IntervalID | null | undefined = null;
 
   setup() {
@@ -91,8 +96,10 @@ export default class NewsFeedStore extends Store {
         if (repeatableNews) {
           const mainIdentificator = repeatableNews.id || repeatableNews.date;
           // Mark Alert as unread in LC if "repeatOnStartup" parameter set
+          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.markNewsAsUnreadRequest.execute(mainIdentificator);
           // Get all read news to force @computed change
+          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.getReadNewsRequest.execute();
         }
       }
@@ -169,6 +176,7 @@ export default class NewsFeedStore extends Store {
       this._setFetchingNewsFailed(true);
     }
 
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
@@ -181,8 +189,10 @@ export default class NewsFeedStore extends Store {
   @action
   markNewsAsRead = async (newsId: number[]) => {
     // Set news timestamp to LC
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.markNewsAsReadRequest.execute(newsId);
     // Get all read news to force @computed change
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getReadNewsRequest.execute();
   };
   @action
@@ -206,6 +216,7 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
   @action
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
     const { url, route, event } = newsItem.action;
 
@@ -216,6 +227,7 @@ export default class NewsFeedStore extends Store {
       newsItem.type !== NewsTypes.INCIDENT &&
       newsItem.type !== NewsTypes.ALERT
     ) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.app.closeNewsFeed.trigger();
       this.actions.router.goToRoute.trigger({
         route,
@@ -223,10 +235,12 @@ export default class NewsFeedStore extends Store {
     } else if (event && AVAILABLE_NEWSFEED_EVENT_ACTIONS.includes(event)) {
       switch (event) {
         case 'OPEN_DIAGNOSTIC_DIALOG':
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.app.openDaedalusDiagnosticsDialog.trigger();
           break;
 
         case 'DOWNLOAD_LOGS':
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.app.downloadLogs.trigger();
           break;
 
@@ -266,6 +280,7 @@ export default class NewsFeedStore extends Store {
   };
 
   @computed
+  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
@@ -274,6 +289,7 @@ export default class NewsFeedStore extends Store {
     if (this.getNewsRequest.wasExecuted || (this.rawNewsJsonQA && isDev)) {
       news = map(this.rawNews, (item) => {
         // Match old and new newsfeed JSON format
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'NewsItem'.
         const mainIdentificator = item.id || item.date;
         let newsfeedItem = {
           ...item,
@@ -287,6 +303,7 @@ export default class NewsFeedStore extends Store {
             event: get(item, ['action', 'event', currentLocale]),
           },
           date: get(item, ['publishedAt', currentLocale], item.date),
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'includes' does not exist on type 'GetRea... Remove this comment to see the full error message
           read: readNews.includes(mainIdentificator),
         };
 
@@ -294,6 +311,7 @@ export default class NewsFeedStore extends Store {
         if (item.type === NewsTypes.INCIDENT) {
           newsfeedItem = {
             ...newsfeedItem,
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ color: any; id: any; title: string; conten... Remove this comment to see the full error message
             color: get(item, 'color', IncidentColors.RED),
           };
         }
@@ -302,6 +320,7 @@ export default class NewsFeedStore extends Store {
         if (item.type === NewsTypes.ALERT) {
           newsfeedItem = {
             ...newsfeedItem,
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ repeatOnStartup: any; id: any; title: stri... Remove this comment to see the full error message
             repeatOnStartup: get(item, 'repeatOnStartup', false),
           };
         }

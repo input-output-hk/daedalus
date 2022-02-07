@@ -4,6 +4,7 @@ import type {
   DownloadState,
   DownloadEventType,
 } from '../types/downloadManager.types';
+
 export const ALLOWED_DOWNLOAD_DIRECTORIES: Record<
   string,
   AllowedDownloadDirectories

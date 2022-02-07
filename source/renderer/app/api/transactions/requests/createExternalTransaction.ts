@@ -4,6 +4,7 @@ import type {
   CreateExternalTransactionRequest,
 } from '../types';
 import { request } from '../../utils/request';
+
 export const createExternalTransaction = (
   config: RequestConfig,
   { signedTransactionBlob }: CreateExternalTransactionRequest

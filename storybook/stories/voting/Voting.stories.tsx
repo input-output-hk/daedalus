@@ -29,6 +29,7 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
+
 const assets = {
   available: [
     {
@@ -111,6 +112,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
           })
         )
       }
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       isSubmitting={boolean('isSubmitting')}
       onConfirm={action('onConfirm')}
       onExternalLinkClick={action('onExternalLinkClick')}
@@ -159,12 +161,14 @@ storiesOf('Voting|Voting Info', module)
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
         fundPhase={select('Fund phase', [
           FundPhases.SNAPSHOT,
           FundPhases.VOTING,
           FundPhases.TALLYING,
           FundPhases.RESULTS,
         ])}
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'Locale'.
         currentLocale={LANGUAGE_OPTIONS[0].value}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentTimeFormat={TIME_OPTIONS[0].value}

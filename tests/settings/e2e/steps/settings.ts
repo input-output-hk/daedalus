@@ -2,6 +2,7 @@ import { Given, When, Then } from "cucumber";
 import { expect } from "chai";
 import { navigateTo } from "../../../navigation/e2e/steps/helpers";
 import { waitUntilWaletNamesEqual } from "../../../wallets/e2e/steps/helpers";
+
 Given(/^I am on the settings screen$/, async function () {
   await navigateTo.call(this, '/settings');
   return this.client.waitForVisible('.SettingsLayout_component');

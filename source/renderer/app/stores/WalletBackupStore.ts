@@ -3,6 +3,7 @@ import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 import type { walletBackupStep } from '../types/walletBackupTypes';
+
 export default class WalletBackupStore extends Store {
   @observable
   inProgress = false;
@@ -24,6 +25,7 @@ export default class WalletBackupStore extends Store {
   isTermRecoveryAccepted = false;
   @observable
   countdownRemaining = 0;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   countdownTimerInterval: IntervalID | null | undefined = null;
 
   setup() {
@@ -53,6 +55,7 @@ export default class WalletBackupStore extends Store {
   _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.PRIVACY_WARNING;
     this.completed = false;
     this.enteredPhrase = [];
@@ -70,6 +73,7 @@ export default class WalletBackupStore extends Store {
       }
     }, 1000);
     this.actions.dialogs.open.trigger({
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'typeof WalletBackupDialog' is not assignable... Remove this comment to see the full error message
       dialog: WalletBackupDialog,
     });
   };
@@ -79,10 +83,12 @@ export default class WalletBackupStore extends Store {
   };
   @action
   _continueToRecoveryPhraseForWalletBackup = () => {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
   @action
   _startWalletBackup = () => {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY;
   };
   @action
@@ -114,6 +120,7 @@ export default class WalletBackupStore extends Store {
   _restartWalletBackup = () => {
     this._clearEnteredRecoveryPhrase();
 
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
   @action

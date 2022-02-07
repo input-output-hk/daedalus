@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -11,9 +12,11 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import Dialog from '../../widgets/Dialog';
 import LocalizableError from '../../../i18n/LocalizableError';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ExportWalletToFileDialog.scs... Remove this comment to see the full error message
 import styles from './ExportWalletToFileDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+
 const messages = defineMessages({
   headline: {
     id: 'wallet.settings.exportToFile.dialog.headline',
@@ -71,6 +74,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   constructor(props: Props, children: Node) {
     super(props, children);
     this.state = {
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'ExportTyp... Remove this comment to see the full error message
       exportType: EXPORT_TYPE.FULL,
     };
   }
@@ -79,6 +83,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   //   this.setState({ exportType });
   // }
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -117,6 +122,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: async (form) => {
         const { spendingPassword } = form.values();

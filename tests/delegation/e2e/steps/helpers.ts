@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+
 const STAKING_BUTTON_SIDEBAR = '.SidebarCategory_component.staking';
 const DELEGATION_CENTER_PAGE = '.StakingWithNavigation_page';
 export const delegationCentreStakingHelper = {
@@ -10,6 +11,7 @@ export const getStakePoolByRanking = async (client: Record<string, any>, ranking
   const result = await client.execute(ranking => {
     const {
       stakePools
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     } = daedalus.stores.staking;
     return stakePools.find(stakePool => stakePool.ranking === parseInt(ranking, 10));
   }, ranking);

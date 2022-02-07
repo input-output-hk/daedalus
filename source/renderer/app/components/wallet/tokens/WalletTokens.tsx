@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokens.scss' or its co... Remove this comment to see the full error message
 import styles from './WalletTokens.scss';
 import Wallet from '../../../domains/Wallet';
 import WalletTokensList from './WalletTokensList';
@@ -8,6 +9,7 @@ import WalletTokensSearch from './WalletTokensSearch';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssetToken } from '../../../api/assets/types';
 import { TOGGLE_TOKEN_FAVORITE_TIMEOUT } from '../../../config/timingConfig';
+
 const messages = defineMessages({
   favoritesListTitle: {
     id: 'wallet.tokens.list.favorites.title',

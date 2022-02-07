@@ -11,12 +11,14 @@ import WalletReceiveRandom from '../../../../source/renderer/app/components/wall
 import WalletReceiveDialog from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveDialog';
 import VerticalFlexContainer from '../../../../source/renderer/app/components/layout/VerticalFlexContainer';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
+
 const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
 storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
     const showDialog = boolean('showDialog', false);
     return (
@@ -32,6 +34,7 @@ storiesOf('Wallets|Receive', module)
           ]}
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           currentLocale={locale}
           showUsed={boolean('showUsed', false)}
@@ -61,6 +64,7 @@ storiesOf('Wallets|Receive', module)
   })
   .add(
     'Receive - sequential with address verification',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
     ({ locale }: { locale: string }) => {
       return (
         <VerticalFlexContainer>
@@ -75,6 +79,7 @@ storiesOf('Wallets|Receive', module)
             ]}
             onShareAddress={action('onShareAddress')}
             onCopyAddress={action('onCopyAddress')}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
             currentLocale={locale}
             onToggleSubMenus={onToggleSubMenus}

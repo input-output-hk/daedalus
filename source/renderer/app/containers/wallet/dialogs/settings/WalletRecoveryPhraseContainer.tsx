@@ -52,6 +52,7 @@ class WalletRecoveryPhraseContainer extends Component<Props> {
     const WalletRecoveryPhraseDialog = this.recoveryPhraseComponent;
     return (
       WalletRecoveryPhraseDialog && (
+        // @ts-ignore ts-migrate(2604) FIXME: JSX element type 'WalletRecoveryPhraseDialog' does... Remove this comment to see the full error message
         <WalletRecoveryPhraseDialog
           onContinue={onContinue}
           onClose={onClose}

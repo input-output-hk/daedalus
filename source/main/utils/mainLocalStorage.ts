@@ -14,8 +14,10 @@ import {
   DOWNLOAD_STATES,
 } from '../../common/config/downloadManagerConfig';
 import { requestElectronStore } from '../ipc/electronStoreConversation';
+
 export const downloadManagerLocalStorage = {
   get: async (id: string): Promise<DownloadLocalDataResponse> => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'info' does not exist on type '{}'.
     const { info, data } =
       (await requestElectronStore({
         type: STORAGE_TYPES.GET,
@@ -94,6 +96,7 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       data: omit(localDownloadsData, id),
     });
     await requestElectronStore({

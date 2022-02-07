@@ -5,6 +5,7 @@ import path from 'path';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
+
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
 const validatedChunkKeyword = 'Validated chunk';

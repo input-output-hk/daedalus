@@ -4,8 +4,10 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SupportSettings.scss' or its... Remove this comment to see the full error message
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
+
 const messages = defineMessages({
   faqTitle: {
     id: 'settings.support.faq.title',

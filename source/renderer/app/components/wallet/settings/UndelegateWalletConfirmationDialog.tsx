@@ -17,10 +17,12 @@ import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UndelegateWalletConfirmation... Remove this comment to see the full error message
 import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
+
 const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.dialog.title',
@@ -120,6 +122,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         confirmUnsupportChecked: {
@@ -203,12 +206,15 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   confirmationDisabled = () => {
     const { form } = this;
     const { fees, isSubmitting, hwDeviceStatus, selectedWallet } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'confirmUnsupportChecked'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: ineligibleCheckboxIsValid } = form.$(
       'confirmIneligibleChecked'
     );
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { isValid: passphraseIsValid } = form.$('passphrase');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
 
@@ -231,6 +237,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
       return false;
     }
 
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     return this.form.submit({
       onSuccess: (form) => {
         const { selectedWallet, onConfirm } = this.props;
@@ -253,6 +260,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
     const errorHasLink = !!get(error, 'values.linkLabel', false);
     const result = errorHasLink ? (
       <FormattedHTMLMessageWithLink
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         message={error}
         onExternalLinkClick={onExternalLinkClick}
       />
@@ -265,8 +273,11 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const unsupportCheckboxField = form.$('confirmUnsupportChecked');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const ineligibleCheckboxField = form.$('confirmIneligibleChecked');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = form.$('passphrase');
     const {
       selectedWallet,

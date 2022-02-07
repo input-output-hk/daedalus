@@ -12,6 +12,7 @@ import CompletionDialog from '../../components/wallet/paper-wallet-certificate/C
 import CompletionDialogContainer from './dialogs/paper-wallet-certificate/CompletionDialogContainer';
 import ConfirmationDialog from '../../components/wallet/paper-wallet-certificate/ConfirmationDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 type State = {
   currentStep: number | null | undefined;
@@ -56,6 +57,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
     if (uiDialogs.isOpen(InstructionsDialog)) {
       activeDialog = (
         <InstructionsDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.onClose}
         />
@@ -65,6 +67,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
     if (uiDialogs.isOpen(PrintDialog)) {
       activeDialog = (
         <PrintDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -74,6 +77,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
     if (uiDialogs.isOpen(SecuringPasswordDialog)) {
       activeDialog = (
         <SecuringPasswordDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -83,6 +87,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
     if (uiDialogs.isOpen(VerificationDialog)) {
       activeDialog = (
         <VerificationDialogContainer
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           onContinue={this.onContinue}
           onClose={this.showConfirmationDialog}
         />
@@ -98,6 +103,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
         {activeDialog}
         {showConfirmationDialog && (
           <ConfirmationDialog
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             network={network}
             onCancel={this.hideConfirmationDialog}
             onConfirm={this.onClose}

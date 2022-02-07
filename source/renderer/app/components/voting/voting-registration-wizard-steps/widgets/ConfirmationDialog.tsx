@@ -4,7 +4,9 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../../widgets/Dialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ConfirmationDialog.scss' or ... Remove this comment to see the full error message
 import styles from './ConfirmationDialog.scss';
+
 const messages = defineMessages({
   headline: {
     id: 'voting.votingRegistration.dialog.confirmation.headline',

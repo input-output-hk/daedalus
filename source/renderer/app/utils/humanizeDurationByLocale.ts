@@ -1,6 +1,7 @@
 import humanizeDuration from 'humanize-duration';
 import { get } from 'lodash';
 import { humanizedDurationLanguages } from '../../../common/types/locales.types';
+
 const generalConfig = {
   round: true,
   // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*

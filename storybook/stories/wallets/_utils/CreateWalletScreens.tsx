@@ -9,6 +9,7 @@ import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/w
 import ValidateDialog from '../../../../source/renderer/app/components/wallet/wallet-create/ValidateDialog';
 import HashDialog from '../../../../source/renderer/app/components/wallet/wallet-create/HashDialog';
 import ConfigDialog from '../../../../source/renderer/app/components/wallet/wallet-create/ConfigDialog';
+
 type State = {
   currentStep: number;
 };

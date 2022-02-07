@@ -4,6 +4,7 @@ import type {
   GetSystemLocaleMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const getSystemLocaleChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetSystemLocaleMainResponse,

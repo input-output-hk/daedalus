@@ -16,6 +16,7 @@ import WalletTypeDialog from '../../../../source/renderer/app/components/wallet/
 import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog';
 import ConfigurationDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog';
 import SuccessDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/SuccessDialog';
+
 type Props = {
   locale: string;
 };
@@ -75,12 +76,14 @@ storiesOf('Wallets|Add Wallet', module)
       walletKindSpecificSelect = select(
         `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
         selectItems,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         Object.values(WALLET_DAEDALUS_KINDS)[0]
       );
     return (
       <MnemonicsDialog
         onContinue={action('onContinue')}
         onClose={action('onClose')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         onSetWalletKind={action('onSetWalletKind')}
         onBack={action('onSetWalletKind')}
         onSetWalletMnemonics={action('onSetWalletMnemonics')}
@@ -95,6 +98,7 @@ storiesOf('Wallets|Add Wallet', module)
       />
     );
   })
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add('Restore - Step 3', (props: Props) => {
     const { locale } = props;
     return (
@@ -128,6 +132,7 @@ storiesOf('Wallets|Add Wallet', module)
       walletKindSpecificSelect = select(
         `Wallet Kind - ${walletKindSelect || 'Daedalus'}`,
         selectItems,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         Object.values(WALLET_DAEDALUS_KINDS)[0]
       );
     return (

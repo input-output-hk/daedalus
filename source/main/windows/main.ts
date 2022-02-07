@@ -8,6 +8,7 @@ import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
+
 const rendererErrorHandler = new RendererErrorHandler();
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlagsSettings(network);
@@ -46,6 +47,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
       contextIsolation: false,
       // TODO: change to ipc
       enableRemoteModule: isTest,
@@ -106,12 +108,14 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
         label: 'Inspect element',
 
         click() {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'inspectElement' does not exist on type '... Remove this comment to see the full error message
           window.inspectElement(x, y);
         },
       });
     }
 
     if (contextMenuOptions.length) {
+      // @ts-ignore ts-migrate(2559) FIXME: Type 'BrowserWindow' has no properties in common w... Remove this comment to see the full error message
       Menu.buildFromTemplate(contextMenuOptions).popup(window);
     }
   });
@@ -161,6 +165,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     rendererErrorHandler.onError('crashed', err);
   });
 
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
   window.updateTitle = (locale: string) => {
     window.setTitle(getWindowTitle(locale));
   };

@@ -17,6 +17,7 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
+
 const assets = {
   available: [
     {
@@ -80,14 +81,18 @@ export const Step1ConfigurationDialogStory = () => {
       obj[wallet.name] = wallet;
       return obj;
     }, {}),
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Wallet' is not assignable to par... Remove this comment to see the full error message
     WALLETS[0]
   );
   return (
     <Step1ConfigurationDialog
       key="Step1ConfigurationDialog"
       wallets={WALLETS}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       wallet={redeemWallet}
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       isWalletValid={boolean('isWalletValid')}
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
       isCalculatingReedemFees={boolean('isCalculatingReedemFees')}
       syncPercentage={99.55}
       mnemonicValidator={isValidMnemonic}
@@ -107,11 +112,13 @@ export const Step2ConfirmationDialogStory = () => {
       obj[wallet.name] = wallet;
       return obj;
     }, {}),
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Wallet' is not assignable to par... Remove this comment to see the full error message
     WALLETS[0]
   );
   return (
     <Step2ConfirmationDialog
       key="Step2ConfirmationDialog"
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       wallet={redeemWallet}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
       redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}
@@ -129,11 +136,13 @@ export const Step3SuccessDialogStory = () => {
       obj[wallet.name] = wallet;
       return obj;
     }, {}),
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Wallet' is not assignable to par... Remove this comment to see the full error message
     WALLETS[0]
   );
   return (
     <Step3SuccessDialog
       key="Step2ConfirmationDialog"
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       wallet={redeemWallet}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
       redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}

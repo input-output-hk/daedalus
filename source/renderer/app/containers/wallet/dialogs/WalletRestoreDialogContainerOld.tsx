@@ -4,6 +4,7 @@ import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog'
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import validWords from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')

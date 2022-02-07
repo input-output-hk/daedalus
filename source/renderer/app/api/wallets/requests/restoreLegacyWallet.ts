@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { LegacyAdaWallet, LegacyWalletInitData } from '../types';
 import { request } from '../../utils/request';
+
 export const restoreLegacyWallet = (
   config: RequestConfig,
   {
@@ -8,7 +9,7 @@ export const restoreLegacyWallet = (
   }: {
     walletInitData: LegacyWalletInitData;
   },
-  type: string = ''
+  type = ''
 ): Promise<LegacyAdaWallet> => {
   const queryParams = {};
   return request(

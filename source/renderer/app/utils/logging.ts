@@ -4,6 +4,8 @@ import type {
   Logger,
   LoggingLevel,
 } from '../../../common/types/logging.types';
+
+// @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'typ... Remove this comment to see the full error message
 const { environment, electronLog } = global;
 const appName = 'daedalus';
 const electronProcess = 'ipcRenderer';

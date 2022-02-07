@@ -4,11 +4,13 @@ import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
+
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -58,6 +60,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
       progress: 0,
       type: 'replayedBlock',
     }}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -99,6 +102,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
       progress: 0,
       type: 'replayedBlock',
     }}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

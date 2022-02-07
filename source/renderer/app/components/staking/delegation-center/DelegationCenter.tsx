@@ -8,6 +8,7 @@ import type {
   TipInfo,
   FutureEpoch,
 } from '../../../api/network/types';
+
 type Props = {
   wallets: Array<Wallet>;
   numberOfStakePools: number;

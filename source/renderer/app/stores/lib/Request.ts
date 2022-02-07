@@ -17,14 +17,14 @@ export default class Request<Result, Error> {
   @observable
   error: Error | null | undefined = null;
   @observable
-  isExecuting: boolean = false;
+  isExecuting = false;
   @observable
-  isError: boolean = false;
+  isError = false;
   @observable
-  wasExecuted: boolean = false;
+  wasExecuted = false;
   promise: Promise<Result> | null | undefined = null;
   _method: (...args: Array<any>) => any;
-  _isWaitingForResponse: boolean = false;
+  _isWaitingForResponse = false;
   _currentApiCall: ApiCallType | null | undefined = null;
 
   constructor(method: (...args: Array<any>) => any) {

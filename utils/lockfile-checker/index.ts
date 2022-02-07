@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'lodash'.
 const lodash = require('lodash');
 
+// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'fs'.
 const fs = require('fs');
 
 const lockfile = require('yarn-lockfile');

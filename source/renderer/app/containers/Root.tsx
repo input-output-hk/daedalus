@@ -7,6 +7,7 @@ import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import AppUpdateContainer from './appUpdate/AppUpdateContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
+
 type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')

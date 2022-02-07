@@ -1,4 +1,5 @@
 import type { ShouldShowWalletSubMenu } from './types';
+
 export const shouldShowWalletSubMenu = ({
   activeSidebarCategory,
   walletRoute,

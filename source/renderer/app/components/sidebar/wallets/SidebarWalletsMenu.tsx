@@ -6,10 +6,13 @@ import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { map } from 'lodash';
 import SidebarSubMenu from '../SidebarMenu';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletsMenu.scss' or ... Remove this comment to see the full error message
 import styles from './SidebarWalletsMenu.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sidebar... Remove this comment to see the full error message
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
 import type { SidebarWalletType } from '../../../types/sidebarTypes';
+
 const messages = defineMessages({
   addAdaWallet: {
     id: 'sidebar.wallets.addWallet',
@@ -61,6 +64,7 @@ class SidebarWalletsMenu extends Component<Props> {
             {map(wallets, (wallet) => (
               <SidebarWalletMenuItem
                 title={wallet.title}
+                // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                 amount={wallet.amount}
                 active={isActiveWallet(wallet.id)}
                 onClick={() => onWalletItemClick(wallet.id)}
@@ -71,9 +75,11 @@ class SidebarWalletsMenu extends Component<Props> {
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
+                // @ts-ignore ts-migrate(2339) FIXME: Property 'isHardwareWallet' does not exist on type... Remove this comment to see the full error message
                 isHardwareWallet={wallet.isHardwareWallet}
                 hasNotification={wallet.hasNotification}
                 isHardwareWalletDisconnected={
+                  // @ts-ignore ts-migrate(2339) FIXME: Property 'isHardwareWalletDisconnected' does not e... Remove this comment to see the full error message
                   wallet.isHardwareWalletDisconnected
                 }
               />

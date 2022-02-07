@@ -223,6 +223,7 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
+
 export default class AdaApi {
   config: RequestConfig;
   // We need to preserve all asset metadata during single runtime in order
@@ -239,6 +240,7 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWallets called');
     const {
       getHardwareWalletLocalData,
@@ -267,6 +269,7 @@ export default class AdaApi {
           },
           isLegacy: true,
         };
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
         wallets.push({ ...legacyAdaWallet, ...extraLegacyWalletProps });
       });
       // @TODO - Remove this once we get hardware wallet flag from WBE
@@ -459,8 +462,10 @@ export default class AdaApi {
       }
     );
     if (fromDate)
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'start' does not exist on type '{ order: ... Remove this comment to see the full error message
       params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
     if (toDate)
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'end' does not exist on type '{ order: "a... Remove this comment to see the full error message
       params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
@@ -722,6 +727,7 @@ export default class AdaApi {
     try {
       const walletInitData = {
         name,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
@@ -750,6 +756,7 @@ export default class AdaApi {
     try {
       const walletInitData = {
         name,
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
@@ -865,6 +872,7 @@ export default class AdaApi {
       } else {
         response = await createTransaction(this.config, {
           walletId,
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ withdrawal: TransactionWithdrawalType; pay... Remove this comment to see the full error message
           data: { ...data, withdrawal },
         });
       }
@@ -932,6 +940,7 @@ export default class AdaApi {
         } else {
           response = await createTransaction(this.config, {
             walletId,
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ withdrawal: any; payments: { address: any;... Remove this comment to see the full error message
             data: { ...data, withdrawal },
           });
         }
@@ -1000,6 +1009,7 @@ export default class AdaApi {
       } else {
         response = await getTransactionFee(this.config, {
           walletId,
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ withdrawal: TransactionWithdrawalType; pay... Remove this comment to see the full error message
           data: { ...data, withdrawal },
         });
       }
@@ -1051,6 +1061,7 @@ export default class AdaApi {
 
       // ApiError with logging showcase
       throw new ApiError(error, {
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean' is not assignable to type 'Record<s... Remove this comment to see the full error message
         logError: true,
         msg: 'AdaApi::calculateTransactionFee error',
       })
@@ -1135,6 +1146,7 @@ export default class AdaApi {
       let totalOutputs = new BigNumber(0);
       map(response.inputs, (input) => {
         const inputAmount = new BigNumber(input.amount.quantity.toString());
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type '{ addres... Remove this comment to see the full error message
         const inputAssets = map(input.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1153,6 +1165,7 @@ export default class AdaApi {
       });
       map(outputs, (output) => {
         const outputAmount = new BigNumber(output.amount.quantity.toString());
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type '{ addres... Remove this comment to see the full error message
         const outputAssets = map(output.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1252,6 +1265,7 @@ export default class AdaApi {
 
       // ApiError with logging showcase
       throw new ApiError(error, {
+        // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean' is not assignable to type 'Record<s... Remove this comment to see the full error message
         logError: true,
         msg: 'AdaApi::calculateTransactionFee error',
       })
@@ -1344,6 +1358,7 @@ export default class AdaApi {
       logger.debug('AdaApi::getICOPublicKey success', {
         icoPublicKey: response,
       });
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'Transaction' is not assignable to type 'stri... Remove this comment to see the full error message
       return response;
     } catch (error) {
       logger.error('AdaApi::getICOPublicKey error', {
@@ -1440,12 +1455,14 @@ export default class AdaApi {
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
   getWalletRecoveryPhrase(): Promise<Array<string>> {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
 
     try {
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1457,12 +1474,14 @@ export default class AdaApi {
   }
 
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
 
     try {
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAdditionalMnemonics())
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
       return response;
     } catch (error) {
@@ -1476,6 +1495,7 @@ export default class AdaApi {
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
   ): Promise<Array<string>> {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input: scrambledInput } = request;
 
@@ -1488,6 +1508,7 @@ export default class AdaApi {
           })
         )
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1501,6 +1522,7 @@ export default class AdaApi {
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<Array<string>> {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
 
@@ -1509,6 +1531,7 @@ export default class AdaApi {
         passphrase,
         scrambledInput,
       });
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return Promise.resolve(response);
     } catch (error) {
@@ -1659,6 +1682,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreLegacyWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreLegacyWallet error', {
@@ -1721,6 +1745,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronRandomWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronRandomWallet error', {
@@ -1774,6 +1799,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronIcarusWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronIcarusWallet error', {
@@ -1827,6 +1853,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronTrezorWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronTrezorWallet error', {
@@ -1880,6 +1907,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronLedgerWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronLedgerWallet error', {
@@ -1925,6 +1953,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreExportedByronWallet success', {
         wallet,
       });
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreExportedByronWallet error', {
@@ -2067,6 +2096,7 @@ export default class AdaApi {
         });
       }
 
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
@@ -2109,6 +2139,7 @@ export default class AdaApi {
     }
   };
   getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getSmashSettings called');
 
     try {
@@ -2174,6 +2205,7 @@ export default class AdaApi {
         const error = {
           code: 'invalid_smash_server',
         };
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ code: string; }' is not assign... Remove this comment to see the full error message
         throw new ApiError(error);
       }
 
@@ -2298,6 +2330,7 @@ export default class AdaApi {
     });
 
     try {
+      // @ts-ignore ts-migrate(2322) FIXME: Type '[]' is not assignable to type 'Promise<[]>'.
       const response: Promise<[]> = await exportWalletAsJSON(this.config, {
         walletId,
         filePath,
@@ -2412,7 +2445,7 @@ export default class AdaApi {
         .result();
     }
   };
-  getStakePools = async (stake: number = 0): Promise<Array<StakePool>> => {
+  getStakePools = async (stake = 0): Promise<Array<StakePool>> => {
     logger.debug('AdaApi::getStakePools called', {
       parameters: {
         stake,
@@ -2446,6 +2479,7 @@ export default class AdaApi {
     }
   };
   testReset = async (): Promise<void> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::testReset called');
 
     try {
@@ -2459,6 +2493,7 @@ export default class AdaApi {
           })
         )
       );
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::testReset success');
     } catch (error) {
       logger.error('AdaApi::testReset error', {
@@ -2468,6 +2503,7 @@ export default class AdaApi {
     }
   };
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkInfo called');
 
     try {
@@ -2557,6 +2593,7 @@ export default class AdaApi {
     }
   };
   getNetworkParameters = async (): Promise<GetNetworkParametersResponse> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkParameters called');
 
     try {
@@ -2600,6 +2637,7 @@ export default class AdaApi {
     }
   };
   getNews = async (): Promise<GetNewsResponse> => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNews called');
     // Fetch news json
     let rawNews: string;
@@ -3082,7 +3120,9 @@ const _createTransactionFromServerData = action(
       deposit: new BigNumber(deposit.quantity.toString()).dividedBy(
         LOVELACES_PER_ADA
       ),
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ policyId: string; assetName: string; quant... Remove this comment to see the full error message
       assets: transactionAssets,
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Date' is not assignable to param... Remove this comment to see the full error message
       date: utcStringToDate(date),
       description: '',
       addresses: {
@@ -3219,6 +3259,7 @@ const _createStakePoolFromServerData = action(
     const retiringAt = get(retirement, 'epoch_start_time', null);
     return new StakePool({
       id,
+      // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'BigNumber... Remove this comment to see the full error message
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
       potentialRewards: new BigNumber(

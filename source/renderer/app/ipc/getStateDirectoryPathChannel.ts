@@ -4,6 +4,7 @@ import type {
   GetStateDirectoryPathMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
+
 export const getStateDirectoryPathChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetStateDirectoryPathMainResponse,

@@ -4,6 +4,7 @@ import type {
   ToggleRTSFlagsModeRendererRequest,
 } from '../../common/ipc/api';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+
 export const toggleRTSFlagsModeChannel: MainIpcChannel<
   ToggleRTSFlagsModeRendererRequest,
   ToggleRTSFlagsModeMainResponse

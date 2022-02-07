@@ -70,7 +70,9 @@ storiesOf('Settings|General', module)
       (store) => (
         <WalletsSettings
           currencySelected={store.state.currencySelected}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           currencyRate={0.321}
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
           currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
           currencyIsActive
           onSelectCurrency={(code) =>
@@ -134,9 +136,11 @@ storiesOf('Settings|General', module)
       discreetMode={boolean('discreetMode', false)}
       openDiscreetMode={boolean('openDiscreetMode', false)}
       onDiscreetModeToggle={() =>
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
         changeControl('discreetMode', !boolean('discreetMode'))
       }
       onOpenDiscreetModeToggle={() =>
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
         changeControl('openDiscreetMode', !boolean('openDiscreetMode'))
       }
     />

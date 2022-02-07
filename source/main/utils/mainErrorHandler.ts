@@ -1,7 +1,9 @@
 import { app } from 'electron';
 import { logger } from './logging';
 import { stringifyError } from '../../common/utils/logging';
+
 export default (onError?: (...args: Array<any>) => any) => {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Main Error Handler started');
 
   const handleError = (title: string, error: any) => {

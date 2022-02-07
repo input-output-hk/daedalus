@@ -97,6 +97,7 @@ const safeExit = async () => {
   }
 
   if (cardanoNode.state === CardanoNodeStates.STOPPING) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
     cardanoNode.exitOnStop();
     return;
@@ -121,6 +122,7 @@ const safeExit = async () => {
 };
 
 const handleWindowClose = async (event: Event | null | undefined) => {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
   event?.preventDefault();
   await safeExit();
@@ -170,17 +172,22 @@ const onAppReady = async () => {
   });
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Setting up Main Window...');
   mainWindow = createMainWindow(
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
     userLocale,
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Electron.Screen' is not assignab... Remove this comment to see the full error message
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(
     `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
   );
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
   });
@@ -188,6 +195,7 @@ const onAppReady = async () => {
     () =>
       new Promise((resolve) => {
         const locale = getLocale(network);
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: true,
         });
@@ -198,9 +206,11 @@ const onAppReady = async () => {
     (data) =>
       new Promise((resolve) => {
         const locale = getLocale(network);
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isNavigationEnabled: data.isNavigationEnabled,
         });
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
         mainWindow.updateTitle(locale);
         resolve();
       })
@@ -225,6 +235,7 @@ const onAppReady = async () => {
   toggleRTSFlagsModeChannel.onReceive(() => {
     const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     return handleWindowClose();
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
@@ -261,6 +272,7 @@ const onAppReady = async () => {
   });
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
 
@@ -290,12 +302,14 @@ const onAppReady = async () => {
       );
 
       if (response === 0) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus'
         );
         return safeExitWithCode(0);
       }
 
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('ipcMain: Exiting local cluster together with Daedalus');
     }
 

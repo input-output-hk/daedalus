@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
 import Wallet from '../../domains/Wallet';
+
 export type DelegationAction =
   | 'changeDelegation'
   | 'removeDelegation'

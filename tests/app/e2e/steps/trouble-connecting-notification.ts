@@ -1,5 +1,6 @@
 import { Then } from "cucumber";
 import { waitUntilTextInSelector } from "../../../common/e2e/steps/helpers";
+
 const SELECTORS = {
   REPORT_ISSUE_BTN: '.ReportIssue_actionButton.reportIssueButton',
   REPORT_ISSUE_HEADER: '.ReportIssue_reportIssueText',

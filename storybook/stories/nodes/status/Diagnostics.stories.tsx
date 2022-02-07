@@ -5,6 +5,7 @@ import { number, withKnobs, boolean } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import DaedalusDiagnostics from '../../../../source/renderer/app/components/status/DaedalusDiagnostics';
+
 const systemInfo = {
   platform: 'macOS',
   platformVersion: '17.7.0',
@@ -39,6 +40,7 @@ storiesOf('Nodes|Status', module)
       systemInfo={systemInfo}
       coreInfo={coreInfo}
       cardanoNodeState="running"
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: { platform: string; platformVe... Remove this comment to see the full error message
       isDev={false}
       isMainnet
       isStaging={false}
@@ -89,6 +91,7 @@ storiesOf('Nodes|Status', module)
       systemInfo={systemInfo}
       coreInfo={coreInfo}
       cardanoNodeState="running"
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: { platform: string; platformVe... Remove this comment to see the full error message
       isDev={false}
       isMainnet
       isStaging={false}

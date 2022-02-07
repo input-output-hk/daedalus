@@ -8,11 +8,14 @@ import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import TadaButton from '../components/widgets/TadaButton';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/menu-opened-i... Remove this comment to see the full error message
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/menu-ic.inlin... Remove this comment to see the full error message
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../components/layout/TopBar.sc... Remove this comment to see the full error message
 import topBarStyles from '../components/layout/TopBar.scss';
 
 const TopBarContainer = (

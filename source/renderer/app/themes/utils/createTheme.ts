@@ -2,6 +2,7 @@ import chroma from 'chroma-js';
 import { isEmpty, has } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
+
 export type PartialThemeParts = {
   colors: ThemeColors;
   fonts: ThemeFonts;
@@ -1269,10 +1270,12 @@ export const createTheme = (
   if (colors && !isEmpty(colors) && fonts && !isEmpty(fonts)) {
     daedalusTheme = {
       ...createReactPolymorphTheme({
+        // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
         colors,
         fonts,
       }),
       ...createDaedalusComponentsTheme({
+        // @ts-ignore ts-migrate(2322) FIXME: Type '{}' is not assignable to type 'ThemeColors'.
         colors,
         fonts,
       }),

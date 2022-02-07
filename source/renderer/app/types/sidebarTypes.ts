@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+
 export type SidebarWalletType = {
   id: string;
   title: string;

@@ -2,6 +2,7 @@ import { get, map } from 'lodash';
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import type { NetworkMagicType } from '../../../common/types/cardano-node.types';
 import type { Network } from '../../../common/types/environment.types';
+
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
 export const SHELLEY_PURPOSE_INDEX = 1852;

@@ -13,6 +13,7 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 import type { WalletLocalData } from '../../api/utils/localStorage';
+
 const messages = defineMessages({
   address: {
     id: 'wallet.receive.pdf.filenamePrefix',
@@ -92,7 +93,7 @@ class WalletReceivePage extends Component<Props, State> {
   handleToggleUsedAddresses = () => {
     this.props.actions.walletSettings.toggleShowUsedAddresses.trigger();
   };
-  getAddressAndFilepath = async (fileExtension: string = 'pdf') => {
+  getAddressAndFilepath = async (fileExtension = 'pdf') => {
     const { addressToShare } = this.state;
     const { activeWallet } = this;
     const { intl } = this.context;
@@ -229,6 +230,7 @@ class WalletReceivePage extends Component<Props, State> {
           ) : (
             <WalletReceiveSequential
               walletAddresses={walletAddresses}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               isAddressValid={this.handleIsAddressValid}
               onShareAddress={this.handleShareAddress}
               onCopyAddress={this.handleCopyAddress}
@@ -249,6 +251,7 @@ class WalletReceivePage extends Component<Props, State> {
             onClose={this.handleCloseShareAddress}
             isHardwareWallet={activeWallet.isHardwareWallet}
             hwDeviceStatus={hwDeviceStatus}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             transportDevice={transportDevice}
             isAddressDerived={isAddressDerived}
             isAddressChecked={isAddressChecked}

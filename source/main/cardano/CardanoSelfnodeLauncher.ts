@@ -6,6 +6,7 @@ import type { Process } from '../utils/processes';
 import type { CardanoNodeProcessNames } from '../../common/types/cardano-node.types';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
+
 export type SelfnodeOptions = {
   selfnodeBin: string;
   mockTokenMetadataServerBin: string;
@@ -47,6 +48,7 @@ export async function CardanoSelfnodeLauncher(
       onStop,
     } = selfnodeOptions;
     setupMockTokenMetadataServer(mockTokenMetadataServerBin);
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
     const processList: Array<Process> = await find('port', CARDANO_WALLET_PORT);
     const isSelfnodeRunning =
       processList.length && processList[0].name === processName;
@@ -79,6 +81,7 @@ export async function CardanoSelfnodeLauncher(
       const nodeProcess: ChildProcess = spawn(selfnodeBin, [], {
         env: {
           ...process.env,
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           CARDANO_WALLET_PORT,
           SHELLEY_TEST_DATA,
           TOKEN_METADATA_SERVER,
@@ -126,6 +129,7 @@ const setupSelfnode = ({
   onStop: (...args: Array<any>) => any;
   connected: boolean;
 }): Selfnode =>
+  // @ts-ignore ts-migrate(2322) FIXME: Type '(ChildProcess | Process) & { wpid: number; s... Remove this comment to see the full error message
   Object.assign({}, nodeProcess, {
     wpid: nodeProcess.pid,
     stop: async () => {
@@ -144,6 +148,7 @@ const setupSelfnode = ({
 const setupMockTokenMetadataServer = async (
   mockTokenMetadataServerBin: string
 ) => {
+  // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
   const processList: Array<Process> = await find(
     'port',
     TOKEN_METADATA_SERVER_PORT

@@ -9,13 +9,19 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingInput.scss' or ... Remove this comment to see the full error message
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/arrow-r... Remove this comment to see the full error message
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 import { ENTER_KEY_CODE, ESCAPE_KEY_CODE } from '../../../config/numbersConfig';
+
 const messages = defineMessages({
   change: {
     id: 'inline.editing.input.change.label',
@@ -74,6 +80,7 @@ class InlineEditingInput extends Component<Props, State> {
     successfullyUpdated: false,
   };
   validator = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         inputField: {
@@ -103,6 +110,7 @@ class InlineEditingInput extends Component<Props, State> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.validator.submit({
       onSuccess: async (form) => {
         this.setInputBlur();
@@ -162,6 +170,7 @@ class InlineEditingInput extends Component<Props, State> {
   };
   onCancel = () => {
     const { value, onCancel, errorMessage } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     const newValue = !errorMessage ? value : '';
     inputField.set(newValue);
@@ -179,16 +188,20 @@ class InlineEditingInput extends Component<Props, State> {
     const input = this.inputElement;
     if (input instanceof HTMLElement) input.blur();
   };
+  // @ts-ignore ts-migrate(2370) FIXME: A rest parameter must be of an array type.
   onChange = (...props: KeyboardEvent) => {
     this.setState({
       hasChanged: true,
     });
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
+    // @ts-ignore ts-migrate(2488) FIXME: Type 'KeyboardEvent' must have a '[Symbol.iterator... Remove this comment to see the full error message
     inputField.onChange(...props);
   };
 
   componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
     const { value: nextValue, errorMessage: nextError } = this.props;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
 
     // If there's an error, we focus the input again
@@ -249,6 +262,7 @@ class InlineEditingInput extends Component<Props, State> {
     }
 
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     let error;
     if (inputField.error) error = inputField.error;
@@ -308,7 +322,9 @@ class InlineEditingInput extends Component<Props, State> {
 
         <div
           className={buttonsWrapperStyles}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '(event: KeyboardEvent) => void' is not assig... Remove this comment to see the full error message
           onMouseDown={this.preventDefaultHelper}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '(event: KeyboardEvent) => void' is not assig... Remove this comment to see the full error message
           onMouseUp={this.preventDefaultHelper}
         >
           {showEditButton && (

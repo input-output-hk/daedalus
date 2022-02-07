@@ -4,6 +4,7 @@ import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 import { environment } from '../environment';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
+
 export const buildKnownIssueFixesSubmenu = (
   actions: MenuActions,
   translations: {},
@@ -13,6 +14,7 @@ export const buildKnownIssueFixesSubmenu = (
   const rtsFlags = getRtsFlagsSettings(network);
   const areRTSFlagsEnabled = !!rtsFlags?.length && rtsFlags.length > 0;
   return [
+    // @ts-ignore ts-migrate(2740) FIXME: Type '{ label: any; click(): void; }' is missing t... Remove this comment to see the full error message
     {
       label: translate('helpSupport.knownIssues'),
 
@@ -21,6 +23,7 @@ export const buildKnownIssueFixesSubmenu = (
         shell.openExternal(faqLink);
       },
     },
+    // @ts-ignore ts-migrate(2740) FIXME: Type '{ label: any; type: "checkbox"; checked: boo... Remove this comment to see the full error message
     {
       label: translate('helpSupport.blankScreenFix'),
       type: 'checkbox',
@@ -30,6 +33,7 @@ export const buildKnownIssueFixesSubmenu = (
         actions.toggleBlankScreenFix(item);
       },
     },
+    // @ts-ignore ts-migrate(2740) FIXME: Type '{ label: any; type: "checkbox"; checked: boo... Remove this comment to see the full error message
     {
       label: translate('helpSupport.usingRtsFlags'),
       type: 'checkbox',

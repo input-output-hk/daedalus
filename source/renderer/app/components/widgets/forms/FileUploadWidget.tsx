@@ -3,9 +3,12 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import path from 'path';
 import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/attach-... Remove this comment to see the full error message
 import attachIcon from '../../../assets/images/attach-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FileUploadWidget.scss' or it... Remove this comment to see the full error message
 import styles from './FileUploadWidget.scss';
 import type { FileDialogRequestParams } from '../../../../../common/types/file-dialog.types';
+
 type Props = {
   label: string;
   placeholder: string;

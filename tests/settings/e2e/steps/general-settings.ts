@@ -1,6 +1,7 @@
 import { When, Then } from "cucumber";
 import { expect } from "chai";
 import { camelCase } from "lodash";
+
 When(/^I click on secondary menu (.*) item$/, async function (buttonName) {
   const buttonSelector = `.SettingsMenuItem_component.${camelCase(buttonName)}`;
   await this.client.waitForVisible(buttonSelector);

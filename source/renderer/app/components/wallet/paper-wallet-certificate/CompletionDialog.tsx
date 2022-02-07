@@ -9,10 +9,13 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CompletionDialog.scss' or it... Remove this comment to see the full error message
 import styles from './CompletionDialog.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import InlineNotification from '../../notifications/InlineNotification';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
+
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.completion.dialog.headline',
@@ -88,6 +91,7 @@ class CompletionDialog extends Component<Props, State> {
   state = {
     showCopyNotification: false,
   };
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   copyNotificationTimeout: TimeoutID;
   onShowCopyNotification = () => {
     const { copyAddressNotificationDuration } = this.props;

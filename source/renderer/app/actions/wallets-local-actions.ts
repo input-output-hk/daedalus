@@ -1,4 +1,5 @@
 import Action from './lib/Action';
+
 export default class WalletSettingsActions {
   refreshWalletsLocalData: Action<any> = new Action();
   setWalletLocalData: Action<{

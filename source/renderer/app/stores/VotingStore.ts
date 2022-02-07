@@ -25,6 +25,7 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
+
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
   public: (...args: Array<any>) => any;
@@ -40,6 +41,7 @@ export type VotingDataType = {
   absoluteSlotNumber: number;
 };
 export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const FundPhases: EnumMap<string, FundPhase> = {
   SNAPSHOT: 'snapshot',
   VOTING: 'voting',
@@ -48,26 +50,28 @@ export const FundPhases: EnumMap<string, FundPhase> = {
 };
 export default class VotingStore extends Store {
   @observable
-  registrationStep: number = 1;
+  registrationStep = 1;
   @observable
   selectedWalletId: string | null | undefined = null;
   @observable
   transactionId: string | null | undefined = null;
   @observable
-  transactionConfirmations: number = 0;
+  transactionConfirmations = 0;
   @observable
-  isTransactionPending: boolean = false;
+  isTransactionPending = false;
   @observable
-  isTransactionConfirmed: boolean = false;
+  isTransactionConfirmed = false;
   @observable
   votingRegistrationKey: VotingRegistrationKeyType | null | undefined = null;
   @observable
   qrCode: string | null | undefined = null;
   @observable
-  isConfirmationDialogOpen: boolean = false;
+  isConfirmationDialogOpen = false;
   @observable
   fundPhase: FundPhase = FundPhases.SNAPSHOT;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   fundPhaseInterval: IntervalID | null | undefined = null;
 
   setup() {
@@ -201,6 +205,7 @@ export default class VotingStore extends Store {
       const votingKey = formattedArrayBufferToHexString(
         this.votingRegistrationKey.public().bytes()
       );
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
@@ -321,6 +326,7 @@ export default class VotingStore extends Store {
           role,
           index,
         } = votingData;
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         const signature = await this.signMetadataRequest.execute({
           addressHex: stakeAddressHex,
           walletId,
@@ -331,6 +337,7 @@ export default class VotingStore extends Store {
           index,
           absoluteSlotNumber,
         });
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         transaction = await this.createVotingRegistrationTransactionRequest.execute(
           {
             address: address.id,
@@ -416,6 +423,7 @@ export default class VotingStore extends Store {
         isMainnet,
         intl,
       });
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.voting.saveAsPDFSuccess.trigger();
     } catch (error) {
       throw new Error(error);
@@ -425,6 +433,7 @@ export default class VotingStore extends Store {
     const {
       confirmations,
       state,
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     }: WalletTransaction = await this.getTransactionRequest.execute({
       walletId: this.selectedWalletId,
       transactionId: this.transactionId,

@@ -1,6 +1,7 @@
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
 import type { WalletUtxos } from '../types';
+
 export const getWalletUtxos = (
   config: RequestConfig,
   {

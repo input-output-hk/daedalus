@@ -3,6 +3,7 @@ import type { ActionsMap } from '../../actions/index';
 import type { StoresMap } from '../index';
 import type { Api } from '../../api/index';
 import type { Environment } from '../../../../common/types/environment.types';
+
 export default class Store {
   stores: StoresMap;
   api: Api;

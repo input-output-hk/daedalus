@@ -12,6 +12,7 @@ import {
   MIN_DELEGATION_FUNDS,
 } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
 type State = {

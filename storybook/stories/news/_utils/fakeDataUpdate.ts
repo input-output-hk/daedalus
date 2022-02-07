@@ -2,6 +2,7 @@ import inc from 'semver/functions/inc';
 import { version as currentVersion } from '../../../../package.json';
 import News from '../../../../source/renderer/app/domains/News';
 import type { NewsItem } from '../../../../source/renderer/app/api/news/types';
+
 export const version = currentVersion;
 export const availableAppVersion = inc(version, 'minor');
 const commonUpdateData = {
@@ -59,7 +60,9 @@ export const update = {
 };
 export const getNewsUpdateItem = (
   read?: boolean,
+  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
   locale: string
+// @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
 ): News.News => {
   const date = new Date().getTime();
   return new News.News({

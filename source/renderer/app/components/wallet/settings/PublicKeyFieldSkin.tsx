@@ -8,8 +8,11 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import type { InputProps } from 'react-polymorph/lib/components/Input';
 import { pickDOMProps } from 'react-polymorph/lib/utils/props';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/copy.in... Remove this comment to see the full error message
 import copyImage from '../../../assets/images/copy.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyField.scss' or its ... Remove this comment to see the full error message
 import styles from './PublicKeyField.scss';
+
 type Props = InputProps & {
   inputRef: ElementRef<'input'>;
   theme: Record<string, any>;

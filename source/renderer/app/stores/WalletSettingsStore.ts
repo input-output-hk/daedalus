@@ -11,6 +11,7 @@ import type { WalletExportToFileParams } from '../actions/wallet-settings-action
 import type { WalletUtxos } from '../api/wallets/types';
 import type { WalletLocalData } from '../api/utils/localStorage';
 import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
+
 export default class WalletSettingsStore extends Store {
   @observable
   updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
@@ -34,6 +35,7 @@ export default class WalletSettingsStore extends Store {
   walletUtxos: WalletUtxos | null | undefined = null;
   @observable
   recoveryPhraseStep = 0;
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingApiInterval: IntervalID | null | undefined = null;
 
   setup() {
@@ -143,12 +145,14 @@ export default class WalletSettingsStore extends Store {
     newPassword: string;
     isLegacy: boolean;
   }) => {
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.updateSpendingPasswordRequest.execute({
       walletId,
       oldPassword,
       newPassword,
       isLegacy,
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateSpendingPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
@@ -176,6 +180,7 @@ export default class WalletSettingsStore extends Store {
       isLegacy: walletData.isLegacy,
     }).promise;
     if (!wallet) return;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.stores.wallets.walletsRequest.patch((result) => {
       const walletIndex = findIndex(result, {
         id: walletId,
@@ -188,11 +193,13 @@ export default class WalletSettingsStore extends Store {
   @action
   _exportToFile = async (params: WalletExportToFileParams) => {
     const { walletId, filePath, password } = params;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.exportWalletToFileRequest.execute({
       walletId,
       filePath,
       password,
     });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
   };
   @action
@@ -224,6 +231,7 @@ export default class WalletSettingsStore extends Store {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
     const { id: walletId, isLegacy } = activeWallet;
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
       isLegacy,

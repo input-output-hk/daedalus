@@ -8,6 +8,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
+
 const id = 'menu';
 export const osxMenu = (
   app: App,
@@ -148,6 +149,7 @@ export const osxMenu = (
       {
         label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Command+I',
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleDevTools' does not exist on type '... Remove this comment to see the full error message
         click: () => window.toggleDevTools(),
       },
     ],
@@ -186,6 +188,7 @@ export const osxMenu = (
         label: translation('helpSupport.downloadLogs'),
 
         click() {
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },

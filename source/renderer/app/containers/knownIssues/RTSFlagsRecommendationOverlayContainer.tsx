@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import RTSFlagsRecommendationOverlay from '../../components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay';
+
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -39,6 +40,7 @@ class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
 
     return (
       <RTSFlagsRecommendationOverlay
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isRTSFlagsModeEnabled={
           this.props.stores.networkStatus.isRTSFlagsModeEnabled
         }

@@ -43,10 +43,12 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         isLegacy={isLegacy}
         isNotResponding={isNotResponding}
         isSetWalletPasswordDialogOpen={false}
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(item: any) => any' is not assig... Remove this comment to see the full error message
         onWalletNavItemClick={linkTo((item) => walletStories[item])}
         onSetWalletPassword={() => {}}
         onOpenExternalLink={() => {}}
         onRestartNode={() => {}}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         walletNotConnected
         isDeviceConnected={false}
         fetchingDevice={false}

@@ -10,6 +10,7 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -68,6 +69,7 @@ class WalletSendPage extends Component<Props> {
     isHardwareWallet: boolean,
     walletId: string
   ) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog,

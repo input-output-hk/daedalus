@@ -1,4 +1,5 @@
 import { generateFileMetaChannel } from '../ipc/generateFileMetaChannel';
+
 type Params = {
   filePath: string;
 };

@@ -5,7 +5,9 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ToggleRTSFlagsDialog.scss' o... Remove this comment to see the full error message
 import styles from './ToggleRTSFlagsDialog.scss';
+
 const messages = defineMessages({
   enableRTSFlagsModeHeadline: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.title',

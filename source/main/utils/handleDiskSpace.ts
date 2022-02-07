@@ -33,6 +33,7 @@ const getDiskCheckReport = async (
     diskTotalSpaceRaw: 0,
     isError: false,
   };
+  // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   return Promise.race([
     // Disk space check promise
     new Promise((resolve) => {
@@ -82,6 +83,7 @@ export const handleDiskSpace = (
     const response = await getDiskCheckReport(stateDirectoryPath);
 
     if (response.isError) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
       );
@@ -149,6 +151,7 @@ export const handleDiskSpace = (
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
           try {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
             await cardanoNode.stop();
           } catch (error) {
@@ -163,6 +166,7 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:
           try {
+            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info(
               '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
             );
@@ -198,7 +202,7 @@ export const handleDiskSpace = (
     }
   };
 
-  let hadNotEnoughSpaceLeft: boolean = false;
+  let hadNotEnoughSpaceLeft = false;
 
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);

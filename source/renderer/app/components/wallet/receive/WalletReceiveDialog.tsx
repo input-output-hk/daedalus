@@ -17,9 +17,11 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletReceiveDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
@@ -27,6 +29,7 @@ import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWallet
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+
 const messages = defineMessages({
   inputLabel: {
     id: 'wallet.receive.dialog.inputLabel',
@@ -165,6 +168,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
   form = new ReactToolboxMobxForm({
     fields: {
       noteInput: {
@@ -175,6 +179,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     },
   });
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { noteInput } = form.values();
@@ -267,6 +272,7 @@ class WalletReceiveDialog extends Component<Props, State> {
       isReverifying,
     } = this.state;
     const { intl } = this.context;
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const noteInputField = this.form.$('noteInput');
     const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
@@ -457,11 +463,15 @@ class WalletReceiveDialog extends Component<Props, State> {
                     </p>
                   }
                   items={map(filteredVerificationOptions, (option) => ({
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                     key: option.status,
                     disabled: false,
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'label' does not exist on type 'number | ... Remove this comment to see the full error message
                     label: option.label,
+                    // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                     selected: option.status === selectedVerificationStatus,
                     onChange: () =>
+                      // @ts-ignore ts-migrate(2339) FIXME: Property 'status' does not exist on type 'number |... Remove this comment to see the full error message
                       this.onChangeVerificationStatus(option.status),
                   }))}
                   verticallyAligned

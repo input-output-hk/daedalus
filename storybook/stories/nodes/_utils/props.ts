@@ -1,4 +1,5 @@
 import { action } from '@storybook/addon-actions';
+
 export const aboutDialogProps = {
   actions: {
     app: {

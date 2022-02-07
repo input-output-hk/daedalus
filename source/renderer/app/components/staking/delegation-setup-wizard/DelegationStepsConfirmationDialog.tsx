@@ -8,7 +8,9 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsConfirmationD... Remove this comment to see the full error message
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -28,6 +30,7 @@ import { OversaturationText } from './OversaturationText';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import { ReactIntlMessage } from '../../../types/i18nTypes';
+
 const messages: Record<string, ReactIntlMessage> = {
   ...getMessages(),
   fieldIsRequired: globalMessages.fieldIsRequired,
@@ -54,6 +57,7 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
   form = new ReactToolboxMobxForm(
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
       fields: {
         spendingPassword: {
@@ -98,6 +102,7 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
     }
   );
   submit = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { selectedWallet } = this.props;
@@ -131,6 +136,7 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const selectedPoolId = get(selectedPool, 'id');
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.confirmButtonLabel)

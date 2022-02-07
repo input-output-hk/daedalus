@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxoCursor.scss' or it... Remove this comment to see the full error message
 import styles from './WalletUtxoCursor.scss';
+
 type CursorProps = {
   height?: number;
   offsetWidth?: number;

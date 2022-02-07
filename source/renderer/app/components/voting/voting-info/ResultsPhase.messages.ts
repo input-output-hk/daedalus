@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+
 export const messages = defineMessages({
   endDateLabel: {
     id: 'voting.resultsPhase.endDateLabel',

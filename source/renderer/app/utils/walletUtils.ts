@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import Wallet from '../domains/Wallet'; // @ts-ignore TODO: fix this in flowconfig
 
 export default import('@iohk-jormungandr/wallet-js').then((modules) => modules);
-const MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS: number = 10; // 1 ADA | unit: ADA
+const MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS = 10; // 1 ADA | unit: ADA
 
 export const isWalletRewardsWithdrawalPossible = (
   transactionAmount: BigNumber,
@@ -17,7 +17,7 @@ export const isWalletRewardsWithdrawalPossible = (
 export const shouldShowEmptyWalletWarning = (
   totalAmountToSpend: BigNumber,
   wallet: Wallet,
-  hasAssets: boolean = false
+  hasAssets = false
 ): boolean => {
   const { amount: walletBalance, isLegacy, isDelegating } = wallet;
   const willRemainZeroAdaAndZeroAssetsAndNotDelegating =

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakingInfoCountdown from '../../components/staking/info/StakingInfoCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')

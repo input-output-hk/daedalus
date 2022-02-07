@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Config'.
 import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -32,7 +33,9 @@ import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import { Slider } from '../../widgets/Slider';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsRanking.scss' or i... Remove this comment to see the full error message
 import styles from './StakePoolsRanking.scss';
+
 const messages = defineMessages({
   rankingAllWallets: {
     id: 'staking.stakePools.rankingAllWallets',
@@ -340,6 +343,7 @@ class StakePoolsRanking extends Component<Props, State> {
                 <div className={walletSelectorContainerClasses}>
                   <WalletsDropdown
                     className={walletSelectorClasses}
+                    // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; placeholder: any; wallets:... Remove this comment to see the full error message
                     placeholder={intl.formatMessage(
                       messages.rankingSelectWallet
                     )}
@@ -356,6 +360,7 @@ class StakePoolsRanking extends Component<Props, State> {
                           );
 
                           if (selectionInput) {
+                            // @ts-ignore ts-migrate(2339) FIXME: Property 'click' does not exist on type 'Element'.
                             selectionInput.click();
                           }
                         }}
@@ -373,6 +378,7 @@ class StakePoolsRanking extends Component<Props, State> {
           </div>
           {false ? ( // eslint-disable-line
             <ButtonLink
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               className={learnMoreButtonClasses}
               onClick={() => onOpenExternalLink(learnMoreUrl)}
               skin={ButtonSkin}

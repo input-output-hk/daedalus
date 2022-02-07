@@ -34,6 +34,7 @@ import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
+
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
     <Root>

@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "path";
 import { fillOutWalletSendForm } from "../../../wallets/e2e/steps/helpers";
 import { waitUntilTextInSelector } from "../../../common/e2e/steps/helpers";
+
 const paperWalletCertificatePath = path.resolve(__dirname, '../documents/paper-wallet-certificate.pdf');
 Given(/^I see the "Certificate Generation Instructions" dialog$/, function () {
   return this.client.waitForVisible('.instructionsDialog');
@@ -16,6 +17,7 @@ When(/^I click on the print button$/, async function () {
     filePath: paperWalletCertificatePath
   };
   await this.client.execute(params => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.wallets.generateCertificate.trigger({
       filePath: params.filePath
     });
@@ -43,7 +45,9 @@ When(/^I see the "Verify Certificate" dialog$/, function () {
 });
 When(/^I enter paper wallet recovery phrase$/, async function () {
   const fields = await this.client.execute(() => ({
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     walletCertificateRecoveryPhrase: daedalus.stores.wallets.walletCertificateRecoveryPhrase,
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     additionalMnemonicWords: daedalus.stores.wallets.additionalMnemonicWords
   }));
   const walletCertificateRecoveryPhrase = `${fields.value.walletCertificateRecoveryPhrase} ${fields.value.additionalMnemonicWords}`;
@@ -108,6 +112,7 @@ When(/^I see the "Paper Wallet Certificate" dialog$/, function () {
 });
 When(/^Cardano explorer link and wallet address should be valid$/, async function () {
   const visibleCardanoExplorerLink = await this.waitAndGetText('.CompletionDialog_linkInstructionsWrapper .CompletionDialog_infoBox .CompletionDialog_link');
+  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   const walletCertificateAddress = await this.client.execute(() => daedalus.stores.wallets.walletCertificateAddress);
   const cardanoExplorerLink = `https://explorer.cardano.org/en/address${walletCertificateAddress.value}`;
   this.certificateWalletAddress = walletCertificateAddress.value;

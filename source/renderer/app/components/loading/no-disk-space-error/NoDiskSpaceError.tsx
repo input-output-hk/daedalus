@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/attenti... Remove this comment to see the full error message
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NoDiskSpaceError.scss' or it... Remove this comment to see the full error message
 import styles from './NoDiskSpaceError.scss';
+
 const messages = defineMessages({
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',

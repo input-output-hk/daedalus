@@ -1,15 +1,16 @@
 import { pick } from 'lodash';
 import { observable, action } from 'mobx';
 import type { Asset as AssetProps, AssetMetadata } from '../api/assets/types';
+
 export default class Asset {
   @observable
-  policyId: string = '';
+  policyId = '';
   @observable
-  assetName: string = '';
+  assetName = '';
   @observable
-  uniqueId: string = '';
+  uniqueId = '';
   @observable
-  fingerprint: string = '';
+  fingerprint = '';
   @observable
   metadata: AssetMetadata | null | undefined;
   @observable

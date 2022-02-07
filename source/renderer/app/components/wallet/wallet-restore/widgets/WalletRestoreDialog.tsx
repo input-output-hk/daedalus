@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import Dialog from '../../../widgets/Dialog';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRestoreDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletRestoreDialog.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { DialogActionItems } from '../../../widgets/Dialog';
 import type { RestoreWalletStep } from '../../../../types/walletRestoreTypes';
+
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.restore.dialog.title',
