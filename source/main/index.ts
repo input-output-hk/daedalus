@@ -159,13 +159,17 @@ const onAppReady = async () => {
     process.env.PATH,
     process.env.DAEDALUS_INSTALL_DIRECTORY,
   ].join(path.delimiter);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(`Daedalus is starting at ${startTime}`, {
     startTime,
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Updating System-info.json file', { ...systemInfo.data });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(`Current working directory is: ${process.cwd()}`, {
     cwd: process.cwd(),
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('System and user locale', {
     systemLocale,
     userLocale,
@@ -263,6 +267,7 @@ const onAppReady = async () => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('Prevented creation of new browser window', {
         url,
       });
@@ -278,6 +283,7 @@ const onAppReady = async () => {
 
     if (isSelfnode) {
       if (keepLocalClusterRunning || isTest) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus',
           {

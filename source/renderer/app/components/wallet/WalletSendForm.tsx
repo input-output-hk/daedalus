@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
-import { filter, get, indexOf, omit, map, without } from 'lodash';
+import { filter, get, indexOf, omit, map, without, isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -40,9 +40,19 @@ import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
+import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
+type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
+const AdaInputStateType: EnumMap<string, AdaInputState> = {
+  Restored: 'restored',
+  Updated: 'updated',
+  None: 'none',
+  Reset: 'reset',
+};
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
@@ -64,6 +74,8 @@ type Props = {
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
+  tokenFavorites: Record<string, boolean>;
+  walletName: string;
 };
 type State = {
   formFields: {
@@ -75,14 +87,17 @@ type State = {
     };
   };
   minimumAda: BigNumber;
+  adaAmountInputTrack: BigNumber;
   feeCalculationRequestQue: number;
   transactionFee: BigNumber;
   transactionFeeError: (string | null | undefined) | (Node | null | undefined);
-  showRemoveAssetButton: Record<string, boolean>;
   selectedAssetUniqueIds: Array<string>;
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
   isTransactionFeeCalculated: boolean;
+  isTokenPickerOpen: boolean;
+  isCalculatingTransactionFee: boolean;
+  adaInputState: AdaInputState;
 };
 
 @observer
@@ -94,21 +109,18 @@ class WalletSendForm extends Component<Props, State> {
   state = {
     formFields: {},
     minimumAda: new BigNumber(0),
+    adaAmountInputTrack: new BigNumber(0),
     feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
-    showRemoveAssetButton: {},
     selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    isTokenPickerOpen: false,
+    isCalculatingTransactionFee: false,
+    adaInputState: AdaInputStateType.None,
   };
-  // We need to track the fee calculation state in order to disable
-  // the "Submit" button as soon as either receiver or amount field changes.
-  // This is required as we are using debounced validation and we need to
-  // disable the "Submit" button as soon as the value changes and then wait for
-  // the validation to end in order to see if the button should be enabled or not.
-  _isCalculatingTransactionFee = false;
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -189,8 +201,11 @@ class WalletSendForm extends Component<Props, State> {
     }
   };
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
-    if (event.target instanceof HTMLInputElement && event.key === 'Enter')
-      this.handleOnSubmit();
+    if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
+      setTimeout(() => {
+        this.handleOnSubmit();
+      }, FORM_VALIDATION_DEBOUNCE_WAIT);
+    }
   };
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -216,8 +231,9 @@ class WalletSendForm extends Component<Props, State> {
     this.updateFormFields(true);
     this.setState({
       minimumAda: new BigNumber(0),
-      showRemoveAssetButton: {},
+      adaAmountInputTrack: new BigNumber(0),
       isResetButtonDisabled: true,
+      adaInputState: AdaInputStateType.None,
     });
   };
   clearReceiverFieldValue = () => {
@@ -307,10 +323,12 @@ class WalletSendForm extends Component<Props, State> {
     );
   };
   isDisabled = () =>
-    this._isCalculatingTransactionFee ||
+    this.state.isCalculatingTransactionFee ||
     !this.state.isTransactionFeeCalculated ||
     // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
-    !this.form.isValid;
+    !this.form.isValid ||
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'validating' does not exist on type 'Reac... Remove this comment to see the full error message
+    this.form.validating;
   form = new ReactToolboxMobxForm(
     // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     {
@@ -343,7 +361,7 @@ class WalletSendForm extends Component<Props, State> {
               const isAdaAmountValid = adaAmountField.isValid;
 
               if (isValid && isAdaAmountValid) {
-                this.calculateTransactionFee();
+                await this.calculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -381,7 +399,7 @@ class WalletSendForm extends Component<Props, State> {
               );
 
               if (isValid) {
-                this.calculateTransactionFee();
+                await this.calculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -426,20 +444,22 @@ class WalletSendForm extends Component<Props, State> {
     currentFeeCalculationRequestQue: number,
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
-  calculateTransactionFee = async () => {
+  validateEmptyAssets = () => {
+    return this.selectedAssets
+      .filter((_, index) => {
+        const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
+        return quantity.isZero();
+      })
+      .forEach(({ uniqueId }) => {
+        // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
+        this.form.$(`asset_${uniqueId}`).validate({
+          showErrors: true,
+        });
+      });
+  };
+  calculateTransactionFee = async (shouldUpdateMinimumAdaAmount = false) => {
+    this.validateEmptyAssets();
     const { form } = this;
-    const emptyAssetFieldValue = '0';
-    const hasEmptyAssetFields = this.selectedAssetsAmounts.includes(
-      emptyAssetFieldValue
-    );
-
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
-    if (!form.isValid || hasEmptyAssetFields) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
-      form.showErrors(true);
-      return;
-    }
-
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
     const receiver = receiverField.value;
@@ -447,17 +467,16 @@ class WalletSendForm extends Component<Props, State> {
     const adaAmountField = form.$('adaAmount');
     const adaAmount = formattedAmountToLovelace(adaAmountField.value);
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ policy_id: string; asset_name: string; qua... Remove this comment to see the full error message
-    const assets: ApiTokens = filter(
-      this.selectedAssets.map(({ policyId, assetName }, index) => {
+    const assets: ApiTokens = this.selectedAssets
+      .map(({ policyId, assetName }, index) => {
         const quantity = new BigNumber(this.selectedAssetsAmounts[index]);
         return {
           policy_id: policyId,
           asset_name: assetName,
           quantity, // BigNumber or number - prevent parsing a BigNumber to Number (Integer) because of JS number length limitation
         };
-      }),
-      'quantity'
-    );
+      })
+      .filter(({ quantity }: { quantity: BigNumber }) => quantity.gt(0));
     const {
       selectedAssetUniqueIds,
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
@@ -465,12 +484,11 @@ class WalletSendForm extends Component<Props, State> {
     this.setState((prevState) => ({
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
       isTransactionFeeCalculated: false,
-      transactionFee: new BigNumber(0),
       transactionFeeError: null,
+      isCalculatingTransactionFee: true,
     }));
 
     try {
-      this._isCalculatingTransactionFee = true;
       const { fee, minimumAda } = await this.props.calculateTransactionFee(
         receiver,
         adaAmount,
@@ -482,16 +500,29 @@ class WalletSendForm extends Component<Props, State> {
         this.isLatestTransactionFeeRequest(
           this.state.feeCalculationRequestQue,
           prevFeeCalculationRequestQue
-        ) &&
-        !this.selectedAssetsAmounts.includes(emptyAssetFieldValue)
+        )
       ) {
-        this._isCalculatingTransactionFee = false;
-        this.setState({
+        const minimumAdaValue = minimumAda || new BigNumber(0);
+        const adaAmountValue = new BigNumber(adaAmountField.value || 0);
+        const nextState = {
           isTransactionFeeCalculated: true,
-          minimumAda: minimumAda || new BigNumber(0),
+          minimumAda: minimumAdaValue,
           transactionFee: fee,
           transactionFeeError: null,
-        });
+          isCalculatingTransactionFee: false,
+          adaInputState: this.state.adaInputState,
+        };
+
+        if (shouldUpdateMinimumAdaAmount) {
+          const adaInputState = await this.checkAdaInputState(
+            adaAmountValue,
+            minimumAdaValue
+          );
+          nextState.adaInputState = adaInputState;
+          this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
+        }
+
+        this.setState(nextState);
       }
     } catch (error) {
       if (
@@ -505,6 +536,11 @@ class WalletSendForm extends Component<Props, State> {
         let transactionFeeError;
         let localizableError = error;
         let values;
+        let nextState = {
+          isCalculatingTransactionFee: false,
+          isTransactionFeeCalculated: false,
+          transactionFee: new BigNumber(0),
+        };
 
         if (error.id === 'api.errors.utxoTooSmall') {
           const minimumAda = get(error, 'values.minimumAda');
@@ -516,9 +552,25 @@ class WalletSendForm extends Component<Props, State> {
             values = {
               minimumAda,
             };
-            this.setState({
-              minimumAda: new BigNumber(minimumAda),
-            });
+
+            if (shouldUpdateMinimumAdaAmount) {
+              const minimumAdaValue = new BigNumber(minimumAda);
+              const adaAmountValue = new BigNumber(adaAmountField.value || 0);
+              const adaInputState = await this.checkAdaInputState(
+                adaAmountValue,
+                minimumAdaValue
+              );
+              this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
+              this.setState({
+                ...nextState,
+                adaInputState,
+                minimumAda: new BigNumber(minimumAda),
+              });
+              return;
+            }
+
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ minimumAda: BigNumber; isCalculatingTransa... Remove this comment to see the full error message
+            nextState = { ...nextState, minimumAda: new BigNumber(minimumAda) };
           }
         }
 
@@ -530,46 +582,123 @@ class WalletSendForm extends Component<Props, State> {
             />
           );
         } else {
-          transactionFeeError = (
-            <FormattedHTMLMessage {...localizableError} values={values} />
+          transactionFeeError = this.context.intl.formatMessage(
+            localizableError,
+            values
           );
         }
 
-        this._isCalculatingTransactionFee = false;
-        this.setState({
-          isTransactionFeeCalculated: false,
-          transactionFee: new BigNumber(0),
-          transactionFeeError,
-        });
+        this.setState({ ...nextState, transactionFeeError });
       }
     }
+  };
+  checkAdaInputState = async (
+    adaAmount: BigNumber,
+    minimumAda: BigNumber
+  ): Promise<AdaInputState> => {
+    const {
+      adaAmountInputTrack,
+      selectedAssetUniqueIds,
+      adaInputState,
+    } = this.state;
+
+    if (
+      adaAmountInputTrack.gt(minimumAda) &&
+      adaInputState === AdaInputStateType.Updated
+    ) {
+      return AdaInputStateType.Restored;
+    }
+
+    if (
+      adaAmountInputTrack.lt(minimumAda) &&
+      !isEmpty(selectedAssetUniqueIds)
+    ) {
+      const isValid = await this.props.validateAmount(
+        formattedAmountToNaturalUnits(minimumAda.toFormat())
+      );
+
+      if (!isValid) {
+        return AdaInputStateType.None;
+      }
+
+      return AdaInputStateType.Updated;
+    }
+
+    if (isEmpty(selectedAssetUniqueIds)) {
+      return AdaInputStateType.Reset;
+    }
+
+    return AdaInputStateType.None;
+  };
+  trySetMinimumAdaAmount = (
+    adaInputState: AdaInputState,
+    minimumAda: BigNumber
+  ) => {
+    const { formFields } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
+    const { adaAmount: adaAmountField } = formFields.receiver;
+
+    switch (adaInputState) {
+      case 'updated':
+        adaAmountField.onChange(minimumAda.toString());
+        break;
+
+      case 'restored':
+      case 'reset':
+        adaAmountField.onChange(this.state.adaAmountInputTrack.toString());
+        break;
+
+      case 'none':
+      default:
+    }
+  };
+  updateAdaAmount = async () => {
+    const { minimumAda } = this.state;
+    const formattedMinimumAda = minimumAda.toFormat();
+    const isValid = await this.props.validateAmount(
+      formattedAmountToNaturalUnits(formattedMinimumAda)
+    );
+
+    if (!isValid) {
+      return;
+    }
+
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
+    this.form.$('adaAmount').onChange(formattedMinimumAda);
+    this.setState({
+      adaInputState: AdaInputStateType.None,
+      adaAmountInputTrack: minimumAda,
+    });
+  };
+  onAdaAmountFieldChange = (value: string) => {
+    const { formFields } = this.state;
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
+    const { adaAmount: adaAmountField } = formFields.receiver;
+    adaAmountField.onChange(value != null ? value : '');
+    const adaAmount = new BigNumber(value != null ? value : 0);
+    this.setState({
+      adaAmountInputTrack: adaAmount,
+      adaInputState: AdaInputStateType.None,
+    });
+  };
+  isAdaAmountLessThanMinimumRequired = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
+    const adaAmountField = this.form.$('adaAmount');
+    const adaAmount = new BigNumber(adaAmountField.value || 0);
+    return adaAmount.lt(this.state.minimumAda);
   };
 
   resetTransactionFee() {
     if (this._isMounted) {
-      this._isCalculatingTransactionFee = false;
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
+        isCalculatingTransactionFee: false,
       });
     }
   }
 
-  showRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = true;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
-  hideRemoveAssetButton = (uniqueId: string) => {
-    const { showRemoveAssetButton } = this.state;
-    showRemoveAssetButton[uniqueId] = false;
-    this.setState({
-      showRemoveAssetButton,
-    });
-  };
   addAssetRow = (uniqueId: string) => {
     this.addAssetFields(uniqueId);
     this.updateFormFields(false, uniqueId);
@@ -587,17 +716,19 @@ class WalletSendForm extends Component<Props, State> {
     const { receiver } = formFields;
     const assetFields = omit(receiver.assetFields, uniqueId);
     const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
-    this.setState({
-      selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
-      formFields: {
-        ...formFields,
-        receiver: { ...receiver, assetFields, assetsDropdown },
+    this.setState(
+      {
+        selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
+        formFields: {
+          ...formFields,
+          receiver: { ...receiver, assetFields, assetsDropdown },
+        },
       },
-    });
-    this.removeAssetFields(uniqueId);
-    setTimeout(() => {
-      this.calculateTransactionFee();
-    });
+      async () => {
+        this.removeAssetFields(uniqueId);
+        await this.calculateTransactionFee(true);
+      }
+    );
   };
   addAssetFields = (uniqueId: string) => {
     const newAsset = `asset_${uniqueId}`;
@@ -652,7 +783,7 @@ class WalletSendForm extends Component<Props, State> {
         const isValid = isValidAmount && isValidRange;
 
         if (isValid) {
-          this.calculateTransactionFee();
+          await this.calculateTransactionFee(true);
         } else {
           this.resetTransactionFee();
         }
@@ -701,11 +832,16 @@ class WalletSendForm extends Component<Props, State> {
     this.removeAssetRow(currentUniqueId);
     this.resetTransactionFee();
   };
+  getMinimumAdaValue = () => {
+    const { minimumAda } = this.state;
+    return minimumAda.isZero()
+      ? TRANSACTION_MIN_ADA_VALUE
+      : minimumAda.toFormat();
+  };
   renderReceiverRow = (): Node => {
     const { intl } = this.context;
     const {
       formFields,
-      minimumAda,
       transactionFeeError,
       selectedAssetUniqueIds,
       isReceiverAddressValid,
@@ -715,7 +851,6 @@ class WalletSendForm extends Component<Props, State> {
       adaAmount: adaAmountField,
       receiver: receiverField,
       assetFields,
-      assetsDropdown,
       // @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'.
     } = formFields.receiver;
     const assetsSeparatorBasicHeight = 140;
@@ -723,12 +858,9 @@ class WalletSendForm extends Component<Props, State> {
       ? assetsSeparatorBasicHeight * (selectedAssetUniqueIds.length + 1) -
         40 * selectedAssetUniqueIds.length
       : assetsSeparatorBasicHeight;
-    const minimumAdaValue = minimumAda.isZero()
-      ? TRANSACTION_MIN_ADA_VALUE
-      : minimumAda.toFormat();
+    const minimumAdaValue = this.getMinimumAdaValue();
     const addAssetButtonClasses = classNames([
       styles.addAssetButton,
-      !this.hasAvailableAssets ? styles.disabled : null,
       'primary',
     ]);
     const receiverFieldClasses = classNames([
@@ -818,27 +950,48 @@ class WalletSendForm extends Component<Props, State> {
                     this.addFocusableField(field);
                   }}
                   className="adaAmount"
-                  value={adaAmountField.value}
                   bigNumberFormat={this.getCurrentNumberFormat()}
                   decimalPlaces={currencyMaxFractionalDigits}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
-                  onChange={(value) => {
-                    adaAmountField.onChange(value);
-                  }}
+                  onChange={this.onAdaAmountFieldChange}
                   currency={globalMessages.adaUnit}
                   error={adaAmountField.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                   autoFocus={this._isAutoFocusEnabled}
                 />
-                <div className={styles.minAdaRequired}>
-                  <span>
-                    {intl.formatMessage(messages.minAdaRequired, {
-                      minimumAda: minimumAdaValue,
-                    })}
-                  </span>
+                <div
+                  className={styles.minAdaRequired}
+                  data-testid="minimumAdaRequiredMsg"
+                >
+                  {this.isAdaAmountLessThanMinimumRequired() ? (
+                    <>
+                      <Button
+                        className={addAssetButtonClasses}
+                        label={intl.formatMessage(
+                          messages.updateAdaAmountButton
+                        )}
+                        onClick={this.updateAdaAmount}
+                      />
+                      <span>
+                        {intl.formatMessage(
+                          messages.updateAdaAmountDescription,
+                          {
+                            minimumAda: minimumAdaValue,
+                          }
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <span>
+                      {intl.formatMessage(messages.minAdaRequired, {
+                        minimumAda: minimumAdaValue,
+                      })}
+                    </span>
+                  )}
+
                   <PopOver
                     content={intl.formatMessage(minAdaRequiredTooltip, {
                       minimumAda: minimumAdaValue,
@@ -859,24 +1012,15 @@ class WalletSendForm extends Component<Props, State> {
                     <AssetInput
                       key={uniqueId}
                       uniqueId={uniqueId}
+                      // @ts-ignore ts-migrate(2322) FIXME: Type '{ key: string; uniqueId: string; index: numb... Remove this comment to see the full error message
                       index={index}
                       getAssetByUniqueId={this.getAssetByUniqueId}
-                      availableAssets={this.availableAssets}
                       assetFields={assetFields}
-                      assetsDropdown={assetsDropdown}
                       addFocusableField={this.addFocusableField}
-                      removeAssetButtonVisible={
-                        this.state.showRemoveAssetButton
-                      }
-                      showRemoveAssetButton={this.showRemoveAssetButton}
-                      hideRemoveAssetButton={this.hideRemoveAssetButton}
                       currentNumberFormat={this.getCurrentNumberFormat()}
                       removeAssetRow={this.removeAssetRow}
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
-                      onChangeAsset={(newUniqueId) =>
-                        this.onChangeAsset(uniqueId, newUniqueId)
-                      }
                       autoFocus={this._isAutoFocusEnabled}
                     />
                   )
@@ -887,12 +1031,24 @@ class WalletSendForm extends Component<Props, State> {
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
                 onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].uniqueId);
+                  this.setState({
+                    isTokenPickerOpen: true,
+                  });
                 }}
               />
             </div>
           </>
         )}
+      </div>
+    );
+  };
+  renderMinimumAmountNotice = (message: ReactIntlMessage, values: {}) => {
+    return (
+      <div
+        className={styles.minimumAmountNotice}
+        data-testid={`WalletSendForm::minimumAmountNotice::${this.state.adaInputState}`}
+      >
+        <FormattedHTMLMessage {...message} values={values} />
       </div>
     );
   };
@@ -906,14 +1062,19 @@ class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
+      isTokenPickerOpen,
+      selectedAssetUniqueIds,
     } = this.state;
     const {
+      assets,
       currencyMaxFractionalDigits,
       hwDeviceStatus,
       isHardwareWallet,
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      tokenFavorites,
+      walletName,
     } = this.props;
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
@@ -933,6 +1094,13 @@ class WalletSendForm extends Component<Props, State> {
       styles.calculatingFeesSpinnerButton,
       styles.spinning,
     ]);
+    const estimatedFeeInputClasses = classNames({
+      [styles.estimatedFeeInput]: true,
+      [styles.withOffset]:
+        this.state.adaInputState === AdaInputStateType.Updated ||
+        this.state.adaInputState === AdaInputStateType.Restored,
+    });
+    const minimumAdaValue = this.getMinimumAdaValue();
     return (
       <div className={styles.component}>
         {isRestoreActive ? (
@@ -947,7 +1115,7 @@ class WalletSendForm extends Component<Props, State> {
             <div className={styles.walletSendForm}>
               {/* @ts-ignore ts-migrate(2339) FIXME: Property 'receiver' does not exist on type '{}'. */}
               {formFields.receiver && this.renderReceiverRow()}
-              <div className={styles.estimatedFeeInput}>
+              <div className={estimatedFeeInputClasses}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
                   value={
@@ -961,7 +1129,7 @@ class WalletSendForm extends Component<Props, State> {
                   }
                   isSet
                 />
-                {this._isCalculatingTransactionFee && (
+                {this.state.isCalculatingTransactionFee && (
                   <div className={styles.calculatingFeesContainer}>
                     <PopOver
                       content={intl.formatMessage(
@@ -973,6 +1141,15 @@ class WalletSendForm extends Component<Props, State> {
                   </div>
                 )}
               </div>
+              {this.state.adaInputState === AdaInputStateType.Updated &&
+                this.renderMinimumAmountNotice(messages.minimumAmountNotice, {
+                  minimumAda: minimumAdaValue,
+                })}
+              {this.state.adaInputState === AdaInputStateType.Restored &&
+                this.renderMinimumAmountNotice(messages.restoredAdaAmount, {
+                  minimumAda: minimumAdaValue,
+                  adaAmount: adaAmountField.value,
+                })}
               <div className={styles.buttonsContainer}>
                 <Button
                   className="flat"
@@ -1006,6 +1183,26 @@ class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
+
+        {isTokenPickerOpen && (
+          <WalletTokenPicker
+            assets={assets}
+            previouslyCheckedIds={selectedAssetUniqueIds}
+            tokenFavorites={tokenFavorites}
+            walletName={walletName}
+            onCancel={() => {
+              this.setState({
+                isTokenPickerOpen: false,
+              });
+            }}
+            onAdd={(checked) => {
+              this.setState({
+                isTokenPickerOpen: false,
+              });
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }

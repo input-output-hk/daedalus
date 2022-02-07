@@ -13,7 +13,7 @@ import {
 } from '../../_support/utils';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 // Screens
-import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/WalletTokensList';
+import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList';
 
 const assets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.

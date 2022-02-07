@@ -12,7 +12,7 @@ import {
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
-import WalletTokens from '../../../../source/renderer/app/components/wallet/tokens/WalletTokens';
+import WalletTokens from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens';
 
 const assets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.

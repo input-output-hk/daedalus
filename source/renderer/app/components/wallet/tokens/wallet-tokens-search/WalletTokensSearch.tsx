@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -6,10 +6,10 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokensSearch.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTokensSearch.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message
-import searchIcon from '../../../assets/images/search.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
-import crossIcon from '../../../assets/images/close-cross.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/sear... Remove this comment to see the full error message
+import searchIcon from '../../../../assets/images/search.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/clos... Remove this comment to see the full error message
+import crossIcon from '../../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   placeholder: {
@@ -20,16 +20,25 @@ const messages = defineMessages({
 });
 type Props = {
   intl: intlShape.isRequired;
-  onSearch: (...args: Array<any>) => any;
+  onSearch: (term: string) => string;
   searchValue: string;
 };
-const WalletTokensSearch = observer((props: Props) => {
+
+const WalletTokensSearch = (props: Props) => {
   const { searchValue, onSearch, intl } = props;
+  const [focus, setFocus] = useState(false);
   return (
     <div className={styles.component}>
-      <SVGInline svg={searchIcon} className={styles.searchIcon} />
+      <SVGInline
+        svg={searchIcon}
+        className={classNames(
+          styles.searchIcon,
+          focus && styles.focusSearchIcon
+        )}
+      />
       <Input
-        className={styles.spendingPassword}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
         onChange={onSearch}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}
@@ -44,5 +53,6 @@ const WalletTokensSearch = observer((props: Props) => {
       )}
     </div>
   );
-});
-export default injectIntl(WalletTokensSearch);
+};
+
+export default injectIntl(observer(WalletTokensSearch));

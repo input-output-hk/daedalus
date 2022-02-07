@@ -72,3 +72,9 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   development: 'Development',
 };
+export type CpuThreadData = {
+  model: string;
+  speed: number;
+  times: Record<string, number>;
+};
+export type Cpu = Array<CpuThreadData>;

@@ -177,6 +177,8 @@ export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | uni
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
   'https://metadata.cardano-testnet.iohkdev.io';
+export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
+
 // Used by mock-token-metadata-server
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =

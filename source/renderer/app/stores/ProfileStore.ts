@@ -620,6 +620,7 @@ export default class ProfileStore extends Store {
       };
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });

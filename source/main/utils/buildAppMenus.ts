@@ -58,6 +58,7 @@ export const buildAppMenus = async (
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 21', {
       code: 21,
     });
@@ -68,6 +69,7 @@ export const buildAppMenus = async (
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 22', {
       code: 22,
     });

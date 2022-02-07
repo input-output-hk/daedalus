@@ -153,6 +153,7 @@ storiesOf('Navigation|Sidebar', module)
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ wallets: { items: { id: string; title: str... Remove this comment to see the full error message
       menus={sidebarMenus}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus

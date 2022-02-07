@@ -78,7 +78,7 @@
     "import/no-unresolved": 1,
     "@typescript-eslint/no-var-requires": 1,
     "camelcase": 1,
-		"no-empty": 1,
+    "no-empty": 1,
     "@typescript-eslint/no-explicit-any": 1,
     "no-shadow": 1,
     "react/no-did-update-set-state": 1,
@@ -86,13 +86,7 @@
     "react/state-in-constructor": 0,
     "react/static-property-placement": 0
   },
-  "plugins": [
-    "@typescript-eslint",
-    "import",
-    "promise",
-    "react",
-    "jest"
-  ],
+  "plugins": ["@typescript-eslint", "import", "promise", "react", "jest"],
   "globals": {
     "API": true,
     "API_VERSION": true,
@@ -102,9 +96,9 @@
     "Process": true // TODO: remove after fix
   },
   "settings": {
-     "import/resolver": {
+    "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx",".ts", ".tsx"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   }

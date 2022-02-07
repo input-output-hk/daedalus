@@ -228,6 +228,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
+    this._checkDiskSpace();
 
     this._getStateDirectoryPath();
 
@@ -243,6 +244,7 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: Restart of cardano-node failed', {
         error,
       });
@@ -289,6 +291,7 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: Error while updating node status', {
         error,
       });
@@ -314,6 +317,8 @@ export default class NetworkStatusStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+
     logger.info(`NetworkStatusStore: handling node state <${state}>`, {
       state,
     });
@@ -325,12 +330,16 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: requesting node status');
       // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       const status = await getCachedCardanoStatusChannel.request();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+
       logger.info('NetworkStatusStore: received cached node status', {
         status,
       });
       if (status)
         runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+
       logger.error('NetworkStatusStore: error while requesting node state', {
         error,
       });
@@ -345,6 +354,8 @@ export default class NetworkStatusStore extends Store {
       const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+
       logger.error('NetworkStatusStore: error while requesting tls config', {
         error,
       });
@@ -366,6 +377,8 @@ export default class NetworkStatusStore extends Store {
   };
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+
     logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
       state,
     });
@@ -500,7 +513,7 @@ export default class NetworkStatusStore extends Store {
         return;
       }
     }
-
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: Checking network clock...', {
       isForceCheck,
     });
@@ -523,6 +536,7 @@ export default class NetworkStatusStore extends Store {
           this._clearNetworkClockPollingInterval();
         }
       });
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Network clock response received', {
         localTimeDifference: this.localTimeDifference,
         isNodeTimeCorrect: this.isNodeTimeCorrect,
@@ -586,7 +600,7 @@ export default class NetworkStatusStore extends Store {
         this._networkStatus = NETWORK_STATUS.SYNCING;
 
         const connectingTimeDelta = this._getStartupTimeDelta();
-
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
         });
@@ -631,7 +645,7 @@ export default class NetworkStatusStore extends Store {
         this.actions.networkStatus.isSyncedAndReady.trigger();
 
         const syncingTimeDelta = this._getStartupTimeDelta();
-
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
         });

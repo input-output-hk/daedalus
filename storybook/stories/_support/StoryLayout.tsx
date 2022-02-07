@@ -26,6 +26,10 @@ import Wallet, {
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
+import {
+  WalletSortBy,
+  WalletSortOrder,
+} from '../../../source/renderer/app/types/sidebarTypes';
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
@@ -166,6 +170,13 @@ class StoryLayout extends Component<Props> {
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId,
+        onWalletSortBy: action('sortWallet'),
+        onSearch: action('searchWallet'),
+      },
+      searchValue: '',
+      walletSortConfig: {
+        sortOrder: WalletSortOrder.Asc,
+        sortBy: WalletSortBy.Date,
       },
     },
   });

@@ -20,11 +20,7 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/sand-clock... Remove this comment to see the full error message
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import {
-  formattedNumber,
-  formattedCpuModel,
-  formattedSize,
-} from '../../utils/formatters';
+import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
@@ -534,13 +530,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu: cpuInOriginalFormat,
+      cpu,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
       hasMetHardwareRequirements,
       isRTSFlagsModeEnabled,
     } = systemInfo;
-    const cpu = formattedCpuModel(cpuInOriginalFormat);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );

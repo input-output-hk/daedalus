@@ -6,7 +6,7 @@ runCommand "daedalus-tsc-ci" { preferLocalBuild = true; } ''
   chmod -R u+w ./
   rm -rf node_modules || true
   cp -a ${rawapp.node_modules} node_modules
-  node_modules/.bin/tsc --quiet
+  node_modules/.bin/tsc --noEmit --quiet
   if [ $? == 0 ] || [ $? == 2 ]
   then
     echo $? > $out

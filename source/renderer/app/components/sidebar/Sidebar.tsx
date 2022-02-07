@@ -77,11 +77,16 @@ const Sidebar = ({
         <SidebarWalletsMenu
           wallets={menus?.wallets?.items || []}
           onAddWallet={onAddWallet}
-          onWalletItemClick={menus?.wallets?.actions?.onWalletItemClick}
+          onWalletItemClick={menus?.wallets?.actions.onWalletItemClick}
           isActiveWallet={(id) => id === menus?.wallets?.activeWalletId}
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}
+          onWalletSortBy={menus?.wallets?.actions.onWalletSortBy}
+          sortBy={menus?.wallets?.walletSortConfig?.sortBy}
+          sortOrder={menus?.wallets?.walletSortConfig?.sortOrder}
+          searchValue={menus?.wallets?.searchValue}
+          onSearch={menus?.wallets?.actions.onSearch}
         />
       )}
     </div>

@@ -12,6 +12,7 @@ export const DefaultSyncingConnectingStory = () => (
     isVerifyingBlockchain={false}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     verificationProgress={0}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+import highlightWords from 'highlight-words';
 import SVGInline from 'react-svg-inline';
 import LegacyBadge, {
   LEGACY_BADGE_MODES,
@@ -27,6 +28,7 @@ type Props = {
   hasNotification: boolean;
   isHardwareWalletDisconnected?: boolean;
   isHardwareWallet: boolean;
+  searchValue: string;
 };
 
 @observer
@@ -46,6 +48,7 @@ class SidebarWalletMenuItem extends Component<Props> {
       hasNotification,
       isHardwareWalletDisconnected,
       isHardwareWallet,
+      searchValue,
     } = this.props;
     const showLegacyBadge = isLegacy && isShelleyActivated;
     const componentStyles = classNames([
@@ -64,11 +67,28 @@ class SidebarWalletMenuItem extends Component<Props> {
         ? styles.disconnected
         : styles.connected,
     ]);
+    const chunks = highlightWords({
+      text: title,
+      query: `/(${searchValue.split('').join('|')})/i`,
+    });
     return (
-      <button className={componentStyles} onClick={onClick}>
+      <button
+        className={componentStyles}
+        onClick={onClick}
+        data-testid="walletMenu"
+      >
         <div className={styles.meta}>
           <div className={styles.topContainer}>
-            <div className={styles.title}>{title}</div>
+            <div className={styles.title} data-testid={title}>
+              {chunks.map(({ text, match, key }) => (
+                <span
+                  key={key}
+                  className={match ? styles.searchMatch : styles.searchUnmatch}
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
             {isHardwareWallet && (
               <div className={styles.hardwareWalletsIconWrapper}>
                 <SVGInline svg={hardwareWalletsIcon} className={hwIconStyles} />

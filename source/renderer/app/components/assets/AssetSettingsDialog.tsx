@@ -169,7 +169,9 @@ class AssetSettingsDialog extends Component<Props, State> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.title)}
-        subtitle={<Asset asset={asset} className={styles.assetToken} />}
+        subtitle={
+          <Asset asset={asset} small={false} className={styles.assetToken} />
+        }
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}
