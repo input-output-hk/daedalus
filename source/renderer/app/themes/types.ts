@@ -3,14 +3,14 @@ export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
 export type PendingThemesUpdates = {
-  'cardano.js'?: Object,
-  'dark-blue.js'?: Object,
-  'dark-cardano.js'?: Object,
-  'flight-candidate.js'?: Object,
-  'light-blue.js'?: Object,
-  'shelley-testnet.js'?: Object,
-  'white.js'?: Object,
-  'yellow.js'?: Object,
+  'cardano.ts'?: Object,
+  'dark-blue.ts'?: Object,
+  'dark-cardano.ts'?: Object,
+  'flight-candidate.ts'?: Object,
+  'light-blue.ts'?: Object,
+  'shelley-testnet.ts'?: Object,
+  'white.ts'?: Object,
+  'yellow.ts'?: Object,
 };
 
 export type CreateThemeParams = {
