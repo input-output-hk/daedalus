@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './ImageUploadWidget.scss';
-
 export const messages = defineMessages({
   dropFileHere: {
     id: 'ImageUploadWidget.dropFileHint',
@@ -16,9 +14,8 @@ export const messages = defineMessages({
     description: 'Label "or click to upload" on the file upload widget.',
   },
 });
-
 type Props = {
-  label: string,
+  label: string;
 };
 
 @observer
@@ -48,4 +45,4 @@ class ImageUploadWidget extends Component<Props> {
   }
 }
 
-export default ImageUploadWidget
+export default ImageUploadWidget;

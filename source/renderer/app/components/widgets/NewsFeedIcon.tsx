@@ -1,17 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './NewsFeedIcon.scss';
-
 type Props = {
-  onNewsFeedIconClick: Function,
-  newsFeedIconClass?: string,
-  hasNotification: boolean,
-  hasUpdate: boolean,
+  onNewsFeedIconClick: (...args: Array<any>) => any;
+  newsFeedIconClass?: string;
+  hasNotification: boolean;
+  hasUpdate: boolean;
 };
-
 export default class NewsFeedIcon extends Component<Props> {
   render() {
     const {

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import path from 'path';
 import { observer, inject } from 'mobx-react';
@@ -8,7 +7,6 @@ import InstructionsDialog from '../../../../components/wallet/paper-wallet-certi
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
 import type { FileDialogRequestParams } from '../../../../../../common/types/file-dialog.types';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -20,7 +18,6 @@ class InstructionsDialogContainer extends Component<Props> {
     children: null,
     onClose: () => {},
   };
-
   onPrint = async () => {
     const {
       currentDateFormat,
@@ -30,7 +27,6 @@ class InstructionsDialogContainer extends Component<Props> {
     const formattedDate = date.format(currentDateFormat);
     const formattedTime = date.format(currentTimeFormatShort);
     const timestamp = `${formattedDate} - ${formattedTime}`;
-
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
       date,
@@ -48,18 +44,14 @@ class InstructionsDialogContainer extends Component<Props> {
         },
       ],
     };
-
     const { filePath } = await showSaveDialogChannel.send(params);
-
     // if cancel button is clicked or path is empty
     if (!filePath) return;
-
     this.props.actions.wallets.generateCertificate.trigger({
       filePath,
       timestamp,
     });
   };
-
   handleOpenExternalLink = (url: string) => {
     const { openExternalLink } = this.props.stores.app;
     openExternalLink(url);
@@ -83,4 +75,4 @@ class InstructionsDialogContainer extends Component<Props> {
   }
 }
 
-export default InstructionsDialogContainer
+export default InstructionsDialogContainer;

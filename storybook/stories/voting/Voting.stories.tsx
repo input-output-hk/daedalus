@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -30,7 +29,6 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
-
 const assets = {
   available: [
     {
@@ -65,7 +63,6 @@ const assets = {
     },
   ],
 };
-
 const WALLETS = [
   generateWallet('Wallet 1', '100000000000000', assets, 0),
   generateWallet(
@@ -78,19 +75,14 @@ const WALLETS = [
     'syncing'
   ),
 ];
-
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
-
 storiesOf('Voting|Voting Registration Wizard', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Voting Registration - Step 1', () => (
     <VotingRegistrationStepsChooseWallet
       onClose={action('onClose')}
@@ -105,7 +97,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       getStakePoolById={action('getStakePoolById')}
     />
   ))
-
   .add('Voting Registration - Step 2', () => (
     <VotingRegistrationStepsRegister
       onClose={action('onClose')}
@@ -129,7 +120,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWallet={WALLETS[0]}
     />
   ))
-
   .add('Voting Registration - Step 3', () => (
     <VotingRegistrationStepsConfirm
       onClose={action('onClose')}
@@ -146,7 +136,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       transactionError={boolean('transactionError', false)}
     />
   ))
-
   .add('Voting Registration - Step 4', () => (
     <VotingRegistrationStepsEnterPinCode
       onClose={action('onClose')}
@@ -155,7 +144,6 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onSetPinCode={action('onSetPinCode')}
     />
   ))
-
   .add('Voting Registration - Step 5', () => (
     <VotingRegistrationStepsQrCode
       onClose={action('onClose')}
@@ -165,13 +153,9 @@ storiesOf('Voting|Voting Registration Wizard', module)
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
     />
   ));
-
 storiesOf('Voting|Voting Info', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Voting Info', () => (
     <VerticalFlexContainer>
       <VotingInfo

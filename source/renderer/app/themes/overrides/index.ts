@@ -12,7 +12,6 @@ import SwitchOverrides from './SwitchOverrides.scss';
 import SelectOverrides from './SelectOverrides.scss';
 import OptionsOverrides from './OptionsOverrides.scss';
 import PopOverOverrides from './PopOverOverrides.scss';
-
 const {
   AUTOCOMPLETE,
   BUTTON,
@@ -28,7 +27,6 @@ const {
   SCROLLBAR,
   STEPPER,
 } = IDENTIFIERS;
-
 export const themeOverrides = {
   [AUTOCOMPLETE]: AutocompleteOverrides,
   [BUTTON]: ButtonOverrides,

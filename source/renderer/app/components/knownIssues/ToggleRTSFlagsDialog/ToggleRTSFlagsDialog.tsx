@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -7,7 +6,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ToggleRTSFlagsDialog.scss';
-
 const messages = defineMessages({
   enableRTSFlagsModeHeadline: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.title',
@@ -49,15 +47,13 @@ const messages = defineMessages({
     description: 'Manual relaunch confirmation checkbox label',
   },
 });
-
 type Props = {
-  onClose: () => void,
-  onConfirm: () => void,
-  isRTSFlagsModeEnabled: boolean,
+  onClose: () => void;
+  onConfirm: () => void;
+  isRTSFlagsModeEnabled: boolean;
 };
-
 type State = {
-  isConfirmationCheckboxChecked: boolean,
+  isConfirmationCheckboxChecked: boolean;
 };
 
 @observer
@@ -65,11 +61,9 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isConfirmationCheckboxChecked: false,
   };
-
   handleCheckboxToggle = () => {
     this.setState((prevState) => ({
       isConfirmationCheckboxChecked: !prevState.isConfirmationCheckboxChecked,
@@ -80,7 +74,6 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { isRTSFlagsModeEnabled, onClose, onConfirm } = this.props;
     const { isConfirmationCheckboxChecked } = this.state;
-
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -97,7 +90,6 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
         disabled: !isConfirmationCheckboxChecked,
       },
     ];
-
     return (
       <Dialog
         className={styles.dialog}
@@ -130,4 +122,4 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
   }
 }
 
-export default ToggleRTSFlagsDialog
+export default ToggleRTSFlagsDialog;

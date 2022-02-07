@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
@@ -8,15 +7,14 @@ import revealIcon from '../../../../assets/images/reveal-key.inline.svg';
 import hideIcon from '../../../../assets/images/hide-key.inline.svg';
 import { useDiscreetModeFeature } from '../../context';
 import styles from './DiscreetModeToggle.scss';
-
 export const DiscreetModeToggleComponent = ({
   className,
   isDiscreetMode,
   onToggle,
 }: {
-  className?: string,
-  isDiscreetMode: boolean,
-  onToggle: () => void,
+  className?: string;
+  isDiscreetMode: boolean;
+  onToggle: () => void;
 }) => {
   return (
     <button
@@ -31,9 +29,8 @@ export const DiscreetModeToggleComponent = ({
     </button>
   );
 };
-
 type Props = {
-  className: string,
+  className: string;
 };
 
 const DiscreetModeToggleContainer = ({ className }: Props) => {

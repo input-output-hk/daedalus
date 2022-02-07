@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -17,12 +16,11 @@ import { messages } from './VotingPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './CurrentPhase.scss';
 import votingStyles from './VotingInfo.scss';
-
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  intl: Intl;
 };
 
 function VotingPhase({
@@ -36,17 +34,14 @@ function VotingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-
   const startDate = formattedDateTime(VOTING_CAST_START_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>

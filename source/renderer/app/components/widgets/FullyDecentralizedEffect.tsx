@@ -1,14 +1,12 @@
-// @flow
 import React, { Component, createRef } from 'react';
 import { get } from 'lodash';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
 import styles from './FullyDecentralizedEffect.scss';
-
 type Props = {
-  isActive: boolean,
-  className?: string,
+  isActive: boolean;
+  className?: string;
 };
 
 @observer
@@ -18,12 +16,13 @@ class FullyDecentralizedEffect extends Component<Props> {
     this.container = createRef();
   }
 
-  container: ?any;
-  fireworks: ?Object = null;
+  container: any | null | undefined;
+  fireworks: Record<string, any> | null | undefined = null;
 
   componentDidMount() {
     const { isActive } = this.props;
     const container = get(this, 'container.current');
+
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
         target: container,
@@ -46,6 +45,7 @@ class FullyDecentralizedEffect extends Component<Props> {
         },
       });
       this.fireworks = fireworks;
+
       if (isActive) {
         fireworks.start();
       }
@@ -55,6 +55,7 @@ class FullyDecentralizedEffect extends Component<Props> {
   componentDidUpdate() {
     const { isActive } = this.props;
     const { fireworks } = this;
+
     if (isActive && fireworks) {
       fireworks.start();
     } else if (!isActive && fireworks) {
@@ -69,4 +70,4 @@ class FullyDecentralizedEffect extends Component<Props> {
   }
 }
 
-export default FullyDecentralizedEffect
+export default FullyDecentralizedEffect;

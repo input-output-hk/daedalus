@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -16,13 +15,12 @@ import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './ResultsPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './CurrentPhase.scss';
-
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  onExternalLinkClick: Function,
-  intl: Intl,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  intl: Intl;
 };
 
 function ResultsPhase({
@@ -37,13 +35,11 @@ function ResultsPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-
   const endDate = formattedDateTime(VOTING_CAST_END_DATE, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
     currentTimeFormat: mappedFormats.currentTimeFormat,
   });
-
   return (
     <section className={styles.root}>
       <h1 className={styles.fundName}>

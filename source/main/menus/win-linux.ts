@@ -1,4 +1,3 @@
-// @flow
 import { compact } from 'lodash';
 import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
@@ -9,9 +8,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
-
 const id = 'menu';
-
 export const winLinuxMenu = (
   app: App,
   window: BrowserWindow,
@@ -19,31 +16,40 @@ export const winLinuxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
     submenu: compact([
       {
         label: translation('daedalus.about'),
+
         click() {
           actions.openAboutDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Ctrl+T',
+
         click() {
           actions.openItnRewardsRedemptionDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
+
         click() {
           app.quit();
         },
@@ -94,6 +100,7 @@ export const winLinuxMenu = (
       {
         label: translation('view.reload'),
         accelerator: 'Ctrl+R',
+
         click() {
           window.webContents.reload();
         },
@@ -104,17 +111,21 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.settings'),
         accelerator: 'Alt+S',
+
         click() {
           actions.openSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
         accelerator: 'Alt+Ctrl+S',
+
         click() {
           actions.openWalletSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
@@ -124,6 +135,7 @@ export const winLinuxMenu = (
         ? {
             label: translation('view.toggleFullScreen'),
             accelerator: 'F11',
+
             click() {
               window.setFullScreen(!window.isFullScreen());
             },
@@ -131,6 +143,7 @@ export const winLinuxMenu = (
         : {
             label: translation('view.toggleMaximumWindowSize'),
             accelerator: 'F11',
+
             click() {
               if (window.isMaximized()) {
                 window.unmaximize();
@@ -142,6 +155,7 @@ export const winLinuxMenu = (
       {
         label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Ctrl+I',
+
         click() {
           window.toggleDevTools();
         },
@@ -152,25 +166,29 @@ export const winLinuxMenu = (
     label: translation('helpSupport'),
     submenu: compact([
       ...buildKnownIssueFixesSubmenu(actions, translations, translation),
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.safetyTips'),
+
         click() {
           const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
       /* {
-        label: translation('helpSupport.featureRequest'),
-        click() {
-          const featureRequestLinkUrl = translation(
-            'helpSupport.featureRequestUrl'
-          );
-          shell.openExternal(featureRequestLinkUrl);
-        },
-      }, */
+    label: translation('helpSupport.featureRequest'),
+    click() {
+      const featureRequestLinkUrl = translation(
+        'helpSupport.featureRequestUrl'
+      );
+      shell.openExternal(featureRequestLinkUrl);
+    },
+  }, */
       {
         label: translation('helpSupport.supportRequest'),
+
         click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
@@ -185,17 +203,22 @@ export const winLinuxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
+
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Ctrl+D',
+
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+
         enabled: isNavigationEnabled,
       },
     ]),

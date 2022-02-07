@@ -1,10 +1,8 @@
-// @flow
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -16,8 +14,7 @@ class WalletCreateDialogContainer extends Component<Props> {
     children: null,
     onClose: () => {},
   };
-
-  onSubmit = (values: { name: string, spendingPassword: string }) => {
+  onSubmit = (values: { name: string; spendingPassword: string }) => {
     this.props.actions.wallets.createWallet.trigger(values);
   };
 
@@ -35,4 +32,4 @@ class WalletCreateDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletCreateDialogContainer
+export default WalletCreateDialogContainer;

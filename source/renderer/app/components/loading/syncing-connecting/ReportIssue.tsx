@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
@@ -9,7 +8,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './ReportIssue.scss';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
-
 const messages = defineMessages({
   reportConnectingIssueText: {
     id: 'loading.screen.reportIssue.connecting.text',
@@ -43,14 +41,12 @@ const messages = defineMessages({
     description: 'Link to connectivity issue article page',
   },
 });
-
 type Props = {
-  onIssueClick: Function,
-  onOpenExternalLink: Function,
-  onDownloadLogs: Function,
-  disableDownloadLogs: boolean,
+  onIssueClick: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onDownloadLogs: (...args: Array<any>) => any;
+  disableDownloadLogs: boolean;
 };
-
 export default class ReportIssue extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -64,7 +60,6 @@ export default class ReportIssue extends Component<Props> {
       onDownloadLogs,
       disableDownloadLogs,
     } = this.props;
-
     const reportIssueButtonClasses = classNames([
       'primary',
       'reportIssueButton',
@@ -79,9 +74,7 @@ export default class ReportIssue extends Component<Props> {
       styles.downloadLogsButton,
       disableDownloadLogs ? styles.disabled : null,
     ]);
-
     const readArticleButtonUrl = messages.connectivityIssueArticleUrl;
-
     return (
       <div className={styles.component}>
         <h1 className={styles.reportIssueText}>

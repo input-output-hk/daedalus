@@ -1,12 +1,9 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
-
 // Screens
-import WalletSettingsScreen from './WalletSettingsScreen.stories.js';
+import WalletSettingsScreen from './WalletSettingsScreen.stories';
 import './WalletDelete.stories';
 import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';

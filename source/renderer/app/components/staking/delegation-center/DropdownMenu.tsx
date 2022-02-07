@@ -1,13 +1,14 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 import styles from './DropdownMenu.scss';
-
 type Props = {
-  label: any,
-  menuItems: Array<{ value: number | string, label: any }>,
-  onMenuItemClick: Function,
+  label: any;
+  menuItems: Array<{
+    value: number | string;
+    label: any;
+  }>;
+  onMenuItemClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -15,14 +16,12 @@ class DropdownMenu extends Component<Props> {
   optionRenderer = (option: any) => (
     <span className={option.className}>{option.label}</span>
   );
-
   selectionRenderer = () => (
     <div className={styles.dropdownToggle}>{this.props.label}</div>
   );
 
   render() {
     const { menuItems, onMenuItemClick } = this.props;
-
     return (
       <div className={styles.component}>
         <Dropdown
@@ -39,4 +38,4 @@ class DropdownMenu extends Component<Props> {
   }
 }
 
-export default DropdownMenu
+export default DropdownMenu;

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { camelCase } from 'lodash';
@@ -19,7 +18,6 @@ import {
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
 import { LOCALES } from '../../../../../common/types/locales.types';
-
 export const messages = defineMessages({
   title: {
     id: 'wallet.settings.recoveryPhraseVerification.title',
@@ -123,14 +121,13 @@ export const messages = defineMessages({
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
   },
 });
-
 export type Props = {
-  creationDate: Date,
-  recoveryPhraseVerificationDate: ?Date,
-  onVerify: Function,
-  wordCount: number,
-  locale: string,
-  isLegacy: boolean,
+  creationDate: Date;
+  recoveryPhraseVerificationDate: Date | null | undefined;
+  onVerify: (...args: Array<any>) => any;
+  wordCount: number;
+  locale: string;
+  isLegacy: boolean;
 };
 
 @observer
@@ -234,26 +231,24 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
       creationDate,
       recoveryPhraseVerificationDate,
     });
-
     const statusStyle = camelCase(`status ${recoveryPhraseVerificationStatus}`);
     const statusStyles = classnames([styles.status, styles[statusStyle]]);
-
     let statusButtonType = 'flat';
     if (recoveryPhraseVerificationStatus === statuses.WARNING)
       statusButtonType = 'primary';
     else if (recoveryPhraseVerificationStatus === statuses.NOTIFICATION)
       statusButtonType = 'attention';
-
     const statusButtonStyles = classnames([
       styles.statusButton,
       statusButtonType,
     ]);
-
     return (
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.description, { wordCount })}
+          {intl.formatMessage(messages.description, {
+            wordCount,
+          })}
           {isLegacy && (
             <>
               &nbsp;
@@ -295,4 +290,4 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseVerificationWidget
+export default WalletRecoveryPhraseVerificationWidget;

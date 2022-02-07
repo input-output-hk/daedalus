@@ -1,4 +1,3 @@
-// @flow
 import React, { useLayoutEffect } from 'react';
 import { storiesOf } from '@storybook/react';
 import { observer } from 'mobx-react';
@@ -10,19 +9,15 @@ import {
   useDiscreetModeFeature,
 } from '../context';
 import DiscreetValue from './DiscreetValue';
-
 const Toggle = observer(({ knob }: { knob: boolean }) => {
   const feature = useDiscreetModeFeature();
-
   useLayoutEffect(() => {
     if (knob !== feature.isDiscreetMode) {
       feature.toggleDiscreetMode();
     }
   }, [knob, feature.isDiscreetMode]);
-
   return null;
 });
-
 storiesOf('Discreet Mode|Discreet Asset Amount', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => (
@@ -32,7 +27,6 @@ storiesOf('Discreet Mode|Discreet Asset Amount', module)
       </StoryProvider>
     </StoryDecorator>
   ))
-
   .add('Discreet mode disabled', () => (
     <>
       <DiscreetValue>123</DiscreetValue>

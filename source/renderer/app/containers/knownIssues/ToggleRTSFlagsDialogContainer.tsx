@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import ToggleRTSFlagsDialog from '../../components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -15,11 +13,9 @@ class ToggleRTSFlagsDialogContainer extends Component<Props> {
     children: null,
     onClose: () => null,
   };
-
   onConfirm = () => {
     this.props.actions.networkStatus.toggleRTSFlagsMode.trigger();
   };
-
   onClose = () => {
     this.props.actions.app.closeToggleRTSFlagsModeDialog.trigger();
   };
@@ -37,4 +33,4 @@ class ToggleRTSFlagsDialogContainer extends Component<Props> {
   }
 }
 
-export default ToggleRTSFlagsDialogContainer
+export default ToggleRTSFlagsDialogContainer;

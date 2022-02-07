@@ -3,7 +3,6 @@ import * as bip39 from 'bip39';
 import blakejs from 'blakejs';
 import crypto from 'crypto';
 import validWords from './valid-words.en';
-
 const iv = Buffer.alloc(16); // it's iv = 0 simply
 
 function decryptWithAES(aesKey, bytes) {
@@ -34,10 +33,12 @@ const hexChar = [
 
 const hexToBytes = (s) => {
   const arr = [];
+
   // eslint-disable-next-line no-self-compare
   if (s.length & (1 === 1)) {
     throw new Error(`Wrong hex: ${s}`);
   }
+
   for (let i = 0; i < s.length / 2; ++i) {
     const c1 = s[2 * i];
     const c2 = s[2 * i + 1];
@@ -46,6 +47,7 @@ const hexToBytes = (s) => {
     if (i1 === -1 || i2 === -1) throw new Error(`Wrong hex: ${s}`);
     arr[i] = (i1 << 4) + i2;
   }
+
   return new Uint8Array(arr);
 };
 
@@ -75,7 +77,6 @@ export const decryptForceVend = (key, data) =>
     ),
     data
   );
-
 // Recovery service certificates decryption
 export const decryptRecoveryRegularVend = decryptRegularVend;
 export const decryptRecoveryForceVend = (key, data) => {
@@ -84,7 +85,6 @@ export const decryptRecoveryForceVend = (key, data) => {
   // 2) hex string
   // 3) numeric array
   // ...therefore we need to try all 3 decryption methods
-
   const trimmedKey = key.trim();
   let decryptedData = null;
   let bufferKey;
@@ -94,8 +94,9 @@ export const decryptRecoveryForceVend = (key, data) => {
     const decodedKey = trimmedKey.replace(/-/g, '+').replace(/_/g, '/');
     bufferKey = Buffer.from(decodedKey, 'base64');
     decryptedData = decryptWithAES(bufferKey, data);
-  } catch (e) {} // eslint-disable-line
+  } catch (e) {}
 
+  // eslint-disable-line
   // 2) hex string: "A974160F123726B94546D0B849E423786CCB6D55D60689983DB34ED557E6D53E"
   if (decryptedData === null) {
     try {

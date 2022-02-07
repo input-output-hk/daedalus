@@ -1,4 +1,3 @@
-// @flow
 import os from 'os';
 import _https from 'https';
 import _http from 'http';
@@ -7,9 +6,7 @@ import electronLog from 'electron-log-daedalus';
 import EventEmitter from 'events';
 import { environment } from './environment';
 import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
-
 const _process = process;
-
 // Increase maximum event listeners to avoid IPC channel stalling
 // (2/2) this line increases the limit for the renderer process
 EventEmitter.defaultMaxListeners = 100; // Default: 10
@@ -51,6 +48,7 @@ process.once('loaded', () => {
     // @ts-ignore
     global.spectronRequire = __non_webpack_require__; // eslint-disable-line
   }
+
   // ESLint will warn about any use of eval(), even this one
   // eslint-disable-next-line no-eval
   global.eval = () => {

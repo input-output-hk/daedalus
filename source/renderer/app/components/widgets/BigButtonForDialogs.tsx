@@ -1,18 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import styles from './BigButtonForDialogs.scss';
-
 type Props = {
-  label: string,
-  description: string,
-  icon: string,
-  onClick?: Function,
-  isDisabled?: boolean,
-  className?: string,
+  label: string;
+  description: string;
+  icon: string;
+  onClick?: (...args: Array<any>) => any;
+  isDisabled?: boolean;
+  className?: string;
 };
-
 export default class BigButtonForDialogs extends Component<Props> {
   render() {
     const {

@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import styles from './DelegateWalletButton.scss';
-
 const messages = defineMessages({
   label: {
     id: 'wallet.settings.delegateWalletButtonLabel',
@@ -11,12 +9,10 @@ const messages = defineMessages({
     description: 'Label for the delegate button on wallet settings',
   },
 });
-
 type Props = {
-  disabled?: boolean,
-  onDelegate: Function,
+  disabled?: boolean;
+  onDelegate: (...args: Array<any>) => any;
 };
-
 export default class DelegateWalletButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -1,4 +1,3 @@
-// @flow
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
@@ -9,13 +8,12 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
-  cardanoNode: ?CardanoNode,
+  cardanoNode: CardanoNode | null | undefined,
   locale: string,
   data: {
-    isNavigationEnabled: boolean,
+    isNavigationEnabled: boolean;
   }
 ) => {
   const {
@@ -26,8 +24,8 @@ export const buildAppMenus = async (
   } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isNavigationEnabled } = data;
-
   const { isMacOS, isBlankScreenFixActive } = environment;
+
   const translations = require(`../locales/${locale}`);
 
   const openAboutDialog = () => {
@@ -53,14 +51,18 @@ export const buildAppMenus = async (
   const restartWithBlankScreenFix = async () => {
     logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
-    logger.info('Exiting Daedalus with code 21', { code: 21 });
+    logger.info('Exiting Daedalus with code 21', {
+      code: 21,
+    });
     safeExitWithCode(21);
   };
 
   const restartWithoutBlankScreenFix = async () => {
     logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
-    logger.info('Exiting Daedalus with code 22', { code: 22 });
+    logger.info('Exiting Daedalus with code 22', {
+      code: 22,
+    });
     safeExitWithCode(22);
   };
 
@@ -82,11 +84,11 @@ export const buildAppMenus = async (
       cancelId: 1,
       noLink: true,
     };
-
     const { response } = await dialog.showMessageBox(
       mainWindow,
       blankScreenFixDialogOptions
     );
+
     if (response === 0) {
       if (isBlankScreenFixActive) {
         restartWithoutBlankScreenFix();
@@ -94,6 +96,7 @@ export const buildAppMenus = async (
         restartWithBlankScreenFix();
       }
     }
+
     item.checked = isBlankScreenFixActive;
   };
 
@@ -110,9 +113,9 @@ export const buildAppMenus = async (
     toggleBlankScreenFix,
     openToggleRTSFlagsModeDialog,
   };
-
   // Build app menus
   let menu;
+
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
       osxMenu(
@@ -144,11 +147,9 @@ export const buildAppMenus = async (
     app.on('activate', () => {
       if (!mainWindow.isVisible()) app.show();
     });
-
     mainWindow.on('focus', () => {
       globalShortcut.register('CommandOrControl+H', app.hide);
     });
-
     mainWindow.on('blur', () => {
       globalShortcut.unregister('CommandOrControl+H');
     });

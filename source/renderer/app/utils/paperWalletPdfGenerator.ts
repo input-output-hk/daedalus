@@ -1,7 +1,5 @@
-// @flow
 import { defineMessages } from 'react-intl';
 import { generatePaperWalletChannel } from '../ipc/generatePaperWalletChannel';
-
 const messages = defineMessages({
   walletAddressLabel: {
     id: 'paper.wallet.pdf.walletAddress.label',
@@ -29,17 +27,15 @@ const messages = defineMessages({
     description: 'PDF author',
   },
 });
-
 type Params = {
-  address: string,
-  filePath: string,
-  mnemonics: Array<string>,
-  intl: Object,
-  isMainnet: boolean,
-  buildLabel: string,
-  timestamp: string,
+  address: string;
+  filePath: string;
+  mnemonics: Array<string>;
+  intl: Record<string, any>;
+  isMainnet: boolean;
+  buildLabel: string;
+  timestamp: string;
 };
-
 export const paperWalletPdfGenerator = async ({
   address,
   filePath,

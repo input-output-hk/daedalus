@@ -1,43 +1,42 @@
-// @flow
 import { includes, omit, size, values, flatten } from 'lodash';
 import JSONBigInt from 'json-bigint';
 import querystring from 'querystring';
 import { getContentLength } from '.';
-
 export type RequestOptions = {
-  hostname: string,
-  method: string,
-  path: string,
-  port: number,
-  ca: Uint8Array,
-  cert: Uint8Array,
-  key: Uint8Array,
+  hostname: string;
+  method: string;
+  path: string;
+  port: number;
+  ca: Uint8Array;
+  cert: Uint8Array;
+  key: Uint8Array;
   headers?: {
-    'Content-Type': string,
-    'Content-Length': number,
-  },
+    'Content-Type': string;
+    'Content-Length': number;
+  };
 };
-
 const ALLOWED_ERROR_EXCEPTION_PATHS = [];
-
 const { isSelfnode } = global.environment;
-
 const agent = new global.https.Agent({
-  maxCachedSessions: 256, // Default: 100 | 0 - Disable TLS session caching
-  maxFreeSockets: 256, // Default: 256
-  maxSockets: 256, // Default: Infinity
-  maxTotalSockets: 256, // Default: Infinity
-  keepAlive: true, // Default: false
-  keepAliveMsecs: 1000, // Default: 1000 | unit: milliseconds
+  maxCachedSessions: 256,
+  // Default: 100 | 0 - Disable TLS session caching
+  maxFreeSockets: 256,
+  // Default: 256
+  maxSockets: 256,
+  // Default: Infinity
+  maxTotalSockets: 256,
+  // Default: Infinity
+  keepAlive: true,
+  // Default: false
+  keepAliveMsecs: 1000,
+  // Default: 1000 | unit: milliseconds
   scheduling: 'lifo', // Default: 'lifo'
   // timeout: 5 * 1000, // 5 seconds | unit: milliseconds
 });
-
 // Passing ciphers, minVersion, and maxVersion speeds up TLS handshake
 const httpsOptions = {
   ciphers: [
-    'TLS_AES_256_GCM_SHA384',
-    // 'TLS_AES_128_GCM_SHA256',
+    'TLS_AES_256_GCM_SHA384', // 'TLS_AES_128_GCM_SHA256',
     // 'TLS_AES_128_CCM_SHA256',
     // 'TLS_AES_128_CCM_8_SHA256',
     // 'TLS_CHACHA20_POLY1305_SHA256'
@@ -51,11 +50,16 @@ const logSocketStats = (state: string, { sockets, freeSockets }) => {
   if (!window.logSocketStats) {
     return;
   }
+
   const used = flatten(values(sockets)).length;
   const free = flatten(values(freeSockets)).length;
   const total = used + free;
   // eslint-disable-next-line no-console
-  console.debug(`[connection:${state}]:socket-stats`, { used, free, total });
+  console.debug(`[connection:${state}]:socket-stats`, {
+    used,
+    free,
+    total,
+  });
 };
 
 function typedRequest<Response>(
@@ -63,9 +67,9 @@ function typedRequest<Response>(
   queryParams?: {},
   rawBodyParams?: any,
   requestOptions?: {
-    returnMeta?: boolean,
-    isOctetStreamRequest?: boolean,
-    isOctetStreamResponse?: boolean,
+    returnMeta?: boolean;
+    isOctetStreamRequest?: boolean;
+    isOctetStreamResponse?: boolean;
   }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
@@ -88,6 +92,7 @@ function typedRequest<Response>(
     // Handle raw body params
     if (rawBodyParams) {
       hasRequestBody = true;
+
       if (isOctetStreamRequest) {
         requestBody = rawBodyParams;
         options.headers = {
@@ -168,6 +173,7 @@ function typedRequest<Response>(
                 statusCode === 404
                   ? 'null'
                   : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
+
               // When deleting a wallet, the API does not return any data in body
               // even if it was successful
               if (!body) {
@@ -176,6 +182,7 @@ function typedRequest<Response>(
                   "data": ${data}
                 }`;
               }
+
               resolve(JSONBigInt.parse(body));
             }
           } else if (stream) {
@@ -185,6 +192,7 @@ function typedRequest<Response>(
           } else if (body) {
             // Error response with a body
             const parsedBody = JSONBigInt.parse(body);
+
             if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -10,7 +9,6 @@ import attentionIcon from '../../../assets/images/attention-big-light.inline.svg
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
 import styles from './SystemTimeError.scss';
-
 const messages = defineMessages({
   overlayTitle: {
     id: 'systemTime.error.overlayTitle',
@@ -65,14 +63,13 @@ const messages = defineMessages({
       'Text of "Continue without clock synchronization checks" button',
   },
 });
-
 type Props = {
-  localTimeDifference: ?number,
-  currentLocale: string,
-  onExternalLinkClick: Function,
-  onCheckTheTimeAgain: Function,
-  onContinueWithoutClockSyncCheck: Function,
-  isCheckingSystemTime: boolean,
+  localTimeDifference: number | null | undefined;
+  currentLocale: string;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onCheckTheTimeAgain: (...args: Array<any>) => any;
+  onContinueWithoutClockSyncCheck: (...args: Array<any>) => any;
+  isCheckingSystemTime: boolean;
 };
 
 @observer
@@ -91,11 +88,9 @@ class SystemTimeError extends Component<Props> {
       onContinueWithoutClockSyncCheck,
       onExternalLinkClick,
     } = this.props;
-
     const supportPortalLinkUrl = intl.formatMessage(
       messages.supportPortalLinkUrl
     );
-
     const supportPortalLink = (
       <Link
         className={styles.supportPortalLink}
@@ -104,7 +99,6 @@ class SystemTimeError extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
     const rawTimeOffset = (localTimeDifference || 0) / 1000;
@@ -119,7 +113,6 @@ class SystemTimeError extends Component<Props> {
         },
       },
     });
-
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />
@@ -138,7 +131,9 @@ class SystemTimeError extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.overlayTextP2}
-                values={{ supportPortalLink }}
+                values={{
+                  supportPortalLink,
+                }}
               />
             </p>
 
@@ -158,14 +153,19 @@ class SystemTimeError extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.ntpUnreachableTextP1}
-                values={{ timeOffset }}
+                values={{
+                  timeOffset,
+                }}
               />
             </p>
 
             <p>
               <FormattedMessage
                 {...messages.ntpUnreachableTextP2}
-                values={{ supportPortalLink, allowedTimeDifferenceInSeconds }}
+                values={{
+                  supportPortalLink,
+                  allowedTimeDifferenceInSeconds,
+                }}
               />
             </p>
 
@@ -185,4 +185,4 @@ class SystemTimeError extends Component<Props> {
   }
 }
 
-export default SystemTimeError
+export default SystemTimeError;

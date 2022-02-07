@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useMemo, useCallback } from 'react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -15,7 +14,6 @@ import WalletNoTokens from './WalletNoTokens';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import type { AssetToken } from '../../../api/assets/types';
 import type { SortBy, SortDirection } from '../../../utils/assets';
-
 const messages = defineMessages({
   noResults: {
     id: 'wallet.tokens.list.search.noResults',
@@ -43,25 +41,24 @@ const messages = defineMessages({
     description: 'View all button label on the WalletTokensList',
   },
 });
-
 type Props = {
-  assets: Array<AssetToken>,
-  assetSettingsDialogWasOpened: boolean,
-  currentLocale: string,
-  insertingAssetUniqueId: ?string,
-  intl: intlShape.isRequired,
-  isLoadingAssets: boolean,
-  onAssetSettings: Function,
-  onCopyAssetParam: Function,
-  onExternalLinkClick: Function,
-  onOpenAssetSend: Function,
-  onToggleFavorite: Function,
-  onViewAllButtonClick?: Function,
-  removingAssetUniqueId: ?string,
-  searchValue?: string,
-  title: string,
-  tokenFavorites: Object,
-  wallet: Wallet,
+  assets: Array<AssetToken>;
+  assetSettingsDialogWasOpened: boolean;
+  currentLocale: string;
+  insertingAssetUniqueId: string | null | undefined;
+  intl: intlShape.isRequired;
+  isLoadingAssets: boolean;
+  onAssetSettings: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onToggleFavorite: (...args: Array<any>) => any;
+  onViewAllButtonClick?: (...args: Array<any>) => any;
+  removingAssetUniqueId: string | null | undefined;
+  searchValue?: string;
+  title: string;
+  tokenFavorites: Record<string, any>;
+  wallet: Wallet;
 };
 
 const getSortIconClasses = (
@@ -130,6 +127,7 @@ const WalletTokensList = observer((props: Props) => {
   const onSortBy = useCallback(
     (newSortBy: SortBy) => {
       if (!hasSorting) return;
+
       if (newSortBy === sortBy) {
         toggleSortDirection();
       } else {
@@ -150,7 +148,6 @@ const WalletTokensList = observer((props: Props) => {
     hasSorting,
   ]);
   const hasTokens = assets.length || isLoadingAssets;
-
   if (!hasTokens)
     return (
       <WalletNoTokens
@@ -159,8 +156,8 @@ const WalletTokensList = observer((props: Props) => {
         onExternalLinkClick={onExternalLinkClick}
       />
     );
-
   let content;
+
   if (isLoadingAssets) {
     content = (
       <div className={styles.syncingWrapper}>
@@ -230,5 +227,4 @@ const WalletTokensList = observer((props: Props) => {
     </div>
   );
 });
-
 export default injectIntl(WalletTokensList);

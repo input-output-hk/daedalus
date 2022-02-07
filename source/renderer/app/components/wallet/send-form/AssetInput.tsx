@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import type { Field } from 'mobx-react-form';
@@ -16,30 +15,24 @@ import type { AssetToken } from '../../../api/assets/types';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import styles from './AssetInput.scss';
 import messages from './messages';
-
 type Props = {
-  uniqueId: string,
-  index: number,
-  getAssetByUniqueId: Function,
-  availableAssets: Array<AssetToken>,
-  assetFields: {
-    [uniqueId: string]: Field,
-  },
-  assetsDropdown: {
-    [uniqueId: string]: Field,
-  },
-  addFocusableField: Function,
-  removeAssetButtonVisible: { [uniqueId: string]: boolean },
-  showRemoveAssetButton: Function,
-  hideRemoveAssetButton: Function,
-  currentNumberFormat: NumberFormat,
-  removeAssetRow: Function,
-  handleSubmitOnEnter: Function,
-  clearAssetFieldValue: Function,
-  onChangeAsset: Function,
-  autoFocus: boolean,
+  uniqueId: string;
+  index: number;
+  getAssetByUniqueId: (...args: Array<any>) => any;
+  availableAssets: Array<AssetToken>;
+  assetFields: Record<string, Field>;
+  assetsDropdown: Record<string, Field>;
+  addFocusableField: (...args: Array<any>) => any;
+  removeAssetButtonVisible: Record<string, boolean>;
+  showRemoveAssetButton: (...args: Array<any>) => any;
+  hideRemoveAssetButton: (...args: Array<any>) => any;
+  currentNumberFormat: NumberFormat;
+  removeAssetRow: (...args: Array<any>) => any;
+  handleSubmitOnEnter: (...args: Array<any>) => any;
+  clearAssetFieldValue: (...args: Array<any>) => any;
+  onChangeAsset: (...args: Array<any>) => any;
+  autoFocus: boolean;
 };
-
 const INPUT_FIELD_PADDING_DELTA = 10;
 
 @observer
@@ -47,21 +40,21 @@ class AssetInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  rightContentRef: { current: null | HTMLDivElement };
+  rightContentRef: {
+    current: null | HTMLDivElement;
+  };
 
   constructor(props: Props) {
     super(props);
-
     this.rightContentRef = React.createRef();
   }
 
   hasAssetValue = (asset: Field) => {
     return get(asset, 'value', false);
   };
-
   generateInputFieldStyle = () => {
     const { current: rightContentDom } = this.rightContentRef;
+
     if (!rightContentDom) {
       return null;
     }
@@ -95,6 +88,7 @@ class AssetInput extends Component<Props> {
       autoFocus,
     } = this.props;
     const asset = getAssetByUniqueId(uniqueId);
+
     if (!asset) {
       return false;
     }
@@ -109,7 +103,6 @@ class AssetInput extends Component<Props> {
     const assetField = assetFields[uniqueId];
     const assetsDropdownField = assetsDropdown[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
-
     return (
       <div
         key={`receiver_asset_${uniqueId}`}
@@ -169,15 +162,17 @@ class AssetInput extends Component<Props> {
           error={assetField.error}
           skin={AmountInputSkin}
           style={inputFieldStyle}
-          onKeyPress={(evt: SyntheticKeyboardEvent<EventTarget>) => {
+          onKeyPress={(evt: React.KeyboardEvent<EventTarget>) => {
             if (decimals === 0) {
               const { charCode } = evt;
+
               if (charCode === 190 || charCode === 110 || charCode === 46) {
                 evt.persist();
                 evt.preventDefault();
                 evt.stopPropagation();
               }
             }
+
             handleSubmitOnEnter(evt);
           }}
           allowSigns={false}
@@ -219,4 +214,4 @@ class AssetInput extends Component<Props> {
   }
 }
 
-export default AssetInput
+export default AssetInput;

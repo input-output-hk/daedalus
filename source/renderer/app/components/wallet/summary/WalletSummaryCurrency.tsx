@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import moment from 'moment';
@@ -12,7 +11,6 @@ import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';
 import type { Currency } from '../../../types/currencyTypes';
 import { DiscreetValue } from '../../../features/discreet-mode';
-
 const messages = defineMessages({
   currencyTitle: {
     id: 'wallet.summary.currency.title',
@@ -31,15 +29,14 @@ const messages = defineMessages({
     description: '"Currency - Fetching" label on Wallet summary currency page',
   },
 });
-
 type Props = {
-  wallet: Wallet,
-  currencyIsFetchingRate: boolean,
-  currencyIsActive: boolean,
-  currencySelected: ?Currency,
-  currencyRate: ?number,
-  currencyLastFetched: ?Date,
-  onCurrencySettingClick: Function,
+  wallet: Wallet;
+  currencyIsFetchingRate: boolean;
+  currencyIsActive: boolean;
+  currencySelected: Currency | null | undefined;
+  currencyRate: number | null | undefined;
+  currencyLastFetched: Date | null | undefined;
+  onCurrencySettingClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -59,15 +56,12 @@ class WalletSummaryCurrency extends Component<Props> {
       onCurrencySettingClick,
     } = this.props;
     const { intl } = this.context;
-
     const isRestoreActive = wallet.isRestoring;
     const hasCurrency =
       currencyIsActive &&
       !!currencySelected &&
       (!!currencyRate || currencyIsFetchingRate);
-
     const { decimalDigits } = currencySelected || {};
-
     let currencyWalletAmount;
     if (isRestoreActive || !currencyRate) currencyWalletAmount = '–';
     else if (hasCurrency && currencyRate)
@@ -83,12 +77,10 @@ class WalletSummaryCurrency extends Component<Props> {
     const fetchedTimeAgo = moment(currencyLastFetched)
       .locale(intl.locale)
       .fromNow();
-
     const buttonStyles = classnames([
       styles.currencyLastFetched,
       currencyIsFetchingRate ? styles.currencyIsFetchingRate : null,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.currencyTitle}>
@@ -123,4 +115,4 @@ class WalletSummaryCurrency extends Component<Props> {
   }
 }
 
-export default WalletSummaryCurrency
+export default WalletSummaryCurrency;

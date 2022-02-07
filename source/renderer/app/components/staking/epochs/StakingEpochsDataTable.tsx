@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
@@ -7,18 +6,16 @@ import { map } from 'lodash';
 import classNames from 'classnames';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import styles from './StakingEpochs.scss';
-
 type TableHeaders = {
-  name: string,
-  title: string,
+  name: string;
+  title: string;
 };
-
 type Props = {
-  tableHeaders: TableHeaders,
-  tableBody: Node,
-  order: string,
-  sortBy: string,
-  handleDataSort: Function,
+  tableHeaders: TableHeaders;
+  tableBody: Node;
+  order: string;
+  sortBy: string;
+  handleDataSort: (...args: Array<any>) => any;
 };
 
 @observer
@@ -31,7 +28,6 @@ class StakingEpochsDataTable extends Component<Props> {
       sortBy,
       handleDataSort,
     } = this.props;
-
     return (
       <table>
         <thead>
@@ -43,7 +39,6 @@ class StakingEpochsDataTable extends Component<Props> {
                 isSorted ? styles.sorted : null,
                 isSorted && order === 'asc' ? styles.ascending : null,
               ]);
-
               return (
                 <th
                   key={tableHeader.name}
@@ -62,4 +57,4 @@ class StakingEpochsDataTable extends Component<Props> {
   }
 }
 
-export default StakingEpochsDataTable
+export default StakingEpochsDataTable;

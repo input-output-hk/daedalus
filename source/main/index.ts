@@ -1,4 +1,3 @@
-// @flow
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
@@ -58,11 +57,9 @@ import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
-
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: CardanoNode;
-
 const {
   isDev,
   isTest,
@@ -88,24 +85,32 @@ if (isBlankScreenFixActive) {
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 app.allowRendererProcessReuse = true;
+
 const safeExit = async () => {
   pauseActiveDownloads();
+
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
+      code: 0,
+    });
     return safeExitWithCode(0);
   }
+
   if (cardanoNode.state === CardanoNodeStates.STOPPING) {
     logger.info('Daedalus:safeExit: waiting for cardano-node to stop...');
     cardanoNode.exitOnStop();
     return;
   }
+
   try {
     const pid = cardanoNode.pid || 'null';
     logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
       pid,
     });
     await cardanoNode.stop();
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
+    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
+      code: 0,
+    });
     safeExitWithCode(0);
   } catch (error) {
     logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
@@ -115,7 +120,7 @@ const safeExit = async () => {
   }
 };
 
-const handleWindowClose = async (event: ?Event) => {
+const handleWindowClose = async (event: Event | null | undefined) => {
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
   event?.preventDefault();
   await safeExit();
@@ -127,16 +132,13 @@ const onAppReady = async () => {
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
-
   const cpu = os.cpus();
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
-
   const startTime = new Date().toISOString();
   // first checks for Japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
   const userLocale = getLocale(network);
-
   const systemInfo = logSystemInfo({
     cardanoNodeVersion,
     cardanoWalletVersion,
@@ -149,45 +151,39 @@ const onAppReady = async () => {
     ram,
     startTime,
   });
-
   // We need DAEDALUS_INSTALL_DIRECTORY in PATH in order for the
   // cardano-launcher to find cardano-wallet and cardano-node executables
   process.env.PATH = [
     process.env.PATH,
     process.env.DAEDALUS_INSTALL_DIRECTORY,
   ].join(path.delimiter);
-
-  logger.info(`Daedalus is starting at ${startTime}`, { startTime });
-
+  logger.info(`Daedalus is starting at ${startTime}`, {
+    startTime,
+  });
   logger.info('Updating System-info.json file', { ...systemInfo.data });
-
   logger.info(`Current working directory is: ${process.cwd()}`, {
     cwd: process.cwd(),
   });
-
-  logger.info('System and user locale', { systemLocale, userLocale });
-
+  logger.info('System and user locale', {
+    systemLocale,
+    userLocale,
+  });
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
-
   logger.info('Setting up Main Window...');
   mainWindow = createMainWindow(
     userLocale,
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
-
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
-
   logger.info(
     `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
   );
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
-
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
   });
-
   enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
@@ -198,7 +194,6 @@ const onAppReady = async () => {
         resolve();
       })
   );
-
   rebuildApplicationMenu.onReceive(
     (data) =>
       new Promise((resolve) => {
@@ -210,42 +205,37 @@ const onAppReady = async () => {
         resolve();
       })
   );
-
   setStateSnapshotLogChannel.onReceive(
     (data: SetStateSnapshotLogMainResponse) => {
       return Promise.resolve(logStateSnapshot(data));
     }
   );
-
   generateWalletMigrationReportChannel.onReceive(
     (data: GenerateWalletMigrationReportRendererRequest) => {
       return Promise.resolve(generateWalletMigrationReport(data));
     }
   );
-
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)
   );
-
   getDesktopDirectoryPathChannel.onRequest(() =>
     Promise.resolve(app.getPath('desktop'))
   );
-
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
-
   toggleRTSFlagsModeChannel.onReceive(() => {
     const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
     storeRtsFlagsSettings(environment.network, flagsToSet);
     return handleWindowClose();
   });
-
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
+
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
       handleCheckDiskSpace();
       return false;
     }
   };
+
   mainErrorHandler(onMainError);
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
@@ -256,19 +246,19 @@ const onAppReady = async () => {
   }
 
   mainWindow.on('close', handleWindowClose);
-
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
-      logger.info('Prevented creation of new browser window', { url });
+      logger.info('Prevented creation of new browser window', {
+        url,
+      });
       // Open these links with the default browser
       shell.openExternal(url);
     });
   });
-
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
@@ -298,12 +288,14 @@ const onAppReady = async () => {
         mainWindow,
         exitSelfnodeDialogOptions
       );
+
       if (response === 0) {
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus'
         );
         return safeExitWithCode(0);
       }
+
       logger.info('ipcMain: Exiting local cluster together with Daedalus');
     }
 

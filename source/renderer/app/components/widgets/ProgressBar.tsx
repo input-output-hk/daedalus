@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './ProgressBar.scss';
-
 type Props = {
-  progress: number,
+  progress: number;
 };
 
 @observer
@@ -17,10 +15,15 @@ class ProgressBar extends Component<Props> {
     const { progress } = this.props;
     return (
       <div className={styles.component}>
-        <div className={styles.progress} style={{ width: `${progress}%` }} />
+        <div
+          className={styles.progress}
+          style={{
+            width: `${progress}%`,
+          }}
+        />
       </div>
     );
   }
 }
 
-export default ProgressBar
+export default ProgressBar;

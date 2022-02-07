@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { omit, filter, escapeRegExp } from 'lodash';
@@ -18,13 +17,12 @@ import ItemsDropdown from './ItemsDropdown';
  *
  */
 type Props = {
-  className?: string,
-  getStakePoolById: Function,
-  numberOfStakePools: number,
-  onSearch?: Function,
-  wallets?: Array<$Shape<Wallet>>,
+  className?: string;
+  getStakePoolById: (...args: Array<any>) => any;
+  numberOfStakePools: number;
+  onSearch?: (...args: Array<any>) => any;
+  wallets?: Array<Partial<Wallet>>;
 };
-
 export const onSearchWalletsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -59,7 +57,9 @@ function WalletsDropdown({
     } = wallet;
     const detail = !isRestoring
       ? discreetModeFeature.discreetValue({
-          replacer: discreetWalletAmount({ amount }),
+          replacer: discreetWalletAmount({
+            amount,
+          }),
         })
       : null;
     return {

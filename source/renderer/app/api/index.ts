@@ -1,13 +1,10 @@
-// @flow
 import AdaApi from './api';
 import LocalStorageApi from './utils/localStorage';
-
 export type Api = {
-  ada: AdaApi,
-  localStorage: LocalStorageApi,
-  setFaultyNodeSettingsApi?: boolean,
+  ada: AdaApi;
+  localStorage: LocalStorageApi;
+  setFaultyNodeSettingsApi?: boolean;
 };
-
 export const setupApi = (isTest: boolean): Api => ({
   ada: new AdaApi(isTest, {
     hostname: 'localhost',

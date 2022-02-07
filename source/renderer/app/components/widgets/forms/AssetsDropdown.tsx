@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { omit, filter, escapeRegExp } from 'lodash';
 import { discreetWalletTokenAmount } from '../../../features/discreet-mode/replacers/discreetWalletTokenAmount';
@@ -18,10 +17,9 @@ import styles from './AssetsDropdown.scss';
  *
  */
 type Props = {
-  assets?: Array<$Shape<AssetToken>>,
-  onSearch?: Function,
+  assets?: Array<Partial<AssetToken>>;
+  onSearch?: (...args: Array<any>) => any;
 };
-
 export const onSearchAssetsDropdown = (
   searchValue: string,
   options: Array<any>
@@ -30,6 +28,7 @@ export const onSearchAssetsDropdown = (
     if (searchValue.length < 3) {
       return true;
     }
+
     const { policyId, assetName, fingerprint, metadata } = asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
@@ -45,7 +44,6 @@ export const onSearchAssetsDropdown = (
     return checkList.some((item) => regex.test(item));
   });
 };
-
 export default function AssetsDropdown({
   assets = [],
   onSearch = onSearchAssetsDropdown,

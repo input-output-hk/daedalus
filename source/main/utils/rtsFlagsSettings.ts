@@ -1,7 +1,5 @@
-// @flow
 import Store from 'electron-store';
 import { logger } from './logging';
-
 const store = new Store();
 
 const getStoreKey = (network: string): string => `${network}-RTS-FLAGS`;
@@ -17,9 +15,9 @@ export const getRtsFlagsSettings = (network: string): string[] | null => {
       error
     );
   }
+
   return null;
 };
-
 export const storeRtsFlagsSettings = (
   network: string,
   flags: string[]

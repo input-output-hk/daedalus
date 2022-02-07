@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import type { Element } from 'react';
 import { observer } from 'mobx-react';
 import styles from './WalletRecoveryInstructions.scss';
-
 type Props = {
-  instructionsText: string | Element<any>,
+  instructionsText: string | Element<any>;
 };
 
 @observer
@@ -16,4 +14,4 @@ class WalletRecoveryInstructions extends Component<Props> {
   }
 }
 
-export default WalletRecoveryInstructions
+export default WalletRecoveryInstructions;

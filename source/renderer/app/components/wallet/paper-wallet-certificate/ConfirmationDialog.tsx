@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import styles from './ConfirmationDialog.scss';
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.confirmation.dialog.headline',
@@ -40,10 +38,9 @@ const messages = defineMessages({
       '"Abort" button label for the paper wallet certificate cancellation confirmation dialog.',
   },
 });
-
 type Props = {
-  onConfirm: Function,
-  onCancel: Function,
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
 
 @observer
@@ -55,15 +52,12 @@ class ConfirmationDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onConfirm, onCancel } = this.props;
-
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       'attention',
       styles.confirmButton,
     ]);
-
     const actions = [
       {
         className: 'cancelButton',
@@ -77,7 +71,6 @@ class ConfirmationDialog extends Component<Props> {
         onClick: onConfirm,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -95,4 +88,4 @@ class ConfirmationDialog extends Component<Props> {
   }
 }
 
-export default ConfirmationDialog
+export default ConfirmationDialog;

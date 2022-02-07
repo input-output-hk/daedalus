@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialogContainer from './wallet-create/InstructionsDialogContainer';
@@ -9,7 +8,6 @@ import HashDialogContainer from './wallet-create/HashDialogContainer';
 import ConfigDialogContainer from './wallet-create/ConfigDialogContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
-
 type Props = InjectedProps;
 
 // TODO create component;
@@ -18,7 +16,10 @@ const CreateWalletAbortConfirmation = () => <div>Are you sure</div>;
 @inject('stores', 'actions')
 @observer
 class WalletCreateDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
 
   get containers() {
     return {
@@ -47,6 +48,7 @@ class WalletCreateDialogContainer extends Component<Props> {
       createWalletChangeStep,
       createWalletClose,
     } = this.props.actions.wallets;
+
     if (this.currentStep !== null) {
       if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
         createWalletChangeStep.trigger();
@@ -55,20 +57,18 @@ class WalletCreateDialogContainer extends Component<Props> {
       }
     }
   };
-
   onBack = () => {
     this.props.actions.wallets.createWalletChangeStep.trigger(true);
   };
-
   onClose = () => {
     const { createWalletAbort, createWalletClose } = this.props.actions.wallets;
+
     if (this.shouldDisplayAbortAlert) {
       createWalletAbort.trigger();
     } else {
       createWalletClose.trigger();
     }
   };
-
   onAbort = () => this.props.actions.wallets.createWalletAbort.trigger();
 
   render() {
@@ -98,4 +98,4 @@ class WalletCreateDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletCreateDialogContainer
+export default WalletCreateDialogContainer;

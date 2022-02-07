@@ -1,4 +1,3 @@
-// @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import type {
   ShowUiPartMainRequest,
@@ -10,12 +9,10 @@ import {
   SHOW_UI_PART_CHANNEL,
   TOGGLE_UI_PART_CHANNEL,
 } from '../../common/ipc/api';
-
 export const showUiPartChannel: MainIpcChannel<
   ShowUiPartRendererResponse,
   ShowUiPartMainRequest
 > = new MainIpcChannel(SHOW_UI_PART_CHANNEL);
-
 export const toggleUiPartChannel: MainIpcChannel<
   ToggleUiPartRendererResponse,
   ToggleUiPartMainRequest

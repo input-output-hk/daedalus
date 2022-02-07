@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -9,7 +8,6 @@ import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletTokensList from '../tokens/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
-
 const messages = defineMessages({
   tokensListTitle: {
     id: 'wallet.summary.assets.tokensTitle',
@@ -17,30 +15,29 @@ const messages = defineMessages({
     description: 'Tokens title in the wallet summary',
   },
 });
-
 type Props = {
-  wallet: Wallet,
-  numberOfRecentTransactions: number,
-  numberOfTransactions?: number,
-  numberOfPendingTransactions: number,
-  isLoadingTransactions: boolean,
-  currentLocale: string,
-  currencyIsFetchingRate: boolean,
-  currencyIsActive: boolean,
-  currencySelected: ?Currency,
-  currencyRate: ?number,
-  currencyLastFetched: ?Date,
-  onCurrencySettingClick: Function,
-  assets: Array<AssetToken>,
-  onOpenAssetSend: Function,
-  onCopyAssetParam: Function,
-  onAssetSettings: Function,
-  isLoadingAssets: boolean,
-  assetSettingsDialogWasOpened: boolean,
-  onExternalLinkClick: Function,
-  onViewAllButtonClick: Function,
-  onToggleFavorite: Function,
-  tokenFavorites: Object,
+  wallet: Wallet;
+  numberOfRecentTransactions: number;
+  numberOfTransactions?: number;
+  numberOfPendingTransactions: number;
+  isLoadingTransactions: boolean;
+  currentLocale: string;
+  currencyIsFetchingRate: boolean;
+  currencyIsActive: boolean;
+  currencySelected: Currency | null | undefined;
+  currencyRate: number | null | undefined;
+  currencyLastFetched: Date | null | undefined;
+  onCurrencySettingClick: (...args: Array<any>) => any;
+  assets: Array<AssetToken>;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onAssetSettings: (...args: Array<any>) => any;
+  isLoadingAssets: boolean;
+  assetSettingsDialogWasOpened: boolean;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onViewAllButtonClick: (...args: Array<any>) => any;
+  onToggleFavorite: (...args: Array<any>) => any;
+  tokenFavorites: Record<string, any>;
 };
 
 @observer
@@ -75,9 +72,7 @@ class WalletSummary extends Component<Props> {
       tokenFavorites,
     } = this.props;
     const { intl } = this.context;
-
     const { isRestoring } = wallet;
-
     return (
       <>
         <WalletSummaryHeader
@@ -122,4 +117,4 @@ class WalletSummary extends Component<Props> {
   }
 }
 
-export default WalletSummary
+export default WalletSummary;

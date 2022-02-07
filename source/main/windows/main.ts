@@ -1,4 +1,3 @@
-// @flow
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
 import { environment } from '../environment';
@@ -9,16 +8,14 @@ import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
-
 const rendererErrorHandler = new RendererErrorHandler();
-
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
 const rtsFlags = getRtsFlagsSettings(network);
-
 const id = 'window';
 
 const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
+
   const translation = getTranslation(translations, id);
   let title = buildLabel;
   if (isBlankScreenFixActive)
@@ -29,18 +26,17 @@ const getWindowTitle = (locale: string): string => {
 };
 
 type WindowOptionsType = {
-  show: boolean,
-  width: number,
-  height: number,
+  show: boolean;
+  width: number;
+  height: number;
   webPreferences: {
-    nodeIntegration: boolean,
-    webviewTag: boolean,
-    enableRemoteModule: boolean,
-    preload: string,
-  },
-  icon?: string,
+    nodeIntegration: boolean;
+    webviewTag: boolean;
+    enableRemoteModule: boolean;
+    preload: string;
+  };
+  icon?: string;
 };
-
 export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   const windowOptions: WindowOptionsType = {
     show: false,
@@ -50,7 +46,8 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
-      contextIsolation: false, // TODO: change to ipc
+      contextIsolation: false,
+      // TODO: change to ipc
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
       additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
@@ -63,36 +60,30 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
-
   rendererErrorHandler.setup(window, createMainWindow);
-
   const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
-
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi(window);
-
   // Provide render process with an api to resize the main window
   ipcMain.on('resize-window', (event, { width, height, animate }) => {
     if (event.sender !== window.webContents) return;
     window.setSize(width, height, animate);
   });
-
   // Provide render process with an api to close the main window
   ipcMain.on('close-window', (event) => {
     if (event.sender !== window.webContents) return;
     window.close();
   });
-
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
   window.setTitle(getWindowTitle(locale));
-
   window.webContents.on('context-menu', (e, props) => {
     const { canCopy, canPaste } = props.editFlags;
     const contextMenuOptions = [];
+
     if (canCopy && props.selectionText) {
       contextMenuOptions.push({
         label: 'Copy',
@@ -100,6 +91,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
         role: 'copy',
       });
     }
+
     if (canPaste) {
       contextMenuOptions.push({
         label: 'Paste',
@@ -112,6 +104,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',
+
         click() {
           window.inspectElement(x, y);
         },
@@ -122,7 +115,6 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
       Menu.buildFromTemplate(contextMenuOptions).popup(window);
     }
   });
-
   window.webContents.on('did-frame-finish-load', () => {
     if (isDev) {
       window.webContents.openDevTools();
@@ -135,7 +127,6 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
       });
     }
   });
-
   window.webContents.on('did-finish-load', () => {
     if (isTest || isDev) {
       window.showInactive(); // show without focusing the window
@@ -153,9 +144,9 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
       window.setBounds(windowBounds);
     }
   });
-
   window.on('closed', (event) => {
     event.preventDefault();
+
     if (ledgerStatus.listening && !!ledgerStatus.Listener) {
       ledgerStatus.Listener.unsubscribe();
       setTimeout(() => app.quit(), 5000);
@@ -163,11 +154,9 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
       app.quit();
     }
   });
-
   window.webContents.on('did-fail-load', (err) => {
     rendererErrorHandler.onError('did-fail-load', err);
   });
-
   window.webContents.on('crashed', (err) => {
     rendererErrorHandler.onError('crashed', err);
   });

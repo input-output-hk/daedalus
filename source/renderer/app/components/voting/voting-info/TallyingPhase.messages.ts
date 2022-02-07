@@ -1,6 +1,4 @@
-// @flow
 import { defineMessages } from 'react-intl';
-
 export const messages = defineMessages({
   endDateLabel: {
     id: 'voting.tallyingPhase.endDateLabel',

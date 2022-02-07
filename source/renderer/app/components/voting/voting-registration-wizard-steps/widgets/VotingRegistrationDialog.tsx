@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import type { Node } from 'react';
@@ -12,7 +11,6 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import type { DialogActions } from '../../../widgets/Dialog';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'voting.votingRegistration.dialog.dialogTitle',
@@ -25,18 +23,17 @@ const messages = defineMessages({
     description: 'Sub title for voting registration',
   },
 });
-
 type Props = {
-  children: Node,
-  stepsList: Array<string>,
-  activeStep: number,
-  actions: DialogActions,
-  onClose: Function,
-  onBack?: Function,
-  containerClassName?: ?string,
-  contentClassName?: ?string,
-  hideCloseButton?: boolean,
-  hideSteps?: boolean,
+  children: Node;
+  stepsList: Array<string>;
+  activeStep: number;
+  actions: DialogActions;
+  onClose: (...args: Array<any>) => any;
+  onBack?: (...args: Array<any>) => any;
+  containerClassName?: string | null | undefined;
+  contentClassName?: string | null | undefined;
+  hideCloseButton?: boolean;
+  hideSteps?: boolean;
 };
 
 @observer
@@ -44,7 +41,6 @@ class VotingRegistrationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     children: null,
   };
@@ -65,14 +61,15 @@ class VotingRegistrationDialog extends Component<Props> {
     } = this.props;
     const containerStyles = classnames([styles.container, containerClassName]);
     const contentStyles = classnames([styles.content, contentClassName]);
-
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.subtitle}
-        values={{ step: activeStep, stepCount: stepsList.length }}
+        values={{
+          step: activeStep,
+          stepCount: stepsList.length,
+        }}
       />
     );
-
     return (
       <Dialog
         className={styles.component}
@@ -104,4 +101,4 @@ class VotingRegistrationDialog extends Component<Props> {
   }
 }
 
-export default VotingRegistrationDialog
+export default VotingRegistrationDialog;

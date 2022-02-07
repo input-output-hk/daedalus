@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -10,22 +9,18 @@ import {
   generateWallet,
   promise,
 } from '../../_support/utils';
-
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
 import Wallet, {
   HwDeviceStatuses,
 } from '../../../../source/renderer/app/domains/Wallet';
-
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog';
 import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
-
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
-
 const allAssets = [
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -85,7 +80,6 @@ const allAssets = [
     }
   ),
 ];
-
 const walletTokens: WalletTokens = {
   available: [
     {
@@ -148,12 +142,12 @@ const walletTokens: WalletTokens = {
     },
   ],
 };
-
 const confirmationTokens = walletTokens.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
   let fingerprint;
+
   if (!assetData || !assetData.fingerprint) {
     fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
       0,
@@ -180,16 +174,15 @@ const confirmationTokens = walletTokens.total.map((assetTotal) => {
         },
   };
 });
-
 const confirmationTokensAmounts = confirmationTokens.map(
   (token) => `${token.quantity}`
 );
-
 const sendFormAssetData = walletTokens.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
   let fingerprint;
+
   if (!assetData || !assetData.fingerprint) {
     fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
       0,
@@ -216,7 +209,6 @@ const sendFormAssetData = walletTokens.total.map((assetTotal) => {
         },
   };
 });
-
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (

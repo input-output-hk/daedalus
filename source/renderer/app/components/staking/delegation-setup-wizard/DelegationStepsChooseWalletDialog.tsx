@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -16,7 +15,6 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
-
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.title',
@@ -81,24 +79,21 @@ const messages = defineMessages({
       'Label for continue button on the delegation setup "choose wallet" step dialog.',
   },
 });
-
 type Props = {
-  numberOfStakePools: number,
-  onClose: Function,
-  onSelectWallet: Function,
-  onBack: Function,
-  wallets: Array<Wallet>,
-  stepsList: Array<string>,
-  minDelegationFunds: number,
-  selectedWalletId: ?string,
-  isWalletAcceptable: Function,
-  getStakePoolById: Function,
+  numberOfStakePools: number;
+  onClose: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  stepsList: Array<string>;
+  minDelegationFunds: number;
+  selectedWalletId: string | null | undefined;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
 };
-
 type State = {
-  selectedWalletId: ?string,
+  selectedWalletId: string | null | undefined;
 };
-
 export default class DelegationStepsChooseWalletDialog extends Component<
   Props,
   State
@@ -106,15 +101,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     selectedWalletId: this.props.selectedWalletId,
   };
-
   onWalletChange = (selectedWalletId: string) => {
-    this.setState({ selectedWalletId });
+    this.setState({
+      selectedWalletId,
+    });
   };
-
   onSelectWallet = () => {
     const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
@@ -133,14 +127,12 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
-
-    const selectedWallet: ?Wallet = wallets.find(
+    const selectedWallet: Wallet | null | undefined = wallets.find(
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
-
     const { amount, reward, isRestoring } = selectedWallet || {};
-
     let errorMessage;
+
     if (selectedWallet && !isWalletAcceptable(amount, reward)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
@@ -155,22 +147,21 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...errorMessage}
-          values={{ minDelegationFunds }}
+          values={{
+            minDelegationFunds,
+          }}
         />
       </p>
     );
-
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsChooseWalletDialogWrapper,
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
-
     const walletSelectClasses = classNames([
       styles.walletSelect,
       error ? styles.error : null,
     ]);
-
     const actions = [
       {
         className: 'continueButton',
@@ -180,7 +171,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         disabled: !selectedWalletId || !!error,
       },
     ];
-
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.stepIndicatorLabel}
@@ -190,7 +180,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         }}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -215,7 +204,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           <p className={styles.description}>
             <FormattedHTMLMessage
               {...messages.description}
-              values={{ minDelegationFunds }}
+              values={{
+                minDelegationFunds,
+              }}
             />
           </p>
           <WalletsDropdown

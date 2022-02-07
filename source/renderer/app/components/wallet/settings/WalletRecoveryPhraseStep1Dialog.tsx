@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -7,7 +6,6 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-
 export const messages = defineMessages({
   recoveryPhraseStep1Title: {
     id: 'wallet.settings.recoveryPhraseStep1Title',
@@ -34,30 +32,23 @@ export const messages = defineMessages({
     description: 'Label for the recoveryPhraseStep1Button on wallet settings.',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  walletName: string,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  walletName: string;
 };
-
 type State = {
-  safetyAgreement: boolean,
+  safetyAgreement: boolean;
 };
 
 @observer
-class WalletRecoveryPhraseStep1Dialog extends Component<
-  Props,
-  State
-> {
+class WalletRecoveryPhraseStep1Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     safetyAgreement: false,
   };
-
   onToggleSafetyAgreement = (checked: boolean) => {
     this.setState({
       safetyAgreement: checked,
@@ -69,7 +60,6 @@ class WalletRecoveryPhraseStep1Dialog extends Component<
     const { onContinue, onClose, walletName } = this.props;
     const { safetyAgreement } = this.state;
     const isSubmitting = false;
-
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
@@ -79,7 +69,6 @@ class WalletRecoveryPhraseStep1Dialog extends Component<
         disabled: !safetyAgreement,
       },
     ];
-
     return (
       <Dialog
         className={styles.dialog}
@@ -105,4 +94,4 @@ class WalletRecoveryPhraseStep1Dialog extends Component<
   }
 }
 
-export default WalletRecoveryPhraseStep1Dialog
+export default WalletRecoveryPhraseStep1Dialog;

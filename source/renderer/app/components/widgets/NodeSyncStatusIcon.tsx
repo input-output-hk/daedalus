@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
@@ -8,7 +7,6 @@ import { formattedNumber } from '../../utils/formatters';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
 import styles from './NodeSyncStatusIcon.scss';
-
 const messages = defineMessages({
   blocksSynced: {
     id: 'cardano.node.sync.status.blocksSynced',
@@ -17,13 +15,11 @@ const messages = defineMessages({
       'Label for the blocks synced info overlay on node sync status icon.',
   },
 });
-
 type Props = {
-  isSynced: boolean,
-  syncPercentage: number,
-  hasTadaIcon?: boolean,
+  isSynced: boolean;
+  syncPercentage: number;
+  hasTadaIcon?: boolean;
 };
-
 export default class NodeSyncStatusIcon extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -39,7 +35,6 @@ export default class NodeSyncStatusIcon extends Component<Props> {
       hasTadaIcon ? styles.hasTadaIcon : null,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
-
     return (
       <div className={componentClasses}>
         <PopOver

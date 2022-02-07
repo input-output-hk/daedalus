@@ -1,17 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './NavButton.scss';
-
 type Props = {
-  label: string,
-  icon?: string,
-  isActive: boolean,
-  onClick: Function,
-  className?: string,
-  hasNotification?: boolean,
+  label: string;
+  icon?: string;
+  isActive: boolean;
+  onClick: (...args: Array<any>) => any;
+  className?: string;
+  hasNotification?: boolean;
 };
 
 @observer
@@ -39,4 +37,4 @@ class NavButton extends Component<Props> {
   }
 }
 
-export default NavButton
+export default NavButton;

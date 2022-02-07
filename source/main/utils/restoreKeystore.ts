@@ -1,19 +1,14 @@
-// @flow
 import * as cbor from 'cbor';
 import * as blake2b from 'blake2b';
 import * as crypto from 'crypto';
-
 export type EncryptedSecretKeys = Array<EncryptedSecretKey>;
-
 export type EncryptedSecretKey = {
-  encryptedPayload: Buffer,
-  passphraseHash: Buffer,
-  isEmptyPassphrase: boolean,
-  walletId: WalletId,
+  encryptedPayload: Buffer;
+  passphraseHash: Buffer;
+  isEmptyPassphrase: boolean;
+  walletId: WalletId;
 };
-
 export type WalletId = string;
-
 export const decodeKeystore = async (
   bytes: Buffer
 ): Promise<EncryptedSecretKeys> => {
@@ -75,7 +70,11 @@ const mkWalletId = (xprv: Buffer): WalletId => {
 const $isEmptyPassphrase = (pwd: Buffer): boolean => {
   const cborEmptyBytes = Buffer.from('40', 'hex');
   const [logN, r, p, salt, hashA] = pwd.toString('utf8').split('|');
-  const opts = { N: 2 ** Number(logN), r: Number(r), p: Number(p) };
+  const opts = {
+    N: 2 ** Number(logN),
+    r: Number(r),
+    p: Number(p),
+  };
   // @ts-ignore
   const hashB = crypto
     .scryptSync(cborEmptyBytes, Buffer.from(salt, 'base64'), 32, opts)

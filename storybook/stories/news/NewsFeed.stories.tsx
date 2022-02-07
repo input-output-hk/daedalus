@@ -1,4 +1,3 @@
-// @flow
 // eslint-disable-file no-unused-vars
 import React from 'react';
 // import { omit } from 'lodash';
@@ -11,21 +10,16 @@ import News from '../../../source/renderer/app/domains/News';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { getNewsItem } from './_utils/fakeDataNewsFeed';
-
 const updateDownloadProgressOptions = {
   range: true,
   min: 0,
   max: 100,
   step: 1,
 };
-
 storiesOf('News|NewsFeed', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-
-  // ====== Stories ======
-
+  )) // ====== Stories ======
   .add('Empty', () => (
     <div>
       <NewsFeed
@@ -45,7 +39,6 @@ storiesOf('News|NewsFeed', module)
       />
     </div>
   ))
-
   .add('Fetching', () => (
     <div>
       <NewsFeed
@@ -65,7 +58,6 @@ storiesOf('News|NewsFeed', module)
       />
     </div>
   ))
-
   .add('Fetched', ({ locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem

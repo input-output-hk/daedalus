@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
@@ -10,18 +9,20 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
-
 type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
 class Wallet extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
     const { options } = item;
+
     if (options && options.length) {
       options.forEach((option) => {
         if (
@@ -32,19 +33,22 @@ class Wallet extends Component<Props> {
         }
       });
     }
+
     const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, {
       id: wallets.active.id,
       page,
     });
     return app.currentRoute === screenRoute;
   };
-
   handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
     if (!wallets.active) return;
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: wallets.active.id, page },
+      params: {
+        id: wallets.active.id,
+        page,
+      },
     });
   };
 
@@ -54,6 +58,7 @@ class Wallet extends Component<Props> {
     const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
     const { active: activeWallet } = wallets;
+
     if (!activeWallet) {
       return (
         <MainLayout>
@@ -61,6 +66,7 @@ class Wallet extends Component<Props> {
         </MainLayout>
       );
     }
+
     const {
       hasNotification,
     } = walletSettings.getWalletsRecoveryPhraseVerificationData(
@@ -73,7 +79,6 @@ class Wallet extends Component<Props> {
       isHardwareWallet,
       hasPassword,
     } = activeWallet;
-
     return (
       <MainLayout>
         {isRestoring ? (
@@ -109,4 +114,4 @@ class Wallet extends Component<Props> {
   }
 }
 
-export default Wallet
+export default Wallet;

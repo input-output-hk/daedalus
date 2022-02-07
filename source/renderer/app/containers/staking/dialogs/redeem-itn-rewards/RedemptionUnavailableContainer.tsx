@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import RedemptionUnavailableDialog from '../../../../components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
@@ -25,4 +23,4 @@ class RedemptionUnavailableContainer extends Component<Props> {
   }
 }
 
-export default RedemptionUnavailableContainer
+export default RedemptionUnavailableContainer;

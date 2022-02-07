@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletNoTokens.scss';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
-
 const messages = defineMessages({
   tokensTitle: {
     id: 'wallet.summary.assets.tokensTitle',
@@ -36,11 +34,10 @@ const messages = defineMessages({
       '"Learn more" link URL in the Wallets Summary No Tokens component',
   },
 });
-
 type Props = {
-  isLoadingAssets: boolean,
-  onExternalLinkClick: Function,
-  numberOfAssets: number,
+  isLoadingAssets: boolean;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  numberOfAssets: number;
 };
 
 @observer
@@ -52,7 +49,6 @@ class WalletSummaryNoTokens extends Component<Props> {
   render() {
     const { isLoadingAssets, onExternalLinkClick, numberOfAssets } = this.props;
     const { intl } = this.context;
-
     return (
       <>
         {!isLoadingAssets && (
@@ -83,4 +79,4 @@ class WalletSummaryNoTokens extends Component<Props> {
   }
 }
 
-export default WalletSummaryNoTokens
+export default WalletSummaryNoTokens;

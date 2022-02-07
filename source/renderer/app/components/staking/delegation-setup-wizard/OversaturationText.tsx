@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import {
   defineMessages,
@@ -9,8 +8,7 @@ import {
 import classnames from 'classnames';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import styles from './OversaturationText.scss';
-
-const messages: { [string]: ReactIntlMessage } = defineMessages({
+const messages: Record<string, ReactIntlMessage> = defineMessages({
   oversaturationWarning: {
     id:
       'staking.delegationSetup.confirmation.step.dialog.oversaturationWarning',
@@ -20,11 +18,10 @@ const messages: { [string]: ReactIntlMessage } = defineMessages({
       'Warning shown if pool is going to be saturated if delegation happens',
   },
 });
-
 type Props = {
-  intl: intlShape,
-  oversaturationPercentage: string,
-  centerText?: boolean,
+  intl: intlShape;
+  oversaturationPercentage: string;
+  centerText?: boolean;
 };
 
 const OversaturationTextComponent = (props: Props) => {

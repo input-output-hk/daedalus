@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -17,7 +16,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../../config/cryptoConfig';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.instructions.dialog.headline',
@@ -106,14 +104,13 @@ const messages = defineMessages({
       '"Wallet certificate create instructions dialog" print button label.',
   },
 });
-
 type Props = {
-  inProgress: boolean,
-  network: string,
-  onClose: Function,
-  onOpenExternalLink: Function,
-  onPrint: Function,
-  error?: ?LocalizableError,
+  inProgress: boolean;
+  network: string;
+  onClose: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onPrint: (...args: Array<any>) => any;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
@@ -121,14 +118,15 @@ class InstructionsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     network: DEVELOPMENT,
   };
 
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.error && this.props.error) {
-      handleFormErrors('.InstructionsDialog_error', { focusElement: true });
+      handleFormErrors('.InstructionsDialog_error', {
+        focusElement: true,
+      });
     }
   }
 
@@ -143,12 +141,10 @@ class InstructionsDialog extends Component<Props> {
       error,
     } = this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
-
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,
     ]);
-
     const actions = [
       {
         className: printButtonClasses,
@@ -169,7 +165,6 @@ class InstructionsDialog extends Component<Props> {
         skin={LinkSkin}
       />
     );
-
     return (
       <Dialog
         className={dialogClasses}
@@ -209,7 +204,9 @@ class InstructionsDialog extends Component<Props> {
               <li>
                 <FormattedMessage
                   {...messages.instructionsListDefinition4}
-                  values={{ link: cardanoExplorerLink }}
+                  values={{
+                    link: cardanoExplorerLink,
+                  }}
                 />
               </li>
               <li>
@@ -229,4 +226,4 @@ class InstructionsDialog extends Component<Props> {
   }
 }
 
-export default InstructionsDialog
+export default InstructionsDialog;

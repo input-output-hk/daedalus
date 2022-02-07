@@ -1,17 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import styles from './ProgressBarLarge.scss';
-
 type Props = {
-  progress: number,
-  showProgressLabel?: boolean,
-  leftLabel?: string,
-  rightLabel1?: string,
-  rightLabel2?: string,
-  isDarkMode?: boolean,
-  loading?: boolean,
+  progress: number;
+  showProgressLabel?: boolean;
+  leftLabel?: string;
+  rightLabel1?: string;
+  rightLabel2?: string;
+  isDarkMode?: boolean;
+  loading?: boolean;
 };
 
 @observer
@@ -30,21 +28,17 @@ class ProgressBarLarge extends Component<Props> {
       isDarkMode,
       loading,
     } = this.props;
-
     const isComplete = progress >= 100;
-
     const progressStyles = classnames([
       styles.progress,
       isComplete ? styles.isComplete : null,
       isDarkMode ? styles.progressDarkMode : styles.progressLightMode,
       loading ? styles.loading : null,
     ]);
-
     const progressBarContainerStyles = classnames([
       styles.progressBarContainer,
       loading ? styles.loading : null,
     ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.content}>
@@ -55,7 +49,12 @@ class ProgressBarLarge extends Component<Props> {
         </div>
         <div className={progressBarContainerStyles}>
           {!loading && (
-            <div className={progressStyles} style={{ width: `${progress}%` }}>
+            <div
+              className={progressStyles}
+              style={{
+                width: `${progress}%`,
+              }}
+            >
               {showProgressLabel && (
                 <div className={styles.progressLabel}>{progress}%</div>
               )}
@@ -67,4 +66,4 @@ class ProgressBarLarge extends Component<Props> {
   }
 }
 
-export default ProgressBarLarge
+export default ProgressBarLarge;

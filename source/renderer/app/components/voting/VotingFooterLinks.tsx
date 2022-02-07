@@ -1,21 +1,16 @@
-// @flow
 import React from 'react';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
-
 import styles from './VotingFooterLinks.scss';
-
 type FooterLink = {
-  url: string,
-  label: string,
+  url: string;
+  label: string;
 };
-
 type Props = {
-  onClickExternalLink: Function,
-  intl: intlShape.isRequired,
+  onClickExternalLink: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
 };
-
 const messages = defineMessages({
   newsletter: {
     id: 'voting.catalystFooterLinks.newsletter',
@@ -38,7 +33,6 @@ const messages = defineMessages({
     description: '"Projects" link for Project Catalyst footer',
   },
 });
-
 export const VotingFooterLinks = injectIntl(
   observer(({ onClickExternalLink, intl }: Props) => {
     const links: FooterLink[] = [
@@ -59,7 +53,6 @@ export const VotingFooterLinks = injectIntl(
         label: intl.formatMessage(messages.projects),
       },
     ];
-
     return (
       <ul className={styles.component}>
         {links.map((link) => (

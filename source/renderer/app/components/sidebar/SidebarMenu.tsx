@@ -1,13 +1,11 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarMenu.scss';
-
 type Props = {
-  children: ?Node,
-  visible: boolean,
+  children: Node | null | undefined;
+  visible: boolean;
 };
 
 @observer
@@ -22,4 +20,4 @@ class SidebarMenu extends Component<Props> {
   }
 }
 
-export default SidebarMenu
+export default SidebarMenu;

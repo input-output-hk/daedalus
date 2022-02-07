@@ -1,4 +1,3 @@
-// @flow
 import { compact } from 'lodash';
 import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
@@ -9,9 +8,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
-
 const id = 'menu';
-
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
@@ -19,45 +16,59 @@ export const osxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
     submenu: compact([
       {
         label: translation('daedalus.about'),
+
         click() {
           actions.openAboutDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Command+T',
+
         click() {
           actions.openItnRewardsRedemptionDialog();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.settings'),
         accelerator: 'Command+,',
+
         click() {
           actions.openSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
       {
         label: translation('daedalus.walletSettings'),
         accelerator: 'Command+;',
+
         click() {
           actions.openWalletSettingsPage();
         },
+
         enabled: isNavigationEnabled,
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.hideDaedalus'),
         role: 'hide',
@@ -70,10 +81,13 @@ export const osxMenu = (
         label: translation('daedalus.showAll'),
         role: 'unhide',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('daedalus.quit'),
         accelerator: 'Command+Q',
+
         click() {
           app.quit();
         },
@@ -93,7 +107,9 @@ export const osxMenu = (
         accelerator: 'Shift+Command+Z',
         role: 'redo',
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('edit.cut'),
         accelerator: 'Command+X',
@@ -140,9 +156,12 @@ export const osxMenu = (
     label: translation('helpSupport'),
     submenu: compact([
       ...buildKnownIssueFixesSubmenu(actions, translations, translation),
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.safetyTips'),
+
         click() {
           const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
           shell.openExternal(safetyTipsLinkUrl);
@@ -150,6 +169,7 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.supportRequest'),
+
         click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
@@ -164,17 +184,22 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
+
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
-      { type: 'separator' },
+      {
+        type: 'separator',
+      },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
         accelerator: 'Command+D',
+
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+
         enabled: isNavigationEnabled,
       },
     ]),

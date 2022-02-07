@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
@@ -10,11 +9,9 @@ import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/w
 import ValidateDialog from '../../../../source/renderer/app/components/wallet/wallet-create/ValidateDialog';
 import HashDialog from '../../../../source/renderer/app/components/wallet/wallet-create/HashDialog';
 import ConfigDialog from '../../../../source/renderer/app/components/wallet/wallet-create/ConfigDialog';
-
 type State = {
-  currentStep: number,
+  currentStep: number;
 };
-
 export default class CreateWalletScreens extends Component<any, State> {
   state = {
     currentStep: 0,
@@ -48,7 +45,9 @@ export default class CreateWalletScreens extends Component<any, State> {
     const { currentStep } = this.state;
     let nextStep = currentStep + 1;
     if (nextStep > CREATE_WALLET_STEPS.length - 1) nextStep = 0;
-    this.setState({ currentStep: nextStep });
+    this.setState({
+      currentStep: nextStep,
+    });
   };
 
   render() {

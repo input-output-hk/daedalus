@@ -1,12 +1,9 @@
-// @flow
 import React from 'react';
 import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
-
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
@@ -46,16 +43,21 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    blockSync={{ progress: 0, type: 'replayedBlock' }}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
   />
 );
-
 export const ConnectivityIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{ progress: 0, type: 'replayedBlock' }}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -88,13 +90,15 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     showNewsFeedIcon
   />
 );
-
 export const LoadingWalletDataSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{ progress: 0, type: 'replayedBlock' }}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -8,12 +7,10 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import styles from './RTSFlagsRecommendationOverlay.scss';
-
 type Props = {
-  onConfirm: () => void,
-  onClose: () => void,
+  onConfirm: () => void;
+  onClose: () => void;
 };
-
 const messages = defineMessages({
   title: {
     id: 'knownIssues.rtsRecommendationOverlay.title',
@@ -47,7 +44,6 @@ class RTSFlagsRecommendationOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, onConfirm } = this.props;
-
     // TODO reduce duplication with AlertsOverlay
     // https://input-output.atlassian.net/browse/DDW-928
     return (
@@ -82,4 +78,4 @@ class RTSFlagsRecommendationOverlay extends Component<Props> {
   }
 }
 
-export default RTSFlagsRecommendationOverlay
+export default RTSFlagsRecommendationOverlay;

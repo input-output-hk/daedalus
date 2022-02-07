@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
@@ -7,23 +6,27 @@ import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizar
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
-
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
 class StakePoolsListPage extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
-    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+    actions.dialogs.open.trigger({
+      dialog: DelegationSetupWizardDialog,
+    });
     updateDataForActiveDialog.trigger({
-      data: { poolId },
+      data: {
+        poolId,
+      },
     });
   };
-
   onUpdateDelegatingStake = (selectedWalletId: string, sliderValue: number) => {
     const {
       actions: { staking: stakingActions },
@@ -31,14 +34,12 @@ class StakePoolsListPage extends Component<Props> {
     stakingActions.selectDelegationWallet.trigger(selectedWalletId);
     stakingActions.updateDelegatingStake.trigger(sliderValue);
   };
-
   onRankStakePools = () => {
     const {
       actions: { staking: stakingActions },
     } = this.props;
     stakingActions.rankStakePools.trigger();
   };
-
   handleSmashSettingsClick = () => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.SETTINGS.STAKE_POOLS,
@@ -72,7 +73,6 @@ class StakePoolsListPage extends Component<Props> {
     const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
-
     return (
       <Fragment>
         <StakePools
@@ -104,4 +104,4 @@ class StakePoolsListPage extends Component<Props> {
   }
 }
 
-export default StakePoolsListPage
+export default StakePoolsListPage;

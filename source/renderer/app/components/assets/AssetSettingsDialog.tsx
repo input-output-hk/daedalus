@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { range } from 'lodash';
@@ -18,7 +17,6 @@ import {
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
-
 const messages = defineMessages({
   title: {
     id: 'assets.settings.dialog.title',
@@ -69,15 +67,13 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  asset: AssetToken,
-  onSubmit: Function,
-  onCancel: Function,
+  asset: AssetToken;
+  onSubmit: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
-
 type State = {
-  decimals: ?number,
+  decimals: number | null | undefined;
 };
 
 @observer
@@ -99,14 +95,16 @@ class AssetSettingsDialog extends Component<Props, State> {
   }
 
   onSetDecimalPrecision = (decimals: number) => {
-    this.setState({ decimals });
+    this.setState({
+      decimals,
+    });
   };
-
   optionRenderer = (props: { value: number }) => {
     const { value } = props;
     const { intl } = this.context;
     const { recommendedDecimals } = this.props.asset;
     let extraLabel;
+
     if (
       typeof recommendedDecimals === 'number' &&
       recommendedDecimals === value
@@ -115,6 +113,7 @@ class AssetSettingsDialog extends Component<Props, State> {
     } else if (value === DEFAULT_DECIMAL_PRECISION) {
       extraLabel = messages.default;
     }
+
     if (extraLabel) {
       return (
         <div>
@@ -122,9 +121,9 @@ class AssetSettingsDialog extends Component<Props, State> {
         </div>
       );
     }
+
     return value;
   };
-
   selectionRenderer = (props: { value: number }) => (
     <div className={styles.selection}>{this.optionRenderer(props)}</div>
   );
@@ -156,6 +155,7 @@ class AssetSettingsDialog extends Component<Props, State> {
     const hasWarning =
       hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
     let warningPopOverMessage;
+
     if (hasWarning) {
       warningPopOverMessage = hasSavedDecimals
         ? messages.warningPopOverNotUsing
@@ -224,4 +224,4 @@ class AssetSettingsDialog extends Component<Props, State> {
   }
 }
 
-export default AssetSettingsDialog
+export default AssetSettingsDialog;

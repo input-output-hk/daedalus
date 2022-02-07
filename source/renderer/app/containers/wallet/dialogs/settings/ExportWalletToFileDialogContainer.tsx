@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import path from 'path';
 import { observer, inject } from 'mobx-react';
@@ -6,7 +5,6 @@ import { showSaveDialogChannel } from '../../../../ipc/show-file-dialog-channels
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -18,7 +16,6 @@ class ExportWalletToFileDialogContainer extends Component<Props> {
     children: null,
     onClose: () => {},
   };
-
   onSubmit = async (params: OnSubmitParams) => {
     const name = 'wallet-export';
     const { desktopDirectoryPath } = this.props.stores.profile;
@@ -42,7 +39,6 @@ class ExportWalletToFileDialogContainer extends Component<Props> {
       ...params,
     });
   };
-
   onCancel = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
     this.props.stores.walletSettings.exportWalletToFileRequest.reset();
@@ -52,10 +48,8 @@ class ExportWalletToFileDialogContainer extends Component<Props> {
     const { wallets, walletSettings } = this.props.stores;
     const activeWallet = wallets.active;
     const { exportWalletToFileRequest } = walletSettings;
-
     // We need an active wallet
     if (!activeWallet) return null;
-
     return (
       <ExportWalletToFileDialog
         walletName={activeWallet.name}
@@ -68,4 +62,4 @@ class ExportWalletToFileDialogContainer extends Component<Props> {
   }
 }
 
-export default ExportWalletToFileDialogContainer
+export default ExportWalletToFileDialogContainer;

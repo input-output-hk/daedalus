@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -12,7 +11,6 @@ import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon
 import isNodeTimeCorrectIcon from '../../../assets/images/is-node-time-correct-icon.inline.svg';
 import isNodeSyncingIcon from '../../../assets/images/is-node-syncing-icon.inline.svg';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
-
 const messages = defineMessages({
   nodeIsRunning: {
     id: 'status.icons.nodeIsRunning',
@@ -149,19 +147,16 @@ const messages = defineMessages({
       'Message "Checking if Cardano node is syncing" on the status icon tooltip',
   },
 });
-
 type Props = {
-  onIconClick: Function,
-  nodeState: ?CardanoNodeState,
-  isNodeResponding?: boolean,
-  isNodeSubscribed?: boolean,
-  isNodeTimeCorrect?: boolean,
-  isNodeSyncing?: boolean,
+  onIconClick: (...args: Array<any>) => any;
+  nodeState: CardanoNodeState | null | undefined;
+  isNodeResponding?: boolean;
+  isNodeSubscribed?: boolean;
+  isNodeTimeCorrect?: boolean;
+  isNodeSyncing?: boolean;
 };
-
 type TipParamValue = true | false | null | string;
-
-const STATUS_CLASSNAMES: Object = {
+const STATUS_CLASSNAMES: Record<string, any> = {
   [CardanoNodeStates.STARTING]: 'unloaded',
   [CardanoNodeStates.RUNNING]: 'on',
   [CardanoNodeStates.EXITING]: 'unloaded',
@@ -176,7 +171,6 @@ const STATUS_CLASSNAMES: Object = {
   false: 'off',
   undefined: 'unloaded',
 };
-
 const NODE_STATE_MESSAGES = {
   [CardanoNodeStates.RUNNING]: messages.nodeIsRunning,
   [CardanoNodeStates.STARTING]: messages.nodeIsStarting,
@@ -189,38 +183,38 @@ const NODE_STATE_MESSAGES = {
   [CardanoNodeStates.ERRORED]: messages.nodeHasErrored,
   [CardanoNodeStates.UNRECOVERABLE]: messages.nodeIsUnrecoverable,
 };
-
 const VARIABLE_VALUES = {
   true: 'On',
   false: 'Off',
   undefined: 'Loading',
   null: 'IsStarting',
 };
-
 export default class StatusIcons extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   getTip = (paramName: string, paramValue: TipParamValue) => {
     let message;
+
     if (paramName === 'nodeState' && paramValue) {
       message = NODE_STATE_MESSAGES[String(paramValue)];
     } else {
       message = messages[`${paramName}${VARIABLE_VALUES[String(paramValue)]}`];
     }
+
     return message && <FormattedHTMLMessage {...message} />;
   };
-
   getClassName = (paramName: string) => {
     // If node is not running, it displays the icons with opacity
     // Whether {isNodeSyncing} it displays the icons for syncing or loading screen
     const { isNodeSyncing } = this.props;
     const paramValue = this.props[paramName];
     let status = STATUS_CLASSNAMES[paramValue];
+
     if (this.isDisabled(paramName)) {
       status = 'unknown';
     }
+
     return classNames([
       styles.icon,
       styles[`icon-${status}`],
@@ -228,7 +222,6 @@ export default class StatusIcons extends Component<Props> {
       isNodeSyncing ? styles.syncing : styles.loading,
     ]);
   };
-
   getTooltipClassname = (paramName: string) => {
     const paramValue = this.props[paramName];
     return classNames([
@@ -237,11 +230,9 @@ export default class StatusIcons extends Component<Props> {
       this.isDisabled(paramName) ? styles.disabled : null,
     ]);
   };
-
   isDisabled = (paramName: string) =>
     paramName !== 'nodeState' &&
     this.props.nodeState !== CardanoNodeStates.RUNNING;
-
   getIconWithPopover = (icon: string, paramName: string) => (
     <PopOver
       themeVariables={{
@@ -265,8 +256,7 @@ export default class StatusIcons extends Component<Props> {
       <div className={styles.component}>
         {[
           this.getIconWithPopover(nodeStateIcon, 'nodeState'),
-          this.getIconWithPopover(isNodeRespondingIcon, 'isNodeResponding'),
-          // this.getIconWithPopover(isNodeSubscribedIcon, 'isNodeSubscribed'),
+          this.getIconWithPopover(isNodeRespondingIcon, 'isNodeResponding'), // this.getIconWithPopover(isNodeSubscribedIcon, 'isNodeSubscribed'),
           this.getIconWithPopover(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
           this.getIconWithPopover(isNodeSyncingIcon, 'isNodeSyncing'),
         ]}

@@ -1,7 +1,5 @@
-// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
-
 //  ==== white theme output for Daedalus and react-polymorph components === //
 export const WHITE_THEME_OUTPUT = {
   aboutWindow: {
@@ -1113,9 +1111,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-widgets-itemsDropdown-option-label-text-color': '#2d2d2d',
   },
 };
-
 const WHITE_THEME_PARAMS: CreateThemeParams = {
   config: WHITE_THEME_OUTPUT,
 };
-
 export default createTheme(WHITE_THEME_PARAMS);

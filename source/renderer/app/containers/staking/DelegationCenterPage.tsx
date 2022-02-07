@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
@@ -13,15 +12,11 @@ import {
   MIN_DELEGATION_FUNDS,
 } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
-
 type Props = InjectedProps;
-
 const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
-
 type State = {
-  selectedList?: ?string,
+  selectedList?: string | null | undefined;
 };
-
 const initialState = {
   selectedList: null,
 };
@@ -29,36 +24,41 @@ const initialState = {
 @inject('actions', 'stores')
 @observer
 class DelegationCenterPage extends Component<Props, State> {
-  static defaultProps = { stores: null };
-
+  static defaultProps = {
+    stores: null,
+  };
   state = { ...initialState };
-
   handleSetListActive = (selectedList: string) =>
-    this.setState({ selectedList });
-
+    this.setState({
+      selectedList,
+    });
   handleDelegate = (walletId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
-
-    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+    actions.dialogs.open.trigger({
+      dialog: DelegationSetupWizardDialog,
+    });
     updateDataForActiveDialog.trigger({
-      data: { walletId },
+      data: {
+        walletId,
+      },
     });
   };
-
   handleUndelegate = async (walletId: string) => {
     const { dialogs } = this.props.actions;
-
     dialogs.open.trigger({
       dialog: UndelegateWalletConfirmationDialog,
     });
     dialogs.updateDataForActiveDialog.trigger({
-      data: { walletId },
+      data: {
+        walletId,
+      },
     });
   };
-
   handleGoToCreateWalletClick = () => {
-    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.ADD,
+    });
   };
 
   render() {
@@ -74,9 +74,7 @@ class DelegationCenterPage extends Component<Props, State> {
       epochLength,
     } = networkStatus;
     const { currentLocale, currentTheme } = profile;
-
     const { selectedList } = this.state;
-
     const numberOfRankedStakePools: number = stakePools.filter(
       (stakePool) =>
         IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
@@ -129,4 +127,4 @@ class DelegationCenterPage extends Component<Props, State> {
   }
 }
 
-export default DelegationCenterPage
+export default DelegationCenterPage;

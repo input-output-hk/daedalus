@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -7,12 +6,10 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetContent.scss';
 import { hexToString } from '../../utils/strings';
-
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
-
 const messages = defineMessages({
   fingerprintAssetParam: {
     id: 'assets.assetToken.param.fingerprint',
@@ -68,21 +65,17 @@ const messages = defineMessages({
     description: 'Asset settings recommended pop over content',
   },
 });
-
 type Props = {
-  asset: AssetProps,
-  onCopyAssetParam?: Function,
-  highlightFingerprint?: boolean,
-  className?: string,
-  intl: intlShape.isRequired,
-  hasError?: boolean,
+  asset: AssetProps;
+  onCopyAssetParam?: (...args: Array<any>) => any;
+  highlightFingerprint?: boolean;
+  className?: string;
+  intl: intlShape.isRequired;
+  hasError?: boolean;
 };
-
-type ParamCopied = ?string;
-
+type ParamCopied = string | null | undefined;
 const AssetContent = observer((props: Props) => {
   const [paramCopied, setParamCopied] = useState<ParamCopied>(null);
-
   let copyNotificationTimeout: TimeoutID;
 
   const handleCopyParam = (
@@ -91,9 +84,14 @@ const AssetContent = observer((props: Props) => {
     fullValue: string
   ) => {
     const { onCopyAssetParam } = props;
+
     if (onCopyAssetParam) {
-      onCopyAssetParam({ param, fullValue });
+      onCopyAssetParam({
+        param,
+        fullValue,
+      });
     }
+
     clearTimeout(copyNotificationTimeout);
     setParamCopied(newParamCopied);
     copyNotificationTimeout = setTimeout(() => {
@@ -107,9 +105,11 @@ const AssetContent = observer((props: Props) => {
       styles.copyIcon,
       paramCopied === assetId ? styles.copiedIcon : null,
     ]);
+
     const onCopy = () => {
       handleCopyParam(assetId, param, value);
     };
+
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetParam}>
@@ -222,5 +222,4 @@ const AssetContent = observer((props: Props) => {
     </div>
   );
 });
-
 export default injectIntl(AssetContent);

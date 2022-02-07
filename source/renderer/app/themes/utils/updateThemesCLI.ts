@@ -1,4 +1,3 @@
-// @flow
 import { isEmpty } from 'lodash';
 import readline from 'readline';
 import chalk from 'chalk';
@@ -8,18 +7,17 @@ import type { PendingThemesUpdates } from '../types';
 
 /* eslint-disable-next-line no-console */
 const logMsg = (msg: string) => console.log(msg);
-const logInputOption = (option: string) => chalk.magenta.italic(`'${option}'`);
-const YES_OR_NO = `${logInputOption('yes')} / ${logInputOption('no')}`;
 
+const logInputOption = (option: string) => chalk.magenta.italic(`'${option}'`);
+
+const YES_OR_NO = `${logInputOption('yes')} / ${logInputOption('no')}`;
 export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     prompt: chalk`\n{cyan Would you like to write these updates to the theme files?} ( ${YES_OR_NO} )\n`,
   });
-
   rl.prompt();
-
   rl.on('line', (line) => {
     switch (line.trim()) {
       case 'yes': {
@@ -31,7 +29,10 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
           if (themeName && !isEmpty(updatedThemes[themeName])) {
             const fileName = themeName.split('.')[0];
             const updatedThemeObj = updatedThemes[themeName];
-            writeThemeUpdate({ fileName, updatedThemeObj });
+            writeThemeUpdate({
+              fileName,
+              updatedThemeObj,
+            });
           }
         }
 

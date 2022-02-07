@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -6,7 +5,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './DataLayerMigrationForm.scss';
-
 const messages = defineMessages({
   title: {
     id: 'profile.dataLayerMigration.title',
@@ -37,10 +35,9 @@ const messages = defineMessages({
     description: 'Submit label for the Data Layer Migration screen.',
   },
 });
-
 type Props = {
-  onSubmit: Function,
-  error?: ?LocalizableError,
+  onSubmit: (...args: Array<any>) => any;
+  error?: LocalizableError | null | undefined;
 };
 
 @observer
@@ -48,7 +45,6 @@ class DataLayerMigrationForm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   submit = () => {
     this.props.onSubmit();
   };
@@ -56,7 +52,6 @@ class DataLayerMigrationForm extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { error } = this.props;
-
     return (
       <div className={styles.component}>
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
@@ -85,4 +80,4 @@ class DataLayerMigrationForm extends Component<Props> {
   }
 }
 
-export default DataLayerMigrationForm
+export default DataLayerMigrationForm;

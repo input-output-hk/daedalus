@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -8,7 +7,6 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-
 export const messages = defineMessages({
   recoveryPhraseStep4Title: {
     id: 'wallet.settings.recoveryPhraseStep4Title',
@@ -48,12 +46,11 @@ export const messages = defineMessages({
       'Label for the recoveryPhraseStep4SupportUrl on wallet settings.',
   },
 });
-
 type Props = {
-  onClose: Function,
-  onContinue: Function,
-  openExternalLink: Function,
-  walletName: string,
+  onClose: (...args: Array<any>) => any;
+  onContinue: (...args: Array<any>) => any;
+  openExternalLink: (...args: Array<any>) => any;
+  walletName: string;
 };
 
 @observer
@@ -61,10 +58,10 @@ class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   render() {
     const { intl } = this.context;
     const { onClose, onContinue, openExternalLink, walletName } = this.props;
-
     const actions = [
       {
         label: intl.formatMessage(messages.recoveryPhraseStep4Button),
@@ -72,13 +69,11 @@ class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
         className: 'attention',
       },
     ];
-
     const dialogStyles = classnames([
       styles.dialog,
       styles.dialog4,
       'verification-unsuccessful',
     ]);
-
     return (
       <Dialog
         className={dialogStyles}
@@ -108,4 +103,4 @@ class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseStep4Dialog
+export default WalletRecoveryPhraseStep4Dialog;

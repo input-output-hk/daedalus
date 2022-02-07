@@ -1,13 +1,11 @@
-// @flow
 import React from 'react';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './RemoveWalletButton.scss';
-
 type Props = {
-  onClick: Function,
-  label: string,
-  disabled?: boolean,
+  onClick: (...args: Array<any>) => any;
+  label: string;
+  disabled?: boolean;
 };
 
 const WalletSettingsRemoveButton = ({

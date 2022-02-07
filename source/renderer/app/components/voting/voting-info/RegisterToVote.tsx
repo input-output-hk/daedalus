@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -17,13 +16,12 @@ import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
 import votingStyles from './VotingInfo.scss';
-
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
-  onRegisterToVoteClick: Function,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  intl: Intl;
+  onRegisterToVoteClick: (...args: Array<any>) => any;
 };
 
 function RegisterToVote({
@@ -44,7 +42,6 @@ function RegisterToVote({
       currentTimeFormat,
     }),
   });
-
   return (
     <div className={styles.root}>
       <span className={styles.title}>

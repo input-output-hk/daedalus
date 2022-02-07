@@ -1,9 +1,7 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import RTSFlagsRecommendationOverlay from '../../components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -15,16 +13,13 @@ class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
     children: null,
     onClose: () => null,
   };
-
   onConfirm = () => {
     this.props.actions.networkStatus.toggleRTSFlagsMode.trigger();
     this.props.actions.profile.acknowledgeRTSModeRecommendation.trigger();
   };
-
   onClose = () => {
     this.props.actions.profile.acknowledgeRTSModeRecommendation.trigger();
   };
-
   shouldRender = () => {
     if (
       this.props.stores.networkStatus.environment.hasMetHardwareRequirements ||
@@ -54,4 +49,4 @@ class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
   }
 }
 
-export default RTSFlagsRecommendationOverlayContainer
+export default RTSFlagsRecommendationOverlayContainer;

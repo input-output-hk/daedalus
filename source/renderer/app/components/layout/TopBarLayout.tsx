@@ -1,13 +1,11 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import styles from './TopBarLayout.scss';
-
 type Props = {
-  topbar: Node,
-  children?: ?Node,
-  notification?: ?Node,
+  topbar: Node;
+  children?: Node | null | undefined;
+  notification?: Node | null | undefined;
 };
 
 @observer
@@ -24,4 +22,4 @@ class TopBarLayout extends Component<Props> {
   }
 }
 
-export default TopBarLayout
+export default TopBarLayout;

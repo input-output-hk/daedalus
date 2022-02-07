@@ -1,5 +1,4 @@
 import RouteParser from 'route-parser';
-
 export const matchRoute = (pattern, path) =>
   new RouteParser(pattern).match(path);
 
@@ -21,14 +20,17 @@ export const buildRoute = (pattern, params) => {
       ? [val]
       : val;
   }
+
   const reRepeatingSlashes = /\/+/g; // '/some//path'
+
   const reSplatParams = /\*{1,2}/g; // '/some/*/complex/**/path'
+
   const reResolvedOptionalParams = /\(([^:*?#]+?)\)/g; // '/path/with/(resolved/params)'
+
   // '/path/with/(groups/containing/:unresolved/optional/:params)'
   const reUnresolvedOptionalParams = /\([^:?#]*:[^?#]*?\)/g;
   const reTokens = /<(.*?)>/g;
   const reSlashTokens = /_!slash!_/g;
-
   let routePath = pattern;
   const tokens = {};
 
@@ -43,10 +45,13 @@ export const buildRoute = (pattern, params) => {
         let i = 0;
         routePath = routePath.replace(reSplatParams, (match) => {
           const val = paramValue[i++];
+
           if (val == null) {
             return '';
           }
+
           const tokenName = `splat${i}`;
+
           if (match === '*') {
             tokens[tokenName] = encodeURIComponent(val);
           } else {
@@ -55,6 +60,7 @@ export const buildRoute = (pattern, params) => {
               val.toString().replace(/\//g, '_!slash!_')
             ).replace(reSlashTokens, '/');
           }
+
           return `<${tokenName}>`;
         });
       } else {
@@ -77,21 +83,13 @@ export const buildRoute = (pattern, params) => {
     });
   }
 
-  return (
-    routePath
-      // Remove braces around resolved optional params (i.e. '/path/(value)')
-      .replace(reResolvedOptionalParams, '$1')
-      // Remove all sequences containing at least one unresolved optional param
-      .replace(reUnresolvedOptionalParams, '')
-      // After everything related to RR syntax is removed, insert actual values
-      .replace(reTokens, (match, token) => tokens[token])
-      // Remove repeating slashes
-      .replace(reRepeatingSlashes, '/')
-      // Always remove ending slash for consistency
-      .replace(/\/+$/, '')
-      // If there was a single slash only, keep it
-      .replace(/^$/, '/')
-  );
+  return routePath // Remove braces around resolved optional params (i.e. '/path/(value)')
+    .replace(reResolvedOptionalParams, '$1') // Remove all sequences containing at least one unresolved optional param
+    .replace(reUnresolvedOptionalParams, '') // After everything related to RR syntax is removed, insert actual values
+    .replace(reTokens, (match, token) => tokens[token]) // Remove repeating slashes
+    .replace(reRepeatingSlashes, '/') // Always remove ending slash for consistency
+    .replace(/\/+$/, '') // If there was a single slash only, keep it
+    .replace(/^$/, '/');
 };
 
 /**

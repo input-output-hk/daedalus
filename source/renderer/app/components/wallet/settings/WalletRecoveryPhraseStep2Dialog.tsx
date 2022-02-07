@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -16,7 +15,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import globalMessages from '../../../i18n/global-messages';
-
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
     id: 'wallet.settings.recoveryPhraseStep2Title',
@@ -60,31 +58,24 @@ export const messages = defineMessages({
       'Error message shown when invalid recovery phrase was entered.',
   },
 });
-
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  expectedWordCount: number | Array<number>,
-  walletName: string,
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  expectedWordCount: number | Array<number>;
+  walletName: string;
 };
-
 type State = {
-  isVerifying: boolean,
+  isVerifying: boolean;
 };
 
 @observer
-class WalletRecoveryPhraseStep2Dialog extends Component<
-  Props,
-  State
-> {
+class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   state = {
     isVerifying: false,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -105,7 +96,9 @@ class WalletRecoveryPhraseStep2Dialog extends Component<
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
       },
@@ -119,7 +112,6 @@ class WalletRecoveryPhraseStep2Dialog extends Component<
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
-
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
@@ -133,17 +125,19 @@ class WalletRecoveryPhraseStep2Dialog extends Component<
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
         onClick: () => {
-          this.setState({ isVerifying: true });
-          onContinue({ recoveryPhrase });
+          this.setState({
+            isVerifying: true,
+          });
+          onContinue({
+            recoveryPhrase,
+          });
         },
         disabled: !canSubmit,
       },
     ];
-
     const maxSelections = Array.isArray(expectedWordCount)
       ? Math.max(...expectedWordCount)
       : expectedWordCount;
-
     return (
       <Dialog
         className={styles.dialog}
@@ -196,4 +190,4 @@ class WalletRecoveryPhraseStep2Dialog extends Component<
   }
 }
 
-export default WalletRecoveryPhraseStep2Dialog
+export default WalletRecoveryPhraseStep2Dialog;

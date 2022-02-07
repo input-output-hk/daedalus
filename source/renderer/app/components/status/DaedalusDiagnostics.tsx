@@ -1,4 +1,3 @@
-// @flow
 import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import classNames from 'classnames';
@@ -28,7 +27,6 @@ import type { CardanoNodeState } from '../../../../common/types/cardano-node.typ
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
-
 const messages = defineMessages({
   systemInfo: {
     id: 'daedalus.diagnostics.dialog.system.info',
@@ -390,39 +388,36 @@ const messages = defineMessages({
     description: 'slot',
   },
 });
-
 type Props = {
-  systemInfo: SystemInfo,
-  coreInfo: CoreSystemInfo,
-  cardanoNodeState: ?CardanoNodeState,
-  isNodeResponding: boolean,
+  systemInfo: SystemInfo;
+  coreInfo: CoreSystemInfo;
+  cardanoNodeState: CardanoNodeState | null | undefined;
+  isNodeResponding: boolean;
   // isNodeSubscribed: boolean,
-  isNodeSyncing: boolean,
-  isNodeInSync: boolean,
-  isNodeTimeCorrect: boolean,
-  nodeConnectionError: ?LocalizableError,
-  isConnected: boolean,
-  isSynced: boolean,
-  syncPercentage: number,
-  localTimeDifference: ?number,
-  isSystemTimeCorrect: boolean,
-  isSystemTimeIgnored: boolean,
-  isCheckingSystemTime: boolean,
-  isForceCheckingSystemTime: boolean,
-  localTip: ?TipInfo,
-  networkTip: ?TipInfo,
-  onOpenStateDirectory: Function,
-  onOpenExternalLink: Function,
-  onRestartNode: Function,
-  onClose: Function,
-  onCopyStateDirectoryPath: Function,
-  onForceCheckNetworkClock: Function,
+  isNodeSyncing: boolean;
+  isNodeInSync: boolean;
+  isNodeTimeCorrect: boolean;
+  nodeConnectionError: LocalizableError | null | undefined;
+  isConnected: boolean;
+  isSynced: boolean;
+  syncPercentage: number;
+  localTimeDifference: number | null | undefined;
+  isSystemTimeCorrect: boolean;
+  isSystemTimeIgnored: boolean;
+  isCheckingSystemTime: boolean;
+  isForceCheckingSystemTime: boolean;
+  localTip: TipInfo | null | undefined;
+  networkTip: TipInfo | null | undefined;
+  onOpenStateDirectory: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onRestartNode: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onCopyStateDirectoryPath: (...args: Array<any>) => any;
+  onForceCheckNetworkClock: (...args: Array<any>) => any;
 };
-
 type State = {
-  isNodeRestarting: boolean,
+  isNodeRestarting: boolean;
 };
-
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
   CardanoNodeStates.UPDATED,
@@ -452,7 +447,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNodeState !== prevCardanoNodeState &&
       includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
     ) {
-      this.setState({ isNodeRestarting: false }); // eslint-disable-line
+      this.setState({
+        isNodeRestarting: false,
+      }); // eslint-disable-line
     }
   }
 
@@ -467,7 +464,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       </div>
     );
   };
-
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
     const key = intl.formatMessage(messages[messageId]);
@@ -479,6 +475,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       styles.layoutHeader,
     ]);
     const classNameRow = classNames([styles.layoutRow, messageId]);
+
     if (typeof value === 'boolean') {
       content = value
         ? intl.formatMessage(messages.statusOn)
@@ -489,6 +486,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
           ? classNames([className, styles.green])
           : classNames([className, styles.red]);
     }
+
     return (
       <div className={classNameRow}>
         <div className={classNameHeader}>
@@ -502,7 +500,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-
     const {
       systemInfo,
       coreInfo,
@@ -528,7 +525,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isCheckingSystemTime,
       isForceCheckingSystemTime,
     } = this.props;
-
     const {
       platform,
       platformVersion,
@@ -538,12 +534,10 @@ class DaedalusDiagnostics extends Component<Props, State> {
       hasMetHardwareRequirements,
       isRTSFlagsModeEnabled,
     } = systemInfo;
-
     const cpu = formattedCpuModel(cpuInOriginalFormat);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );
-
     const {
       daedalusVersion,
       daedalusBuildNumber,
@@ -558,20 +552,16 @@ class DaedalusDiagnostics extends Component<Props, State> {
       cardanoNetwork,
       daedalusStateDirectoryPath,
     } = coreInfo;
-
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
-
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
-
     const cardanoNetworkValue = intl.formatMessage(
       globalMessages[`network_${cardanoNetwork}`]
     );
-
     const localTimeDifferenceClasses = isCheckingSystemTime
       ? classNames([styles.layoutData, styles.localTimeDifference])
       : classNames([
@@ -583,9 +573,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
             ? styles.red
             : styles.green,
         ]);
-
     const { getSectionRow, getRow } = this;
-
     return (
       <div className={styles.component}>
         <DialogCloseButton
@@ -862,58 +850,68 @@ class DaedalusDiagnostics extends Component<Props, State> {
   getLocalisationForCardanoNodeState = () => {
     const { cardanoNodeState } = this.props;
     let localisationKey;
+
     switch (cardanoNodeState) {
       case CardanoNodeStates.STARTING:
         localisationKey = messages.nodeIsStarting;
         break;
+
       case CardanoNodeStates.EXITING:
         localisationKey = messages.nodeIsExiting;
         break;
+
       case CardanoNodeStates.STOPPING:
         localisationKey = messages.nodeIsStopping;
         break;
+
       case CardanoNodeStates.STOPPED:
         localisationKey = messages.nodeHasStopped;
         break;
+
       case CardanoNodeStates.UPDATING:
         localisationKey = messages.nodeIsUpdating;
         break;
+
       case CardanoNodeStates.UPDATED:
         localisationKey = messages.nodeHasBeenUpdated;
         break;
+
       case CardanoNodeStates.CRASHED:
         localisationKey = messages.nodeHasCrashed;
         break;
+
       case CardanoNodeStates.ERRORED:
         localisationKey = messages.nodeHasErrored;
         break;
+
       case CardanoNodeStates.UNRECOVERABLE:
         localisationKey = messages.nodeIsUnrecoverable;
         break;
+
       default:
         localisationKey = messages.nodeIsRunning;
         break;
     }
+
     return localisationKey;
   };
-
   restoreDialogCloseOnEscKey = () => {
     // This method is to be used on buttons which get disabled after click
     // as without it the ReactModal is not closing if you press the ESC key
     // even after the button is later re-enabled
     document.getElementsByClassName('ReactModal__Content')[0].focus();
   };
-
   checkTime = () => {
     this.props.onForceCheckNetworkClock();
     this.restoreDialogCloseOnEscKey();
   };
-
   restartNode = () => {
-    this.setState({ isNodeRestarting: true });
+    this.setState({
+      isNodeRestarting: true,
+    });
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
   };
 }
 
-export default DaedalusDiagnostics
+export default DaedalusDiagnostics;

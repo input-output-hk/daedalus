@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
@@ -18,7 +17,6 @@ import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
 } from '../../../source/renderer/app/config/sidebarConfig';
-
 const sidebarMenus = observable({
   wallets: {
     items: [
@@ -62,7 +60,6 @@ const sidebarMenus = observable({
   },
   hardwareWallets: null,
 });
-
 const sidebarMenusHardware = observable({
   wallets: null,
   hardwareWallets: {
@@ -106,17 +103,14 @@ const sidebarMenusHardware = observable({
     },
   },
 });
-
 let emptyMenus;
-
 storiesOf('Navigation|Sidebar', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
-  .addDecorator(withKnobs)
-  // ====== Stories ======
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('No Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}

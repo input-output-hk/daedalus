@@ -1,8 +1,6 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
-
 export const updateSpendingPassword = (
   config: RequestConfig,
   {
@@ -10,9 +8,9 @@ export const updateSpendingPassword = (
     oldPassword,
     newPassword,
   }: {
-    walletId: string,
-    oldPassword: string,
-    newPassword: string,
+    walletId: string;
+    oldPassword: string;
+    newPassword: string;
   }
 ): Promise<AdaWallet> =>
   request(

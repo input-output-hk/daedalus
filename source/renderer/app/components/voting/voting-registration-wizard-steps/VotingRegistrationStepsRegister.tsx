@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { get } from 'lodash';
@@ -21,9 +20,7 @@ import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
-
 import type { HwDeviceStatus } from '../../../domains/Wallet';
-
 const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
@@ -69,24 +66,22 @@ const messages = defineMessages({
     description: 'Learn more" link URL on the "sign" step.',
   },
 });
-
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  stepsList: Array<string>,
-  activeStep: number,
-  transactionFee: ?BigNumber,
-  transactionFeeError?: string | Node | null,
-  transactionError?: ?LocalizableError,
-  hwDeviceStatus: HwDeviceStatus,
-  selectedWallet: ?Wallet,
-  isTrezor: boolean,
-  isHardwareWallet: boolean,
-  isSubmitting: boolean,
-  onConfirm: Function,
-  onClose: Function,
-  onBack: Function,
-  onExternalLinkClick: Function,
+  stepsList: Array<string>;
+  activeStep: number;
+  transactionFee: BigNumber | null | undefined;
+  transactionFeeError?: string | Node | null;
+  transactionError?: LocalizableError | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  selectedWallet: Wallet | null | undefined;
+  isTrezor: boolean;
+  isHardwareWallet: boolean;
+  isSubmitting: boolean;
+  onConfirm: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -94,7 +89,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -110,12 +104,14 @@ class VotingRegistrationStepsRegister extends Component<Props> {
           validators: [
             ({ field }) => {
               const password = field.value;
+
               if (password === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+
               return [true];
             },
           ],
@@ -123,19 +119,19 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     const { spendingPassword } = this.form.values();
     this.props.onConfirm(spendingPassword);
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
@@ -160,7 +156,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
     const selectedWalletName = get(selectedWallet, 'name', '');
-
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
@@ -176,7 +171,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
         primary: true,
       },
     ];
-
     return (
       <VotingRegistrationDialog
         onClose={!isSubmitting ? onClose : () => {}}
@@ -189,7 +183,9 @@ class VotingRegistrationStepsRegister extends Component<Props> {
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{
+              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+            }}
           />
         </p>
 
@@ -257,4 +253,4 @@ class VotingRegistrationStepsRegister extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsRegister
+export default VotingRegistrationStepsRegister;

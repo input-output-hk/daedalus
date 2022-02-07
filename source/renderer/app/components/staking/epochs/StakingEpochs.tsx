@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -11,7 +10,6 @@ import StakingEpochsPreviousEpochData from './StakingEpochsPreviousEpochData';
 import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
-
 const messages = defineMessages({
   currentEpochHeading: {
     id: 'staking.epochs.currentHeading',
@@ -24,22 +22,19 @@ const messages = defineMessages({
     description: 'Headline for the previous epoch.',
   },
 });
-
 type Props = {
-  currentEpochName: string,
-  currentEpochData: EpochData,
-  currentEpochEndDateTime: string,
-  currentEpochProgress: number,
-  previousEpochName: string,
-  previousEpochData: EpochData,
-  isLoading: boolean,
+  currentEpochName: string;
+  currentEpochData: EpochData;
+  currentEpochEndDateTime: string;
+  currentEpochProgress: number;
+  previousEpochName: string;
+  previousEpochData: EpochData;
+  isLoading: boolean;
 };
-
 type State = {
-  selectedEpoch: string,
-  duration: string,
+  selectedEpoch: string;
+  duration: string;
 };
-
 const { CURRENT_EPOCH, PREVIOUS_EPOCH } = SELECTED_EPOCH_OPTIONS;
 
 @observer
@@ -47,7 +42,6 @@ class StakingEpochs extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     isLoading: false,
   };
@@ -63,14 +57,15 @@ class StakingEpochs extends Component<Props, State> {
   componentDidMount() {
     const { intl } = this.context;
     const { currentEpochEndDateTime } = this.props;
-
     this.setState({
       duration: humanizeDurationToShort(intl.locale, currentEpochEndDateTime),
     });
   }
 
   onSelectedEpochChange = (selectedEpoch: string) =>
-    this.setState({ selectedEpoch });
+    this.setState({
+      selectedEpoch,
+    });
 
   render() {
     const {
@@ -124,11 +119,15 @@ class StakingEpochs extends Component<Props, State> {
                 <div className={styles.progressBarContainer}>
                   <div
                     className={styles.progress}
-                    style={{ width: `${currentEpochProgress}%` }}
+                    style={{
+                      width: `${currentEpochProgress}%`,
+                    }}
                   >
                     <div
                       className={styles.overlapProgressLabel}
-                      style={{ left: `${10000 / currentEpochProgress}%` }}
+                      style={{
+                        left: `${10000 / currentEpochProgress}%`,
+                      }}
                     >
                       {duration}
                     </div>
@@ -159,4 +158,4 @@ class StakingEpochs extends Component<Props, State> {
   }
 }
 
-export default StakingEpochs
+export default StakingEpochs;

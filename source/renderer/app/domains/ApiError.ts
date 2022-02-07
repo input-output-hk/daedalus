@@ -1,11 +1,9 @@
-// @flow
 import { action, observable } from 'mobx';
 import { camelCase, get, includes, keys, map, omit, snakeCase } from 'lodash';
 import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
 import { logger } from '../utils/logging';
 import { toJS } from '../../../common/utils/helper';
-
 type KnownErrorType =
   | 'invalid_wallet_type'
   | 'no_such_wallet'
@@ -48,26 +46,27 @@ type KnownErrorType =
   | 'address_already_exists'
   | 'utxo_too_small'
   | 'invalid_smash_server';
-
 type LoggingType = {
-  msg?: string,
-  logError?: Object,
+  msg?: string;
+  logError?: Record<string, any>;
 };
-
 type ErrorType = {
-  code?: KnownErrorType,
-  message?: string,
+  code?: KnownErrorType;
+  message?: string;
 };
-
 export default class ApiError {
-  @observable tempError: string = '';
-  @observable clause: boolean;
-  @observable forceSet: boolean = false;
-  @observable additionalValues: Object = {};
+  @observable
+  tempError: string = '';
+  @observable
+  clause: boolean;
+  @observable
+  forceSet: boolean = false;
+  @observable
+  additionalValues: Record<string, any> = {};
   isFinalError: boolean = false;
   id: string;
   defaultMessage: string;
-  values: Object;
+  values: Record<string, any>;
   code: string;
 
   constructor(error: ErrorType = {}, logging?: LoggingType) {
@@ -75,6 +74,7 @@ export default class ApiError {
     const errorCode = error.code ? camelCase(error.code) : null;
     const localizableError = get(messages, errorCode);
     let humanizedError;
+
     if (localizableError) {
       this.isFinalError = true;
       humanizedError = {
@@ -90,19 +90,18 @@ export default class ApiError {
         values: genericApiError.values,
       };
     }
-    Object.assign(this, {
-      ...humanizedError,
-      code: error.code,
-    });
+
+    Object.assign(this, { ...humanizedError, code: error.code });
 
     // Set logging
     this._logError(logging);
   }
 
-  @action set(
+  @action
+  set(
     predefinedError: string,
     force?: boolean = false,
-    values?: Object
+    values?: Record<string, any>
   ) {
     if (
       predefinedError &&
@@ -120,6 +119,7 @@ export default class ApiError {
       const transformedValues = {};
       map(values, (val, key) => {
         const translated = get(messages, val);
+
         if (translated) {
           transformedValues[key] = translated;
         } else {
@@ -128,49 +128,58 @@ export default class ApiError {
       });
       this.additionalValues = transformedValues;
       Object.assign(this, {
-        values: {
-          ...this.values,
-          ...transformedValues,
-        },
+        values: { ...this.values, ...transformedValues },
       });
     }
+
     return this;
   }
 
-  @action where(type: string, declaration: string) {
+  @action
+  where(type: string, declaration: string) {
     if (
       this.clause &&
       (!this.isFinalError || (this.isFinalError && this.forceSet))
     ) {
       this.clause = this.values[type] === declaration;
+
       if (!this.clause) {
         this.tempError = '';
+
         if (this.additionalValues) {
           const additionalValuesKeys = keys(this.additionalValues);
           this.values = omit(this.values, additionalValuesKeys);
         }
+
         if (this.forceSet) {
           this.clause = false;
           this.forceSet = false;
         }
       }
     }
+
     return this;
   }
 
-  @action inc(type: string, declaration: string) {
+  @action
+  inc(type: string, declaration: string) {
     const fullMessage = get(this.values, type, '');
+
     if (this.clause && !this.isFinalError && fullMessage) {
       this.clause = includes(fullMessage, declaration);
+
       if (!this.clause) {
         this.tempError = '';
       }
     }
+
     return this;
   }
 
-  @action result(fallbackError?: string) {
+  @action
+  result(fallbackError?: string) {
     if (this.isFinalError && !this.forceSet) return this;
+
     if (this.tempError && messages[this.tempError]) {
       Object.assign(this, {
         id: messages[this.tempError].id,
@@ -180,6 +189,7 @@ export default class ApiError {
       });
       return this;
     }
+
     if (fallbackError) {
       Object.assign(this, {
         id: messages[fallbackError].id,
@@ -189,6 +199,7 @@ export default class ApiError {
       });
       return this;
     }
+
     return new GenericApiError(this.values);
   }
 

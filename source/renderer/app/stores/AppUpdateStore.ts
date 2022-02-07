@@ -1,4 +1,3 @@
-// @flow
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
 import semver from 'semver';
@@ -36,44 +35,57 @@ import type {
   DownloadData,
 } from '../../../common/types/downloadManager.types';
 import type { FormattedDownloadData } from '../utils/formatters';
-
 const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
-
 export default class AppUpdateStore extends Store {
-  @observable availableUpdate: ?News = null;
-  @observable availableUpdateVersion: string = '';
-  @observable isUpdateDownloading: boolean = false;
-  @observable isUpdateDownloaded: boolean = false;
-  @observable isUpdateProgressOpen: boolean = false;
-  @observable isAutomaticUpdateFailed: boolean = false;
-  @observable isUpdatePostponed: boolean = false;
-  @observable isWaitingToQuitDaedalus: boolean = false;
-  @observable installationProgress: number = 0;
-
-  @observable downloadInfo: ?DownloadInfo = null;
-  @observable downloadData: ?DownloadData = null;
-  @observable availableAppVersion: ?string = null;
-
-  @observable getAppAutomaticUpdateFailedRequest: Request<
-    Promise<boolean>
-  > = new Request(this.api.localStorage.getAppAutomaticUpdateFailed);
-  @observable setAppAutomaticUpdateFailedRequest: Request<
-    Promise<void>
-  > = new Request(this.api.localStorage.setAppAutomaticUpdateFailed);
-  @observable unsetAppAutomaticUpdateFailedRequest: Request<
-    Promise<void>
-  > = new Request(this.api.localStorage.unsetAppAutomaticUpdateFailed);
-
-  @observable getAppUpdateCompletedRequest: Request<
-    Promise<boolean>
-  > = new Request(this.api.localStorage.getAppUpdateCompleted);
-  @observable setAppUpdateCompletedRequest: Request<
-    Promise<void>
-  > = new Request(this.api.localStorage.setAppUpdateCompleted);
-  @observable unsetAppUpdateCompletedRequest: Request<
-    Promise<void>
-  > = new Request(this.api.localStorage.unsetAppUpdateCompleted);
+  @observable
+  availableUpdate: News | null | undefined = null;
+  @observable
+  availableUpdateVersion: string = '';
+  @observable
+  isUpdateDownloading: boolean = false;
+  @observable
+  isUpdateDownloaded: boolean = false;
+  @observable
+  isUpdateProgressOpen: boolean = false;
+  @observable
+  isAutomaticUpdateFailed: boolean = false;
+  @observable
+  isUpdatePostponed: boolean = false;
+  @observable
+  isWaitingToQuitDaedalus: boolean = false;
+  @observable
+  installationProgress: number = 0;
+  @observable
+  downloadInfo: DownloadInfo | null | undefined = null;
+  @observable
+  downloadData: DownloadData | null | undefined = null;
+  @observable
+  availableAppVersion: string | null | undefined = null;
+  @observable
+  getAppAutomaticUpdateFailedRequest: Request<Promise<boolean>> = new Request(
+    this.api.localStorage.getAppAutomaticUpdateFailed
+  );
+  @observable
+  setAppAutomaticUpdateFailedRequest: Request<Promise<void>> = new Request(
+    this.api.localStorage.setAppAutomaticUpdateFailed
+  );
+  @observable
+  unsetAppAutomaticUpdateFailedRequest: Request<Promise<void>> = new Request(
+    this.api.localStorage.unsetAppAutomaticUpdateFailed
+  );
+  @observable
+  getAppUpdateCompletedRequest: Request<Promise<boolean>> = new Request(
+    this.api.localStorage.getAppUpdateCompleted
+  );
+  @observable
+  setAppUpdateCompletedRequest: Request<Promise<void>> = new Request(
+    this.api.localStorage.setAppUpdateCompleted
+  );
+  @observable
+  unsetAppUpdateCompletedRequest: Request<Promise<void>> = new Request(
+    this.api.localStorage.unsetAppUpdateCompleted
+  );
 
   setup() {
     const actions = this.actions.appUpdate;
@@ -81,24 +93,21 @@ export default class AppUpdateStore extends Store {
     actions.openAppUpdateOverlay.listen(this._openAppUpdateOverlay);
     actions.closeAppUpdateOverlay.listen(this._closeAppUpdateOverlay);
     actions.postponeUpdate.listen(this._postponeUpdate);
-
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
     manageAppUpdateChannel.onReceive(this._manageQuitAndInstallResponse);
-
     // ============== MOBX REACTIONS ==============
     this.registerReactions([this._watchForNewsfeedUpdates]);
   }
 
   // ================= REACTIONS ==================
-
   _watchForNewsfeedUpdates = () => {
     const { update } = this.stores.newsFeed.newsFeedData;
     if (update) this._checkNewAppUpdate(update);
   };
 
   // ==================== PUBLIC ==================
-
-  @computed get displayAppUpdateOverlay(): boolean {
+  @computed
+  get displayAppUpdateOverlay(): boolean {
     return (
       !!this.availableUpdate &&
       !this.isUpdatePostponed &&
@@ -107,50 +116,60 @@ export default class AppUpdateStore extends Store {
         this.isAutomaticUpdateFailed)
     );
   }
-  @computed get displayAppUpdateNewsItem(): boolean {
+
+  @computed
+  get displayAppUpdateNewsItem(): boolean {
     return this.isUpdateDownloading || this.isUpdatePostponed;
   }
 
-  @computed get formattedDownloadData(): FormattedDownloadData {
+  @computed
+  get formattedDownloadData(): FormattedDownloadData {
     return formattedDownloadData(
       this.downloadData,
       this.stores.profile.currentLocale
     );
   }
 
-  @computed get downloadTimeLeft(): string {
+  @computed
+  get downloadTimeLeft(): string {
     return this.formattedDownloadData.timeLeft;
   }
 
-  @computed get totalDownloaded(): string {
+  @computed
+  get totalDownloaded(): string {
     return this.formattedDownloadData.downloaded;
   }
 
-  @computed get totalDownloadSize(): string {
+  @computed
+  get totalDownloadSize(): string {
     return this.formattedDownloadData.total;
   }
 
-  @computed get downloadProgress(): number {
+  @computed
+  get downloadProgress(): number {
     return this.formattedDownloadData.progress;
   }
 
-  @computed get showManualUpdate(): boolean {
+  @computed
+  get showManualUpdate(): boolean {
     return this.isAutomaticUpdateFailed;
   }
 
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
     const { version, hash, url } = softwareUpdate[platform] || {};
-    return { version, hash, url };
+    return {
+      version,
+      hash,
+      url,
+    };
   }
 
   isUpdateInstalled = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
     return !semver.lt(currentVersion, updateVersion);
   };
-
   // =================== PRIVATE ==================
-
   _checkNewAppUpdate = async (update: News) => {
     const { version, url } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
@@ -177,12 +196,11 @@ export default class AppUpdateStore extends Store {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
     });
-
     // Cancels if the update download is already in progress
     if (this.isUpdateDownloading) return false;
-
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
@@ -193,21 +211,26 @@ export default class AppUpdateStore extends Store {
     // Is there a pending / resumable download?
     const downloadLocalData = await this._getUpdateDownloadLocalData();
     const { info, data } = downloadLocalData;
+
     if (info && data) {
       // The download is outdated
       if (info.fileUrl !== url) {
         await this._removeLocalDataInfo();
         return this._requestUpdateDownload(update);
       }
+
       // The user reopened Daedalus without installing the update
       if (data.state === DOWNLOAD_STATES.FINISHED && data.progress === 100) {
         // Does the file still exist?
         const installerFileStillExists = await this._checkFileExists();
+
         if (!installerFileStillExists) {
           logger.error(
             'AppUpdateStore:_setAppAutomaticUpdateFailed: Failed to find the installer file'
           );
+
           this._setAppAutomaticUpdateFailed();
+
           return false;
         }
 
@@ -221,35 +244,33 @@ export default class AppUpdateStore extends Store {
 
       // Resumes the update download
       this._requestResumeUpdateDownload();
+
       return false;
     }
 
     await this._removeLocalDataInfo();
     return this._requestUpdateDownload(update);
   };
-
   _removeLocalDataInfo = async () => {
     clearDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
-
   _removeUpdateFile = () => {
     deleteDownloadedFile.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
-
-  _getUpdateDownloadLocalData = async (): Promise<DownloadLocalDataMainResponse> =>
+  _getUpdateDownloadLocalData = async (): Promise<
+    DownloadLocalDataMainResponse
+  > =>
     getDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
-
   _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
     checkFileExistsChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
-
   _manageUpdateResponse = ({
     eventType,
     info,
@@ -261,14 +282,17 @@ export default class AppUpdateStore extends Store {
         this.availableUpdate = null;
         this.isUpdateDownloaded = true;
       }
+
       if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
         this.downloadInfo = info;
         this.downloadData = data;
       }
+
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
         this.isUpdateDownloaded = true;
         this.actions.app.closeNewsFeed.trigger();
       }
+
       if (eventType === DOWNLOAD_EVENT_TYPES.ERROR) {
         logger.error(
           'AppUpdateStore:_setAppAutomaticUpdateFailed: Received an error event from the main process',
@@ -276,8 +300,10 @@ export default class AppUpdateStore extends Store {
             error,
           }
         );
+
         this._setAppAutomaticUpdateFailed();
       }
+
       if (
         eventType === DOWNLOAD_EVENT_TYPES.END ||
         eventType === DOWNLOAD_EVENT_TYPES.PAUSE ||
@@ -288,9 +314,10 @@ export default class AppUpdateStore extends Store {
         this.isUpdateDownloading = true;
       }
     });
-    return Promise.resolve({ fileUrl: '' });
+    return Promise.resolve({
+      fileUrl: '',
+    });
   };
-
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
@@ -300,7 +327,6 @@ export default class AppUpdateStore extends Store {
       },
     });
   };
-
   _requestUpdateDownload = (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
     if (!fileUrl) return null;
@@ -313,7 +339,6 @@ export default class AppUpdateStore extends Store {
       },
     });
   };
-
   _installUpdate = async () => {
     if (
       !this.availableUpdate ||
@@ -333,6 +358,7 @@ export default class AppUpdateStore extends Store {
       // this._setAppAutomaticUpdateFailed();
       return false;
     }
+
     runInAction(() => {
       this.isWaitingToQuitDaedalus = true;
     });
@@ -345,17 +371,20 @@ export default class AppUpdateStore extends Store {
       hash,
     });
   };
-
   _manageQuitAndInstallResponse = ({
     status,
     data,
   }: ManageAppUpdateMainResponse) => {
     const { message, progress, error } = data;
+
     if (status === statuses.ERROR) {
-      logger.error(message || '', { error });
+      logger.error(message || '', {
+        error,
+      });
       runInAction(() => {
         this.isWaitingToQuitDaedalus = false;
       });
+
       this._setAppAutomaticUpdateFailed();
     } else if (status === statuses.PROGRESS) {
       if (progress) {
@@ -364,26 +393,29 @@ export default class AppUpdateStore extends Store {
         });
       }
     }
-    return Promise.resolve({ filePath: '', hash: '' });
-  };
 
+    return Promise.resolve({
+      filePath: '',
+      hash: '',
+    });
+  };
   _setAppAutomaticUpdateFailed = async () => {
     await this.setAppAutomaticUpdateFailedRequest.execute();
     runInAction(() => {
       this.isAutomaticUpdateFailed = true;
     });
   };
-
-  @action _openAppUpdateOverlay = () => {
+  @action
+  _openAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = true;
     this.isUpdatePostponed = false;
   };
-
-  @action _closeAppUpdateOverlay = () => {
+  @action
+  _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
   };
-
-  @action _postponeUpdate = () => {
+  @action
+  _postponeUpdate = () => {
     this.isUpdatePostponed = true;
   };
 }

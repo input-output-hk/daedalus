@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map } from 'lodash';
@@ -10,7 +9,6 @@ import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
-
 const messages = defineMessages({
   currencyTitleLabel: {
     id: 'settings.wallets.currency.titleLabel',
@@ -45,14 +43,13 @@ const messages = defineMessages({
       'currencyPoweredByLabel for the Currency settings in the Wallets settings page.',
   },
 });
-
 type Props = {
-  currencySelected: ?LocalizedCurrency,
-  currencyList: Array<any>,
-  currencyIsActive: boolean,
-  onSelectCurrency: Function,
-  onToggleCurrencyIsActive: Function,
-  onOpenExternalLink: Function,
+  currencySelected: LocalizedCurrency | null | undefined;
+  currencyList: Array<any>;
+  currencyIsActive: boolean;
+  onSelectCurrency: (...args: Array<any>) => any;
+  onToggleCurrencyIsActive: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
 
 @observer
@@ -71,12 +68,10 @@ class WalletSettings extends Component<Props> {
       onToggleCurrencyIsActive,
       onOpenExternalLink,
     } = this.props;
-
     const currencyOptions = map(currencyList, ({ code, name }) => ({
       label: `${code.toUpperCase()} - ${name}`,
       value: code,
     }));
-
     return (
       <div className={styles.component}>
         <div className={styles.label}>
@@ -116,7 +111,9 @@ class WalletSettings extends Component<Props> {
               <div className={styles.disclaimer}>
                 <FormattedHTMLMessage
                   {...messages.currencyDisclaimer}
-                  values={{ currencyApiName: currencyConfig.name }}
+                  values={{
+                    currencyApiName: currencyConfig.name,
+                  }}
                 />
               </div>
             )}
@@ -127,4 +124,4 @@ class WalletSettings extends Component<Props> {
   }
 }
 
-export default WalletSettings
+export default WalletSettings;

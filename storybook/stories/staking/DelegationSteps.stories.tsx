@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
@@ -11,7 +10,6 @@ import DelegationStepsChooseStakePoolDialog from '../../../source/renderer/app/c
 import DelegationStepsNotAvailableDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 import DelegationStepsConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
 import DelegationStepsSuccessDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog';
-
 import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakingConfig';
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
@@ -24,7 +22,6 @@ import {
   WalletSyncStateStatuses,
   HwDeviceStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
-
 const assets = {
   available: [
     {
@@ -59,7 +56,6 @@ const assets = {
     },
   ],
 };
-
 const WALLETS = [
   generateWallet('Wallet 1', '1000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
@@ -101,18 +97,15 @@ const getDelegationWizardStepsList = (locale) => [
 ];
 
 type Props = {
-  currentTheme: string,
-  locale: string,
-  isDisabled?: boolean,
-  oversaturationPercentage: number,
+  currentTheme: string;
+  locale: string;
+  isDisabled?: boolean;
+  oversaturationPercentage: number;
 };
-
 type State = {
-  currentStep: number,
+  currentStep: number;
 };
-
 const NUMBER_OF_STEPS = 6;
-
 export class StakingDelegationSteps extends Component<Props, State> {
   state = {
     currentStep: 0,
@@ -138,6 +131,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         />,
       ];
     }
+
     return [
       <DelegationStepsIntroDialog
         key="DelegationStepsIntroDialog"
@@ -215,18 +209,22 @@ export class StakingDelegationSteps extends Component<Props, State> {
     const { currentStep } = this.state;
     let nextStep = currentStep + 1;
     if (nextStep > NUMBER_OF_STEPS - 1) nextStep = 0;
-    this.setState({ currentStep: nextStep });
+    this.setState({
+      currentStep: nextStep,
+    });
   };
-
   onBack = () => {
     const { currentStep } = this.state;
     let nextStep = currentStep - 1;
     if (nextStep < NUMBER_OF_STEPS - 1) nextStep = 0;
-    this.setState({ currentStep: nextStep });
+    this.setState({
+      currentStep: nextStep,
+    });
   };
-
   onReset = () => {
-    this.setState({ currentStep: 0 });
+    this.setState({
+      currentStep: 0,
+    });
   };
 
   render() {

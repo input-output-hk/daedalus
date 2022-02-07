@@ -1,10 +1,8 @@
-// @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import VerificationDialog from '../../../../components/wallet/paper-wallet-certificate/VerificationDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
-
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
@@ -16,7 +14,6 @@ class VerificationDialogContainer extends Component<Props> {
     children: null,
     onClose: () => {},
   };
-
   onContinue = () => {
     this.props.actions.wallets.updateCertificateStep.trigger();
   };
@@ -27,11 +24,13 @@ class VerificationDialogContainer extends Component<Props> {
       walletCertificateRecoveryPhrase,
       additionalMnemonicWords,
     } = wallets;
+
     if (!walletCertificateRecoveryPhrase || !additionalMnemonicWords) {
       throw new Error(
         'Props walletCertificateRecoveryPhrase and additionalMnemonicWords are required'
       );
     }
+
     return (
       <VerificationDialog
         suggestedMnemonics={validWords}
@@ -44,4 +43,4 @@ class VerificationDialogContainer extends Component<Props> {
   }
 }
 
-export default VerificationDialogContainer
+export default VerificationDialogContainer;

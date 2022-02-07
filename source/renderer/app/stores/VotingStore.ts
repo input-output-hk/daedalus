@@ -1,4 +1,3 @@
-// @flow
 import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
@@ -26,20 +25,20 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
-
-export type VotingRegistrationKeyType = { bytes: Function, public: Function };
-
-export type VotingDataType = {
-  stakeAddress: string,
-  stakeAddressHex: string,
-  votingKey: string,
-  stakeKey: string,
-  role: PathRoleIdentityType,
-  index: string,
-  metadata: VotingMetadataType,
-  absoluteSlotNumber: number,
+export type VotingRegistrationKeyType = {
+  bytes: (...args: Array<any>) => any;
+  public: (...args: Array<any>) => any;
 };
-
+export type VotingDataType = {
+  stakeAddress: string;
+  stakeAddressHex: string;
+  votingKey: string;
+  stakeKey: string;
+  role: PathRoleIdentityType;
+  index: string;
+  metadata: VotingMetadataType;
+  absoluteSlotNumber: number;
+};
 export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
 export const FundPhases: EnumMap<string, FundPhase> = {
   SNAPSHOT: 'snapshot',
@@ -47,21 +46,29 @@ export const FundPhases: EnumMap<string, FundPhase> = {
   TALLYING: 'tallying',
   RESULTS: 'results',
 };
-
 export default class VotingStore extends Store {
-  @observable registrationStep: number = 1;
-  @observable selectedWalletId: ?string = null;
-  @observable transactionId: ?string = null;
-  @observable transactionConfirmations: number = 0;
-  @observable isTransactionPending: boolean = false;
-  @observable isTransactionConfirmed: boolean = false;
-  @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
-  @observable qrCode: ?string = null;
-  @observable isConfirmationDialogOpen: boolean = false;
-  @observable fundPhase: FundPhase = FundPhases.SNAPSHOT;
-
-  transactionPollingInterval: ?IntervalID = null;
-  fundPhaseInterval: ?IntervalID = null;
+  @observable
+  registrationStep: number = 1;
+  @observable
+  selectedWalletId: string | null | undefined = null;
+  @observable
+  transactionId: string | null | undefined = null;
+  @observable
+  transactionConfirmations: number = 0;
+  @observable
+  isTransactionPending: boolean = false;
+  @observable
+  isTransactionConfirmed: boolean = false;
+  @observable
+  votingRegistrationKey: VotingRegistrationKeyType | null | undefined = null;
+  @observable
+  qrCode: string | null | undefined = null;
+  @observable
+  isConfirmationDialogOpen: boolean = false;
+  @observable
+  fundPhase: FundPhase = FundPhases.SNAPSHOT;
+  transactionPollingInterval: IntervalID | null | undefined = null;
+  fundPhaseInterval: IntervalID | null | undefined = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -76,53 +83,50 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
+
     this._initializeFundPhaseInterval();
   }
 
   // REQUESTS
-
-  @observable getWalletPublicKeyRequest: Request<string> = new Request(
+  @observable
+  getWalletPublicKeyRequest: Request<string> = new Request(
     this.api.ada.getWalletPublicKey
   );
-
   @observable
-  createVotingRegistrationTransactionRequest: Request<WalletTransaction> = new Request(
-    this.api.ada.createVotingRegistrationTransaction
-  );
-
+  createVotingRegistrationTransactionRequest: Request<
+    WalletTransaction
+  > = new Request(this.api.ada.createVotingRegistrationTransaction);
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
   );
-
   @observable
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
     this.api.ada.getTransaction
   );
-
   // ACTIONS
-
-  @action _showConfirmationDialog = () => {
+  @action
+  _showConfirmationDialog = () => {
     this.isConfirmationDialogOpen = true;
   };
-
-  @action _closeConfirmationDialog = () => {
+  @action
+  _closeConfirmationDialog = () => {
     this.isConfirmationDialogOpen = false;
   };
-
-  @action _setSelectedWalletId = (walletId: string) => {
+  @action
+  _setSelectedWalletId = (walletId: string) => {
     this.selectedWalletId = walletId;
   };
-
-  @action _nextRegistrationStep = () => {
+  @action
+  _nextRegistrationStep = () => {
     this.registrationStep++;
   };
-
-  @action _previousRegistrationStep = () => {
+  @action
+  _previousRegistrationStep = () => {
     this.registrationStep--;
   };
-
-  @action _resetRegistration = () => {
+  @action
+  _resetRegistration = () => {
     this.isConfirmationDialogOpen = false;
     this.registrationStep = 1;
     this.selectedWalletId = null;
@@ -135,23 +139,25 @@ export default class VotingStore extends Store {
     this.getWalletPublicKeyRequest.reset();
     this.createVotingRegistrationTransactionRequest.reset();
     this.signMetadataRequest.reset();
+
     if (this.transactionPollingInterval) {
       clearInterval(this.transactionPollingInterval);
     }
+
     if (this.fundPhaseInterval) {
       clearInterval(this.fundPhaseInterval);
     }
   };
-
-  @action _startTransactionPolling = () => {
+  @action
+  _startTransactionPolling = () => {
     if (this.transactionPollingInterval)
       clearInterval(this.transactionPollingInterval);
     this.transactionPollingInterval = setInterval(() => {
       this._checkVotingRegistrationTransaction();
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
   };
-
-  @action _initializeFundPhaseInterval = () => {
+  @action
+  _initializeFundPhaseInterval = () => {
     if (this.fundPhaseInterval) {
       clearInterval(this.fundPhaseInterval);
     }
@@ -160,44 +166,41 @@ export default class VotingStore extends Store {
       this._checkFundPhase(new Date());
     }, VOTING_PHASE_CHECK_INTERVAL);
   };
-
-  @action _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
+  @action
+  _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
     this.votingRegistrationKey = value;
   };
-
-  @action _setTransactionId = (transactionId: string) => {
+  @action
+  _setTransactionId = (transactionId: string) => {
     this.transactionId = transactionId;
   };
-
-  @action _setTransactionConfirmations = (confirmations: number) => {
+  @action
+  _setTransactionConfirmations = (confirmations: number) => {
     this.transactionConfirmations = confirmations;
   };
-
-  @action _setIsTransactionPending = (value: boolean) => {
+  @action
+  _setIsTransactionPending = (value: boolean) => {
     this.isTransactionPending = value;
   };
-
-  @action _setIsTransactionConfirmed = (value: boolean) => {
+  @action
+  _setIsTransactionConfirmed = (value: boolean) => {
     this.isTransactionConfirmed = value;
   };
-
-  @action _setQrCode = (value: ?string) => {
+  @action
+  _setQrCode = (value: string | null | undefined) => {
     this.qrCode = value;
   };
-
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
       const { stakeAddresses } = this.stores.addresses;
       const stakeAddress = stakeAddresses[walletId];
       const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
-
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
       const votingKey = formattedArrayBufferToHexString(
         this.votingRegistrationKey.public().bytes()
       );
-
       const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
@@ -256,7 +259,6 @@ export default class VotingStore extends Store {
           ],
         },
       };
-
       const votingData = {
         stakeAddress,
         stakeAddressHex,
@@ -272,13 +274,12 @@ export default class VotingStore extends Store {
       throw e;
     }
   };
-
   _sendTransaction = async ({
     amount,
     passphrase,
   }: {
-    amount: number,
-    passphrase: ?string,
+    amount: number;
+    passphrase: string | null | undefined;
   }) => {
     const walletId = this.selectedWalletId;
     if (!walletId)
@@ -294,14 +295,15 @@ export default class VotingStore extends Store {
 
     // Reset voting registration transaction state
     this._setIsTransactionPending(true);
+
     this._setIsTransactionConfirmed(false);
 
     // Reset voting registration requests
     this.getWalletPublicKeyRequest.reset();
     this.createVotingRegistrationTransactionRequest.reset();
     this.signMetadataRequest.reset();
-
     let transaction;
+
     try {
       if (isHardwareWallet) {
         transaction = await this.stores.hardwareWallets._sendMoney({
@@ -309,7 +311,9 @@ export default class VotingStore extends Store {
           selectedWalletId: walletId,
         });
       } else {
-        const votingData = await this.prepareVotingData({ walletId });
+        const votingData = await this.prepareVotingData({
+          walletId,
+        });
         const {
           stakeAddressHex,
           votingKey,
@@ -317,7 +321,6 @@ export default class VotingStore extends Store {
           role,
           index,
         } = votingData;
-
         const signature = await this.signMetadataRequest.execute({
           addressHex: stakeAddressHex,
           walletId,
@@ -328,7 +331,6 @@ export default class VotingStore extends Store {
           index,
           absoluteSlotNumber,
         });
-
         transaction = await this.createVotingRegistrationTransactionRequest.execute(
           {
             address: address.id,
@@ -345,8 +347,10 @@ export default class VotingStore extends Store {
       }
 
       this._setTransactionId(transaction.id);
+
       if (!isHardwareWallet) {
         this._startTransactionPolling();
+
         this._nextRegistrationStep();
       }
     } catch (error) {
@@ -357,10 +361,10 @@ export default class VotingStore extends Store {
         // For any other error code we proceed to the next screen
         this._nextRegistrationStep();
       }
+
       throw error;
     }
   };
-
   _generateQrCode = async (pinCode: number) => {
     const { symmetric_encrypt: symmetricEncrypt } = await walletUtils;
     const password = new Uint8Array(4);
@@ -378,10 +382,11 @@ export default class VotingStore extends Store {
       password,
       this.votingRegistrationKey.bytes()
     );
+
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
+
     this._nextRegistrationStep();
   };
-
   _saveAsPDF = async () => {
     const { qrCode, selectedWalletId } = this;
     if (!qrCode || !selectedWalletId) return;
@@ -416,7 +421,6 @@ export default class VotingStore extends Store {
       throw new Error(error);
     }
   };
-
   _checkVotingRegistrationTransaction = async () => {
     const {
       confirmations,
@@ -442,12 +446,13 @@ export default class VotingStore extends Store {
       confirmations >= VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS
     ) {
       this._setIsTransactionConfirmed(true);
+
       if (this.transactionPollingInterval)
         clearInterval(this.transactionPollingInterval);
     }
   };
-
-  @action _checkFundPhase = (now: Date) => {
+  @action
+  _checkFundPhase = (now: Date) => {
     const phaseValidation = {
       [FundPhases.SNAPSHOT]: (date: Date) => date < VOTING_CAST_START_DATE,
       [FundPhases.VOTING]: (date: Date) =>
@@ -461,24 +466,24 @@ export default class VotingStore extends Store {
         .map((key) => FundPhases[key])
         .find((phase) => phaseValidation[phase](now)) || FundPhases.SNAPSHOT;
   };
-
   _generateVotingRegistrationKey = async () => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
+
     this._setVotingRegistrationKey(extendedPrivateKey.generate());
   };
-
   _getHexFromBech32 = async (key: string): Promise<string> => {
     const { bech32_decode_to_bytes: decodeBech32ToBytes } = await walletUtils;
     return formattedArrayBufferToHexString(decodeBech32ToBytes(key));
   };
 
   // GETTERS
-
-  @computed get currentRoute(): string {
+  @computed
+  get currentRoute(): string {
     return this.stores.router.location.pathname;
   }
 
-  @computed get isVotingPage(): boolean {
+  @computed
+  get isVotingPage(): boolean {
     return this.currentRoute.indexOf(ROUTES.VOTING.REGISTRATION) > -1;
   }
 }

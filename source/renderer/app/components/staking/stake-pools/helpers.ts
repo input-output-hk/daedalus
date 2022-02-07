@@ -1,7 +1,5 @@
-// @flow
 import StakePool from '../../../domains/StakePool';
 import type { StakePoolProps } from '../../../domains/StakePool';
-
 const searchFields = ['id', 'ticker', 'name'];
 
 const stakePoolsListSearch = (

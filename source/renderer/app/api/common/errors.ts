@@ -1,7 +1,5 @@
-// @flow
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../../i18n/LocalizableError';
-
 export const messages = defineMessages({
   genericApiError: {
     id: 'api.errors.GenericApiError',
@@ -14,9 +12,8 @@ export const messages = defineMessages({
     description: '"This API method is not yet implemented." error message.',
   },
 });
-
 export class GenericApiError extends LocalizableError {
-  constructor(values?: Object = {}) {
+  constructor(values?: Record<string, any> = {}) {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
@@ -24,7 +21,6 @@ export class GenericApiError extends LocalizableError {
     });
   }
 }
-
 export class ApiMethodNotYetImplementedError extends LocalizableError {
   constructor() {
     super({

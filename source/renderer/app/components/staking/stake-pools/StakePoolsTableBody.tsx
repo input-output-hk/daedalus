@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
@@ -14,16 +13,15 @@ import { PoolPopOver } from '../widgets/PoolPopOver';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
-
 type TableBodyProps = {
-  sortedStakePoolList: StakePool,
-  numberOfRankedStakePools: number,
-  currentTheme: string,
-  onOpenExternalLink: Function,
-  showWithSelectButton?: boolean,
-  containerClassName: string,
-  onSelect?: (poolId: string) => void,
-  selectedPoolId?: ?number,
+  sortedStakePoolList: StakePool;
+  numberOfRankedStakePools: number;
+  currentTheme: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  showWithSelectButton?: boolean;
+  containerClassName: string;
+  onSelect?: (poolId: string) => void;
+  selectedPoolId?: number | null | undefined;
 };
 
 @observer
@@ -65,9 +63,7 @@ class StakePoolsTableBody extends Component<TableBodyProps> {
         styles.progressBarContent,
         styles[getSaturationColor(saturation)],
       ]);
-
       const color = getColorFromRange(rank, numberOfRankedStakePools);
-
       return (
         <tr key={key}>
           <td>
@@ -103,7 +99,9 @@ class StakePoolsTableBody extends Component<TableBodyProps> {
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
+                    style={{
+                      width: `${parseFloat(saturation).toFixed(2)}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -130,4 +128,4 @@ class StakePoolsTableBody extends Component<TableBodyProps> {
   }
 }
 
-export { StakePoolsTableBody }
+export { StakePoolsTableBody };

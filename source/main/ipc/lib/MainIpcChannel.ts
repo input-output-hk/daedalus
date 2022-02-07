@@ -1,4 +1,3 @@
-// @flow
 import { ipcMain } from 'electron';
 import { IpcChannel } from '../../../common/ipc/lib/IpcChannel';
 import type {
@@ -37,7 +36,7 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<
   }
 
   onRequest(
-    handler: (Incoming) => Promise<Outgoing>,
+    handler: (arg0: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
     super.onRequest(handler, receiver);

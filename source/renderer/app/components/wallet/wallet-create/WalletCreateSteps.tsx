@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
@@ -6,11 +5,9 @@ import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import styles from './WalletCreateSteps.scss';
 import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
 import type { RestoreWalletStep } from '../../../types/walletRestoreTypes';
-
 type Props = {
-  stepNumber: number,
+  stepNumber: number;
 };
-
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.create.dialog.title',
@@ -53,7 +50,6 @@ const messages = defineMessages({
     description: 'Step "Config" in the wallet create dialog.',
   },
 });
-
 export default class WalletCreateSteps extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

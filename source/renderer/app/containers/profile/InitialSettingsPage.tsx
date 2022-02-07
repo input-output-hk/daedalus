@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
@@ -10,18 +9,22 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 class InitialSettingsPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
-
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
   onSubmit = async () => {
     const { actions } = this.props;
     const { finishInitialScreenSettings } = actions.profile;
     finishInitialScreenSettings.trigger();
   };
-
   handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
     const { updateUserLocalSetting } = actions.profile;
-    updateUserLocalSetting.trigger({ param, value });
+    updateUserLocalSetting.trigger({
+      param,
+      value,
+    });
     const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
 
     if (param === 'locale') {
@@ -67,4 +70,4 @@ class InitialSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default InitialSettingsPage
+export default InitialSettingsPage;

@@ -1,11 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import styles from './CancelTransactionConfirmationDialog.scss';
-
 const messages = defineMessages({
   headline: {
     id: 'cancel.transaction.confirmation.dialog.headline',
@@ -40,11 +38,10 @@ const messages = defineMessages({
       '"Confirm" button label for the pending transaction cancellation confirmation dialog.',
   },
 });
-
 type Props = {
-  isSubmitting: boolean,
-  onConfirm: Function,
-  onCancel: Function,
+  isSubmitting: boolean;
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
 
 @observer
@@ -56,16 +53,13 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { isSubmitting, onConfirm, onCancel } = this.props;
-
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       'attention',
       styles.confirmButton,
       isSubmitting ? styles.isSubmitting : null,
     ]);
-
     const actions = [
       {
         className: 'cancelButton',
@@ -81,7 +75,6 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
         onClick: onConfirm,
       },
     ];
-
     return (
       <Dialog
         className={dialogClasses}
@@ -99,4 +92,4 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
   }
 }
 
-export default CancelTransactionConfirmationDialog
+export default CancelTransactionConfirmationDialog;

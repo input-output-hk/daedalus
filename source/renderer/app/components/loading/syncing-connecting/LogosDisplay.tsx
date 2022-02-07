@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -7,11 +6,9 @@ import styles from './LogosDisplay.scss';
 import adaLogo from '../../../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../../../assets/images/cardano-logo.inline.svg';
 import animationData from './logo-animation-data.json';
-
 type Props = {
-  isConnected: boolean,
+  isConnected: boolean;
 };
-
 const logoAnimationOptionsLottie = {
   loop: true,
   autoplay: true,
@@ -20,11 +17,10 @@ const logoAnimationOptionsLottie = {
     preserveAspectRatio: 'xMidYMid slice',
   },
 };
-
 export default class LogosDisplay extends Component<Props> {
   componentDidMount() {
     // Manual adjustment due to `logo-animation-data.json` canvas size
-    const svg: Object = document.querySelector(
+    const svg: Record<string, any> = document.querySelector(
       '.LogosDisplay_daedalusLogo svg'
     );
     svg.setAttribute('viewBox', '534 250 212 220');
@@ -44,7 +40,6 @@ export default class LogosDisplay extends Component<Props> {
       styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
-
     return (
       <div className={styles.component}>
         <SVGInline svg={adaLogo} className={currencyLogoStyles} />

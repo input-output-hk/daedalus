@@ -1,11 +1,8 @@
-// @flow
 import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 import { every } from 'lodash';
-
 const MIN_PASSWORD_LENGTH = 10;
 const MAX_PASSWORD_LENGTH = 255;
-
 export const isValidWalletName = (walletName: string) => {
   const nameLength = walletName.length;
   return nameLength >= 3 && nameLength <= 40;
@@ -49,10 +46,10 @@ export const isCaselessString = (s: string) =>
 /**
  * Test if a whole string is in unicase letters (or digits)
  */
-export const isUnicaseString = (password: string) =>
-  // We require at least one unicase letter
-  containsUnicaseLetter(password) &&
-  // Every char has to belong to the support caseless categories
+export const isUnicaseString = (
+  password: string // We require at least one unicase letter
+) =>
+  containsUnicaseLetter(password) && // Every char has to belong to the support caseless categories
   every(password.split(''), (char) => isCaselessString(char));
 
 /**
@@ -65,30 +62,31 @@ export const isValidSpendingPassword = (password: string): boolean => {
     password.length <= MAX_PASSWORD_LENGTH
   );
 };
-
 // eslint-disable-next-line max-len
 export const isValidRepeatPassword = (
   spendingPassword: string,
   repeatPassword: string
 ) => spendingPassword === repeatPassword;
-
 export const isNotEmptyString = (value: string) => value !== '';
-
 export const isValidAmountInLovelaces = (value: string) => {
-  const isNumeric = isInt(value, { allow_leading_zeroes: false });
+  const isNumeric = isInt(value, {
+    allow_leading_zeroes: false,
+  });
   if (!isNumeric) return false;
   const numericValue = new BigNumber(value);
   const minValue = new BigNumber(1);
   const maxValue = new BigNumber(45000000000000000);
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
-
 export const isValidAssetAmountInNaturalUnits = (value: string) => {
-  const isNumeric = isInt(value, { allow_leading_zeroes: false });
+  const isNumeric = isInt(value, {
+    allow_leading_zeroes: false,
+  });
   if (!isNumeric) return false;
   const numericValue = new BigNumber(value);
   const minValue = new BigNumber(1);
   const maxValue = new BigNumber('18446744073709551615'); // cardano-wallet max asset amount of 2^64 - 1
+
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
@@ -96,17 +94,14 @@ export const isValidAssetAmountInNaturalUnits = (value: string) => {
  * Mnemonics validation
  */
 type ValidateMnemonicsParams = {
-  requiredWords: number | number[],
-  providedWords: string[],
-  validator: (providedWords: string[]) => [boolean, string],
+  requiredWords: number | number[];
+  providedWords: string[];
+  validator: (providedWords: string[]) => [boolean, string];
 };
-
 export const INCOMPLETE_MNEMONIC_MARKER = 'INCOMPLETE_MNEMONIC_MARKER';
-
 export function validateMnemonics(params: ValidateMnemonicsParams) {
   const { requiredWords, providedWords } = params;
   const providedWordsCount = providedWords.length;
-
   const isPhraseComplete = Array.isArray(requiredWords)
     ? requiredWords.includes(providedWordsCount)
     : providedWordsCount === requiredWords;
@@ -114,9 +109,9 @@ export function validateMnemonics(params: ValidateMnemonicsParams) {
   if (!isPhraseComplete) {
     return INCOMPLETE_MNEMONIC_MARKER;
   }
+
   return params.validator(providedWords);
 }
-
 export function errorOrIncompleteMarker(error: string) {
   return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
 }
@@ -127,6 +122,5 @@ export function errorOrIncompleteMarker(error: string) {
 export const isValidPinCode = (pinCode: string, length: number): boolean => {
   return pinCode.length === length;
 };
-
 export const isValidRepeatPinCode = (pinCode: string, repeatPinCode: string) =>
   pinCode === repeatPinCode;

@@ -1,18 +1,15 @@
-// @flow
 import chalk from 'chalk';
 import { isEmpty, keys, toPairs } from 'lodash';
 import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
 import { updateThemes } from './updateThemes';
 import { writeThemeUpdate } from './writeThemeUpdate';
-
 // Types
 type PropertyName = string;
 type PropertyValue = string;
 type Property = Array<PropertyName | PropertyValue>;
 type SimplePropertiesList = Array<string>;
 type CompletePropertiesList = Array<Property>;
-
 // Config
 const MAX_RESULTS_BEFORE_WARNING = 30;
 const firstTheme = EXISTING_THEME_OUTPUTS[0][1];
@@ -46,7 +43,6 @@ const copy = async () => {
     }
 
     fromPrefix = fromPrefix.trim();
-
     ({
       items: foundProperties,
       category: fromCategory,
@@ -70,11 +66,13 @@ const copy = async () => {
           `I've found ${foundProperties.length} properties. Are you sure you want to proceed?`
         ),
       });
+
       if (!shouldProceed) {
         info(`Ok, restarting...`);
         return step1();
       }
     }
+
     return step2();
   };
 
@@ -94,6 +92,7 @@ const copy = async () => {
       warn('No properties were selected...');
       return step2();
     }
+
     return step3();
   };
 
@@ -115,12 +114,10 @@ const copy = async () => {
     }
 
     toPrefix = toPrefix.trim();
-
     ({
       items: existingProperties,
       category: toCategory,
     } = findPropertiesFromPrefix(firstTheme, toPrefix));
-
     // Check existing properties with the given new prefix
     const conflictingProperties = existingProperties.filter(
       (existingProperty) => {
@@ -157,11 +154,13 @@ const copy = async () => {
       });
       const removed =
         originalSelectedPropertiesLength - selectedProperties.length;
+
       if (removed > 0) {
         separator();
         log(`Great, I've removed ${removed} existing properties`);
       }
     }
+
     return step4();
   };
 
@@ -171,14 +170,15 @@ const copy = async () => {
    */
   const step4 = async () => {
     let isNewCategory = false;
+
     if (!toCategory) {
       const categorType = await prompt({
         type: 'list',
         message: 'Which category do you want me to copy into?',
         choices: ['New category', 'Existing category'],
       });
-
       isNewCategory = categorType.includes('New');
+
       if (isNewCategory) {
         toCategory = await prompt({
           type: 'input',
@@ -198,7 +198,6 @@ const copy = async () => {
     const newProperties = selectedProperties.map((selectedProperty) =>
       replaceSingleProperty(selectedProperty, fromPrefix, toPrefix)
     );
-
     const confirmMessage = `Great, I'll copy ${
       selectedProperties.length
     } properties from "${cyan(fromPrefix)}" to "${cyan(
@@ -221,11 +220,11 @@ Here's an example of how they will look like:
 }"
 Should I proceed?
 `;
-
     const confirmCopy = await prompt({
       type: 'confirm',
       message: confirmMessage,
     });
+
     if (!confirmCopy) {
       info(`Ok, restarting...`);
       return step1();
@@ -244,16 +243,13 @@ Should I proceed?
         const fromProperties: CompletePropertiesList = toPairs(
           theme[fromCategory]
         ).filter(([propertyKey]) => selectedProperties.includes(propertyKey));
-
         const toProperties = fromProperties.map(
           ([fromPropertyKey, fromPropertyValue]) => [
             replaceSingleProperty(fromPropertyKey, fromPrefix, toPrefix),
             fromPropertyValue,
           ]
         );
-
         pending[themeName] = {};
-
         pending[themeName][toCategory] = toProperties.reduce(
           (obj, [propertyKey, propertyValue]) => {
             obj[propertyKey] = propertyValue;
@@ -261,20 +257,23 @@ Should I proceed?
           },
           {}
         );
-
         return pending;
       },
       {}
     );
-
     const updatedThemes = updateThemes(pendingUpdates);
+
     for (const themeName in updatedThemes) {
       if (themeName && !isEmpty(updatedThemes[themeName])) {
         const fileName = themeName.split('.')[0];
         const updatedThemeObj = updatedThemes[themeName];
-        writeThemeUpdate({ fileName, updatedThemeObj });
+        writeThemeUpdate({
+          fileName,
+          updatedThemeObj,
+        });
       }
     }
+
     info(
       `\nGreat! I have finished adding the new properties and am running Prettier.\nMeanwhile you need to update the '${cyan(
         'CreateTheme.js'
@@ -288,17 +287,19 @@ Should I proceed?
 // Utils
 const { log } = console;
 const { cyan, red, magenta } = chalk;
+
 const separator = () => log('\n');
+
 const orange = (content) => chalk.keyword('orange')(content);
+
 const info = (message) => log(orange(message));
+
 const warn = (message) => log(red(message));
+
 const prompt = async (promptConfig) => {
   separator();
   const { response } = await inquirer.prompt([
-    {
-      ...promptConfig,
-      name: 'response',
-    },
+    { ...promptConfig, name: 'response' },
   ]);
   return response;
 };
@@ -320,21 +321,23 @@ const getChoicesFromProperties = (properties) =>
   }));
 
 const findPropertiesFromPrefix = (
-  themeObj: Object,
+  themeObj: Record<string, any>,
   prefix: string
 ): {
-  category: string,
-  items: Array<string>,
+  category: string;
+  items: Array<string>;
 } =>
   toPairs(themeObj).reduce(
     (response, [categoryName, categoryObj]) => {
       const existingProperties = keys(categoryObj).filter(
         (property) => property.indexOf(prefix) > -1
       );
+
       if (existingProperties.length) {
         if (!response.category) response.category = categoryName;
         response.items = existingProperties;
       }
+
       return response;
     },
     {

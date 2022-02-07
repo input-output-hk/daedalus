@@ -23,26 +23,25 @@ module.exports = {
   target: isTestEnv ? 'electron-renderer' : 'web',
   cache: true,
   resolve: {
-		extensions: ['.tsx', '.ts', '.js', '.json'],
-	},module: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
+  module: {
     rules: [
       {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/main/,
         use: (isCi ? [] : ['cache-loader', 'thread-loader']).concat([
-          
-					{
-						loader: 'babel-loader',
-						options: {
-							presets: [
-								'@babel/preset-env',
-								'@babel/preset-react',
-								'@babel/preset-typescript',
-							],
-						},
-					}
-				,
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
+            },
+          },
         ]),
       },
       {

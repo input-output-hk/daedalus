@@ -1,8 +1,5 @@
-// @flow
 import pull from 'lodash/pull';
-
 import { Reaction } from './reaction';
-
 export class Feature {
   isRunning: boolean = false;
   reactions: Reaction[] = [];
@@ -18,7 +15,6 @@ export class Feature {
   }
 
   // REACTIONS
-
   registerReactions(reactions: Reaction[]) {
     this.reactions.push(...reactions);
   }

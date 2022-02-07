@@ -1,17 +1,15 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './WalletUtxoTick.scss';
-
 export type TickProps = {
-  x: number,
-  y: number,
+  x: number;
+  y: number;
   payload: {
-    value: number,
-  },
-  textAnchor: 'start' | 'end',
-  vertical?: boolean,
+    value: number;
+  };
+  textAnchor: 'start' | 'end';
+  vertical?: boolean;
 };
 
 @observer
@@ -36,4 +34,4 @@ class WalletUtxoTick extends Component<TickProps> {
   }
 }
 
-export default WalletUtxoTick
+export default WalletUtxoTick;

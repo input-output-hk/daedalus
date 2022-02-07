@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
@@ -8,19 +7,17 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import daedalusIcon from '../../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Splash.scss';
-
 type Props = {
-  onButtonClick: Function,
-  onLinkClick: Function,
-  title: string,
-  subTitle1: string,
-  subTitle2?: string,
-  description: Node,
-  buttonLabel: string,
-  linkLabel: boolean | string,
-  backgroundImage?: string,
+  onButtonClick: (...args: Array<any>) => any;
+  onLinkClick: (...args: Array<any>) => any;
+  title: string;
+  subTitle1: string;
+  subTitle2?: string;
+  description: Node;
+  buttonLabel: string;
+  linkLabel: boolean | string;
+  backgroundImage?: string;
 };
-
 export default class SplashNetwork extends Component<Props> {
   render() {
     const {
@@ -34,7 +31,6 @@ export default class SplashNetwork extends Component<Props> {
       linkLabel,
       backgroundImage,
     } = this.props;
-
     return (
       <div className={styles.component}>
         <div className={styles.backgroundContainer}>

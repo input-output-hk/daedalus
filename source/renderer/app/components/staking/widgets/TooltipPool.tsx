@@ -1,4 +1,3 @@
-// @flow
 import React, { createRef, Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';
@@ -35,7 +34,6 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
-
 const messages = defineMessages({
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
@@ -152,23 +150,21 @@ const messages = defineMessages({
     description: 'Data not available yet label',
   },
 });
-
 type Props = {
-  stakePool: StakePool,
-  currentTheme: string,
-  onClose: () => void,
-  onOpenExternalLink: (string) => void,
-  onSelect?: () => void,
-  showWithSelectButton?: boolean,
-  color: string,
-  containerClassName: string,
-  numberOfRankedStakePools: number,
-  isGridRewardsView?: boolean,
+  stakePool: StakePool;
+  currentTheme: string;
+  onClose: () => void;
+  onOpenExternalLink: (arg0: string) => void;
+  onSelect?: () => void;
+  showWithSelectButton?: boolean;
+  color: string;
+  containerClassName: string;
+  numberOfRankedStakePools: number;
+  isGridRewardsView?: boolean;
 };
-
 type State = {
-  componentStyle: Object,
-  idCopyFeedback: boolean,
+  componentStyle: Record<string, any>;
+  idCopyFeedback: boolean;
 };
 
 @observer
@@ -176,10 +172,8 @@ class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   idCopyFeedbackTimeout: TimeoutID;
-  rootRef: ElementRef<*> = createRef();
-
+  rootRef: ElementRef<any> = createRef();
   state = {
     componentStyle: {},
     idCopyFeedback: false,
@@ -188,27 +182,31 @@ class TooltipPool extends Component<Props, State> {
   componentDidMount() {
     window.addEventListener('keydown', this.handleInputKeyDown);
   }
+
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleInputKeyDown);
   }
+
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       this.props.onClose();
     }
   };
-
   onCopyId = () => {
     clearTimeout(this.idCopyFeedbackTimeout);
     this.setState({
       idCopyFeedback: true,
     });
     this.idCopyFeedbackTimeout = setTimeout(() => {
-      this.setState({ idCopyFeedback: false });
+      this.setState({
+        idCopyFeedback: false,
+      });
     }, STAKE_POOL_ID_COPY_FEEDBACK);
   };
-
   onIdMouseOut = () => {
-    this.setState({ idCopyFeedback: false });
+    this.setState({
+      idCopyFeedback: false,
+    });
   };
 
   get isGreyColor() {
@@ -239,7 +237,6 @@ class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
-
     const fields = [
       {
         key: 'saturation',
@@ -373,10 +370,9 @@ class TooltipPool extends Component<Props, State> {
         ),
       },
     ];
-
     return (
       <div className={styles.table}>
-        {fields.map((field: { key: string, value: any }) => {
+        {fields.map((field: { key: string; value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
               <div className={styles.labelContainer}>
@@ -427,13 +423,10 @@ class TooltipPool extends Component<Props, State> {
       showWithSelectButton,
     } = this.props;
     const { componentStyle, idCopyFeedback } = this.state;
-
     const { id, name, description, ticker, homepage, retiring } = stakePool;
-
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
-
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
     const hoverContentClassnames = classnames([
       styles.hoverContent,
@@ -451,7 +444,6 @@ class TooltipPool extends Component<Props, State> {
     const stakePoolAddressHoverCopy = idCopyFeedback
       ? intl.formatMessage(messages.copiedIdTooltipLabel)
       : intl.formatMessage(messages.copyIdTooltipLabel);
-
     return (
       <div
         className={styles.component}
@@ -475,7 +467,9 @@ class TooltipPool extends Component<Props, State> {
             <div className={styles.retirement}>
               <FormattedMessage
                 {...messages.retirement}
-                values={{ retirementFromNow }}
+                values={{
+                  retirementFromNow,
+                }}
               />
             </div>
           )}
@@ -524,4 +518,4 @@ class TooltipPool extends Component<Props, State> {
   }
 }
 
-export default TooltipPool
+export default TooltipPool;

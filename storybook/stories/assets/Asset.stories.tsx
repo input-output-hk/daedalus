@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
@@ -6,13 +5,9 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import Asset from '../../../source/renderer/app/components/assets/Asset';
-
 storiesOf('Assets|Asset pill', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-
-  // ====== Stories ======
-
+  .addDecorator(withKnobs) // ====== Stories ======
   .add('Default', () => {
     const policyId = text(
       'policyId',
@@ -20,7 +15,11 @@ storiesOf('Assets|Asset pill', module)
     );
     const assetName = text('assetName', '6861707079636f696e');
     return (
-      <div style={{ padding: '30px' }}>
+      <div
+        style={{
+          padding: '30px',
+        }}
+      >
         <Asset
           asset={{
             policyId,

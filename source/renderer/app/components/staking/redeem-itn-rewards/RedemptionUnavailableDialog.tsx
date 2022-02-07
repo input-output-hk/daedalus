@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -9,7 +8,6 @@ import Dialog from '../../widgets/Dialog';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './RedemptionUnavailableDialog.scss';
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.redemptionUnavailable.title',
@@ -24,10 +22,9 @@ const messages = defineMessages({
       'closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable',
   },
 });
-
 type Props = {
-  onClose: Function,
-  syncPercentage: number,
+  onClose: (...args: Array<any>) => any;
+  syncPercentage: number;
 };
 
 @observer
@@ -35,10 +32,10 @@ class RedemptionUnavailableDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   render() {
     const { intl } = this.context;
     const { onClose, syncPercentage } = this.props;
-
     const closeButton = (
       <DialogCloseButton
         icon={closeCrossThin}
@@ -46,7 +43,6 @@ class RedemptionUnavailableDialog extends Component<Props> {
         onClose={onClose}
       />
     );
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -79,4 +75,4 @@ class RedemptionUnavailableDialog extends Component<Props> {
   }
 }
 
-export default RedemptionUnavailableDialog
+export default RedemptionUnavailableDialog;

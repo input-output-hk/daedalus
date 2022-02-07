@@ -1,19 +1,15 @@
-// @flow
 import chroma from 'chroma-js';
 import isNil from 'lodash/isNil';
-
 // Ranking 001: hsla(142, 76%, 45%, 1)
 // Ranking 100: hsla(15, 97%, 58%, 1)
-
 type RangeOptions = {
-  colors?: Array<any>,
-  numberOfItems?: number,
-  darken?: number,
-  brighten?: number,
-  alpha?: number,
-  reverse?: boolean,
+  colors?: Array<any>;
+  numberOfItems?: number;
+  darken?: number;
+  brighten?: number;
+  alpha?: number;
+  reverse?: boolean;
 };
-
 const defaultRangeOptions = {
   colors: ['#1cca5b', '#fc602c'],
   numberOfItems: 99,
@@ -22,9 +18,8 @@ const defaultRangeOptions = {
   alpha: 1,
   reverse: false,
 };
-
 export const getColorFromRange = (
-  index: ?number,
+  index: number | null | undefined,
   optionsOrNumberOfItems?: RangeOptions | number
 ) => {
   let options = {};
@@ -51,9 +46,9 @@ export const getColorFromRange = (
 
   return scale(index).darken(darken).brighten(brighten).alpha(alpha).hex();
 };
-
 export const getSaturationColor = (saturation: number): string => {
   let color;
+
   if (saturation > 110) {
     color = 'red';
   } else if (saturation > 105) {
@@ -63,5 +58,6 @@ export const getSaturationColor = (saturation: number): string => {
   } else {
     color = 'green';
   }
+
   return color;
 };

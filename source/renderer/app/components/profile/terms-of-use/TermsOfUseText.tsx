@@ -1,19 +1,18 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import styles from './TermsOfUseText.scss';
-
 type Props = {
-  localizedTermsOfUse: string,
-  onOpenExternalLink: Function,
+  localizedTermsOfUse: string;
+  onOpenExternalLink: (...args: Array<any>) => any;
 };
 
 @observer
 class TermsOfUseText extends Component<Props> {
-  termsOfUseClickHandler = (event: SyntheticMouseEvent<HTMLElement>) => {
+  termsOfUseClickHandler = (event: React.MouseEvent<HTMLElement>) => {
     const linkUrl = get(event, ['target', 'href']);
+
     if (linkUrl) {
       event.preventDefault();
       this.props.onOpenExternalLink(linkUrl);
@@ -36,4 +35,4 @@ class TermsOfUseText extends Component<Props> {
   }
 }
 
-export default TermsOfUseText
+export default TermsOfUseText;

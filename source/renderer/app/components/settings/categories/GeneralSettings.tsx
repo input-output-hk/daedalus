@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import ProfileSettingsForm from '../../widgets/forms/ProfileSettingsForm';
@@ -28,4 +27,4 @@ class GeneralSettings extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default GeneralSettings
+export default GeneralSettings;

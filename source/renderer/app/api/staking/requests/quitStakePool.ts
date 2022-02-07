@@ -1,9 +1,7 @@
-// @flow
 import type { RequestConfig } from '../../common/types';
 import type { QuitStakePoolRequest } from '../types';
 import type { Transaction } from '../../transactions/types';
 import { request } from '../../utils/request';
-
 export const quitStakePool = (
   config: RequestConfig,
   { walletId, passphrase }: QuitStakePoolRequest
@@ -15,5 +13,7 @@ export const quitStakePool = (
       ...config,
     },
     {},
-    { passphrase }
+    {
+      passphrase,
+    }
   );

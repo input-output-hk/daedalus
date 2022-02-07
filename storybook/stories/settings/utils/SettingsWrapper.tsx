@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
@@ -7,7 +6,6 @@ import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SettingsLayout from '../../../../source/renderer/app/components/settings/SettingsLayout';
 import SettingsMenu from '../../../../source/renderer/app/components/settings/menu/SettingsMenu';
-
 const pageNames = {
   '/settings/index': 'General',
   '/settings/stake-pools': 'Stake Pools',
@@ -15,11 +13,10 @@ const pageNames = {
   '/settings/terms-of-service': 'Terms of service',
   '/settings/support': 'Support',
 };
-
 /* eslint-disable react/display-name  */
-export default (story: Object, context: Object) => {
-  const storyWithKnobs = withKnobs(story, context);
 
+export default (story: Record<string, any>, context: Record<string, any>) => {
+  const storyWithKnobs = withKnobs(story, context);
   const menu = (
     <SettingsMenu
       isFlight={false}
@@ -36,7 +33,6 @@ export default (story: Object, context: Object) => {
       }}
     />
   );
-
   return (
     <StoryDecorator>
       <StoryProvider>

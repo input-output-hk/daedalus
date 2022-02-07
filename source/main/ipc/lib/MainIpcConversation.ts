@@ -1,4 +1,3 @@
-// @flow
 import { ipcMain } from 'electron';
 import type {
   IpcReceiver,
@@ -37,7 +36,7 @@ export class MainIpcConversation<Incoming, Outgoing> extends IpcConversation<
   }
 
   onRequest(
-    handler: (Incoming) => Promise<Outgoing>,
+    handler: (arg0: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
     super.onRequest(handler, receiver);

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, intlShape } from 'react-intl';
@@ -11,18 +10,15 @@ import Dialog from '../../widgets/Dialog';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
-
 import { messages } from './ICOPublicKeyQRCodeDialog.messages';
-
 type Props = {
-  walletName: string,
-  walletPublicKey: string,
-  onCopyWalletPublicKey: Function,
-  onClose: Function,
-  derivationPath: string,
-  intl: intlShape.isRequired,
+  walletName: string;
+  walletPublicKey: string;
+  onCopyWalletPublicKey: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  derivationPath: string;
+  intl: intlShape.isRequired;
 };
-
 const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
   const {
     walletName,
@@ -32,14 +28,12 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
     derivationPath,
     intl,
   } = props;
-
   const actions = [
     {
       label: intl.formatMessage(globalMessages.close),
       onClick: onClose,
     },
   ];
-
   // Get QRCode color value from active theme's CSS variable
   const qrCodeBackgroundColor = document.documentElement
     ? document.documentElement.style.getPropertyValue(
@@ -51,7 +45,6 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
         '--theme-receive-qr-code-foreground-color'
       )
     : '#000';
-
   return (
     <Dialog
       title={intl.formatMessage(messages.dialogTitle)}
@@ -88,5 +81,4 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
     </Dialog>
   );
 });
-
 export default injectIntl(ICOPublicKeyQRCodeDialog);

@@ -1,13 +1,10 @@
-// @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GET_BLOCK_SYNC_STATUS_CHANNEL } from '../../common/ipc/api';
 import type {
   GetBlockSyncProgressRendererRequest,
   GetBlockSyncProgressMainResponse,
 } from '../../common/ipc/api';
-
 // IpcChannel<Incoming, Outgoing>
-
 export const getBlockSyncProgressChannel: MainIpcChannel<
   GetBlockSyncProgressRendererRequest,
   GetBlockSyncProgressMainResponse

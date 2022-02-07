@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
@@ -7,13 +6,12 @@ import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
 import attachIcon from '../../../assets/images/attach-ic.inline.svg';
 import styles from './FileUploadWidget.scss';
 import type { FileDialogRequestParams } from '../../../../../common/types/file-dialog.types';
-
 type Props = {
-  label: string,
-  placeholder: string,
-  onFileSelected: Function,
-  selectedFile: string,
-  acceptedFileTypes: Array<string>,
+  label: string;
+  placeholder: string;
+  onFileSelected: (...args: Array<any>) => any;
+  selectedFile: string;
+  acceptedFileTypes: Array<string>;
 };
 
 @observer
@@ -29,6 +27,7 @@ class FileUploadWidget extends Component<Props> {
       properties: ['openFile'],
     };
     const { filePaths } = await showOpenDialogChannel.send(params);
+
     if (!filePaths || filePaths.length === 0) {
       return;
     }
@@ -36,14 +35,13 @@ class FileUploadWidget extends Component<Props> {
     const filePath = filePaths[0];
     this.props.onFileSelected(filePath);
   };
-
   onDragOver = () => false;
   onDragLeave = () => false;
   onDragEnd = () => false;
   onDrop = (e: any) => {
     e.preventDefault();
-
     const { files } = e.dataTransfer;
+
     if (!files || files.length === 0) {
       return;
     }
@@ -55,7 +53,6 @@ class FileUploadWidget extends Component<Props> {
   render() {
     const { label, placeholder, selectedFile } = this.props;
     const fileName = path.basename(selectedFile);
-
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
@@ -79,4 +76,4 @@ class FileUploadWidget extends Component<Props> {
   }
 }
 
-export default FileUploadWidget
+export default FileUploadWidget;

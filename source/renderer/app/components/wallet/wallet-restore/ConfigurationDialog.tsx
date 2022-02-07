@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -24,7 +23,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 const messages = defineMessages({
   description1: {
     id: 'wallet.restore.dialog.step.configuration.description1',
@@ -79,18 +77,17 @@ const messages = defineMessages({
     description: 'Tooltip for the password input in the create wallet dialog.',
   },
 });
-
 type Props = {
-  isSubmitting: boolean,
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onChange: Function,
-  walletName: string,
-  spendingPassword: string,
-  repeatPassword: string,
-  error?: ?LocalizableError,
-  currentLocale: string,
+  isSubmitting: boolean;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onChange: (...args: Array<any>) => any;
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+  error?: LocalizableError | null | undefined;
+  currentLocale: string;
 };
 
 @observer
@@ -98,7 +95,6 @@ class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     error: null,
   };
@@ -182,14 +178,15 @@ class ConfigurationDialog extends Component<Props> {
       },
     },
     {
-      plugins: { vjf: vjf() },
+      plugins: {
+        vjf: vjf(),
+      },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -198,12 +195,12 @@ class ConfigurationDialog extends Component<Props> {
         onContinue(walletName, spendingPassword);
       },
       onError: () =>
-        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
+        handleFormErrors('.ConfigurationDialog_error', {
+          focusElement: true,
+        }),
     });
   };
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
@@ -218,29 +215,23 @@ class ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
-
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
     const repeatPasswordField = form.$('repeatPassword');
-
     const walletNameFieldClasses = classnames([
       styles.walletName,
       'walletName',
     ]);
-
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.continueButtonLabel)
     ) : (
       <LoadingSpinner />
     );
-
     const canSubmit = !isSubmitting && form.isValid;
-
     return (
       <WalletRestoreDialog
         className={styles.dialogComponent}
@@ -308,4 +299,4 @@ class ConfigurationDialog extends Component<Props> {
   }
 }
 
-export default ConfigurationDialog
+export default ConfigurationDialog;

@@ -1,4 +1,3 @@
-// @flow
 import React, { useCallback, useState, useEffect } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -15,16 +14,15 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import { LOCALES } from '../../../../../common/types/locales.types';
 import styles from './PublicKeyField.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
-
 type Props = {
-  publicKey: string,
-  locale: Locale,
-  onCopyPublicKey: Function,
-  onShowQRCode: Function,
-  onOpenWalletKeyDialog: Function,
-  intl: intlShape.isRequired,
-  messages: { [string]: ReactIntlMessage },
-  description?: string,
+  publicKey: string;
+  locale: Locale;
+  onCopyPublicKey: (...args: Array<any>) => any;
+  onShowQRCode: (...args: Array<any>) => any;
+  onOpenWalletKeyDialog: (...args: Array<any>) => any;
+  intl: intlShape.isRequired;
+  messages: Record<string, ReactIntlMessage>;
+  description?: string;
 };
 
 const PublicKeyField = (props: Props) => {
@@ -38,9 +36,7 @@ const PublicKeyField = (props: Props) => {
     description,
     onCopyPublicKey,
   } = props;
-
   const [publicKeyHidden, setPublicKeyHidden] = useState<boolean>(!publicKey);
-
   const togglePublicKeyVisibility = useCallback(() => {
     if (!publicKey) {
       onOpenWalletKeyDialog();
@@ -48,21 +44,17 @@ const PublicKeyField = (props: Props) => {
       setPublicKeyHidden((prevCheck: boolean) => !prevCheck);
     }
   });
-
   // This is called when the publicKey is set
   useEffect(() => {
     setPublicKeyHidden(!publicKey);
   }, [publicKey]);
-
   // This is called when the component is mounted the first time
   useEffect(() => {
     setPublicKeyHidden(true);
   }, []);
-
   const handleCopyPublicKey = useCallback(() => onCopyPublicKey(publicKey), [
     publicKey,
   ]);
-
   const fieldStyles = classnames([
     styles.field,
     publicKeyHidden || !publicKey ? styles.valueHidden : styles.valueShown,
@@ -71,23 +63,19 @@ const PublicKeyField = (props: Props) => {
   const hiddenValuePlaceholder = intl.formatMessage(
     messages.publicKeyShowInstruction
   );
-
   const toggleButtonTooltip = intl.formatMessage(
     globalMessages[publicKeyHidden ? 'reveal' : 'hide']
   );
-
   const qrCodeButtonStyles = classnames([
     styles.imageButton,
     styles.qrCodeButton,
     'flat',
   ]);
-
   const revealHideButtonStyles = classnames([
     styles.imageButton,
     publicKeyHidden ? styles.revealButton : styles.hideButton,
     'flat',
   ]);
-
   return (
     <div className={styles.component}>
       <div className={styles.title}>
