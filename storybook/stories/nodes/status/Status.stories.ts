@@ -1,0 +1,1 @@
+import './Diagnostics.stories';
