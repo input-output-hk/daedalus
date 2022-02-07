@@ -125,7 +125,7 @@
 
       border-color: rgba(
         var(--theme-dialog-fullsize-secondary-text-action-color),
-        calc(0.75 * var(--opacity))
+        0.75
       );
       color: var(--main-color);
       opacity: var(--opacity);
