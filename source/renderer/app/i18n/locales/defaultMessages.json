@@ -3871,17 +3871,120 @@
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 30
         },
         "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
-          "line": 17
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Date",
+        "description": "Label for the \"Date\" sort button",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByDateButton",
+        "start": {
+          "column": 20,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Sort wallets by creation date",
+        "description": "Tooltip message for Date sort button",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByDateTooltip",
+        "start": {
+          "column": 21,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Balance",
+        "description": "Label for the \"Balance\" sort button",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByBalanceButton",
+        "start": {
+          "column": 23,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Sort wallets by balance",
+        "description": "Tooltip message for Balance sort button",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByBalanceTooltip",
+        "start": {
+          "column": 24,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!A – Z",
+        "description": "Label for the \"Name\" sort button",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByNameButton",
+        "start": {
+          "column": 20,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Sort wallets by name",
+        "description": "Tooltip message for Name sort button",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.tsx",
+        "id": "sidebar.wallets.sortByNameTooltip",
+        "start": {
+          "column": 21,
+          "line": 56
         }
       }
     ],
     "path": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Filter",
+        "description": "Search placeholder for the sidebar wallet menu",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/sidebar/wallets/WalletSearch.tsx",
+        "id": "sidebar.wallets.search.placeholder",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/wallets/WalletSearch.json"
   },
   {
     "descriptors": [
