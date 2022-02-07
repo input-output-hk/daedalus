@@ -9,9 +9,11 @@ type Props = {
 };
 
 @observer
-export default class WalletRecoveryInstructions extends Component<Props> {
+class WalletRecoveryInstructions extends Component<Props> {
   render() {
     const { instructionsText } = this.props;
     return <div className={styles.component}>{instructionsText}</div>;
   }
 }
+
+export default WalletRecoveryInstructions

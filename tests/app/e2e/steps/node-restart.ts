@@ -1,9 +1,7 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const CARDANO_NODE_STATE = '.cardanoNodeState .DaedalusDiagnostics_layoutData';
 
 Given(/^I open the "Diagnostic" screen$/, async function() {

@@ -240,7 +240,7 @@ export const exportWallets = async (
   let errors = '';
   try {
     const legacySecretKeyFile = fs.readFileSync(legacySecretKeyPath);
-    // $FlowFixMe
+    // @ts-ignore
     const rawWallets = await decodeKeystore(legacySecretKeyFile);
     wallets = rawWallets.map((w) => ({
       name: null,

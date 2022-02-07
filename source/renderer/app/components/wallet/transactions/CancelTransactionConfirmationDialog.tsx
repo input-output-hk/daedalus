@@ -48,7 +48,7 @@ type Props = {
 };
 
 @observer
-export default class CancelTransactionConfirmationDialog extends Component<Props> {
+class CancelTransactionConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -98,3 +98,5 @@ export default class CancelTransactionConfirmationDialog extends Component<Props
     );
   }
 }
+
+export default CancelTransactionConfirmationDialog

@@ -43,7 +43,7 @@ type Props = {
 };
 
 @observer
-export default class ICOPublicKeyDialog extends Component<Props> {
+class ICOPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -142,3 +142,5 @@ export default class ICOPublicKeyDialog extends Component<Props> {
     );
   }
 }
+
+export default ICOPublicKeyDialog

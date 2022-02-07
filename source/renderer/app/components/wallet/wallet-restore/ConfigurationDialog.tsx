@@ -94,7 +94,7 @@ type Props = {
 };
 
 @observer
-export default class ConfigurationDialog extends Component<Props> {
+class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -307,3 +307,5 @@ export default class ConfigurationDialog extends Component<Props> {
     );
   }
 }
+
+export default ConfigurationDialog

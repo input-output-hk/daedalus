@@ -58,7 +58,7 @@ type Props = {
 type State = { timeUntilFutureEpoch: number };
 
 @observer
-export default class DelegationCenterHeader extends Component<Props, State> {
+class DelegationCenterHeader extends Component<Props, State> {
   intervalHandler: ?IntervalID = null;
   state = { timeUntilFutureEpoch: 0 };
 
@@ -179,3 +179,5 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     );
   }
 }
+
+export default DelegationCenterHeader

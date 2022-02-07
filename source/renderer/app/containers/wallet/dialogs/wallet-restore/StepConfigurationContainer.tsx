@@ -10,7 +10,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class ConfigurationDialogContainer extends Component<Props> {
+class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   handleContinue = () => {
@@ -53,3 +53,5 @@ export default class ConfigurationDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default ConfigurationDialogContainer

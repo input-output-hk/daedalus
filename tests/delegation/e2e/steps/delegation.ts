@@ -5,9 +5,7 @@ import BigNumber from 'bignumber.js';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 import { timeout, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Given(/^I am on the Delegation "([^"]*)" screen$/, async function(
   screenName

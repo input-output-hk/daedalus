@@ -23,7 +23,7 @@ export const StakingPageScrollContext = React.createContext<ContextValue>({
 });
 
 @observer
-export default class StakingWithNavigation extends Component<Props> {
+class StakingWithNavigation extends Component<Props> {
   stakingPageRef = createRef<*>();
 
   render() {
@@ -62,3 +62,5 @@ export default class StakingWithNavigation extends Component<Props> {
     );
   }
 }
+
+export default StakingWithNavigation

@@ -10,7 +10,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletTransactionsPage extends Component<Props> {
+class WalletTransactionsPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { app, wallets, addresses, profile, assets } = stores;
@@ -82,3 +82,5 @@ export default class WalletTransactionsPage extends Component<Props> {
     );
   }
 }
+
+export default WalletTransactionsPage

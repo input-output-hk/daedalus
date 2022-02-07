@@ -102,7 +102,7 @@ type Props = {
 };
 
 @observer
-export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
+class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -257,3 +257,5 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     );
   }
 }
+
+export default WalletRecoveryPhraseEntryDialog

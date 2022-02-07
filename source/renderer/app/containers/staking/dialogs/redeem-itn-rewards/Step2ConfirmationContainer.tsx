@@ -10,7 +10,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Step2ConfirmationContainer extends Component<Props> {
+class Step2ConfirmationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -37,3 +37,5 @@ export default class Step2ConfirmationContainer extends Component<Props> {
     );
   }
 }
+
+export default Step2ConfirmationContainer

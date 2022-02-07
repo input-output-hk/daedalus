@@ -98,7 +98,7 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class NotificationsContainer extends Component<InjectedProps> {
+class NotificationsContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   constructor(props: InjectedProps) {
@@ -224,3 +224,5 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     );
   }
 }
+
+export default NotificationsContainer

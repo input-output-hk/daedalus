@@ -15,7 +15,7 @@ type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Wallet extends Component<Props> {
+class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   isActiveScreen = (page: string, item: NavDropdownProps) => {
@@ -108,3 +108,5 @@ export default class Wallet extends Component<Props> {
     );
   }
 }
+
+export default Wallet

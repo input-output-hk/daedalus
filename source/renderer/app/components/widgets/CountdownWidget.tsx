@@ -41,7 +41,7 @@ type Props = {
 type State = { timeLeft: ?number };
 
 @observer
-export default class CountdownWidget extends Component<Props, State> {
+class CountdownWidget extends Component<Props, State> {
   intervalHandler: ?IntervalID = null;
   state = { timeLeft: null };
 
@@ -190,3 +190,5 @@ export default class CountdownWidget extends Component<Props, State> {
     );
   }
 }
+
+export default CountdownWidget

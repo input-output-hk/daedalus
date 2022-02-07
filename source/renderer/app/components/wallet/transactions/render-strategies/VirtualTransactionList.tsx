@@ -31,7 +31,7 @@ const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
-export class VirtualTransactionList extends Component<Props> {
+class VirtualTransactionList extends Component<Props> {
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
@@ -346,3 +346,5 @@ export class VirtualTransactionList extends Component<Props> {
     );
   }
 }
+
+export { VirtualTransactionList }

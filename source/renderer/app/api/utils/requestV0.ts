@@ -63,7 +63,7 @@ function typedRequest<Response>(
       };
     }
 
-    // $FlowFixMe
+    // @ts-ignore
     const httpsRequest = https.request(options);
     if (hasRequestBody) {
       httpsRequest.write(requestBody);

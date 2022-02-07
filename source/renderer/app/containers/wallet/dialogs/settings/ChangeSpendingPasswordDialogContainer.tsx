@@ -12,7 +12,7 @@ type Props = {
 
 @inject('actions', 'stores')
 @observer
-export default class ChangeSpendingPasswordDialogContainer extends Component<Props> {
+class ChangeSpendingPasswordDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -63,3 +63,5 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
     );
   }
 }
+
+export default ChangeSpendingPasswordDialogContainer

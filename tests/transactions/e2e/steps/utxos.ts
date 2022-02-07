@@ -3,9 +3,7 @@ import { Then } from 'cucumber';
 import { expect } from 'chai';
 import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const container = '.WalletUtxo_container';
 

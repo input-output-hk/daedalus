@@ -7,7 +7,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class GeneralSettingsPage extends Component<InjectedProps> {
+class GeneralSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   handleSelectItem = async (param: string, value: string) => {
@@ -43,3 +43,5 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default GeneralSettingsPage

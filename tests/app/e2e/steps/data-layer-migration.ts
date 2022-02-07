@@ -1,8 +1,6 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 const SELECTORS = {
   COMPONENT: '.DataLayerMigrationForm_component',

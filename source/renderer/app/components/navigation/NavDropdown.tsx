@@ -20,7 +20,7 @@ type Props = {
 };
 
 @observer
-export default class NavDropdown extends Component<Props> {
+class NavDropdown extends Component<Props> {
   render() {
     const {
       label,
@@ -69,3 +69,5 @@ export default class NavDropdown extends Component<Props> {
     );
   }
 }
+
+export default NavDropdown

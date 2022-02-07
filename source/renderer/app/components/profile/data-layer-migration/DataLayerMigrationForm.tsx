@@ -44,7 +44,7 @@ type Props = {
 };
 
 @observer
-export default class DataLayerMigrationForm extends Component<Props> {
+class DataLayerMigrationForm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -84,3 +84,5 @@ export default class DataLayerMigrationForm extends Component<Props> {
     );
   }
 }
+
+export default DataLayerMigrationForm

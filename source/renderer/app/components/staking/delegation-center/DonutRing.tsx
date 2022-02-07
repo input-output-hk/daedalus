@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class DonutRing extends Component<Props> {
+class DonutRing extends Component<Props> {
   static defaultProps = {
     showText: false,
   };
@@ -64,3 +64,5 @@ export default class DonutRing extends Component<Props> {
     );
   }
 }
+
+export default DonutRing

@@ -30,7 +30,7 @@ type Props = {
 };
 
 @observer
-export default class NoWalletsDialog extends Component<Props> {
+class NoWalletsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -71,3 +71,5 @@ export default class NoWalletsDialog extends Component<Props> {
     );
   }
 }
+
+export default NoWalletsDialog

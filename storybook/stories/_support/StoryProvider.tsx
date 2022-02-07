@@ -148,7 +148,7 @@ export const WALLETS_V2 = [
 ];
 
 @observer
-export default class StoryProvider extends Component<Props> {
+class StoryProvider extends Component<Props> {
   @observable activeWalletId = '0';
 
   @computed get storiesProps(): {} {
@@ -197,3 +197,5 @@ export default class StoryProvider extends Component<Props> {
     );
   }
 }
+
+export default StoryProvider

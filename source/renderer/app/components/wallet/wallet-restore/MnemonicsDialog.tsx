@@ -67,7 +67,7 @@ type Props = {
 };
 
 @observer
-export default class MnemonicsDialog extends Component<Props> {
+class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -173,3 +173,5 @@ export default class MnemonicsDialog extends Component<Props> {
     );
   }
 }
+
+export default MnemonicsDialog

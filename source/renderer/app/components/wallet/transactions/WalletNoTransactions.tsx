@@ -6,7 +6,7 @@ import styles from './WalletNoTransactions.scss';
 type Props = { label: string };
 
 @observer
-export default class WalletNoTransactions extends Component<Props> {
+class WalletNoTransactions extends Component<Props> {
   render() {
     const { label } = this.props;
 
@@ -17,3 +17,5 @@ export default class WalletNoTransactions extends Component<Props> {
     );
   }
 }
+
+export default WalletNoTransactions

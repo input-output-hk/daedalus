@@ -73,7 +73,7 @@ type State = {
 };
 
 @observer
-export default class WalletRecoveryPhraseStep2Dialog extends Component<
+class WalletRecoveryPhraseStep2Dialog extends Component<
   Props,
   State
 > {
@@ -195,3 +195,5 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     );
   }
 }
+
+export default WalletRecoveryPhraseStep2Dialog

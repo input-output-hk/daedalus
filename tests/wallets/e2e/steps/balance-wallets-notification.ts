@@ -1,9 +1,7 @@
 // @flow
 import { Then } from 'cucumber';
 import { expect } from 'chai';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 Then(
   /^"Byron" wallet "([^"]*)" action should be visible in the top bar notification$/,

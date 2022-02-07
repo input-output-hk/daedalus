@@ -8,7 +8,7 @@ type Props = InjectedStoresProps;
 
 @inject('stores')
 @observer
-export default class NoDiskSpaceErrorPage extends Component<Props> {
+class NoDiskSpaceErrorPage extends Component<Props> {
   static defaultProps = { stores: null };
 
   render() {
@@ -28,3 +28,5 @@ export default class NoDiskSpaceErrorPage extends Component<Props> {
     );
   }
 }
+
+export default NoDiskSpaceErrorPage

@@ -27,7 +27,7 @@ const ADDRESS_LINE_PADDING = 21;
 const ADDRESS_SELECTOR = '.Address';
 
 @observer
-export class VirtualAddressesList extends Component<Props> {
+class VirtualAddressesList extends Component<Props> {
   list: List;
   listWidth: number = 0;
   addressHeight: number = 0;
@@ -120,3 +120,5 @@ export class VirtualAddressesList extends Component<Props> {
     );
   }
 }
+
+export { VirtualAddressesList }

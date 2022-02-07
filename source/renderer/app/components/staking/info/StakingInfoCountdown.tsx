@@ -53,7 +53,7 @@ type Props = {
 };
 
 @observer
-export default class StakingInfoCountdown extends Component<Props> {
+class StakingInfoCountdown extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };
@@ -122,3 +122,5 @@ export default class StakingInfoCountdown extends Component<Props> {
     );
   }
 }
+
+export default StakingInfoCountdown

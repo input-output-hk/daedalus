@@ -37,7 +37,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
+class PublicKeyQRCodeDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleCopyWalletPublicKey = (isICO: boolean = false) => {
@@ -52,7 +52,7 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
       );
 
     const publicKey = ellipsis(
-      // $FlowFixMe Flow cannot detect the previous condition. Hopefully this is solved using Typescript
+      // @ts-ignore Flow cannot detect the previous condition. Hopefully this is solved using Typescript
       isICO ? icoPublicKey : activePublicKey,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
       WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
@@ -109,3 +109,5 @@ export default class PublicKeyQRCodeDialogContainer extends Component<Props> {
     return null;
   }
 }
+
+export default PublicKeyQRCodeDialogContainer

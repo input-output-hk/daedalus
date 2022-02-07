@@ -18,7 +18,7 @@ type Props = {
 };
 
 @observer
-export default class ThumbSelectedPool extends Component<Props> {
+class ThumbSelectedPool extends Component<Props> {
   render() {
     const {
       stakePool,
@@ -62,3 +62,5 @@ export default class ThumbSelectedPool extends Component<Props> {
     );
   }
 }
+
+export default ThumbSelectedPool

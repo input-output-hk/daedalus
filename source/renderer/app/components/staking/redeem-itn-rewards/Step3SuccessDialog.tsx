@@ -46,7 +46,7 @@ type Props = {
 };
 
 @observer
-export default class Step3SuccessDialog extends Component<Props> {
+class Step3SuccessDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -111,3 +111,5 @@ export default class Step3SuccessDialog extends Component<Props> {
     );
   }
 }
+
+export default Step3SuccessDialog

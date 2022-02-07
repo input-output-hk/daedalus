@@ -46,7 +46,7 @@ type Props = {
 };
 
 @observer
-export default class VotingRegistrationDialogWizard extends Component<Props> {
+class VotingRegistrationDialogWizard extends Component<Props> {
   render() {
     const {
       stepsList,
@@ -161,3 +161,5 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
     return content;
   }
 }
+
+export default VotingRegistrationDialogWizard

@@ -6,7 +6,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class DisplaySettingsPage extends Component<InjectedProps> {
+class DisplaySettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   selectTheme = (values: { theme: string }) => {
@@ -20,3 +20,5 @@ export default class DisplaySettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default DisplaySettingsPage

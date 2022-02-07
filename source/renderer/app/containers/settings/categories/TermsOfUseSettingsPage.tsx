@@ -6,7 +6,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores')
 @observer
-export default class TermsOfUseSettingsPage extends Component<InjectedProps> {
+class TermsOfUseSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -20,3 +20,5 @@ export default class TermsOfUseSettingsPage extends Component<InjectedProps> {
     );
   }
 }
+
+export default TermsOfUseSettingsPage

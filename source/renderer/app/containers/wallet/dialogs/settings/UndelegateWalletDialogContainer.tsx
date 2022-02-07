@@ -23,7 +23,7 @@ type State = {
 
 @inject('actions', 'stores')
 @observer
-export default class UndelegateWalletDialogContainer extends Component<
+class UndelegateWalletDialogContainer extends Component<
   Props,
   State
 > {
@@ -191,3 +191,5 @@ export default class UndelegateWalletDialogContainer extends Component<
     );
   }
 }
+
+export default UndelegateWalletDialogContainer

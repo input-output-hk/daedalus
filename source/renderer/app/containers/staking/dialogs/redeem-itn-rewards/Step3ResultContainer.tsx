@@ -11,7 +11,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Step3ResultContainer extends Component<Props> {
+class Step3ResultContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
@@ -39,3 +39,5 @@ export default class Step3ResultContainer extends Component<Props> {
     return <Step3FailureDialog onClose={onClose} onBack={onBack} />;
   }
 }
+
+export default Step3ResultContainer

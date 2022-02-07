@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import styles from './BlockGenerationInfo.scss';
 
 @observer
-export default class BlockGenerationInfo extends Component<any> {
+class BlockGenerationInfo extends Component<any> {
   render() {
     return (
       <div className={styles.component}>
@@ -20,3 +20,5 @@ export default class BlockGenerationInfo extends Component<any> {
     );
   }
 }
+
+export default BlockGenerationInfo

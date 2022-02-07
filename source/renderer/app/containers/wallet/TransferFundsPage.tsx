@@ -9,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class TransferFundsPage extends Component<Props> {
+class TransferFundsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -38,3 +38,5 @@ export default class TransferFundsPage extends Component<Props> {
     );
   }
 }
+
+export default TransferFundsPage

@@ -110,7 +110,7 @@ const initialState = {
 };
 
 @observer
-export default class StakePools extends Component<Props, State> {
+class StakePools extends Component<Props, State> {
   loadingSpinner: ?LoadingSpinner;
 
   static contextTypes = {
@@ -383,3 +383,5 @@ export default class StakePools extends Component<Props, State> {
     );
   }
 }
+
+export default StakePools

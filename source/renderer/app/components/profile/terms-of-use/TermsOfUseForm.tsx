@@ -44,7 +44,7 @@ type State = {
 };
 
 @observer
-export default class TermsOfUseForm extends Component<Props, State> {
+class TermsOfUseForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -108,3 +108,5 @@ export default class TermsOfUseForm extends Component<Props, State> {
     );
   }
 }
+
+export default TermsOfUseForm

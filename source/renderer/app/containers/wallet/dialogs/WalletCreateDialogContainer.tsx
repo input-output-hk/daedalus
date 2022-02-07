@@ -17,7 +17,7 @@ const CreateWalletAbortConfirmation = () => <div>Are you sure</div>;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletCreateDialogContainer extends Component<Props> {
+class WalletCreateDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   get containers() {
@@ -97,3 +97,5 @@ export default class WalletCreateDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletCreateDialogContainer

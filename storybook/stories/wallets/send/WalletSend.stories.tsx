@@ -343,7 +343,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => {
-    // $FlowFixMe[prop-missing]
+    // @ts-ignore[prop-missing]
     const wallet: Wallet = {
       name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
       amount: new BigNumber(100),
@@ -381,7 +381,7 @@ storiesOf('Wallets|Send', module)
     );
   })
   .add('Wallet Send Confirmation Dialog With No Assets', () => {
-    // $FlowFixMe[prop-missing]
+    // @ts-ignore[prop-missing]
     const wallet: Wallet = {
       name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
       amount: new BigNumber(100),

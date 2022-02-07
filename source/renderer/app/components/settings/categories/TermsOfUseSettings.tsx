@@ -10,7 +10,7 @@ type Props = {
 };
 
 @observer
-export default class TermsOfUseSettings extends Component<Props> {
+class TermsOfUseSettings extends Component<Props> {
   render() {
     const { localizedTermsOfUse, onOpenExternalLink } = this.props;
     return (
@@ -23,3 +23,5 @@ export default class TermsOfUseSettings extends Component<Props> {
     );
   }
 }
+
+export default TermsOfUseSettings

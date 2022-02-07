@@ -16,7 +16,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSendPage extends Component<Props> {
+class WalletSendPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   calculateTransactionFee = async (params: {
@@ -152,3 +152,5 @@ export default class WalletSendPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSendPage

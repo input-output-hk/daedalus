@@ -212,7 +212,7 @@ type State = {
 };
 
 @observer
-export default class WalletRestoreDialog extends Component<Props, State> {
+class WalletRestoreDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -679,3 +679,5 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     if (onChoiceChange) onChoiceChange();
   };
 }
+
+export default WalletRestoreDialog

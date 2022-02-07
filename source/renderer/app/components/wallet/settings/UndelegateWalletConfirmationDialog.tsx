@@ -119,7 +119,7 @@ type Props = {
 };
 
 @observer
-export default class UndelegateWalletConfirmationDialog extends Component<Props> {
+class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -406,3 +406,5 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
     );
   }
 }
+
+export default UndelegateWalletConfirmationDialog

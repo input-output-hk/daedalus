@@ -78,7 +78,7 @@ type Props = {
 };
 
 @observer
-export default class Step2ConfirmationDialog extends Component<Props> {
+class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -238,3 +238,5 @@ export default class Step2ConfirmationDialog extends Component<Props> {
     );
   }
 }
+
+export default Step2ConfirmationDialog

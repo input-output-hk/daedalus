@@ -82,7 +82,7 @@ type State = {
 };
 
 @observer
-export default class CompletionDialog extends Component<Props, State> {
+class CompletionDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -207,3 +207,5 @@ export default class CompletionDialog extends Component<Props, State> {
     );
   }
 }
+
+export default CompletionDialog

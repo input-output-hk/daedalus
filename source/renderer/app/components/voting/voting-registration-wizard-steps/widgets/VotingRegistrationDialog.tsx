@@ -40,7 +40,7 @@ type Props = {
 };
 
 @observer
-export default class VotingRegistrationDialog extends Component<Props> {
+class VotingRegistrationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -103,3 +103,5 @@ export default class VotingRegistrationDialog extends Component<Props> {
     );
   }
 }
+
+export default VotingRegistrationDialog

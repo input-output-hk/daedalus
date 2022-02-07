@@ -410,7 +410,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
-      // $FlowFixMe
+      // @ts-ignore
       return utils.hex_to_buf(derivedXpub);
     } catch (e) {
       throw e;

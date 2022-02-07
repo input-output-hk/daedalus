@@ -25,7 +25,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSettingsPage extends Component<Props> {
+class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleCopyWalletPublicKey = (walletPublicKey: string) => {
@@ -181,3 +181,5 @@ export default class WalletSettingsPage extends Component<Props> {
     );
   }
 }
+
+export default WalletSettingsPage

@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class TopBarLayout extends Component<Props> {
+class TopBarLayout extends Component<Props> {
   render() {
     const { children, topbar, notification } = this.props;
     return (
@@ -23,3 +23,5 @@ export default class TopBarLayout extends Component<Props> {
     );
   }
 }
+
+export default TopBarLayout

@@ -16,7 +16,7 @@ type TableHeaderProps = {
 };
 
 @observer
-export class StakePoolsTableHeader extends Component<TableHeaderProps> {
+class StakePoolsTableHeader extends Component<TableHeaderProps> {
   render() {
     const {
       availableTableHeaders,
@@ -48,3 +48,5 @@ export class StakePoolsTableHeader extends Component<TableHeaderProps> {
     });
   }
 }
+
+export { StakePoolsTableHeader }

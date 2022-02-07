@@ -14,7 +14,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class RedeemItnRewardsContainer extends Component<Props> {
+class RedeemItnRewardsContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   get containers() {
@@ -59,3 +59,5 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
     );
   }
 }
+
+export default RedeemItnRewardsContainer

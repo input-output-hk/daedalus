@@ -17,7 +17,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class VotingRegistrationPage extends Component<Props> {
+class VotingRegistrationPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleGoToCreateWalletClick = () => {
@@ -89,3 +89,5 @@ export default class VotingRegistrationPage extends Component<Props> {
     );
   }
 }
+
+export default VotingRegistrationPage

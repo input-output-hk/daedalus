@@ -9,7 +9,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores')
 @observer
-export default class CompletionDialogContainer extends Component<Props> {
+class CompletionDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -42,3 +42,5 @@ export default class CompletionDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default CompletionDialogContainer

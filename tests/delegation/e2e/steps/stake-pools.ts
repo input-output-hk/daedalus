@@ -3,11 +3,9 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { delegationCentreStakingHelper, getStakePoolByRanking } from './helpers';
-import type { Daedalus } from '../../../types';
 import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 
-declare var daedalus: Daedalus;
 
 const {
   stakingButtonVisible,

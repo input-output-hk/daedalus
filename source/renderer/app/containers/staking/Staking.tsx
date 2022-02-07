@@ -17,7 +17,7 @@ type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Staking extends Component<Props> {
+class Staking extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   componentDidMount() {
@@ -121,3 +121,5 @@ export default class Staking extends Component<Props> {
     );
   }
 }
+
+export default Staking

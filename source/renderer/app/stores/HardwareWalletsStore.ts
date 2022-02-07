@@ -657,7 +657,7 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Connect - New Transaction / Address verification initiated - return last device'
           );
-          // $FlowFixMe
+          // @ts-ignore
           lastDeviceTransport = await getHardwareWalletTransportChannel.request(
             {
               devicePath: null, // Use last plugged device
@@ -2517,7 +2517,7 @@ export default class HardwareWalletsStore extends Store {
       );
       // It is not possible to pass null value that FLOW marks as error (FlowFixMe used)
       this.initiateAddressVerification(
-        // $FlowFixMe
+        // @ts-ignore
         this.unfinishedWalletAddressVerification,
         path
       );

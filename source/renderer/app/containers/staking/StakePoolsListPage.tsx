@@ -12,7 +12,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakePoolsListPage extends Component<Props> {
+class StakePoolsListPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleDelegate = (poolId: string) => {
@@ -103,3 +103,5 @@ export default class StakePoolsListPage extends Component<Props> {
     );
   }
 }
+
+export default StakePoolsListPage

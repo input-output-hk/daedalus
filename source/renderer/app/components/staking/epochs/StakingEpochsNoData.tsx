@@ -13,7 +13,7 @@ const messages = defineMessages({
 });
 
 @observer
-export default class StakingEpochsNoData extends Component<any> {
+class StakingEpochsNoData extends Component<any> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -28,3 +28,5 @@ export default class StakingEpochsNoData extends Component<any> {
     );
   }
 }
+
+export default StakingEpochsNoData

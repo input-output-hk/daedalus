@@ -48,7 +48,7 @@ process.once('loaded', () => {
 
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
-    // $FlowFixMe
+    // @ts-ignore
     global.spectronRequire = __non_webpack_require__; // eslint-disable-line
   }
   // ESLint will warn about any use of eval(), even this one

@@ -9,7 +9,7 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletCreateDialogContainer extends Component<Props> {
+class WalletCreateDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -34,3 +34,5 @@ export default class WalletCreateDialogContainer extends Component<Props> {
     );
   }
 }
+
+export default WalletCreateDialogContainer

@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class TermsOfUseText extends Component<Props> {
+class TermsOfUseText extends Component<Props> {
   termsOfUseClickHandler = (event: SyntheticMouseEvent<HTMLElement>) => {
     const linkUrl = get(event, ['target', 'href']);
     if (linkUrl) {
@@ -35,3 +35,5 @@ export default class TermsOfUseText extends Component<Props> {
     );
   }
 }
+
+export default TermsOfUseText

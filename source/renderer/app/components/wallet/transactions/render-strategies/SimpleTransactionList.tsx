@@ -13,7 +13,7 @@ type Props = {
 };
 
 @observer
-export class SimpleTransactionList extends Component<Props> {
+class SimpleTransactionList extends Component<Props> {
   static defaultProps = {
     onOpenExternalLink: () => {},
   };
@@ -51,3 +51,5 @@ export class SimpleTransactionList extends Component<Props> {
     );
   }
 }
+
+export { SimpleTransactionList }

@@ -47,7 +47,7 @@ type Props = {
 };
 
 @observer
-export default class Step3FailureDialog extends Component<Props> {
+class Step3FailureDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -99,3 +99,5 @@ export default class Step3FailureDialog extends Component<Props> {
     );
   }
 }
+
+export default Step3FailureDialog

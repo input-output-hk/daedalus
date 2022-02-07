@@ -11,7 +11,7 @@ type Props = {
 };
 
 @observer
-export default class SyncingConnectingBackground extends Component<Props> {
+class SyncingConnectingBackground extends Component<Props> {
   render() {
     const { isConnecting, isSyncing, hasLoadedCurrentTheme } = this.props;
     const componentStyles = classNames([
@@ -23,3 +23,5 @@ export default class SyncingConnectingBackground extends Component<Props> {
     return <div className={componentStyles} />;
   }
 }
+
+export default SyncingConnectingBackground

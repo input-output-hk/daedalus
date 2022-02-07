@@ -25,7 +25,7 @@ type Props = {
 };
 
 @observer
-export default class TopBar extends Component<Props> {
+class TopBar extends Component<Props> {
   render() {
     const {
       onLeftIconClick,
@@ -113,3 +113,5 @@ export default class TopBar extends Component<Props> {
     );
   }
 }
+
+export default TopBar

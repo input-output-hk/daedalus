@@ -10,9 +10,7 @@ import {
 } from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import { getRawWalletId } from '../../../../source/renderer/app/api/utils';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 
 // This step ensures sequential creation of given transactions
 // use only when the order is important because it's slower!

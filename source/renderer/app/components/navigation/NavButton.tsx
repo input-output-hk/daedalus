@@ -15,7 +15,7 @@ type Props = {
 };
 
 @observer
-export default class NavButton extends Component<Props> {
+class NavButton extends Component<Props> {
   render() {
     const { isActive, icon, onClick, className, hasNotification } = this.props;
     const componentClasses = classnames([
@@ -38,3 +38,5 @@ export default class NavButton extends Component<Props> {
     );
   }
 }
+
+export default NavButton
