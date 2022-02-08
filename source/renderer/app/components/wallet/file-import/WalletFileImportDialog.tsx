@@ -79,7 +79,7 @@ type Props = {
   error: LocalizableError | null | undefined;
 };
 
-interface Fields {
+interface FormFields {
   walletFilePath: string;
   walletName: string;
   spendingPassword: string;
@@ -91,7 +91,7 @@ class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletFilePath: {

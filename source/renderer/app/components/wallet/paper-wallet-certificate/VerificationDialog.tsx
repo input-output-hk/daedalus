@@ -99,7 +99,7 @@ type Props = {
   onClose: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   recoveryPhrase: string;
 }
 
@@ -124,7 +124,7 @@ class VerificationDialog extends Component<Props, State> {
     }));
   };
   recoveryPhraseAutocomplete: Autocomplete;
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {

@@ -96,7 +96,7 @@ type State = {
   isSubmitting: boolean;
 };
 
-interface Fields {
+interface FormFields {
   repeatPassword: string;
   spendingPassword: string;
   walletName: string;
@@ -118,7 +118,7 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 
   walletNameInput: Input;
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {

@@ -99,7 +99,7 @@ type Props = {
   onFinishBackup: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   recoveryPhrase: string;
 }
 
@@ -108,7 +108,7 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {

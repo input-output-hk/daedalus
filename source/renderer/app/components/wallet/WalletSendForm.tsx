@@ -78,7 +78,7 @@ type Props = {
   onTokenPickerDialogClose: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   receiver: string;
   adaAmount: string;
   [assets: string]: string;
@@ -326,7 +326,7 @@ class WalletSendForm extends Component<Props, State> {
     !this.state.isTransactionFeeCalculated ||
     !this.form.isValid ||
     this.form.validating;
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         receiver: {

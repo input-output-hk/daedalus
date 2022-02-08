@@ -64,7 +64,7 @@ type Props = {
   maxWordCount: number;
 };
 
-interface Fields {
+interface FormFields {
   recoveryPhrase: string;
 }
 
@@ -73,7 +73,7 @@ class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {

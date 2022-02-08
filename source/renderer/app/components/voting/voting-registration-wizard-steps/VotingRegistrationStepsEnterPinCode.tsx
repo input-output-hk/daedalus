@@ -67,7 +67,7 @@ type Props = {
   onSetPinCode: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   pinCode: string[];
   repeatPinCode: string;
 }
@@ -77,7 +77,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         pinCode: {

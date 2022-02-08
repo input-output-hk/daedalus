@@ -143,7 +143,7 @@ type Props = {
   wallets: Array<Wallet>;
 };
 
-interface Fields {
+interface FormFields {
   checkboxAcceptance1: string;
   checkboxAcceptance2: string;
   walletsDropdown: string;
@@ -160,7 +160,7 @@ class Step1ConfigurationDialog extends Component<Props> {
     recoveryPhrase: [],
   };
   recoveryPhraseAutocomplete: Autocomplete;
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {

@@ -94,7 +94,7 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -103,7 +103,7 @@ class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

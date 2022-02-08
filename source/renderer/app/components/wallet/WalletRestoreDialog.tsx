@@ -209,7 +209,7 @@ type State = {
   walletType: string;
 };
 
-interface Fields {
+interface FormFields {
   repeatPassword: string;
   spendingPassword: string;
   recoveryPhrase: string;
@@ -235,7 +235,7 @@ class WalletRestoreDialog extends Component<Props, State> {
     }
   }
 
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {

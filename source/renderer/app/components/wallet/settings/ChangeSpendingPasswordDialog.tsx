@@ -99,7 +99,7 @@ type Props = {
   currentLocale: string;
 };
 
-interface Fields {
+interface FormFields {
   currentPassword: string;
   spendingPassword: string;
   repeatPassword: string;
@@ -115,7 +115,7 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         currentPassword: {

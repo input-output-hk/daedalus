@@ -65,7 +65,7 @@ type State = {
   exportType: ExportType;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -86,7 +86,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   // onChangeExportType(exportType: ExportType) {
   //   this.setState({ exportType });
   // }
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

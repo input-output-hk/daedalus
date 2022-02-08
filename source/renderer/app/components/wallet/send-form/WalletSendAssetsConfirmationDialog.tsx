@@ -63,7 +63,7 @@ type State = {
   areTermsAccepted: boolean;
 };
 
-interface Fields {
+interface FormFields {
   passphrase: string;
   flightCandidateCheckbox: string;
 }
@@ -93,7 +93,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     });
   }
 
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         passphrase: {

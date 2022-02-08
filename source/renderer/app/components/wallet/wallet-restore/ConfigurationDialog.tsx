@@ -93,7 +93,7 @@ type Props = {
   currentLocale: string;
 };
 
-interface Fields {
+interface FormFields {
   walletName: string;
   spendingPassword: string;
   repeatPassword: string;
@@ -114,7 +114,7 @@ class ConfigurationDialog extends Component<Props> {
     }
   }
 
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {

@@ -87,7 +87,7 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -96,7 +96,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

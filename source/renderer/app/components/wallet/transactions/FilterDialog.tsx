@@ -117,7 +117,7 @@ export type FilterDialogProps = {
 };
 type Props = FilterDialogProps & InjectedProps;
 
-interface Fields {
+interface FormFields {
   incomingChecked: boolean;
   outgoingChecked: boolean;
   dateRange: string;
@@ -136,7 +136,7 @@ class FilterDialog extends Component<Props> {
     label: string;
     value: string;
   }>;
-  form: ReactToolboxMobxForm<Fields>;
+  form: ReactToolboxMobxForm<FormFields>;
   popoverTippyInstance: ElementRef<any> = createRef();
 
   constructor(props: Props, context: Record<string, any>) {
@@ -175,7 +175,7 @@ class FilterDialog extends Component<Props> {
         value: DateRangeTypes.CUSTOM,
       },
     ];
-    this.form = new ReactToolboxMobxForm<Fields>({
+    this.form = new ReactToolboxMobxForm<FormFields>({
       fields: {
         incomingChecked: {
           type: 'checkbox',

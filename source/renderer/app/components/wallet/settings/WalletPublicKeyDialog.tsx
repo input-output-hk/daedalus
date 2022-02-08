@@ -40,7 +40,7 @@ type Props = {
   walletName: string;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -58,7 +58,7 @@ class WalletPublicKeyDialog extends Component<Props> {
     }
   }
 
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

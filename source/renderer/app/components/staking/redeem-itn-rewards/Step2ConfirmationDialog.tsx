@@ -77,7 +77,7 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -89,7 +89,7 @@ class Step2ConfirmationDialog extends Component<Props> {
   static defaultProps = {
     error: null,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

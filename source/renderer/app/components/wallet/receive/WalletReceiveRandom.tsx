@@ -81,7 +81,7 @@ type Props = {
   onToggleUsedAddresses: (...args: Array<any>) => any;
 };
 
-interface Fields {
+interface FormFields {
   spendingPassword: string;
 }
 
@@ -95,7 +95,7 @@ class WalletReceiveRandom extends Component<Props> {
     const { onToggleUsedAddresses } = this.props;
     onToggleUsedAddresses();
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

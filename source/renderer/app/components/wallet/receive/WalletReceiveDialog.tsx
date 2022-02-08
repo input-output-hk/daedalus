@@ -156,7 +156,7 @@ type State = {
   isReverifying: boolean;
 };
 
-interface Fields {
+interface FormFields {
   noteInput: string;
 }
 
@@ -170,7 +170,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
-  form = new ReactToolboxMobxForm<Fields>({
+  form = new ReactToolboxMobxForm<FormFields>({
     fields: {
       noteInput: {
         value: '',

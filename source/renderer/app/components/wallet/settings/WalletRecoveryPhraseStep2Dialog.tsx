@@ -70,7 +70,7 @@ type State = {
   isVerifying: boolean;
 };
 
-interface Fields {
+interface FormFields {
   recoveryPhrase: string;
 }
 
@@ -82,7 +82,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   state = {
     isVerifying: false,
   };
-  form = new ReactToolboxMobxForm<Fields>(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
