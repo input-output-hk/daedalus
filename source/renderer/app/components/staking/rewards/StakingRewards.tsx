@@ -450,7 +450,7 @@ class StakingRewards extends Component<Props, State> {
             )}
           </BorderedBox>
           <div className={styles.note}>
-            <div className={styles.noteContent}>
+            <div>
               <FormattedHTMLMessage {...messages.note} />
             </div>
           </div>

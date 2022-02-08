@@ -114,14 +114,7 @@ class AssetInput extends Component<Props> {
                 : '0'
             }
             className={styles.assetItem}
-            label={
-              <Asset
-                asset={asset}
-                className={styles.assetToken}
-                hidePopOver
-                small
-              />
-            }
+            label={<Asset asset={asset} hidePopOver small />}
             data-testid={`assetInput:${uniqueId}`}
             bigNumberFormat={decimals ? currentNumberFormat : null}
             decimalPlaces={decimals}
@@ -159,7 +152,7 @@ class AssetInput extends Component<Props> {
                   label={intl.formatMessage(messages.clearLabel)}
                   onClick={() => clearAssetFieldValue(assetField)}
                 />
-                <div className={styles.separator} />
+                <div />
               </div>
             )}
             {ticker ? (

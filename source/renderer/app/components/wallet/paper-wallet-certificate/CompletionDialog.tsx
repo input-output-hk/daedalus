@@ -117,7 +117,7 @@ class CompletionDialog extends Component<Props, State> {
       network,
     } = this.props;
     const { showCopyNotification } = this.state;
-    const dialogClasses = classnames([styles.component, 'completionDialog']);
+    const dialogClasses = classnames(['completionDialog']);
     const actions = [
       {
         className: 'finishButton',
@@ -147,9 +147,7 @@ class CompletionDialog extends Component<Props, State> {
         actions={actions}
       >
         <div className={styles.completionContentWrapper}>
-          <p className={styles.subtitle}>
-            {intl.formatMessage(messages.subtitle)}
-          </p>
+          <p>{intl.formatMessage(messages.subtitle)}</p>
 
           <div className={styles.linkInstructionsWrapper}>
             <p>{intl.formatMessage(messages.linkInstructions)}</p>

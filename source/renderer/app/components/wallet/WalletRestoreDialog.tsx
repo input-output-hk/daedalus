@@ -374,11 +374,7 @@ class WalletRestoreDialog extends Component<Props, State> {
     const { form } = this;
     const { walletType } = this.state;
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
-    const dialogClasses = classnames([
-      styles.component,
-      styles.dialogWithCertificateRestore,
-      'WalletRestoreDialog',
-    ]);
+    const dialogClasses = classnames([styles.component, 'WalletRestoreDialog']);
     const walletNameFieldClasses = classnames([
       'walletName',
       styles.walletName,

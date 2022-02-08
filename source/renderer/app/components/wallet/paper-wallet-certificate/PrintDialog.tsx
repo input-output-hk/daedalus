@@ -97,7 +97,7 @@ class PrintDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onContinue, onClose } = this.props;
     const { isPrintedCorrectly, isReadable, isScannable } = this.state;
-    const dialogClasses = classnames([styles.component, 'printDialog']);
+    const dialogClasses = classnames(['printDialog']);
     const certificatePrintedCheckboxClasses = classnames([
       'printedCheckbox',
       styles.checkbox,

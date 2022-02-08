@@ -20,10 +20,7 @@ type Props = {
 export default class ButtonLink extends Component<Props> {
   render() {
     const { label, linkProps } = this.props;
-    const linkLabelClasses = classNames([
-      styles.linkLabel,
-      get(linkProps, 'className', null),
-    ]);
+    const linkLabelClasses = classNames([get(linkProps, 'className', null)]);
     const linkLabel = (
       <Link
         label={label}

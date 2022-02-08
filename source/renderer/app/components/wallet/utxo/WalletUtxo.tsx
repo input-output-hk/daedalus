@@ -179,7 +179,6 @@ export default class WalletUtxo extends Component<Props, State> {
                   >
                     <BarChart data={chartData} barSize={23}>
                       <CartesianGrid
-                        className={styles.cartesianGrid}
                         horizontal={false}
                         vertical={false}
                         y={-10}
@@ -194,7 +193,6 @@ export default class WalletUtxo extends Component<Props, State> {
                         tick={(props: TickProps) => (
                           <Tick {...props} textAnchor="start" vertical />
                         )}
-                        className={styles.xAxis}
                         y={0}
                       >
                         <Label

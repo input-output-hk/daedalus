@@ -64,7 +64,7 @@ class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWalletDisconnected &&
       isHardwareWalletIndicatorEnabled
         ? styles.disconnected
-        : styles.connected,
+        : null,
     ]);
     const chunks = highlightWords({
       text: title,

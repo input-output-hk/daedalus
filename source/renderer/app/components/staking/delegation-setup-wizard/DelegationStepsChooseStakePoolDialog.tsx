@@ -25,7 +25,6 @@ import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import { getFilteredStakePoolsList } from '../stake-pools/helpers';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import commonStyles from './DelegationSteps.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsChooseStakePo... Remove this comment to see the full error message
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';

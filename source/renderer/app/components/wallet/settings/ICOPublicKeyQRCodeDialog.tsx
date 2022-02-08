@@ -57,7 +57,7 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
       className={styles.dialog}
       closeButton={<DialogCloseButton onClose={onClose} />}
     >
-      <div className={styles.walletPublicKeyQRCode}>
+      <div>
         <QRCode
           value={walletPublicKey}
           bgColor={qrCodeBackgroundColor}

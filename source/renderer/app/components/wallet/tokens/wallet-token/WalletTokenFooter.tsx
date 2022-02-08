@@ -52,7 +52,6 @@ const WalletTokenFooter = (props: Props) => {
             metadata={asset.metadata}
             decimals={asset.decimals}
             isLoading={isLoading}
-            className={styles.assetAmount}
           />
         </div>
       </div>
@@ -75,12 +74,7 @@ const WalletTokenFooter = (props: Props) => {
               label={
                 <>
                   {intl.formatMessage(messages.settingsButtonLabel)}
-                  {hasWarning && (
-                    <SVGInline
-                      className={styles.warningIcon}
-                      svg={warningIcon}
-                    />
-                  )}
+                  {hasWarning && <SVGInline svg={warningIcon} />}
                 </>
               }
               onClick={() =>

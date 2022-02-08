@@ -169,7 +169,7 @@ class Step2ConfirmationDialog extends Component<Props> {
       direction: 'column',
       items: [
         {
-          className: isSubmitting ? styles.isSubmitting : null,
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
           disabled: !form.isValid,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),

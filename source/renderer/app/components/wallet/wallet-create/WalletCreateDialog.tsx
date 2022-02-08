@@ -31,7 +31,6 @@ export default class WalletCreateDialog extends Component<Props> {
     const { actions, children, stepNumber, onClose } = this.props;
     return (
       <Dialog
-        className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick

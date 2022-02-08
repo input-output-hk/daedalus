@@ -34,7 +34,7 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
-      isSynced ? styles.synced : styles.syncing,
+      isSynced ? null : styles.syncing,
       hasTadaIcon ? styles.hasTadaIcon : null,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
@@ -45,7 +45,7 @@ export default class NodeSyncStatusIcon extends Component<Props> {
             percentage: formattedNumber(percentage),
           })}
         >
-          <div className={styles.questionMark}>
+          <div>
             <SVGInline className={styles.icon} svg={statusIcon} />
           </div>
         </PopOver>

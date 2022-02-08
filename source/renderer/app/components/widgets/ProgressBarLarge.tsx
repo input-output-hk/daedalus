@@ -43,7 +43,7 @@ class ProgressBarLarge extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.content}>
-          <p className={styles.leftLabel}>{leftLabel}</p>
+          <p>{leftLabel}</p>
           <p className={styles.rightLabel}>
             <b>{rightLabel1}</b> {rightLabel2}
           </p>

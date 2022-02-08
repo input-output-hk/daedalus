@@ -32,7 +32,7 @@ class MnemonicInputWidget extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div>{error}</div>}
         <div className={styles.tokens}>
           {tokens.map((token, index) => (
             <Input

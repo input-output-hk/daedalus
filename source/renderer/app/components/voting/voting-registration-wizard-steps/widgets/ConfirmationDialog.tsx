@@ -53,7 +53,6 @@ class ConfirmationDialog extends Component<Props> {
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
     const confirmButtonClasses = classnames([
       'confirmButton', // 'attention',
-      styles.confirmButton,
     ]);
     const actions = [
       {

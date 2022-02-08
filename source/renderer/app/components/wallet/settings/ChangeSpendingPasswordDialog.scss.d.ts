@@ -6,5 +6,6 @@ export const isSubmitting: string;
 export const jpLangTooltipIcon: string;
 export const newPassword: string;
 export const passwordInstructions: string;
+export const repeatedPassword: string;
 export const spendingPasswordField: string;
 export const spendingPasswordFields: string;

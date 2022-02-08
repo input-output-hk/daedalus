@@ -129,7 +129,7 @@ export default class About extends Component<Props> {
 
           <h2>{apiHeadline}</h2>
 
-          <div className={styles.apiMembers}>{apiMembers}</div>
+          <div>{apiMembers}</div>
         </div>
 
         <div className={styles.footerWrapper}>

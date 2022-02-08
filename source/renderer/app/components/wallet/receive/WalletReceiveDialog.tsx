@@ -276,10 +276,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     const noteInputField = this.form.$('noteInput');
     const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
-    const buttonClasses = classnames([
-      'attention',
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
+    const buttonClasses = classnames(['attention']);
     const supportButtonLabel = !isSubmitting ? (
       intl.formatMessage(messages.supportRequestButtonLabel)
     ) : (
@@ -498,7 +495,7 @@ class WalletReceiveDialog extends Component<Props, State> {
                 <p className={styles.warningTitle}>
                   {intl.formatMessage(messages.invalidAddressWarningTitle)}
                 </p>
-                <p className={styles.warningDescription}>
+                <p>
                   {intl.formatMessage(
                     messages.invalidAddressWarningDescription,
                     {

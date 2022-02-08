@@ -208,7 +208,6 @@ class AppUpdateOverlay extends Component<Props, State> {
     const buttonStyles = classnames([
       styles.button,
       isButtonDisabled ? styles.disabled : null,
-      isWaitingToQuitDaedalus ? styles.installing : null,
     ]);
     const buttonLabel = isLinux
       ? messages.buttonInstallUpdateLabel

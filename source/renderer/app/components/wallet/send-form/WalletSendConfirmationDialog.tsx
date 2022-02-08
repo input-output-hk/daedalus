@@ -11,7 +11,6 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendConfirmationDialog... Remove this comment to see the full error message
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';

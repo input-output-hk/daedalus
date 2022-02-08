@@ -274,7 +274,6 @@ class InlineEditingInput extends Component<Props, State> {
       styles.component,
       isActive ? null : styles.inactive,
       readOnly ? styles.readOnly : null,
-      isLoading ? styles.isLoading : null,
       showEditButton || showLoadingButton ? styles.twoButtons : null,
       showFocusButtons ? styles.twoButtons : null,
     ]);

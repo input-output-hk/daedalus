@@ -247,7 +247,6 @@ class ConfigurationDialog extends Component<Props> {
         stepNumber={2}
         actions={[
           {
-            className: isSubmitting ? styles.isSubmitting : null,
             disabled: !canSubmit,
             primary: true,
             label: buttonLabel,
@@ -269,7 +268,7 @@ class ConfigurationDialog extends Component<Props> {
             error={walletNameField.error}
           />
 
-          <div className={styles.spendingPasswordWrapper}>
+          <div>
             <div className={styles.spendingPasswordFields}>
               <div className={spendingPasswordClasses}>
                 <PasswordInput

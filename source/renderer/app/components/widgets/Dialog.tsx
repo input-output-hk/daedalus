@@ -111,7 +111,7 @@ export default class Dialog extends Component<Props> {
               <div className={styles.content}>{children}</div>
             </div>
           )}
-          {footer && <div className={styles.footer}>{footer}</div>}
+          {footer && <div>{footer}</div>}
 
           {items && (
             <div className={classActionsClasses}>

@@ -122,7 +122,7 @@ const AssetContent = observer((props: Props) => {
             <SVGInline svg={icon} className={iconClassnames} />
           </div>
           {assetId === 'assetName' && (
-            <div className={styles.assetASCIIName}>
+            <div className={styles.assetAsciiName}>
               (ASCII: {hexToString(value)})
             </div>
           )}

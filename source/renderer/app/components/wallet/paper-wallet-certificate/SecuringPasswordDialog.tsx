@@ -69,10 +69,7 @@ class SecuringPasswordDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
-    const dialogClasses = classnames([
-      styles.component,
-      'SecuringPasswordDialog',
-    ]);
+    const dialogClasses = classnames(['SecuringPasswordDialog']);
     const actions = [
       {
         className: 'continueButton',

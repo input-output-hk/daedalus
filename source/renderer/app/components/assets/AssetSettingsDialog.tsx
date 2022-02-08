@@ -201,7 +201,6 @@ class AssetSettingsDialog extends Component<Props, State> {
           <Select
             options={options}
             value={decimals}
-            className={styles.decimalsDropdown}
             label={
               <span className={styles.decimalsDropdownLabel}>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}

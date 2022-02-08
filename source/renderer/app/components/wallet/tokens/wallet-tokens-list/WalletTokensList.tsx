@@ -136,7 +136,7 @@ const WalletTokensList = observer((props: Props) => {
 
   if (isLoadingAssets) {
     content = (
-      <div className={styles.syncingWrapper}>
+      <div>
         <LoadingSpinner big />
       </div>
     );

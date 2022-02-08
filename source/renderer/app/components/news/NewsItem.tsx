@@ -132,7 +132,7 @@ class NewsItem extends Component<Props, State> {
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(currentDateFormat)}
         </div>
-        <div className={styles.newsItemContentWrapper}>
+        <div>
           <AnimateHeight
             duration={expandWithoutTransition ? 0 : 500}
             height={this.state.newsItemExpanded ? 'auto' : 0}

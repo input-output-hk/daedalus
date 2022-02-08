@@ -159,7 +159,7 @@ class WalletReceiveSequential extends Component<Props, State> {
       <div className={styles.component}>
         <BorderedBox fullHeight>
           <div className={styles.container}>
-            <div className={styles.instructions}>
+            <div>
               <h2 className={styles.instructionsTitle}>
                 {intl.formatMessage(messages.instructionsTitle)}
               </h2>

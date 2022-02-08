@@ -51,8 +51,8 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
     if (!isSyncing) return null;
     return (
       <div className={styles.syncingSpinner}>
-        <PopOver content={syncingLabel} className={styles.syncingLabel}>
-          <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
+        <PopOver content={syncingLabel}>
+          <SVGInline svg={tinySpinnerIcon} />
         </PopOver>
       </div>
     );

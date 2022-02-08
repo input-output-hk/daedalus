@@ -385,12 +385,10 @@ class FilterDialog extends Component<Props> {
     const toDateLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseToDateInput : null;
     const fromDateClassNames = classNames([
-      styles.dateRangeInput,
       styles.fromDateInput,
       fromDateLocaleClassName,
     ]);
     const toDateClassNames = classNames([
-      styles.dateRangeInput,
       styles.toDateInput,
       toDateLocaleClassName,
     ]);

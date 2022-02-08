@@ -250,7 +250,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         ]}
         onClose={onClose}
       >
-        <div className={styles.component}>
+        <div>
           {this.getWalletKind(
             WALLET_KINDS,
             messages.labelWalletKind,

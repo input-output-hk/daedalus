@@ -141,7 +141,7 @@ class InstructionsDialog extends Component<Props> {
       network,
       error,
     } = this.props;
-    const dialogClasses = classnames([styles.component, 'instructionsDialog']);
+    const dialogClasses = classnames(['instructionsDialog']);
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,

@@ -90,14 +90,14 @@ class DelegationCenterBody extends Component<Props> {
     return (
       <div className={componentClasses}>
         {isLoading ? (
-          <div className={styles.loadinBlockWrapper}>
+          <div>
             <p>{intl.formatMessage(messages.loadingStakePoolsMessage)}</p>
             {loadingSpinner}
           </div>
         ) : (
           <div>
             <div className={styles.bodyTitle}>
-              <div className={styles.leftBodyTitle}>{title}</div>
+              <div>{title}</div>
               {nextEpochNumber && futureEpochNumber && (
                 <div className={styles.rightBodyTitle}>
                   <span>{currentEpochTitle}</span>

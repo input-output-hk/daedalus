@@ -297,7 +297,7 @@ class TooltipPool extends Component<Props, State> {
       {
         key: 'relativeStake',
         value: (
-          <div className={styles.defaultColor}>
+          <div>
             <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
               // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
               relativeStake,
@@ -326,7 +326,7 @@ class TooltipPool extends Component<Props, State> {
       {
         key: 'pledge',
         value: (
-          <div className={styles.defaultColor}>
+          <div>
             <span className={styles.defaultColorContent}>
               {formattedWalletAmount(pledge, true, false)}
             </span>
@@ -353,7 +353,7 @@ class TooltipPool extends Component<Props, State> {
       {
         key: 'producedBlocks',
         value: (
-          <div className={styles.defaultColor}>
+          <div>
             <span className={styles.defaultColorContent}>
               {toFixedUserFormat(producedBlocks, 0)}
             </span>
@@ -363,7 +363,7 @@ class TooltipPool extends Component<Props, State> {
       {
         key: 'potentialRewards',
         value: (
-          <div className={styles.defaultColor}>
+          <div>
             {isGridRewardsView &&
             potentialRewards.isZero &&
             potentialRewards.isZero() ? (
@@ -392,7 +392,7 @@ class TooltipPool extends Component<Props, State> {
                   offset={[0, 10]}
                   key={field.key}
                   content={
-                    <div className={styles.tooltipWithHTMLContent}>
+                    <div className={styles.tooltipWithHtmlContent}>
                       <FormattedHTMLMessage
                         {...messages[`${field.key}Tooltip`]}
                       />
@@ -486,7 +486,7 @@ class TooltipPool extends Component<Props, State> {
           <PopOver
             key="id"
             content={
-              <div className={styles.tooltipWithHTMLContent}>
+              <div className={styles.tooltipWithHtmlContent}>
                 {stakePoolAddressHoverCopy}
               </div>
             }

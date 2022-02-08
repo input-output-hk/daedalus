@@ -35,7 +35,6 @@ class StakePoolsTableHeader extends Component<TableHeaderProps> {
       const sortIconClasses = classNames([
         styles.sortIcon,
         isSorted ? styles.sorted : null,
-        isSorted && stakePoolsOrder === 'asc' ? styles.ascending : null,
         isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
         styles[`${defaultOrdering}DefaultOrdering`],
       ]);

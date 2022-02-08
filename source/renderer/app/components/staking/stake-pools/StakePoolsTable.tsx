@@ -276,7 +276,7 @@ class StakePoolsTable extends Component<Props, State> {
             key="ranking"
             placement="bottom"
             content={
-              <div className={styles.tooltipWithHTMLContent}>
+              <div className={styles.tooltipWithHtmlContent}>
                 <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
               </div>
             }
@@ -389,11 +389,7 @@ class StakePoolsTable extends Component<Props, State> {
                     />
                   </tr>
                 </thead>
-                <tbody
-                  className={
-                    currentLocale === 'ja-JP' ? styles.japaneseHeader : null
-                  }
-                >
+                <tbody>
                   <StakePoolsTableBody
                     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                     sortedStakePoolList={sortedStakePoolList}

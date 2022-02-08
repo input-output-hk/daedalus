@@ -1,7 +1,6 @@
 import React from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { noop } from 'lodash/fp';
-import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
@@ -31,13 +30,7 @@ const WalletSearchComponent = ({
 }: Props) => {
   const hasValue = !!searchValue.length;
   return (
-    <label
-      htmlFor="sideBarwalletSearch"
-      className={classNames({
-        [styles.component]: true,
-        [styles.hasValue]: hasValue,
-      })}
-    >
+    <label htmlFor="sideBarwalletSearch" className={styles.component}>
       <SVGInline svg={searchIcon} className={styles.searchIcon} />
       <Input
         id="sideBarwalletSearch"

@@ -249,7 +249,6 @@ class Asset extends Component<Props, State> {
             '--rp-pop-over-box-shadow':
               '0 5px 20px 0 var(--theme-widgets-asset-token-box-shadow)',
           }}
-          contentClassName={styles.popOver}
           content={popOverContent}
           visible={isPillPopOverVisible}
           appendTo="parent"
@@ -287,7 +286,6 @@ class Asset extends Component<Props, State> {
     return (
       <button className={styles.settingsButton} onClick={onClickSettingsBind}>
         <PopOver
-          className={styles.test}
           content={intl.formatMessage(messages.settingsCogPopOver)}
           visible={isSettingsPopOverVisible}
         >

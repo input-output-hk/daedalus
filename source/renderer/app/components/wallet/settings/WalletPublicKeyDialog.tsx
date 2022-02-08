@@ -129,14 +129,12 @@ class WalletPublicKeyDialog extends Component<Props> {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.dialog}
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={styles.description}>
           {intl.formatMessage(messages.description)}
         </div>
         <Input
-          className={styles.spendingPassword}
           {...spendingPasswordField.bind()}
           error={spendingPasswordField.error}
           onKeyPress={this.handleSubmitOnEnter}

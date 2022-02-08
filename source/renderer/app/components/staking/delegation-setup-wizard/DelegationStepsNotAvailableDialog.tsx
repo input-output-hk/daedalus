@@ -3,7 +3,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import commonStyles from './DelegationSteps.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsNotAvailableD... Remove this comment to see the full error message
 import styles from './DelegationStepsNotAvailableDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';

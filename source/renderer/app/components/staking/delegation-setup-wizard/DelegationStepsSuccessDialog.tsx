@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import commonStyles from './DelegationSteps.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsSuccessDialog... Remove this comment to see the full error message
 import styles from './DelegationStepsSuccessDialog.scss';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
