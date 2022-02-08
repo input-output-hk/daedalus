@@ -50,6 +50,13 @@ export default class AppStore extends Store {
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
+    this.actions.app.closeToggleRTSFlagsModeDialog.listen(() => {
+      this._closeActiveDialog();
+    });
+    this.actions.app.openToggleRTSFlagsModeDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+      this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
+    });
     this.actions.app.downloadLogs.listen(this._downloadLogs);
     this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
@@ -113,6 +120,12 @@ export default class AppStore extends Store {
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
+
+        break;
+
+      case DIALOGS.TOGGLE_RTS_FLAGS_MODE:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+        this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
 
         break;
 
