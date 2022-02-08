@@ -9,7 +9,6 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import ButtonLink from '../widgets/ButtonLink';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AlertsOverlay.scss' or its c... Remove this comment to see the full error message
 import styles from './AlertsOverlay.scss';
 
 type State = {

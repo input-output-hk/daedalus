@@ -7,7 +7,6 @@ import LegacyBadge, {
   LEGACY_BADGE_MODES,
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletMenuItem.scss' ... Remove this comment to see the full error message
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message

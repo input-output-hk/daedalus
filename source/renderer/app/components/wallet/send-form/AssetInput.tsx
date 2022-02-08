@@ -17,7 +17,6 @@ import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import { Divider } from '../widgets/Divider';
 import { ClearButton } from '../widgets/ClearButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetInput.scss' or its corr... Remove this comment to see the full error message
 import styles from './AssetInput.scss';
 import messages from './messages';
 

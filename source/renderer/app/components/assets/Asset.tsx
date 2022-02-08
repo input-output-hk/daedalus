@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Asset.scss' or its correspon... Remove this comment to see the full error message
 import styles from './Asset.scss';
 import { ellipsis } from '../../utils/strings';
 import AssetContent from './AssetContent';

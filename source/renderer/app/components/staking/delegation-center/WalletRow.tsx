@@ -13,7 +13,6 @@ import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { PoolPopOver } from '../widgets/PoolPopOver';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRow.scss' or its corre... Remove this comment to see the full error message
 import styles from './WalletRow.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRowPopOverOverrides.sc... Remove this comment to see the full error message
 import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';

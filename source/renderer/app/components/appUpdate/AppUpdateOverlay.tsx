@@ -13,7 +13,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AppUpdateOverlay.scss' or it... Remove this comment to see the full error message
 import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';

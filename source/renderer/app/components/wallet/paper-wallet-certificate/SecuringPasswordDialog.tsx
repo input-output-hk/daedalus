@@ -9,7 +9,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/paper-w... Remove this comment to see the full error message
 import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SecuringPasswordDialog.scss'... Remove this comment to see the full error message
 import styles from './SecuringPasswordDialog.scss';
 import { PAPER_WALLET_WRITTEN_WORDS_COUNT } from '../../../config/cryptoConfig';
 

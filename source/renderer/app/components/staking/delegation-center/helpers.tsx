@@ -1,7 +1,6 @@
 import { get } from 'lodash';
 import React from 'react';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterHeader.scss'... Remove this comment to see the full error message
 import styles from './DelegationCenterHeader.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/delimet... Remove this comment to see the full error message
 import delimeterIcon from '../../../assets/images/delimeter.inline.svg';

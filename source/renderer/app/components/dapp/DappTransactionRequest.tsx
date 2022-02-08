@@ -9,7 +9,6 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DappTransactionRequest.scss'... Remove this comment to see the full error message
 import styles from './DappTransactionRequest.scss';
 import Dialog from '../widgets/Dialog';
 import globalMessages from '../../i18n/global-messages';

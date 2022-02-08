@@ -12,7 +12,6 @@ import clearIcon from '../../assets/images/hardware-wallet/close-cross-red.inlin
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './HardwareWalletStatus.scss' o... Remove this comment to see the full error message
 import styles from './HardwareWalletStatus.scss';
 
 const messages = defineMessages({

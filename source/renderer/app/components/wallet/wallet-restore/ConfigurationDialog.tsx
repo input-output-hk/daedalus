@@ -8,7 +8,6 @@ import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ConfigurationDialog.scss' or... Remove this comment to see the full error message
 import styles from './ConfigurationDialog.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,

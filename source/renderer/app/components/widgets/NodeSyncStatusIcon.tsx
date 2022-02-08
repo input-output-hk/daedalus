@@ -8,7 +8,6 @@ import { formattedNumber } from '../../utils/formatters';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/top-bar/no... Remove this comment to see the full error message
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NodeSyncStatusIcon.scss' or ... Remove this comment to see the full error message
 import styles from './NodeSyncStatusIcon.scss';
 
 const messages = defineMessages({

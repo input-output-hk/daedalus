@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletAdd.scss' or its corre... Remove this comment to see the full error message
 import styles from './WalletAdd.scss';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/create-ic.... Remove this comment to see the full error message

@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './IncidentOverlay.scss' or its... Remove this comment to see the full error message
 import styles from './IncidentOverlay.scss';
 
 type Props = {

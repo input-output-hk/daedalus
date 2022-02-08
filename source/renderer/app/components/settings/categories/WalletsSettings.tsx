@@ -5,7 +5,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletsSettings.scss' or its... Remove this comment to see the full error message
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import globalMessages from '../../../i18n/global-messages';

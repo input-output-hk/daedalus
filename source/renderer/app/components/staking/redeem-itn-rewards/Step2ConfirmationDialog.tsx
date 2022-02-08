@@ -7,7 +7,6 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step2ConfirmationDialog.scss... Remove this comment to see the full error message
 import styles from './Step2ConfirmationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';

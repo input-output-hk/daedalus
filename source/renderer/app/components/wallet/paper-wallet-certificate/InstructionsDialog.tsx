@@ -8,7 +8,6 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InstructionsDialog.scss' or ... Remove this comment to see the full error message
 import styles from './InstructionsDialog.scss';
 import { handleFormErrors } from '../../../utils/ReactToolboxMobxForm';
 import {

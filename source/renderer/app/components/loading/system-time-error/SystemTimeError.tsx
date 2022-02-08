@@ -9,7 +9,6 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SystemTimeError.scss' or its... Remove this comment to see the full error message
 import styles from './SystemTimeError.scss';
 
 const messages = defineMessages({

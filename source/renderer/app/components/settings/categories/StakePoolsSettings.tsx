@@ -13,7 +13,6 @@ import {
 } from 'react-intl';
 import { getSmashServerIdFromUrl, getUrlParts } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSettings.scss' or ... Remove this comment to see the full error message
 import styles from './StakePoolsSettings.scss';
 import {
   SMASH_SERVERS_LIST,

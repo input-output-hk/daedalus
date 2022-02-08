@@ -4,7 +4,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsSuccessDialog... Remove this comment to see the full error message
 import styles from './DelegationStepsSuccessDialog.scss';

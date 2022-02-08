@@ -3,7 +3,6 @@ import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Notification.scss' or its co... Remove this comment to see the full error message
 import styles from './Notification.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCross from '../../assets/images/close-cross.inline.svg';

@@ -5,7 +5,6 @@ import SVGInline from 'react-svg-inline';
 import spinnerIconBig from '../../assets/images/spinner-dark-big.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIconSmall from '../../assets/images/spinner-dark.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './LoadingSpinner.scss' or its ... Remove this comment to see the full error message
 import styles from './LoadingSpinner.scss';
 
 type Props = {

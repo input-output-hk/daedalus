@@ -7,7 +7,6 @@ import classnames from 'classnames';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/currenc... Remove this comment to see the full error message
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryCurrency.scss' ... Remove this comment to see the full error message
 import styles from './WalletSummaryCurrency.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';

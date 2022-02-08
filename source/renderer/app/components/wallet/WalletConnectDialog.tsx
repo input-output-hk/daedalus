@@ -23,7 +23,6 @@ import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import LocalizableError from '../../i18n/LocalizableError';
 import Dialog from '../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletConnectDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';

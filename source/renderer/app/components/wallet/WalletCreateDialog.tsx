@@ -20,7 +20,6 @@ import {
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateDialog.scss' or ... Remove this comment to see the full error message
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';

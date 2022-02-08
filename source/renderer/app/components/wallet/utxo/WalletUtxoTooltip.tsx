@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { get } from 'lodash';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxoTooltip.scss' or i... Remove this comment to see the full error message
 import styles from './WalletUtxoTooltip.scss';
 import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 

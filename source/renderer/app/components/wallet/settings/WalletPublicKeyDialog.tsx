@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyDialog.scss' or its... Remove this comment to see the full error message
 import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';

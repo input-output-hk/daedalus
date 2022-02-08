@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletToken.scss' or its cor... Remove this comment to see the full error message
 import styles from './WalletToken.scss';
 import AssetContent from '../../../assets/AssetContent';
 import type { AssetToken } from '../../../../api/assets/types';

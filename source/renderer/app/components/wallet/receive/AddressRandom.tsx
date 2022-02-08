@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import AddressActions from './AddressActions';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AddressRandom.scss' or its c... Remove this comment to see the full error message
 import styles from './AddressRandom.scss';
 import WalletAddress from '../../../domains/WalletAddress';
 

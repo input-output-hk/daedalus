@@ -22,7 +22,6 @@ import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';

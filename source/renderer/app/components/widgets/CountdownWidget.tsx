@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CountdownWidget.scss' or its... Remove this comment to see the full error message
 import styles from './CountdownWidget.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/delimeter.... Remove this comment to see the full error message
 import delimeterIcon from '../../assets/images/delimeter.inline.svg';

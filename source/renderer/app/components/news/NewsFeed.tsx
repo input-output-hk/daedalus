@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NewsFeed.scss' or its corres... Remove this comment to see the full error message
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
 import NewsItem from './NewsItem';

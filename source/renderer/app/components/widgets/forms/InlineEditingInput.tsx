@@ -9,7 +9,6 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingInput.scss' or ... Remove this comment to see the full error message
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message

@@ -3,7 +3,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StatusIcons.scss' or its cor... Remove this comment to see the full error message
 import styles from './StatusIcons.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/node-st... Remove this comment to see the full error message

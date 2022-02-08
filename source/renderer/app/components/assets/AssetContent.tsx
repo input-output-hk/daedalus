@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetContent.scss' or its co... Remove this comment to see the full error message
 import styles from './AssetContent.scss';
 import { hexToString } from '../../utils/strings';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/copy-asset... Remove this comment to see the full error message
