@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
-import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -19,19 +18,12 @@ class InitialSettingsPage extends Component<InjectedProps> {
     finishInitialScreenSettings.trigger();
   };
   handleSelectItem = async (param: string, value: string) => {
-    const { actions, stores } = this.props;
+    const { actions } = this.props;
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({
       param,
       value,
     });
-    const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
-
-    if (param === 'locale') {
-      await rebuildApplicationMenu.send({
-        isNavigationEnabled,
-      });
-    }
   };
 
   render() {
