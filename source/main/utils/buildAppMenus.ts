@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -8,20 +9,24 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
-import { setRtsFlagsAndRestart } from './rtsFlags';
-import { RTS_FLAGS } from '../config';
 
+interface Data {
+  isNavigationEnabled: boolean;
+  walletSettingsState: WalletSettingsStateEnum;
+}
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode | null | undefined,
   locale: string,
-  data: {
-    isNavigationEnabled: boolean;
-  }
+  { isNavigationEnabled, walletSettingsState }: Data
 ) => {
-  const { ABOUT, DAEDALUS_DIAGNOSTICS, ITN_REWARDS_REDEMPTION } = DIALOGS;
+  const {
+    ABOUT,
+    DAEDALUS_DIAGNOSTICS,
+    ITN_REWARDS_REDEMPTION,
+    TOGGLE_RTS_FLAGS_MODE,
+  } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isNavigationEnabled } = data;
   const { isMacOS, isBlankScreenFixActive } = environment;
 
   const translations = require(`../locales/${locale}`);
@@ -55,6 +60,7 @@ export const buildAppMenus = async (
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 21', {
       code: 21,
     });
@@ -65,6 +71,7 @@ export const buildAppMenus = async (
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Exiting Daedalus with code 22', {
       code: 22,
     });
@@ -105,36 +112,9 @@ export const buildAppMenus = async (
     item.checked = isBlankScreenFixActive;
   };
 
-  const setRtsFlags = async (enable: boolean): Promise<void> => {
-    const translation = getTranslation(translations, 'menu');
-    const rtsFlagsDialogOptions = {
-      buttons: [
-        translation('helpSupport.rtsFlagsDialogConfirm'),
-        translation('helpSupport.rtsFlagsDialogCancel'),
-      ],
-      type: 'warning',
-      title: enable
-        ? translation('helpSupport.enableRtsFlagsDialogTitle')
-        : translation('helpSupport.disableRtsFlagsDialogTitle'),
-      message: enable
-        ? translation('helpSupport.enableRtsFlagsDialogMessage')
-        : translation('helpSupport.disableRtsFlagsDialogMessage'),
-      defaultId: 1,
-      cancelId: 1,
-      noLink: true,
-    };
-    const { response } = await dialog.showMessageBox(
-      mainWindow,
-      rtsFlagsDialogOptions
-    );
-
-    if (response === 0) {
-      if (enable) {
-        setRtsFlagsAndRestart(environment.network, RTS_FLAGS);
-      } else {
-        setRtsFlagsAndRestart(environment.network, []);
-      }
-    }
+  const openToggleRTSFlagsModeDialog = () => {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
+    if (mainWindow) showUiPartChannel.send(TOGGLE_RTS_FLAGS_MODE, mainWindow);
   };
 
   const menuActions = {
@@ -144,7 +124,7 @@ export const buildAppMenus = async (
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,
-    setRtsFlags,
+    openToggleRTSFlagsModeDialog,
   };
   // Build app menus
   let menu;
@@ -158,7 +138,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     Menu.setApplicationMenu(menu);
@@ -171,7 +152,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     mainWindow.setMenu(menu);
