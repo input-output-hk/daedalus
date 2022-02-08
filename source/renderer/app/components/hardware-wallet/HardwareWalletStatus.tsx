@@ -58,7 +58,7 @@ const messages = defineMessages({
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
-      '!!!Exporting public key failed. Make sure the provided passphrase is correct. Disconnect and reconnect the device to retry.',
+      '!!!Disconnect and reconnect your device to restart the process.',
     description:
       '"Disconnect and reconnect your device to start the process again" device state',
   },
