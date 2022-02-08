@@ -47,10 +47,10 @@
   }
 
   .clearIcon {
+    flex-shrink: 0;
     height: 14px;
     margin-right: 6px;
     object-fit: contain;
-    flex-shrink: 0;
     width: 14px;
   }
 

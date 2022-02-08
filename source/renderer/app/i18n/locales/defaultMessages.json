@@ -1307,7 +1307,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Exporting public key failed. Make sure the provided passphrase is correct. Disconnect and reconnect the device to retry.",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
