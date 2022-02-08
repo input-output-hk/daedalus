@@ -306,12 +306,6 @@ export default class LocalStorageApi {
       assetLocalData,
       `${policyId}${assetName}`
     );
-  getAssetSettingsDialogWasOpened = (): Promise<boolean> =>
-    LocalStorageApi.get(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, false);
-  setAssetSettingsDialogWasOpened = (): Promise<void> =>
-    LocalStorageApi.set(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, true);
-  unsetAssetSettingsDialogWasOpened = (): Promise<void> =>
-    LocalStorageApi.unset(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED);
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);
   setSmashServer = (smashServerUrl: string): Promise<void> =>
