@@ -639,7 +639,7 @@
   "test.environment.shelleyQaLabel": "Shelley QA",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",
-  "voting.apiError.description1": "We could not fetch the API to fetch the Catalyst Project dates",
+  "voting.apiError.description1": "Unable to communicate with the API that retrieves the Catalyst date information",
   "voting.apiError.description2": "Please, try again later",
   "voting.apiError.title": "Catalyst API unavailable",
   "voting.catalyst.descriptionRow1": "Decide which innovative ideas for Cardano will receive funding.",

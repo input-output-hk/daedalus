@@ -9,7 +9,7 @@ export const messages = defineMessages({
   description1: {
     id: 'voting.apiError.description1',
     defaultMessage:
-      '!!!We could not fetch the API to fetch the Catalyst Project dates',
+      '!!!Unable to communicate with the API that retrieves the Catalyst date information',
     description: 'Description 1',
   },
   description2: {
