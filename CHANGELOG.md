@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 4.8.0
 
 ### Features
 
@@ -9,6 +9,10 @@
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 - Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791))
 
+### Fixes
+
+- Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
+  
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
@@ -19,11 +23,17 @@
 ### Features
 
 - Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
-- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827)) ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
 
 ### Chores
 
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
 
