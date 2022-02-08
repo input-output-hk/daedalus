@@ -56,13 +56,13 @@ class WalletSummaryHeader extends Component<Props> {
     const walletAmountStyles = classnames([styles.walletAmount]);
     const isRestoreActive = wallet.isRestoring;
     const walletAmount = isRestoreActive
-      ? '-'
+      ? '–'
       : formattedWalletAmount(wallet.amount, false);
     const totalTransactions = isRestoreActive
-      ? '-'
+      ? '–'
       : numberOfTransactions ?? numberOfRecentTransactions;
     const pendingTransactions = isRestoreActive
-      ? '-'
+      ? '–'
       : numberOfPendingTransactions;
     return (
       <div className={styles.component}>
