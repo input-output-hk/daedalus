@@ -7,7 +7,6 @@ import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';
 import type { Intl } from '../../../types/i18nTypes';
-import SecurityMenuItem from './SecurityMenuItem';
 
 type Props = {
   intl: Intl,
@@ -26,7 +25,12 @@ const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
           active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
           className="general"
         />
-        <SecurityMenuItem isActiveItem={isActiveItem} onClick={onItemClick} />
+        <SettingsMenuItem
+          active={isActiveItem(ROUTES.SETTINGS.SECURITY)}
+          label={intl.formatMessage(messages.security)}
+          onClick={() => onItemClick(ROUTES.SETTINGS.SECURITY)}
+          className="security"
+        />
         <SettingsMenuItem
           label={intl.formatMessage(messages.wallets)}
           onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}

@@ -3848,25 +3848,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
-        "description": "Label of settings sidebar category popover notification",
-        "end": {
-          "column": 3,
-          "line": 10
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.js",
-        "id": "sidebar.category.settings.notification.label",
-        "start": {
-          "column": 9,
-          "line": 5
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
