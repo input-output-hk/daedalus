@@ -18264,13 +18264,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 18
+          "line": 20
         }
       }
     ],
