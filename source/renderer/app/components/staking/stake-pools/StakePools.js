@@ -292,23 +292,41 @@ export default class StakePools extends Component<Props, State> {
                     </span>
                   </span>
                 </h2>
-                <StakingPageScrollContext.Consumer>
-                  {(stakePoolsScrollContext) => (
-                    <StakePoolsList
-                      stakePoolsList={stakePoolsDelegatingList}
-                      onOpenExternalLink={onOpenExternalLink}
-                      currentTheme={currentTheme}
-                      containerClassName="StakingWithNavigation_page"
-                      onSelect={this.onDelegate}
-                      numberOfRankedStakePools={numberOfRankedStakePools}
-                      isGridRewardsView={isGridRewardsView}
-                      showWithSelectButton
-                      scrollElementRef={
-                        stakePoolsScrollContext.scrollElementRef
-                      }
-                    />
-                  )}
-                </StakingPageScrollContext.Consumer>
+                {isListView ? (
+                  <StakePoolsTable
+                    listName={SELECTED_INDEX_TABLE}
+                    currentLocale={currentLocale}
+                    stakePoolsList={stakePoolsDelegatingList}
+                    onOpenExternalLink={onOpenExternalLink}
+                    currentTheme={currentTheme}
+                    isListActive={selectedList === SELECTED_INDEX_TABLE}
+                    setListActive={this.handleSetListActive}
+                    containerClassName="StakingWithNavigation_page"
+                    onSelect={this.onDelegate}
+                    numberOfRankedStakePools={numberOfRankedStakePools}
+                    showWithSelectButton
+                    onTableHeaderMouseEnter={this.handleTableHeaderMouseEnter}
+                    onTableHeaderMouseLeave={this.handleTableHeaderMouseLeave}
+                  />
+                ) : (
+                  <StakingPageScrollContext.Consumer>
+                    {(stakePoolsScrollContext) => (
+                      <StakePoolsList
+                        stakePoolsList={stakePoolsDelegatingList}
+                        onOpenExternalLink={onOpenExternalLink}
+                        currentTheme={currentTheme}
+                        containerClassName="StakingWithNavigation_page"
+                        onSelect={this.onDelegate}
+                        numberOfRankedStakePools={numberOfRankedStakePools}
+                        isGridRewardsView={isGridRewardsView}
+                        showWithSelectButton
+                        scrollElementRef={
+                          stakePoolsScrollContext.scrollElementRef
+                        }
+                      />
+                    )}
+                  </StakingPageScrollContext.Consumer>
+                )}
               </Fragment>
             )}
             {isListView && (
