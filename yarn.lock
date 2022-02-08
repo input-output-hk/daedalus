@@ -8465,9 +8465,11 @@ fill-range@^4.0.0:
     repeat-string "^1.6.1"
     to-regex-range "^2.1.0"
 
-filter-react-dom-props@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/filter-react-dom-props/-/filter-react-dom-props-0.0.2.tgz#d5c1e5a89c13534cebe3930a22afa9ae3238813b"
+filter-invalid-dom-props@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/filter-invalid-dom-props/-/filter-invalid-dom-props-2.1.0.tgz#7690bb72e9213a09e8429c07f3aea21468f43ee5"
+  dependencies:
+    html-attributes "1.1.0"
 
 finalhandler@~1.1.2:
   version "1.1.2"
@@ -9555,6 +9557,10 @@ homedir-polyfill@^1.0.1:
 hosted-git-info@^2.1.4:
   version "2.8.8"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
+
+html-attributes@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/html-attributes/-/html-attributes-1.1.0.tgz#82027a4fac7a6070ea6c18cc3886aea18d6dea09"
 
 html-encoding-sniffer@^2.0.1:
   version "2.0.1"
@@ -14298,14 +14304,15 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.1.tgz#94e664e173b3b4a32c13953291e92fa34a05c8a7"
+react-polymorph@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-1.0.2.tgz#c4a36e32744fa7c2c0cfbf78aff02382cece3017"
   dependencies:
     "@tippyjs/react" "4.2.1"
     create-react-context "0.2.2"
     fast-password-entropy "1.1.1"
-    filter-react-dom-props "0.0.2"
+    filter-invalid-dom-props "2.1.0"
+    html-attributes "1.1.0"
     popper.js "1.16.1"
     react-modal "3.1.12"
     react-scrollbars-custom "4.0.21"
