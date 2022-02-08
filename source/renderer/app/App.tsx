@@ -6,6 +6,7 @@ import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
+import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides';
@@ -49,52 +50,45 @@ class App extends Component<{
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped;
 
-    // Daedalus is not shutting down
-    if (document.documentElement) {
-      document.documentElement.lang = locale;
-    }
-
     return (
-      <Fragment>
-        {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
-        <ThemeManager variables={themeVars} />
-        <Provider stores={stores} actions={actions}>
-          <ThemeProvider
-            theme={daedalusTheme}
-            skins={SimpleSkins}
-            variables={SimpleDefaults}
-            themeOverrides={themeOverrides}
-          >
-            <IntlProvider
-              {...{
-                locale,
-                key: locale,
-                messages: translations[locale],
-              }}
+      <EmotionThemeProvider theme={{}}>
+        <Fragment>
+          {/* @ts-ignore */}
+          <ThemeManager variables={themeVars} />
+          <Provider stores={stores} actions={actions}>
+            <ThemeProvider
+              theme={daedalusTheme}
+              skins={SimpleSkins}
+              variables={SimpleDefaults}
+              themeOverrides={themeOverrides}
             >
-              <Fragment>
-                <Router history={history}>
-                  <Routes />
-                </Router>
-                {mobxDevTools}
-                {[
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                  ),
-                  <NotificationsContainer key="notificationsContainer" />,
-                ]}
-                {canShowNews && [
-                  <NewsFeedContainer key="newsFeedList" />,
-                  <NewsOverlayContainer key="newsFeedOverlay" />,
-                ]}
-              </Fragment>
-            </IntlProvider>
-          </ThemeProvider>
-        </Provider>
-      </Fragment>
+              <IntlProvider
+                {...{ locale, key: locale, messages: translations[locale] }}
+              >
+                <Fragment>
+                  <Router history={history}>
+                    <Routes />
+                  </Router>
+                  {mobxDevTools}
+                  {[
+                    // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'ApplicationDialog'.ts(2345)
+                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                    // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'ApplicationDialog'.ts(2345)
+                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                    ),
+                    <NotificationsContainer key="notificationsContainer" />,
+                  ]}
+                  {canShowNews && [
+                    <NewsFeedContainer key="newsFeedList" />,
+                    <NewsOverlayContainer key="newsFeedOverlay" />,
+                  ]}
+                </Fragment>
+              </IntlProvider>
+            </ThemeProvider>
+          </Provider>
+        </Fragment>
+      </EmotionThemeProvider>
     );
   }
 }

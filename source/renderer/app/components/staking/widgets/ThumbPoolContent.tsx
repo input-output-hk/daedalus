@@ -3,11 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clock-c... Remove this comment to see the full error message
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ThumbPoolContent.scss' or it... Remove this comment to see the full error message
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
@@ -15,9 +13,23 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ada-sym... Remove this comment to see the full error message
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import {
+  Container,
+  Ticker,
+  Ranking,
+  RankingStar,
+  Rewards,
+  AdaIcon,
+  NoDataDash,
+  NoDataDashIcon,
+  Clock,
+  ClockIcon,
+  ColorBand,
+  GreyColorBand,
+  SaturationBar,
+} from './ThumbPoolContent.styles';
 
 type Props = {
   stakePool: StakePool;
@@ -61,23 +73,23 @@ class ThumbPoolContent extends Component<Props> {
       potentialRewards,
     } = stakePool;
     const color = getColorFromRange(ranking, numberOfRankedStakePools);
-    const componentClassnames = classnames([
-      styles.component,
-      !IS_SATURATION_DATA_AVAILABLE ? styles.hideSaturation : null,
-    ]);
+
     const saturationClassnames = classnames([
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+
     return (
-      <div className={componentClassnames}>
-        <div className={styles.ticker}>{ticker}</div>
+      <Container isSaturationDataAvailable={IS_SATURATION_DATA_AVAILABLE}>
+        <Ticker isSaturationDataAvailable={IS_SATURATION_DATA_AVAILABLE}>
+          {ticker}
+        </Ticker>
         {isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
-            <div className={styles.rewards}>
+            <Rewards>
               {this.formattedRewards(potentialRewards)}
-              <SVGInline svg={adaIcon} className={styles.adaIcon} />
-            </div>
+              <AdaIcon svg={adaIcon} />
+            </Rewards>
           ) : (
             <div className={styles.noDataDash}>
               <SVGInline svg={noDataDashBigImage} />
@@ -85,54 +97,48 @@ class ThumbPoolContent extends Component<Props> {
           ))}
         {!isGridRewardsView &&
           (IS_RANKING_DATA_AVAILABLE ? (
-            <div
-              className={styles.ranking}
-              style={{
-                color,
-              }}
-            >
+            <Ranking style={{ color }}>
               {nonMyopicMemberRewards ? (
                 ranking
               ) : (
                 <>
                   {numberOfRankedStakePools + 1}
-                  <sup>*</sup>
+                  <RankingStar>*</RankingStar>
                 </>
               )}
-            </div>
+            </Ranking>
           ) : (
-            <div className={styles.noDataDash}>
-              <SVGInline svg={noDataDashBigImage} />
-            </div>
+            <NoDataDash>
+              <NoDataDashIcon svg={noDataDashBigImage} />
+            </NoDataDash>
           ))}
         {IS_SATURATION_DATA_AVAILABLE && (
-          <div className={saturationClassnames}>
+          <SaturationBar>
             <span
               style={{
-                // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
+                // @ts-ignore Argument of type 'number' is not assignable to parameter of type 'string'.ts(2345)
                 width: `${parseFloat(saturation).toFixed(2)}%`,
               }}
             />
-          </div>
+          </SaturationBar>
         )}
         {IS_RANKING_DATA_AVAILABLE ? (
           <>
             {retiring && (
-              <div className={styles.clock}>
-                <SVGInline svg={clockIcon} className={styles.clockIcon} />
-              </div>
+              <Clock>
+                <ClockIcon svg={clockIcon} />
+              </Clock>
             )}
-            <div
-              className={styles.colorBand}
+            <ColorBand
               style={{
                 background: color,
               }}
             />
           </>
         ) : (
-          <div className={styles.greyColorBand} />
+          <GreyColorBand />
         )}
-      </div>
+      </Container>
     );
   }
 }
