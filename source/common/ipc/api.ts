@@ -14,6 +14,7 @@ import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types'
 import type { GenerateCsvParams } from '../types/csv-request.types';
 import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
 import type {
+  BlockSyncType,
   CardanoNodeState,
   CardanoStatus,
   FaultInjectionIpcRequest,
@@ -450,9 +451,13 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 /**
  * Channel for checking block replay progress
  */
-export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
-export type GetBlockReplayProgressRendererRequest = void;
-export type GetBlockReplayProgressMainResponse = number;
+export const GET_BLOCK_SYNC_STATUS_CHANNEL = 'GetBlockSyncProgressChannel';
+export type GetBlockSyncProgressType = BlockSyncType;
+export type GetBlockSyncProgressRendererRequest = void;
+export type GetBlockSyncProgressMainResponse = {
+  progress: number;
+  type: GetBlockSyncProgressType;
+};
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices
@@ -502,3 +507,6 @@ export type deriveAddressMainResponse = string;
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
 export type showAddressRendererRequest = showAddressRendererRequestType;
 export type showAddressMainResponse = void;
+export const TOGGLE_RTS_FLAGS_MODE_CHANNEL = 'TOGGLE_RTS_FLAGS_MODE_CHANNEL';
+export type ToggleRTSFlagsModeRendererRequest = void;
+export type ToggleRTSFlagsModeMainResponse = void;
