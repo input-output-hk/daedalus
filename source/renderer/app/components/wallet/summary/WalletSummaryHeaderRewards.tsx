@@ -39,7 +39,7 @@ export function getFormattedRewardAmount(amount: BigNumber): string {
 export function discreetRewardsAmount(isRestoring = false): ReplacerFn {
   return (isDiscreetMode, symbol, value) => {
     if (isRestoring) {
-      return '-';
+      return '–';
     }
 
     if (!isDiscreetMode) {
