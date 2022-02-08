@@ -69,7 +69,7 @@ type Props = {
 
 interface FormFields {
   pinCode: string[];
-  repeatPinCode: string;
+  repeatPinCode: string[];
 }
 
 @observer
