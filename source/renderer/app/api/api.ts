@@ -2968,7 +2968,6 @@ export default class AdaApi {
       logger.error('AdaApi::getCatalystFund error', {
         error,
       });
-      throw new Error('Unable to fetch catalyst fund');
     }
   };
 } // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
