@@ -2055,6 +2055,19 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
       });
     } catch (error) {
+      console.error(error);
+
+      if (error.code === 'Device_InvalidState') {
+        runInAction(
+          'HardwareWalletsStore:: set Transaction verifying failed - wrong Trezor passphrase',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET; // for now
+            this.isTransactionInitiated = true;
+          }
+        );
+        throw error;
+      }
+
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
