@@ -1,5 +1,6 @@
 // @flow
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -10,13 +11,15 @@ import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 
+interface Data {
+  isNavigationEnabled: boolean;
+  walletSettingsState: WalletSettingsStateEnum;
+}
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   locale: string,
-  data: {
-    isNavigationEnabled: boolean,
-  }
+  { isNavigationEnabled, walletSettingsState }: Data
 ) => {
   const {
     ABOUT,
@@ -25,7 +28,7 @@ export const buildAppMenus = async (
     TOGGLE_RTS_FLAGS_MODE,
   } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isNavigationEnabled } = data;
+  const { isMacOS, isBlankScreenFixActive } = environment;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -121,7 +124,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     Menu.setApplicationMenu(menu);
@@ -133,7 +137,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isNavigationEnabled
+        isNavigationEnabled,
+        walletSettingsState
       )
     );
     mainWindow.setMenu(menu);

@@ -9,6 +9,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
 
 const id = 'menu';
 
@@ -19,7 +20,8 @@ export const winLinuxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  walletSettingsState: WalletSettingsStateEnum,
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
@@ -115,7 +117,11 @@ export const winLinuxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: isNavigationEnabled,
+
+        enabled:
+          isNavigationEnabled &&
+          walletSettingsState === WalletSettingsStateEnum.enabled,
+        visible: walletSettingsState !== WalletSettingsStateEnum.hidden,
       },
       {
         type: 'separator',

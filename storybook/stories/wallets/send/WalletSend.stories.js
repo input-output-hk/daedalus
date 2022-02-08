@@ -230,7 +230,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       assets={sendFormAssetData}
       addressValidator={() => true}
-      onOpenDialogAction={action('onOpenDialogAction')}
+      onSubmit={action('onSubmit')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
@@ -241,6 +241,10 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
+      walletName="My wallet"
+      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -253,7 +257,7 @@ storiesOf('Wallets|Send', module)
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
-      onOpenDialogAction={action('onOpenDialogAction')}
+      onSubmit={action('onSubmit')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
@@ -265,6 +269,10 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
+      walletName="My wallet"
+      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -277,7 +285,7 @@ storiesOf('Wallets|Send', module)
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
-      onOpenDialogAction={action('onOpenDialogAction')}
+      onSubmit={action('onSubmit')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
@@ -289,6 +297,10 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
+      walletName="My wallet"
+      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -301,7 +313,7 @@ storiesOf('Wallets|Send', module)
       calculateTransactionFee={promise(true)}
       assets={sendFormAssetData}
       addressValidator={() => true}
-      onOpenDialogAction={action('onOpenDialogAction')}
+      onSubmit={action('onSubmit')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
@@ -313,6 +325,10 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
+      walletName="My wallet"
+      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     />
   ))
   .add('Send - With Assets', () => (
@@ -327,7 +343,7 @@ storiesOf('Wallets|Send', module)
         minimumAda: new BigNumber(number('minimumAda', 1)),
       })}
       addressValidator={() => true}
-      onOpenDialogAction={action('onOpenDialogAction')}
+      onSubmit={action('onSubmit')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
@@ -340,6 +356,10 @@ storiesOf('Wallets|Send', module)
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      tokenFavorites={{}}
+      walletName="My wallet"
+      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => {

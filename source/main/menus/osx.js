@@ -9,6 +9,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 import { buildKnownIssueFixesSubmenu } from './submenuBuilders';
+import { WalletSettingsStateEnum } from '../../common/ipc/api';
 
 const id = 'menu';
 
@@ -19,7 +20,8 @@ export const osxMenu = (
   translations: {},
   locale: string,
   isNavigationEnabled: boolean,
-  translation: Function = getTranslation(translations, id)
+  walletSettingsState: WalletSettingsStateEnum,
+  translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
     label: translation('daedalus'),
@@ -55,7 +57,11 @@ export const osxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: isNavigationEnabled,
+
+        enabled:
+          isNavigationEnabled &&
+          walletSettingsState === WalletSettingsStateEnum.enabled,
+        visible: walletSettingsState !== WalletSettingsStateEnum.hidden,
       },
       { type: 'separator' },
       {

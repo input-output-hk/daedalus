@@ -22,6 +22,7 @@ import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
+import { MenuUpdater } from './containers/MenuUpdater';
 
 @observer
 export default class App extends Component<{
@@ -58,6 +59,7 @@ export default class App extends Component<{
       <Fragment>
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
+          <MenuUpdater />
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}

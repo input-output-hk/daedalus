@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
-import { requestGetter } from '../utils/storesUtils';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
 
@@ -15,30 +14,29 @@ export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
   // REQUESTS
-  @observable favoritesRequest: Request<Object> = new Request(
+  @observable
+  favoritesRequest: Request<Record<string, any>> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     this.api.localStorage.getWalletTokenFavorites
   );
-
-  @observable activeAsset: ?string = null;
-  @observable editingsAsset: ?AssetToken = null;
-  @observable assetsRequests: {
-    [key: WalletId]: Request<GetAssetsResponse>,
-  } = {};
-  @observable insertingAssetUniqueId: ?string = null;
-  @observable removingAssetUniqueId: ?string = null;
-
-  // REQUESTS
   @observable
-  getAssetSettingsDialogWasOpenedRequest: Request<void> = new Request(
-    this.api.localStorage.getAssetSettingsDialogWasOpened
-  );
+  activeAsset: string | null | undefined = null;
+  @observable
+  editedAsset: AssetToken | null | undefined = null;
+  @observable
+  assetsRequests: Record<WalletId, Request<GetAssetsResponse>> = {};
+  @observable
+  insertingAssetUniqueId: string | null | undefined = null;
+  @observable
+  removingAssetUniqueId: string | null | undefined = null;
 
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
-    assetsActions.onAssetSettingsOpen.listen(this._onAssetSettingsOpen);
+    assetsActions.setEditedAsset.listen(this._onEditedAssetSet);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
-    assetsActions.onAssetSettingsCancel.listen(this._onAssetSettingsCancel);
+    assetsActions.unsetEditedAsset.listen(this._onEditedAssetUnset);
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
     assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
     assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
@@ -74,11 +72,8 @@ export default class AssetsStore extends Store {
   getAsset = (policyId: string, assetName: string): ?Asset =>
     this.details[`${policyId}${assetName}`];
 
-  @computed get assetSettingsDialogWasOpened(): boolean {
-    return requestGetter(this.getAssetSettingsDialogWasOpenedRequest, false);
-  }
-
-  @computed get favorites(): Object {
+  @computed
+  get favorites(): Record<string, any> {
     return this.favoritesRequest.result || {};
   }
 
@@ -87,11 +82,9 @@ export default class AssetsStore extends Store {
   _setUpFavorites = async () => {
     this.favoritesRequest.execute();
   };
-
-  @action _onAssetSettingsOpen = ({ asset }: { asset: AssetToken }) => {
-    this.editingsAsset = asset;
-    this.api.localStorage.setAssetSettingsDialogWasOpened();
-    this.getAssetSettingsDialogWasOpenedRequest.execute();
+  @action
+  _onEditedAssetSet = ({ asset }: { asset: AssetToken }) => {
+    this.editedAsset = asset;
   };
 
   @action _onAssetSettingsSubmit = async ({
@@ -101,7 +94,7 @@ export default class AssetsStore extends Store {
     asset: AssetToken,
     decimals: number,
   }) => {
-    this.editingsAsset = null;
+    this.editedAsset = null;
     const { policyId, assetName } = asset;
     const assetDomain = this.getAsset(policyId, assetName);
     if (assetDomain) {
@@ -114,12 +107,13 @@ export default class AssetsStore extends Store {
       decimals,
     });
   };
-
-  @action _onAssetSettingsCancel = () => {
-    this.editingsAsset = null;
+  @action
+  _onEditedAssetUnset = () => {
+    this.editedAsset = null;
   };
-
-  @action _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
+  @action
+  _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
     const { stores, actions } = this;
     const { wallets } = stores;
     const { active } = wallets;
@@ -142,6 +136,7 @@ export default class AssetsStore extends Store {
     fullValue: string,
   }) => {
     const shortValue = ellipsis(fullValue, 15, 15);
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     this.actions.assets.copyAssetParamNotification.trigger({
       param,
       shortValue,
@@ -150,6 +145,7 @@ export default class AssetsStore extends Store {
 
   @action _refreshAssetsData = () => {
     if (this.stores.networkStatus.isConnected) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
       const { all } = this.stores.wallets;
       for (const wallet of all) {
         const { id: walletId } = wallet;
@@ -169,6 +165,7 @@ export default class AssetsStore extends Store {
   @action _createWalletTokensRequest = (
     walletId: string
   ): Request<GetAssetsResponse> => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
     return this.assetsRequests[walletId];
   };
@@ -180,6 +177,7 @@ export default class AssetsStore extends Store {
     uniqueId: string,
     isFavorite: boolean,
   }) => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     await this.api.localStorage.toggleWalletTokenFavorite(
       uniqueId,
       !isFavorite

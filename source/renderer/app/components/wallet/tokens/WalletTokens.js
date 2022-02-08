@@ -31,18 +31,17 @@ const messages = defineMessages({
 });
 
 type Props = {
-  assets: Array<AssetToken>,
-  assetSettingsDialogWasOpened: boolean,
-  currentLocale: string,
-  intl: intlShape.isRequired,
-  isLoadingAssets: boolean,
-  onAssetSettings: Function,
-  onCopyAssetParam: Function,
-  onExternalLinkClick: Function,
-  onOpenAssetSend: Function,
-  onToggleFavorite: Function,
-  tokenFavorites: Object,
-  wallet: Wallet,
+  assets: Array<AssetToken>;
+  currentLocale: string;
+  intl: intlShape.isRequired;
+  isLoadingAssets: boolean;
+  onAssetSettings: (...args: Array<any>) => any;
+  onCopyAssetParam: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  onOpenAssetSend: (...args: Array<any>) => any;
+  onToggleFavorite: (...args: Array<any>) => any;
+  tokenFavorites: Record<string, any>;
+  wallet: Wallet;
 };
 
 const WalletTokens = observer((props: Props) => {

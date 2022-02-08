@@ -42,50 +42,52 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  currencyMaxIntegerDigits: number,
-  currencyMaxFractionalDigits: number,
-  currentNumberFormat: string,
-  calculateTransactionFee: Function,
-  walletAmount: BigNumber,
-  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  addressValidator: Function,
-  assets: Array<AssetToken>,
-  hasAssets: boolean,
-  selectedAsset: ?Asset,
-  isLoadingAssets: boolean,
-  isDialogOpen: Function,
-  isRestoreActive: boolean,
-  isHardwareWallet: boolean,
-  hwDeviceStatus: HwDeviceStatus,
-  onOpenDialogAction: Function,
-  onUnsetActiveAsset: Function,
-  onExternalLinkClick: Function,
-  isAddressFromSameWallet: boolean,
+  currencyMaxIntegerDigits: number;
+  currencyMaxFractionalDigits: number;
+  currentNumberFormat: string;
+  calculateTransactionFee: (...args: Array<any>) => any;
+  walletAmount: BigNumber;
+  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
+  validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>;
+  addressValidator: (...args: Array<any>) => any;
+  assets: Array<AssetToken>;
+  hasAssets: boolean;
+  selectedAsset: Asset | null | undefined;
+  isLoadingAssets: boolean;
+  isDialogOpen: (...args: Array<any>) => any;
+  isRestoreActive: boolean;
+  isHardwareWallet: boolean;
+  hwDeviceStatus: HwDeviceStatus;
+  onSubmit: (...args: Array<any>) => any;
+  onUnsetActiveAsset: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  isAddressFromSameWallet: boolean;
+  tokenFavorites: Record<string, boolean>;
+  walletName: string;
+  onTokenPickerDialogOpen: (...args: Array<any>) => any;
+  onTokenPickerDialogClose: (...args: Array<any>) => any;
 };
 
 type State = {
   formFields: {
     receiver: {
-      receiver: Field,
-      adaAmount: Field,
-      assetFields: {
-        [uniqueId: string]: Field,
-      },
-      assetsDropdown: {
-        [uniqueId: string]: Field,
-      },
-    },
-  },
-  minimumAda: BigNumber,
-  feeCalculationRequestQue: number,
-  transactionFee: BigNumber,
-  transactionFeeError: ?string | ?Node,
-  showRemoveAssetButton: { [uniqueId: string]: boolean },
-  selectedAssetUniqueIds: Array<string>,
-  isResetButtonDisabled: boolean,
-  isReceiverAddressValid: boolean,
-  isTransactionFeeCalculated: boolean,
+      receiver: Field;
+      adaAmount: Field;
+      assetFields: Record<string, Field>;
+      assetsDropdown: Record<string, Field>;
+    };
+  };
+  minimumAda: BigNumber;
+  adaAmountInputTrack: BigNumber;
+  feeCalculationRequestQue: number;
+  transactionFee: BigNumber;
+  transactionFeeError: (string | null | undefined) | (Node | null | undefined);
+  selectedAssetUniqueIds: Array<string>;
+  isResetButtonDisabled: boolean;
+  isReceiverAddressValid: boolean;
+  isTransactionFeeCalculated: boolean;
+  isCalculatingTransactionFee: boolean;
+  adaInputState: AdaInputState;
 };
 
 @observer
@@ -105,6 +107,8 @@ export default class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
+    isCalculatingTransactionFee: false,
+    adaInputState: AdaInputStateType.None,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -207,9 +211,7 @@ export default class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-    this.props.onOpenDialogAction({
-      dialog: WalletSendAssetsConfirmationDialog,
-    });
+    this.props.onSubmit();
   };
 
   handleOnReset = () => {
@@ -680,7 +682,11 @@ export default class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount } = this.props;
+    const {
+      currencyMaxFractionalDigits,
+      walletAmount,
+      onTokenPickerDialogOpen,
+    } = this.props;
 
     const {
       adaAmount: adaAmountField,
@@ -861,9 +867,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
-                onClick={() => {
-                  this.addAssetRow(this.availableAssets[0].uniqueId);
-                }}
+                onClick={onTokenPickerDialogOpen}
               />
             </div>
           </>
@@ -881,6 +885,7 @@ export default class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
+      selectedAssetUniqueIds,
     } = this.state;
     const {
       currencyMaxFractionalDigits,
@@ -889,6 +894,9 @@ export default class WalletSendForm extends Component<Props, State> {
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      tokenFavorites,
+      walletName,
+      onTokenPickerDialogClose,
     } = this.props;
 
     const receiverField = form.$('receiver');
@@ -981,6 +989,20 @@ export default class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
           />
         ) : null}
+
+        {isDialogOpen(WalletTokenPicker) && (
+          <WalletTokenPicker
+            assets={assets}
+            previouslyCheckedIds={selectedAssetUniqueIds}
+            tokenFavorites={tokenFavorites}
+            walletName={walletName}
+            onCancel={onTokenPickerDialogClose}
+            onAdd={(checked) => {
+              onTokenPickerDialogClose();
+              checked.forEach(this.addAssetRow);
+            }}
+          />
+        )}
       </div>
     );
   }
