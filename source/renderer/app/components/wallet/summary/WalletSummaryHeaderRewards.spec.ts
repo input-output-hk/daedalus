@@ -19,7 +19,7 @@ describe('discreetRewardsAmount', () => {
   const symbol = '***';
   it('should replace the amount with a dash while restoring', () => {
     const replacer = discreetRewardsAmount(true);
-    expect(replacer(true, symbol, new BigNumber(0))).toEqual('-');
+    expect(replacer(true, symbol, new BigNumber(0))).toEqual('–');
   });
   it('should replace the amount with a discreet value', () => {
     const replacer = discreetRewardsAmount();
