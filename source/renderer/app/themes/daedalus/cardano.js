@@ -296,6 +296,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
+    '--theme-dialog-fullsize-secondary-text-action-color': '255, 255, 255',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',

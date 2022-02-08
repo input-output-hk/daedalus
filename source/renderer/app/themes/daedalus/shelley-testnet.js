@@ -281,6 +281,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
     '--theme-dialog-fullsize-field-background-color':
       'rgba(255, 255, 255, 0.07)',
+    '--theme-dialog-fullsize-secondary-text-action-color': '255, 255, 255',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
