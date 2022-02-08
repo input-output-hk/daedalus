@@ -56,6 +56,7 @@ const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
+const isVotingEnabled = includes(process.argv.slice(1), '--voting');
 
 /* ==================================================================
 =                       Compose environment                         =
@@ -96,6 +97,7 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
+    isVotingEnabled,
   },
   process.env
 );
