@@ -70,12 +70,14 @@ type Props = {
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
-  onOpenDialogAction: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
   tokenFavorites: Record<string, boolean>;
   walletName: string;
+  onTokenPickerDialogOpen: (...args: Array<any>) => any;
+  onTokenPickerDialogClose: (...args: Array<any>) => any;
 };
 type State = {
   formFields: {
@@ -95,7 +97,6 @@ type State = {
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
   isTransactionFeeCalculated: boolean;
-  isTokenPickerOpen: boolean;
   isCalculatingTransactionFee: boolean;
   adaInputState: AdaInputState;
 };
@@ -117,7 +118,6 @@ class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isTransactionFeeCalculated: false,
-    isTokenPickerOpen: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
   };
@@ -211,10 +211,7 @@ class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-
-    this.props.onOpenDialogAction({
-      dialog: WalletSendAssetsConfirmationDialog,
-    });
+    this.props.onSubmit();
   };
   handleOnReset = () => {
     // Cancel all debounced field validations
@@ -846,7 +843,12 @@ class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       isReceiverAddressValid,
     } = this.state;
-    const { currencyMaxFractionalDigits, walletAmount } = this.props;
+    const {
+      currencyMaxFractionalDigits,
+      walletAmount,
+      onTokenPickerDialogOpen,
+    } = this.props;
+
     const {
       adaAmount: adaAmountField,
       receiver: receiverField,
@@ -1030,11 +1032,7 @@ class WalletSendForm extends Component<Props, State> {
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
                 disabled={!this.hasAvailableAssets}
-                onClick={() => {
-                  this.setState({
-                    isTokenPickerOpen: true,
-                  });
-                }}
+                onClick={onTokenPickerDialogOpen}
               />
             </div>
           </>
@@ -1062,7 +1060,6 @@ class WalletSendForm extends Component<Props, State> {
       transactionFeeError,
       isResetButtonDisabled,
       isTransactionFeeCalculated,
-      isTokenPickerOpen,
       selectedAssetUniqueIds,
     } = this.state;
     const {
@@ -1075,6 +1072,7 @@ class WalletSendForm extends Component<Props, State> {
       onExternalLinkClick,
       tokenFavorites,
       walletName,
+      onTokenPickerDialogClose,
     } = this.props;
     // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const receiverField = form.$('receiver');
@@ -1184,21 +1182,15 @@ class WalletSendForm extends Component<Props, State> {
           />
         ) : null}
 
-        {isTokenPickerOpen && (
+        {isDialogOpen(WalletTokenPicker) && (
           <WalletTokenPicker
             assets={assets}
             previouslyCheckedIds={selectedAssetUniqueIds}
             tokenFavorites={tokenFavorites}
             walletName={walletName}
-            onCancel={() => {
-              this.setState({
-                isTokenPickerOpen: false,
-              });
-            }}
+            onCancel={onTokenPickerDialogClose}
             onAdd={(checked) => {
-              this.setState({
-                isTokenPickerOpen: false,
-              });
+              onTokenPickerDialogClose();
               checked.forEach(this.addAssetRow);
             }}
           />
