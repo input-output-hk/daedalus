@@ -22,7 +22,10 @@ type State = {
 };
 type Props = {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  verificationProgress: number;
+  blockSync: {
+    type: BlockSyncType;
+    progress: number;
+  };
   hasBeenConnected: boolean;
   forceConnectivityIssue?: boolean;
   isConnected: boolean;

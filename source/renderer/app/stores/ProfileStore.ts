@@ -41,7 +41,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
-import formatCpuInfo from '../utils/formatCpuInfo';
+import { buildSystemInfo } from '../utils/buildSystemInfo';
 
 export default class ProfileStore extends Store {
   @observable
@@ -133,6 +133,8 @@ export default class ProfileStore extends Store {
   isSubmittingBugReport = false;
   @observable
   isInitialScreen = false;
+  @observable
+  isRTSModeRecommendationAcknowledged = false;
 
   /* eslint-enable max-len */
   setup() {
@@ -371,6 +373,10 @@ export default class ProfileStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
+  @action
+  _acknowledgeRTSFlagsModeRecommendation = () => {
+    this.isRTSModeRecommendationAcknowledged = true;
+  };
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
   };
@@ -568,13 +574,7 @@ export default class ProfileStore extends Store {
         isStaging,
         isTestnet,
       } = this.environment;
-      const systemInfo = {
-        platform: os,
-        platformVersion,
-        cpu: formatCpuInfo(cpu),
-        ram: formattedBytesToSize(ram),
-        availableDiskSpace: diskSpaceAvailable,
-      };
+      const systemInfo = buildSystemInfo(this.environment, networkStatus);
       const coreInfo = {
         daedalusVersion: version,
         daedalusBuildNumber: build,
@@ -620,6 +620,7 @@ export default class ProfileStore extends Store {
       };
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });

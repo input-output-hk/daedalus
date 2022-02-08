@@ -20,6 +20,7 @@ import {
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import type {
+  BlockSyncType,
   CardanoNodeState,
   CardanoStatus,
   TlsConfig,
@@ -41,6 +42,8 @@ import type { GetBlockSyncProgressMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import { toggleRTSFlagsModeChannel } from '../ipc/toggleRTSFlagsModeChannel';
+
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
   CONNECTING: 0,
@@ -82,6 +85,7 @@ export default class NetworkStatusStore extends Store {
   cardanoNodePID = 0;
   @observable
   cardanoWalletPID = 0;
+  @observable isRTSFlagsModeEnabled = false;
   @observable
   isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
 
@@ -167,14 +171,13 @@ export default class NetworkStatusStore extends Store {
   @observable
   shelleyActivationTime = '';
   @observable
-  // @ts-ignore ts-migrate(2300) FIXME: Duplicate identifier 'isAlonzoActivated'.
-  isAlonzoActivated = false;
-  @observable
   isAlonzoPending = false;
   @observable
   alonzoActivationTime = '';
-  @observable
-  verificationProgress = 0;
+  @observable blockSync: {
+    type: BlockSyncType;
+    progress: number;
+  } = { progress: 0, type: 'validatingChunk' };
   @observable
   epochLength: number | null | undefined = null; // unit: 1 slot
 
@@ -235,6 +238,7 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: Restart of cardano-node failed', {
         error,
       });
@@ -281,6 +285,7 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: Error while updating node status', {
         error,
       });
@@ -306,6 +311,7 @@ export default class NetworkStatusStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info(`NetworkStatusStore: handling node state <${state}>`, {
       state,
     });
@@ -317,12 +323,14 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: requesting node status');
       // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
       const status = await getCachedCardanoStatusChannel.request();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: received cached node status', {
         status,
       });
       if (status)
         runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: error while requesting node state', {
         error,
       });
@@ -337,6 +345,7 @@ export default class NetworkStatusStore extends Store {
       const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: error while requesting tls config', {
         error,
       });
@@ -358,6 +367,7 @@ export default class NetworkStatusStore extends Store {
   };
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
       state,
     });
@@ -418,7 +428,12 @@ export default class NetworkStatusStore extends Store {
       isRTSFlagsModeEnabled,
     };
   };
+
   // DEFINE ACTIONS
+  @action _toggleRTSFlagsMode = async () => {
+    await toggleRTSFlagsModeChannel.send();
+  };
+
   @action
   _setNetworkStatusPollingInterval = () => {
     this._networkStatusPollingInterval = setInterval(
@@ -489,6 +504,7 @@ export default class NetworkStatusStore extends Store {
       }
     }
 
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: Checking network clock...', {
       isForceCheck,
     });
@@ -511,6 +527,7 @@ export default class NetworkStatusStore extends Store {
           this._clearNetworkClockPollingInterval();
         }
       });
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('NetworkStatusStore: Network clock response received', {
         localTimeDifference: this.localTimeDifference,
         isNodeTimeCorrect: this.isNodeTimeCorrect,
@@ -575,6 +592,7 @@ export default class NetworkStatusStore extends Store {
 
         const connectingTimeDelta = this._getStartupTimeDelta();
 
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
         });
@@ -620,6 +638,7 @@ export default class NetworkStatusStore extends Store {
 
         const syncingTimeDelta = this._getStartupTimeDelta();
 
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
         });
@@ -784,11 +803,11 @@ export default class NetworkStatusStore extends Store {
 
     return Promise.resolve();
   };
-  @action
-  _onCheckVerificationProgress = (
-    verificationProgress: number
-  ): Promise<void> => {
-    this.verificationProgress = verificationProgress;
+  @action _onCheckBlockSyncProgress = ({
+    progress,
+    type,
+  }: GetBlockSyncProgressMainResponse): Promise<void> => {
+    this.blockSync = { progress, type };
     return Promise.resolve();
   };
   @action
@@ -849,6 +868,6 @@ export default class NetworkStatusStore extends Store {
 
   @computed
   get isVerifyingBlockchain(): boolean {
-    return !this.isConnected && this.verificationProgress < 100;
+    return !this.isConnected && this.blockSync.progress < 100;
   }
 }

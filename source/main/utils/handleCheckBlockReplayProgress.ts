@@ -6,6 +6,43 @@ import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
 
+const blockKeyword = 'Replayed block';
+const validatingChunkKeyword = 'Validating chunk';
+const validatedChunkKeyword = 'Validated chunk';
+const ledgerKeyword = 'Pushing ledger state';
+
+const progressKeywords = [
+  blockKeyword,
+  validatingChunkKeyword,
+  validatedChunkKeyword,
+  ledgerKeyword,
+];
+
+type KeywordTypeMap = {
+  [name: string]: GetBlockSyncProgressType;
+};
+
+const keywordTypeMap: KeywordTypeMap = {
+  [blockKeyword]: 'replayedBlock',
+  [validatingChunkKeyword]: 'validatingChunk',
+  [validatedChunkKeyword]: 'validatingChunk',
+  [ledgerKeyword]: 'pushingLedger',
+};
+
+function containProgressKeywords(line: string) {
+  return progressKeywords.some((keyword) => line.includes(keyword));
+}
+
+function getProgressType(line: string): GetBlockSyncProgressType | null {
+  const key = progressKeywords.find((k) => line.includes(k));
+
+  if (!key) {
+    return null;
+  }
+
+  return keywordTypeMap[key];
+}
+
 export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string

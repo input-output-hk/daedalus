@@ -45,7 +45,7 @@ class App extends Component<{
 
     const themeVars = require(`./themes/daedalus/${currentTheme}.ts`).default;
 
-    const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+    const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
       !isNodeStopping && // Daedalus is not shutting down
@@ -86,6 +86,7 @@ class App extends Component<{
                   isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
                     <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
                   ),
+                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
                   isActiveDialog(TOGGLE_RTS_FLAGS_MODE) && (
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),

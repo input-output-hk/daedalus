@@ -10,6 +10,7 @@ export const DefaultSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     verificationProgress={0}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
@@ -45,7 +46,10 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    blockSync={{ progress: 0, type: 'replayedBlock' }}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
   />
 );
 export const ConnectivityIssuesSyncingConnectingStory = () => (
@@ -53,7 +57,10 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    verificationProgress={0}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -92,7 +99,10 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    verificationProgress={0}
+    blockSync={{
+      progress: 0,
+      type: 'replayedBlock',
+    }}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}

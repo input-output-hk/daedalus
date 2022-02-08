@@ -19,6 +19,12 @@ import {
   checkIsWindows,
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
+// Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
+// actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
+//
+// TODO figure out better place for it - can't import from config.js as it would be a circular dep
+// https://input-output.atlassian.net/browse/DDW-928
+export const RECOMMENDED_RAM_IN_BYTES = 15 * 1024 * 1024 * 1024;
 
 // Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
 // actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
