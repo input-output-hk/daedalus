@@ -4,6 +4,7 @@ import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { WalletSettingsStateEnum } from '../common/ipc/api';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
@@ -43,7 +44,6 @@ import type {
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import {
   restoreSavedWindowBounds,
@@ -198,28 +198,20 @@ const onAppReady = async () => {
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
+    walletSettingsState: WalletSettingsStateEnum.hidden,
   });
-  enableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        const locale = getLocale(network);
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: true,
-        });
-        resolve();
-      })
-  );
   rebuildApplicationMenu.onReceive(
-    (data) =>
+    ({ walletSettingsState, isNavigationEnabled }) =>
       new Promise((resolve) => {
         const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: data.isNavigationEnabled,
+          isNavigationEnabled,
+          walletSettingsState,
         });
         // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
         mainWindow.updateTitle(locale);
+        // @ts-ignore ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         resolve();
       })
   );
