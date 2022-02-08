@@ -36,7 +36,7 @@ function ResultsPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-  const endDate = formattedDateTime(fundInfo.fundEndTime, {
+  const endDate = formattedDateTime(fundInfo.current.endTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
     currentTimeFormat: mappedFormats.currentTimeFormat,
@@ -45,7 +45,7 @@ function ResultsPhase({
     <section className={styles.root}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: fundInfo.fundNumber,
+          votingFundNumber: fundInfo.current.number,
         })}
       </h1>
 

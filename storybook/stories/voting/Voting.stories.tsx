@@ -11,7 +11,7 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
-import { FundPhases } from '../../../source/renderer/app/stores/VotingStore';
+import { FundPhase } from '../../../source/renderer/app/stores/VotingStore';
 import { CatalystFund } from '../../../source/renderer/app/api/voting/types';
 import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
@@ -32,14 +32,18 @@ import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
 
 const mockFundInfo: CatalystFund = {
-  fundNumber: 7,
-  nextFundNumber: 8,
-  fundEndTime: new Date('Feb 3, 2022, 11:00 UTC'),
-  fundStartTime: new Date('Jan 20, 2022, 11:00 UTC'),
-  fundResults: new Date('Feb 10, 2022'),
-  nextRegistrationSnapshotTime: new Date('Apr 7, 2022, 11:00 UTC'),
-  registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
-  nextFundStartTime: new Date('Jan 6, 2022, 11:00 UTC'),
+  current: {
+    number: 7,
+    startTime: new Date('Jan 20, 2022, 11:00 UTC'),
+    endTime: new Date('Feb 3, 2022, 11:00 UTC'),
+    results: new Date('Feb 10, 2022'),
+    registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
+  },
+  next: {
+    number: 8,
+    startTime: new Date('Jan 6, 2022, 11:00 UTC'),
+    registrationSnapshotTime: new Date('Apr 7, 2022, 11:00 UTC'),
+  },
 };
 
 const assets = {
@@ -181,10 +185,10 @@ storiesOf('Voting|Voting Info', module)
         fundInfo={mockFundInfo}
         // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
         fundPhase={select('Fund phase', [
-          FundPhases.SNAPSHOT,
-          FundPhases.VOTING,
-          FundPhases.TALLYING,
-          FundPhases.RESULTS,
+          FundPhase.SNAPSHOT,
+          FundPhase.VOTING,
+          FundPhase.TALLYING,
+          FundPhase.RESULTS,
         ])}
         // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'Locale'.
         currentLocale={LANGUAGE_OPTIONS[0].value}

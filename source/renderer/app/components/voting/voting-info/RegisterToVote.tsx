@@ -36,19 +36,22 @@ function RegisterToVote({
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const castEndDate = formattedDateTime(fundInfo.nextRegistrationSnapshotTime, {
-    currentLocale,
-    ...mapToLongDateTimeFormat({
+  const castEndDate = formattedDateTime(
+    fundInfo.next.registrationSnapshotTime,
+    {
       currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    }),
-  });
+      ...mapToLongDateTimeFormat({
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+      }),
+    }
+  );
   return (
     <div className={styles.root}>
       <span className={styles.title}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: fundInfo.nextFundNumber,
+          votingFundNumber: fundInfo.next.number,
         })}
       </span>
       <span className={styles.dateLabel}>

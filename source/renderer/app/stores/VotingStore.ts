@@ -37,14 +37,13 @@ export type VotingDataType = {
   metadata: VotingMetadataType;
   absoluteSlotNumber: number;
 };
-export type FundPhase = 'snapshot' | 'voting' | 'tallying' | 'results';
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
-export const FundPhases: EnumMap<string, FundPhase> = {
-  SNAPSHOT: 'snapshot',
-  VOTING: 'voting',
-  TALLYING: 'tallying',
-  RESULTS: 'results',
-};
+
+export enum FundPhase {
+  SNAPSHOT = 'snapshot',
+  VOTING = 'voting',
+  TALLYING = 'tallying',
+  RESULTS = 'results',
+}
 export default class VotingStore extends Store {
   @observable
   registrationStep = 1;
@@ -73,7 +72,7 @@ export default class VotingStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   fundPhaseInterval: IntervalID | null | undefined = null;
 
-  async setup() {
+  setup() {
     const { voting: votingActions } = this.actions;
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
@@ -87,17 +86,19 @@ export default class VotingStore extends Store {
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
 
+    this._setupFund();
+  }
+
+  @action
+  _setupFund = async () => {
+    await this.getCatalystFundRequest.execute().promise;
     this._initializeFundPhaseInterval();
 
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    await this.getCatalystFundRequest.execute();
-    const catalystFund = this.getCatalystFundRequest.result;
-
     runInAction('Initialize fund', () => {
-      this.catalystFund = catalystFund;
+      this.catalystFund = this.getCatalystFundRequest.result;
       this._checkFundPhase(new Date());
     });
-  }
+  };
 
   // REQUESTS
   @observable
@@ -419,7 +420,7 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const nextVotingFundNumber = this.catalystFund?.nextFundNumber;
+    const nextVotingFundNumber = this.catalystFund?.next?.number;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
@@ -476,20 +477,20 @@ export default class VotingStore extends Store {
   @action
   _checkFundPhase = (now: Date) => {
     const phaseValidation = {
-      [FundPhases.SNAPSHOT]: (date: Date) =>
-        date < this.catalystFund?.fundStartTime,
-      [FundPhases.VOTING]: (date: Date) =>
-        date >= this.catalystFund?.fundStartTime &&
-        date < this.catalystFund?.fundEndTime,
-      [FundPhases.TALLYING]: (date: Date) =>
-        date >= this.catalystFund?.fundEndTime &&
-        date < this.catalystFund?.fundResults,
-      [FundPhases.RESULTS]: (date: Date) =>
-        date >= this.catalystFund?.fundResults,
+      [FundPhase.SNAPSHOT]: (date: Date) =>
+        date < this.catalystFund?.current?.startTime,
+      [FundPhase.VOTING]: (date: Date) =>
+        date >= this.catalystFund?.current?.startTime &&
+        date < this.catalystFund?.current?.endTime,
+      [FundPhase.TALLYING]: (date: Date) =>
+        date >= this.catalystFund?.current?.endTime &&
+        date < this.catalystFund?.current?.results,
+      [FundPhase.RESULTS]: (date: Date) =>
+        date >= this.catalystFund?.current?.results,
     };
-    this.fundPhase = Object.values<FundPhase>(FundPhases).find((phase) =>
-      phaseValidation[phase](now)
-    );
+    this.fundPhase =
+      Object.values(FundPhase).find((phase) => phaseValidation[phase](now)) ||
+      null;
   };
   _generateVotingRegistrationKey = async () => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;

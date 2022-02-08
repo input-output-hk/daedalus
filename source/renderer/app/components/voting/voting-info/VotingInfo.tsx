@@ -12,8 +12,7 @@ import Headline from './Headline';
 import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
 import ApiError from './ApiError';
-import { FundPhases } from '../../../stores/VotingStore';
-import type { FundPhase } from '../../../stores/VotingStore';
+import { FundPhase } from '../../../stores/VotingStore';
 import type { CatalystFund } from '../../../api/voting/types';
 
 type Props = {
@@ -26,10 +25,10 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 const phaseToComponentMap = {
-  [FundPhases.SNAPSHOT]: SnapshotPhase,
-  [FundPhases.VOTING]: VotingPhase,
-  [FundPhases.TALLYING]: TallyingPhase,
-  [FundPhases.RESULTS]: ResultsPhase,
+  [FundPhase.SNAPSHOT]: SnapshotPhase,
+  [FundPhase.VOTING]: VotingPhase,
+  [FundPhase.TALLYING]: TallyingPhase,
+  [FundPhase.RESULTS]: ResultsPhase,
 };
 
 const VotingInfo = ({
@@ -41,16 +40,15 @@ const VotingInfo = ({
   onRegisterToVoteClick,
   onExternalLinkClick,
 }: Props) => {
-  const PhaseComponent = phaseToComponentMap[fundPhase || FundPhases.SNAPSHOT];
+  const PhaseComponent = phaseToComponentMap[fundPhase || FundPhase.SNAPSHOT];
   return (
     <div className={styles.component}>
       <BorderedBox>
         <Headline onExternalLinkClick={onExternalLinkClick} />
         <hr className={styles.separator} />
         <div className={styles.bottomContent}>
-          {!fundPhase ? (
-            <ApiError />
-          ) : (
+          {fundPhase === null && <ApiError />}
+          {fundPhase && (
             <>
               <div className={styles.leftContent}>
                 <PhaseComponent

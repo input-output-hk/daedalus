@@ -33,11 +33,11 @@ function TallyingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-  const endDated = formattedDateTime(fundInfo.fundEndTime, {
+  const endDated = formattedDateTime(fundInfo.current.endTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-  const resultsDate = formattedDateTime(fundInfo.fundResults, {
+  const resultsDate = formattedDateTime(fundInfo.current.results, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
@@ -45,7 +45,7 @@ function TallyingPhase({
     <section className={styles.root}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: fundInfo.fundNumber,
+          votingFundNumber: fundInfo.current.number,
         })}
       </h1>
       <div className={styles.block}>

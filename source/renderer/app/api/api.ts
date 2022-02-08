@@ -2945,20 +2945,24 @@ export default class AdaApi {
         catalystFund,
       });
       return {
-        fundNumber: catalystFund.id + 1,
-        nextFundNumber: catalystFund.id + 2,
-        fundEndTime: new Date(catalystFund.fund_end_time),
-        fundStartTime: new Date(catalystFund.fund_start_time),
-        fundResults: new Date(
-          catalystFund.chain_vote_plans?.[0]?.chain_committee_end_time
-        ),
-        nextFundStartTime: new Date(catalystFund.next_fund_start_time),
-        nextRegistrationSnapshotTime: new Date(
-          catalystFund.next_registration_snapshot_time
-        ),
-        registrationSnapshotTime: new Date(
-          catalystFund.registration_snapshot_time
-        ),
+        current: {
+          number: catalystFund.id + 1,
+          startTime: new Date(catalystFund.fund_start_time),
+          endTime: new Date(catalystFund.fund_end_time),
+          results: new Date(
+            catalystFund.chain_vote_plans?.[0]?.chain_committee_end_time
+          ),
+          registrationSnapshotTime: new Date(
+            catalystFund.registration_snapshot_time
+          ),
+        },
+        next: {
+          number: catalystFund.id + 2,
+          startTime: new Date(catalystFund.next_fund_start_time),
+          registrationSnapshotTime: new Date(
+            catalystFund.next_registration_snapshot_time
+          ),
+        },
       };
     } catch (error) {
       logger.error('AdaApi::getCatalystFund error', {

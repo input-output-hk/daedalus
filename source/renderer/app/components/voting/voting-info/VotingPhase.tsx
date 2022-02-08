@@ -35,11 +35,11 @@ function VotingPhase({
     currentDateFormat,
     currentTimeFormat,
   });
-  const startDate = formattedDateTime(fundInfo.fundStartTime, {
+  const startDate = formattedDateTime(fundInfo.current.startTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-  const endDate = formattedDateTime(fundInfo.fundEndTime, {
+  const endDate = formattedDateTime(fundInfo.current.endTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
@@ -47,7 +47,7 @@ function VotingPhase({
     <section className={styles.root}>
       <h1 className={styles.fundName}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: fundInfo.fundNumber,
+          votingFundNumber: fundInfo.current.number,
         })}
       </h1>
       <div className={styles.block}>

@@ -40,12 +40,16 @@ export type GetCatalystFundResponse = {
   }>;
 };
 export type CatalystFund = {
-  fundNumber: number;
-  nextFundNumber: number;
-  fundEndTime: Date;
-  fundStartTime: Date;
-  fundResults: Date;
-  nextFundStartTime: Date;
-  nextRegistrationSnapshotTime: Date;
-  registrationSnapshotTime: Date;
+  current: {
+    number: number;
+    startTime: Date;
+    endTime: Date;
+    results: Date;
+    registrationSnapshotTime: Date;
+  };
+  next: {
+    number: number;
+    startTime: Date;
+    registrationSnapshotTime: Date;
+  };
 };
