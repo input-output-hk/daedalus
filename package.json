@@ -62,7 +62,8 @@
     "yoroi:wallet:importer": "ts-node utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "ts-node utils/create-news-verification-hashes/index.ts",
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
-    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix"
+    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
+    "typedef:sass": "typed-scss-modules source/renderer/app"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -175,6 +176,7 @@
     "timemachine": "0.3.2",
     "transform-loader": "0.2.4",
     "ts-node": "^10.4.0",
+    "typed-scss-modules": "5.0.0",
     "typescript": "^4.5.5",
     "url-loader": "2.0.1",
     "utf-8-validate": "5.0.2",
