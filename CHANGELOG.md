@@ -5,6 +5,11 @@
 ### Features
 
 - Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+
+## 4.8.0
+
+### Features
+
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
 - Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
@@ -24,11 +29,17 @@
 ### Features
 
 - Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
-- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827)) ([PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
 
 ### Chores
 
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
 - Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
 
