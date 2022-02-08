@@ -1,5 +1,4 @@
-import { memoize } from 'lodash/fp';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { matchPath } from 'react-router-dom';
 import { WalletSettingsStateEnum } from '../../../../common/ipc/api';
 import { ROUTES } from '../../routes-config';
@@ -7,23 +6,20 @@ import type { UseMenuUpdaterArgs } from './types';
 
 const walletRoutes = Object.values(ROUTES.WALLETS);
 
-const shouldWalletSettingsOptionBeVisible = memoize((pathname: string) =>
-  walletRoutes.some(
-    (path) =>
-      matchPath(pathname, {
-        path,
-      })?.isExact
-  )
-);
-
 const useMenuUpdater = ({
   stores: { app, profile, router, staking, uiDialogs },
   rebuildApplicationMenu,
 }: UseMenuUpdaterArgs) => {
   useEffect(() => {
     let walletSettingsState = WalletSettingsStateEnum.hidden;
+    const walletSettingsOptionVisible = walletRoutes.some(
+      (path) =>
+        matchPath(router.location?.pathname, {
+          path,
+        })?.isExact
+    );
 
-    if (shouldWalletSettingsOptionBeVisible(router.location?.pathname)) {
+    if (walletSettingsOptionVisible) {
       const itIsTheWalletSettingsPage = matchPath(router.location?.pathname, {
         path: ROUTES.WALLETS.SETTINGS,
       })?.isExact;
