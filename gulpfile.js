@@ -171,6 +171,8 @@ gulp.task(
   )
 );
 
+gulp.task('typedef:sass', shell.task('yarn typedef:sass --watch'));
+
 gulp.task(
   'build:watch',
   gulp.series(
@@ -206,7 +208,10 @@ gulp.task(
 
 gulp.task(
   'dev',
-  gulp.series('server:create:dev', 'build:watch', 'server:start')
+  gulp.parallel(
+    gulp.series('server:create:dev', 'build:watch', 'server:start'),
+    gulp.series('typedef:sass')
+  )
 );
 
 gulp.task(
