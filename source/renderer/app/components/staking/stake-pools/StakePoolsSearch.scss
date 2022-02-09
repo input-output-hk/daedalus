@@ -107,10 +107,6 @@
     width: 15px;
 
     &:hover {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
-      );
-
       svg {
         > g > g {
           opacity: 1;
