@@ -97,6 +97,12 @@ type State = {
   isSubmitting: boolean,
 };
 
+interface FormFields {
+  repeatPassword: string;
+  spendingPassword: string;
+  walletName: string;
+}
+
 @observer
 export default class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
@@ -114,8 +120,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   }
 
   walletNameInput: Input;
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {
@@ -186,7 +191,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
   );
 
   submit = () => {
-    this.setState({ isSubmitting: false });
+    this.setState({
+      isSubmitting: false,
+    });
     this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
@@ -216,11 +223,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
-
     const canSubmit = !isSubmitting && form.isValid;
 
     const buttonLabel = !isSubmitting ? (

@@ -118,13 +118,18 @@ type Props = {
   isTrezor: boolean,
 };
 
+interface FormFields {
+  confirmUnsupportChecked: string;
+  confirmIneligibleChecked: string;
+  passphrase: string;
+}
+
 @observer
 export default class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         confirmUnsupportChecked: {

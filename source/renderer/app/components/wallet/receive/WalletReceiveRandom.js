@@ -84,6 +84,10 @@ type Props = {
   onToggleUsedAddresses: Function,
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 export default class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
@@ -96,8 +100,7 @@ export default class WalletReceiveRandom extends Component<Props> {
     const { onToggleUsedAddresses } = this.props;
     onToggleUsedAddresses();
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -195,7 +198,6 @@ export default class WalletReceiveRandom extends Component<Props> {
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
     ]);
-
     const passwordField = form.$('spendingPassword');
 
     const canSubmit = !isSubmitting && passwordField.value;

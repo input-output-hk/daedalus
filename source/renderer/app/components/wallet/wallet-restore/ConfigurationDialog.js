@@ -93,6 +93,12 @@ type Props = {
   currentLocale: string,
 };
 
+interface FormFields {
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 export default class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
@@ -109,7 +115,7 @@ export default class ConfigurationDialog extends Component<Props> {
     }
   }
 
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {
@@ -218,7 +224,6 @@ export default class ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
-
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
     const repeatPasswordField = form.$('repeatPassword');
@@ -238,7 +243,6 @@ export default class ConfigurationDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
-
     const canSubmit = !isSubmitting && form.isValid;
 
     return (

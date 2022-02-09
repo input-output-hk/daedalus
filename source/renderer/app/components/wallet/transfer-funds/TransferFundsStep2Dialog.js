@@ -96,13 +96,16 @@ type Props = {
   error?: ?LocalizableError,
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 export default class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -177,7 +180,6 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletAmount,
       false
     );
-
     const spendingPasswordField = this.form.$('spendingPassword');
 
     const buttonClasses = classnames([

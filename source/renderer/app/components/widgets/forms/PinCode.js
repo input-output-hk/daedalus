@@ -8,19 +8,18 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import styles from './PinCode.scss';
 
-type Props = $Exact<{
-  id: string,
-  name: string,
-  type: string,
-  autoFocus: boolean,
-  onChange?: Function,
-  label: string,
-  length: number,
-  disabled: boolean,
-  value: Array<string>,
-  error: string | null,
-}>;
-
+type Props = {
+  id?: string;
+  name: string;
+  type: string;
+  autoFocus: boolean;
+  onChange?: (...args: Array<any>) => any;
+  label: string;
+  length?: number;
+  disabled: boolean;
+  value: Array<string>;
+  error: string | null;
+};
 export default class PinCode extends Component<Props> {
   static defaultProps = {
     length: 4,

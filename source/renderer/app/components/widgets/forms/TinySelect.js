@@ -5,8 +5,15 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinySelect.scss';
 
-type Props = $Exact<{ value: string }>;
-
+type Props = {
+  value: string;
+  onChange: (...args: any) => void;
+  placeholder?: string;
+  options: Array<{
+    label: string;
+    value: string;
+  }>;
+};
 export default class TinySelect extends Component<Props> {
   render() {
     return (

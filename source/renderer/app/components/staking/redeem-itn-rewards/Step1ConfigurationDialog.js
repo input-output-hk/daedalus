@@ -143,6 +143,13 @@ type Props = {
   wallets: Array<Wallet>,
 };
 
+interface FormFields {
+  checkboxAcceptance1: string;
+  checkboxAcceptance2: string;
+  walletsDropdown: string;
+  recoveryPhrase: string;
+}
+
 @observer
 export default class Step1ConfigurationDialog extends Component<Props> {
   static contextTypes = {
@@ -155,8 +162,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
@@ -266,7 +272,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           />
         </p>
       );
-
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');

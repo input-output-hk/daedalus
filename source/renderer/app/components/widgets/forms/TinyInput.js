@@ -6,42 +6,45 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinyInput.scss';
-
+import { NumberFormat } from '../../../../../common/types/number.types';
 // TODO: Extend react-polymorph Input component props when they are available
-type Props = $Exact<{
-  autoFocus?: boolean,
-  innerLabelPrefix?: string,
-  innerLabelSuffix?: string,
-  innerValue?: Node,
-  onKeyPress?: Function,
-  onSubmit?: Function,
-  onChange?: Function,
-  type?: string,
-  useReadMode?: boolean,
-  className?: ?string,
-  disabled?: boolean,
-  error?: string | Element<any>,
-  inputRef?: Ref<any>,
-  showErrorState?: boolean,
-  hideErrorState?: boolean,
-  isShowingErrorOnFocus?: boolean,
-  isShowingErrorOnHover?: boolean,
-  label?: string | Element<any>,
-  maxLength?: number,
-  minLength?: number,
-  placeholder?: string,
-  readOnly?: boolean,
-  setError?: Function,
-  selectedOption?: any,
-  selectionRenderer?: Function,
-  skin?: ComponentType<any>,
-  theme?: ?Object, // will take precedence over theme in context if passed
-  themeId?: string,
-  themeOverrides?: Object,
-  themeVariables?: Object,
-  value: string,
-}>;
-
+type Props = {
+  autoFocus?: boolean;
+  innerLabelPrefix?: string;
+  innerLabelSuffix?: string;
+  innerValue?: Node;
+  onKeyPress?: (...args: Array<any>) => any;
+  onSubmit?: (...args: Array<any>) => any;
+  onChange?: (...args: Array<any>) => any;
+  type?: string;
+  useReadMode?: boolean;
+  className?: string | null | undefined;
+  disabled?: boolean;
+  error?: string | Element<any>;
+  inputRef?: Ref<any>;
+  showErrorState?: boolean;
+  hideErrorState?: boolean;
+  isShowingErrorOnFocus?: boolean;
+  isShowingErrorOnHover?: boolean;
+  label?: string | Element<any>;
+  maxLength?: number;
+  minLength?: number;
+  placeholder?: string;
+  readOnly?: boolean;
+  setError?: (...args: Array<any>) => any;
+  selectedOption?: any;
+  selectionRenderer?: (...args: Array<any>) => any;
+  skin?: ComponentType<any>;
+  theme?: Record<string, any> | null | undefined;
+  // will take precedence over theme in context if passed
+  themeId?: string;
+  themeOverrides?: Record<string, any>;
+  themeVariables?: Record<string, any>;
+  value: string;
+  bigNumberFormat?: NumberFormat;
+  decimalPlaces?: number;
+  allowSigns?: boolean;
+};
 type State = {
   isEditMode: boolean,
 };

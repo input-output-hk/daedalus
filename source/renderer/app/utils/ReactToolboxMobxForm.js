@@ -2,7 +2,7 @@
 import MobxReactForm from 'mobx-react-form';
 import { waitForExist } from './waitForExist';
 
-export default class ReactToolboxMobxForm extends MobxReactForm {
+export default class ReactToolboxMobxForm<T> extends MobxReactForm<T> {
   bindings() {
     return {
       ReactToolbox: {

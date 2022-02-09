@@ -18,11 +18,17 @@ import ItemsDropdown from './ItemsDropdown';
  *
  */
 type Props = {
-  className?: string,
-  getStakePoolById: Function,
-  numberOfStakePools: number,
-  onSearch?: Function,
-  wallets?: Array<$Shape<Wallet>>,
+  className?: string;
+  getStakePoolById: (...args: Array<any>) => any;
+  numberOfStakePools: number;
+  onSearch?: (...args: Array<any>) => any;
+  onChange?: (...args: Array<any>) => any;
+  selectionRenderer?: (...args: Array<any>) => any;
+  placeholder?: string;
+  value?: string;
+  errorPosition?: string;
+  disabled?: boolean;
+  wallets?: Array<Partial<Wallet>>;
 };
 
 export const onSearchWalletsDropdown = (

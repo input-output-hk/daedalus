@@ -51,13 +51,16 @@ type Props = {
   oversaturationPercentage: number,
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 export default class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

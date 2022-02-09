@@ -161,6 +161,10 @@ type State = {
   isReverifying: boolean,
 };
 
+interface FormFields {
+  noteInput: string;
+}
+
 @observer
 export default class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
@@ -172,8 +176,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
-
-  form = new ReactToolboxMobxForm({
+  form = new ReactToolboxMobxForm<FormFields>({
     fields: {
       noteInput: {
         value: '',
@@ -191,6 +194,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
         onDownloadPDF(noteInput);
       },
       onError: (err) => {
+        // @ts-ignore Argument of type 'MobxReactForm<Fields>' is not assignable to parameter of type 'string'.
         throw new Error(err);
       },
     });

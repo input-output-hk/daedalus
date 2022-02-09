@@ -99,6 +99,12 @@ type Props = {
   currentLocale: string,
 };
 
+interface FormFields {
+  currentPassword: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 export default class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
@@ -110,8 +116,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         currentPassword: {
@@ -244,11 +249,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
-
     const currentPasswordField = form.$('currentPassword');
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
-
     const canSubmit = !isSubmitting && form.isValid;
 
     const currentPasswordError =

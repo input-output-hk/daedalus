@@ -211,6 +211,13 @@ type State = {
   walletType: string,
 };
 
+interface FormFields {
+  repeatPassword: string;
+  spendingPassword: string;
+  recoveryPhrase: string;
+  walletName: string;
+}
+
 @observer
 export default class WalletRestoreDialog extends Component<Props, State> {
   static contextTypes = {
@@ -233,7 +240,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     }
   }
 
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {
@@ -383,7 +390,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       'walletName',
       styles.walletName,
     ]);
-
     const walletNameField = form.$('walletName');
     const recoveryPhraseField = form.$('recoveryPhrase');
     const spendingPasswordField = form.$('spendingPassword');

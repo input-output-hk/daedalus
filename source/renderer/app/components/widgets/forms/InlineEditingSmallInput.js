@@ -38,6 +38,10 @@ type State = {
   isActive: boolean,
 };
 
+interface FormFields {
+  inputField: string;
+}
+
 @observer
 export default class InlineEditingSmallInput extends Component<Props, State> {
   state = {
@@ -49,8 +53,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
     onStopEditing: () => {},
     onCancelEditing: () => {},
   };
-
-  validator = new ReactToolboxMobxForm(
+  validator = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         inputField: {

@@ -82,13 +82,19 @@ type Props = {
   error: ?LocalizableError,
 };
 
+interface FormFields {
+  walletFilePath: string;
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 export default class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletFilePath: {

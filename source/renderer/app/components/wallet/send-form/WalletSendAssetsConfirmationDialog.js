@@ -64,6 +64,11 @@ type State = {
   areTermsAccepted: boolean,
 };
 
+interface FormFields {
+  passphrase: string;
+  flightCandidateCheckbox: string;
+}
+
 const messages = getMessages();
 
 @observer
@@ -90,7 +95,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
     this.setState({ selectedAssets, assetsAmounts });
   }
 
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         passphrase: {
@@ -161,7 +166,7 @@ export default class WalletSendAssetsConfirmationDialog extends Component<
 
   renderConfirmationElement = (
     isHardwareWallet: boolean
-  ): React$Element<*> | null => {
+  ): React.ReactElement<React.ComponentProps<any>, any> | null => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {

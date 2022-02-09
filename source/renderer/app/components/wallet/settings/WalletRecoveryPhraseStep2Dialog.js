@@ -72,6 +72,10 @@ type State = {
   isVerifying: boolean,
 };
 
+interface FormFields {
+  recoveryPhrase: string;
+}
+
 @observer
 export default class WalletRecoveryPhraseStep2Dialog extends Component<
   Props,
@@ -84,8 +88,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
   state = {
     isVerifying: false,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {

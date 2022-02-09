@@ -63,6 +63,10 @@ type State = {
   successfullyUpdated: boolean,
 };
 
+interface FormFields {
+  inputField: string;
+}
+
 @observer
 export default class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
@@ -79,8 +83,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     hasChanged: false,
     successfullyUpdated: false,
   };
-
-  validator = new ReactToolboxMobxForm(
+  validator = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         inputField: {

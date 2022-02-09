@@ -70,6 +70,10 @@ type State = {
   exportType: ExportType,
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 export default class ExportWalletToFileDialog extends Component<Props, State> {
   static contextTypes = {
@@ -86,8 +90,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
   // onChangeExportType(exportType: ExportType) {
   //   this.setState({ exportType });
   // }
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {

@@ -69,13 +69,17 @@ type Props = {
   onSetPinCode: Function,
 };
 
+interface FormFields {
+  pinCode: string[];
+  repeatPinCode: string[];
+}
+
 @observer
 export default class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         pinCode: {
@@ -142,7 +146,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
-
     const pinCodeField = form.$('pinCode');
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();

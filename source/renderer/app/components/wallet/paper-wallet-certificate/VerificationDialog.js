@@ -102,6 +102,10 @@ type Props = {
   onClose: Function,
 };
 
+interface FormFields {
+  recoveryPhrase: string;
+}
+
 @observer
 export default class VerificationDialog extends Component<Props, State> {
   static contextTypes = {
@@ -127,8 +131,7 @@ export default class VerificationDialog extends Component<Props, State> {
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
@@ -233,7 +236,6 @@ export default class VerificationDialog extends Component<Props, State> {
       recoveringConfirmed,
       isRecoveryPhraseValid,
     } = this.state;
-
     const recoveryPhraseField = form.$('recoveryPhrase');
 
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);

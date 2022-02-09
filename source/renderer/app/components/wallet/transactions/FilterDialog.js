@@ -120,15 +120,27 @@ type Props = {|
   ...InjectedProps,
 |};
 
+interface FormFields {
+  incomingChecked: boolean;
+  outgoingChecked: boolean;
+  dateRange: string;
+  fromDate: string;
+  toDate: string;
+  fromAmount: string;
+  toAmount: string;
+}
+
 @observer
 class FilterDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  dateRangeOptions: Array<{ label: string, value: string }>;
-  form: ReactToolboxMobxForm;
-  popoverTippyInstance: ElementRef<*> = createRef();
+  dateRangeOptions: Array<{
+    label: string;
+    value: string;
+  }>;
+  form: ReactToolboxMobxForm<FormFields>;
+  popoverTippyInstance: ElementRef<any> = createRef();
 
   constructor(props: Props, context: Object) {
     super(props);
@@ -169,7 +181,7 @@ class FilterDialog extends Component<Props> {
         value: DateRangeTypes.CUSTOM,
       },
     ];
-    this.form = new ReactToolboxMobxForm({
+    this.form = new ReactToolboxMobxForm<FormFields>({
       fields: {
         incomingChecked: {
           type: 'checkbox',
@@ -235,7 +247,6 @@ class FilterDialog extends Component<Props> {
       incomingChecked,
       outgoingChecked,
     } = filterOptions;
-
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
@@ -318,8 +329,7 @@ class FilterDialog extends Component<Props> {
   isValidFromDate = (date: Object) => {
     return date.isSameOrBefore(moment().endOf('day'));
   };
-
-  isValidToDate = (date: Object) => {
+  isValidToDate = (date: Record<string, any>) => {
     const { fromDate } = this.form.values();
     return (
       date.isSameOrBefore(moment().endOf('day')) &&

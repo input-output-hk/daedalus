@@ -77,6 +77,10 @@ type Props = {
   error?: ?LocalizableError,
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 export default class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
@@ -86,8 +90,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
   static defaultProps = {
     error: null,
   };
-
-  form = new ReactToolboxMobxForm(
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -164,7 +167,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       : transactionFees;
 
     const { name: walletName } = wallet;
-
     const spendingPasswordField = form.$('spendingPassword');
 
     const actions = {
