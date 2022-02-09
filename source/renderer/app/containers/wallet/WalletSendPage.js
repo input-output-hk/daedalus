@@ -58,6 +58,11 @@ export default class WalletSendPage extends Component<Props> {
         assets: selectedAssets,
       }));
     }
+
+    return {
+      fee,
+      minimumAda,
+    };
   };
 
   submit = (isHardwareWallet: boolean, walletId: string) => {

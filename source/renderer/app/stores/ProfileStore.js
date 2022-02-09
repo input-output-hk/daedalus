@@ -135,7 +135,6 @@ export default class ProfileStore extends Store {
     profileActions.acknowledgeRTSModeRecommendation.listen(
       this._acknowledgeRTSFlagsModeRecommendation
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
@@ -529,7 +528,6 @@ export default class ProfileStore extends Store {
         isMainnet,
         isStaging,
         isTestnet,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
       } = this.environment;
 
       const systemInfo = buildSystemInfo(this.environment, networkStatus);
