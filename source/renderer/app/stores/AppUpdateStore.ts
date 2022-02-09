@@ -178,8 +178,7 @@ export default class AppUpdateStore extends Store {
   _checkNewAppUpdate = async (update: News) => {
     const { version, url } = this.getUpdateInfo(update);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    const appUpdateCompleted =
-      await this.getAppUpdateCompletedRequest.execute();
+    const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
     /*
      * The update was already installed and the installer was already deleted.
@@ -209,8 +208,7 @@ export default class AppUpdateStore extends Store {
     if (this.isUpdateDownloading) return false;
     // Is there an 'Automatic Update Failed' flag?
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    const isAutomaticUpdateFailed =
-      await this.getAppAutomaticUpdateFailedRequest.execute();
+    const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
 
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
@@ -273,11 +271,12 @@ export default class AppUpdateStore extends Store {
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
-  _getUpdateDownloadLocalData =
-    async (): Promise<DownloadLocalDataMainResponse> =>
-      getDownloadLocalDataChannel.request({
-        id: APP_UPDATE_DOWNLOAD_ID,
-      });
+  _getUpdateDownloadLocalData = async (): Promise<
+    DownloadLocalDataMainResponse
+  > =>
+    getDownloadLocalDataChannel.request({
+      id: APP_UPDATE_DOWNLOAD_ID,
+    });
   _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
     checkFileExistsChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,

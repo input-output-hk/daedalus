@@ -57,9 +57,9 @@ storiesOf('Wallets|Import File', module)
       ...Array(number('Wallets with name', 5)),
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
     ].map((x, index: number) => getWallet(index, true, statusSelect));
-    const unnamedWallets = [...Array(number('Wallets with no name', 5))].map(
-      (x, index: number) => getWallet(index, false)
-    );
+    const unnamedWallets = [
+      ...Array(number('Wallets with no name', 5)),
+    ].map((x, index: number) => getWallet(index, false));
     return (
       <VerticalFlexContainer>
         <WalletSelectImportDialog

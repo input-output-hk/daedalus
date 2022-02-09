@@ -25,8 +25,11 @@ class LoadingPage extends Component<InjectedProps> {
   }
 
   get isSystemTimeError() {
-    const { isSystemTimeCorrect, isNodeStopping, isNodeStopped } =
-      this.networkStatus;
+    const {
+      isSystemTimeCorrect,
+      isNodeStopping,
+      isNodeStopped,
+    } = this.networkStatus;
     return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
   }
 

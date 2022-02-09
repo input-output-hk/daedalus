@@ -15,8 +15,13 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const { newsFeed, appUpdate, networkStatus, profile, app } =
-      this.props.stores;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+    } = this.props.stores;
     const {
       cardanoNodeState,
       isNodeResponding,

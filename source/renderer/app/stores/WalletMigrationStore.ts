@@ -232,11 +232,13 @@ export default class WalletMigrationStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('WalletMigrationStore: Starting wallet export...');
     this.isExportRunning = true;
-    const { wallets, errors }: ExportWalletsMainResponse =
-      await exportWalletsChannel.request({
-        exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
-        locale: this.stores.profile.currentLocale,
-      });
+    const {
+      wallets,
+      errors,
+    }: ExportWalletsMainResponse = await exportWalletsChannel.request({
+      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
+      locale: this.stores.profile.currentLocale,
+    });
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = orderBy(
         wallets.map((wallet) => {
@@ -367,8 +369,8 @@ export default class WalletMigrationStore extends Store {
   };
   @action
   _generateMigrationReport = async () => {
-    const finalMigrationStatus =
-      await this.getWalletMigrationStatusRequest.execute().promise;
+    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+      .promise;
     const walletMigrationReportData: WalletMigrationReportData = {
       exportedWalletsData: this.exportedWalletsData,
       exportedWalletsCount: this.exportedWalletsCount,
@@ -409,8 +411,8 @@ export default class WalletMigrationStore extends Store {
       // Reset migration data
       this._resetMigration();
 
-      const walletMigrationStatus =
-        await this.getWalletMigrationStatusRequest.execute().promise;
+      const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+        .promise;
 
       if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
         // Wait for wallets to load as we need to match existing and exported wallets
@@ -501,8 +503,8 @@ export default class WalletMigrationStore extends Store {
       this.actions.dialogs.closeActiveDialog.trigger();
     }
 
-    const walletMigrationStatus =
-      await this.getWalletMigrationStatusRequest.execute().promise;
+    const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
+      .promise;
 
     if (walletMigrationStatus === WalletMigrationStatuses.RUNNING) {
       // Update migration status

@@ -101,8 +101,10 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: string | null | undefined = null;
 
   setup() {
-    const { staking: stakingActions, networkStatus: networkStatusActions } =
-      this.actions;
+    const {
+      staking: stakingActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
       STAKE_POOLS_FAST_INTERVAL
@@ -157,9 +159,9 @@ export default class StakingStore extends Store {
     this.api.ada.getStakePools
   );
   @observable
-  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
-    this.api.ada.calculateDelegationFee
-  );
+  calculateDelegationFeeRequest: Request<
+    DelegationCalculateFeeResponse
+  > = new Request(this.api.ada.calculateDelegationFee);
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable
   getRedeemItnRewardsFeeRequest: Request<any> = new Request(
@@ -267,8 +269,7 @@ export default class StakingStore extends Store {
   };
   @action
   _getStakingInfoWasOpen = async () => {
-    const stakingInfoWasOpen =
-      await this.api.localStorage.getStakingInfoWasOpen();
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
@@ -400,8 +401,9 @@ export default class StakingStore extends Store {
   }) => {
     const { transactionId, walletId } = request;
 
-    const recentTransactionsResponse =
-      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -485,10 +487,11 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: DelegationCalculateFeeResponse =
-        await this.calculateDelegationFeeRequest.execute({
+      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
+        {
           ...delegationFeeRequest,
-        }).promise;
+        }
+      ).promise;
 
       if (this._delegationFeeCalculationWalletId !== walletId) {
         return null;
@@ -574,8 +577,11 @@ export default class StakingStore extends Store {
 
   @action
   getStakePoolsData = async (isSmash?: boolean) => {
-    const { isConnected, isSynced, isShelleyActivated } =
-      this.stores.networkStatus;
+    const {
+      isConnected,
+      isSynced,
+      isShelleyActivated,
+    } = this.stores.networkStatus;
 
     if (!isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();

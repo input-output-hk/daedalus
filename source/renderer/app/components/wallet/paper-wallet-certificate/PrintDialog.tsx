@@ -36,14 +36,16 @@ const messages = defineMessages({
     description: '"Paper wallet create certificate print dialog" info.',
   },
   certificatePrintedConfirmationLabel: {
-    id: 'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',
+    id:
+      'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',
     defaultMessage:
       '!!!Yes, the paper wallet certificate printed successfully.',
     description:
       '"Paper wallet create certificate print dialog" certificate printed confirmation.',
   },
   certificateReadableConfirmationLabel: {
-    id: 'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
+    id:
+      'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
     defaultMessage:
       '!!!Yes, first {paperWalletPrintedWordsCount} words of the paper wallet recovery phrase are readable.',
     description:
@@ -152,8 +154,7 @@ class PrintDialog extends Component<Props, State> {
               label={intl.formatMessage(
                 messages.certificateReadableConfirmationLabel,
                 {
-                  paperWalletPrintedWordsCount:
-                    PAPER_WALLET_PRINTED_WORDS_COUNT,
+                  paperWalletPrintedWordsCount: PAPER_WALLET_PRINTED_WORDS_COUNT,
                 }
               )}
               onChange={this.onConfirmReadable}

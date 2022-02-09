@@ -35,7 +35,9 @@ const messages = defineMessages({
       'Label for close button on the delegation setup not available dialog.',
   },
 });
-export default class DelegationStepsNotAvailableDialog extends Component<Props> {
+export default class DelegationStepsNotAvailableDialog extends Component<
+  Props
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

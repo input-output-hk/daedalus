@@ -23,8 +23,11 @@ type Props = {
 @observer
 class ThumbSelectedPool extends Component<Props> {
   render() {
-    const { stakePool, alreadyDelegated, numberOfRankedStakePools } =
-      this.props;
+    const {
+      stakePool,
+      alreadyDelegated,
+      numberOfRankedStakePools,
+    } = this.props;
     const { ticker, retiring, ranking } = stakePool || {};
     const rankColor =
       stakePool && !retiring && IS_RANKING_DATA_AVAILABLE

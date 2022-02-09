@@ -62,7 +62,8 @@ const messages = defineMessages({
       'Label for the "Repeat password" input in the wallet restore dialog.',
   },
   passwordFieldsPlaceholder: {
-    id: 'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
+    id:
+      'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
     defaultMessage: '!!!Password',
     description:
       'Placeholder for the "Password" inputs in the wallet restore dialog.',

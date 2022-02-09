@@ -182,8 +182,11 @@ class WalletSettings extends Component<Props, State> {
     });
   };
   onUndelegateWalletClick = async () => {
-    const { walletId, openDialogAction, updateDataForActiveDialogAction } =
-      this.props;
+    const {
+      walletId,
+      openDialogAction,
+      updateDataForActiveDialogAction,
+    } = this.props;
     this.onBlockForm();
     openDialogAction({
       dialog: UndelegateWalletConfirmationDialog,

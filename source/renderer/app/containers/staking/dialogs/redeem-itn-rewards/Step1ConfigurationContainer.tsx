@@ -45,11 +45,16 @@ class Step1ConfigurationContainer extends Component<Props> {
     const { actions, stores, onBack, onClose } = this.props;
     const { app, staking, wallets } = stores;
     const { allWallets } = wallets;
-    const { redeemWallet, isCalculatingReedemFees, redeemRecoveryPhrase } =
-      staking;
+    const {
+      redeemWallet,
+      isCalculatingReedemFees,
+      redeemRecoveryPhrase,
+    } = staking;
     const { openExternalLink } = app;
-    const { onConfigurationContinue, onCalculateRedeemWalletFees } =
-      actions.staking;
+    const {
+      onConfigurationContinue,
+      onCalculateRedeemWalletFees,
+    } = actions.staking;
     const selectedWalletId = get(redeemWallet, 'id', null);
     const selectedWallet: Wallet | null | undefined = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId

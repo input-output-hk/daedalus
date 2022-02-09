@@ -29,8 +29,10 @@ class WalletRestoreContainer extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const { restoreWalletStep, restoreWalletShowAbortConfirmation } =
-      stores.wallets;
+    const {
+      restoreWalletStep,
+      restoreWalletShowAbortConfirmation,
+    } = stores.wallets;
     const {
       restoreWalletClose,
       restoreWalletCancelClose,
