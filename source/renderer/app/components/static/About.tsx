@@ -6,11 +6,8 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/daedalus-l... Remove this comment to see the full error message
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/cardano-lo... Remove this comment to see the full error message
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
 
 const messages = defineMessages({

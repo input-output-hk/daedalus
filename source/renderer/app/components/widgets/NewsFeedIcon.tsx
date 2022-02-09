@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/top-bar/ne... Remove this comment to see the full error message
 import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './NewsFeedIcon.scss';
 

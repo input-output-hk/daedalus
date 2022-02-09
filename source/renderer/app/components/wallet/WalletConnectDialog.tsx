@@ -12,13 +12,9 @@ import SVGInline from 'react-svg-inline';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/hardware-w... Remove this comment to see the full error message
 import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import LocalizableError from '../../i18n/LocalizableError';

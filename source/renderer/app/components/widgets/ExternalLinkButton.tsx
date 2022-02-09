@@ -2,7 +2,6 @@ import React from 'react';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/external-l... Remove this comment to see the full error message
 import externalLinkIcon from '../../assets/images/external-link-ic.inline.svg';
 import styles from './ExternalLinkButton.scss';
 

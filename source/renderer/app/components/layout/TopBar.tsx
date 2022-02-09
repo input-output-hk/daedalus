@@ -9,7 +9,6 @@ import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/header-log... Remove this comment to see the full error message
 import headerLogo from '../../assets/images/header-logo.inline.svg';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 

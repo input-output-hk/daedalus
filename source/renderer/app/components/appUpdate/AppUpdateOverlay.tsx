@@ -16,9 +16,7 @@ import News from '../../domains/News';
 import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/link-ic.in... Remove this comment to see the full error message
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({

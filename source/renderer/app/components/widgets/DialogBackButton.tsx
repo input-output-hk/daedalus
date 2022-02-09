@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/back-arrow... Remove this comment to see the full error message
 import backArrow from '../../assets/images/back-arrow-ic.inline.svg';
 import styles from './DialogBackButton.scss';
 

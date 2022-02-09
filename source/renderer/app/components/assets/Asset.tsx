@@ -7,9 +7,7 @@ import { observer } from 'mobx-react';
 import styles from './Asset.scss';
 import { ellipsis } from '../../utils/strings';
 import AssetContent from './AssetContent';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import { ASSET_TOKEN_DISPLAY_DELAY } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';

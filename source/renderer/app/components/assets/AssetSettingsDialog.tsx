@@ -11,7 +11,6 @@ import Dialog from '../widgets/Dialog';
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,

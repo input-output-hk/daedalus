@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import { formattedNumber } from '../../utils/formatters';
 import styles from './RestoreNotification.scss';
