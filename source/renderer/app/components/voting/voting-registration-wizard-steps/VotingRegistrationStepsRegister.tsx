@@ -87,13 +87,16 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -133,7 +136,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'ReactToo... Remove this comment to see the full error message
     const { spendingPassword } = this.form.values();
     this.props.onConfirm(spendingPassword);
   };
@@ -158,7 +160,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       isHardwareWallet,
       nextFundNumber,
     } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);

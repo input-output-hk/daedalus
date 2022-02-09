@@ -33,7 +33,6 @@ import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import { Slider } from '../../widgets/Slider';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsRanking.scss' or i... Remove this comment to see the full error message
 import styles from './StakePoolsRanking.scss';
 
 const messages = defineMessages({

@@ -3848,25 +3848,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
-        "description": "Label of settings sidebar category popover notification",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.ts",
-        "id": "sidebar.category.settings.notification.label",
-        "start": {
-          "column": 9,
-          "line": 4
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
@@ -6424,13 +6405,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 40
+          "line": 39
         }
       },
       {
@@ -6438,13 +6419,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -6452,13 +6433,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -6466,13 +6447,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -6480,13 +6461,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 62
+          "line": 61
         }
       },
       {
@@ -6494,13 +6475,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -6508,13 +6489,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 71
         }
       },
       {
@@ -6522,13 +6503,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 81
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 77
         }
       },
       {
@@ -6536,13 +6517,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 82
         }
       },
       {
@@ -6550,13 +6531,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 88
+          "line": 87
         }
       },
       {
@@ -6564,13 +6545,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 96
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 93
+          "line": 92
         }
       },
       {
@@ -6578,13 +6559,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 101
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 98
+          "line": 97
         }
       },
       {
@@ -6592,13 +6573,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 103
+          "line": 102
         }
       },
       {
@@ -6606,13 +6587,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 108
+          "line": 107
         }
       }
     ],
@@ -9043,13 +9024,13 @@
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -9057,13 +9038,13 @@
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -9071,13 +9052,13 @@
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -9085,13 +9066,13 @@
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -9099,13 +9080,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -9113,13 +9094,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 52
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -9127,13 +9108,13 @@
         "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.tsx",
         "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 53
         }
       }
     ],
@@ -9690,13 +9671,13 @@
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 29
+          "line": 28
         }
       },
       {
@@ -9704,13 +9685,13 @@
         "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
         "start": {
           "column": 28,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -9718,13 +9699,13 @@
         "description": "Placeholder hint for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -9732,13 +9713,13 @@
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder",
         "start": {
           "column": 34,
-          "line": 47
+          "line": 46
         }
       },
       {
@@ -9746,13 +9727,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -9760,13 +9741,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
         "start": {
           "column": 34,
-          "line": 60
+          "line": 59
         }
       },
       {
@@ -9774,13 +9755,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -9788,13 +9769,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 72
+          "line": 71
         }
       },
       {
@@ -9802,13 +9783,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 79
+          "line": 78
         }
       }
     ],
@@ -10528,13 +10509,13 @@
         "description": "Headline for the \"Paper wallet create certificate verification dialog\".",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.headline",
         "start": {
           "column": 12,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -10542,13 +10523,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -10556,13 +10537,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.instructions",
         "start": {
           "column": 16,
-          "line": 39
+          "line": 38
         }
       },
       {
@@ -10570,13 +10551,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase label.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label",
         "start": {
           "column": 23,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -10584,13 +10565,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint",
         "start": {
           "column": 22,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -10598,13 +10579,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
         "start": {
           "column": 27,
-          "line": 60
+          "line": 59
         }
       },
       {
@@ -10612,13 +10593,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" button clear label.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.button.clearLabel",
         "start": {
           "column": 20,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -10626,13 +10607,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" storing understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel",
         "start": {
           "column": 30,
-          "line": 73
+          "line": 72
         }
       },
       {
@@ -10640,13 +10621,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel",
         "start": {
           "column": 33,
-          "line": 81
+          "line": 80
         }
       }
     ],
@@ -10748,13 +10729,13 @@
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.inputLabel",
         "start": {
           "column": 14,
-          "line": 34
+          "line": 32
         }
       },
       {
@@ -10762,13 +10743,13 @@
         "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.inputPlaceholder",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 37
         }
       },
       {
@@ -10776,13 +10757,13 @@
         "description": "saveQRCodeImage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.saveQRCodeImage",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 42
         }
       },
       {
@@ -10790,13 +10771,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 49
+          "line": 47
         }
       },
       {
@@ -10804,13 +10785,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 54
+          "line": 52
         }
       },
       {
@@ -10818,13 +10799,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 57
         }
       },
       {
@@ -10832,13 +10813,13 @@
         "description": "Tooltip for the receiving address path",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.spendingPathTooltip",
         "start": {
           "column": 23,
-          "line": 64
+          "line": 62
         }
       },
       {
@@ -10846,13 +10827,13 @@
         "description": "Tooltip for the rewards address path",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.stakingPathTooltip",
         "start": {
           "column": 22,
-          "line": 69
+          "line": 67
         }
       },
       {
@@ -10860,13 +10841,13 @@
         "description": "Support request button label",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.supportRequestButtonLabel",
         "start": {
           "column": 29,
-          "line": 74
+          "line": 72
         }
       },
       {
@@ -10874,13 +10855,13 @@
         "description": "Support request link URL",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.supportRequestLinkUrl",
         "start": {
           "column": 25,
-          "line": 79
+          "line": 77
         }
       },
       {
@@ -10888,13 +10869,13 @@
         "description": "Invalid address confirmation checkbox label",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.invalidAddressConfirmationLabel",
         "start": {
           "column": 35,
-          "line": 84
+          "line": 82
         }
       },
       {
@@ -10902,13 +10883,13 @@
         "description": "Verification options section label",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.verificationCheckOptionsLabel",
         "start": {
           "column": 33,
-          "line": 90
+          "line": 88
         }
       },
       {
@@ -10916,13 +10897,13 @@
         "description": "Verification option \"Valid\" label",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.verificationCheckOptionValid",
         "start": {
           "column": 32,
-          "line": 95
+          "line": 93
         }
       },
       {
@@ -10930,13 +10911,13 @@
         "description": "Verification option \"Invalid\" label",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.verificationCheckOptionInvalid",
         "start": {
           "column": 34,
-          "line": 100
+          "line": 98
         }
       },
       {
@@ -10944,13 +10925,13 @@
         "description": "Verification option \"Reverify\" label",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.verificationCheckOptionReverify",
         "start": {
           "column": 35,
-          "line": 106
+          "line": 104
         }
       },
       {
@@ -10958,13 +10939,13 @@
         "description": "Daedalus verification status check label",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.softwareCheckLabel",
         "start": {
           "column": 22,
-          "line": 111
+          "line": 109
         }
       },
       {
@@ -10972,13 +10953,13 @@
         "description": "User verification status check label",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 118
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.confirmationCheckLabel",
         "start": {
           "column": 26,
-          "line": 116
+          "line": 114
         }
       },
       {
@@ -10986,13 +10967,13 @@
         "description": "Address verification instructions",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 124
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.addressVerificationInstructions",
         "start": {
           "column": 35,
-          "line": 121
+          "line": 119
         }
       },
       {
@@ -11000,13 +10981,13 @@
         "description": "Invalid address \"Warning\" title",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 129
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.invalidAddressWarningTitle",
         "start": {
           "column": 30,
-          "line": 127
+          "line": 125
         }
       },
       {
@@ -11014,13 +10995,13 @@
         "description": "Invalid address \"Warning\" description",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 135
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.tsx",
         "id": "wallet.receive.dialog.invalidAddressWarningDescription",
         "start": {
           "column": 36,
-          "line": 132
+          "line": 130
         }
       }
     ],
@@ -11033,13 +11014,13 @@
         "description": "Label for wallet address on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.walletAddressLabel",
         "start": {
           "column": 22,
-          "line": 28
+          "line": 26
         }
       },
       {
@@ -11047,13 +11028,13 @@
         "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.walletReceiveInstructions",
         "start": {
           "column": 29,
-          "line": 33
+          "line": 31
         }
       },
       {
@@ -11061,13 +11042,13 @@
         "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.generateNewAddressButtonLabel",
         "start": {
           "column": 33,
-          "line": 40
+          "line": 38
         }
       },
       {
@@ -11075,13 +11056,13 @@
         "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.receivingAddressesSectionTitle",
         "start": {
           "column": 34,
-          "line": 46
+          "line": 44
         }
       },
       {
@@ -11089,13 +11070,13 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 52
+          "line": 50
         }
       },
       {
@@ -11103,13 +11084,13 @@
         "description": "Placeholder for \"spending password\" on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 58
+          "line": 56
         }
       },
       {
@@ -11117,13 +11098,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveRandom.tsx",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 64
+          "line": 62
         }
       }
     ],
@@ -12344,13 +12325,13 @@
         "description": "Title for the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.title",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -12358,13 +12339,13 @@
         "description": "Label for the \"Undelegate\" button in the undelegate wallet dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -12372,13 +12353,13 @@
         "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.descriptionWithTicker",
         "start": {
           "column": 25,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -12386,13 +12367,13 @@
         "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker",
         "start": {
           "column": 32,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -12400,13 +12381,13 @@
         "description": "unknown stake pool label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -12414,13 +12395,13 @@
         "description": "Notice to confirm if the user understands unsupporting Cardano network after undelegation",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.confirmUnsupportNotice",
         "start": {
           "column": 26,
-          "line": 57
+          "line": 56
         }
       },
       {
@@ -12428,13 +12409,13 @@
         "description": "Notice to confirm if the user understands non-earning rewards after undelegation",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.confirmIneligibleNotice",
         "start": {
           "column": 27,
-          "line": 64
+          "line": 63
         }
       },
       {
@@ -12442,13 +12423,13 @@
         "description": "Fees label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 71
+          "line": 70
         }
       },
       {
@@ -12456,13 +12437,13 @@
         "description": "Deposits reclaimed label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.depositLabel",
         "start": {
           "column": 16,
-          "line": 76
+          "line": 75
         }
       },
       {
@@ -12470,13 +12451,13 @@
         "description": "Spending password label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 81
+          "line": 80
         }
       },
       {
@@ -12484,13 +12465,13 @@
         "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 86
+          "line": 85
         }
       },
       {
@@ -12498,13 +12479,13 @@
         "description": "Label for password error in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 92
+          "line": 91
         }
       },
       {
@@ -12512,13 +12493,13 @@
         "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx",
         "id": "wallet.settings.undelegate.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 97
+          "line": 96
         }
       }
     ],
@@ -18311,13 +18292,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 18
+          "line": 20
         }
       }
     ],
