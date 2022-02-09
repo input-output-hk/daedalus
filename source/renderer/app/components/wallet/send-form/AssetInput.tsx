@@ -15,6 +15,8 @@ import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
+import { Divider } from '../widgets/Divider';
+import { ClearButton } from '../widgets/ClearButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetInput.scss' or its corr... Remove this comment to see the full error message
 import styles from './AssetInput.scss';
 import messages from './messages';
@@ -121,6 +123,7 @@ class AssetInput extends Component<Props> {
                 small
               />
             }
+            data-testid={`assetInput:${uniqueId}`}
             bigNumberFormat={decimals ? currentNumberFormat : null}
             decimalPlaces={decimals}
             numberLocaleOptions={{
@@ -153,26 +156,16 @@ class AssetInput extends Component<Props> {
           <div className={styles.rightContent} ref={this.rightContentRef}>
             {this.hasAssetValue(assetField) && (
               <div className={styles.clearAssetContainer}>
-                <PopOver
-                  content={intl.formatMessage(messages.clearLabel)}
-                  placement="top"
-                >
-                  <button
-                    onClick={() => clearAssetFieldValue(assetField)}
-                    className={styles.clearAssetButton}
-                  >
-                    <SVGInline
-                      svg={closeIcon}
-                      className={styles.clearReceiverIcon}
-                    />
-                  </button>
-                </PopOver>
+                <ClearButton
+                  label={intl.formatMessage(messages.clearLabel)}
+                  onClick={() => clearAssetFieldValue(assetField)}
+                />
                 <div className={styles.separator} />
               </div>
             )}
             {ticker ? (
               <>
-                <span className={styles.divider} />
+                <Divider />
                 <span className={styles.ticker}>{ticker}</span>
               </>
             ) : null}
@@ -182,7 +175,7 @@ class AssetInput extends Component<Props> {
           <span
             className={classNames([styles.removeAssetButton, 'flat'])}
             onClick={() => removeAssetRow(uniqueId)}
-            data-testid={`remove-asset-${uniqueId}`}
+            data-testid={`removeAsset:${uniqueId}`}
           >
             <SVGInline svg={removeIcon} className={styles.removeIcon} />
           </span>

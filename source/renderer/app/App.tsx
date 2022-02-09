@@ -21,6 +21,7 @@ import type { ActionsMap } from './actions/index';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
+import { MenuUpdater } from './containers/MenuUpdater';
 
 @observer
 class App extends Component<{
@@ -61,6 +62,7 @@ class App extends Component<{
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
+          <MenuUpdater />
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}

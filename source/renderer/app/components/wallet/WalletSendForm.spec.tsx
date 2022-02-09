@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { addLocaleData } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import { Provider as MobxProvider } from 'mobx-react';
@@ -19,6 +19,7 @@ import { NUMBER_OPTIONS } from '../../config/profileConfig';
 import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
+import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm from './WalletSendForm';
 
 describe('wallet/Wallet Send Form', () => {
@@ -53,6 +54,8 @@ describe('wallet/Wallet Send Form', () => {
     calculateTransactionFee: (...args: Array<any>) => any;
     currentNumberFormat?: string;
   }) {
+    const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
+
     return (
       <TestDecorator>
         <BrowserLocalStorageBridge>
@@ -68,8 +71,10 @@ describe('wallet/Wallet Send Form', () => {
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onOpenDialogAction={jest.fn()}
-                isDialogOpen={jest.fn()}
+                onSubmit={jest.fn()}
+                isDialogOpen={(dialog) =>
+                  dialog === WalletTokenPicker && tokenPickerOpen
+                }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
                 isHardwareWallet={false}
@@ -81,6 +86,8 @@ describe('wallet/Wallet Send Form', () => {
                 isAddressFromSameWallet={false}
                 tokenFavorites={{}}
                 walletName={faker.name.firstName()}
+                onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
+                onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
@@ -101,15 +108,11 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   function getInput(label: string) {
-    return screen
-      .getByText(label)
-      .closest('label')
-      .parentElement.querySelector('input');
+    return screen.getByLabelText(label);
   }
 
   async function findInput(label: string) {
-    await screen.findByText(label);
-    return getInput(label);
+    return screen.findByLabelText(label);
   }
 
   async function addToken(value = 1, tokenIndex = 0) {
@@ -122,7 +125,10 @@ describe('wallet/Wallet Send Form', () => {
     fireEvent.click(tokenCheckbox);
     const addTokenPickerButton = await screen.findByText('Add');
     fireEvent.click(addTokenPickerButton);
-    const token = await findInput(assets[tokenIndex].metadata.name);
+
+    const { uniqueId } = assets[tokenIndex];
+
+    const token = await screen.findByTestId(`assetInput:${uniqueId}`);
     fireEvent.change(token, {
       target: {
         value,
@@ -131,7 +137,7 @@ describe('wallet/Wallet Send Form', () => {
     return async () => {
       fireEvent.mouseEnter(token);
       const removeTokenButton = await screen.findByTestId(
-        `remove-asset-${assets[tokenIndex].uniqueId}`
+        `removeAsset:${uniqueId}`
       );
       fireEvent.click(removeTokenButton);
     };
