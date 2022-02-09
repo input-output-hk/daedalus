@@ -183,4 +183,4 @@ export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 1
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =
   process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
-export const RTS_FLAGS = ['-c'];
+export const RTS_FLAGS = ['-c', '-F1.25'];
