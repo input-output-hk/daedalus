@@ -157,6 +157,7 @@ storiesOf('Navigation|Sidebar', module)
       menus={sidebarMenus}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ categories: { name: string; icon: any; rou... Remove this comment to see the full error message
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       onOpenDialog={action('openDialog')}
