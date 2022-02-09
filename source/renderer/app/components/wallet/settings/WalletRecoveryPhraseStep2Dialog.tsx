@@ -70,6 +70,10 @@ type State = {
   isVerifying: boolean;
 };
 
+interface FormFields {
+  recoveryPhrase: string;
+}
+
 @observer
 class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   static contextTypes = {
@@ -78,8 +82,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   state = {
     isVerifying: false,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
@@ -113,7 +116,6 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onClose, onContinue, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
     const canSubmit =
