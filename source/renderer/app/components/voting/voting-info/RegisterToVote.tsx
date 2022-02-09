@@ -36,7 +36,7 @@ function RegisterToVote({
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const castEndDate = formattedDateTime(
+  const snapshotDate = formattedDateTime(
     fundInfo.next.registrationSnapshotTime,
     {
       currentLocale,
@@ -57,7 +57,7 @@ function RegisterToVote({
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
-      <span className={styles.date}>{castEndDate}</span>
+      <span className={styles.date}>{snapshotDate}</span>
       <hr className={votingStyles.separator} />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}
