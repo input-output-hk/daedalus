@@ -3848,25 +3848,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!New discreet mode settings are available in <b>Security</b> tab.",
-        "description": "Label of settings sidebar category popover notification",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.ts",
-        "id": "sidebar.category.settings.notification.label",
-        "start": {
-          "column": 9,
-          "line": 4
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/sidebar/SidebarCategoryWrapper.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
@@ -18264,13 +18245,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 18
+          "line": 20
         }
       }
     ],

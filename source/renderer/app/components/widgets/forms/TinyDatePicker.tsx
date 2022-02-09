@@ -20,14 +20,15 @@ type Props = {
   onFocus?: (...args: Array<any>) => any;
   onKeyDown?: (...args: Array<any>) => any;
   isValidDate?: (...args: Array<any>) => any;
+  closeOnSelect?: boolean;
   locale?: string;
   dateFormat: string;
   disablePaste?: boolean;
   value: string;
   label?: string | Element<any>;
   placeholder?: string;
-  innerLabelPrefix: string;
-  innerValue: string | Element<any>;
+  innerLabelPrefix?: string;
+  innerValue?: string | Element<any>;
   pickerPanelPosition: PickerPanelPosition;
   useReadMode?: boolean;
   error?: string | Element<any>;
