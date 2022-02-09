@@ -31,7 +31,6 @@ const messages = defineMessages({
 });
 type Props = {
   assets: Array<AssetToken>;
-  assetSettingsDialogWasOpened: boolean;
   currentLocale: string;
   intl: intlShape.isRequired;
   isLoadingAssets: boolean;

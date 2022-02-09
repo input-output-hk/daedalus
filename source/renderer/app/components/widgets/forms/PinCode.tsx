@@ -5,17 +5,16 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PinCode.scss' or its corresp... Remove this comment to see the full error message
 import styles from './PinCode.scss';
 
 type Props = {
-  id: string;
+  id?: string;
   name: string;
   type: string;
   autoFocus: boolean;
   onChange?: (...args: Array<any>) => any;
   label: string;
-  length: number;
+  length?: number;
   disabled: boolean;
   value: Array<string>;
   error: string | null;
