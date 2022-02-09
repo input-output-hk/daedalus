@@ -39,9 +39,10 @@ export const throwErrorIfNotEnoughAdaToSupportTokens = (
     adaToProceedRegex.test(error.message)
   ) {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Math'.
-    const adaToRemain = Math.ceil(
+    const roundedAda = Math.ceil(
       Number(error.message.replace(adaToProceedRegex, '$1'))
     );
+    const adaToRemain = roundedAda > 2 ? roundedAda : 2;
     throw new ApiError()
       .set('cannotLeaveWalletEmpty', true, {
         adaToRemain,

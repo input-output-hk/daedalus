@@ -1,5 +1,5 @@
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './apiHelpers' or its correspon... Remove this comment to see the full error message
 import { throwErrorIfNotEnoughAdaToSupportTokens } from './apiHelpers';
+import ApiError from '../../domains/ApiError';
 
 // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'describe'. Do you need to instal... Remove this comment to see the full error message
 describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
@@ -61,7 +61,7 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     ).not.toThrow();
   });
   // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
-  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee"', () => {
+  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee" and round to 2 minimum ada', () => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
     const error = new Error(
       'I am unable to finalize the transaction, as there is not enough ada available to pay for the fee and also pay for the minimum ada quantities of all change outputs. I need approximately 0.629344 ada to proceed. Try increasing your wallet balance or sending a smaller amount.'
@@ -69,14 +69,9 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
     error.code = 'cannot_cover_fee';
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
-    expect(() =>
-      throwErrorIfNotEnoughAdaToSupportTokens(error, true)
-    ).toThrowError(
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ additionalValues: { adaToRemai... Remove this comment to see the full error message
-      new Error({
-        additionalValues: {
-          adaToRemain: 1,
-        },
+    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error, true)).toThrow(
+      expect.objectContaining({
+        additionalValues: { adaToRemain: 2 },
         clause: true,
         code: undefined,
         defaultMessage:
@@ -85,9 +80,32 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
         id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
         isFinalError: false,
         tempError: 'cannotLeaveWalletEmpty',
-        values: {
-          adaToRemain: 1,
-        },
+        values: { adaToRemain: 2 },
+      })
+    );
+  });
+
+  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
+  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee" and round to 2 nearest whole value provided by error', () => {
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
+    const error = new Error(
+      'I am unable to finalize the transaction, as there is not enough ada available to pay for the fee and also pay for the minimum ada quantities of all change outputs. I need approximately 2.629344 ada to proceed. Try increasing your wallet balance or sending a smaller amount.'
+    );
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Error'.
+    error.code = 'cannot_cover_fee';
+    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
+    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error, true)).toThrow(
+      expect.objectContaining({
+        additionalValues: { adaToRemain: 3 },
+        clause: true,
+        code: undefined,
+        defaultMessage:
+          '!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.',
+        forceSet: true,
+        id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
+        isFinalError: false,
+        tempError: 'cannotLeaveWalletEmpty',
+        values: { adaToRemain: 3 },
       })
     );
   });
