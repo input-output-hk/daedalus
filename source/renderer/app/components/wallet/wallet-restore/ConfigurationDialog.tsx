@@ -93,6 +93,12 @@ type Props = {
   currentLocale: string;
 };
 
+interface FormFields {
+  walletName: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
@@ -108,8 +114,7 @@ class ConfigurationDialog extends Component<Props> {
     }
   }
 
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {
@@ -192,7 +197,6 @@ class ConfigurationDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { onContinue } = this.props;
@@ -209,13 +213,10 @@ class ConfigurationDialog extends Component<Props> {
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'each' does not exist on type 'ReactToolb... Remove this comment to see the full error message
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'reset' does not exist on type 'ReactTool... Remove this comment to see the full error message
     form.reset();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'showErrors' does not exist on type 'Reac... Remove this comment to see the full error message
     form.showErrors(false);
   };
 
@@ -223,11 +224,8 @@ class ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPasswordField = form.$('repeatPassword');
     const walletNameFieldClasses = classnames([
       styles.walletName,
@@ -242,7 +240,6 @@ class ConfigurationDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
     return (
       <WalletRestoreDialog
