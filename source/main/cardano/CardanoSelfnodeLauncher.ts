@@ -41,12 +41,8 @@ export async function CardanoSelfnodeLauncher(
   replyPort: number;
 }> {
   return new Promise(async (resolve, reject) => {
-    const {
-      selfnodeBin,
-      mockTokenMetadataServerBin,
-      processName,
-      onStop,
-    } = selfnodeOptions;
+    const { selfnodeBin, mockTokenMetadataServerBin, processName, onStop } =
+      selfnodeOptions;
     setupMockTokenMetadataServer(mockTokenMetadataServerBin);
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
     const processList: Array<Process> = await find('port', CARDANO_WALLET_PORT);

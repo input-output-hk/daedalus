@@ -35,8 +35,7 @@ const messages = defineMessages({
     description: 'You may write the remaining words here:',
   },
   securingPasswordConfirmation: {
-    id:
-      'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
+    id: 'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
     defaultMessage:
       '!!!I have written the remaining {paperWalletWrittenWordsCount} words on the certificate.',
     description:

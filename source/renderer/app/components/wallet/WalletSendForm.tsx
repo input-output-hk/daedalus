@@ -593,11 +593,8 @@ class WalletSendForm extends Component<Props, State> {
     adaAmount: BigNumber,
     minimumAda: BigNumber
   ): Promise<AdaInputState> => {
-    const {
-      adaAmountInputTrack,
-      selectedAssetUniqueIds,
-      adaInputState,
-    } = this.state;
+    const { adaAmountInputTrack, selectedAssetUniqueIds, adaInputState } =
+      this.state;
 
     if (
       adaAmountInputTrack.gt(minimumAda) &&

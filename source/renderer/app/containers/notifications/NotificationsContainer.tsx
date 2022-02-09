@@ -127,8 +127,8 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'downloadTransactionsCSVSuccess',
-      actionToListenAndOpen: this.props.actions.transactions
-        .requestCSVFileSuccess,
+      actionToListenAndOpen:
+        this.props.actions.transactions.requestCSVFileSuccess,
       actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
     },
     {
@@ -145,8 +145,8 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'downloadAddressPDFSuccess',
-      actionToListenAndOpen: this.props.actions.wallets
-        .generateAddressPDFSuccess,
+      actionToListenAndOpen:
+        this.props.actions.wallets.generateAddressPDFSuccess,
       actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
     },
     {
@@ -161,13 +161,13 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'copyStateDirectoryPath',
-      actionToListenAndOpen: this.props.actions.networkStatus
-        .copyStateDirectoryPath,
+      actionToListenAndOpen:
+        this.props.actions.networkStatus.copyStateDirectoryPath,
     },
     {
       id: 'copyAssetParam',
-      actionToListenAndOpen: this.props.actions.assets
-        .copyAssetParamNotification,
+      actionToListenAndOpen:
+        this.props.actions.assets.copyAssetParamNotification,
     },
   ];
   // @ts-ignore ts-migrate(2740) FIXME: Type '{ downloadLogsProgress: { icon: string; hasE... Remove this comment to see the full error message

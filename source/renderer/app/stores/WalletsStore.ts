@@ -114,19 +114,16 @@ export default class WalletsStore extends Store {
   );
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletCertificateAdditionalMnemonicsRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  getWalletCertificateAdditionalMnemonicsRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletCertificateRecoveryPhraseRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  getWalletCertificateRecoveryPhraseRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
   @observable
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-  getWalletRecoveryPhraseFromCertificateRequest: Request<
-    Array<string>
-  > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
+  getWalletRecoveryPhraseFromCertificateRequest: Request<Array<string>> =
+    new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
   restoreDaedalusRequest: Request<Wallet> = new Request(
@@ -159,9 +156,8 @@ export default class WalletsStore extends Store {
   );
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
-  transferFundsCalculateFeeRequest: Request<
-    TransferFundsCalculateFeeRequest
-  > = new Request(this.api.ada.transferFundsCalculateFee);
+  transferFundsCalculateFeeRequest: Request<TransferFundsCalculateFeeRequest> =
+    new Request(this.api.ada.transferFundsCalculateFee);
   @observable
   // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'WalletsStor... Remove this comment to see the full error message
   transferFundsRequest: Request<TransferFundsRequest> = new Request(
@@ -435,11 +431,8 @@ export default class WalletsStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const recoveryPhrase:
-        | Array<string>
-        | null
-        | undefined = await this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: Array<string> | null | undefined =
+        await this.getWalletRecoveryPhraseRequest.execute().promise;
 
       if (recoveryPhrase != null) {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
@@ -668,9 +661,8 @@ export default class WalletsStore extends Store {
   // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   _finishWalletBackup = async () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
-      ' '
-    );
+    this._newWalletDetails.mnemonic =
+      this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(
       this._newWalletDetails
     ).promise;
@@ -784,12 +776,11 @@ export default class WalletsStore extends Store {
     const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-    const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
-      {
+    const unscrambledRecoveryPhrase: Array<string> =
+      await this.getWalletRecoveryPhraseFromCertificateRequest.execute({
         passphrase,
         scrambledInput,
-      }
-    ).promise;
+      }).promise;
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     // @ts-ignore
     return unscrambledRecoveryPhrase;
@@ -1316,17 +1307,14 @@ export default class WalletsStore extends Store {
           (walletId) => ({
             walletId,
             // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
-              walletId
-            ),
+            recentRequest:
+              this.stores.transactions._getTransactionsRecentRequest(walletId),
             // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-            allRequest: this.stores.transactions._getTransactionsAllRequest(
-              walletId
-            ),
+            allRequest:
+              this.stores.transactions._getTransactionsAllRequest(walletId),
             // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
-            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
-              walletId
-            ),
+            withdrawalsRequest:
+              this.stores.transactions._getWithdrawalsRequest(walletId),
           })
         );
 
@@ -1495,12 +1483,13 @@ export default class WalletsStore extends Store {
 
       // Generate wallet recovery phrase
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: Array<string> =
+        yield this.getWalletRecoveryPhraseRequest.execute().promise;
       // Generate 9-words (additional) mnemonic
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
-        .promise;
+      const additionalMnemonicWords: Array<string> =
+        yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
+          .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
       // Generate spending password from 9-word mnemonic and save to store
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -1508,15 +1497,13 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
       // Generate paper wallet scrambled mnemonic
       // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
-        {
+      const walletCertificateRecoveryPhrase: Array<string> =
+        yield this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
-        }
-      ).promise;
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(
-        ' '
-      );
+        }).promise;
+      this.walletCertificateRecoveryPhrase =
+        walletCertificateRecoveryPhrase.join(' ');
       // Create temporary wallet
       const walletData = {
         name: 'Paper Wallet',

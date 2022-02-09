@@ -30,11 +30,8 @@ class AppUpdateContainer extends Component<InjectedProps> {
       isWaitingToQuitDaedalus,
       installationProgress,
     } = appUpdate;
-    const {
-      installUpdate,
-      closeAppUpdateOverlay,
-      postponeUpdate,
-    } = actions.appUpdate;
+    const { installUpdate, closeAppUpdateOverlay, postponeUpdate } =
+      actions.appUpdate;
     if (!availableUpdate) return null;
     return (
       <AppUpdateOverlay

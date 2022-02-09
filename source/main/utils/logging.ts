@@ -23,15 +23,14 @@ const environmentData = {
   version,
 };
 
-const logToLevel = (level: string) => (
-  message: string,
-  data: Record<string, any> | null | undefined
-) =>
-  log[level](formatContext({ ...messageContext, level }), {
-    message,
-    data: toJS(data),
-    environmentData,
-  });
+const logToLevel =
+  (level: string) =>
+  (message: string, data: Record<string, any> | null | undefined) =>
+    log[level](formatContext({ ...messageContext, level }), {
+      message,
+      data: toJS(data),
+      environmentData,
+    });
 
 export const logger: Logger = {
   debug: logToLevel('debug'),

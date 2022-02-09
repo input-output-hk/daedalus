@@ -27,29 +27,31 @@ export const CURRENCY_DEFAULT_SELECTED = currenciesList.usd;
 export const CURRENCY_REQUEST_RATE_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
 
 // Generic function for all the Currency requests
-export const genericCurrencyRequest = (
-  requestName: RequestName
-  // @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
-): ((...args: Array<any>) => any) => async (payload?: any): any => {
-  const request = currencyConfig.requests[requestName];
-  let response;
+export const genericCurrencyRequest =
+  (
+    requestName: RequestName
+    // @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
+  ): ((...args: Array<any>) => any) =>
+  async (payload?: any): any => {
+    const request = currencyConfig.requests[requestName];
+    let response;
 
-  if (Array.isArray(request)) {
-    response = [];
+    if (Array.isArray(request)) {
+      response = [];
 
-    for (const req of request) {
-      const responseItem = await externalRequest(req);
-      response.push(responseItem);
+      for (const req of request) {
+        const responseItem = await externalRequest(req);
+        response.push(responseItem);
+      }
+    } else if (typeof request === 'function') {
+      const req = request(payload);
+      response = await externalRequest(req);
+    } else if (request) {
+      response = await externalRequest(request);
     }
-  } else if (typeof request === 'function') {
-    const req = request(payload);
-    response = await externalRequest(req);
-  } else if (request) {
-    response = await externalRequest(request);
-  }
 
-  return response;
-};
+    return response;
+  };
 export const getLocalizedCurrenciesList = (
   rawCurrencyList: Array<Currency>,
   currentLocale: Locale

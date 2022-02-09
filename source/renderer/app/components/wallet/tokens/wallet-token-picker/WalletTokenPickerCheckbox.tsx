@@ -17,10 +17,10 @@ const WalletTokenPickerCheckbox = ({
 }: Props) => {
   const checked = isChecked || isPreviouslyChecked;
   const toolTipDisabled = !isMaxCount || checked;
-  const onChange = useCallback(() => toggleCheckbox(uniqueId), [
-    toggleCheckbox,
-    uniqueId,
-  ]);
+  const onChange = useCallback(
+    () => toggleCheckbox(uniqueId),
+    [toggleCheckbox, uniqueId]
+  );
   return (
     <div className={className}>
       <PopOver

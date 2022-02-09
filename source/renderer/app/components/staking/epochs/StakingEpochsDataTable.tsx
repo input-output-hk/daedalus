@@ -25,13 +25,8 @@ type Props = {
 @observer
 class StakingEpochsDataTable extends Component<Props> {
   render() {
-    const {
-      tableHeaders,
-      tableBody,
-      order,
-      sortBy,
-      handleDataSort,
-    } = this.props;
+    const { tableHeaders, tableBody, order, sortBy, handleDataSort } =
+      this.props;
     return (
       <table>
         <thead>

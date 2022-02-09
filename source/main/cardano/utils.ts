@@ -174,13 +174,8 @@ export const exportWallets = async (
   mainWindow: BrowserWindow,
   locale: string
 ): Promise<ExportWalletsMainResponse> => {
-  const {
-    legacySecretKey,
-    legacyWalletDB,
-    stateDir,
-    cluster,
-    isFlight,
-  } = launcherConfig;
+  const { legacySecretKey, legacyWalletDB, stateDir, cluster, isFlight } =
+    launcherConfig;
   logger.info('ipcMain: Starting wallets export...', {
     exportSourcePath,
     legacySecretKey,
