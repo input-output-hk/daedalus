@@ -378,7 +378,6 @@
   "settings.wallets.currency.poweredBy.label": "Powered by ",
   "settings.wallets.currency.selectLabel": "Select currency",
   "settings.wallets.currency.titleLabel": "Display ada balances in other currency",
-  "sidebar.category.settings.notification.label": "New discreet mode settings are available in <b>Security</b> tab.",
   "sidebar.wallets.addWallet": "Add wallet",
   "sidebar.wallets.search.placeholder": "Filter",
   "sidebar.wallets.sortByBalanceButton": "Balance",
