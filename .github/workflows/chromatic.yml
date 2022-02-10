@@ -2,6 +2,7 @@ name: 'Chromatic'
 on: push
 jobs:
   chromatic-deployment:
+    if: contains(github.event.pull_request.labels.*.name, 'run Chromatic') || github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
