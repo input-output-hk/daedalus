@@ -62,6 +62,12 @@ type State = {
   assetsAmounts: Array<string>;
   areTermsAccepted: boolean;
 };
+
+interface FormFields {
+  passphrase: string;
+  flightCandidateCheckbox: string;
+}
+
 const messages = getMessages();
 
 @observer
@@ -87,8 +93,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     });
   }
 
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         passphrase: {
@@ -132,7 +137,6 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { selectedAssets, assetsAmounts } = this.state;
@@ -157,13 +161,11 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     });
   };
   handleSubmitOnEnter = (event: KeyboardEvent) =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
   renderConfirmationElement = (
     isHardwareWallet: boolean
   ): React.ReactElement<React.ComponentProps<any>, any> | null => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const {
@@ -231,9 +233,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     const { form } = this;
     const { intl } = this.context;
     const { selectedAssets, areTermsAccepted, assetsAmounts } = this.state;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const passphraseField = form.$('passphrase');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,

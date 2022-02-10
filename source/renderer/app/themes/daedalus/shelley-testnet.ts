@@ -279,6 +279,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
     '--theme-dialog-fullsize-field-background-color':
       'rgba(255, 255, 255, 0.07)',
+    '--theme-dialog-fullsize-secondary-text-action-color': '255, 255, 255',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
@@ -682,9 +683,11 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
+    '--rp-select-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-select-input-bg-color': 'transparent',
     '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
+    '--rp-select-input-border-color-disabled': 'transparent',
     '--rp-select-input-text-color': '#ffffff',
     '--rp-select-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
   },

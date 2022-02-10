@@ -97,7 +97,18 @@
   },
   "settings": {
     "import/resolver": {
-      "node": { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": "**/*.ts",
+      "rules": {
+          "no-useless-constructor": "off",
+          "@typescript-eslint/no-useless-constructor": "error"
+      }
+    }
+  ]
 }

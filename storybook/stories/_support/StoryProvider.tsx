@@ -13,7 +13,6 @@ import {
   BrowserLocalStorageBridge,
 } from '../../../source/renderer/app/features';
 import { DiscreetModeToggleKnob } from './DiscreetModeToggleKnob';
-import { DiscreetModeNotificationKnob } from './DiscreetModeNotificationKnob';
 
 type Props = {
   children: Node;
@@ -200,7 +199,6 @@ class StoryProvider extends Component<Props> {
             <>
               {this.props.children}
               <DiscreetModeToggleKnob />
-              <DiscreetModeNotificationKnob />
             </>
           </DiscreetModeFeatureProvider>
         </BrowserLocalStorageBridge>

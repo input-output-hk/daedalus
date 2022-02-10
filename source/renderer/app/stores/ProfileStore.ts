@@ -9,12 +9,10 @@ import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import { formattedBytesToSize } from '../utils/formatters';
 import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
-import { enableApplicationMenuNavigationChannel } from '../ipc/enableApplicationMenuNavigationChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -42,7 +40,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
-import formatCpuInfo from '../utils/formatCpuInfo';
+import { buildSystemInfo } from '../utils/buildSystemInfo';
 
 export default class ProfileStore extends Store {
   @observable
@@ -81,10 +79,12 @@ export default class ProfileStore extends Store {
   );
   @observable
   getProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserDateFormatJapanese
   );
   @observable
   setProfileDateFormatJapaneseRequest: Request<string> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserDateFormatJapanese
   );
   @observable
@@ -105,10 +105,12 @@ export default class ProfileStore extends Store {
   );
   @observable
   getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getDataLayerMigrationAcceptance
   );
   @observable
   setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setDataLayerMigrationAcceptance
   );
   @observable
@@ -134,9 +136,12 @@ export default class ProfileStore extends Store {
   isSubmittingBugReport = false;
   @observable
   isInitialScreen = false;
+  @observable
+  isRTSModeRecommendationAcknowledged = false;
 
   /* eslint-enable max-len */
   setup() {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
     const { profile: profileActions } = this.actions;
     profileActions.finishInitialScreenSettings.listen(
       this._finishInitialScreenSettings
@@ -151,6 +156,9 @@ export default class ProfileStore extends Store {
     profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
     profileActions.downloadLogs.listen(this._downloadLogs);
     profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
+    profileActions.acknowledgeRTSModeRecommendation.listen(
+      this._acknowledgeRTSFlagsModeRecommendation
+    );
     this.actions.app.initAppEnvironment.listen(() => {});
     this.registerReactions([
       this._updateBigNumberFormat,
@@ -202,6 +210,7 @@ export default class ProfileStore extends Store {
     if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
       systemValue = this.environment.isMainnet
         ? THEMES.DARK_CARDANO
         : THEMES.LIGHT_BLUE;
@@ -339,6 +348,7 @@ export default class ProfileStore extends Store {
 
     if (param === 'numberFormat') {
       // Force re-rendering of the sidebar in order to apply new number format
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.refreshWalletsData();
     }
   };
@@ -353,21 +363,20 @@ export default class ProfileStore extends Store {
     await this.setTermsOfUseAcceptanceRequest.execute();
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
-    await enableApplicationMenuNavigationChannel.send();
   };
   _getTermsOfUseAcceptance = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
-
-    if (this.getTermsOfUseAcceptanceRequest.result) {
-      await enableApplicationMenuNavigationChannel.send();
-    }
   };
   _acceptDataLayerMigration = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDataLayerMigrationAcceptanceRequest.execute();
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDataLayerMigrationAcceptanceRequest.execute();
+  };
+  @action
+  _acknowledgeRTSFlagsModeRecommendation = () => {
+    this.isRTSModeRecommendationAcknowledged = true;
   };
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
@@ -388,6 +397,7 @@ export default class ProfileStore extends Store {
       runInAction('Set `isInitialScreen` true', () => {
         this.isInitialScreen = true;
       });
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.INITIAL_SETTINGS,
       });
@@ -402,14 +412,17 @@ export default class ProfileStore extends Store {
       this.isCurrentLocaleSet &&
       termsOfUseNotAccepted
     ) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.TERMS_OF_USE,
       });
     }
   };
   _isOnTermsOfUsePage = () =>
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
       this.hasLoadedDataLayerMigrationAcceptance &&
@@ -419,15 +432,18 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       if (!this.stores.wallets.hasAnyWallets) {
         // There are no wallets to migrate:
         // set the data layer migration acceptance to true
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
       } else {
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
         this.actions.router.goToRoute.trigger({
           route: ROUTES.PROFILE.DATA_LAYER_MIGRATION,
         });
@@ -448,6 +464,7 @@ export default class ProfileStore extends Store {
     }
   };
   _isOnDataLayerMigrationPage = () =>
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({
@@ -520,6 +537,7 @@ export default class ProfileStore extends Store {
           compressedLogsFilePath: this.compressedLogsFilePath,
           destinationPath: destination,
         });
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
         this.actions.profile.downloadLogsSuccess.trigger(false);
 
         this._reset();
@@ -536,13 +554,13 @@ export default class ProfileStore extends Store {
     try {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('ProfileStore: Requesting state snapshot log file creation');
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       const { networkStatus } = this.stores;
       const {
         cardanoNodePID,
         cardanoWalletPID,
         tlsConfig,
         stateDirectoryPath,
-        diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
         isNodeInSync,
@@ -558,7 +576,6 @@ export default class ProfileStore extends Store {
         network,
         apiVersion,
         nodeVersion,
-        cpu,
         version,
         mainProcessID,
         rendererProcessID,
@@ -567,17 +584,8 @@ export default class ProfileStore extends Store {
         isMainnet,
         isStaging,
         isTestnet,
-        os,
-        platformVersion,
-        ram,
       } = this.environment;
-      const systemInfo = {
-        platform: os,
-        platformVersion,
-        cpu: formatCpuInfo(cpu),
-        ram: formattedBytesToSize(ram),
-        availableDiskSpace: diskSpaceAvailable,
-      };
+      const systemInfo = buildSystemInfo(this.environment, networkStatus);
       const coreInfo = {
         daedalusVersion: version,
         daedalusBuildNumber: build,
@@ -623,6 +631,7 @@ export default class ProfileStore extends Store {
       };
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });
@@ -630,6 +639,7 @@ export default class ProfileStore extends Store {
   };
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
       this.actions.app.setIsDownloadingLogs.trigger(
         isDownloadNotificationVisible
       );
