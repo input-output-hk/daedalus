@@ -264,7 +264,6 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'registerReactions' does not exist on typ... Remove this comment to see the full error message
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
     const {
       router,
@@ -272,7 +271,6 @@ export default class WalletsStore extends Store {
       wallets: walletsActions,
       app,
       networkStatus,
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     } = this.actions;
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
@@ -681,7 +679,6 @@ export default class WalletsStore extends Store {
       } else {
         this.active = null;
         this.activeValue = null;
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
         this.actions.router.goToRoute.trigger({
           route: ROUTES.WALLETS.ADD,
         });
@@ -689,7 +686,6 @@ export default class WalletsStore extends Store {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
     });
@@ -742,7 +738,6 @@ export default class WalletsStore extends Store {
       }
     ).promise;
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-    // @ts-ignore
     return unscrambledRecoveryPhrase;
   };
   @action
@@ -1062,7 +1057,6 @@ export default class WalletsStore extends Store {
   // ACTIONS
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.router.goToRoute.trigger({
       route,
     });
@@ -1156,7 +1150,6 @@ export default class WalletsStore extends Store {
     this.isAddressFromSameWallet = false;
 
     if (!expectedNetworkTag) {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
       throw new Error('Unexpected environment');
     }
 
@@ -1520,7 +1513,6 @@ export default class WalletsStore extends Store {
         intl,
       });
       const walletAddress = ellipsis(address, 15, 15);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.wallets.generateAddressPDFSuccess.trigger({
         walletAddress,
       });
@@ -1541,7 +1533,6 @@ export default class WalletsStore extends Store {
         filePath,
       });
       const walletAddress = ellipsis(address, 15, 15);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.wallets.saveQRCodeImageSuccess.trigger({
         walletAddress,
       });
