@@ -9,7 +9,7 @@ on:
 
 jobs:
   chromatic-deployment:
-    if: contains(github.event.pull_request.labels.*.name, 'run Chromatic')
+    if: contains(github.event.pull_request.labels.*.name, 'run Chromatic') || github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     env:
       STORYBOOK_FREEZE_DATE: "true"
