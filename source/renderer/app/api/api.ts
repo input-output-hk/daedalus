@@ -225,7 +225,6 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './utils/apiHelpers' or its cor... Remove this comment to see the full error message
 import { throwErrorIfNotEnoughAdaToSupportTokens } from './utils/apiHelpers';
 
 export default class AdaApi {
