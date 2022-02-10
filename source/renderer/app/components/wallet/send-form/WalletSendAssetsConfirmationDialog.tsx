@@ -285,7 +285,6 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     let errorElement = null;
 
     if (error) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'Localiza... Remove this comment to see the full error message
       const errorHasLink = !!error.values.linkLabel;
       errorElement = errorHasLink ? (
         <FormattedHTMLMessageWithLink

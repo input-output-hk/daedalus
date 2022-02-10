@@ -556,6 +556,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
+    // @ts-ignore
     const { message, code } = connectionError;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
