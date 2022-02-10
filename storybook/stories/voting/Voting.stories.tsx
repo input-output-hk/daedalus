@@ -30,6 +30,7 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
+import { Locale } from '../../../source/common/types/locales.types';
 
 const mockFundInfo: CatalystFund = {
   current: {
@@ -93,6 +94,16 @@ const WALLETS = [
   ),
 ];
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
+
+const votingInfo = {
+  fundInfo: mockFundInfo,
+  currentLocale: LANGUAGE_OPTIONS[0].value as Locale,
+  currentDateFormat: DATE_ENGLISH_OPTIONS[0].value,
+  currentTimeFormat: TIME_OPTIONS[0].value,
+  onRegisterToVoteClick: action('onRegisterToVoteClick'),
+  onExternalLinkClick: action('onExternalLinkClick'),
+};
+
 storiesOf('Voting|Voting Registration Wizard', module)
   .addDecorator((story) => (
     <StoryProvider>
@@ -177,26 +188,25 @@ storiesOf('Voting|Voting Registration Wizard', module)
     />
   ));
 storiesOf('Voting|Voting Info', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryDecorator>
+      <VerticalFlexContainer>
+        {story()}
+        <VotingFooterLinks />
+      </VerticalFlexContainer>
+    </StoryDecorator>
+  ))
   .addDecorator(withKnobs) // ====== Stories ======
-  .add('Voting Info', () => (
-    <VerticalFlexContainer>
-      <VotingInfo
-        fundInfo={mockFundInfo}
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
-        fundPhase={select('Fund phase', [
-          FundPhase.SNAPSHOT,
-          FundPhase.VOTING,
-          FundPhase.TALLYING,
-          FundPhase.RESULTS,
-        ])}
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'Locale'.
-        currentLocale={LANGUAGE_OPTIONS[0].value}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-        onRegisterToVoteClick={action('onRegisterToVoteClick')}
-        onExternalLinkClick={action('onExternalLinkClick')}
-      />
-      <VotingFooterLinks />
-    </VerticalFlexContainer>
-  ));
+  .add('Snapshot phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.SNAPSHOT} />
+  ))
+  .add('Voting phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.VOTING} />
+  ))
+  .add('Tallying phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.TALLYING} />
+  ))
+  .add('Results phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.RESULTS} />
+  ))
+  .add('API error', () => <VotingInfo {...votingInfo} fundPhase={null} />);

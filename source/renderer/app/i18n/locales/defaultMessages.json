@@ -8391,7 +8391,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Unable to communicate with the API that retrieves the Catalyst date information",
+        "defaultMessage": "!!!Unable to communicate with the API that retrieves the Catalyst date information.",
         "description": "Description 1",
         "end": {
           "column": 3,
@@ -8405,7 +8405,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please, try again later",
+        "defaultMessage": "!!!Please, try again later.",
         "description": "Description 2",
         "end": {
           "column": 3,
