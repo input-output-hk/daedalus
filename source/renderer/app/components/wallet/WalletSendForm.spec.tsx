@@ -28,12 +28,12 @@ describe('wallet/Wallet Send Form', () => {
   const currencyMaxFractionalDigits = 6;
 
   function createAssets(index: number) {
-    const id = `${faker.random.uuid()}:${index}`;
+    const id = `${faker.datatype.uuid()}:${index}`;
     return {
       policyId: id,
       assetName: faker.internet.domainWord(),
       uniqueId: id,
-      fingerprint: faker.random.uuid(),
+      fingerprint: faker.datatype.uuid(),
       quantity: new BigNumber(faker.finance.amount()),
       decimals: 0,
       recommendedDecimals: null,

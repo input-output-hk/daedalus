@@ -188,7 +188,7 @@ export const generateTransaction = (
   metadata: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
-    id: faker.random.uuid(),
+    id: faker.datatype.uuid(),
     title: '',
     type,
     amount: amount.plus(fee),
