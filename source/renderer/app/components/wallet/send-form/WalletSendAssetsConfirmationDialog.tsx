@@ -14,9 +14,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSendAssetsConfirmation... Remove this comment to see the full error message
 import styles from './WalletSendAssetsConfirmationDialog.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
@@ -39,36 +37,26 @@ type Props = {
   receiver: string;
   wallet: Wallet;
   totalAmount: BigNumber;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   selectedAssets: Array<AssetToken>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   allAvailableTokens: Array<AssetToken>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   assetsAmounts: Array<string>;
   transactionFee: string | null | undefined;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onSubmit: (...args: Array<any>) => any;
   amountToNaturalUnits: (amountWithFractions: string) => string;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onCancel: (...args: Array<any>) => any;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onExternalLinkClick: (...args: Array<any>) => any;
   isSubmitting: boolean;
   isFlight: boolean;
   error: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   isHardwareWallet: boolean;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onInitiateTransaction: (...args: Array<any>) => any;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   onCopyAssetParam: (...args: Array<any>) => any;
   isTrezor: boolean;
   formattedTotalAmount: string;
 };
 type State = {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   selectedAssets: Array<AssetToken>;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   assetsAmounts: Array<string>;
   areTermsAccepted: boolean;
 };
@@ -281,7 +269,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
         primary: true,
         className: 'confirmButton',
         disabled:
-          !!error ||
+          error?.id ===
+            'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens' ||
           (!isHardwareWallet && !passphraseField.isValid) ||
           (isHardwareWallet &&
             hwDeviceStatus !==
@@ -290,7 +279,6 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
       },
     ];
     const assetsSeparatorBasicHeight = 27;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type '{}'.
     const assetsSeparatorCalculatedHeight = selectedAssets.length
       ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18
       : assetsSeparatorBasicHeight;
@@ -363,7 +351,6 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                       </div>
                     </div>
                   </div>
-                  {/* @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type '{}'. */}
                   {selectedAssets.map((asset, assetIndex) => {
                     const assetAmount = this.getFormattedAssetAmount(
                       asset,

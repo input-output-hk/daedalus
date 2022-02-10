@@ -38,7 +38,6 @@ export default class WalletsActions {
     kind: string;
   }> = new Action();
   restoreWalletSetMnemonics: Action<{
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     mnemonics: Array<string>;
   }> = new Action();
   restoreWalletSetConfig: Action<{
@@ -59,9 +58,7 @@ export default class WalletsActions {
     receiver: string;
     amount: string;
     passphrase: string;
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     assets?: Array<AssetToken>;
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
   }> = new Action();
