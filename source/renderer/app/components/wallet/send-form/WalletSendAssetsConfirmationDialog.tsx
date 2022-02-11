@@ -163,6 +163,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
+    this.props.error?.id !==
+      'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens' &&
     submitOnEnter(this.submit, event);
   renderConfirmationElement = (
     isHardwareWallet: boolean
