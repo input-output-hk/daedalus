@@ -1,26 +1,27 @@
 /* eslint-disable consistent-return */
-import { includes, without, get } from 'lodash';
+import { get, includes, without } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { toJS } from '../../../../common/utils/helper';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
+import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
-  STORAGE_TYPES as types,
   STORAGE_KEYS as keys,
+  STORAGE_TYPES as types,
 } from '../../../../common/config/electron-store.config';
 import type { NewsTimestamp } from '../news/types';
-import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
 import type {
-  TransportDevice,
-  HardwareWalletExtendedPublicKeyResponse,
   DeviceType,
+  HardwareWalletExtendedPublicKeyResponse,
+  TransportDevice,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 import type { Currency, DeprecatedCurrency } from '../../types/currencyTypes';
 import {
-  CURRENCY_IS_ACTIVE_BY_DEFAULT,
   CURRENCY_DEFAULT_SELECTED,
+  CURRENCY_IS_ACTIVE_BY_DEFAULT,
 } from '../../config/currencyConfig';
+import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 
 export type WalletLocalData = {
   id: string;
@@ -140,12 +141,18 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.TERMS_OF_USE_ACCEPTANCE, true);
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
-  getAnalyticsAcceptance = (): Promise<boolean> =>
-    LocalStorageApi.get(keys.ANALYTICS_ACCEPTED, false);
-  setAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTED, true);
+  getAnalyticsAcceptance = (): Promise<AnalyticsAcceptanceStatus> =>
+    LocalStorageApi.get(
+      keys.ANALYTICS_ACCEPTANCE,
+      AnalyticsAcceptanceStatus.PENDING
+    );
+  setAnalyticsAcceptance = (status: AnalyticsAcceptanceStatus): Promise<void> =>
+    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, status);
   unsetAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTED, false);
+    LocalStorageApi.set(
+      keys.ANALYTICS_ACCEPTANCE,
+      AnalyticsAcceptanceStatus.PENDING
+    );
   getAnalyticsMachineSpecSent = (): Promise<boolean> =>
     LocalStorageApi.get(keys.ANALYTICS_MACHINE_SPEC_SENT, false);
   setAnalyticsMachineSpecSent = (): Promise<void> =>

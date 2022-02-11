@@ -1,5 +1,5 @@
 import React from 'react';
-import { configure, action } from 'mobx';
+import { action, configure } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -13,13 +13,15 @@ import utils from './utils';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import '!style-loader!css-loader!sass-loader!./themes/index.global.scss'; // eslint-disable-line
-
-import { setupApi } from './api/index';
+import { setupApi } from './api';
 import LocalStorageApi from './api/utils/localStorage';
 import {
   DiscreetModeFeatureProvider,
   LocalStorageFeatureProvider,
 } from './features';
+import { getAnalyticsClient } from './analytics';
+import { runSendMachineSpecAnalyticsJob } from './jobs/runSendMachineSpecAnalyticsJob';
+
 // run MobX in strict mode
 configure({
   enforceActions: 'always',
@@ -30,10 +32,19 @@ addLocaleData([...en, ...ja]);
 const { environment } = global;
 const { isTest } = environment;
 
-const initializeDaedalus = () => {
+const initializeDaedalus = async () => {
   const api = setupApi(isTest);
-  const hashHistory = createHashHistory();
+  const analyticsClient = await getAnalyticsClient(
+    api.localStorage,
+    environment
+  );
+  runSendMachineSpecAnalyticsJob(
+    analyticsClient,
+    api.localStorage,
+    environment
+  );
   const routingStore = new RouterStore();
+  const hashHistory = createHashHistory();
   const stores = setupStores(api, actions, routingStore);
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message

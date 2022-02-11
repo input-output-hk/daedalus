@@ -1,3 +1,5 @@
+import { Environment } from './source/common/types/environment.types';
+
 declare module '*.svg' {
   const content: any;
   export default content;
@@ -39,6 +41,9 @@ declare global {
       WALLET_COUNT: number;
     }
   }
+
+  var environment: Environment;
+
   var daedalus: Daedalus;
 }
 

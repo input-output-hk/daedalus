@@ -45,7 +45,7 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 import formatCpuInfo from '../utils/formatCpuInfo';
-import { AnalyticsClient } from '../analytics';
+import { AnalyticsAcceptanceStatus } from '../analytics/types';
 
 export default class ProfileStore extends Store {
   @observable
@@ -119,7 +119,9 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
-  getAnalyticsAcceptanceRequest: Request<boolean> = new Request(
+  getAnalyticsAcceptanceRequest: Request<
+    AnalyticsAcceptanceStatus
+  > = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getAnalyticsAcceptance
   );
@@ -171,7 +173,7 @@ export default class ProfileStore extends Store {
       this._finishInitialScreenSettings
     );
     profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
-    profileActions.acceptAnalytics.listen(this._acceptAnalytics);
+    profileActions.acceptAnalytics.listen(this._setAnalyticsAcceptanceStatus);
     profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
@@ -187,8 +189,9 @@ export default class ProfileStore extends Store {
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
-      this._redirectToAnalyticsScreenIfNotAccepted,
+      this._redirectToAnalyticsScreenIfNotConfirmed,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted, // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      this._redirectToMainUiAfterAnalyticsAreConfirmed,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
@@ -319,16 +322,11 @@ export default class ProfileStore extends Store {
   }
 
   @computed
-  get hasLoadedAnalyticsAcceptance(): boolean {
+  get hasConfirmedAnalyticsAcceptanceStatus(): boolean {
     return (
-      this.getAnalyticsAcceptanceRequest.wasExecuted &&
-      this.getAnalyticsAcceptanceRequest.result !== null
+      this.getAnalyticsAcceptanceRequest.result !==
+      AnalyticsAcceptanceStatus.PENDING
     );
-  }
-
-  @computed
-  get areAnalyticsAccepted(): boolean {
-    return this.getAnalyticsAcceptanceRequest.result === true;
   }
 
   @computed
@@ -412,9 +410,9 @@ export default class ProfileStore extends Store {
       await enableApplicationMenuNavigationChannel.send();
     }
   };
-  _acceptAnalytics = async () => {
+  _setAnalyticsAcceptanceStatus = async (status: AnalyticsAcceptanceStatus) => {
     // @ts-ignore
-    await this.setAnalyticsAcceptanceRequest.execute();
+    await this.setAnalyticsAcceptanceRequest.execute(status);
     // @ts-ignore
     await this.getAnalyticsAcceptanceRequest.execute();
     await enableApplicationMenuNavigationChannel.send();
@@ -465,7 +463,7 @@ export default class ProfileStore extends Store {
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
-      this.areAnalyticsAccepted &&
+      this.hasConfirmedAnalyticsAcceptanceStatus &&
       termsOfUseNotAccepted
     ) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
@@ -474,17 +472,17 @@ export default class ProfileStore extends Store {
       });
     }
   };
+  _isOnAnalyticsPage = () =>
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
+    this.stores.app.currentRoute === ROUTES.PROFILE.ANALYTICS;
   _isOnTermsOfUsePage = () =>
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
-  _redirectToAnalyticsScreenIfNotAccepted = () => {
-    const analyticsNotAccepted =
-      this.hasLoadedAnalyticsAcceptance && !this.areAnalyticsAccepted;
-
+  _redirectToAnalyticsScreenIfNotConfirmed = () => {
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
-      analyticsNotAccepted
+      !this.hasConfirmedAnalyticsAcceptanceStatus
     ) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
       this.actions.router.goToRoute.trigger({
@@ -503,7 +501,7 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.areAnalyticsAccepted &&
+      this.hasConfirmedAnalyticsAcceptanceStatus &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
@@ -524,6 +522,14 @@ export default class ProfileStore extends Store {
   };
   _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+      this._redirectToRoot();
+    }
+  };
+  _redirectToMainUiAfterAnalyticsAreConfirmed = () => {
+    if (
+      this.hasConfirmedAnalyticsAcceptanceStatus &&
+      this._isOnAnalyticsPage()
+    ) {
       this._redirectToRoot();
     }
   };

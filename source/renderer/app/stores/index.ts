@@ -1,6 +1,6 @@
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module 'utility-types' or its correspo... Remove this comment to see the full error message
 import { Class } from 'utility-types';
-import { observable, action } from 'mobx';
+import { action, observable } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
@@ -23,8 +23,10 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
+import AnalyticsStore from './AnalyticsStore';
 
 export const storeClasses = {
+  analytics: AnalyticsStore,
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
@@ -48,6 +50,7 @@ export const storeClasses = {
   window: WindowStore,
 };
 export type StoresMap = {
+  analytics: AnalyticsStore;
   addresses: AddressesStore;
   app: AppStore;
   appUpdate: AppUpdateStore;
@@ -94,6 +97,7 @@ export default action(
     // Create fresh instances of all stores
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ addresses: Store; app: Store; assets: Stor... Remove this comment to see the full error message
     stores = observable({
+      analytics: createStoreInstanceOf(AnalyticsStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       assets: createStoreInstanceOf(AssetsStore),

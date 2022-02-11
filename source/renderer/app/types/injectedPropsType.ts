@@ -4,7 +4,7 @@ import type { StoresMap } from '../stores/index';
 import type { ActionsMap } from '../actions/index';
 
 export type InjectedProps = {
-  stores: any | StoresMap;
+  stores: StoresMap;
   actions: any | ActionsMap;
   isICO?: boolean;
 };

@@ -4,6 +4,8 @@ import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { runSendMachineSpecAnalyticsJob } from '../../jobs/runSendMachineSpecAnalyticsJob';
+import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 
 @inject('stores', 'actions')
 @observer
@@ -12,8 +14,16 @@ class AnalyticsPage extends Component<InjectedProps> {
     actions: null,
     stores: null,
   };
-  onSubmit = () => {
-    this.props.actions.profile.acceptAnalytics.trigger();
+
+  onSubmit = async (analyticsAccepted: AnalyticsAcceptanceStatus) => {
+    this.props.actions.profile.acceptAnalytics.trigger(analyticsAccepted);
+
+    // fire and forget - even if it fails it will be retried when application starts
+    runSendMachineSpecAnalyticsJob(
+      this.props.stores.analytics.analyticsClient,
+      this.props.stores.profile.api.localStorage,
+      global.environment
+    );
   };
 
   render() {
@@ -31,7 +41,6 @@ class AnalyticsPage extends Component<InjectedProps> {
     );
     return (
       <TopBarLayout topbar={topbar}>
-        {/* todo discuss error handling */}
         <AnalyticsDialog
           loading={setAnalyticsAcceptanceRequest.isExecuting}
           onConfirm={this.onSubmit}

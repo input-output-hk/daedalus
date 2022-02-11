@@ -22,6 +22,7 @@ export type Environment = {
   mainProcessID: string;
   rendererProcessID: string;
   os: string;
+  system: string;
   cpu: Cpu;
   ram: number;
   installerVersion: string;
@@ -31,6 +32,7 @@ export type Environment = {
   isLinux: boolean;
   isBlankScreenFixActive: boolean;
   keepLocalClusterRunning: boolean;
+  analyticsEnabled: boolean;
 };
 // constants
 export const PRODUCTION = 'production';

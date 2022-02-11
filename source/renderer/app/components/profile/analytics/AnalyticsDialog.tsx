@@ -7,6 +7,7 @@ import styles from './AnalyticsDialog.scss';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import { Intl } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
+import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
 
 const messages = defineMessages({
   title: {
@@ -47,13 +48,18 @@ const messages = defineMessages({
     description: 'Analytics data collection confirmation button text',
   },
 });
-type Props = {
+
+interface AnalyticsDialogProps {
   intl: Intl;
   loading: boolean;
-  onConfirm: (...args: Array<any>) => any;
-};
+  onConfirm: (analyticsAccepted: AnalyticsAcceptanceStatus) => void;
+}
 
-const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
+const AnalyticsDialog = ({
+  intl,
+  loading,
+  onConfirm,
+}: AnalyticsDialogProps) => {
   const [showDataCollectionDetails, setShowDataCollectionDetails] = useState(
     false
   );
@@ -68,6 +74,13 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
       (prevAllowDataCollection) => !prevAllowDataCollection
     );
   }, [setAllowDataCollection]);
+  const handleConfirm = useCallback(() => {
+    onConfirm(
+      allowDataCollection
+        ? AnalyticsAcceptanceStatus.ACCEPTED
+        : AnalyticsAcceptanceStatus.REJECTED
+    );
+  }, [allowDataCollection]);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const getShowDataCollectionDetailsToggleLabel = useCallback(
     (isVisible: boolean) =>
@@ -118,7 +131,7 @@ const AnalyticsDialog = ({ intl, loading, onConfirm }: Props) => {
           label={intl.formatMessage(messages.confirmButton)}
           skin={ButtonSpinnerSkin}
           loading={loading}
-          onClick={onConfirm}
+          onClick={handleConfirm}
         />
       </div>
     </div>
