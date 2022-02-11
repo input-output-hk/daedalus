@@ -52,7 +52,7 @@ const messages = defineMessages({
   unrecognized_wallet: {
     id: 'wallet.hardware.deviceStatus.unrecognized_wallet',
     defaultMessage:
-      '!!!We could not recognize this device. Please ensure that you are using the same device used for pairing {walletName} and that you have entered the correct passphrase.',
+      '!!!We could not recognize this device. Please ensure that you are using the same device used for pairing "{walletName}" and that you have entered the correct passphrase.',
     description: '"Unrecognized wallet" device state',
   },
   exportingPublicKeyError: {

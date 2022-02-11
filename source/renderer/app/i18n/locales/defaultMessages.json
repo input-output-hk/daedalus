@@ -1293,7 +1293,7 @@
         }
       },
       {
-        "defaultMessage": "!!!We could not recognize this device. Please ensure that you are using the same device used for pairing {walletName} and that you have entered the correct passphrase.",
+        "defaultMessage": "!!!We could not recognize this device. Please ensure that you are using the same device used for pairing \"{walletName}\" and that you have entered the correct passphrase.",
         "description": "\"Unrecognized wallet\" device state",
         "end": {
           "column": 3,
