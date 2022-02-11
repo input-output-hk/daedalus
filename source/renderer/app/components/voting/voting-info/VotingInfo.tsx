@@ -1,8 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import BorderedBox from '../../widgets/BorderedBox';
-import type { Locale } from '../../../../../common/types/locales.types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import styles from './VotingInfo.scss';
 import ResultsPhase from './ResultsPhase';
 import SnapshotPhase from './SnapshotPhase';
@@ -13,18 +11,9 @@ import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
 import ApiError from './ApiError';
 import { FundPhase } from '../../../stores/VotingStore';
-import type { CatalystFund } from '../../../api/voting/types';
+import { VotingProps as Props, PhaseProps } from './types';
 
-type Props = {
-  currentLocale: Locale;
-  currentDateFormat: string;
-  currentTimeFormat: string;
-  fundPhase: FundPhase;
-  fundInfo: CatalystFund;
-  onRegisterToVoteClick: (...args: Array<any>) => any;
-  onExternalLinkClick: (...args: Array<any>) => any;
-};
-const phaseToComponentMap = {
+const phaseToComponentMap: { [key in FundPhase]: React.FC<PhaseProps> } = {
   [FundPhase.SNAPSHOT]: SnapshotPhase,
   [FundPhase.VOTING]: VotingPhase,
   [FundPhase.TALLYING]: TallyingPhase,
@@ -40,7 +29,7 @@ const VotingInfo = ({
   onRegisterToVoteClick,
   onExternalLinkClick,
 }: Props) => {
-  const PhaseComponent = phaseToComponentMap[fundPhase || FundPhase.SNAPSHOT];
+  const PhaseComponent = phaseToComponentMap[fundPhase];
   return (
     <div className={styles.component}>
       <BorderedBox>

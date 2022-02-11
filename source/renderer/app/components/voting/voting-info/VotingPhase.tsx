@@ -5,23 +5,11 @@ import {
   formattedDateTime,
   mapToLongDateTimeFormat,
 } from '../../../utils/formatters';
-import type { Locale } from '../../../../../common/types/locales.types';
-import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './VotingPhase.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CurrentPhase.scss' or its co... Remove this comment to see the full error message
 import styles from './CurrentPhase.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import votingStyles from './VotingInfo.scss';
-import type { CatalystFund } from '../../../api/voting/types';
-
-type Props = {
-  currentLocale: Locale;
-  currentDateFormat: string;
-  currentTimeFormat: string;
-  fundInfo: CatalystFund;
-  intl: Intl;
-};
+import type { PhaseIntlProps as Props } from './types';
 
 function VotingPhase({
   currentLocale,
