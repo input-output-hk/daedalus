@@ -36,7 +36,6 @@ function StakePoolsSearchListViewButtonComponent({
   return (
     <PopOver
       visible={isPopOverVisible}
-      offset={[0, -2]}
       content={intl.formatMessage(messages.listIconTooltip)}
     >
       <button

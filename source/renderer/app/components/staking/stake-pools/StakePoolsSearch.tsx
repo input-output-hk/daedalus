@@ -127,17 +127,13 @@ function StakePoolsSearchComponent({
 
       {isBigSearchComponent && (
         <div className={styles.viewButtons}>
-          <PopOver
-            offset={[0, -2]}
-            content={intl.formatMessage(messages.gridIconTooltip)}
-          >
+          <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
             <button className={gridButtonClasses} onClick={onGridView}>
               <SVGInline svg={gridIcon} />
             </button>
           </PopOver>
           {IS_GRID_REWARDS_VIEW_AVAILABLE && (
             <PopOver
-              offset={[0, -2]}
               content={intl.formatMessage(messages.gridRewardsIconTooltip)}
             >
               <button

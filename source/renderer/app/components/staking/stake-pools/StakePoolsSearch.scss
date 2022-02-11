@@ -99,6 +99,10 @@
   padding: 0 20px;
   width: 118px;
 
+  & > span {
+    display: flex;
+  }
+
   button {
     border-radius: 3px;
     color: var(--theme-about-window-icon-close-button-color);
