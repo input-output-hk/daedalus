@@ -274,6 +274,7 @@ class HardwareWalletStatus extends Component<Props, State> {
       (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+        hwDeviceStatus === HwDeviceStatuses.UNRECOGNIZED_WALLET ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION)
     ) {
       const message =
