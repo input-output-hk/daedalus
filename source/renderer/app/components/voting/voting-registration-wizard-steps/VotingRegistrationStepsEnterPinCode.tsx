@@ -62,7 +62,7 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   onSetPinCode: (...args: Array<any>) => any;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 
 interface FormFields {

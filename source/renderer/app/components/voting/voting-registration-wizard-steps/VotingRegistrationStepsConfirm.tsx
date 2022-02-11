@@ -80,7 +80,7 @@ type Props = {
     | (LocalizableError | null | undefined);
   onConfirm: (...args: Array<any>) => any;
   onRestart: (...args: Array<any>) => any;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 
 @observer

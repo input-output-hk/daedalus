@@ -32,7 +32,7 @@ const messages = defineMessages({
 type Props = {
   onGoToCreateWalletClick: (...args: Array<any>) => any;
   minVotingFunds: number;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 export default class VotingNoWallets extends Component<Props> {
   static contextTypes = {

@@ -42,7 +42,7 @@ type Props = {
   onRestart: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   hwDeviceStatus: HwDeviceStatus;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 
 @observer

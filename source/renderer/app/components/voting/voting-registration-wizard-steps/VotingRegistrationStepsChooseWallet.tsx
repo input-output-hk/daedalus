@@ -75,7 +75,7 @@ type Props = {
   selectedWalletId: string | null | undefined;
   isWalletAcceptable: (...args: Array<any>) => any;
   getStakePoolById: (...args: Array<any>) => any;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 type State = {
   selectedWalletId: string | null | undefined;

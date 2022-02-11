@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
 });
 type Props = {
-  nextFundNumber?: number;
+  nextFundNumber: number;
   onConfirm: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
 };

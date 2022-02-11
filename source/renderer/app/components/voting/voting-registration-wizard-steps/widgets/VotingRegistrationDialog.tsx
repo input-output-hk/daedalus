@@ -36,7 +36,7 @@ type Props = {
   contentClassName?: string | null | undefined;
   hideCloseButton?: boolean;
   hideSteps?: boolean;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 
 @observer

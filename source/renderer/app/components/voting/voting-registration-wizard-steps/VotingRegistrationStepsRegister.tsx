@@ -77,7 +77,7 @@ type Props = {
   transactionError?: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   selectedWallet: Wallet | null | undefined;
-  nextFundNumber?: number;
+  nextFundNumber: number;
   isTrezor: boolean;
   isHardwareWallet: boolean;
   isSubmitting: boolean;

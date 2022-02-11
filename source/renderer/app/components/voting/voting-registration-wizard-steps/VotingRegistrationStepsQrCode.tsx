@@ -67,7 +67,7 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   qrCode: string | null | undefined;
-  nextFundNumber?: number;
+  nextFundNumber: number;
 };
 type State = {
   isCheckbox1Accepted: boolean;
