@@ -225,7 +225,7 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
-import { throwErrorIfNotEnoughAdaToSupportTokens } from './utils/apiHelpers';
+import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -911,11 +911,8 @@ export default class AdaApi {
       logger.error('AdaApi::createTransaction error', {
         error,
       });
-      throwErrorIfNotEnoughAdaToSupportTokens(
-        error,
-        hasAssetsRemainingAfterTransaction
-      );
-      throw new ApiError(error)
+
+      const apiError = new ApiError(error)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
@@ -923,8 +920,20 @@ export default class AdaApi {
           linkLabel: 'tooBigTransactionErrorLinkLabel',
           linkURL: 'tooBigTransactionErrorLinkURL',
         })
-        .where('code', 'transaction_is_too_big')
-        .result();
+        .where('code', 'transaction_is_too_big');
+
+      const {
+        requiresAdaToRemainToSupportNativeTokens,
+        adaToRemain,
+      } = doesWalletRequireAdaToRemainToSupportTokens(
+        error,
+        hasAssetsRemainingAfterTransaction
+      );
+      if (requiresAdaToRemainToSupportNativeTokens) {
+        apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
+      }
+
+      throw apiError.result();
     }
   };
   // For testing purpose ONLY

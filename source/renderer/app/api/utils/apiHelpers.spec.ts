@@ -1,13 +1,16 @@
-import { throwErrorIfNotEnoughAdaToSupportTokens } from './apiHelpers';
-import ApiError from '../../domains/ApiError';
+import { doesWalletRequireAdaToRemainToSupportTokens } from './apiHelpers';
 
 describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
   it('should not throw if error.code is not "cannot_cover_fee"', () => {
     const error = { code: 'other_error' };
 
-    expect(() =>
-      throwErrorIfNotEnoughAdaToSupportTokens(error, true)
-    ).not.toThrow();
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: false,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
+    );
   });
   it('should not throw error if error code is "cannot_cover_fee" but hasAssetsRemainingAfterTransaction is undefined', () => {
     const error = {
@@ -16,7 +19,13 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
       code: 'cannot_cover_fee',
     };
 
-    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error)).not.toThrow();
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: false,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error)).toEqual(
+      expectedResult
+    );
   });
   it('should not throw error if error code is "cannot_cover_fee" but message does not match reegex', () => {
     const error = {
@@ -24,9 +33,13 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
       code: 'cannot_cover_fee',
     };
 
-    expect(() =>
-      throwErrorIfNotEnoughAdaToSupportTokens(error, true)
-    ).not.toThrow();
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: false,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
+    );
   });
   it('should not throw error if error code is not "cannot_cover_fee" and message matches regex', () => {
     const error = {
@@ -35,16 +48,24 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
       code: 'other_code',
     };
 
-    expect(() =>
-      throwErrorIfNotEnoughAdaToSupportTokens(error, true)
-    ).not.toThrow();
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: false,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
+    );
   });
   it('should not throw if there are no tokens remaining in wallet after transaction', () => {
     const error = { code: 'cannot_cover_fee' };
 
-    expect(() =>
-      throwErrorIfNotEnoughAdaToSupportTokens(error, false)
-    ).not.toThrow();
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: false,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
+    );
   });
   it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee" and round to 2 minimum ada', () => {
     const error = {
@@ -53,19 +74,13 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
       code: 'cannot_cover_fee',
     };
 
-    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error, true)).toThrow(
-      expect.objectContaining({
-        additionalValues: { adaToRemain: 2 },
-        clause: true,
-        code: undefined,
-        defaultMessage:
-          '!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.',
-        forceSet: true,
-        id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
-        isFinalError: false,
-        tempError: 'cannotLeaveWalletEmpty',
-        values: { adaToRemain: 2 },
-      })
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: true,
+      adaToRemain: 2,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
     );
   });
 
@@ -76,19 +91,13 @@ describe('throwErrorIfNotEnoughAdaToSupportTokens', () => {
       code: 'cannot_cover_fee',
     };
 
-    expect(() => throwErrorIfNotEnoughAdaToSupportTokens(error, true)).toThrow(
-      expect.objectContaining({
-        additionalValues: { adaToRemain: 3 },
-        clause: true,
-        code: undefined,
-        defaultMessage:
-          '!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.',
-        forceSet: true,
-        id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
-        isFinalError: false,
-        tempError: 'cannotLeaveWalletEmpty',
-        values: { adaToRemain: 3 },
-      })
+    const expectedResult = {
+      requiresAdaToRemainToSupportNativeTokens: true,
+      adaToRemain: 3,
+    };
+
+    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual(
+      expectedResult
     );
   });
 });

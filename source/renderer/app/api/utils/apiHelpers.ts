@@ -22,10 +22,13 @@ export const testSync = (apiMethod: (...args: Array<any>) => any) => {
 // helper code for deferring API call execution
 export const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
-export const throwErrorIfNotEnoughAdaToSupportTokens = (
+export const doesWalletRequireAdaToRemainToSupportTokens = (
   error: any,
   hasAssetsRemainingAfterTransaction?: boolean
-) => {
+): {
+  requiresAdaToRemainToSupportNativeTokens: boolean;
+  adaToRemain?: number;
+} => {
   const adaToProceedRegex = new RegExp(
     /.*I need approximately([\s\d.,]+)ada to proceed.*/
   );
@@ -39,10 +42,7 @@ export const throwErrorIfNotEnoughAdaToSupportTokens = (
       Number(error.message.replace(adaToProceedRegex, '$1'))
     );
     const adaToRemain = roundedAda > 2 ? roundedAda : 2;
-    throw new ApiError()
-      .set('cannotLeaveWalletEmpty', true, {
-        adaToRemain,
-      })
-      .result();
+    return { requiresAdaToRemainToSupportNativeTokens: true, adaToRemain };
   }
+  return { requiresAdaToRemainToSupportNativeTokens: false };
 };
