@@ -2938,12 +2938,12 @@ export default class AdaApi {
     logger.debug('AdaApi::getCatalystFund called', {});
 
     try {
-      const catalystFundRaw = await getCatalystFund();
-      const catalystFund: GetCatalystFundResponse = JSON.parse(catalystFundRaw);
+      const catalystFund = await getCatalystFund();
 
       logger.debug('AdaApi::getCatalystFund success', {
         catalystFund,
       });
+
       return {
         current: {
           number: catalystFund.id + 1,
