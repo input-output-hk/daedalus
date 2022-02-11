@@ -37,7 +37,7 @@ const mockFundInfo: CatalystFund = {
     number: 7,
     startTime: new Date('Jan 20, 2022, 11:00 UTC'),
     endTime: new Date('Feb 3, 2022, 11:00 UTC'),
-    results: new Date('Feb 10, 2022'),
+    resultsTime: new Date('Feb 10, 2022'),
     registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
   },
   next: {
