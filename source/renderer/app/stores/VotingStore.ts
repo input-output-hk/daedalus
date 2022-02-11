@@ -484,9 +484,9 @@ export default class VotingStore extends Store {
         date < this.catalystFund?.current?.endTime,
       [FundPhase.TALLYING]: (date: Date) =>
         date >= this.catalystFund?.current?.endTime &&
-        date < this.catalystFund?.current?.results,
+        date < this.catalystFund?.current?.resultsTime,
       [FundPhase.RESULTS]: (date: Date) =>
-        date >= this.catalystFund?.current?.results,
+        date >= this.catalystFund?.current?.resultsTime,
     };
     this.fundPhase =
       Object.values(FundPhase).find((phase) => phaseValidation[phase](now)) ||

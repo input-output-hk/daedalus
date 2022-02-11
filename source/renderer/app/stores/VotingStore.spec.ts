@@ -7,7 +7,7 @@ const mockFundInfo = {
   current: {
     startTime: new Date('Jan 20, 2022, 11:00 UTC'),
     endTime: new Date('Feb 3, 2022, 11:00 UTC'),
-    results: new Date('Feb 10, 2022'),
+    resultsTime: new Date('Feb 10, 2022'),
     registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
   },
 };
@@ -35,10 +35,10 @@ describe('VotingStore', () => {
     ],
     [mockFundInfo.current.endTime, FundPhase.TALLYING],
     [
-      new Date(mockFundInfo.current.results.getTime() - 60000),
+      new Date(mockFundInfo.current.resultsTime.getTime() - 60000),
       FundPhase.TALLYING,
     ],
-    [mockFundInfo.current.results, FundPhase.RESULTS],
+    [mockFundInfo.current.resultsTime, FundPhase.RESULTS],
   ];
   const votingStore = new VotingStore(api, actions);
 

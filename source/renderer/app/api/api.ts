@@ -2949,7 +2949,7 @@ export default class AdaApi {
           number: catalystFund.id + 1,
           startTime: new Date(catalystFund.fund_start_time),
           endTime: new Date(catalystFund.fund_end_time),
-          results: new Date(
+          resultsTime: new Date(
             catalystFund.chain_vote_plans?.[0]?.chain_committee_end_time
           ),
           registrationSnapshotTime: new Date(

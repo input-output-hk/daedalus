@@ -37,7 +37,7 @@ function TallyingPhase({
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });
-  const resultsDate = formattedDateTime(fundInfo.current.results, {
+  const resultsDate = formattedDateTime(fundInfo.current.resultsTime, {
     currentLocale,
     currentDateFormat: mappedFormats.currentDateFormat,
   });

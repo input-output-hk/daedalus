@@ -44,7 +44,7 @@ export type CatalystFund = {
     number: number;
     startTime: Date;
     endTime: Date;
-    results: Date;
+    resultsTime: Date;
     registrationSnapshotTime: Date;
   };
   next: {
