@@ -246,10 +246,7 @@ export default class AdaApi {
   getWallets = async (): Promise<Array<Wallet>> => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWallets called');
-    const {
-      getHardwareWalletLocalData,
-      getHardwareWalletsLocalData,
-    } = global.daedalus.api.localStorage;
+    const { getHardwareWalletsLocalData } = global.daedalus.api.localStorage;
 
     try {
       const wallets: AdaWallets = await getWallets(this.config);
@@ -280,7 +277,9 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet) => {
           const { id } = wallet;
-          const walletData = await getHardwareWalletLocalData(id);
+
+          const walletData = hwLocalData[id];
+
           return _createWalletFromServerData({
             ...wallet,
             isHardwareWallet:
