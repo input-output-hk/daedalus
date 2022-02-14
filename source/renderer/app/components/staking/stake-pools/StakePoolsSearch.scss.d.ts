@@ -9,6 +9,5 @@ export const inputExtrasSearch: string;
 export const searchIcon: string;
 export const searchInput: string;
 export const selected: string;
-export const separator: string;
 export const viewButtons: string;
 export const withGridRewardsView: string;

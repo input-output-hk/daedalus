@@ -3,7 +3,6 @@ import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSearch.scss' or it... Remove this comment to see the full error message
 import styles from './StakePoolsSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/list-ic... Remove this comment to see the full error message
 import listIcon from '../../../assets/images/list-ic.inline.svg';
@@ -30,10 +29,7 @@ function StakePoolsSearchListViewButtonComponent({
   const [visible, setVisible] = useState(false);
   const isPopOverVisible = visible || isListViewTooltipVisible;
 
-  const listButtonClasses = classnames([
-    styles.listView,
-    isListView ? styles.selected : null,
-  ]);
+  const listButtonClasses = classnames([isListView ? styles.selected : null]);
 
   return (
     <PopOver

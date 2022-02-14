@@ -83,7 +83,6 @@ class WalletSettings extends Component<Props> {
           <NormalSwitch
             checked={currencyIsActive}
             onChange={onToggleCurrencyIsActive}
-            className={styles.switchControl}
           />
         </div>
         {currencyIsActive && (
