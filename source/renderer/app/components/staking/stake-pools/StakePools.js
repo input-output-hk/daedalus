@@ -71,24 +71,26 @@ const messages = defineMessages({
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
 
 type Props = {
-  wallets: Array<Wallet>,
-  currentLocale: string,
-  stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  updateDelegatingStake: Function,
-  rankStakePools: Function,
-  selectedDelegationWalletId?: ?string,
-  stake?: ?number,
-  onDelegate: Function,
-  isLoading: boolean,
-  isFetching: boolean,
-  isRanking: boolean,
-  stakePoolsDelegatingList: Array<StakePool>,
-  getStakePoolById: Function,
-  onSmashSettingsClick: Function,
-  smashServerUrl: ?string,
-  maxDelegationFunds: number,
+  currentLocale: string;
+  currentTheme: string;
+  getStakePoolById: (...args: Array<any>) => any;
+  isFetching: boolean;
+  isListViewTooltipVisible?: boolean;
+  isLoading: boolean;
+  isRanking: boolean;
+  maxDelegationFunds: number;
+  onDelegate: (...args: Array<any>) => any;
+  onListViewVisited: () => void;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onSmashSettingsClick: (...args: Array<any>) => any;
+  rankStakePools: (...args: Array<any>) => any;
+  selectedDelegationWalletId?: string | null | undefined;
+  smashServerUrl: string | null | undefined;
+  stake?: number | null | undefined;
+  stakePoolsDelegatingList: Array<StakePool>;
+  stakePoolsList: Array<StakePool>;
+  updateDelegatingStake: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
 };
 
 type State = {
@@ -137,14 +139,13 @@ export default class StakePools extends Component<Props, State> {
       isListView: false,
     });
   };
-
-  handleListView = () =>
+  handleListView = () => {
     this.setState({
       isGridView: false,
       isGridRewardsView: false,
       isListView: true,
     });
-
+  };
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
 
@@ -170,9 +171,11 @@ export default class StakePools extends Component<Props, State> {
       selectedDelegationWalletId,
       stake,
       onOpenExternalLink,
+      onListViewVisited,
       currentTheme,
-      isLoading,
       isFetching,
+      isListViewTooltipVisible,
+      isLoading,
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
@@ -278,7 +281,9 @@ export default class StakePools extends Component<Props, State> {
               onGridView={this.handleGridView}
               onGridRewardsView={this.handleGridRewardsView}
               onListView={this.handleListView}
+              onListViewVisited={onListViewVisited}
               isListView={isListView}
+              isListViewTooltipVisible={isListViewTooltipVisible}
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               smashServer={smashServer}

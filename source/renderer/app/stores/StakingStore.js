@@ -39,14 +39,24 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
-  @observable isDelegationTransactionPending = false;
-  @observable fetchingStakePoolsFailed = false;
-  @observable selectedDelegationWalletId = null;
-  @observable stake = INITIAL_DELEGATION_FUNDS;
-  @observable isRanking = false;
-  @observable smashServerUrl: ?string = null;
-  @observable smashServerUrlError: ?LocalizableError = null;
-  @observable smashServerLoading: boolean = false;
+  @observable
+  isDelegationTransactionPending = false;
+  @observable
+  fetchingStakePoolsFailed = false;
+  @observable
+  selectedDelegationWalletId = null;
+  @observable
+  stake = INITIAL_DELEGATION_FUNDS;
+  @observable
+  isRanking = false;
+  @observable
+  smashServerUrl: string | null | undefined = null;
+  @observable
+  smashServerUrlError: LocalizableError | null | undefined = null;
+  @observable
+  smashServerLoading = false;
+  @observable
+  stakePoolsListViewTooltipVisible = true;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -122,6 +132,7 @@ export default class StakingStore extends Store {
 
     this._startStakePoolsFetchTracker();
     this._getStakingInfoWasOpen();
+    this._getStakePoolsListViewTooltip();
   }
 
   // REQUESTS
@@ -248,8 +259,22 @@ export default class StakingStore extends Store {
     this.stakingInfoWasOpen = true;
     this.api.localStorage.setStakingInfoWasOpen();
   };
-
-  @action _stakePoolsFetchTracker = () => {
+  @action
+  _getStakePoolsListViewTooltip = async () => {
+    const tooltipShown = await this.api.localStorage.getStakePoolsListViewTooltip();
+    runInAction(() => {
+      this.stakePoolsListViewTooltipVisible = tooltipShown;
+    });
+  };
+  @action
+  hideStakePoolsListViewTooltip = () => {
+    this.stakePoolsListViewTooltipVisible = false;
+    this.api.localStorage.setStakePoolsListViewTooltip(
+      this.stakePoolsListViewTooltipVisible
+    );
+  };
+  @action
+  _stakePoolsFetchTracker = () => {
     const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
     this.numberOfStakePoolsFetched = this.stakePools.length;
     if (
