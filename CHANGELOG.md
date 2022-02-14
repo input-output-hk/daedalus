@@ -1,5 +1,10 @@
 # Changelog
 
+## vNext
+
+### Features
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+
 ## 4.9.0-FC1
 
 ### Features
