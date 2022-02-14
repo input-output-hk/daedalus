@@ -503,7 +503,6 @@ export default class WalletsStore extends Store {
 
       this._restoreWalletResetData();
 
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.dialogs.closeActiveDialog.trigger();
     }
   };
@@ -619,7 +618,6 @@ export default class WalletsStore extends Store {
         await this._patchWalletRequestWithNewWallet(wallet);
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
         this.actions.dialogs.closeActiveDialog.trigger();
       }
     } catch (error) {
@@ -638,7 +636,6 @@ export default class WalletsStore extends Store {
 
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
       this.refreshWalletsData();
@@ -684,7 +681,6 @@ export default class WalletsStore extends Store {
         });
       }
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
@@ -822,7 +818,6 @@ export default class WalletsStore extends Store {
       hasAssetsRemainingAfterTransaction,
     });
     this.refreshWalletsData();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
     this.goToWalletRoute(wallet.id);
@@ -1200,7 +1195,6 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -1237,7 +1231,6 @@ export default class WalletsStore extends Store {
 
         this.stores.transactions._refreshTransactionData();
       });
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
       this.actions.wallets.refreshWalletsDataSuccess.trigger();
     }
   };
@@ -1259,7 +1252,6 @@ export default class WalletsStore extends Store {
     if (!importedWallet)
       throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
     this.importFromFileRequest.reset();
     this.goToWalletRoute(importedWallet.id);
@@ -1649,14 +1641,12 @@ export default class WalletsStore extends Store {
   };
   @action
   _closeCertificateGeneration = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
 
     this._resetCertificateData();
   };
   @action
   _closeRewardsCsvGeneration = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Wallets... Remove this comment to see the full error message
     this.actions.dialogs.closeActiveDialog.trigger();
 
     this._resetRewardsCsvData();

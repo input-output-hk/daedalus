@@ -1,5 +1,5 @@
 import { ApiMethodNotYetImplementedError } from '../common/errors';
-import ApiError from '../../domains/ApiError';
+import { ErrorType } from '../../domains/ApiError';
 
 export const notYetImplemented = async () =>
   new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ export const testSync = (apiMethod: (...args: Array<any>) => any) => {
 export const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 export const doesWalletRequireAdaToRemainToSupportTokens = (
-  error: any,
+  error: ErrorType,
   hasAssetsRemainingAfterTransaction?: boolean
 ): {
   requiresAdaToRemainToSupportNativeTokens: boolean;

@@ -28,6 +28,7 @@ import type { CardanoNodeState } from '../../../../common/types/cardano-node.typ
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
+import { ErrorType } from '../../domains/ApiError';
 
 const messages = defineMessages({
   systemInfo: {
@@ -556,8 +557,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
-    // @ts-ignore
-    const { message, code } = connectionError;
+    const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
