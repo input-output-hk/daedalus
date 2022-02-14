@@ -6,3 +6,4 @@ export const description: string;
 export const disclaimer: string;
 export const label: string;
 export const separator: string;
+export const switchControl: string;
