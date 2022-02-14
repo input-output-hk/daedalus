@@ -3,6 +3,11 @@
 ## vNext
 
 ### Features
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+
+## 4.9.0-FC1
+
+### Features
 
 - Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
@@ -10,7 +15,6 @@
 - Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
 - Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
 - Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791), [PR 2859](https://github.com/input-output-hk/daedalus/pull/2859))
-- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
 
 ### Fixes
 
@@ -55,7 +59,8 @@
 
 ### Fixes
 
-- Fixed blockain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2816](https://github.com/input-output-hk/daedalus/pull/2816/files))
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
 
