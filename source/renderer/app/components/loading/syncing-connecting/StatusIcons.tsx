@@ -220,10 +220,17 @@ export default class StatusIcons extends Component<Props> {
       status = 'unknown';
     }
 
+    const classesMap = {
+      on: styles.iconOn,
+      off: styles.iconOff,
+      unloaded: styles.iconUnloaded,
+      unknown: styles.iconUnknown,
+    };
+
     return classNames([
       styles.icon,
-      styles[`icon-${status}`],
-      styles[`icon-${paramName}`],
+      classesMap[status],
+      classesMap[paramName],
       isNodeSyncing ? styles.syncing : styles.loading,
     ]);
   };

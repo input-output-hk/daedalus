@@ -48,11 +48,14 @@ export default class Notification extends Component<Props> {
       themeOverride,
     } = this.props;
     const isClickToClose = clickToClose && !actions;
+    const themeOverrideMap = {
+      grey: styles.themeOverrideGrey,
+    };
     const notificationMessageStyles = classNames([
       styles.component,
       isVisible ? styles.isVisible : null,
       isClickToClose ? styles.clickToClose : null,
-      themeOverride ? styles[`theme-override-${themeOverride}`] : null,
+      themeOverride ? themeOverrideMap[themeOverride] : null,
     ]);
     const messageStyles = classNames([
       styles.message,

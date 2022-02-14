@@ -83,8 +83,7 @@ class WalletSettings extends Component<Props> {
           <NormalSwitch
             checked={currencyIsActive}
             onChange={onToggleCurrencyIsActive}
-            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-            className={styles.switch}
+            className={styles.switchControl}
           />
         </div>
         {currencyIsActive && (
