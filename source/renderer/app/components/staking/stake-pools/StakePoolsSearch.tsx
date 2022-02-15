@@ -19,6 +19,7 @@ import { IS_GRID_REWARDS_VIEW_AVAILABLE } from '../../../config/stakingConfig';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './StakePoolsSearch.messages';
 import { StakePoolsSearchListViewButton } from './StakePoolsSearchListViewButton';
+import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 
 type Props = {
   label?: string;
@@ -92,67 +93,102 @@ function StakePoolsSearchComponent({
     IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
   ]);
   return (
-    <div className={styles.component}>
-      <div className={styles.container}>
-        <SVGInline svg={searchIcon} className={styles.searchIcon} />
-        <Input
-          autoFocus
-          label={label || null}
-          className={searchInputClases}
-          onChange={onSearch}
-          ref={(input) => {
-            searchInput.current = input;
-          }}
-          placeholder={
-            placeholder || intl.formatMessage(messages.searchInputPlaceholder)
-          }
-          skin={InputSkin}
-          value={search}
-          maxLength={150}
-          onFocus={autoSelectOnFocus}
-        />
-        {hasSearchClearButton && (
-          <div className={clearSearchClasses}>
-            <PopOver content={intl.formatMessage(messages.clearTooltip)}>
-              <button
-                onClick={handleClearSearch}
-                className={styles.clearSearchButton}
-              >
-                <SVGInline svg={closeIcon} className={styles.clearSearchIcon} />
-              </button>
-            </PopOver>
+    <StakingPageScrollContext.Consumer>
+      {({ scrollElementRef }) => (
+        <div className={styles.component}>
+          <div className={styles.container}>
+            <SVGInline svg={searchIcon} className={styles.searchIcon} />
+            <Input
+              autoFocus
+              label={label || null}
+              className={searchInputClases}
+              onChange={onSearch}
+              ref={(input) => {
+                searchInput.current = input;
+              }}
+              placeholder={
+                placeholder ||
+                intl.formatMessage(messages.searchInputPlaceholder)
+              }
+              skin={InputSkin}
+              value={search}
+              maxLength={150}
+              onFocus={autoSelectOnFocus}
+            />
+            {hasSearchClearButton && (
+              <div className={clearSearchClasses}>
+                <PopOver content={intl.formatMessage(messages.clearTooltip)}>
+                  <button
+                    onClick={handleClearSearch}
+                    className={styles.clearSearchButton}
+                  >
+                    <SVGInline
+                      svg={closeIcon}
+                      className={styles.clearSearchIcon}
+                    />
+                  </button>
+                </PopOver>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {isBigSearchComponent && (
-        <div className={styles.viewButtons}>
-          <PopOver content={intl.formatMessage(messages.gridIconTooltip)}>
-            <button className={gridButtonClasses} onClick={onGridView}>
-              <SVGInline svg={gridIcon} />
-            </button>
-          </PopOver>
-          {IS_GRID_REWARDS_VIEW_AVAILABLE && (
-            <PopOver
-              content={intl.formatMessage(messages.gridRewardsIconTooltip)}
-            >
-              <button
-                className={gridRewardsButtonClasses}
-                onClick={onGridRewardsView}
+          {isBigSearchComponent && (
+            <div className={styles.viewButtons}>
+              <PopOver
+                content={intl.formatMessage(messages.gridIconTooltip)}
+                appendTo={() => scrollElementRef.current}
+                popperOptions={{
+                  placement: 'top',
+                  modifiers: [
+                    {
+                      name: 'flip',
+                      options: {
+                        fallbackPlacements: ['bottom'],
+                      },
+                    },
+                  ],
+                }}
               >
-                <SVGInline svg={gridRewardsIcon} />
-              </button>
-            </PopOver>
+                <button className={gridButtonClasses} onClick={onGridView}>
+                  <SVGInline svg={gridIcon} />
+                </button>
+              </PopOver>
+              {IS_GRID_REWARDS_VIEW_AVAILABLE && (
+                <PopOver
+                  content={intl.formatMessage(messages.gridRewardsIconTooltip)}
+                  appendTo={() => scrollElementRef.current}
+                  popperOptions={{
+                    placement: 'top',
+                    modifiers: [
+                      {
+                        name: 'flip',
+                        options: {
+                          fallbackPlacements: ['bottom', 'left'],
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <button
+                    className={gridRewardsButtonClasses}
+                    onClick={onGridRewardsView}
+                  >
+                    <SVGInline svg={gridRewardsIcon} />
+                  </button>
+                </PopOver>
+              )}
+              <StakePoolsSearchListViewButton
+                isListViewTooltipVisible={isListViewTooltipVisible}
+                isListView={isListView}
+                onClick={onListView}
+                onListViewVisited={onListViewVisited}
+                tooltipTarget={scrollElementRef.current}
+              />
+            </div>
           )}
-          <StakePoolsSearchListViewButton
-            isListViewTooltipVisible={isListViewTooltipVisible}
-            isListView={isListView}
-            onClick={onListView}
-            onListViewVisited={onListViewVisited}
-          />
         </div>
       )}
-    </div>
+    </StakingPageScrollContext.Consumer>
   );
 }
 

@@ -16,6 +16,7 @@ type Props = {
   onClick?: () => void;
   onListViewVisited?: () => void;
   intl: Intl;
+  tooltipTarget?: HTMLDivElement;
 };
 
 function StakePoolsSearchListViewButtonComponent({
@@ -24,6 +25,7 @@ function StakePoolsSearchListViewButtonComponent({
   isListView,
   isListViewTooltipVisible,
   intl,
+  tooltipTarget,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const isPopOverVisible = visible || isListViewTooltipVisible;
@@ -37,6 +39,7 @@ function StakePoolsSearchListViewButtonComponent({
     <PopOver
       visible={isPopOverVisible}
       content={intl.formatMessage(messages.listIconTooltip)}
+      appendTo={() => tooltipTarget}
     >
       <button
         className={listButtonClasses}
