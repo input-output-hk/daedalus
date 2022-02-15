@@ -6419,13 +6419,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -6433,13 +6433,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -6447,13 +6447,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -6461,13 +6461,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -6475,13 +6475,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -6489,13 +6489,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -6503,13 +6503,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -6517,13 +6517,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -6531,13 +6531,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -6545,13 +6545,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -6559,13 +6559,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 97
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -6573,13 +6573,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 97
+          "line": 98
         }
       },
       {
@@ -6587,13 +6587,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 107
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 102
+          "line": 103
         }
       },
       {
@@ -6601,13 +6601,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 112
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.tsx",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 107
+          "line": 108
         }
       }
     ],
