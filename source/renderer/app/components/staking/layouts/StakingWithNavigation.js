@@ -1,21 +1,20 @@
 // @flow
 import React, { Component, createRef } from 'react';
-import type { ElementRef, Node } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
 import styles from './StakingWithNavigation.scss';
 
 type Props = {
-  children?: Node,
-  activeItem: string,
-  showInfoTab: boolean,
-  onNavItemClick: Function,
-  isActiveNavItem: Function,
+  children?: React.ReactNode;
+  activeItem: string;
+  showInfoTab: boolean;
+  onNavItemClick: (...args: Array<any>) => any;
+  isActiveNavItem: (...args: Array<any>) => any;
 };
 
 type ContextValue = {
-  scrollElementRef: ?ElementRef<*>,
+  scrollElementRef: React.RefObject<HTMLDivElement> | null | undefined;
 };
 
 export const StakingPageScrollContext = React.createContext<ContextValue>({
@@ -23,8 +22,8 @@ export const StakingPageScrollContext = React.createContext<ContextValue>({
 });
 
 @observer
-export default class StakingWithNavigation extends Component<Props> {
-  stakingPageRef = createRef<*>();
+class StakingWithNavigation extends Component<Props> {
+  stakingPageRef = createRef<HTMLDivElement>();
 
   render() {
     const {
@@ -49,12 +48,7 @@ export default class StakingWithNavigation extends Component<Props> {
               showInfoTab={showInfoTab}
             />
           </div>
-          <div
-            className={styles.page}
-            ref={(ref) => {
-              this.stakingPageRef.current = ref;
-            }}
-          >
+          <div className={styles.page} ref={this.stakingPageRef}>
             {children}
           </div>
         </div>

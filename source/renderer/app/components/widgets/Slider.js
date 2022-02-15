@@ -8,41 +8,42 @@ import { shortNumber } from '../../utils/formatters';
 import styles from './Slider.scss';
 
 type Props = {
-  className?: string,
-  min: number,
-  minDisplayValue?: number,
-  max: number,
-  maxDisplayValue?: number,
-  marks?: any,
-  step?: number,
-  vertical?: boolean,
-  handle?: Function,
-  included?: boolean,
-  reverse?: boolean,
-  disabled?: boolean,
-  dots?: boolean,
-  onBeforeChange?: Function,
-  onChange: Function,
-  onAfterChange?: Function,
-  minimumTrackStyle?: any,
-  maximumTrackStyle?: any,
-  handleStyle?: any,
-  trackStyle?: any,
-  railStyle?: any,
-  dotStyle?: any,
-  activeDotStyle?: any,
-  defaultValue?: number,
-  value: number,
-  displayValue?: any,
-  showRawValue?: boolean,
-  showTooltip?: boolean,
-  minTooltip?: string,
-  maxTooltip?: string,
-  startPoint?: number,
-  tabIndex?: number,
-  ariaLabelForHandle?: string,
-  ariaLabelledByForHandle?: string,
-  ariaValueTextFormatterForHandle?: Function,
+  className?: string;
+  min: number;
+  minDisplayValue?: number;
+  max: number;
+  maxDisplayValue?: number;
+  marks?: any;
+  step?: number;
+  vertical?: boolean;
+  handle?: (...args: Array<any>) => any;
+  included?: boolean;
+  reverse?: boolean;
+  disabled?: boolean;
+  dots?: boolean;
+  onBeforeChange?: (...args: Array<any>) => any;
+  onChange: (...args: Array<any>) => any;
+  onAfterChange?: (...args: Array<any>) => any;
+  minimumTrackStyle?: any;
+  maximumTrackStyle?: any;
+  handleStyle?: any;
+  trackStyle?: any;
+  railStyle?: any;
+  dotStyle?: any;
+  activeDotStyle?: any;
+  defaultValue?: number;
+  value: number;
+  displayValue?: any;
+  showRawValue?: boolean;
+  showTooltip?: boolean;
+  minTooltip?: string;
+  maxTooltip?: string;
+  startPoint?: number;
+  tabIndex?: number;
+  ariaLabelForHandle?: string;
+  ariaLabelledByForHandle?: string;
+  tooltipAppendTo?: string | (() => void) | 'parent';
+  ariaValueTextFormatterForHandle?: (...args: Array<any>) => any;
 };
 
 export const Slider = observer((props: Props) => {
@@ -55,6 +56,7 @@ export const Slider = observer((props: Props) => {
     maxDisplayValue,
     displayValue,
     showRawValue,
+    tooltipAppendTo,
     ...rest
   } = props;
   const { min, max, value } = rest;
@@ -71,7 +73,21 @@ export const Slider = observer((props: Props) => {
       <div className={styles.upperMarks}>
         <div className={styles.minMark}>
           {showTooltip ? (
-            <PopOver content={minTooltip}>
+            <PopOver
+              content={minTooltip}
+              appendTo={tooltipAppendTo}
+              popperOptions={{
+                placement: 'top',
+                modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      fallbackPlacements: ['bottom'],
+                    },
+                  },
+                ],
+              }}
+            >
               {shortNumber(minDisplayValue || min)}
             </PopOver>
           ) : (
@@ -80,7 +96,21 @@ export const Slider = observer((props: Props) => {
         </div>
         <div className={styles.maxMark}>
           {showTooltip ? (
-            <PopOver content={maxTooltip}>
+            <PopOver
+              content={maxTooltip}
+              appendTo={tooltipAppendTo}
+              popperOptions={{
+                placement: 'top',
+                modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      fallbackPlacements: ['bottom', 'left'],
+                    },
+                  },
+                ],
+              }}
+            >
               {shortNumber(maxDisplayValue || max)}
             </PopOver>
           ) : (
