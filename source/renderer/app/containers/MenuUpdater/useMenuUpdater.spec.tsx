@@ -72,11 +72,8 @@ const defaultArgs: UseMenuUpdaterArgs = {
   },
   rebuildApplicationMenu: makeRebuildApplicationMenu(),
 };
-// @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'describe'. Do you need to instal... Remove this comment to see the full error message
 describe('useMenuUpdater', () => {
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends rebuildApplicationMenu IPC channel message', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -84,19 +81,13 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send).toHaveBeenCalledTimes(1);
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send).toHaveBeenNthCalledWith(1, {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
       isNavigationEnabled: expect.any(Boolean),
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
       walletSettingsState: expect.any(String),
     });
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends isNavigationEnabled value according to termsOfUseAcceptance', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -110,10 +101,8 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send.mock.calls[0][0]).toHaveProperty('isNavigationEnabled', true);
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('watches on the profile.currentLocale property changes', () => {
     const send = jest.fn();
     const makeArgs = (profile) => ({
@@ -130,12 +119,9 @@ describe('useMenuUpdater', () => {
     const { rerender } = renderComponent(makeArgs(makeProfile()));
     rerender(makeArgs(makeProfile({ currentLocale: 'jp' })));
 
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send).toHaveBeenCalledTimes(2);
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends walletSettingsState hidden when it is not a wallet page', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -149,15 +135,12 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send.mock.calls[0][0]).toHaveProperty(
       'walletSettingsState',
       WalletSettingsStateEnum.hidden
     );
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends walletSettingsState enabled when it is one of a wallet pages', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -171,15 +154,12 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send.mock.calls[0][0]).toHaveProperty(
       'walletSettingsState',
       WalletSettingsStateEnum.enabled
     );
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends walletSettingsState disabled when it is one of a wallet pages but a dialog is open', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -196,7 +176,6 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send.mock.calls[0][0]).toHaveProperty(
       'walletSettingsState',
       WalletSettingsStateEnum.disabled
@@ -228,9 +207,7 @@ describe('useMenuUpdater', () => {
       },
     },
   ].forEach(({ name, storesOverride }) => {
-    // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
     it(`sends walletSettingsState disabled when it is one of a wallet pages but ${name} dialog is open`, () => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
       const send = jest.fn();
       renderComponent({
         ...defaultArgs,
@@ -245,16 +222,13 @@ describe('useMenuUpdater', () => {
           send,
         }),
       });
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
       expect(send.mock.calls[0][0]).toHaveProperty(
         'walletSettingsState',
         WalletSettingsStateEnum.disabled
       );
     });
   });
-  // @ts-ignore ts-migrate(2582) FIXME: Cannot find name 'it'. Do you need to install type... Remove this comment to see the full error message
   it('sends walletSettingsState disabled when wallet settings route is already active', () => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'jest'.
     const send = jest.fn();
     renderComponent({
       ...defaultArgs,
@@ -268,7 +242,6 @@ describe('useMenuUpdater', () => {
         send,
       }),
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'expect'.
     expect(send.mock.calls[0][0]).toHaveProperty(
       'walletSettingsState',
       WalletSettingsStateEnum.disabled

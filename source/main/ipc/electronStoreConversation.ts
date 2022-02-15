@@ -37,6 +37,7 @@ const reset = async () => {
   await unset(keys.READ_NEWS);
   await unset(keys.SMASH_SERVER);
   await unset(keys.STAKING_INFO_WAS_OPEN);
+  await unset(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP);
   await unset(keys.TERMS_OF_USE_ACCEPTANCE);
   await unset(keys.THEME);
   await unset(keys.USER_DATE_FORMAT_ENGLISH);
