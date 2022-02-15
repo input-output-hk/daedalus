@@ -69,15 +69,18 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  isTransactionPending: boolean,
-  isTransactionConfirmed: boolean,
-  transactionConfirmations: number,
-  transactionError: ?boolean | ?LocalizableError,
-  onConfirm: Function,
-  onRestart: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  isTransactionPending: boolean;
+  isTransactionConfirmed: boolean;
+  transactionConfirmations: number;
+  transactionError:
+    | (boolean | null | undefined)
+    | (LocalizableError | null | undefined);
+  onConfirm: (...args: Array<any>) => any;
+  onRestart: (...args: Array<any>) => any;
+  nextFundNumber: number;
 };
 
 @observer
@@ -98,6 +101,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
       transactionConfirmations,
       transactionError,
       onClose,
+      nextFundNumber,
     } = this.props;
 
     const description = intl.formatMessage(messages.description);
@@ -159,6 +163,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
         actions={actions}
         containerClassName={styles.component}
         hideSteps={!!transactionError}
+        nextFundNumber={nextFundNumber}
       >
         {transactionError ? (
           <Fragment>

@@ -6,7 +6,7 @@ import { set } from 'lodash';
 import { observer } from 'mobx-react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
-import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsQrCod... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsQrCode.scss';
 
 const messages = defineMessages({
@@ -64,11 +64,12 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onClose: Function,
-  onDownloadPDF: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  qrCode: ?string,
+  onClose: (...args: Array<any>) => any;
+  onDownloadPDF: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  qrCode: string | null | undefined;
+  nextFundNumber: number;
 };
 
 type State = {
@@ -103,15 +104,20 @@ export default class VotingRegistrationStepsQrCode extends Component<
   render() {
     const { intl } = this.context;
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
-    const { stepsList, activeStep, qrCode, onDownloadPDF } = this.props;
-
+    const {
+      stepsList,
+      activeStep,
+      qrCode,
+      onDownloadPDF,
+      nextFundNumber,
+    } = this.props;
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription1 = intl.formatMessage(messages.qrCodeDescription1);
     const qrCodeDescription2 = intl.formatMessage(messages.qrCodeDescription2);
     const qrCodeWarning = <FormattedHTMLMessage {...messages.qrCodeWarning} />;
     const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
     const checkbox2Label = intl.formatMessage(messages.checkbox2Label, {
-      nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+      nextVotingFundNumber: nextFundNumber,
     });
     const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
     const saveAsPdfButtonLabel = intl.formatMessage(
@@ -154,6 +160,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
         actions={actions}
         containerClassName={styles.component}
         hideCloseButton={!areBothCheckboxesAccepted}
+        nextFundNumber={nextFundNumber}
       >
         <div className={styles.qrCode}>
           {qrCode && (

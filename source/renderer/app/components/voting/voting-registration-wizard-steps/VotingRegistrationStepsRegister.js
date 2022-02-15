@@ -20,8 +20,6 @@ import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
-import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
-
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
@@ -73,20 +71,21 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  stepsList: Array<string>,
-  activeStep: number,
-  transactionFee: ?BigNumber,
-  transactionFeeError?: string | Node | null,
-  transactionError?: ?LocalizableError,
-  hwDeviceStatus: HwDeviceStatus,
-  selectedWallet: ?Wallet,
-  isTrezor: boolean,
-  isHardwareWallet: boolean,
-  isSubmitting: boolean,
-  onConfirm: Function,
-  onClose: Function,
-  onBack: Function,
-  onExternalLinkClick: Function,
+  stepsList: Array<string>;
+  activeStep: number;
+  transactionFee: BigNumber | null | undefined;
+  transactionFeeError?: string | Node | null;
+  transactionError?: LocalizableError | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  selectedWallet: Wallet | null | undefined;
+  nextFundNumber: number;
+  isTrezor: boolean;
+  isHardwareWallet: boolean;
+  isSubmitting: boolean;
+  onConfirm: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
 };
 
 interface FormFields {
@@ -158,6 +157,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
       selectedWallet,
       isTrezor,
       isHardwareWallet,
+      nextFundNumber,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -188,11 +188,14 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
         actions={actions}
         onBack={onBack}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{
+              nextVotingFundNumber: nextFundNumber,
+            }}
           />
         </p>
 

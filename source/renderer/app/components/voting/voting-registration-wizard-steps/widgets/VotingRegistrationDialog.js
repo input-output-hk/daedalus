@@ -11,7 +11,6 @@ import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import type { DialogActions } from '../../../widgets/Dialog';
-import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -27,16 +26,17 @@ const messages = defineMessages({
 });
 
 type Props = {
-  children: Node,
-  stepsList: Array<string>,
-  activeStep: number,
-  actions: DialogActions,
-  onClose: Function,
-  onBack?: Function,
-  containerClassName?: ?string,
-  contentClassName?: ?string,
-  hideCloseButton?: boolean,
-  hideSteps?: boolean,
+  children: Node;
+  stepsList: Array<string>;
+  activeStep: number;
+  actions: DialogActions;
+  onClose: (...args: Array<any>) => any;
+  onBack?: (...args: Array<any>) => any;
+  containerClassName?: string | null | undefined;
+  contentClassName?: string | null | undefined;
+  hideCloseButton?: boolean;
+  hideSteps?: boolean;
+  nextFundNumber: number;
 };
 
 @observer
@@ -62,6 +62,7 @@ export default class VotingRegistrationDialog extends Component<Props> {
       contentClassName,
       hideCloseButton,
       hideSteps,
+      nextFundNumber,
     } = this.props;
     const containerStyles = classnames([styles.container, containerClassName]);
     const contentStyles = classnames([styles.content, contentClassName]);
@@ -77,7 +78,7 @@ export default class VotingRegistrationDialog extends Component<Props> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle, {
-          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+          nextVotingFundNumber: nextFundNumber,
         })}
         subtitle={!hideSteps && stepsIndicatorLabel}
         onClose={onClose}

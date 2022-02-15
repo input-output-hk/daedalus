@@ -6503,13 +6503,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 8
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 18
+          "line": 4
         }
       },
       {
@@ -6517,13 +6517,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 13
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 9
         }
       },
       {
@@ -6531,13 +6531,13 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 18
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 14
         }
       },
       {
@@ -6545,13 +6545,13 @@
         "description": "\"gridIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 23
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.gridIconTooltip",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 19
         }
       },
       {
@@ -6559,13 +6559,13 @@
         "description": "\"gridRewardsIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 28
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.gridRewardsIconTooltip",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 24
         }
       },
       {
@@ -6573,13 +6573,13 @@
         "description": "\"listIconTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 33
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.listIconTooltip",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 29
         }
       },
       {
@@ -6587,17 +6587,17 @@
         "description": "\"clearTooltip\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 38
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.ts",
         "id": "staking.stakePools.search.clearTooltip",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 34
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.json"
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.messages.json"
   },
   {
     "descriptors": [
@@ -8274,6 +8274,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Catalyst API unavailable",
+        "description": "Title",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.title",
+        "start": {
+          "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Unable to communicate with the API that retrieves the Catalyst date information.",
+        "description": "Description 1",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.description1",
+        "start": {
+          "column": 16,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Please, try again later.",
+        "description": "Description 2",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts",
+        "id": "voting.apiError.description2",
+        "start": {
+          "column": 16,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-info/ApiError.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
@@ -8874,13 +8921,13 @@
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 17
         }
       },
       {
@@ -8888,13 +8935,13 @@
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 27
+          "line": 24
         }
       },
       {
@@ -8902,13 +8949,13 @@
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 35
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 33
+          "line": 30
         }
       },
       {
@@ -8916,13 +8963,13 @@
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 41
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 39
+          "line": 36
         }
       },
       {
@@ -8930,13 +8977,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 46
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 45
+          "line": 42
         }
       },
       {
@@ -8944,13 +8991,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 52
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 50
+          "line": 47
         }
       },
       {
@@ -8958,13 +9005,13 @@
         "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 58
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode.js",
         "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 53
         }
       }
     ],
@@ -8977,13 +9024,13 @@
         "description": "Qr code title on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeTitle",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -8991,13 +9038,13 @@
         "description": "Part 1 of Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeDescription1",
         "start": {
           "column": 22,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -9005,13 +9052,13 @@
         "description": "Part 2 of Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeDescription2",
         "start": {
           "column": 22,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -9019,13 +9066,13 @@
         "description": "Qr code warning on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeWarning",
         "start": {
           "column": 17,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -9033,13 +9080,13 @@
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -9047,13 +9094,13 @@
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -9061,13 +9108,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -9075,13 +9122,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 58
+          "line": 57
         }
       }
     ],
@@ -9094,13 +9141,13 @@
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 32
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.description",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -9108,13 +9155,13 @@
         "description": "Label for continue button on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 34
+          "line": 33
         }
       },
       {
@@ -9122,13 +9169,13 @@
         "description": "Fees label on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 39
         }
       },
       {
@@ -9136,13 +9183,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -9150,13 +9197,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 53
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -9164,13 +9211,13 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 55
+          "line": 54
         }
       },
       {
@@ -9178,13 +9225,13 @@
         "description": "\"Learn more\" link on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 63
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learnMoreLink",
         "start": {
           "column": 17,
-          "line": 60
+          "line": 59
         }
       },
       {
@@ -9192,13 +9239,13 @@
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 69
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
-          "line": 65
+          "line": 64
         }
       }
     ],
@@ -9211,13 +9258,13 @@
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.headline",
         "start": {
           "column": 12,
-          "line": 11
+          "line": 10
         }
       },
       {
@@ -9225,13 +9272,13 @@
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.content",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 16
         }
       },
       {
@@ -9239,13 +9286,13 @@
         "description": "\"Cancel registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -9253,13 +9300,13 @@
         "description": "\"Continue registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 31
+          "line": 30
         }
       }
     ],

@@ -4,10 +4,6 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
-  VOTING_NEW_SNAPSHOT_DATE,
-  NEXT_VOTING_FUND_NUMBER,
-} from '../../../config/votingConfig';
-import {
   formattedDateTime,
   mapToLongDateTimeFormat,
 } from '../../../utils/formatters';
@@ -17,45 +13,50 @@ import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
 import votingStyles from './VotingInfo.scss';
+import type { CatalystFund } from '../../../api/voting/types';
 
 type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  intl: Intl,
-  onRegisterToVoteClick: Function,
+  currentLocale: Locale;
+  currentDateFormat: string;
+  currentTimeFormat: string;
+  fundInfo: CatalystFund;
+  intl: Intl;
+  onRegisterToVoteClick: (...args: Array<any>) => any;
 };
 
 function RegisterToVote({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
+  fundInfo,
   intl,
   onRegisterToVoteClick,
 }: Props) {
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const castEndDate = formattedDateTime(VOTING_NEW_SNAPSHOT_DATE, {
-    currentLocale,
-    ...mapToLongDateTimeFormat({
+  const snapshotDate = formattedDateTime(
+    fundInfo.next.registrationSnapshotTime,
+    {
       currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    }),
-  });
-
+      ...mapToLongDateTimeFormat({
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+      }),
+    }
+  );
   return (
     <div className={styles.root}>
       <span className={styles.title}>
         {intl.formatMessage(votingMessages.fundName, {
-          votingFundNumber: NEXT_VOTING_FUND_NUMBER,
+          votingFundNumber: fundInfo.next.number,
         })}
       </span>
       <span className={styles.dateLabel}>
         {intl.formatMessage(messages.dateLabel)}
       </span>
-      <span className={styles.date}>{castEndDate}</span>
+      <span className={styles.date}>{snapshotDate}</span>
       <hr className={votingStyles.separator} />
       <span className={styles.stepsTitle}>
         {intl.formatMessage(messages.stepsTitle)}

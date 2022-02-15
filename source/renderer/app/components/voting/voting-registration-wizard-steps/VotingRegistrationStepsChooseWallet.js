@@ -66,16 +66,17 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  numberOfStakePools: number,
-  onSelectWallet: Function,
-  wallets: Array<Wallet>,
-  minVotingRegistrationFunds: number,
-  selectedWalletId: ?string,
-  isWalletAcceptable: Function,
-  getStakePoolById: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  numberOfStakePools: number;
+  onSelectWallet: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  minVotingRegistrationFunds: number;
+  selectedWalletId: string | null | undefined;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
+  nextFundNumber: number;
 };
 
 type State = {
@@ -115,6 +116,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
+      nextFundNumber,
     } = this.props;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -177,6 +179,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage {...messages.description} />

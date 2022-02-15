@@ -180,6 +180,7 @@ export default class VotingRegistrationDialogContainer extends Component<
       isTransactionConfirmed,
       transactionConfirmations,
       qrCode,
+      catalystFund,
     } = voting;
     const { openExternalLink } = app;
     const {
@@ -237,9 +238,11 @@ export default class VotingRegistrationDialogContainer extends Component<
           onExternalLinkClick={openExternalLink}
           isTrezor={isTrezor}
           isHardwareWallet={isHardwareWallet}
+          nextFundNumber={catalystFund?.next?.number}
         />
         {isConfirmationDialogOpen && (
           <ConfirmationDialog
+            nextFundNumber={catalystFund?.next?.number}
             onConfirm={closeConfirmationDialog.trigger}
             onCancel={() => {
               this.props.actions.dialogs.closeActiveDialog.trigger();

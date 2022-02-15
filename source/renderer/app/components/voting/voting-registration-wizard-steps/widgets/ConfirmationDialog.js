@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../../widgets/Dialog';
-import { NEXT_VOTING_FUND_NUMBER } from '../../../../config/votingConfig';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ConfirmationDialog.scss' or ... Remove this comment to see the full error message
 import styles from './ConfirmationDialog.scss';
 
 const messages = defineMessages({
@@ -38,8 +38,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onConfirm: Function,
-  onCancel: Function,
+  nextFundNumber: number;
+  onConfirm: (...args: Array<any>) => any;
+  onCancel: (...args: Array<any>) => any;
 };
 
 @observer
@@ -50,8 +51,7 @@ export default class ConfirmationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onConfirm, onCancel } = this.props;
-
+    const { nextFundNumber, onConfirm, onCancel } = this.props;
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
 
     const confirmButtonClasses = classnames([
@@ -78,7 +78,7 @@ export default class ConfirmationDialog extends Component<Props> {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline, {
-          nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+          nextVotingFundNumber: nextFundNumber,
         })}
         actions={actions}
         closeOnOverlayClick={false}
@@ -86,7 +86,7 @@ export default class ConfirmationDialog extends Component<Props> {
       >
         <p>
           {intl.formatMessage(messages.content, {
-            nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+            nextVotingFundNumber: nextFundNumber,
           })}
         </p>
       </Dialog>

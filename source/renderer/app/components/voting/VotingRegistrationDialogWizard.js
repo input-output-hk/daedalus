@@ -16,33 +16,34 @@ import Wallet from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 type Props = {
-  stepsList: Array<string>,
-  activeStep: number,
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
-  onSelectWallet: Function,
-  isWalletAcceptable: Function,
-  wallets: Array<Wallet>,
-  selectedWallet: ?Wallet,
-  onSetPinCode: Function,
-  minVotingRegistrationFunds: number,
-  stakePoolsList: Array<StakePool>,
-  getStakePoolById: Function,
-  transactionFee: ?BigNumber,
-  transactionFeeError: string | Node | null,
-  onSubmit: Function,
-  qrCode: ?string,
-  isTransactionPending: boolean,
-  isTransactionConfirmed: boolean,
-  transactionConfirmations: number,
-  transactionError: ?LocalizableError,
-  isTrezor: boolean,
-  isHardwareWallet: boolean,
-  onDownloadPDF: Function,
-  onRestart: Function,
-  onExternalLinkClick: Function,
-  hwDeviceStatus: HwDeviceStatus,
+  stepsList: Array<string>;
+  activeStep: number;
+  onContinue: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onBack: (...args: Array<any>) => any;
+  onSelectWallet: (...args: Array<any>) => any;
+  isWalletAcceptable: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
+  selectedWallet: Wallet | null | undefined;
+  onSetPinCode: (...args: Array<any>) => any;
+  minVotingRegistrationFunds: number;
+  stakePoolsList: Array<StakePool>;
+  getStakePoolById: (...args: Array<any>) => any;
+  transactionFee: BigNumber | null | undefined;
+  transactionFeeError: string | Node | null;
+  onSubmit: (...args: Array<any>) => any;
+  qrCode: string | null | undefined;
+  isTransactionPending: boolean;
+  isTransactionConfirmed: boolean;
+  transactionConfirmations: number;
+  transactionError: LocalizableError | null | undefined;
+  isTrezor: boolean;
+  isHardwareWallet: boolean;
+  onDownloadPDF: (...args: Array<any>) => any;
+  onRestart: (...args: Array<any>) => any;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  hwDeviceStatus: HwDeviceStatus;
+  nextFundNumber: number;
 };
 
 @observer
@@ -76,6 +77,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       hwDeviceStatus,
       isTrezor,
       isHardwareWallet,
+      nextFundNumber,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -95,6 +97,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
             getStakePoolById={getStakePoolById}
+            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -115,6 +118,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             selectedWallet={selectedWallet}
             isTrezor={isTrezor}
             isHardwareWallet={isHardwareWallet}
+            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -130,6 +134,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             transactionError={transactionError}
             onConfirm={onContinue}
             onRestart={onRestart}
+            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -140,6 +145,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onClose={onClose}
             stepsList={stepsList}
             activeStep={activeStep}
+            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -151,6 +157,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             onDownloadPDF={onDownloadPDF}
             stepsList={stepsList}
             activeStep={activeStep}
+            nextFundNumber={nextFundNumber}
           />
         );
         break;

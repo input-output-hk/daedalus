@@ -10,10 +10,7 @@ import {
   isValidRepeatPinCode,
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import {
-  VOTING_REGISTRATION_PIN_CODE_LENGTH,
-  NEXT_VOTING_FUND_NUMBER,
-} from '../../../config/votingConfig';
+import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
@@ -63,10 +60,11 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onClose: Function,
-  stepsList: Array<string>,
-  activeStep: number,
-  onSetPinCode: Function,
+  onClose: (...args: Array<any>) => any;
+  stepsList: Array<string>;
+  activeStep: number;
+  onSetPinCode: (...args: Array<any>) => any;
+  nextFundNumber: number;
 };
 
 interface FormFields {
@@ -141,8 +139,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, stepsList, activeStep } = this.props;
-
+    const { onClose, stepsList, activeStep, nextFundNumber } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
@@ -169,11 +166,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER }}
+            values={{
+              nextVotingFundNumber: nextFundNumber,
+            }}
           />
         </p>
 

@@ -2,7 +2,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import BorderedBox from '../../widgets/BorderedBox';
-import type { Locale } from '../../../../../common/types/locales.types';
 import styles from './VotingInfo.scss';
 import ResultsPhase from './ResultsPhase';
 import SnapshotPhase from './SnapshotPhase';
@@ -11,23 +10,15 @@ import TallyingPhase from './TallyingPhase';
 import Headline from './Headline';
 import AppStore from './AppStore';
 import RegisterToVote from './RegisterToVote';
-import { FundPhases } from '../../../stores/VotingStore';
-import type { FundPhase } from '../../../stores/VotingStore';
+import ApiError from './ApiError';
+import { FundPhase } from '../../../stores/VotingStore';
+import { VotingProps as Props, PhaseProps } from './types';
 
-type Props = {
-  currentLocale: Locale,
-  currentDateFormat: string,
-  currentTimeFormat: string,
-  fundPhase: FundPhase,
-  onRegisterToVoteClick: Function,
-  onExternalLinkClick: Function,
-};
-
-const phaseToComponentMap = {
-  [FundPhases.SNAPSHOT]: SnapshotPhase,
-  [FundPhases.VOTING]: VotingPhase,
-  [FundPhases.TALLYING]: TallyingPhase,
-  [FundPhases.RESULTS]: ResultsPhase,
+const phaseToComponentMap: { [key in FundPhase]: React.FC<PhaseProps> } = {
+  [FundPhase.SNAPSHOT]: SnapshotPhase,
+  [FundPhase.VOTING]: VotingPhase,
+  [FundPhase.TALLYING]: TallyingPhase,
+  [FundPhase.RESULTS]: ResultsPhase,
 };
 
 const VotingInfo = ({
@@ -35,39 +26,46 @@ const VotingInfo = ({
   currentDateFormat,
   currentTimeFormat,
   fundPhase,
+  fundInfo,
   onRegisterToVoteClick,
   onExternalLinkClick,
 }: Props) => {
-  const PhaseComponent = phaseToComponentMap[fundPhase || FundPhases.SNAPSHOT];
-
+  const PhaseComponent = phaseToComponentMap[fundPhase];
   return (
     <div className={styles.component}>
       <BorderedBox>
         <Headline onExternalLinkClick={onExternalLinkClick} />
         <hr className={styles.separator} />
         <div className={styles.bottomContent}>
-          <div className={styles.leftContent}>
-            <PhaseComponent
-              currentLocale={currentLocale}
-              currentDateFormat={currentDateFormat}
-              currentTimeFormat={currentTimeFormat}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-            <div className={styles.appStoreSpacing}>
-              <AppStore
-                onAppleStoreLinkClick={onExternalLinkClick}
-                onAndroidStoreLinkClick={onExternalLinkClick}
-              />
-            </div>
-          </div>
-          <div className={styles.rightContent}>
-            <RegisterToVote
-              currentLocale={currentLocale}
-              currentDateFormat={currentDateFormat}
-              currentTimeFormat={currentTimeFormat}
-              onRegisterToVoteClick={onRegisterToVoteClick}
-            />
-          </div>
+          {fundPhase === null && <ApiError />}
+          {fundPhase && (
+            <>
+              <div className={styles.leftContent}>
+                <PhaseComponent
+                  fundInfo={fundInfo}
+                  currentLocale={currentLocale}
+                  currentDateFormat={currentDateFormat}
+                  currentTimeFormat={currentTimeFormat}
+                  onExternalLinkClick={onExternalLinkClick}
+                />
+                <div className={styles.appStoreSpacing}>
+                  <AppStore
+                    onAppleStoreLinkClick={onExternalLinkClick}
+                    onAndroidStoreLinkClick={onExternalLinkClick}
+                  />
+                </div>
+              </div>
+              <div className={styles.rightContent}>
+                <RegisterToVote
+                  fundInfo={fundInfo}
+                  currentLocale={currentLocale}
+                  currentDateFormat={currentDateFormat}
+                  currentTimeFormat={currentTimeFormat}
+                  onRegisterToVoteClick={onRegisterToVoteClick}
+                />
+              </div>
+            </>
+          )}
         </div>
       </BorderedBox>
     </div>
