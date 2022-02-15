@@ -2,6 +2,7 @@
 
 .component {
   bottom: 64px;
+  font-family: var(--font-regular);
   position: absolute;
   text-align: center;
   width: 100%;
@@ -13,14 +14,12 @@
 }
 
 .headline {
-  font-family: var(--font-regular);
   font-size: 18px;
   margin-bottom: 14px;
 }
 
 .description {
   color: var(--theme-connecting-description-color);
-  font-family: var(--font-regular);
   font-size: 16px;
   line-height: 22px;
   margin: 0 auto;
@@ -40,4 +39,63 @@
 .component,
 .headline {
   --webkit-backface-visibility: hidden;
+}
+
+.syncingProgresses {
+  display: flex;
+  justify-content: center;
+}
+
+.syncingProgresses_column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.syncingProgresses_iconsColumn {
+  margin-right: 12px;
+  width: 28px;
+}
+
+.syncingProgresses_messagesColumn {
+  margin-right: 60px;
+  text-align: left;
+}
+
+.syncingProgresses_cell {
+  align-items: center;
+  color: var(--theme-connecting-sync-progress-color);
+  display: flex;
+  height: 28px;
+  line-height: 1.22;
+  margin-bottom: 14px;
+}
+
+.syncingProgresses_cell:last-child {
+  margin: 0;
+}
+
+.syncingProgresses_cellTextRight {
+  justify-content: flex-end;
+}
+
+.syncingProgresses_faded {
+  opacity: 0.5;
+}
+
+.syncingProgresses_icon svg {
+  fill: currentColor;
+  height: 1em;
+  position: relative;
+  top: 0.125em;
+  width: 1em;
+}
+
+.syncingProgresses_iconRotating :global {
+  animation: loading-spin 1.2s linear infinite;
+}
+
+.syncingProgresses_descriptionIcon {
+  margin-left: 6px;
+  opacity: 0.3;
 }

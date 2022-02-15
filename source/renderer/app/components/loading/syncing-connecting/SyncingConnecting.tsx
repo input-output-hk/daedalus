@@ -20,12 +20,10 @@ let connectingInterval = null;
 type State = {
   connectingTime: number;
 };
-type Props = {
+
+export type Props = {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  blockSync: {
-    type: BlockSyncType;
-    progress: number;
-  };
+  blockSync: Record<BlockSyncType, number>;
   hasBeenConnected: boolean;
   forceConnectivityIssue?: boolean;
   isConnected: boolean;

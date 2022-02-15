@@ -19,13 +19,13 @@ import {
   restartCardanoNodeChannel,
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
-import type {
+import {
   BlockSyncType,
   CardanoNodeState,
+  CardanoNodeStates,
   CardanoStatus,
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
-import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
 import { getBlockSyncProgressChannel } from '../ipc/getBlockSyncChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
@@ -173,10 +173,12 @@ export default class NetworkStatusStore extends Store {
   isAlonzoPending = false;
   @observable
   alonzoActivationTime = '';
-  @observable blockSync: {
-    type: BlockSyncType;
-    progress: number;
-  } = { progress: 0, type: 'validatingChunk' };
+  @observable
+  blockSync: Record<BlockSyncType, number> = {
+    [BlockSyncType.validatingChunk]: 0,
+    [BlockSyncType.replayedBlock]: 0,
+    [BlockSyncType.pushingLedger]: 0,
+  };
   @observable
   epochLength: number | null | undefined = null; // unit: 1 slot
 
@@ -802,13 +804,17 @@ export default class NetworkStatusStore extends Store {
 
     return Promise.resolve();
   };
-  @action _onCheckBlockSyncProgress = ({
+
+  @action _onCheckBlockSyncProgress = async ({
     progress,
     type,
-  }: GetBlockSyncProgressMainResponse): Promise<void> => {
-    this.blockSync = { progress, type };
-    return Promise.resolve();
+  }: GetBlockSyncProgressMainResponse) => {
+    this.blockSync = {
+      ...this.blockSync,
+      [type]: progress,
+    };
   };
+
   @action
   _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
@@ -867,6 +873,9 @@ export default class NetworkStatusStore extends Store {
 
   @computed
   get isVerifyingBlockchain(): boolean {
-    return !this.isConnected && this.blockSync.progress < 100;
+    return (
+      !this.isConnected &&
+      Object.values(this.blockSync).some((value) => value < 100)
+    );
   }
 }

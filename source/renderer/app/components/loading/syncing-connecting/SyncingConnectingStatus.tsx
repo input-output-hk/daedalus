@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
+import React, { Component } from 'react';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import SVGInline from 'react-svg-inline';
+import {
+  BlockSyncType,
+  CardanoNodeState,
+  CardanoNodeStates,
+} from '../../../../../common/types/cardano-node.types';
+import checkMarkIcon from '../../../assets/images/check-w.inline.svg';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+import spinnerIcon from '../../../assets/images/spinner-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnectingStatus.scss... Remove this comment to see the full error message
 import styles from './SyncingConnectingStatus.scss';
-import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
-import type {
-  CardanoNodeState,
-  BlockSyncType,
-} from '../../../../../common/types/cardano-node.types';
 
 const messages = defineMessages({
   starting: {
@@ -82,31 +87,44 @@ const messages = defineMessages({
   },
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
+    defaultMessage: '!!!Verifying the blockchain',
+    description: 'Message "Verifying the blockchain" on the loading screen.',
+  },
+  verifyingBlockchainDescription: {
+    id: 'loading.screen.verifyingBlockchainDescription',
     defaultMessage:
-      '!!!Verifying the blockchain ({verificationProgress}% complete)',
+      '!!!This process replays the blockchain from the last saved ledger',
     description:
-      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+      'Description of "Verifying the blockchain" message on the loading screen.',
   },
   validatingChunk: {
     id: 'loading.screen.validatingChunk',
-    defaultMessage: '!!!Validating blocks ({verificationProgress}% complete)',
+    defaultMessage: '!!!Validating blocks',
+    description: 'Message "Validating blocks" on the loading screen.',
+  },
+  validatingChunkDescription: {
+    id: 'loading.screen.validatingChunkDescription',
+    defaultMessage:
+      '!!!This process verifies the integrity of locally stored blockchain',
     description:
-      'Message "Validating blocks (65% complete) ..." on the loading screen.',
+      'Description of "Validating blocks" message on the loading screen.',
   },
   pushingLedgerState: {
     id: 'loading.screen.pushingLedgerState',
-    defaultMessage:
-      '!!!Applying a block to ledger ({verificationProgress}% complete)',
+    defaultMessage: '!!!Applying block',
+    description: 'Message "Applying a block to ledger" on the loading screen.',
+  },
+  pushingLedgerStateDescription: {
+    id: 'loading.screen.pushingLedgerStateDescription',
+    defaultMessage: '!!!This process applies a block to the ledger',
     description:
-      'Message "Applying a block to ledger (65% complete) ..." on the loading screen.',
+      'Description of "Applying block" message on the loading screen.',
   },
 });
-type Props = {
+
+interface Props {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  blockSync: {
-    type: BlockSyncType;
-    progress: number;
-  };
+  blockSync: Record<BlockSyncType, number>;
   hasLoadedCurrentLocale: boolean;
   hasBeenConnected: boolean;
   isTlsCertInvalid: boolean;
@@ -114,11 +132,35 @@ type Props = {
   isNodeStopping: boolean;
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
-};
+}
+
+const blockSyncTypesOrdered: Array<BlockSyncType> = [
+  BlockSyncType.pushingLedger,
+  BlockSyncType.validatingChunk,
+  BlockSyncType.replayedBlock,
+];
+
+interface MakeBlockSyncIterationCallbackArgs {
+  type: BlockSyncType;
+  value: number;
+}
+
+const makeBlockSyncIteration = (blockSync: Record<BlockSyncType, number>) => (
+  cb: (args: MakeBlockSyncIterationCallbackArgs) => any
+) => blockSyncTypesOrdered.map((type) => cb({ type, value: blockSync[type] }));
+
+const getDescriptionOfBlockSyncType = (type: BlockSyncType) =>
+  (({
+    [BlockSyncType.replayedBlock]: messages.verifyingBlockchainDescription,
+    [BlockSyncType.validatingChunk]: messages.validatingChunkDescription,
+    [BlockSyncType.pushingLedger]: messages.pushingLedgerStateDescription,
+  } as Record<BlockSyncType, any>)[type]);
+
 export default class SyncingConnectingStatus extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   _getConnectingMessage = (): {
     connectingMessage: string;
     connectingDescription?: string;
@@ -132,6 +174,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     } = this.props;
     let connectingMessage;
 
+    // if (!isConnected) {
     if (isConnected) {
       connectingMessage = messages.loadingWalletData;
       return {
@@ -140,6 +183,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
     }
 
     let connectingDescription;
+    // const cardanoNodeState = CardanoNodeStates.RUNNING;
+    // const isVerifyingBlockchain = true;
 
     switch (cardanoNodeState) {
       case null:
@@ -175,8 +220,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
         connectingMessage = messages.unrecoverable;
         break;
 
+      case CardanoNodeStates.RUNNING:
       default:
-        // also covers CardanoNodeStates.RUNNING state
         connectingMessage = hasBeenConnected
           ? messages.reconnecting
           : messages.connecting;
@@ -188,9 +233,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
 
     if (isTlsCertInvalid && isConnectingMessage) {
       connectingMessage = messages.tlsCertificateNotValidError;
-    } else if (isVerifyingBlockchain && isConnectingMessage) {
-      connectingMessage = this.getBlockSyncMessage();
-      connectingDescription = messages.startingDescription;
     }
 
     return {
@@ -198,8 +240,11 @@ export default class SyncingConnectingStatus extends Component<Props> {
       connectingDescription,
     };
   };
-  getBlockSyncMessage = () => {
-    switch (this.props.blockSync.type) {
+
+  getBlockSyncMessage = (type: BlockSyncType) => {
+    // getBlockSyncMessage = () => {
+    switch (type) {
+      // switch (this.props.blockSync.type) {
       case 'replayedBlock':
         return messages.verifyingBlockchain;
 
@@ -219,10 +264,102 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopping,
       isNodeStopped,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
       hasLoadedCurrentLocale,
       blockSync,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
+
+    const {
+      connectingMessage,
+      connectingDescription,
+    } = this._getConnectingMessage();
+
+    const isConnectingMessage =
+      connectingMessage === messages.connecting ||
+      connectingMessage === messages.reconnecting;
+
+    if (isVerifyingBlockchain && isConnectingMessage) {
+      const iterateOverBlockSync = makeBlockSyncIteration(blockSync);
+
+      const componentStyles = classNames(
+        styles.component,
+        styles.syncingProgresses
+      );
+      const iconsColumnStyles = classNames(
+        styles.syncingProgresses_column,
+        styles.syncingProgresses_iconsColumn
+      );
+      const messagesColumnStyles = classNames(
+        styles.syncingProgresses_column,
+        styles.syncingProgresses_messagesColumn
+      );
+      const questionMarkIconStyles = classNames(
+        styles.syncingProgresses_icon,
+        styles.syncingProgresses_descriptionIcon
+      );
+
+      return (
+        <div className={componentStyles}>
+          <div className={iconsColumnStyles}>
+            {iterateOverBlockSync(({ type, value }) => (
+              <div key={type} className={styles.syncingProgresses_cell}>
+                <SVGInline
+                  svg={value < 100 ? spinnerIcon : checkMarkIcon}
+                  className={classNames(
+                    styles.syncingProgresses_icon,
+                    styles.syncingProgresses_faded,
+                    {
+                      [styles.syncingProgresses_iconRotating]: value < 100,
+                    }
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+          <div className={messagesColumnStyles}>
+            {iterateOverBlockSync(({ type, value }) => (
+              <div key={type} className={styles.syncingProgresses_cell}>
+                <span
+                  className={classNames({
+                    [styles.syncingProgresses_faded]: value === 100,
+                  })}
+                >
+                  {intl.formatMessage(this.getBlockSyncMessage(type))}
+                </span>
+                <PopOver
+                  content={intl.formatMessage(
+                    getDescriptionOfBlockSyncType(type)
+                  )}
+                >
+                  <SVGInline
+                    svg={questionMarkIcon}
+                    className={questionMarkIconStyles}
+                  />
+                </PopOver>
+              </div>
+            ))}
+          </div>
+          <div className={styles.syncingProgresses_column}>
+            {iterateOverBlockSync(({ type, value }) => (
+              <div
+                key={type}
+                className={classNames(
+                  styles.syncingProgresses_cell,
+                  styles.syncingProgresses_cellTextRight,
+                  {
+                    [styles.syncingProgresses_faded]: value === 100,
+                  }
+                )}
+              >
+                {Math.floor(value)}%
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     const showEllipsis =
       !isConnected && (isNodeStopped || (isTlsCertInvalid && !isNodeStopping));
     const componentStyles = classNames([
@@ -234,17 +371,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
-    const {
-      connectingMessage,
-      connectingDescription,
-    } = this._getConnectingMessage();
-
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(connectingMessage, {
-            verificationProgress: blockSync.progress,
-          })}
+          {intl.formatMessage(connectingMessage)}
         </h1>
         <div className={styles.description}>
           {connectingDescription && (

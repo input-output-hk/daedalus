@@ -3,13 +3,22 @@ import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
-import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
+import {
+  BlockSyncType,
+  CardanoNodeStates,
+} from '../../../../source/common/types/cardano-node.types';
+
+const blockSync = {
+  [BlockSyncType.replayedBlock]: 100,
+  [BlockSyncType.pushingLedger]: 99.9,
+  [BlockSyncType.validatingChunk]: 100,
+};
 
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
     hasUpdate={false}
-    isVerifyingBlockchain={false}
+    isVerifyingBlockchain={boolean('isVerifyingBlockchain', false)}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     verificationProgress={0}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
@@ -46,10 +55,7 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSync={blockSync}
   />
 );
 export const ConnectivityIssuesSyncingConnectingStory = () => (
@@ -57,10 +63,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSync={blockSync}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -99,10 +102,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSync={blockSync}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
