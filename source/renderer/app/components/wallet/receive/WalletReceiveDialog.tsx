@@ -276,7 +276,6 @@ class WalletReceiveDialog extends Component<Props, State> {
     const noteInputField = this.form.$('noteInput');
     const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
-    const buttonClasses = classnames(['attention']);
     const supportButtonLabel = !isSubmitting ? (
       intl.formatMessage(messages.supportRequestButtonLabel)
     ) : (
@@ -292,7 +291,7 @@ class WalletReceiveDialog extends Component<Props, State> {
       );
       actions = [
         {
-          className: buttonClasses,
+          className: 'attention',
           label: supportButtonLabel,
           onClick: onSupportRequestClick.bind(this, supportRequestLinkUrl),
           disabled: !isInvalidAddressConfirmed,

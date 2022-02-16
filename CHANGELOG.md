@@ -18,6 +18,9 @@
 
 - Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
 
+### Chores
+- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
+
 ## 4.9.0-FC1
 
 ### Features
@@ -39,7 +42,6 @@
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
 - Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
-- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 
 ## 4.8.0
 

@@ -141,7 +141,6 @@ class InstructionsDialog extends Component<Props> {
       network,
       error,
     } = this.props;
-    const dialogClasses = classnames(['instructionsDialog']);
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,
@@ -168,7 +167,7 @@ class InstructionsDialog extends Component<Props> {
     );
     return (
       <Dialog
-        className={dialogClasses}
+        className="instructionsDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick

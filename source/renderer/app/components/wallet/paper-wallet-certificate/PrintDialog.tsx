@@ -97,7 +97,6 @@ class PrintDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onContinue, onClose } = this.props;
     const { isPrintedCorrectly, isReadable, isScannable } = this.state;
-    const dialogClasses = classnames(['printDialog']);
     const certificatePrintedCheckboxClasses = classnames([
       'printedCheckbox',
       styles.checkbox,
@@ -122,7 +121,7 @@ class PrintDialog extends Component<Props, State> {
     ];
     return (
       <Dialog
-        className={dialogClasses}
+        className="printDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         onClose={onClose}

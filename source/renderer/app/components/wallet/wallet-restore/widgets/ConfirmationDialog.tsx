@@ -47,9 +47,6 @@ class ConfirmationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onCancel } = this.props;
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
-    const confirmButtonClasses = classnames([
-      'confirmButton', // 'attention',
-    ]);
     const actions = [
       {
         className: 'cancelButton',
@@ -57,7 +54,7 @@ class ConfirmationDialog extends Component<Props> {
         onClick: onCancel,
       },
       {
-        className: confirmButtonClasses,
+        className: 'confirmButton',
         label: intl.formatMessage(messages.confirmButtonLabel),
         primary: true,
         onClick: onConfirm,

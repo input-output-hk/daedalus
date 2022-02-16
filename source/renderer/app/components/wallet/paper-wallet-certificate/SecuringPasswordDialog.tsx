@@ -69,7 +69,6 @@ class SecuringPasswordDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
-    const dialogClasses = classnames(['SecuringPasswordDialog']);
     const actions = [
       {
         className: 'continueButton',
@@ -81,7 +80,7 @@ class SecuringPasswordDialog extends Component<Props, State> {
     ];
     return (
       <Dialog
-        className={dialogClasses}
+        className="SecuringPasswordDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         onClose={onClose}

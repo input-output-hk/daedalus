@@ -67,7 +67,6 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       !isWalletNameConfirmationCorrect);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const handleSubmit = React.useCallback(() => !isDisabled && onContinue());
-  const buttonClasses = classnames(['attention']);
   const buttonLabel = !isSubmitting ? (
     `${intl.formatMessage(messages.confirmButtonLabel)} ${countdownDisplay}`
   ) : (
@@ -79,7 +78,7 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       onClick: onCancel,
     },
     {
-      className: buttonClasses,
+      className: 'attention',
       label: buttonLabel,
       onClick: onContinue,
       disabled: isDisabled,

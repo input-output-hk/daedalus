@@ -152,7 +152,6 @@ class AssetInput extends Component<Props> {
                   label={intl.formatMessage(messages.clearLabel)}
                   onClick={() => clearAssetFieldValue(assetField)}
                 />
-                <div />
               </div>
             )}
             {ticker ? (
