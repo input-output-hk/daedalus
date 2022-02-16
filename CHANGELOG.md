@@ -6,6 +6,7 @@
 
 - Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
 - Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Fixes
 
@@ -15,7 +16,6 @@
 
 ### Features
 
-- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 - Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
