@@ -1,0 +1,64 @@
+.root {
+  display: flex;
+  justify-content: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.columnIcons {
+  margin-right: 12px;
+  width: 28px;
+}
+
+.columnMessages {
+  margin-right: 60px;
+  text-align: left;
+}
+
+.cell {
+  align-items: center;
+  color: var(--theme-connecting-sync-progress-color);
+  display: flex;
+  height: 28px;
+  line-height: 1.22;
+  margin-bottom: 14px;
+}
+
+.cell:last-child {
+  margin: 0;
+}
+
+.cellTextRight {
+  justify-content: flex-end;
+}
+
+.faded {
+  opacity: 0.5;
+}
+
+.icon {
+  svg {
+    fill: currentColor;
+    height: 1em;
+    position: relative;
+    top: 0.125em;
+    width: 1em;
+  }
+}
+
+.iconRotating :global {
+  animation: loading-spin 1.2s linear infinite;
+}
+
+.iconDescription {
+  margin-left: 6px;
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
