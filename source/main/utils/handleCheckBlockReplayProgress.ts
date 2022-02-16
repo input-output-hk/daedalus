@@ -5,6 +5,7 @@ import path from 'path';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
+import { BlockSyncType } from '../../common/types/cardano-node.types';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -18,15 +19,11 @@ const progressKeywords = [
   ledgerKeyword,
 ];
 
-type KeywordTypeMap = {
-  [name: string]: GetBlockSyncProgressType;
-};
-
-const keywordTypeMap: KeywordTypeMap = {
-  [blockKeyword]: 'replayedBlock',
-  [validatingChunkKeyword]: 'validatingChunk',
-  [validatedChunkKeyword]: 'validatingChunk',
-  [ledgerKeyword]: 'pushingLedger',
+const keywordTypeMap: Record<string, GetBlockSyncProgressType> = {
+  [blockKeyword]: BlockSyncType.replayedBlock,
+  [validatingChunkKeyword]: BlockSyncType.validatingChunk,
+  [validatedChunkKeyword]: BlockSyncType.validatingChunk,
+  [ledgerKeyword]: BlockSyncType.pushingLedger,
 };
 
 function containProgressKeywords(line: string) {
