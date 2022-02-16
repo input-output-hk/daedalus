@@ -1,6 +1,7 @@
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module 'utility-types' or its correspo... Remove this comment to see the full error message
 import { Class } from 'utility-types';
-import { action, observable } from 'mobx';
+import { observable, action } from 'mobx';
+import { RouterStore } from 'mobx-react-router';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
@@ -60,7 +61,7 @@ export type StoresMap = {
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
-  router: Record<string, any>;
+  router: RouterStore;
   sidebar: SidebarStore;
   staking: StakingStore;
   transactions: TransactionsStore;

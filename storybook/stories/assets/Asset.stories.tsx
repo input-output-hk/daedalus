@@ -49,7 +49,7 @@ storiesOf('Assets|Asset pill', module)
               },
             },
           }}
-          small={boolean('small', true)}
+          small={boolean('small', false)}
           // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
           hidePopOver={boolean('hidePopOver')}
           onCopyAssetParam={action('onCopyAssetParam')}

@@ -7,6 +7,12 @@ import styles from './TinySelect.scss';
 
 type Props = {
   value: string;
+  onChange: (...args: any) => void;
+  placeholder?: string;
+  options: Array<{
+    label: string;
+    value: string;
+  }>;
 };
 export default class TinySelect extends Component<Props> {
   render() {
