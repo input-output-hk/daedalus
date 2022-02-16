@@ -1,6 +1,6 @@
 import { BlockSyncType } from '../../../../../../common/types/cardano-node.types';
 import { ReactIntlMessage } from '../../../../types/i18nTypes';
-import messages from './messages';
+import messages from './SyncingProgress.messages';
 
 const mapOfBlockSyncTypeToMessageDescription: {
   [key in BlockSyncType]: ReactIntlMessage;

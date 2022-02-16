@@ -21,9 +21,9 @@ interface Context {
 }
 
 const blockSyncTypesOrdered: Array<BlockSyncType> = [
-  BlockSyncType.pushingLedger,
   BlockSyncType.validatingChunk,
   BlockSyncType.replayedBlock,
+  BlockSyncType.pushingLedger,
 ];
 
 const iconsColumnStyles = cx(styles.column, styles.columnIcons);
