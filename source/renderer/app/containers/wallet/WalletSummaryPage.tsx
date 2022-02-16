@@ -73,6 +73,7 @@ class WalletSummaryPage extends Component<Props> {
   };
 
   get assetSettingsDialogWasOpened() {
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'typeof AssetSettingsDialog' is not assignable... Remove this comment to see the full error message
     return this.props.stores.uiDialogs.isOpen(AssetSettingsDialog);
   }
 

@@ -1099,7 +1099,7 @@ export default class HardwareWalletsStore extends Store {
   };
   initiateAddressVerification = async (
     address: WalletAddress,
-    path: string | null | undefined
+    path?: string | null
   ) => {
     if (this.isAddressVerificationInitiated) return;
     logger.debug('[HW-DEBUG] HWStore - Initiate Address Verification: ', {
