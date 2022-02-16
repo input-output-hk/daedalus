@@ -235,6 +235,7 @@
     "mobx-react-form": "2.0.8",
     "mobx-react-router": "4.1.0",
     "moment": "2.29.0",
+    "nanoid": "3.2.0",
     "node-downloader-helper": "1.0.18",
     "omit-deep-lodash": "1.1.5",
     "pbkdf2": "3.0.17",
