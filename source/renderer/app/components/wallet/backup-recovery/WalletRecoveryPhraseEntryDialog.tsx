@@ -21,7 +21,6 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseEntryDia... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -100,13 +99,16 @@ type Props = {
   onFinishBackup: (...args: Array<any>) => any;
 };
 
+interface FormFields {
+  recoveryPhrase: string;
+}
+
 @observer
 class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
@@ -156,7 +158,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       onCancelBackup,
       onFinishBackup,
     } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([
       styles.component,

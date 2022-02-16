@@ -312,12 +312,6 @@ export default class LocalStorageApi {
       assetLocalData,
       `${policyId}${assetName}`
     );
-  getAssetSettingsDialogWasOpened = (): Promise<boolean> =>
-    LocalStorageApi.get(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, false);
-  setAssetSettingsDialogWasOpened = (): Promise<void> =>
-    LocalStorageApi.set(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED, true);
-  unsetAssetSettingsDialogWasOpened = (): Promise<void> =>
-    LocalStorageApi.unset(keys.ASSET_SETTINGS_DIALOG_WAS_OPENED);
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);
   setSmashServer = (smashServerUrl: string): Promise<void> =>
@@ -410,6 +404,12 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
   unsetHardwareWalletDevicesAll = async (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES);
+  setStakePoolsListViewTooltip = async (visited: boolean): Promise<void> =>
+    LocalStorageApi.set(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, visited);
+  getStakePoolsListViewTooltip = async (): Promise<boolean> =>
+    LocalStorageApi.get(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP, true);
+  unsetStakePoolsListViewTooltip = async (): Promise<void> =>
+    LocalStorageApi.unset(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP);
   reset = async () => {
     await LocalStorageApi.reset();
   };

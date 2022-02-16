@@ -21,4 +21,5 @@ export default class ProfileActions {
     theme: string;
   }> = new Action();
   finishInitialScreenSettings: Action<any> = new Action();
+  acknowledgeRTSModeRecommendation: Action<any> = new Action();
 }

@@ -72,7 +72,7 @@ module.exports = async ({ config }) => {
       rules: [
         jsxRule,
         {
-          test: /.tsx?$/,
+          test: /\.tsx?$/,
           loader: 'babel-loader',
           options: {
             presets: [

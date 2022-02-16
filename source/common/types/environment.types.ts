@@ -22,8 +22,9 @@ export type Environment = {
   mainProcessID: string;
   rendererProcessID: string;
   os: string;
-  cpu: Cpu;
+  cpu: string;
   ram: number;
+  hasMetHardwareRequirements: boolean;
   installerVersion: string;
   version: string;
   isWindows: boolean;

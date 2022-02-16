@@ -9,11 +9,7 @@ import {
   isValidRepeatPinCode,
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import {
-  VOTING_REGISTRATION_PIN_CODE_LENGTH,
-  NEXT_VOTING_FUND_NUMBER,
-} from '../../../config/votingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsEnter... Remove this comment to see the full error message
+import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
@@ -66,15 +62,20 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   onSetPinCode: (...args: Array<any>) => any;
+  nextFundNumber: number;
 };
+
+interface FormFields {
+  pinCode: string[];
+  repeatPinCode: string[];
+}
 
 @observer
 class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         pinCode: {
@@ -125,7 +126,6 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { pinCode } = form.values();
@@ -137,13 +137,11 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, stepsList, activeStep } = this.props;
+    const { onClose, stepsList, activeStep, nextFundNumber } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const pinCodeField = form.$('pinCode');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatPinCodeField = form.$('repeatPinCode');
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
@@ -151,7 +149,6 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
       {
         label: buttonLabel,
         onClick: this.submit,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
         disabled: !form.isValid,
         primary: true,
       },
@@ -165,12 +162,13 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
             values={{
-              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+              nextVotingFundNumber: nextFundNumber,
             }}
           />
         </p>

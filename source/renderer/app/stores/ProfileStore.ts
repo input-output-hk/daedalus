@@ -9,12 +9,10 @@ import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import { formattedBytesToSize } from '../utils/formatters';
 import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
-import { enableApplicationMenuNavigationChannel } from '../ipc/enableApplicationMenuNavigationChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -42,7 +40,7 @@ import {
   TIME_OPTIONS,
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
-import formatCpuInfo from '../utils/formatCpuInfo';
+import { buildSystemInfo } from '../utils/buildSystemInfo';
 
 export default class ProfileStore extends Store {
   @observable
@@ -159,6 +157,8 @@ export default class ProfileStore extends Store {
   isSubmittingBugReport = false;
   @observable
   isInitialScreen = false;
+  @observable
+  isRTSModeRecommendationAcknowledged = false;
 
   /* eslint-enable max-len */
   setup() {
@@ -178,6 +178,9 @@ export default class ProfileStore extends Store {
     profileActions.getLogsAndCompress.listen(this._getLogsAndCompress);
     profileActions.downloadLogs.listen(this._downloadLogs);
     profileActions.downloadLogsSuccess.listen(this._toggleDisableDownloadLogs);
+    profileActions.acknowledgeRTSModeRecommendation.listen(
+      this._acknowledgeRTSFlagsModeRecommendation
+    );
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
     this.actions.app.initAppEnvironment.listen(() => {});
     // @ts-ignore ts-migrate(2339) FIXME: Property 'registerReactions' does not exist on typ... Remove this comment to see the full error message
@@ -399,36 +402,30 @@ export default class ProfileStore extends Store {
     await this.setTermsOfUseAcceptanceRequest.execute();
     // @ts-ignore
     await this.getTermsOfUseAcceptanceRequest.execute();
-    await enableApplicationMenuNavigationChannel.send();
   };
   _getTermsOfUseAcceptance = async () => {
     // @ts-ignore
     await this.getTermsOfUseAcceptanceRequest.execute();
-
-    if (this.getTermsOfUseAcceptanceRequest.result) {
-      await enableApplicationMenuNavigationChannel.send();
-    }
   };
   _acceptAnalytics = async () => {
     // @ts-ignore
     await this.setAnalyticsAcceptanceRequest.execute();
     // @ts-ignore
     await this.getAnalyticsAcceptanceRequest.execute();
-    await enableApplicationMenuNavigationChannel.send();
   };
   _getAnalyticsAcceptance = async () => {
     // @ts-ignore
     await this.getAnalyticsAcceptanceRequest.execute();
-
-    if (this.getAnalyticsAcceptanceRequest.result) {
-      await enableApplicationMenuNavigationChannel.send();
-    }
   };
   _acceptDataLayerMigration = async () => {
     // @ts-ignore
     await this.setDataLayerMigrationAcceptanceRequest.execute();
     // @ts-ignore
     await this.getDataLayerMigrationAcceptanceRequest.execute();
+  };
+  @action
+  _acknowledgeRTSFlagsModeRecommendation = () => {
+    this.isRTSModeRecommendationAcknowledged = true;
   };
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();
@@ -500,7 +497,6 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.areAnalyticsAccepted &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
@@ -630,7 +626,6 @@ export default class ProfileStore extends Store {
         cardanoWalletPID,
         tlsConfig,
         stateDirectoryPath,
-        diskSpaceAvailable,
         cardanoNodeState,
         isConnected,
         isNodeInSync,
@@ -646,7 +641,6 @@ export default class ProfileStore extends Store {
         network,
         apiVersion,
         nodeVersion,
-        cpu,
         version,
         mainProcessID,
         rendererProcessID,
@@ -655,18 +649,8 @@ export default class ProfileStore extends Store {
         isMainnet,
         isStaging,
         isTestnet,
-        os,
-        platformVersion,
-        ram,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
       } = this.environment;
-      const systemInfo = {
-        platform: os,
-        platformVersion,
-        cpu: formatCpuInfo(cpu),
-        ram: formattedBytesToSize(ram),
-        availableDiskSpace: diskSpaceAvailable,
-      };
+      const systemInfo = buildSystemInfo(this.environment, networkStatus);
       const coreInfo = {
         daedalusVersion: version,
         daedalusBuildNumber: build,
@@ -712,6 +696,7 @@ export default class ProfileStore extends Store {
       };
       await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('ProfileStore: State snapshot log file creation failed', {
         error,
       });
