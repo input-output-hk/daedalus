@@ -42,6 +42,7 @@ type Props = {
   tabIndex?: number;
   ariaLabelForHandle?: string;
   ariaLabelledByForHandle?: string;
+  tooltipAppendTo?: string | (() => void) | 'parent';
   ariaValueTextFormatterForHandle?: (...args: Array<any>) => any;
 };
 export const Slider = observer((props: Props) => {
@@ -54,6 +55,7 @@ export const Slider = observer((props: Props) => {
     maxDisplayValue,
     displayValue,
     showRawValue,
+    tooltipAppendTo,
     ...rest
   } = props;
   const { min, max, value } = rest;
@@ -70,7 +72,21 @@ export const Slider = observer((props: Props) => {
       <div className={styles.upperMarks}>
         <div className={styles.minMark}>
           {showTooltip ? (
-            <PopOver content={minTooltip}>
+            <PopOver
+              content={minTooltip}
+              appendTo={tooltipAppendTo}
+              popperOptions={{
+                placement: 'top',
+                modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      fallbackPlacements: ['bottom'],
+                    },
+                  },
+                ],
+              }}
+            >
               {shortNumber(minDisplayValue || min)}
             </PopOver>
           ) : (
@@ -79,7 +95,21 @@ export const Slider = observer((props: Props) => {
         </div>
         <div className={styles.maxMark}>
           {showTooltip ? (
-            <PopOver content={maxTooltip}>
+            <PopOver
+              content={maxTooltip}
+              appendTo={tooltipAppendTo}
+              popperOptions={{
+                placement: 'top',
+                modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      fallbackPlacements: ['bottom', 'left'],
+                    },
+                  },
+                ],
+              }}
+            >
               {shortNumber(maxDisplayValue || max)}
             </PopOver>
           ) : (

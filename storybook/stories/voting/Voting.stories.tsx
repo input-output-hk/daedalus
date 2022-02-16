@@ -11,7 +11,8 @@ import VotingRegistrationStepsConfirm from '../../../source/renderer/app/compone
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/voting-info/VotingInfo';
-import { FundPhases } from '../../../source/renderer/app/stores/VotingStore';
+import { FundPhase } from '../../../source/renderer/app/stores/VotingStore';
+import { CatalystFund } from '../../../source/renderer/app/api/voting/types';
 import { VotingFooterLinks } from '../../../source/renderer/app/components/voting/VotingFooterLinks';
 import {
   LANGUAGE_OPTIONS,
@@ -29,6 +30,22 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import VerticalFlexContainer from '../../../source/renderer/app/components/layout/VerticalFlexContainer';
+import { Locale } from '../../../source/common/types/locales.types';
+
+const mockFundInfo: CatalystFund = {
+  current: {
+    number: 7,
+    startTime: new Date('Jan 20, 2022, 11:00 UTC'),
+    endTime: new Date('Feb 3, 2022, 11:00 UTC'),
+    resultsTime: new Date('Feb 10, 2022'),
+    registrationSnapshotTime: new Date('Jan 6, 2022, 11:00 UTC'),
+  },
+  next: {
+    number: 8,
+    startTime: new Date('Jan 6, 2022, 11:00 UTC'),
+    registrationSnapshotTime: new Date('Apr 7, 2022, 11:00 UTC'),
+  },
+};
 
 const assets = {
   available: [
@@ -77,6 +94,16 @@ const WALLETS = [
   ),
 ];
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
+
+const votingInfo = {
+  fundInfo: mockFundInfo,
+  currentLocale: LANGUAGE_OPTIONS[0].value as Locale,
+  currentDateFormat: DATE_ENGLISH_OPTIONS[0].value,
+  currentTimeFormat: TIME_OPTIONS[0].value,
+  onRegisterToVoteClick: action('onRegisterToVoteClick'),
+  onExternalLinkClick: action('onExternalLinkClick'),
+};
+
 storiesOf('Voting|Voting Registration Wizard', module)
   .addDecorator((story) => (
     <StoryProvider>
@@ -96,6 +123,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 2', () => (
@@ -104,6 +132,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onBack={action('onBack')}
       stepsList={stepsList}
       activeStep={2}
+      nextFundNumber={8}
       transactionFee={
         new BigNumber(
           number('transactionFee', 0.3, {
@@ -136,6 +165,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onConfirm={action('onConfirm')}
       onRestart={action('onRestart')}
       transactionError={boolean('transactionError', false)}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 4', () => (
@@ -144,6 +174,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={4}
       onSetPinCode={action('onSetPinCode')}
+      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 5', () => (
@@ -153,28 +184,29 @@ storiesOf('Voting|Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={2}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
+      nextFundNumber={8}
     />
   ));
 storiesOf('Voting|Voting Info', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => (
+    <StoryDecorator>
+      <VerticalFlexContainer>
+        {story()}
+        <VotingFooterLinks />
+      </VerticalFlexContainer>
+    </StoryDecorator>
+  ))
   .addDecorator(withKnobs) // ====== Stories ======
-  .add('Voting Info', () => (
-    <VerticalFlexContainer>
-      <VotingInfo
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 3-4 arguments, but got 2.
-        fundPhase={select('Fund phase', [
-          FundPhases.SNAPSHOT,
-          FundPhases.VOTING,
-          FundPhases.TALLYING,
-          FundPhases.RESULTS,
-        ])}
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'Locale'.
-        currentLocale={LANGUAGE_OPTIONS[0].value}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-        onRegisterToVoteClick={action('onRegisterToVoteClick')}
-        onExternalLinkClick={action('onExternalLinkClick')}
-      />
-      <VotingFooterLinks />
-    </VerticalFlexContainer>
-  ));
+  .add('Snapshot phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.SNAPSHOT} />
+  ))
+  .add('Voting phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.VOTING} />
+  ))
+  .add('Tallying phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.TALLYING} />
+  ))
+  .add('Results phase', () => (
+    <VotingInfo {...votingInfo} fundPhase={FundPhase.RESULTS} />
+  ))
+  .add('API error', () => <VotingInfo {...votingInfo} fundPhase={null} />);
