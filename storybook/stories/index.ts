@@ -31,5 +31,4 @@ import './notifications/Notifications.stories';
 import './common/Widgets.stories';
 import './common/ItemsDropdown.stories';
 // Discreet Mode
-import '../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story';
-import '../../source/renderer/app/features/discreet-mode/ui/DiscreetValue.story';
+import '../../source/renderer/app/features/discreet-mode-poc/ui/DiscreetMode.story';

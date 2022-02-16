@@ -10,17 +10,18 @@ type Props = {
   label?: string;
   onChange?: (...args: Array<any>) => any;
 };
-export default class NormalSwitch extends Component<Props> {
-  render() {
-    return (
-      <Checkbox
-        className={styles.component}
-        themeId={IDENTIFIERS.SWITCH}
-        skin={SwitchSkin}
-        checked={this.props.checked}
-        onChange={this.props.onChange}
-        label={this.props.label}
-      />
-    );
-  }
+export default function NormalSwitch(props: Props) {
+  return (
+    <Checkbox
+      className={styles.component}
+      themeId={IDENTIFIERS.SWITCH}
+      skin={SwitchSkin}
+      checked={props.checked}
+      onChange={(newValue) => {
+        if (typeof newValue === 'boolean' && props.checked !== newValue)
+          props.onChange(newValue);
+      }}
+      label={props.label}
+    />
+  );
 }

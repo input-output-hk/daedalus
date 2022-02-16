@@ -32,7 +32,9 @@ export function getFeatureFromContext<T>(context: Context<T | null>): T {
   const instance = useContext(context);
 
   if (!instance) {
-    throw new Error(`You need to provide a context before using it.`);
+    throw new Error(
+      `You need to provide a feature via context before using it.`
+    );
   }
 
   return instance;

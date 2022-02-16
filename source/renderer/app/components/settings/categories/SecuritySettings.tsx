@@ -1,6 +1,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import { DiscreetModeToggle } from '../../../features/discreet-mode-poc/ui/settings/DiscreetModeToggle';
+import { OpenInDiscreetModeToggle } from '../../../features/discreet-mode-poc/ui/settings/OpenInDiscreetModeToggle';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SecuritySettings.scss' or it... Remove this comment to see the full error message
 import styles from './SecuritySettings.scss';
 import messages from './SecuritySettings.messages';
@@ -8,19 +9,9 @@ import type { Intl } from '../../../types/i18nTypes';
 
 type Props = {
   intl: Intl;
-  discreetMode: boolean;
-  openDiscreetMode: boolean;
-  onDiscreetModeToggle: () => void;
-  onOpenDiscreetModeToggle: () => void;
 };
 
-const SecuritySettings = ({
-  intl,
-  discreetMode,
-  openDiscreetMode,
-  onDiscreetModeToggle,
-  onOpenDiscreetModeToggle,
-}: Props) => {
+const SecuritySettings = ({ intl }: Props) => {
   return (
     <div className={styles.root}>
       <div className={styles.setting}>
@@ -31,10 +22,7 @@ const SecuritySettings = ({
           <p className={styles.description}>
             {intl.formatMessage(messages.discreetModeDescription)}
           </p>
-          <NormalSwitch
-            checked={discreetMode}
-            onChange={onDiscreetModeToggle}
-          />
+          <DiscreetModeToggle />
         </div>
       </div>
       <div className={styles.setting}>
@@ -45,10 +33,7 @@ const SecuritySettings = ({
           <p className={styles.description}>
             {intl.formatMessage(messages.openInDiscreetModeDescription)}
           </p>
-          <NormalSwitch
-            checked={openDiscreetMode}
-            onChange={onOpenDiscreetModeToggle}
-          />
+          <OpenInDiscreetModeToggle />
         </div>
       </div>
     </div>
