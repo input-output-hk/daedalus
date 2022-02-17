@@ -4,6 +4,17 @@
 
 ### Features
 
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+- Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+
+### Fixes
+
+- Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+
+## 4.9.0-FC1
+
+### Features
+
 - Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
@@ -16,7 +27,7 @@
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
-
+  
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
