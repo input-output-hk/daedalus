@@ -4,6 +4,7 @@
 
 ### Features
 
+- Added display of current/unspent rewards ([PR 2803](https://github.com/input-output-hk/daedalus/pull/2803))
 - Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
