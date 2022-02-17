@@ -128,8 +128,7 @@ import type {
   GetNetworkParametersApiResponse,
 } from './network/types';
 // Transactions Types
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './transactions/types' or its c... Remove this comment to see the full error message
-import type {
+import {
   Transaction,
   TransactionFee,
   TransactionWithdrawals,
@@ -151,7 +150,7 @@ import type {
   ICOPublicKeyParams,
 } from './transactions/types';
 // Wallets Types
-import type {
+import {
   AdaWallet,
   AdaWallets,
   CreateHardwareWalletRequest,
@@ -216,7 +215,7 @@ import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
-import ApiError from '../domains/ApiError';
+import ApiError, { ErrorType } from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import type {
   GetAssetsRequest,
@@ -245,18 +244,17 @@ export default class AdaApi {
     this.config = config;
   }
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWallets = async (): Promise<Array<Wallet>> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWallets called');
     const {
       getHardwareWalletLocalData,
       getHardwareWalletsLocalData,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
     } = global.daedalus.api.localStorage;
 
     try {
-      const wallets: AdaWallets = await getWallets(this.config);
+      const wallets: Array<AdaWallet | LegacyAdaWallet> = await getWallets(
+        this.config
+      );
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -277,13 +275,11 @@ export default class AdaApi {
           },
           isLegacy: true,
         };
-        // @ts-ignore ts-migrate(2698) FIXME: Spread types may only be created from object types... Remove this comment to see the full error message
         wallets.push({ ...legacyAdaWallet, ...extraLegacyWalletProps });
       });
       // @TODO - Remove this once we get hardware wallet flag from WBE
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       return await Promise.all(
-        wallets.map(async (wallet) => {
+        wallets.map(async (wallet: AdaWallet) => {
           const { id } = wallet;
           const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
@@ -300,7 +296,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWallet = async (request: GetWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::getWallet called', {
       parameters: filterLogData(request),
@@ -345,7 +340,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletPublicKey = async (
     request: GetWalletPublicKeyRequest
   ): Promise<string> => {
@@ -371,7 +365,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getAccountPublicKey = async (
     request: GetAccountPublicKeyRequest
   ): Promise<string> => {
@@ -402,7 +395,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getAddresses = async (
     request: GetAddressesRequest
   ): Promise<Array<WalletAddress>> => {
@@ -422,14 +414,12 @@ export default class AdaApi {
         );
       } else {
         response = await getAddresses(this.config, walletId, queryParams);
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'reverse' does not exist on type '{}'.
         response.reverse();
       }
 
       logger.debug('AdaApi::getAddresses success', {
         addresses: response,
       });
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'map' does not exist on type '{}'.
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', {
@@ -438,7 +428,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getTransaction = async (
     request: GetTransactionRequest
   ): Promise<WalletTransaction> => {
@@ -464,7 +453,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
@@ -472,18 +460,17 @@ export default class AdaApi {
       parameters: request,
     });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Object'.
     const params = Object.assign(
       {},
       {
         order: order || 'descending',
+        start: undefined,
+        end: undefined,
       }
     );
     if (fromDate)
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'start' does not exist on type '{ order: ... Remove this comment to see the full error message
       params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
     if (toDate)
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'end' does not exist on type '{ order: "a... Remove this comment to see the full error message
       params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
@@ -505,7 +492,6 @@ export default class AdaApi {
       const transactions = response.map((tx) =>
         _createTransactionFromServerData(tx)
       );
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       return Promise.resolve({
         transactions,
         total: response.length,
@@ -664,7 +650,6 @@ export default class AdaApi {
     //   throw new GenericApiError(error);
     // }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getAssets = async (request: GetAssetsRequest): Promise<GetAssetsResponse> => {
     logger.debug('AdaApi::getAssets called', {
       parameters: request,
@@ -678,7 +663,6 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
       const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
       logger.debug('AdaApi::getAssetsLocalData success', {
         assetsLocaldata,
@@ -690,7 +674,6 @@ export default class AdaApi {
           this.storedAssetMetadata
         )
       );
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       return new Promise((resolve) =>
         resolve({
           assets,
@@ -704,7 +687,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWithdrawals = async (
     request: GetWithdrawalsRequest
   ): Promise<GetWithdrawalsResponse> => {
@@ -741,7 +723,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
@@ -769,7 +750,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createLegacyWallet = async (
     request: CreateWalletRequest
   ): Promise<Wallet> => {
@@ -827,7 +807,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   deleteWallet = async (request: DeleteWalletRequest): Promise<boolean> => {
     logger.debug('AdaApi::deleteWallet called', {
       parameters: filterLogData(request),
@@ -858,9 +837,10 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createTransaction = async (
-    request: CreateTransactionRequest
+    request: CreateTransactionRequest & {
+      hasAssetsRemainingAfterTransaction: boolean;
+    }
   ): Promise<WalletTransaction> => {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
@@ -873,7 +853,6 @@ export default class AdaApi {
       isLegacy,
       assets,
       withdrawal = TransactionWithdrawal,
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'hasAssetsRemainingAfterTransaction' does... Remove this comment to see the full error message
       hasAssetsRemainingAfterTransaction,
     } = request;
 
@@ -940,9 +919,7 @@ export default class AdaApi {
     }
   };
   // For testing purpose ONLY
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createExpiredTransaction = async (request: any): Promise<any> => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'global'.
     if (global.environment.isDev) {
       logger.debug('AdaApi::createTransaction called', {
         parameters: filterLogData(request),
@@ -1012,7 +989,6 @@ export default class AdaApi {
 
     return null;
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   calculateTransactionFee = async (
     request: GetTransactionFeeRequest
   ): Promise<GetTransactionFeeResponse> => {
@@ -1136,7 +1112,6 @@ export default class AdaApi {
     payments?: CoinSelectionsPaymentRequestType;
     delegation?: CoinSelectionsDelegationRequestType;
     metadata?: VotingMetadataType;
-    // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
@@ -1177,7 +1152,6 @@ export default class AdaApi {
           metadata: metadata || null,
         };
       } else {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
         throw new Error('Missing parameters!');
       }
 
@@ -1194,28 +1168,19 @@ export default class AdaApi {
       let totalInputs = new BigNumber(0);
       let totalOutputs = new BigNumber(0);
       map(response.inputs, (input) => {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
         const inputAmount = new BigNumber(input.amount.quantity.toString());
         // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
         const inputAssets = map(input.assets, (asset) => ({
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'policy_id' does not exist on type 'unkno... Remove this comment to see the full error message
           policyId: asset.policy_id,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'asset_name' does not exist on type 'unkn... Remove this comment to see the full error message
           assetName: asset.asset_name,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'quantity' does not exist on type 'unknow... Remove this comment to see the full error message
           quantity: asset.quantity,
         }));
         totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'address' does not exist on type 'unknown... Remove this comment to see the full error message
           address: input.address,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
           amount: input.amount,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'id' does not exist on type 'unknown'.
           id: input.id,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'index' does not exist on type 'unknown'.
           index: input.index,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'derivation_path' does not exist on type ... Remove this comment to see the full error message
           derivationPath: input.derivation_path,
           assets: inputAssets,
         };
@@ -1223,24 +1188,17 @@ export default class AdaApi {
         inputsData.push(inputData);
       });
       map(outputs, (output) => {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
         const outputAmount = new BigNumber(output.amount.quantity.toString());
         // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
         const outputAssets = map(output.assets, (asset) => ({
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'policy_id' does not exist on type 'unkno... Remove this comment to see the full error message
           policyId: asset.policy_id,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'asset_name' does not exist on type 'unkn... Remove this comment to see the full error message
           assetName: asset.asset_name,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'quantity' does not exist on type 'unknow... Remove this comment to see the full error message
           quantity: asset.quantity,
         }));
         totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'address' does not exist on type 'unknown... Remove this comment to see the full error message
           address: output.address,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
           amount: output.amount,
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'derivation_path' does not exist on type ... Remove this comment to see the full error message
           derivationPath: output.derivation_path || null,
           assets: outputAssets,
         };
@@ -1251,11 +1209,8 @@ export default class AdaApi {
       if (response.certificates) {
         map(response.certificates, (certificate) => {
           const certificateData = {
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'certificate_type' does not exist on type... Remove this comment to see the full error message
             certificateType: certificate.certificate_type,
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'reward_account_path' does not exist on t... Remove this comment to see the full error message
             rewardAccountPath: certificate.reward_account_path,
-            // @ts-ignore ts-migrate(2339) FIXME: Property 'pool' does not exist on type 'unknown'.
             pool: certificate.pool || null,
           };
           // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
@@ -1264,18 +1219,13 @@ export default class AdaApi {
       }
 
       const withdrawalsData = map(response.withdrawals, (withdrawal) => ({
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'stake_address' does not exist on type 'u... Remove this comment to see the full error message
         stakeAddress: withdrawal.stake_address,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'derivation_path' does not exist on type ... Remove this comment to see the full error message
         derivationPath: withdrawal.derivation_path,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
         amount: withdrawal.amount,
       }));
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'quantity' does not exist on type 'unknow... Remove this comment to see the full error message
       const depositsArray = map(response.deposits, (deposit) =>
         deposit.quantity.toString()
       );
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type '{}'.
       const deposits = depositsArray.length
         ? BigNumber.sum.apply(null, depositsArray)
         : new BigNumber(0);
@@ -1284,11 +1234,9 @@ export default class AdaApi {
         delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
           : new BigNumber(0);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'amount' does not exist on type 'unknown'... Remove this comment to see the full error message
       const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
         withdrawal.amount.quantity.toString()
       );
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'length' does not exist on type '{}'.
       const withdrawals = withdrawalsArray.length
         ? BigNumber.sum.apply(null, withdrawalsArray)
         : new BigNumber(0);
@@ -1350,7 +1298,6 @@ export default class AdaApi {
         .set(notEnoughMoneyError, true)
         .where('code', 'not_enough_money')
         .set('utxoTooSmall', true, {
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'exec' does not exist on type '{}'.
           minimumAda: get(
             /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
             2,
@@ -1364,7 +1311,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createExternalTransaction = async (
     request: CreateExternalTransactionRequest
   ): Promise<CreateExternalTransactionResponse> => {
@@ -1384,7 +1330,6 @@ export default class AdaApi {
   };
   inspectAddress = async (request: {
     addressId: string;
-    // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   }): Promise<InspectAddressResponse> => {
     logger.debug('AdaApi::inspectAddress called', {
       parameters: filterLogData(request),
@@ -1406,7 +1351,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getPublicKey = async (request: any): Promise<any> => {
     logger.debug('AdaApi::getPublicKey called', {
       parameters: filterLogData(request),
@@ -1430,7 +1374,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getICOPublicKey = async (request: ICOPublicKeyParams): Promise<string> => {
     logger.debug('AdaApi::getICOPublicKey called', {
       parameters: filterLogData(request),
@@ -1454,7 +1397,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   constructAddress = async (request: any): Promise<any> => {
     const { data } = request;
 
@@ -1473,7 +1415,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createAddress = async (
     request: CreateByronWalletAddressRequest
   ): Promise<WalletAddress> => {
@@ -1504,7 +1445,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   deleteTransaction = async (
     request: DeleteTransactionRequest
   ): Promise<void> => {
@@ -1537,21 +1477,16 @@ export default class AdaApi {
       // is no longer pending - in which case there is nothing we can do.
     }
   };
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'split' does not exist on type 'string'.
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletRecoveryPhrase(): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
 
     try {
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1562,17 +1497,13 @@ export default class AdaApi {
     }
   }
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
 
     try {
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAdditionalMnemonics())
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
       return response;
     } catch (error) {
@@ -1583,16 +1514,13 @@ export default class AdaApi {
     }
   }
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
   ): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input: scrambledInput } = request;
 
     try {
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(
           scrambleMnemonics({
@@ -1601,7 +1529,6 @@ export default class AdaApi {
           })
         )
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1612,11 +1539,9 @@ export default class AdaApi {
     }
   }
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
 
@@ -1625,9 +1550,7 @@ export default class AdaApi {
         passphrase,
         scrambledInput,
       });
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       return Promise.resolve(response);
     } catch (error) {
       logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error', {
@@ -1636,12 +1559,10 @@ export default class AdaApi {
       const errorRejection = new ApiError(error)
         .set('invalidMnemonic', true)
         .result();
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       return Promise.reject(errorRejection);
     }
   }
 
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreWallet = async (request: RestoreWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::restoreWallet called', {
       parameters: filterLogData(request),
@@ -1677,7 +1598,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createHardwareWallet = async (
     request: CreateHardwareWalletRequest
   ): Promise<Wallet> => {
@@ -1709,7 +1629,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
     try {
       const apiResponse = await getCurrencyList();
@@ -1727,7 +1646,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getCurrencyRate = async (
     currency: GetCurrencyRateRequest
   ): Promise<GetCurrencyRateResponse> => {
@@ -1747,7 +1665,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreLegacyWallet = async (
     request: RestoreLegacyWalletRequest
   ): Promise<Wallet> => {
@@ -1801,7 +1718,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreByronRandomWallet = async (
     request: RestoreLegacyWalletRequest
   ): Promise<Wallet> => {
@@ -1865,7 +1781,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreByronIcarusWallet = async (
     request: RestoreLegacyWalletRequest
   ): Promise<Wallet> => {
@@ -1920,7 +1835,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreByronTrezorWallet = async (
     request: RestoreLegacyWalletRequest
   ): Promise<Wallet> => {
@@ -1975,7 +1889,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreByronLedgerWallet = async (
     request: RestoreLegacyWalletRequest
   ): Promise<Wallet> => {
@@ -2030,7 +1943,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   restoreExportedByronWallet = async (
     request: RestoreExportedByronWalletRequest
   ): Promise<Wallet> => {
@@ -2068,7 +1980,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   importWalletFromKey = async (
     request: ImportWalletFromKeyRequest
   ): Promise<Wallet> => {
@@ -2096,7 +2007,6 @@ export default class AdaApi {
         .result('walletFileImportError');
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   importWalletFromFile = async (
     request: ImportWalletFromFileRequest
   ): Promise<Wallet> => {
@@ -2127,7 +2037,6 @@ export default class AdaApi {
         .result('walletFileImportError');
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
@@ -2171,7 +2080,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   updateSpendingPassword = async (
     request: UpdateSpendingPasswordRequest
   ): Promise<boolean> => {
@@ -2206,7 +2114,6 @@ export default class AdaApi {
         });
       }
 
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
@@ -2220,7 +2127,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   quitStakePool = async (
     request: QuitStakePoolRequest
   ): Promise<Transaction> => {
@@ -2249,9 +2155,7 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getSmashSettings called');
 
     try {
@@ -2269,7 +2173,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   checkSmashServerIsValid = async (url: string): Promise<boolean> => {
     logger.debug('AdaApi::checkSmashServerIsValid called', {
       parameters: {
@@ -2300,7 +2203,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   updateSmashSettings = async (
     poolMetadataSource: PoolMetadataSource
   ): Promise<void> => {
@@ -2316,10 +2218,9 @@ export default class AdaApi {
       );
 
       if (!isSmashServerValid) {
-        const error = {
+        const error: ErrorType = {
           code: 'invalid_smash_server',
         };
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ code: string; }' is not assign... Remove this comment to see the full error message
         throw new ApiError(error);
       }
 
@@ -2347,7 +2248,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getRedeemItnRewardsFee = async (
     request: GetRedeemItnRewardsFeeRequest
   ): Promise<GetRedeemItnRewardsFeeResponse> => {
@@ -2393,7 +2293,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   requestRedeemItnRewards = async (
     request: RequestRedeemItnRewardsRequest
   ): Promise<RequestRedeemItnRewardsResponse> => {
@@ -2437,7 +2336,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
@@ -2447,8 +2345,7 @@ export default class AdaApi {
     });
 
     try {
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
-      const response: Promise<[]> = await exportWalletAsJSON(this.config, {
+      const response: [] = await exportWalletAsJSON(this.config, {
         walletId,
         filePath,
       });
@@ -2463,7 +2360,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getWalletUtxos = async (
     request: GetWalletUtxosRequest
   ): Promise<WalletUtxos> => {
@@ -2496,7 +2392,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   transferFundsCalculateFee = async (
     request: TransferFundsCalculateFeeRequest
   ): Promise<TransferFundsCalculateFeeResponse> => {
@@ -2525,7 +2420,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   transferFunds = async (
     request: TransferFundsRequest
   ): Promise<TransferFundsResponse> => {
@@ -2565,7 +2459,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getStakePools = async (stake = 0): Promise<Array<StakePool>> => {
     logger.debug('AdaApi::getStakePools called', {
       parameters: {
@@ -2599,14 +2492,11 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   testReset = async (): Promise<void> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::testReset called');
 
     try {
       const wallets = await this.getWallets();
-      // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
       await Promise.all(
         wallets.map((wallet) =>
           this.deleteWallet({
@@ -2616,7 +2506,6 @@ export default class AdaApi {
           })
         )
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::testReset success');
     } catch (error) {
       logger.error('AdaApi::testReset error', {
@@ -2625,9 +2514,7 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkInfo called');
 
     try {
@@ -2762,9 +2649,7 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getNews = async (): Promise<GetNewsResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNews called');
     // Fetch news json
     let rawNews: string;
@@ -2772,13 +2657,11 @@ export default class AdaApi {
 
     try {
       rawNews = await getNews();
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'JSON'.
       news = JSON.parse(rawNews);
     } catch (error) {
       logger.error('AdaApi::getNews error', {
         error,
       });
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
       throw new Error('Unable to fetch news');
     }
 
@@ -2793,12 +2676,10 @@ export default class AdaApi {
       logger.error('AdaApi::getNews (hash) error', {
         error,
       });
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
       throw new Error('Unable to fetch news hash');
     }
 
     if (newsHash !== expectedNewsHash) {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Error'.
       throw new Error('Newsfeed could not be verified');
     }
 
@@ -2808,7 +2689,6 @@ export default class AdaApi {
     });
     return news;
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   calculateDelegationFee = async (
     request: GetDelegationFeeRequest
   ): Promise<DelegationCalculateFeeResponse> => {
@@ -2831,7 +2711,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   joinStakePool = async (
     request: JoinStakePoolRequest
   ): Promise<Transaction> => {
@@ -2861,7 +2740,6 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createWalletSignature = async (
     request: CreateWalletSignatureRequest
   ): Promise<Buffer> => {
@@ -2938,7 +2816,6 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
-  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
@@ -3044,31 +2921,23 @@ export default class AdaApi {
         .result();
     }
   };
-  // @ts-ignore ts-migrate(2697) FIXME: An async function or method must return a 'Promise... Remove this comment to see the full error message
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
   // No implementation here but can be overwritten
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   setLocalTimeDifference: (...args: Array<any>) => any;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   setSyncProgress: (...args: Array<any>) => any;
   setFaultyNodeSettingsApi: boolean;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   resetTestOverrides: (...args: Array<any>) => any;
   // Newsfeed testing utility
   setTestingNewsFeed: (testingNewsFeedData: GetNewsResponse) => void;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   setTestingStakePools: (testingStakePoolsData: Array<StakePoolProps>) => void;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   setTestingWallets: (testingWalletsData: Array<WalletProps>) => void;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Record'.
   setTestingWallet: (
     testingWalletData: Record<string, any>,
     walletIndex?: number
   ) => void;
   // Stake pools testing utility
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
   setFakeStakePoolsJsonForTesting: (
     fakeStakePoolsJson: Array<StakePool>
   ) => void;
@@ -3198,7 +3067,6 @@ const _createWalletFromServerData = action(
       availableAmount: walletAvailableAmount,
       reward: walletRewardAmount,
       assets: walletAssets,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Date'.
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null,
@@ -3459,7 +3327,6 @@ const _createStakePoolFromServerData = action(
       ),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Date'.
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
