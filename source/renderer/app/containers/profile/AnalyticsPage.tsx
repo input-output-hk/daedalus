@@ -15,8 +15,12 @@ class AnalyticsPage extends Component<InjectedProps> {
     stores: null,
   };
 
-  onSubmit = async (analyticsAccepted: AnalyticsAcceptanceStatus) => {
-    this.props.actions.profile.acceptAnalytics.trigger(analyticsAccepted);
+  onSubmit = async (analyticsAccepted: boolean) => {
+    this.props.actions.profile.acceptAnalytics.trigger(
+      analyticsAccepted
+        ? AnalyticsAcceptanceStatus.ACCEPTED
+        : AnalyticsAcceptanceStatus.REJECTED
+    );
 
     // fire and forget - even if it fails it will be retried when application starts
     runSendMachineSpecAnalyticsJob(

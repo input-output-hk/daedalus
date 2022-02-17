@@ -2830,7 +2830,7 @@
           "line": 17
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.title",
+        "id": "analytics.form.title",
         "start": {
           "column": 9,
           "line": 13
@@ -2844,7 +2844,7 @@
           "line": 24
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.description",
+        "id": "analytics.form.description",
         "start": {
           "column": 15,
           "line": 18
@@ -2858,7 +2858,7 @@
           "line": 29
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.dataCollectionDetailsTitle",
+        "id": "analytics.form.dataCollectionDetailsTitle",
         "start": {
           "column": 30,
           "line": 25
@@ -2872,7 +2872,7 @@
           "line": 34
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.dataCollectionDetailsUserBehaviour",
+        "id": "analytics.form.dataCollectionDetailsUserBehaviour",
         "start": {
           "column": 38,
           "line": 30
@@ -2886,7 +2886,7 @@
           "line": 39
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.dataCollectionDetailsDeviceInfo",
+        "id": "analytics.form.dataCollectionDetailsDeviceInfo",
         "start": {
           "column": 35,
           "line": 35
@@ -2900,7 +2900,7 @@
           "line": 44
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.dataCollectionSwitchText",
+        "id": "analytics.form.dataCollectionSwitchText",
         "start": {
           "column": 30,
           "line": 40

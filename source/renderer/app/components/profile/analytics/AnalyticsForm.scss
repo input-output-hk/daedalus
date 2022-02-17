@@ -1,0 +1,66 @@
+.title,
+.dataCollectionTitle {
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.dataCollectionTitle {
+  align-items: center;
+  display: flex;
+}
+
+.description {
+  margin-bottom: 20px;
+}
+
+.descriptionLink {
+  color: var(--theme-link-main-color);
+}
+
+.dataCollectionList {
+  line-height: 2; // todo discuss with Sasha
+  list-style: auto outside;
+  padding-left: 30px;
+}
+
+.dataCollectionListItem {
+  color: var(--theme-support-settings-text-color);
+  padding-left: 12px;
+
+  &::marker {
+    font-weight: bold;
+  }
+}
+
+.hr {
+  border: 0;
+  border-top: 1px solid var(--theme-dapp-transaction-request-separator);
+  margin: 20px 0;
+  opacity: 0.3;
+}
+
+.toggleButton {
+  background-color: var(
+    --theme-dapp-transaction-request-toggle-button-background-color
+  );
+  border-radius: 4px;
+  color: var(--theme-label-button-color);
+  cursor: pointer;
+  font-family: var(--font-medium);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-left: 10px;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+
+// TODO improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
+.switchButton {
+  flex-direction: row-reverse;
+  margin: 0 0 30px;
+
+  & label {
+    margin: 0 !important;
+  }
+}

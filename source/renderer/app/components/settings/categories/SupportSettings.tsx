@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { inject, observer } from 'mobx-react';
+import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SupportSettings.scss' or its... Remove this comment to see the full error message
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
+import AnalyticsForm from '../../profile/analytics/AnalyticsForm';
+import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
+import { runSendMachineSpecAnalyticsJob } from '../../../jobs/runSendMachineSpecAnalyticsJob';
+import { InjectedProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
   faqTitle: {
@@ -70,17 +74,53 @@ const messages = defineMessages({
       '"download your logs here" link in the Logs section on the support settings page',
   },
 });
-type Props = {
+
+interface SupportSettingsProps extends InjectedProps {
   onExternalLinkClick: (...args: Array<any>) => any;
   onSupportRequestClick: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
   disableDownloadLogs: boolean;
-};
+}
 
+@inject('stores', 'actions')
 @observer
-class SupportSettings extends Component<Props> {
+class SupportSettings extends Component<SupportSettingsProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    actions: null,
+    stores: null,
+  };
+
+  state = {
+    analyticsAccepted: false,
+  };
+
+  async componentDidMount() {
+    const analyticsAcceptanceStatus = await this.props.stores.analytics.api.localStorage.getAnalyticsAcceptance();
+
+    this.setState({
+      analyticsAccepted:
+        analyticsAcceptanceStatus === AnalyticsAcceptanceStatus.ACCEPTED,
+    });
+  }
+
+  onAnalyticsAcceptanceChange = async (analyticsAccepted: boolean) => {
+    this.setState({ analyticsAccepted });
+    this.props.actions.profile.acceptAnalytics.trigger(
+      analyticsAccepted
+        ? AnalyticsAcceptanceStatus.ACCEPTED
+        : AnalyticsAcceptanceStatus.REJECTED
+    );
+
+    // fire and forget - even if it fails it will be retried when application starts
+    runSendMachineSpecAnalyticsJob(
+      this.props.stores.analytics.analyticsClient,
+      this.props.stores.profile.api.localStorage,
+      global.environment
+    );
   };
 
   render() {
@@ -166,6 +206,14 @@ class SupportSettings extends Component<Props> {
             </p>
           </li>
         </ol>
+
+        <hr />
+
+        <AnalyticsForm
+          intl={intl}
+          onAnalyticsAcceptanceChange={this.onAnalyticsAcceptanceChange}
+          analyticsAccepted={this.state.analyticsAccepted}
+        />
       </div>
     );
   }
