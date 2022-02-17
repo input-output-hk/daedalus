@@ -5,9 +5,9 @@ import messages from './SyncingProgress.messages';
 const mapOfBlockSyncTypeToProgressDescription: {
   [key in BlockSyncType]: ReactIntlMessage;
 } = {
-  [BlockSyncType.replayedBlock]: messages.verifyingBlockchainDescription,
   [BlockSyncType.validatingChunk]: messages.validatingChunkDescription,
-  [BlockSyncType.pushingLedger]: messages.pushingLedgerStateDescription,
+  [BlockSyncType.replayedBlock]: messages.replayedBlockDescription,
+  [BlockSyncType.pushingLedger]: messages.pushingLedgerDescription,
 };
 
 const getProgressDescriptionByBlockSyncType = (type: BlockSyncType) =>
@@ -16,9 +16,9 @@ const getProgressDescriptionByBlockSyncType = (type: BlockSyncType) =>
 const mapOfBlockSyncTypeToProgressName: {
   [key in BlockSyncType]: ReactIntlMessage;
 } = {
-  [BlockSyncType.replayedBlock]: messages.verifyingBlockchain,
   [BlockSyncType.validatingChunk]: messages.validatingChunk,
-  [BlockSyncType.pushingLedger]: messages.pushingLedgerState,
+  [BlockSyncType.replayedBlock]: messages.replayedBlock,
+  [BlockSyncType.pushingLedger]: messages.pushingLedger,
 };
 
 const getProgressNameByBlockSyncType = (type: BlockSyncType) =>

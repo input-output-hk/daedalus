@@ -18,15 +18,15 @@ const makeProgressValueKnob = ({ name, value }) =>
 
 const makeBlockSyncProgress = () => ({
   [BlockSyncType.validatingChunk]: makeProgressValueKnob({
-    name: 'Validating blocks',
+    name: 'Verifying on-disk blockchain state',
     value: 100,
   }),
   [BlockSyncType.replayedBlock]: makeProgressValueKnob({
-    name: 'Verifying the blockchain',
+    name: 'Replaying ledger from on-disk blockchain',
     value: 99.9,
   }),
   [BlockSyncType.pushingLedger]: makeProgressValueKnob({
-    name: 'Applying blocks',
+    name: 'Syncing blockchain',
     value: 0,
   }),
 });
