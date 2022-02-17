@@ -10,8 +10,8 @@ import { BlockSyncType } from '../../../../../../common/types/cardano-node.types
 import { Intl } from '../../../../types/i18nTypes';
 import styles from './SyncingProgress.scss';
 import {
-  getDescriptionOfBlockSyncType,
-  getMessageOfBlockSyncType,
+  getProgressDescriptionByBlockSyncType,
+  getProgressNameByBlockSyncType,
 } from './utils';
 
 type Props = Record<BlockSyncType, number>;
@@ -56,10 +56,12 @@ const SyncingProgress: FC<Props> = (props, { intl }: Context) => (
       {blockSyncTypesOrdered.map((type) => (
         <div key={type} className={styles.cell}>
           <span className={makeMainMessageStyles(props[type] === 100)}>
-            {intl.formatMessage(getMessageOfBlockSyncType(type))}
+            {intl.formatMessage(getProgressNameByBlockSyncType(type))}
           </span>
           <PopOver
-            content={intl.formatMessage(getDescriptionOfBlockSyncType(type))}
+            content={intl.formatMessage(
+              getProgressDescriptionByBlockSyncType(type)
+            )}
           >
             <SVGInline
               svg={questionMarkIcon}

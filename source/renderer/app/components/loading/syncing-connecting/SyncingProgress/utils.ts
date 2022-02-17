@@ -2,7 +2,7 @@ import { BlockSyncType } from '../../../../../../common/types/cardano-node.types
 import { ReactIntlMessage } from '../../../../types/i18nTypes';
 import messages from './SyncingProgress.messages';
 
-const mapOfBlockSyncTypeToMessageDescription: {
+const mapOfBlockSyncTypeToProgressDescription: {
   [key in BlockSyncType]: ReactIntlMessage;
 } = {
   [BlockSyncType.replayedBlock]: messages.verifyingBlockchainDescription,
@@ -10,10 +10,10 @@ const mapOfBlockSyncTypeToMessageDescription: {
   [BlockSyncType.pushingLedger]: messages.pushingLedgerStateDescription,
 };
 
-const getDescriptionOfBlockSyncType = (type: BlockSyncType) =>
-  mapOfBlockSyncTypeToMessageDescription[type];
+const getProgressDescriptionByBlockSyncType = (type: BlockSyncType) =>
+  mapOfBlockSyncTypeToProgressDescription[type];
 
-const mapOfBlockSyncTypeToMessage: {
+const mapOfBlockSyncTypeToProgressName: {
   [key in BlockSyncType]: ReactIntlMessage;
 } = {
   [BlockSyncType.replayedBlock]: messages.verifyingBlockchain,
@@ -21,7 +21,10 @@ const mapOfBlockSyncTypeToMessage: {
   [BlockSyncType.pushingLedger]: messages.pushingLedgerState,
 };
 
-const getMessageOfBlockSyncType = (type: BlockSyncType) =>
-  mapOfBlockSyncTypeToMessage[type];
+const getProgressNameByBlockSyncType = (type: BlockSyncType) =>
+  mapOfBlockSyncTypeToProgressName[type];
 
-export { getDescriptionOfBlockSyncType, getMessageOfBlockSyncType };
+export {
+  getProgressDescriptionByBlockSyncType,
+  getProgressNameByBlockSyncType,
+};

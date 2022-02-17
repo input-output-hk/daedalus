@@ -85,7 +85,7 @@ const messages = defineMessages({
 
 interface Props {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  blockSync: Record<BlockSyncType, number>;
+  blockSyncProgress: Record<BlockSyncType, number>;
   hasLoadedCurrentLocale: boolean;
   hasBeenConnected: boolean;
   isTlsCertInvalid: boolean;
@@ -185,7 +185,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isTlsCertInvalid,
       isVerifyingBlockchain,
       hasLoadedCurrentLocale,
-      blockSync,
+      blockSyncProgress,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
@@ -201,7 +201,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isVerifyingBlockchain && isConnectingMessage) {
       return (
         <div className={styles.component}>
-          <SyncingProgress {...blockSync} />
+          <SyncingProgress {...blockSyncProgress} />
         </div>
       );
     }

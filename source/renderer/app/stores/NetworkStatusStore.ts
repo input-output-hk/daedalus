@@ -174,7 +174,7 @@ export default class NetworkStatusStore extends Store {
   @observable
   alonzoActivationTime = '';
   @observable
-  blockSync: Record<BlockSyncType, number> = {
+  blockSyncProgress: Record<BlockSyncType, number> = {
     [BlockSyncType.validatingChunk]: 0,
     [BlockSyncType.replayedBlock]: 0,
     [BlockSyncType.pushingLedger]: 0,
@@ -228,7 +228,7 @@ export default class NetworkStatusStore extends Store {
     this._getStateDirectoryPath();
 
     // Blockchain verification checking
-    getBlockSyncProgressChannel.onReceive(this._onCheckBlockSyncProgress);
+    getBlockSyncProgressChannel.onReceive(this._onBlockSyncProgressUpdate);
   }
 
   _restartNode = async () => {
@@ -805,12 +805,12 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onCheckBlockSyncProgress = async ({
+  @action _onBlockSyncProgressUpdate = async ({
     progress,
     type,
   }: GetBlockSyncProgressMainResponse) => {
-    this.blockSync = {
-      ...this.blockSync,
+    this.blockSyncProgress = {
+      ...this.blockSyncProgress,
       [type]: progress,
     };
   };
@@ -875,7 +875,7 @@ export default class NetworkStatusStore extends Store {
   get isVerifyingBlockchain(): boolean {
     return (
       !this.isConnected &&
-      Object.values(this.blockSync).some((value) => value < 100)
+      Object.values(this.blockSyncProgress).some((value) => value < 100)
     );
   }
 }

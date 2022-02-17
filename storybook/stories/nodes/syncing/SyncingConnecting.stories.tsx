@@ -1,5 +1,5 @@
 import React from 'react';
-import { boolean, radios } from '@storybook/addon-knobs';
+import { boolean, radios, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
@@ -8,11 +8,28 @@ import {
   CardanoNodeStates,
 } from '../../../../source/common/types/cardano-node.types';
 
-const blockSync = {
-  [BlockSyncType.replayedBlock]: 100,
-  [BlockSyncType.pushingLedger]: 99.9,
-  [BlockSyncType.validatingChunk]: 100,
-};
+const makeProgressValueKnob = ({ name, value }) =>
+  number(name, value, {
+    range: true,
+    min: 0,
+    max: 100,
+    step: 0.01,
+  });
+
+const makeBlockSyncProgress = () => ({
+  [BlockSyncType.validatingChunk]: makeProgressValueKnob({
+    name: 'Validating blocks',
+    value: 100,
+  }),
+  [BlockSyncType.replayedBlock]: makeProgressValueKnob({
+    name: 'Verifying the blockchain',
+    value: 99.9,
+  }),
+  [BlockSyncType.pushingLedger]: makeProgressValueKnob({
+    name: 'Applying blocks',
+    value: 0,
+  }),
+});
 
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
@@ -55,7 +72,7 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    blockSync={blockSync}
+    blockSyncProgress={makeBlockSyncProgress()}
   />
 );
 export const ConnectivityIssuesSyncingConnectingStory = () => (
@@ -63,7 +80,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={blockSync}
+    blockSyncProgress={makeBlockSyncProgress()}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -102,7 +119,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={blockSync}
+    blockSyncProgress={makeBlockSyncProgress()}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}

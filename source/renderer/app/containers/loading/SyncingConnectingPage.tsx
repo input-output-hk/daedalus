@@ -76,7 +76,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         disableDownloadLogs={app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
         isVerifyingBlockchain={isVerifyingBlockchain}
-        blockSync={blockSync}
+        blockSyncProgress={blockSync}
       />
     );
   }
