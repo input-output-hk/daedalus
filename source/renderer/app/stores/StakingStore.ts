@@ -54,6 +54,8 @@ export default class StakingStore extends Store {
   smashServerUrlError: LocalizableError | null | undefined = null;
   @observable
   smashServerLoading = false;
+  @observable
+  stakePoolsListViewTooltipVisible = true;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable
@@ -145,6 +147,7 @@ export default class StakingStore extends Store {
     this._startStakePoolsFetchTracker();
 
     this._getStakingInfoWasOpen();
+    this._getStakePoolsListViewTooltip();
   }
 
   // REQUESTS
@@ -293,6 +296,20 @@ export default class StakingStore extends Store {
     this.stakingInfoWasOpen = true;
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.localStorage.setStakingInfoWasOpen();
+  };
+  @action
+  _getStakePoolsListViewTooltip = async () => {
+    const tooltipShown = await this.api.localStorage.getStakePoolsListViewTooltip();
+    runInAction(() => {
+      this.stakePoolsListViewTooltipVisible = tooltipShown;
+    });
+  };
+  @action
+  hideStakePoolsListViewTooltip = () => {
+    this.stakePoolsListViewTooltipVisible = false;
+    this.api.localStorage.setStakePoolsListViewTooltip(
+      this.stakePoolsListViewTooltipVisible
+    );
   };
   @action
   _stakePoolsFetchTracker = () => {
