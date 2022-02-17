@@ -81,15 +81,19 @@ export const handleCheckBlockReplayProgress = (
       { progress: finalProgressPercentage, type: progressType },
       mainWindow.webContents
     );
+
+    if (finalProgressPercentage === 100 && progressType === 'pushingLedger') {
+      clearInterval(checkBlockReplayProgressInterval);
+    }
   };
 
   const setBlockReplayProgressCheckingInterval = () => {
-    setInterval(async () => {
+    return setInterval(async () => {
       checkBlockReplayProgress();
     }, BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL);
   };
 
   // Start default interval
-  setBlockReplayProgressCheckingInterval();
+  const checkBlockReplayProgressInterval = setBlockReplayProgressCheckingInterval();
   return checkBlockReplayProgress;
 };
