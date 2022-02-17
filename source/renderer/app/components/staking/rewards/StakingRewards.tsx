@@ -157,7 +157,7 @@ class StakingRewards extends Component<Props, State> {
       const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
+      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
