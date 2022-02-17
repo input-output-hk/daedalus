@@ -151,7 +151,10 @@ export default class StakingRewards extends Component<Props, State> {
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
+      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
+        DECIMAL_PLACES_IN_ADA
+      );
+      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
