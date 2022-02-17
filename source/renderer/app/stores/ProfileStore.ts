@@ -659,10 +659,6 @@ export default class ProfileStore extends Store {
         isMainnet,
         isStaging,
         isTestnet,
-        os,
-        platformVersion,
-        ram,
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Pro... Remove this comment to see the full error message
       } = this.environment;
       const systemInfo = buildSystemInfo(this.environment, networkStatus);
       const coreInfo = {
