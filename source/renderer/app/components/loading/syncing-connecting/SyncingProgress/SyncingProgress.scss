@@ -10,8 +10,7 @@
 }
 
 .columnIcons {
-  margin-right: 12px;
-  width: 28px;
+  margin-right: 20px;
 }
 
 .columnMessages {
@@ -42,6 +41,8 @@
 }
 
 .icon {
+  font-size: 28px;
+
   svg {
     fill: currentColor;
     height: 1em;
@@ -51,8 +52,10 @@
   }
 }
 
-.iconRotating :global {
-  animation: loading-spin 1.2s linear infinite;
+.iconRotating {
+  :global {
+    animation: loading-spin 1.2s linear infinite;
+  }
 }
 
 .iconDescription {
