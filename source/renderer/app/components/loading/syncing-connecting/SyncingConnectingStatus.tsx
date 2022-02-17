@@ -186,6 +186,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isVerifyingBlockchain,
       hasLoadedCurrentLocale,
       blockSyncProgress,
+      cardanoNodeState,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
@@ -194,11 +195,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       connectingDescription,
     } = this._getConnectingMessage();
 
-    const isConnectingMessage =
-      connectingMessage === messages.connecting ||
-      connectingMessage === messages.reconnecting;
-
-    if (isVerifyingBlockchain && isConnectingMessage) {
+    if (
+      cardanoNodeState === CardanoNodeStates.RUNNING &&
+      isVerifyingBlockchain
+    ) {
       return (
         <div className={styles.component}>
           <SyncingProgress {...blockSyncProgress} />
