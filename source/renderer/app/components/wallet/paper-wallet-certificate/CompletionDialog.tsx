@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
-import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
@@ -117,7 +116,6 @@ class CompletionDialog extends Component<Props, State> {
       network,
     } = this.props;
     const { showCopyNotification } = this.state;
-    const dialogClasses = classnames(['completionDialog']);
     const actions = [
       {
         className: 'finishButton',
@@ -142,7 +140,7 @@ class CompletionDialog extends Component<Props, State> {
       : '#000';
     return (
       <Dialog
-        className={dialogClasses}
+        className="completionDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
       >

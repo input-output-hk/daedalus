@@ -299,13 +299,12 @@ class Step1ConfigurationDialog extends Component<Props, State> {
       recoveryPhraseField.isValid ||
       this.state.wasRecoveryPhraseValidAtLeastOnce
     );
-    const buttonClasses = classnames(['primary']);
 
     const actions = {
       direction: 'column',
       items: [
         {
-          className: buttonClasses,
+          className: 'primary',
           disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
