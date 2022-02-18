@@ -11,6 +11,7 @@
 ### Fixes
 
 - Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+- Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
 
 ## 4.9.0-FC1
 
