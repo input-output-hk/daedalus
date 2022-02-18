@@ -28,6 +28,13 @@ const messages = defineMessages({
     description:
       'RestoringWallet Error Label on the rewards redemption setup "choose wallet" step dialog.',
   },
+  test: {
+    id: 'staking.redeemItnRewards.step1.test',
+    defaultMessage:
+      '!!!This wallet can’t be used for rewards redemption while it’s being synced.',
+    description:
+      'RestoringWallet Error Label on the rewards redemption setup "choose wallet" step dialog.',
+  },
 });
 
 @inject('stores', 'actions')
