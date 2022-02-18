@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-source ./utils.sh
+source utils.sh
 
 BUILDKITE_BUILD_NUMBER="$1"
 
