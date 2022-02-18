@@ -63,7 +63,7 @@
     "create-news-verification-hashes": "ts-node utils/create-news-verification-hashes/index.ts",
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
     "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
-    "postinstall": "[[ -n $CI ]] && yarn lockfile:fix"
+    "postinstall": "node ./scripts/postinstall.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
