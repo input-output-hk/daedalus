@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
+set -e
+source ./utils.sh
+
 # DEPENDENCIES (binaries should be in PATH):
 #   0. 'git'
 #   1. 'curl'
 #   2. 'nix-shell'
-
-set -e
 
 CLUSTERS="$(xargs echo -n < "$(dirname "$0")"/../installer-clusters.cfg)"
 
@@ -34,19 +35,6 @@ EOF
     test -z "$1" || exit 1
 }
 
-arg2nz() { test $# -ge 2 -a ! -z "$2" || usage "empty value for" "$1"; }
-fail() { echo "ERROR: $*" >&2; exit 1; }
-retry() {
-        local tries=$1; arg2nz "iteration count" "$1"; shift
-        for i in $(seq 1 "${tries}")
-        do if "$@"
-           then return 0
-           else echo "failed, retry #$i of ${tries}"
-           fi
-           sleep 5s
-        done
-        fail "persistent failure to exec:  $*"
-}
 
 ###
 ### Argument processing
@@ -117,11 +105,11 @@ export PATH=$HOME/.local/bin:$PATH
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
 upload_artifacts() {
-    buildkite-agent artifact upload "$@" --job "$BUILDKITE_JOB_ID"
+    retry 5 buildkite-agent artifact upload "$@" --job "$BUILDKITE_JOB_ID"
 }
 
 upload_artifacts_public() {
-    buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+    retry 5 buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
 }
 
 function checkItnCluster() {
