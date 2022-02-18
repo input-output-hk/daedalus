@@ -62,8 +62,7 @@
     "yoroi:wallet:importer": "ts-node utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "ts-node utils/create-news-verification-hashes/index.ts",
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
-    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
-    "postinstall": "./scripts/postinstall.sh"
+    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -223,7 +222,6 @@
     "humanize-duration": "3.23.1",
     "inquirer": "7.3.3",
     "json-bigint": "1.0.0",
-    "left-pad": "^1.3.0",
     "lodash": "4.17.21",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.27",
