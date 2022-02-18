@@ -6129,13 +6129,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -6143,13 +6143,13 @@
         "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -6157,13 +6157,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -6171,13 +6171,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -6185,13 +6185,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -6199,13 +6199,13 @@
         "description": "Table header \"Total Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.total",
         "start": {
           "column": 26,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -6213,13 +6213,13 @@
         "description": "Table header \"Unspent\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.unspent",
         "start": {
           "column": 28,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -6227,13 +6227,13 @@
         "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -6241,13 +6241,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 75
+          "line": 76
         }
       },
       {
@@ -6255,13 +6255,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 80
+          "line": 81
         }
       },
       {
@@ -6269,13 +6269,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -6283,13 +6283,13 @@
         "description": "View in explorer button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
-          "line": 91
+          "line": 92
         }
       }
     ],
