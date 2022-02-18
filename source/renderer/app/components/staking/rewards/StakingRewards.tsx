@@ -146,11 +146,7 @@ class StakingRewards extends Component<Props, State> {
   ) => {
     const { onExportCsv } = this.props;
     const { intl } = this.context;
-    const exportedHeader = [
-      ...availableTableHeaders.map((header) => header.title),
-      intl.formatMessage(messages.tableHeaderDate),
-    ];
-    const date = new Date().toISOString();
+    const exportedHeader = availableTableHeaders.map((header) => header.title);
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
@@ -166,7 +162,6 @@ class StakingRewards extends Component<Props, State> {
         rewardsAddress,
         isRestoring ? '-' : rewardTotal,
         isRestoring ? '-' : rewardUnspent,
-        date,
       ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
