@@ -9,6 +9,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   bigNumberComparator,
   stringComparator,
@@ -150,11 +151,13 @@ class StakingRewards extends Component<Props, State> {
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
-        DECIMAL_PLACES_IN_ADA
+      const rewardTotal = formattedWalletAmount(
+        get(reward, REWARD_FIELDS.REWARD_TOTAL),
+        false
       );
-      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT).toFormat(
-        DECIMAL_PLACES_IN_ADA
+      const rewardUnspent = formattedWalletAmount(
+        get(reward, REWARD_FIELDS.REWARD_UNSPENT),
+        false
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
       return [
