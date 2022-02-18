@@ -1,0 +1,24 @@
+name: Verify Pull Requests
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print environment variables
+        uses: printenv
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Run checks
+        run: yarn check:all && git diff --exit-code > /dev/null || echo "Did you forget to run 'yarn check:all' and commit changes?"
+      - name: Run tests
+        run: yarn test:jest --maxWorkers=3
