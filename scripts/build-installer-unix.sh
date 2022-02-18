@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-source "$(dirname $0)/utils.sh"
+source "$(dirname "$0")/utils.sh"
 
 # DEPENDENCIES (binaries should be in PATH):
 #   0. 'git'

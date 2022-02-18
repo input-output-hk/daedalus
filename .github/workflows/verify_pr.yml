@@ -5,8 +5,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Print environment variables
-        run: printenv
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Setup Node.js

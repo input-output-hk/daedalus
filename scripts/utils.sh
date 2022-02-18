@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 arg2nz() { test $# -ge 2 -a ! -z "$2" || usage "empty value for" "$1"; }
 fail() { echo "ERROR: $*" >&2; exit 1; }
 retry() {
