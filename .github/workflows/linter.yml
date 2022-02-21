@@ -12,4 +12,4 @@ jobs:
         with:
           node-version: '14'
       - run: yarn install --frozen-lockfile
-      - run: yarn prettier:check && yarn typedef:sass && yarn compile && yarn lint && yarn stylelint
+      - run: yarn prettier:check && yarn compile && yarn lint && yarn stylelint
