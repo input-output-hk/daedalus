@@ -62,7 +62,8 @@
     "yoroi:wallet:importer": "ts-node utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "ts-node utils/create-news-verification-hashes/index.ts",
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
-    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix"
+    "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
+    "postinstall": "./scripts/postinstall.sh"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
