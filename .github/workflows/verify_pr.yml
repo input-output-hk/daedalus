@@ -7,6 +7,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+      - name: Debug
+        run: which git
+      - name: Debug2
+        run: /usr/bin/git diff
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
