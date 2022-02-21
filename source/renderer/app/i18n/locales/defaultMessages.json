@@ -10055,13 +10055,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.headline",
         "start": {
           "column": 12,
-          "line": 19
+          "line": 18
         }
       },
       {
@@ -10069,13 +10069,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -10083,13 +10083,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -10097,13 +10097,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" address instructions.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.addressInstructions",
         "start": {
           "column": 23,
-          "line": 39
+          "line": 38
         }
       },
       {
@@ -10111,13 +10111,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" cardano link label.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel",
         "start": {
           "column": 20,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -10125,13 +10125,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" address copied.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -10139,13 +10139,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" wallet address label.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 58
+          "line": 57
         }
       },
       {
@@ -10153,13 +10153,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" finish button label.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.tsx",
         "id": "paper.wallet.create.certificate.completion.dialog.finishButtonLabel",
         "start": {
           "column": 21,
-          "line": 64
+          "line": 63
         }
       }
     ],
