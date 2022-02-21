@@ -6243,16 +6243,30 @@
       },
       {
         "defaultMessage": "!!!Total rewards earned (ADA)",
-        "description": "Table header \"Reward\" label on staking rewards page",
+        "description": "Table header \"Total Reward\" label on staking rewards page",
         "end": {
           "column": 3,
           "line": 64
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
-        "id": "staking.rewards.tableHeader.reward",
+        "id": "staking.rewards.tableHeader.total",
         "start": {
-          "column": 21,
+          "column": 26,
           "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Unspent (ADA)",
+        "description": "Table header \"Unspent\" label on staking rewards page",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
+        "id": "staking.rewards.tableHeader.unspent",
+        "start": {
+          "column": 28,
+          "line": 65
         }
       },
       {
@@ -6260,13 +6274,13 @@
         "description": "Table header \"Rewards address\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.rewardsAddress",
         "start": {
           "column": 29,
-          "line": 65
+          "line": 70
         }
       },
       {
@@ -6274,13 +6288,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 70
+          "line": 75
         }
       },
       {
@@ -6288,13 +6302,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 75
+          "line": 80
         }
       },
       {
@@ -6302,13 +6316,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 81
+          "line": 86
         }
       },
       {
@@ -6316,13 +6330,13 @@
         "description": "View in explorer button label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.tsx",
         "id": "staking.rewards.actionViewInExplorer",
         "start": {
           "column": 24,
-          "line": 86
+          "line": 91
         }
       }
     ],
@@ -13468,13 +13482,13 @@
         "description": "Tokens title in the wallet summary",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.tsx",
         "id": "wallet.summary.assets.tokensTitle",
         "start": {
           "column": 19,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -13530,35 +13544,54 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Number of transactions",
+        "defaultMessage": "!!!{total} transactions, {pending} pending",
         "description": "\"Number of transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.tsx",
         "id": "wallet.summary.header.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Number of pending transactions",
-        "description": "\"Number of pending transactions\" label on Wallet summary header page",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.tsx",
-        "id": "wallet.summary.header.pendingTransactionsLabel",
-        "start": {
-          "column": 28,
-          "line": 21
+          "line": 18
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!{total} rewards earned, {unspent} unspent rewards",
+        "description": "Headline for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.tsx",
+        "id": "wallet.summary.header.rewardsSummary",
+        "start": {
+          "column": 11,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!All the ada in this wallet is in the rewards account.\n      Since transaction fees cannot be paid with rewards, please send 2 or\n      more ada to this wallet to cover transaction fees.",
+        "description": "Tooltip describing that rewards are unspendable on the Wallet summary header",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.tsx",
+        "id": "wallet.summary.header.unspendableTooltip",
+        "start": {
+          "column": 22,
+          "line": 25
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/summary/WalletSummaryHeaderRewards.json"
   },
   {
     "descriptors": [
