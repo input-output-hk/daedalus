@@ -73,7 +73,7 @@
 
 ### Fixes
 
-- Fixed blockain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
 
