@@ -22,35 +22,35 @@ type State = {
   connectingTime: number,
 };
 
-type Props = {
-  cardanoNodeState: ?CardanoNodeState,
-  blockSync: { type: BlockSyncType, progress: number },
-  hasBeenConnected: boolean,
-  forceConnectivityIssue?: boolean,
-  isConnected: boolean,
-  isSynced: boolean,
-  isConnecting: boolean,
-  isSyncing: boolean,
-  isSyncProgressStalling: boolean,
-  isNodeStopping: boolean,
-  isNodeStopped: boolean,
-  isTlsCertInvalid: boolean,
-  hasLoadedCurrentLocale: boolean,
-  hasLoadedCurrentTheme: boolean,
-  hasNotification: boolean,
-  hasUpdate: boolean,
-  isCheckingSystemTime: boolean,
-  isNodeResponding: boolean,
-  isNodeSyncing: boolean,
-  isNodeTimeCorrect: boolean,
-  disableDownloadLogs: boolean,
-  showNewsFeedIcon: boolean,
-  isVerifyingBlockchain: boolean,
-  onIssueClick: Function,
-  onOpenExternalLink: Function,
-  onDownloadLogs: Function,
-  onStatusIconClick: Function,
-  onToggleNewsFeedIconClick: Function,
+export type Props = {
+  cardanoNodeState: CardanoNodeState | null | undefined;
+  blockSyncProgress: Record<BlockSyncType, number>;
+  hasBeenConnected: boolean;
+  forceConnectivityIssue?: boolean;
+  isConnected: boolean;
+  isSynced: boolean;
+  isConnecting: boolean;
+  isSyncing: boolean;
+  isSyncProgressStalling: boolean;
+  isNodeStopping: boolean;
+  isNodeStopped: boolean;
+  isTlsCertInvalid: boolean;
+  hasLoadedCurrentLocale: boolean;
+  hasLoadedCurrentTheme: boolean;
+  hasNotification: boolean;
+  hasUpdate: boolean;
+  isCheckingSystemTime: boolean;
+  isNodeResponding: boolean;
+  isNodeSyncing: boolean;
+  isNodeTimeCorrect: boolean;
+  disableDownloadLogs: boolean;
+  showNewsFeedIcon: boolean;
+  isVerifyingBlockchain: boolean;
+  onIssueClick: (...args: Array<any>) => any;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onDownloadLogs: (...args: Array<any>) => any;
+  onStatusIconClick: (...args: Array<any>) => any;
+  onToggleNewsFeedIconClick: (...args: Array<any>) => any;
 };
 
 @observer
@@ -166,7 +166,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
       isVerifyingBlockchain,
-      blockSync,
+      blockSyncProgress,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -209,7 +209,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isVerifyingBlockchain={isVerifyingBlockchain}
-          blockSync={blockSync}
+          blockSyncProgress={blockSyncProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

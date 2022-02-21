@@ -35,7 +35,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
       isVerifyingBlockchain,
-      blockSync,
+      blockSyncProgress,
     } = networkStatus;
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
@@ -74,7 +74,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         disableDownloadLogs={app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
         isVerifyingBlockchain={isVerifyingBlockchain}
-        blockSync={blockSync}
+        blockSyncProgress={blockSyncProgress}
       />
     );
   }

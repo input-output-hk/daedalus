@@ -186,6 +186,7 @@ export enum WalletSettingsStateEnum {
   disabled = 'disabled',
   enabled = 'enabled',
 }
+
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
   isNavigationEnabled: boolean;
@@ -452,7 +453,7 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 /**
  * Channel for checking block replay progress
  */
-export const GET_BLOCK_SYNC_STATUS_CHANNEL = 'GetBlockSyncProgressChannel';
+export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
 export type GetBlockSyncProgressType = BlockSyncType;
 export type GetBlockSyncProgressRendererRequest = void;
 export type GetBlockSyncProgressMainResponse = {
