@@ -69,7 +69,7 @@
     "react/no-array-index-key": "warn",
     "react/no-unused-prop-types": "warn",
     "react/prefer-stateless-function": 0,
-    "react/prop-types": "warn",
+    "react/prop-types": 0,
     "react/require-default-props": 0,
     "react/jsx-first-prop-new-line": [1, "multiline-multiprop"],
     "@typescript-eslint/ban-ts-comment": 1,
