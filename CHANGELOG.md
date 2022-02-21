@@ -4,6 +4,7 @@
 
 ### Features
 
+- Improve the syncing screen by showing syncing progress split into three stages ([PR 2877](https://github.com/input-output-hk/daedalus/pull/2877))
 - Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
 - Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
 

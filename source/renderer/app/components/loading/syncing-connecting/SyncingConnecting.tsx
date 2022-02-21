@@ -20,12 +20,10 @@ let connectingInterval = null;
 type State = {
   connectingTime: number;
 };
-type Props = {
+
+export type Props = {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  blockSync: {
-    type: BlockSyncType;
-    progress: number;
-  };
+  blockSyncProgress: Record<BlockSyncType, number>;
   hasBeenConnected: boolean;
   forceConnectivityIssue?: boolean;
   isConnected: boolean;
@@ -170,7 +168,7 @@ class SyncingConnecting extends Component<Props, State> {
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
       isVerifyingBlockchain,
-      blockSync,
+      blockSyncProgress,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -211,7 +209,7 @@ class SyncingConnecting extends Component<Props, State> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isVerifyingBlockchain={isVerifyingBlockchain}
-          blockSync={blockSync}
+          blockSyncProgress={blockSyncProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}
