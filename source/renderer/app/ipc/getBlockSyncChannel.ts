@@ -1,4 +1,4 @@
-import { GET_BLOCK_SYNC_STATUS_CHANNEL } from '../../../common/ipc/api';
+import { GET_BLOCK_SYNC_PROGRESS_CHANNEL } from '../../../common/ipc/api';
 import type {
   GetBlockSyncProgressRendererRequest,
   GetBlockSyncProgressMainResponse,
@@ -9,4 +9,4 @@ export const getBlockSyncProgressChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   GetBlockSyncProgressMainResponse,
   GetBlockSyncProgressRendererRequest
-> = new RendererIpcChannel(GET_BLOCK_SYNC_STATUS_CHANNEL);
+> = new RendererIpcChannel(GET_BLOCK_SYNC_PROGRESS_CHANNEL);
