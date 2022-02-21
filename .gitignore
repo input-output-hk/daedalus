@@ -121,4 +121,4 @@ Debug
 .vscode
 
 # Typescript
-#*.scss.d.ts
+*.scss.d.ts
