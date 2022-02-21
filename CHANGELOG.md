@@ -13,6 +13,10 @@
 - Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
 - Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
 
+### Chores
+
+- Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+
 ## 4.9.0-FC1
 
 ### Features
