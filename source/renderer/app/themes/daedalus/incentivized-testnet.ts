@@ -157,6 +157,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-connecting-background-color8': 'rgba(42, 43, 60, 1)',
     '--theme-connecting-text-color': '#ffffff',
     '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-connecting-sync-progress-color': '#fff',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#ffffff',

@@ -1,15 +1,41 @@
 import React from 'react';
-import { boolean, radios } from '@storybook/addon-knobs';
+import { boolean, radios, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
-import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
+import {
+  BlockSyncType,
+  CardanoNodeStates,
+} from '../../../../source/common/types/cardano-node.types';
+
+const makeProgressValueKnob = ({ name, value }) =>
+  number(name, value, {
+    range: true,
+    min: 0,
+    max: 100,
+    step: 0.01,
+  });
+
+const makeBlockSyncProgress = () => ({
+  [BlockSyncType.validatingChunk]: makeProgressValueKnob({
+    name: 'Verifying on-disk blockchain state',
+    value: 100,
+  }),
+  [BlockSyncType.replayedBlock]: makeProgressValueKnob({
+    name: 'Replaying ledger from on-disk blockchain',
+    value: 99.9,
+  }),
+  [BlockSyncType.pushingLedger]: makeProgressValueKnob({
+    name: 'Syncing blockchain',
+    value: 0,
+  }),
+});
 
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
     hasNotification={false}
     hasUpdate={false}
-    isVerifyingBlockchain={false}
+    isVerifyingBlockchain={boolean('isVerifyingBlockchain', false)}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     verificationProgress={0}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
@@ -46,10 +72,7 @@ export const DefaultSyncingConnectingStory = () => (
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
     showNewsFeedIcon
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSyncProgress={makeBlockSyncProgress()}
   />
 );
 export const ConnectivityIssuesSyncingConnectingStory = () => (
@@ -57,10 +80,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSyncProgress={makeBlockSyncProgress()}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
@@ -99,10 +119,7 @@ export const LoadingWalletDataSyncingConnectingStory = () => (
     hasNotification={false}
     hasUpdate={false}
     isVerifyingBlockchain={false}
-    blockSync={{
-      progress: 0,
-      type: 'replayedBlock',
-    }}
+    blockSyncProgress={makeBlockSyncProgress()}
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
