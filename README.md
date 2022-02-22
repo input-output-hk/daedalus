@@ -194,6 +194,14 @@ Make sure to list bootstrap in externals in `webpack.config.base.js` or the app 
 externals: ['bootstrap']
 ```
 
+### Debugging
+
+You can debug the main process by following one these approaches:
+- [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
+- [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
+
+The inspector runs on port 9229
+
 ## Testing
 
 You can find more details regarding tests setup within
