@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnosticsDialog.sc... Remove this comment to see the full error message
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import { buildSystemInfo } from '../../utils/buildSystemInfo';

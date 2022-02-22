@@ -16,7 +16,6 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsRegis... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';

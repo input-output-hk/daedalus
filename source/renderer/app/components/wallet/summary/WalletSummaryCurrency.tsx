@@ -7,7 +7,6 @@ import classnames from 'classnames';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/currenc... Remove this comment to see the full error message
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryCurrency.scss' ... Remove this comment to see the full error message
 import styles from './WalletSummaryCurrency.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';
@@ -92,10 +91,7 @@ class WalletSummaryCurrency extends Component<Props> {
         <div className={styles.currencyWalletAmount}>
           {/* @ts-ignore ts-migrate(2741) FIXME: Property 'replacer' is missing in type '{ children... Remove this comment to see the full error message */}
           <DiscreetValue>{currencyWalletAmount}</DiscreetValue>
-          <span className={styles.currencyCode}>
-            {' '}
-            {currencyWalletAmountSymbol}
-          </span>
+          <span> {currencyWalletAmountSymbol}</span>
         </div>
         <div className={styles.currencyRate}>
           1 {intl.formatMessage(globalMessages.adaUnit)} = {currencyRate || '–'}{' '}

@@ -9,11 +9,8 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Dialog.scss' or its correspo... Remove this comment to see the full error message
 import styles from './Dialog.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DialogOverride.scss' or its ... Remove this comment to see the full error message
 import dialogOverrides from './DialogOverride.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DialogFullSizeOverride.scss'... Remove this comment to see the full error message
 import dialogFullSizeOverride from './DialogFullSizeOverride.scss';
 
 export type DialogActionItems = Array<DialogActionItem>;
@@ -114,7 +111,7 @@ export default class Dialog extends Component<Props> {
               <div className={styles.content}>{children}</div>
             </div>
           )}
-          {footer && <div className={styles.footer}>{footer}</div>}
+          {footer && <div>{footer}</div>}
 
           {items && (
             <div className={classActionsClasses}>

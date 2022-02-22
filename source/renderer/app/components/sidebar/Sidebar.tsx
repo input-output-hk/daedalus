@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Sidebar.scss' or its corresp... Remove this comment to see the full error message
 import styles from './Sidebar.scss';
 import { shouldShowWalletSubMenu } from './helpers';
 import SidebarCategory from './SidebarCategory';

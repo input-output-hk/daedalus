@@ -24,7 +24,6 @@ import {
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step1ConfigurationDialog.scs... Remove this comment to see the full error message
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -278,10 +277,6 @@ class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
     const validRecoveryPhase = recoveryPhraseField.isValid;
-    const buttonClasses = classnames([
-      'primary',
-      isCalculatingReedemFees ? styles.isSubmitting : null,
-    ]);
     const walletsDropdownClasses = classnames([
       styles.walletsDropdown,
       !validRecoveryPhase ? styles.disabled : null,
@@ -290,7 +285,7 @@ class Step1ConfigurationDialog extends Component<Props> {
       direction: 'column',
       items: [
         {
-          className: buttonClasses,
+          className: 'primary',
           disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),

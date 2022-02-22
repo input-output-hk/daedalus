@@ -5,7 +5,6 @@ import type {
   MetadataValue,
   TransactionMetadata,
 } from '../../../../types/TransactionMetadata';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransactionMetadataView.scss... Remove this comment to see the full error message
 import styles from './TransactionMetadataView.scss';
 
 function flattenMetadata(data: MetadataValue) {

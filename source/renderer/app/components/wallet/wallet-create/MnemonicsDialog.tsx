@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateStyles.scss' or ... Remove this comment to see the full error message
 import commonStyles from './WalletCreateStyles.scss';
 
 type Props = {

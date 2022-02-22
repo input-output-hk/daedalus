@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import RcSlider from 'rc-slider';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { shortNumber } from '../../utils/formatters';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Slider.scss' or its correspo... Remove this comment to see the full error message
 import styles from './Slider.scss';
 
 type Props = {

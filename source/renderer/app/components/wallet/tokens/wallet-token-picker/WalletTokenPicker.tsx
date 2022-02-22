@@ -8,7 +8,6 @@ import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
 import WalletTokenPickerCheckbox from './WalletTokenPickerCheckbox';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokenPicker.scss' or i... Remove this comment to see the full error message
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
 import {

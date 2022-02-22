@@ -10,7 +10,6 @@ import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualTransactionList.scss'... Remove this comment to see the full error message
 import styles from './VirtualTransactionList.scss';
 
 type Props = {

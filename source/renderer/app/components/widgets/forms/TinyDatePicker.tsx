@@ -8,7 +8,6 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
 import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TinyDatePicker.scss' or its ... Remove this comment to see the full error message
 import styles from './TinyDatePicker.scss';
 
 type PickerPanelPosition = 'left' | 'right';

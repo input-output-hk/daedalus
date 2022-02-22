@@ -8,7 +8,6 @@ import { map, noop } from 'lodash';
 import Fuse from 'fuse.js';
 import { FUZZY_SEARCH_THRESHOLD } from '../../../config/sidebarConfig';
 import SidebarSubMenu from '../SidebarMenu';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletsMenu.scss' or ... Remove this comment to see the full error message
 import styles from './SidebarWalletsMenu.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sidebar... Remove this comment to see the full error message
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';

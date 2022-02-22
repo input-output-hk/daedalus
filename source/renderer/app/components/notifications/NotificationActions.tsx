@@ -4,7 +4,6 @@ import { map } from 'lodash';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NotificationActions.scss' or... Remove this comment to see the full error message
 import styles from './NotificationActions.scss';
 
 export type NotificationActionItems = Array<NotificationActionItem>;

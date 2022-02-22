@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokensSearch.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTokensSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/sear... Remove this comment to see the full error message
 import searchIcon from '../../../../assets/images/search.inline.svg';
