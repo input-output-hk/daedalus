@@ -82,7 +82,10 @@ export const handleCheckBlockReplayProgress = (
       mainWindow.webContents
     );
 
-    if (finalProgressPercentage === 100 && progressType === 'pushingLedger') {
+    if (
+      finalProgressPercentage === 100 &&
+      progressType === BlockSyncType.pushingLedger
+    ) {
       clearInterval(checkBlockReplayProgressInterval);
     }
   };
