@@ -25,7 +25,7 @@ const messages = defineMessages({
   stepsCounter: {
     id: 'wallet.restore.dialog.stepsCounter',
     defaultMessage: '!!!Step {currentStep} of {totalSteps}',
-    description: 'Step couters in the wallet restore dialog.',
+    description: 'Step counters in the wallet restore dialog.',
   },
 });
 type Props = {

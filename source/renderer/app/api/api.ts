@@ -1160,7 +1160,7 @@ export default class AdaApi {
         walletId,
         data,
       });
-      // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
+      // @TODO - handle CHANGE parameter on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);
       // Calculate fee from inputs and outputs
       const inputsData = [];

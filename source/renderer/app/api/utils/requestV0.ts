@@ -39,7 +39,7 @@ function typedRequest<Response>(
           queryString = `?passphrase=${encryptedPassphrase}`;
         }
 
-        // Passphrase must be ommited from rest query params
+        // Passphrase must be omitted from rest query params
         queryParams = omit(queryParams, 'passphrase');
 
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'boolean' is not assignable to pa... Remove this comment to see the full error message
