@@ -196,7 +196,7 @@ externals: ['bootstrap']
 
 ### Debugging
 
-You can debug the main process by following one these approaches:
+You can debug the main process by following one of these approaches:
 - [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
 - [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
 
