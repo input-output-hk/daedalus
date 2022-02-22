@@ -17,6 +17,7 @@
 ### Chores
 
 - Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+- Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
 
 ### Chores
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
