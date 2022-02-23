@@ -46,12 +46,14 @@ type KnownErrorType =
   | 'wallet_not_responding'
   | 'address_already_exists'
   | 'utxo_too_small'
-  | 'invalid_smash_server';
+  | 'invalid_smash_server'
+  | 'cannot_cover_fee';
+
 type LoggingType = {
   msg?: string;
   logError?: Record<string, any>;
 };
-type ErrorType = {
+export type ErrorType = {
   code?: KnownErrorType;
   message?: string;
 };

@@ -116,11 +116,14 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
           isHardwareWallet,
         } = this.props;
         const { passphrase } = form.values();
+        const hasAssetsRemainingAfterTransaction =
+          this.props.allAvailableTokens?.length > 0;
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
+          hasAssetsRemainingAfterTransaction,
         };
         this.props.onSubmit(transactionData);
       },
@@ -129,6 +132,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent) =>
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
+    this.props.error?.id !==
+      'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens' &&
     submitOnEnter(this.submit, event);
   renderConfirmationElement = (
     isHardwareWallet: boolean
@@ -218,6 +223,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
         primary: true,
         className: 'confirmButton',
         disabled:
+          error?.id ===
+            'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens' ||
           (!isHardwareWallet && !passphraseField.isValid) ||
           (isHardwareWallet &&
             hwDeviceStatus !==
@@ -228,7 +235,6 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
     let errorElement = null;
 
     if (error) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'values' does not exist on type 'Localiza... Remove this comment to see the full error message
       const errorHasLink = !!error.values.linkLabel;
       errorElement = errorHasLink ? (
         <FormattedHTMLMessageWithLink
@@ -237,7 +243,7 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
           onExternalLinkClick={onExternalLinkClick}
         />
       ) : (
-        intl.formatMessage(error)
+        <FormattedHTMLMessage {...error} />
       );
     }
 

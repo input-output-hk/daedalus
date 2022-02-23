@@ -527,7 +527,9 @@ export default class StakingStore extends Store {
 
     try {
       const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
-        { ...delegationFeeRequest }
+        {
+          ...delegationFeeRequest,
+        }
       ).promise;
 
       if (this._delegationFeeCalculationWalletId !== walletId) {
