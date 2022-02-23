@@ -8,6 +8,7 @@ const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
 // Setup electron-connect server to start the app in development mode
 let electronServer;
+const electronServerAgs = ['--inspect=9229'];
 // Gulp input sources for main and renderer compilation
 const mainInputSource = () => gulp.src('source/main/index.ts');
 const rendererInputSource = () => gulp.src('source/renderer/index.ts');
@@ -47,7 +48,7 @@ const buildMainWatch = () => (done) =>
     .pipe(
       webpackStream(mainWebpackWatchConfig, webpack, () => {
         // Restart app every time after main script has been re-compiled
-        electronServer.restart();
+        electronServer.restart(electronServerAgs);
         done();
       })
     )
@@ -79,7 +80,7 @@ gulp.task(
 gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
 gulp.task('server:start', (done) => {
-  electronServer.start();
+  electronServer.start(electronServerAgs);
   done();
 });
 
@@ -92,13 +93,10 @@ gulp.task('server:create:dev', (done) => {
 });
 
 gulp.task('server:create:debug', (done) => {
-  createElectronServer(
-    {
-      NODE_ENV: process.env.NODE_ENV,
-      XCURSOR_PATH: '/usr/share/icons' || 'development',
-    },
-    ['--inspect', '--inspect-brk']
-  );
+  createElectronServer({
+    NODE_ENV: process.env.NODE_ENV,
+    XCURSOR_PATH: '/usr/share/icons' || 'development',
+  });
   done();
 });
 
