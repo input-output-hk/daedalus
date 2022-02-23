@@ -19,10 +19,10 @@ import type { AdaApiStakePool } from '../../renderer/app/api/staking/types';
 
 export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
 export type Logger = {
-  debug: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
-  info: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
-  error: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
-  warn: (arg0: string, arg1: Record<string, any> | null | undefined) => void;
+  debug: (arg0: string, arg1?: Record<string, any> | null | undefined) => void;
+  info: (arg0: string, arg1?: Record<string, any> | null | undefined) => void;
+  error: (arg0: string, arg1?: Record<string, any> | null | undefined) => void;
+  warn: (arg0: string, arg1?: Record<string, any> | null | undefined) => void;
 };
 export type FormatMessageContextParams = {
   appName: string;
