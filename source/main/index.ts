@@ -56,6 +56,9 @@ import {
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 
+app.commandLine.appendSwitch('inspect', '5858');
+app.commandLine.appendSwitch('remote-debugging-port', '8315');
+
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;

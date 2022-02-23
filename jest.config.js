@@ -89,6 +89,8 @@ module.exports = {
     // Jest does not support WASM imports from ESM modules
     // https://github.com/facebook/jest/issues/9430
     '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
+    '^electron$': '<rootDir>/source/spec/electron.ts',
+    '^electron-log-daedalus$': '<rootDir>/source/spec/electron-log-daedalus.ts',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

@@ -102,6 +102,7 @@ export class IpcChannel<Incoming, Outgoing> {
     receiver: IpcReceiver
   ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
+      console.log('sender', sender.send);
       sender.send(this._requestChannel, message);
       // Handle response to the sent request once
       receiver.once(
