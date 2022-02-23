@@ -21,7 +21,6 @@ import UnpairWallet from './UnpairWallet';
 import DeleteWallet from './DeleteWallet';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import type { Locale } from '../../../../../common/types/locales.types';

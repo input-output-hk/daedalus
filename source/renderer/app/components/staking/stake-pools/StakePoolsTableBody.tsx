@@ -10,7 +10,6 @@ import {
   toFixedUserFormat,
 } from '../../../utils/formatters';
 import { PoolPopOver } from '../widgets/PoolPopOver';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsTable.scss' or its... Remove this comment to see the full error message
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';

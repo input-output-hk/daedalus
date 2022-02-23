@@ -11,7 +11,6 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePools.scss' or its corr... Remove this comment to see the full error message
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';

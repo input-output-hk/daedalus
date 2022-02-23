@@ -17,7 +17,6 @@ import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import { Divider } from '../widgets/Divider';
 import { ClearButton } from '../widgets/ClearButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetInput.scss' or its corr... Remove this comment to see the full error message
 import styles from './AssetInput.scss';
 import messages from './messages';
 
@@ -115,14 +114,7 @@ class AssetInput extends Component<Props> {
                 : '0'
             }
             className={styles.assetItem}
-            label={
-              <Asset
-                asset={asset}
-                className={styles.assetToken}
-                hidePopOver
-                small
-              />
-            }
+            label={<Asset asset={asset} hidePopOver small />}
             data-testid={`assetInput:${uniqueId}`}
             bigNumberFormat={decimals ? currentNumberFormat : null}
             decimalPlaces={decimals}
@@ -160,7 +152,6 @@ class AssetInput extends Component<Props> {
                   label={intl.formatMessage(messages.clearLabel)}
                   onClick={() => clearAssetFieldValue(assetField)}
                 />
-                <div className={styles.separator} />
               </div>
             )}
             {ticker ? (

@@ -5,7 +5,6 @@ import type { ElementRef } from 'react';
 import { AutoSizer, List, WindowScroller } from 'react-virtualized';
 import { Instance } from 'tippy.js';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsList.scss' or its ... Remove this comment to see the full error message
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';

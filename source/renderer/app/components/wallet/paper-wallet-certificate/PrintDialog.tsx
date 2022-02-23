@@ -7,7 +7,6 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PrintDialog.scss' or its cor... Remove this comment to see the full error message
 import styles from './PrintDialog.scss';
 import {
   PAPER_WALLET_PRINTED_WORDS_COUNT,
@@ -98,7 +97,6 @@ class PrintDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onContinue, onClose } = this.props;
     const { isPrintedCorrectly, isReadable, isScannable } = this.state;
-    const dialogClasses = classnames([styles.component, 'printDialog']);
     const certificatePrintedCheckboxClasses = classnames([
       'printedCheckbox',
       styles.checkbox,
@@ -123,7 +121,7 @@ class PrintDialog extends Component<Props, State> {
     ];
     return (
       <Dialog
-        className={dialogClasses}
+        className="printDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         onClose={onClose}

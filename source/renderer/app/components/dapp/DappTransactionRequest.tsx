@@ -9,7 +9,6 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DappTransactionRequest.scss'... Remove this comment to see the full error message
 import styles from './DappTransactionRequest.scss';
 import Dialog from '../widgets/Dialog';
 import globalMessages from '../../i18n/global-messages';
@@ -120,7 +119,6 @@ const DappTransactionRequest = observer((props: Props) => {
     triggeredFrom,
     wallets,
   } = props;
-  let hasAmountError = false;
   const hasTokenError = useMemo(
     () =>
       assets.reduce((result, token, index) => {
@@ -138,10 +136,6 @@ const DappTransactionRequest = observer((props: Props) => {
     adaBalanceRequired
   );
 
-  if (walletsDropdownHasError) {
-    hasAmountError = true;
-  }
-
   const adaAmountErrorMessage = walletsDropdownHasError ? (
     <FormattedHTMLMessage
       {...messages.insufficientBalanceErrorMessage}
@@ -153,7 +147,6 @@ const DappTransactionRequest = observer((props: Props) => {
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
     walletsDropdownHasError || hasTokenError ? styles.error : null,
-    hasAmountError ? styles.amountError : null,
   ]);
   const canSubmit =
     !!selectedWallet && !hasTokenError && !walletsDropdownHasError;

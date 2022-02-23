@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import FilterButton from './FilterButton';
 import FilterDialog from './FilterDialog';
 import type { FilterDialogProps } from './FilterDialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactionsHeader.scs... Remove this comment to see the full error message
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message

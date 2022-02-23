@@ -11,7 +11,6 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactions.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 

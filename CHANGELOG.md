@@ -4,13 +4,24 @@
 
 ### Features
 
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
+- Added display of current/unspent rewards ([PR 2803](https://github.com/input-output-hk/daedalus/pull/2803))
+- Improve the syncing screen by showing syncing progress split into three stages ([PR 2877](https://github.com/input-output-hk/daedalus/pull/2877))
 - Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
 - Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
-- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Fixes
 
 - Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+- Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+
+### Chores
+
+- Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+
+### Chores
+
+- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 
 ## 4.9.0-FC1
 
@@ -66,7 +77,6 @@
 
 ### Fixes
 
-- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2816](https://github.com/input-output-hk/daedalus/pull/2816/files))
 - Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
