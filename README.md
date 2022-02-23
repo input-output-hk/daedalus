@@ -199,6 +199,7 @@ externals: ['bootstrap']
 You can debug the main process by following one of these approaches:
 - [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
 - [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
+- [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
 
 The inspector runs on port 9229
 
