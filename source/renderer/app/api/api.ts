@@ -460,18 +460,19 @@ export default class AdaApi {
       parameters: request,
     });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
+
     const params = Object.assign(
       {},
       {
         order: order || 'descending',
-        start: undefined,
-        end: undefined,
+        ...(fromDate
+          ? { start: `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z` }
+          : {}),
+        ...(toDate
+          ? { end: `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z` }
+          : {}),
       }
     );
-    if (fromDate)
-      params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
-    if (toDate)
-      params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
       let response;
