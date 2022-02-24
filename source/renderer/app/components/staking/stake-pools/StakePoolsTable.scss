@@ -227,6 +227,7 @@
 
       .ticker {
         color: var(--theme-staking-stake-pool-tooltip-link-color);
+        text-transform: uppercase;
       }
 
       &:nth-child(2) {

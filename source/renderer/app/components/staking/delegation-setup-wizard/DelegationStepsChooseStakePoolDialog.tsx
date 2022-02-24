@@ -118,7 +118,7 @@ const DelegationStepsChooseStakePoolDialog = observer((props: Props) => {
     activeStakePoolId = lastDelegatedStakePoolId;
   }
 
-  const selectedPoolTicker = selectedPool?.ticker;
+  const selectedPoolTicker = selectedPool?.ticker.toUpperCase();
   const canSubmit =
     !activeStakePoolId || activeStakePoolId !== selectedPool?.id;
   const actions = [
