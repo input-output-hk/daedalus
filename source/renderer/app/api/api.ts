@@ -465,12 +465,12 @@ export default class AdaApi {
       {},
       {
         order: order || 'descending',
-        ...(fromDate
-          ? { start: `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z` }
-          : {}),
-        ...(toDate
-          ? { end: `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z` }
-          : {}),
+      },
+      !!fromDate && {
+        start: `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`,
+      },
+      !!toDate && {
+        end: `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`,
       }
     );
 
