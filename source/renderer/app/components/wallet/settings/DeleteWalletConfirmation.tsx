@@ -4,7 +4,6 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { submitOnEnter } from '../../../utils/form';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DeleteWalletConfirmationDial... Remove this comment to see the full error message
 import styles from './DeleteWalletConfirmationDialog.scss';
 
 type Props = {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import { throttle } from 'lodash';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './BackToTopButton.scss' or its... Remove this comment to see the full error message
 import styles from './BackToTopButton.scss';
 
 const messages = defineMessages({

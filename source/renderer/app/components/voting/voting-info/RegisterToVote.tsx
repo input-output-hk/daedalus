@@ -10,9 +10,7 @@ import type { Locale } from '../../../../../common/types/locales.types';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RegisterToVote.scss' or its ... Remove this comment to see the full error message
 import styles from './RegisterToVote.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingInfo.scss' or its corr... Remove this comment to see the full error message
 import votingStyles from './VotingInfo.scss';
 import type { CatalystFund } from '../../../api/voting/types';
 
@@ -64,7 +62,6 @@ function RegisterToVote({
       </span>
       <div className={styles.step}>
         <Checkbox
-          className={styles.checkbox}
           checked={step1}
           onChange={setStep1}
           label={intl.formatMessage(messages.step1CheckBoxLabel)}
@@ -72,7 +69,6 @@ function RegisterToVote({
       </div>
       <div className={styles.step}>
         <Checkbox
-          className={styles.checkbox}
           checked={step2}
           label={intl.formatMessage(messages.step2CheckBoxLabel)}
           onChange={setStep2}

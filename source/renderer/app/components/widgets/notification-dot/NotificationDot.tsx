@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NotificationDot.scss' or its... Remove this comment to see the full error message
 import styles from './NotificationDot.scss';
 
 type Props = {

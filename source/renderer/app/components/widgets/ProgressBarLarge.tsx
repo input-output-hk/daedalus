@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ProgressBarLarge.scss' or it... Remove this comment to see the full error message
 import styles from './ProgressBarLarge.scss';
 
 type Props = {
@@ -44,7 +43,7 @@ class ProgressBarLarge extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.content}>
-          <p className={styles.leftLabel}>{leftLabel}</p>
+          <p>{leftLabel}</p>
           <p className={styles.rightLabel}>
             <b>{rightLabel1}</b> {rightLabel2}
           </p>

@@ -9,7 +9,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/paper-w... Remove this comment to see the full error message
 import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SecuringPasswordDialog.scss'... Remove this comment to see the full error message
 import styles from './SecuringPasswordDialog.scss';
 import { PAPER_WALLET_WRITTEN_WORDS_COUNT } from '../../../config/cryptoConfig';
 
@@ -70,10 +69,6 @@ class SecuringPasswordDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
-    const dialogClasses = classnames([
-      styles.component,
-      'SecuringPasswordDialog',
-    ]);
     const actions = [
       {
         className: 'continueButton',
@@ -85,7 +80,7 @@ class SecuringPasswordDialog extends Component<Props, State> {
     ];
     return (
       <Dialog
-        className={dialogClasses}
+        className="SecuringPasswordDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         onClose={onClose}

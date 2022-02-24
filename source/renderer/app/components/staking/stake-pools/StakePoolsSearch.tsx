@@ -5,7 +5,6 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSearch.scss' or it... Remove this comment to see the full error message
 import styles from './StakePoolsSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message
 import searchIcon from '../../../assets/images/search.inline.svg';

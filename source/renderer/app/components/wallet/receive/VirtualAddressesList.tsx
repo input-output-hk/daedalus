@@ -3,7 +3,6 @@ import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import WalletAddress from '../../../domains/WalletAddress';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualAddressesList.scss' o... Remove this comment to see the full error message
 import styles from './VirtualAddressesList.scss';
 
 type Props = {

@@ -28,6 +28,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
+          buildScriptName: 'storybook:build:chromatic'
       - name: Publish to Chromatic and auto accept changes
         if: github.ref == 'refs/heads/develop'
         uses: chromaui/action@v1
@@ -35,3 +36,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: true
+          buildScriptName: 'storybook:build:chromatic'

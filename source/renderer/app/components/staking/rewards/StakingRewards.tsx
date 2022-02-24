@@ -21,7 +21,6 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingRewards.scss' or its ... Remove this comment to see the full error message
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
@@ -449,7 +448,7 @@ class StakingRewards extends Component<Props, State> {
             )}
           </BorderedBox>
           <div className={styles.note}>
-            <div className={styles.noteContent}>
+            <div>
               <FormattedHTMLMessage {...messages.note} />
             </div>
           </div>

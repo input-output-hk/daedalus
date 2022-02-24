@@ -3,9 +3,7 @@ import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { LoadingSpinner } from 'react-polymorph/lib/components/LoadingSpinner';
 import { LoadingSpinnerSkin } from 'react-polymorph/lib/skins/simple/LoadingSpinnerSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransactionTypeIcon.scss' or... Remove this comment to see the full error message
 import styles from './TransactionTypeIcon.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SpinnerOverrides.scss' or it... Remove this comment to see the full error message
 import spinnerOverrides from './SpinnerOverrides.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/wallet-... Remove this comment to see the full error message
 import expendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
