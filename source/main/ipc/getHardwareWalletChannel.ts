@@ -1,7 +1,9 @@
+import { BrowserWindow } from 'electron';
+import moment from 'moment';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+import { identifyUSBProductId } from '@ledgerhq/devices';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-import { BrowserWindow } from 'electron';
 import TrezorConnect, {
   DEVICE,
   DEVICE_EVENT,
@@ -12,49 +14,12 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
-import { MainIpcChannel } from './lib/MainIpcChannel';
-import type {
-  deriveAddressMainResponse,
-  deriveAddressRendererRequest,
-  deriveXpubMainResponse,
-  deriveXpubRendererRequest,
-  getCardanoAdaAppMainResponse,
-  getCardanoAdaAppRendererRequest,
-  getExtendedPublicKeyMainResponse,
-  getExtendedPublicKeyRendererRequest,
-  getHardwareWalletConnectionMainRequest,
-  getHardwareWalletConnectionRendererResponse,
-  getHardwareWalletTransportMainResponse,
-  getHardwareWalletTransportRendererRequest,
-  handleInitLedgerConnectMainResponse,
-  handleInitLedgerConnectRendererRequest,
-  handleInitTrezorConnectMainResponse,
-  handleInitTrezorConnectRendererRequest,
-  resetTrezorActionMainResponse,
-  resetTrezorActionRendererRequest,
-  showAddressMainResponse,
-  showAddressRendererRequest,
-  signTransactionLedgerMainResponse,
-  signTransactionLedgerRendererRequest,
-  signTransactionTrezorMainResponse,
-  signTransactionTrezorRendererRequest,
-} from '../../common/ipc/api';
-import {
-  DERIVE_ADDRESS_CHANNEL,
-  DERIVE_XPUB_CHANNEL,
-  GET_CARDANO_ADA_APP_CHANNEL,
-  GET_EXTENDED_PUBLIC_KEY_CHANNEL,
-  GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
-  GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
-  GET_INIT_LEDGER_CONNECT_CHANNEL,
-  GET_INIT_TREZOR_CONNECT_CHANNEL,
-  RESET_ACTION_TREZOR_CHANNEL,
-  SHOW_ADDRESS_CHANNEL,
-  SIGN_TRANSACTION_LEDGER_CHANNEL,
-  SIGN_TRANSACTION_TREZOR_CHANNEL,
-} from '../../common/ipc/api';
+import { listenDevices } from './listenDevices';
+import { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { logger } from '../utils/logging';
-import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+import { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+
+import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -67,67 +32,27 @@ export const ledgerStatus: ledgerStatusType = {
   listening: false,
   Listener: null,
 };
-const getHardwareWalletTransportChannel: MainIpcChannel<
-  getHardwareWalletTransportRendererRequest,
-  getHardwareWalletTransportMainResponse
-> = new MainIpcChannel(GET_HARDWARE_WALLET_TRANSPORT_CHANNEL);
-const getExtendedPublicKeyChannel: MainIpcChannel<
-  getExtendedPublicKeyRendererRequest,
-  getExtendedPublicKeyMainResponse
-> = new MainIpcChannel(GET_EXTENDED_PUBLIC_KEY_CHANNEL);
-const getCardanoAdaAppChannel: MainIpcChannel<
-  getCardanoAdaAppRendererRequest,
-  getCardanoAdaAppMainResponse
-> = new MainIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
-const getHardwareWalletConnectionChannel: MainIpcChannel<
-  getHardwareWalletConnectionMainRequest,
-  getHardwareWalletConnectionRendererResponse
-> = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
-const signTransactionLedgerChannel: MainIpcChannel<
-  signTransactionLedgerRendererRequest,
-  signTransactionLedgerMainResponse
-> = new MainIpcChannel(SIGN_TRANSACTION_LEDGER_CHANNEL);
-const signTransactionTrezorChannel: MainIpcChannel<
-  signTransactionTrezorRendererRequest,
-  signTransactionTrezorMainResponse
-> = new MainIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
-const resetTrezorActionChannel: MainIpcChannel<
-  resetTrezorActionRendererRequest,
-  resetTrezorActionMainResponse
-> = new MainIpcChannel(RESET_ACTION_TREZOR_CHANNEL);
-const handleInitTrezorConnectChannel: MainIpcChannel<
-  handleInitTrezorConnectRendererRequest,
-  handleInitTrezorConnectMainResponse
-> = new MainIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
-const handleInitLedgerConnectChannel: MainIpcChannel<
-  handleInitLedgerConnectRendererRequest,
-  handleInitLedgerConnectMainResponse
-> = new MainIpcChannel(GET_INIT_LEDGER_CONNECT_CHANNEL);
-const deriveXpubChannel: MainIpcChannel<
-  deriveXpubRendererRequest,
-  deriveXpubMainResponse
-> = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
-const deriveAddressChannel: MainIpcChannel<
-  deriveAddressRendererRequest,
-  deriveAddressMainResponse
-> = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
-const showAddressChannel: MainIpcChannel<
-  showAddressRendererRequest,
-  showAddressMainResponse
-> = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
 let devicesMemo = {};
 
 class EventObserver {
-  constructor(props) {
-    // @ts-ignore
-    this.mainWindow = props;
+  mainWindow: IpcSender;
+  getHardwareWalletConnectionChannel: HardwareWalletChannels['getHardwareWalletConnectionChannel'];
+
+  constructor({
+    mainWindow,
+    getHardwareWalletConnectionChannel,
+  }: {
+    mainWindow: IpcSender;
+    getHardwareWalletConnectionChannel: HardwareWalletChannels['getHardwareWalletConnectionChannel'];
+  }) {
+    this.mainWindow = mainWindow;
+    this.getHardwareWalletConnectionChannel = getHardwareWalletConnectionChannel;
   }
 
   next = async (event) => {
     try {
       const transportList = await TransportNodeHid.list();
       const connectionChanged = event.type === 'add' || event.type === 'remove';
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
         `[HW-DEBUG] Ledger NEXT: , ${JSON.stringify({
           event,
@@ -137,18 +62,15 @@ class EventObserver {
       );
 
       if (connectionChanged) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] Ledger NEXT - connection changed');
         const device = get(event, 'device', {});
         const deviceModel = get(event, 'deviceModel', {});
 
         if (event.type === 'add') {
           if (!devicesMemo[device.path]) {
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
 
             try {
-              // @ts-ignore
               const transport = await TransportNodeHid.open(device.path);
               const AdaConnection = new AppAda(transport);
               devicesMemo[device.path] = {
@@ -156,7 +78,7 @@ class EventObserver {
                 transport,
                 AdaConnection,
               };
-              getHardwareWalletConnectionChannel.send(
+              this.getHardwareWalletConnectionChannel.send(
                 {
                   disconnected: false,
                   deviceType: 'ledger',
@@ -167,19 +89,17 @@ class EventObserver {
                   deviceName: deviceModel.productName,
                   // e.g. Test Name
                   path: device.path,
-                }, // @ts-ignore
+                },
                 this.mainWindow
               );
             } catch (e) {
-              // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
               logger.info('[HW-DEBUG] CONSTRUCTOR error');
             }
           }
         } else {
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.info('[HW-DEBUG] CONSTRUCTOR REMOVE');
           devicesMemo = omit(devicesMemo, [device.path]);
-          getHardwareWalletConnectionChannel.send(
+          this.getHardwareWalletConnectionChannel.send(
             {
               disconnected: true,
               deviceType: 'ledger',
@@ -190,37 +110,46 @@ class EventObserver {
               deviceName: deviceModel.productName,
               // e.g. Test Name
               path: device.path,
-            }, // @ts-ignore
+            },
             this.mainWindow
           );
         }
 
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] CONSTRUCTOR Memo');
       } else {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] Ledger NEXT - connection NOT changed');
       }
     } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error(`[HW-DEBUG] Error on NEXT ${JSON.stringify(error)}`);
     }
   };
 
   error(e) {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] Ledger NEXT error');
     throw e;
   }
 
   complete() {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] Ledger NEXT complete');
   }
 }
 
 export const handleHardwareWalletRequests = async (
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
+  {
+    getHardwareWalletTransportChannel,
+    getExtendedPublicKeyChannel,
+    getCardanoAdaAppChannel,
+    getHardwareWalletConnectionChannel,
+    signTransactionLedgerChannel,
+    signTransactionTrezorChannel,
+    resetTrezorActionChannel,
+    handleInitTrezorConnectChannel,
+    handleInitLedgerConnectChannel,
+    deriveXpubChannel,
+    deriveAddressChannel,
+    showAddressChannel,
+  }: HardwareWalletChannels
 ) => {
   let deviceConnection = null;
   let observer;
@@ -469,21 +398,27 @@ export const handleHardwareWalletRequests = async (
       });
   });
   handleInitLedgerConnectChannel.onRequest(async () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('[HW-DEBUG] INIT LEDGER');
-    observer = new EventObserver(mainWindow);
+    observer = new EventObserver({
+      mainWindow: (mainWindow as unknown) as IpcSender,
+      getHardwareWalletConnectionChannel,
+    });
 
     try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] OBSERVER INIT');
-      TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
 
-      ledgerStatus.Listener = TransportNodeHid.listen(observer);
-      ledgerStatus.listening = true;
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+      const onAdd = (payload) => {
+        observer.next(payload);
+      };
+
+      const onRemove = (payload) => {
+        observer.next(payload);
+      };
+
+      listenDevices(onAdd, onRemove);
+
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] OBSERVER INIT FAILED');
       ledgerStatus.listening = false;
     }
