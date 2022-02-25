@@ -89,6 +89,9 @@ module.exports = {
     // Jest does not support WASM imports from ESM modules
     // https://github.com/facebook/jest/issues/9430
     '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
+    '^electron$': '<rootDir>/source/__tests-utils__/electron.ts',
+    '^electron-log-daedalus$':
+      '<rootDir>/source/__tests-utils__/electron-log-daedalus.ts',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -155,9 +158,10 @@ module.exports = {
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '<rootDir>/source/main/ipc/getHardwareWalletChannel.spec.ts',
+  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

@@ -12,7 +12,7 @@
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e:fail-fast",
-    "test:jest": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:jest": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:generate:report": "ts-node tests/reporter.ts",
     "test:unit": "yarn cucumber:run --require 'tests/**/unit/**/*.ts' --tags '@unit and not @skip and not @wip'",
     "test:unit:rerun": "yarn cucumber:rerun --require 'tests/**/unit/**/*.ts' --tags '@unit and not @skip and not @wip'",
@@ -122,6 +122,7 @@
     "electron-chromedriver": "16.0.0",
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "3.2.0",
+    "electron-mock-ipc": "0.3.12",
     "electron-packager": "15.4.0",
     "electron-rebuild": "2.0.1",
     "eslint": "7.10.0",
@@ -274,6 +275,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.2.4-extended",
     "unorm": "1.6.0",
+    "usb-detection": "4.13.0",
     "validator": "13.7.0"
   },
   "devEngines": {
