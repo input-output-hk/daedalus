@@ -9,33 +9,6 @@ source "$(dirname "$0")/utils.sh"
 
 CLUSTERS="$(xargs echo -n < "$(dirname "$0")"/../installer-clusters.cfg)"
 
-usage() {
-    test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }
-    cat >&2 <<EOF
-  Usage:
-    $0 OPTIONS*
-
-  Build a Daedalus installer.
-
-  Options:
-    --clusters "[CLUSTER-NAME...]"
-                              Build installers for CLUSTERS.  Defaults to "mainnet staging testnet"
-    --fast-impure             Fast, impure, incremental build
-    --build-id BUILD-NO       Identifier of the build; defaults to '0'
-
-    --nix-path NIX-PATH       NIX_PATH value
-
-    --upload-s3               Upload the installer to S3
-    --test-installer          Test the installer for installability
-
-    --verbose                 Verbose operation
-    --quiet                   Disable verbose operation
-
-EOF
-    test -z "$1" || exit 1
-}
-
-
 ###
 ### Argument processing
 ###
@@ -64,8 +37,8 @@ while test $# -ge 1
 do case "$1" in
            --clusters )                                     CLUSTERS="$2"; shift;;
            --fast-impure )                               export fast_impure=true;;
-           --build-id )       arg2nz "build identifier" "$2"; build_id="$2"; shift;;
-           --nix-path )       arg2nz "NIX_PATH value" "$2";
+           --build-id )       validate_arguments "build identifier" "$2"; build_id="$2"; shift;;
+           --nix-path )       validate_arguments "NIX_PATH value" "$2";
                                                      export NIX_PATH="$2"; shift;;
            --test-installer )                         test_installer="--test-installer";;
 
