@@ -156,6 +156,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-connecting-background-color8': 'rgba(54, 55, 77, 1)',
     '--theme-connecting-text-color': '#ffffff',
     '--theme-connecting-description-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-connecting-sync-progress-color': '#fff',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#ffffff',
@@ -683,10 +684,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
     '--rp-select-input-bg-color': 'transparent',
-    '--rp-select-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
-    '--rp-select-input-border-color-disabled': 'transparent',
     '--rp-select-input-text-color': '#ffffff',
     '--rp-select-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
   },

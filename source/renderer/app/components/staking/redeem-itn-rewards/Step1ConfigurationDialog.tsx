@@ -24,7 +24,6 @@ import {
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step1ConfigurationDialog.scs... Remove this comment to see the full error message
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -143,10 +142,6 @@ type Props = {
   wallets: Array<Wallet>;
 };
 
-type State = {
-  wasRecoveryPhraseValidAtLeastOnce: boolean;
-};
-
 interface FormFields {
   checkboxAcceptance1: string;
   checkboxAcceptance2: string;
@@ -155,7 +150,7 @@ interface FormFields {
 }
 
 @observer
-class Step1ConfigurationDialog extends Component<Props, State> {
+class Step1ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -163,11 +158,6 @@ class Step1ConfigurationDialog extends Component<Props, State> {
     error: null,
     recoveryPhrase: [],
   };
-
-  state = {
-    wasRecoveryPhraseValidAtLeastOnce: false,
-  };
-
   recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm<FormFields>(
     {
@@ -187,16 +177,6 @@ class Step1ConfigurationDialog extends Component<Props, State> {
                 this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
               ],
             }),
-          hooks: {
-            onChange: (field) => {
-              if (
-                this.state.wasRecoveryPhraseValidAtLeastOnce === false &&
-                field.isValid
-              ) {
-                this.setState({ wasRecoveryPhraseValidAtLeastOnce: true });
-              }
-            },
-          },
         },
         walletsDropdown: {
           type: 'select',
@@ -296,20 +276,16 @@ class Step1ConfigurationDialog extends Component<Props, State> {
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-    const walletsDropdownDisabled = !(
-      recoveryPhraseField.isValid ||
-      this.state.wasRecoveryPhraseValidAtLeastOnce
-    );
-    const buttonClasses = classnames([
-      'primary',
-      isCalculatingReedemFees ? styles.isSubmitting : null,
+    const validRecoveryPhase = recoveryPhraseField.isValid;
+    const walletsDropdownClasses = classnames([
+      styles.walletsDropdown,
+      !validRecoveryPhase ? styles.disabled : null,
     ]);
-
     const actions = {
       direction: 'column',
       items: [
         {
-          className: buttonClasses,
+          className: 'primary',
           disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
@@ -389,6 +365,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown
+              className={walletsDropdownClasses}
               {...walletsDropdownField.bind()}
               numberOfStakePools={4}
               wallets={wallets}
@@ -399,7 +376,6 @@ class Step1ConfigurationDialog extends Component<Props, State> {
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"
-              disabled={walletsDropdownDisabled}
             />
           </div>
           <Checkbox

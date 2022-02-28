@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DonutRing.scss' or its corre... Remove this comment to see the full error message
 import styles from './DonutRing.scss';
 
 type Props = {

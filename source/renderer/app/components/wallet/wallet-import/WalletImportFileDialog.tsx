@@ -10,7 +10,6 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { get } from 'lodash';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletImportFileDialog.scss'... Remove this comment to see the full error message
 import styles from './WalletImportFileDialog.scss';
 import RadioSet from '../../widgets/RadioSet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';

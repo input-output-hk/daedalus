@@ -63,7 +63,7 @@ export class DiscreetMode extends Feature {
     value,
   }: {
     replacer?: ReplacerFn;
-    value?: number | string;
+    value?: any;
   }) {
     return replacer(this.isDiscreetMode, SENSITIVE_DATA_SYMBOL, value);
   }

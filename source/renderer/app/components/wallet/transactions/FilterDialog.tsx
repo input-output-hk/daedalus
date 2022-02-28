@@ -32,7 +32,6 @@ import TinyInput from '../../widgets/forms/TinyInput';
 import TinyDatePicker from '../../widgets/forms/TinyDatePicker';
 import TinyButton from '../../widgets/forms/TinyButton';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FilterDialog.scss' or its co... Remove this comment to see the full error message
 import styles from './FilterDialog.scss';
 
 const messages = defineMessages({
@@ -386,12 +385,10 @@ class FilterDialog extends Component<Props> {
     const toDateLocaleClassName =
       locale === 'ja-JP' ? styles.japaneseToDateInput : null;
     const fromDateClassNames = classNames([
-      styles.dateRangeInput,
       styles.fromDateInput,
       fromDateLocaleClassName,
     ]);
     const toDateClassNames = classNames([
-      styles.dateRangeInput,
       styles.toDateInput,
       toDateLocaleClassName,
     ]);

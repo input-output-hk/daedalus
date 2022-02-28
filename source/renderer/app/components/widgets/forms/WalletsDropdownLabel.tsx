@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { getColorFromRange } from '../../../utils/colors';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletsDropdownLabel.scss' o... Remove this comment to see the full error message
 import styles from './WalletsDropdownLabel.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';

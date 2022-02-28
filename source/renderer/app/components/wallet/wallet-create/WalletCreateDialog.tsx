@@ -5,7 +5,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletCreateSteps from './WalletCreateSteps';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateDialog.scss' or ... Remove this comment to see the full error message
 import styles from './WalletCreateDialog.scss';
 import type { DialogActionItems } from '../../widgets/Dialog';
 
@@ -32,7 +31,6 @@ export default class WalletCreateDialog extends Component<Props> {
     const { actions, children, stepNumber, onClose } = this.props;
     return (
       <Dialog
-        className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick

@@ -7,7 +7,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RTSFlagsRecommendationOverla... Remove this comment to see the full error message
 import styles from './RTSFlagsRecommendationOverlay.scss';
 
 type Props = {

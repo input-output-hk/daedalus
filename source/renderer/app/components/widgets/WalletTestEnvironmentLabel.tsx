@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTestEnvironmentLabel.s... Remove this comment to see the full error message
 import styles from './WalletTestEnvironmentLabel.scss';
 import type { networkType } from '../../types/networkTypes';
 

@@ -7,8 +7,7 @@ import type {
   MetadataString,
   MetadataValue,
 } from '../../../../types/TransactionMetadata';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransactionMetadataView.scss... Remove this comment to see the full error message
-import styles from './TransactionMetadataView.scss';
+import './TransactionMetadataView.scss';
 
 /**
  * NOTE: These components are currently not used because we simply
@@ -30,7 +29,7 @@ function BytesView({ value }: { value: MetadataBytes }) {
 
 function ListView({ value }: { value: MetadataList }) {
   return (
-    <ol className={styles.list}>
+    <ol>
       {value.list.map((
         v,
         index // eslint-disable-next-line react/no-array-index-key
@@ -45,7 +44,7 @@ function ListView({ value }: { value: MetadataList }) {
 
 function MapView({ value }: { value: MetadataMap }) {
   return (
-    <ol className={styles.map}>
+    <ol>
       {value.map.map((
         v,
         index // eslint-disable-next-line react/no-array-index-key

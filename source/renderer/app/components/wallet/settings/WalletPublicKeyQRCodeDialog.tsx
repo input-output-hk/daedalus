@@ -9,7 +9,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PublicKeyQRCodeDialog.scss' ... Remove this comment to see the full error message
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
@@ -60,7 +59,7 @@ const WalletPublicKeyQRCodeDialog = observer((props: Props) => {
       className={styles.dialog}
       closeButton={<DialogCloseButton onClose={onClose} />}
     >
-      <div className={styles.walletPublicKeyQRCode}>
+      <div className={styles.walletPublicKeyQrCode}>
         <QRCode
           value={walletPublicKey}
           bgColor={qrCodeBackgroundColor}

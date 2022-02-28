@@ -1,5 +1,6 @@
 // Screens sets
 import './summary/WalletSummary.stories';
+import './summary/WalletSummaryHeader.stories';
 import './send/WalletSend.stories';
 import './receive/WalletReceive.stories';
 import './transactions/TransactionsList.stories';

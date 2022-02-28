@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsChoos... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsChooseWallet.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 

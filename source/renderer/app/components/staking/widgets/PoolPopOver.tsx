@@ -5,7 +5,6 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PoolPopOver.scss' or its cor... Remove this comment to see the full error message
 import styles from './PoolPopOver.scss';
 
 /**
