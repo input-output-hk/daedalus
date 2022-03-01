@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CancelTransactionConfirmatio... Remove this comment to see the full error message
 import styles from './CancelTransactionConfirmationDialog.scss';
 
 const messages = defineMessages({
@@ -59,7 +58,6 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
     const confirmButtonClasses = classnames([
       'confirmButton',
       'attention',
-      styles.confirmButton,
       isSubmitting ? styles.isSubmitting : null,
     ]);
     const actions = [

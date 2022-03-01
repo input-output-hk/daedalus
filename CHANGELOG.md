@@ -4,6 +4,35 @@
 
 ### Features
 
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
+
+### Chores
+
+- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
+- Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.0
+
+### Features
+
+- Added display of current/unspent rewards ([PR 2803](https://github.com/input-output-hk/daedalus/pull/2803))
+- Improve the syncing screen by showing syncing progress split into three stages ([PR 2877](https://github.com/input-output-hk/daedalus/pull/2877))
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+- Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+
+### Fixes
+
+- Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+- Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+
+### Chores
+
+- Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+
+## 4.9.0-FC1
+
+### Features
+
 - Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
 - Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
 - Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
@@ -17,7 +46,7 @@
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
-
+  
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
@@ -55,7 +84,6 @@
 
 ### Fixes
 
-- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2816](https://github.com/input-output-hk/daedalus/pull/2816/files))
 - Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
@@ -66,10 +94,12 @@
 
 ### Fixes
 
+- Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
 - Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
 
 ### Chores
 
+- Integrated Chromatic for visual regression testing ([PR 2776](https://github.com/input-output-hk/daedalus/pull/2776))
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 - Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))

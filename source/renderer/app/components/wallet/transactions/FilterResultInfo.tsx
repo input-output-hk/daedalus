@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FilterResultInfo.scss' or it... Remove this comment to see the full error message
 import styles from './FilterResultInfo.scss';
 
 const messages = defineMessages({

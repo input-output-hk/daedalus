@@ -7,7 +7,6 @@ import LogosDisplay from './LogosDisplay';
 import SyncingConnectingBackground from './SyncingConnectingBackground';
 import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnecting.scss' or i... Remove this comment to see the full error message
 import styles from './SyncingConnecting.scss';
 import type {
   CardanoNodeState,
@@ -20,12 +19,10 @@ let connectingInterval = null;
 type State = {
   connectingTime: number;
 };
-type Props = {
+
+export type Props = {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  blockSync: {
-    type: BlockSyncType;
-    progress: number;
-  };
+  blockSyncProgress: Record<BlockSyncType, number>;
   hasBeenConnected: boolean;
   forceConnectivityIssue?: boolean;
   isConnected: boolean;
@@ -170,7 +167,7 @@ class SyncingConnecting extends Component<Props, State> {
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
       isVerifyingBlockchain,
-      blockSync,
+      blockSyncProgress,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -211,7 +208,7 @@ class SyncingConnecting extends Component<Props, State> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isVerifyingBlockchain={isVerifyingBlockchain}
-          blockSync={blockSync}
+          blockSyncProgress={blockSyncProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

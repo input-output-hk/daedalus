@@ -3,9 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import Notification from '../../components/notifications/Notification';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/success-sm... Remove this comment to see the full error message
 import successIcon from '../../assets/images/success-small.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/spinner-da... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import type {
   NotificationConfig,

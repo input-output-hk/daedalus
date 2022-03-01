@@ -164,6 +164,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-connecting-background-color8': 'rgba(38, 51, 69, 1)',
     '--theme-connecting-text-color': '#fff',
     '--theme-connecting-description-color': 'rgba(233, 244, 254, 0.7)',
+    '--theme-connecting-sync-progress-color': '#e9f4fe',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#e9f4fe',
@@ -701,10 +702,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(233, 244, 254, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(233, 244, 254, 1)',
     '--rp-select-input-bg-color': 'transparent',
-    '--rp-select-input-bg-color-disabled': 'rgba(233, 244, 254, 0.05)',
     '--rp-select-input-border-color': 'rgba(233, 244, 254, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(233, 244, 254, 0.7)',
-    '--rp-select-input-border-color-disabled': 'transparent',
     '--rp-select-input-text-color': 'rgba(233, 244, 254, 1)',
     '--rp-select-input-placeholder-color': 'rgba(233, 244, 254, 0.5)',
   },

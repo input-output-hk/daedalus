@@ -8,11 +8,9 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Asset from './Asset';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetSettingsDialog.scss' or... Remove this comment to see the full error message
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
@@ -202,7 +200,6 @@ class AssetSettingsDialog extends Component<Props, State> {
           <Select
             options={options}
             value={decimals}
-            className={styles.decimalsDropdown}
             label={
               <span className={styles.decimalsDropdownLabel}>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}

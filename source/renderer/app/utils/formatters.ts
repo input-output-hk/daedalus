@@ -19,11 +19,12 @@ export const formattedWalletAmount = (
   amount: BigNumber,
   withCurrency = true,
   long = true,
-  currency = 'ADA'
+  currency = 'ADA',
+  decimalPlaces: number = DECIMAL_PLACES_IN_ADA
 ): string => {
   let formattedAmount = long
-    ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
-    : shortNumber(amount);
+    ? new BigNumber(amount).toFormat(decimalPlaces)
+    : shortNumber(amount, decimalPlaces);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   const { decimalSeparator } = BigNumber.config().FORMAT;
 
@@ -114,7 +115,10 @@ export const formattedTokenDecimals = (
 // B        Billion             1.00E+09
 // T        Trillion            1.00E+12
 // Q        Quadrillion         1.00E+15
-export const shortNumber = (value: number | BigNumber): string => {
+export const shortNumber = (
+  value: number | BigNumber,
+  decimalPlaces: number = DECIMAL_PLACES_IN_ADA
+): string => {
   const amount = new BigNumber(value);
   let formattedAmount = '';
 
@@ -122,7 +126,7 @@ export const shortNumber = (value: number | BigNumber): string => {
     formattedAmount = '0';
   } else if (amount.isLessThan(1000)) {
     formattedAmount = `${amount.decimalPlaces(
-      DECIMAL_PLACES_IN_ADA,
+      decimalPlaces,
       BigNumber.ROUND_DOWN
     )}`;
   } else if (amount.isLessThan(1000000)) {

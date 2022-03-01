@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRestoreSteps.scss' or ... Remove this comment to see the full error message
 import styles from './WalletRestoreSteps.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { RestoreWalletStep } from '../../../../types/walletRestoreTypes';

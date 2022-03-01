@@ -14,10 +14,14 @@
 }
 
 .walletContent {
-  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.currency {
+  min-width: 187px;
+  padding-top: 6px;
 }
 
 .walletName {
@@ -41,27 +45,27 @@
 
   .currencyCode {
     font-size: 16px;
-    font-size: 16px;
     margin-left: 6px;
     opacity: 0.7;
   }
 }
 
+.rewards {
+  @extend %smallText;
+  height: auto;
+}
+
+.rewardsAmount {
+  font-family: var(--font-medium);
+}
+
 .transactionsCountWrapper {
-  .numberOfTransactions,
-  .numberOfPendingTransactions {
+  .numberOfTransactions {
     @extend %smallText;
-
-    span:first-child {
+    font-family: var(--font-light);
+    span {
       font-family: var(--font-medium);
-      opacity: 0.7;
     }
-
-    span:last-child {
-      font-family: var(--font-light);
-      opacity: 1;
-    }
-
     &.isLoadingNumberOfTransactions {
       @include animated-ellipsis($width: 16px);
     }
