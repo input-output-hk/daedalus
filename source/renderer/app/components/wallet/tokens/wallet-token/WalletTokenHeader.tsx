@@ -13,7 +13,6 @@ import arrow from '../../../../assets/images/collapse-arrow-small.inline.svg';
 import starNotFilledIcon from '../../../../assets/images/star-not-filled.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/star... Remove this comment to see the full error message
 import starFilledIcon from '../../../../assets/images/star-filled.inline.svg';
-import { isRecommendedDecimal } from './helpers';
 
 type Props = {
   anyAssetWasHovered: boolean;
@@ -24,6 +23,7 @@ type Props = {
   isExpanded: boolean;
   isFavorite: boolean;
   isLoading: boolean;
+  hasWarning: boolean;
   onClick: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
   onToggleFavorite?: (...args: Array<any>) => any;
@@ -39,16 +39,14 @@ const WalletTokenHeader = (props: Props) => {
     isExpanded,
     isFavorite,
     isLoading,
+    hasWarning,
     onClick,
     onCopyAssetParam,
     onToggleFavorite,
   } = props;
-  const { decimals, uniqueId, recommendedDecimals } = asset;
+  const { uniqueId } = asset;
   const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
-  const hasWarning = isRecommendedDecimal({
-    decimals,
-    recommendedDecimals,
-  });
+
   const rootStyles = classNames(
     styles.root,
     isExpanded && styles.isExpanded,
@@ -58,6 +56,7 @@ const WalletTokenHeader = (props: Props) => {
     styles.favoriteIcon,
     isFavorite && styles.isFavorite
   );
+
   return (
     <div className={rootStyles} onClick={onClick}>
       {onToggleFavorite && (

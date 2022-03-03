@@ -6,6 +6,7 @@ import AssetContent from '../../../assets/AssetContent';
 import type { AssetToken } from '../../../../api/assets/types';
 import WalletTokenFooter from './WalletTokenFooter';
 import WalletTokenHeader from './WalletTokenHeader';
+import { isRecommendedDecimal } from './helpers';
 
 type Props = {
   anyAssetWasHovered: boolean;
@@ -43,9 +44,16 @@ const WalletToken = observer((props: Props) => {
     isRemovingAsset,
   } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
   const toggleIsExpanded = useCallback(() => {
     setIsExpanded(!isExpanded);
   }, [setIsExpanded, isExpanded]);
+
+  const hasWarning = isRecommendedDecimal({
+    decimals: asset.decimals,
+    recommendedDecimals: asset.recommendedDecimals,
+  });
+
   const componentStyles = useMemo(
     () =>
       classNames(
@@ -71,6 +79,7 @@ const WalletToken = observer((props: Props) => {
         onCopyAssetParam={onCopyAssetParam}
         onToggleFavorite={onToggleFavorite}
         assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+        hasWarning={hasWarning}
       />
       <div className={styles.content}>
         <AssetContent
@@ -84,6 +93,7 @@ const WalletToken = observer((props: Props) => {
           isLoading={isLoading}
           onAssetSettings={onAssetSettings}
           onOpenAssetSend={onOpenAssetSend}
+          hasWarning={hasWarning}
         />
       </div>
     </div>

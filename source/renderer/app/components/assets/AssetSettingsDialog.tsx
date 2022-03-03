@@ -17,6 +17,7 @@ import {
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
+import { isRecommendedDecimal } from '../wallet/tokens/wallet-token/helpers';
 
 const messages = defineMessages({
   title: {
@@ -135,7 +136,6 @@ class AssetSettingsDialog extends Component<Props, State> {
     const { decimals: savedDecimals, recommendedDecimals } = asset;
     const { decimals } = this.state;
     const hasSavedDecimals = typeof savedDecimals === 'number';
-    const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
     }));
@@ -153,8 +153,12 @@ class AssetSettingsDialog extends Component<Props, State> {
         onClick: () => onSubmit(asset, decimals),
       },
     ];
-    const hasWarning =
-      hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
+
+    const hasWarning = isRecommendedDecimal({
+      recommendedDecimals,
+      decimals: savedDecimals,
+    });
+
     let warningPopOverMessage;
 
     if (hasWarning) {
@@ -209,10 +213,12 @@ class AssetSettingsDialog extends Component<Props, State> {
                       recommendedDecimals,
                     })}
                   >
-                    <SVGInline
-                      className={styles.warningIcon}
-                      svg={warningIcon}
-                    />
+                    <span data-testid="warning-icon">
+                      <SVGInline
+                        className={styles.warningIcon}
+                        svg={warningIcon}
+                      />
+                    </span>
                   </PopOver>
                 )}
               </span>
