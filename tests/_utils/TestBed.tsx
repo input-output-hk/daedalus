@@ -1,15 +1,22 @@
 import React, { ReactElement } from 'react';
 import { IntlProvider } from 'react-intl';
-import { Provider as MobxProvider } from 'mobx-react';
 import { render } from "@testing-library/react";
+import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
+import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 
 import { BrowserLocalStorageBridge, DiscreetModeFeatureProvider } from '../../source/renderer/app/features';
 import translations from '../../source/renderer/app/i18n/locales/en-US.json';
-import StoryDecorator from '../../storybook/stories/_support/StoryDecorator';
+import { daedalusTheme } from '../../source/renderer/app/themes/daedalus';
+import { themeOverrides } from '../../source/renderer/app/themes/overrides';
 
-const TestBed = ({ children }: { children: React.ReactNode }) => (
-    <StoryDecorator>
-        <MobxProvider>
+const TestBed = ({ children }: { children: ReactElement }) => (
+    <ThemeProvider
+        theme={daedalusTheme}
+        skins={SimpleSkins}
+        variables={SimpleDefaults}
+        themeOverrides={themeOverrides}
+      >
             <IntlProvider locale="en-US" messages={translations}>
                 <BrowserLocalStorageBridge>
                     <DiscreetModeFeatureProvider>
@@ -17,8 +24,7 @@ const TestBed = ({ children }: { children: React.ReactNode }) => (
                     </DiscreetModeFeatureProvider>
                 </BrowserLocalStorageBridge>
             </IntlProvider>
-        </MobxProvider>
-    </StoryDecorator>
+    </ThemeProvider>
 );
 
 const createTestBed = (component: ReactElement) => {
