@@ -1,6 +1,5 @@
 import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
-import { noop } from 'lodash';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { select, withKnobs } from '@storybook/addon-knobs';
@@ -112,5 +111,8 @@ storiesOf('News|Overlays', module)
     />
   ))
   .add('RTS Recommendation', () => (
-    <RTSFlagsRecommendationOverlay onConfirm={noop} onClose={noop} />
+    <RTSFlagsRecommendationOverlay
+      onConfirm={action('onConfirm')}
+      onClose={action('onClose')}
+    />
   ));
