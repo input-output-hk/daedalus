@@ -181,7 +181,8 @@ class Asset extends Component<Props, State> {
       assetName,
     } = asset;
     const hasName = !!metadata?.name;
-    const name = metadata?.name || `ASCII: ${hexToString(assetName)}`;
+    const name =
+      metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`);
     const displayName = metadataNameChars
       ? ellipsis(name, metadataNameChars)
       : name;
@@ -208,6 +209,7 @@ class Asset extends Component<Props, State> {
         </div>
         {displayName && (
           <div
+            data-testid="assetName"
             className={classnames(
               styles.metadataName,
               !hasName && styles.ascii
