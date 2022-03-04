@@ -700,7 +700,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(94, 96, 102, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(94, 96, 102, 0.7)',
     '--rp-select-input-bg-color': 'transparent',
-    '--rp-select-input-bg-color-disabled': 'rgba(45, 45, 45, 0.05)',
+    '--rp-select-input-bg-color-disabled': 'rgba(255, 255, 255, 0.05)',
     '--rp-select-input-border-color': 'rgba(94, 96, 102, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(94, 96, 102, 0.7)',
     '--rp-select-input-border-color-disabled': 'transparent',
