@@ -158,7 +158,7 @@ yarn2nix.mkYarnPackage {
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
-    yarn rebuild usb-detection
+    yarn --offline rebuild usb-detection
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
