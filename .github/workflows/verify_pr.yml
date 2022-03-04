@@ -1,0 +1,26 @@
+name: Verify Pull Request
+on:
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Restore node_modules from cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Run checks
+        run: yarn check:all
+      - name: Ensure there are no uncommited changes
+        run: git diff --exit-code || (echo "Did you forget to run 'yarn check:all' and commit changes?" && exit 1)
+      - name: Run tests
+        run: yarn test:jest --maxWorkers=3
