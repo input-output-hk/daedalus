@@ -157,7 +157,8 @@ yarn2nix.mkYarnPackage {
     dup usb-detection
 
     # We ship debug version because the release one has issues with ledger nano s
-    node_modules/.bin/electron-rebuild -w usb,usb-detection --useCache -s --debug
+    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
+    yarn rebuild usb-detection
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
@@ -174,7 +175,7 @@ yarn2nix.mkYarnPackage {
     mkdir -pv $out/share/daedalus/build
     cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
     cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
-    cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/build/detection.node
+    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node $out/share/daedalus/build/detection.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
