@@ -149,6 +149,7 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 # Sign native electron bindings and supplementary binaries
 sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/detection.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*"/keccak.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
@@ -301,7 +302,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
     ) externalYarn
   mktree ((fromText pathtoapp) </> "Contents/Resources/app/build")
-  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node") ]
+  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node"), ("usb-detection/build/Release", "detection.node") ]
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
@@ -361,8 +362,12 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         sortaMove filename = do
           mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
           symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
-      mapM_ sortaMove [ "usb_bindings.node" ]
+      mapM_ sortaMove [ "usb_bindings.node" "detection.node" ]
       void $ chain (encodeString dir) [ tt $ dir </> "usb_bindings.node" ]
+      void $ chain (encodeString dir) [ tt $ dir </> "detection.node" ]
+      --
+      -- TODO: why is it duplicated??? and above? – a TODO for @michalrus
+      --
       let
         sortaMove :: FilePath -> IO ()
         sortaMove filename = do
