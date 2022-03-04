@@ -362,7 +362,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         sortaMove filename = do
           mv (appRoot </> "Contents/Resources/app/build" </> filename) (dir</>filename)
           symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
-      mapM_ sortaMove [ "usb_bindings.node" "detection.node" ]
+      mapM_ sortaMove [ "usb_bindings.node", "detection.node" ]
       void $ chain (encodeString dir) [ tt $ dir </> "usb_bindings.node" ]
       void $ chain (encodeString dir) [ tt $ dir </> "detection.node" ]
       --
