@@ -319,8 +319,6 @@ let
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
-      runTsc = self.callPackage ./tests/tsc.nix {};
-      runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
     nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
