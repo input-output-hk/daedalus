@@ -65,6 +65,7 @@
     "create-news-verification-hashes": "ts-node utils/create-news-verification-hashes/index.ts",
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
     "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
+    "postinstall": "./scripts/postinstall.sh",
     "typedef:sass": "typed-scss-modules source/renderer/app"
   },
   "bin": {
