@@ -142,6 +142,10 @@ type Props = {
   wallets: Array<Wallet>;
 };
 
+type State = {
+  wasRecoveryPhraseValidAtLeastOnce: boolean;
+};
+
 interface FormFields {
   checkboxAcceptance1: string;
   checkboxAcceptance2: string;
@@ -150,7 +154,7 @@ interface FormFields {
 }
 
 @observer
-class Step1ConfigurationDialog extends Component<Props> {
+class Step1ConfigurationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -158,6 +162,11 @@ class Step1ConfigurationDialog extends Component<Props> {
     error: null,
     recoveryPhrase: [],
   };
+
+  state = {
+    wasRecoveryPhraseValidAtLeastOnce: false,
+  };
+
   recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm<FormFields>(
     {
@@ -177,6 +186,16 @@ class Step1ConfigurationDialog extends Component<Props> {
                 this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
               ],
             }),
+          hooks: {
+            onChange: (field) => {
+              if (
+                this.state.wasRecoveryPhraseValidAtLeastOnce === false &&
+                field.isValid
+              ) {
+                this.setState({ wasRecoveryPhraseValidAtLeastOnce: true });
+              }
+            },
+          },
         },
         walletsDropdown: {
           type: 'select',
@@ -276,11 +295,11 @@ class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-    const validRecoveryPhase = recoveryPhraseField.isValid;
-    const walletsDropdownClasses = classnames([
-      styles.walletsDropdown,
-      !validRecoveryPhase ? styles.disabled : null,
-    ]);
+    const walletsDropdownDisabled = !(
+      recoveryPhraseField.isValid ||
+      this.state.wasRecoveryPhraseValidAtLeastOnce
+    );
+
     const actions = {
       direction: 'column',
       items: [
@@ -365,7 +384,6 @@ class Step1ConfigurationDialog extends Component<Props> {
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown
-              className={walletsDropdownClasses}
               {...walletsDropdownField.bind()}
               numberOfStakePools={4}
               wallets={wallets}
@@ -376,6 +394,7 @@ class Step1ConfigurationDialog extends Component<Props> {
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"
+              disabled={walletsDropdownDisabled}
             />
           </div>
           <Checkbox
