@@ -6,6 +6,10 @@
 
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
+### Fixes
+
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
+
 ### Chores
 
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
@@ -84,7 +88,6 @@
 
 ### Fixes
 
-- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2816](https://github.com/input-output-hk/daedalus/pull/2816/files))
 - Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
 
 ## 4.7.0
