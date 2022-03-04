@@ -640,7 +640,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-input-bg-color': '#ffffff',
     '--rp-input-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
     '--rp-input-border-color': 'rgba(94, 96, 102, 0.3)',
-    '--rp-input-border-color-disabled': 'rgba(94, 96, 102, 0.05)',
+    '--rp-input-border-color-disabled': 'transparent',
     '--rp-input-border-color-errored': '#ea4c5b',
     '--rp-input-border-color-focus': 'rgba(94, 96, 102, 0.7)',
     '--rp-input-line-height': '22px',
