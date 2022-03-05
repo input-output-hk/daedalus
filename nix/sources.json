@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "refs/tags/1.29.0-rc2",
+        "branch": "tags/1.33.0",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "cc78734d263d0eec2b12070380cdfea02a5a8342",
-        "sha256": "1bqrbgc11c4x5mrcm7shyvfs05fqi4v1pr4y9pw2aprab277czjr",
+        "rev": "814df2c146f5d56f8c35a681fe75e85b905aed5d",
+        "sha256": "1hr00wqzmcyc3x0kp2hyw78rfmimf6z4zd4vv85b9zv3nqbjgrik",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/cc78734d263d0eec2b12070380cdfea02a5a8342.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/814df2c146f5d56f8c35a681fe75e85b905aed5d.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "anviking/ADP-1081/node-alonzo-rc",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "dac16ba7e3bf64bf5474497656932fd342c3b720",
-        "sha256": "012lnp5rah4qyl8r0v04d0rz28b1rdaz6flhjrahf45b9gx7mny1",
+        "rev": "a5085acbd2670c24251cf8d76a4e83c77a2679ba",
+        "sha256": "1apzfy7qdgf6l0lb3icqz3rvaq2w3a53xq6wvhqnbfi8i7cacy03",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/dac16ba7e3bf64bf5474497656932fd342c3b720.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a5085acbd2670c24251cf8d76a4e83c77a2679ba.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {

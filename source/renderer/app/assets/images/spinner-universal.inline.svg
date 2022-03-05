@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="loading-progress-steps" transform="translate(-56.000000, -456.000000)" fill-rule="nonzero">
+            <g id="Group" transform="translate(56.000000, 288.000000)">
+                <g id="spinner" transform="translate(0.000000, 168.000000)">
+                    <path d="M28,16 C34.627417,16 40,21.372583 40,28 C40,31.1047483 38.812963,34.0262096 36.7296274,36.2337622 L36.4852814,36.4852814 L33.6568542,33.6568542 C35.1487603,32.1649482 36,30.1523915 36,28 C36,23.581722 32.418278,20 28,20 C25.9501034,20 24.0270409,20.7720995 22.5597759,22.1343973 L22.3431458,22.3431458 L19.5147186,19.5147186 C21.7493338,17.2801035 24.7758383,16 28,16 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

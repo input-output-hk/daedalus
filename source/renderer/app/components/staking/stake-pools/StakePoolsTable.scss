@@ -113,7 +113,7 @@
         justify-content: space-between;
         width: 100%;
 
-        .tooltipWithHTMLContent {
+        .tooltipWithHtmlContent {
           p {
             -webkit-box-orient: horizontal;
             display: block;
@@ -227,6 +227,7 @@
 
       .ticker {
         color: var(--theme-staking-stake-pool-tooltip-link-color);
+        text-transform: uppercase;
       }
 
       &:nth-child(2) {
