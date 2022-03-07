@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 4.9.0
 
 ### Features
 
@@ -28,6 +28,7 @@
 
 - Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
 - Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+- Fixed the gap between Stake Pool View options ([PR 2899](https://github.com/input-output-hk/daedalus/pull/2899))
 
 ### Chores
 
