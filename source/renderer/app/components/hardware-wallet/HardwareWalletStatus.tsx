@@ -46,6 +46,13 @@ const messages = defineMessages({
     defaultMessage: '!!!Exporting the public key failed',
     description: '"Exporting public key failed" device state',
   },
+  incorrect_passphrase_provided: {
+    id: 'wallet.hardware.deviceStatus.incorrect_passphrase_provided',
+    defaultMessage:
+      '!!!The passphrase you have entered does not match the paired wallet',
+    description:
+      '"Message displayed when user connects different wallet than the current one',
+  },
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
@@ -160,12 +167,54 @@ const messages = defineMessages({
     description: '"Address verified" device state',
   },
 });
+
+const hwDeviceLoadingStatuses = [
+  HwDeviceStatuses.CONNECTING,
+  HwDeviceStatuses.LAUNCHING_CARDANO_APP,
+  HwDeviceStatuses.EXPORTING_PUBLIC_KEY,
+  HwDeviceStatuses.VERIFYING_TRANSACTION,
+  HwDeviceStatuses.VERIFYING_ADDRESS,
+  HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION,
+];
+
+const hwDeviceReadyStatuses = [
+  HwDeviceStatuses.READY,
+  HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED,
+  HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
+];
+
+const hwDeviceErrorStatuses = [
+  HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED,
+  HwDeviceStatuses.INCORRECT_PASSPHRASE_PROVIDED,
+  HwDeviceStatuses.CONNECTING_FAILED,
+  HwDeviceStatuses.TREZOR_BRIDGE_FAILURE,
+  HwDeviceStatuses.WRONG_FIRMWARE,
+  HwDeviceStatuses.WRONG_CARDANO_APP_VERSION,
+  HwDeviceStatuses.UNSUPPORTED_DEVICE,
+  HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED,
+  HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
+  HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED,
+];
+
+const hwDevicePassphraseRelatedStatuses = [
+  HwDeviceStatuses.EXPORTING_PUBLIC_KEY,
+  HwDeviceStatuses.VERIFYING_TRANSACTION,
+  HwDeviceStatuses.VERIFYING_ADDRESS,
+];
+
+const hwDeviceInstructionsLinkRelatedStatuses = [
+  HwDeviceStatuses.TREZOR_BRIDGE_FAILURE,
+  HwDeviceStatuses.WRONG_CARDANO_APP_VERSION,
+  HwDeviceStatuses.WRONG_FIRMWARE,
+];
+
 type Props = {
   hwDeviceStatus: HwDeviceStatus;
   onExternalLinkClick?: (...args: Array<any>) => any;
   walletName?: string;
   isTrezor: boolean;
 };
+
 type State = {
   hwDeviceStatus: HwDeviceStatus;
 };
@@ -190,12 +239,14 @@ class HardwareWalletStatus extends Component<Props, State> {
         setTimeout(() => {
           // Status remains unchanged in 1.5s - set as new status
           if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
+            console.log('HW status', nextProps.hwDeviceStatus);
             this.setState({
               hwDeviceStatus: nextProps.hwDeviceStatus,
             });
           }
         }, 4000);
       } else {
+        console.log('HW status', nextProps.hwDeviceStatus);
         this.setState({
           hwDeviceStatus: nextProps.hwDeviceStatus,
         });
@@ -207,40 +258,21 @@ class HardwareWalletStatus extends Component<Props, State> {
     const { intl } = this.context;
     const { onExternalLinkClick, walletName, isTrezor } = this.props;
     const { hwDeviceStatus } = this.state;
-    const isLoading =
-      hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
-      hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP ||
-      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
-    const isReady =
-      hwDeviceStatus === HwDeviceStatuses.READY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
-    const hasErrored =
-      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
-      hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE ||
-      hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
-      hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
-    const hasPassphraseLabel =
-      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS;
-    const componentClasses = classnames([
-      styles.component,
-      isReady ? styles.isReady : null,
-      hasErrored ? styles.isError : null,
-    ]);
-    const hasInstructionsLink =
-      hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
-      hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
-      hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
+    const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
+    const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
+    const hasErrored = hwDeviceErrorStatuses.includes(hwDeviceStatus);
+    const hasPassphraseLabel = hwDevicePassphraseRelatedStatuses.includes(
+      hwDeviceStatus
+    );
+    const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
+      hwDeviceStatus
+    );
+
+    const componentClasses = classnames(styles.component, {
+      [styles.isReady]: isReady,
+      [styles.isError]: hasErrored,
+    });
+
     let instructionsLink;
     let label;
 
