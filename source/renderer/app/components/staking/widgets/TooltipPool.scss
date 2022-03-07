@@ -230,11 +230,11 @@ $tooltip-width: 280px;
 .ticker {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   display: inline-block;
-  font-size: 14px;
   line-height: 1.36;
   margin-bottom: 9px;
   opacity: 0.6;
   vertical-align: middle;
+  @extend %stakePoolTicker;
 }
 
 .retirement {
