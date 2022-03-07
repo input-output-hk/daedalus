@@ -8,13 +8,15 @@
 
 Daedalus - Cryptocurrency Wallet
 
-## Installation
+## Setup development environment
 
-### Yarn
+### Linux/macOS
+
+#### Yarn
 
 [Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install `npm` dependencies to build Daedalus.
 
-### Nix
+#### Nix
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
@@ -57,11 +59,9 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
    ```
 2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
-## Development
+#### Running Daedalus with Cardano Node
 
-### Running Daedalus with Cardano Node
-
-#### Selfnode
+##### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
@@ -90,37 +90,37 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 | desiredPoolNumber | 3
 | minimumUtxoValue | 1 ADA
 
-#### Mainnet
+##### Mainnet
 
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Flight
+##### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Testnet
+##### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Staging
+##### Staging
 
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Shelley QA
+##### Shelley QA
 
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Alonzo Purple
+##### Alonzo Purple
 
 1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Native token metadata server
+##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
 
@@ -151,7 +151,28 @@ http://localhost:65432/metadata/query
 ```
 ... and expect a "200 OK" response.
 
-### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
+### Windows
+
+This Option is only for troubleshoot windows specific Issues with hardware wallets. It is not recommended to use Windows as a developer environment.
+Most of the commands need `nix` and will run on Linux or macOS.
+
+#### Requisites
+- Windows 10/11
+- Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
+- NodeJS 16
+- Python2 *
+- `yarn global add windows-build-tools` *
+- Microsoft Build Tools 2015 *
+- Microsoft Visual Studio 2017 (Include Desktop development with C++) *
+- `yarn config set msvsversion 2015 --global`
+
+*needed for node-sass@4.14.1
+
+#### Steps
+- `yarn install`
+- `yarn dev:windows`
+
+#### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
