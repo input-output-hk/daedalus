@@ -43,7 +43,7 @@ function getProgressType(line: string): GetBlockSyncProgressType | null {
 
 const applicationStartDate = moment.utc();
 
-export const handleCheckBlockReplayProgress = async (
+export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string
 ) => {
