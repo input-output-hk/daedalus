@@ -1,4 +1,6 @@
 import { BrowserWindow } from 'electron';
+import moment from 'moment';
+import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { identifyUSBProductId } from '@ledgerhq/devices';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
@@ -31,11 +33,6 @@ export const ledgerStatus: ledgerStatusType = {
   Listener: null,
 };
 
-const getTransportNodeHid = async () => {
-  const module = await import('@ledgerhq/hw-transport-node-hid');
-  return module.default.default;
-};
-
 let devicesMemo = {};
 
 class EventObserver {
@@ -55,7 +52,6 @@ class EventObserver {
 
   next = async (event) => {
     try {
-      const TransportNodeHid = await getTransportNodeHid();
       const transportList = await TransportNodeHid.list();
       const connectionChanged = event.type === 'add' || event.type === 'remove';
       logger.info(
@@ -158,8 +154,6 @@ export const handleHardwareWalletRequests = async (
 ) => {
   let deviceConnection = null;
   let observer;
-
-  const TransportNodeHid = await getTransportNodeHid();
 
   const resetTrezorListeners = () => {
     // Remove all listeners if exist - e.g. on app refresh

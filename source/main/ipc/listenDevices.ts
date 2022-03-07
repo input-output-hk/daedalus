@@ -2,7 +2,7 @@ import usbDetect from 'usb-detection';
 import { ledgerUSBVendorId, identifyUSBProductId } from '@ledgerhq/devices';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 
-import { log } from '@ledgerhq/logs';
+import { log, listen } from '@ledgerhq/logs';
 import debounce from 'lodash/debounce';
 
 export type Device = {
@@ -19,6 +19,8 @@ export type Device = {
   usagePage: number;
   usage: number;
 };
+
+// listen(console.log);
 
 const deviceToLog = ({ productId, locationId, deviceAddress }) =>
   `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
@@ -87,6 +89,8 @@ export const listenDevices = (
     }
   });
 
+  let timeout;
+
   const poll = () => {
     log('hid-listen', 'Polling for added or removed devices');
 
@@ -94,10 +98,18 @@ export const listenDevices = (
     const currentDevices = getFlatDevices();
     const newDevices = currentDevices.filter((d) => !lastDevices.includes(d));
 
+    console.log('currentDevices', currentDevices);
+    console.log('newDevices', newDevices);
+
     if (newDevices.length > 0) {
       log('hid-listen', 'New device found:', newDevices);
 
       listDevices = getDevices();
+      console.log('listDevices', listDevices);
+      console.log(
+        'newDevices::getDeviceByPaths(newDevices)',
+        getDeviceByPaths(newDevices)
+      );
       onAdd(getPayloadData('add', getDeviceByPaths(newDevices)));
 
       changeFound = true;
@@ -111,6 +123,11 @@ export const listenDevices = (
 
     if (removeDevices.length > 0) {
       log('hid-listen', 'Removed device found:', removeDevices);
+      console.log('removeDevices', removeDevices);
+      console.log(
+        'removeDevices::getDeviceByPaths(removeDevices)',
+        getDeviceByPaths(removeDevices)
+      );
 
       onRemove(getPayloadData('remove', getDeviceByPaths(removeDevices)));
       listDevices = listDevices.filter(
@@ -132,15 +149,30 @@ export const listenDevices = (
   const add = (device) => {
     log('usb-detection', `add: ${deviceToLog(device)}`);
 
-    debouncedPoll();
+    if (!timeout) {
+      // a time is needed for the device to actually be connectable over HID..
+      // we also take this time to not emit the device yet and potentially cancel it if a remove happens.
+      timeout = setTimeout(() => {
+        debouncedPoll();
+        timeout = null;
+      }, usbDebounce);
+    }
   };
 
   const remove = (device) => {
+    console.log('REMOVE ******************');
     log('usb-detection', `remove: ${deviceToLog(device)}`);
 
-    debouncedPoll();
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    } else {
+      debouncedPoll();
+    }
   };
 
   usbDetect.on(addEvent, add);
   usbDetect.on(removeEvent, remove);
+
+  // setInterval(poll, 1000);
 };
