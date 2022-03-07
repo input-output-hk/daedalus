@@ -50,7 +50,7 @@
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
-  
+
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
@@ -236,7 +236,6 @@
 - Updated `cardano-wallet` to version `2021-08-11` which includes `cardano-node` alonzo-purple-1.0.1 ([PR 2641](https://github.com/input-output-hk/daedalus/pull/2641))
 - Updated `cardano-wallet` to version `2021-07-30` which includes `cardano-node` 1.28.0 ([PR 2635](https://github.com/input-output-hk/daedalus/pull/2635), [PR 2638](https://github.com/input-output-hk/daedalus/pull/2638))
 - Removed "Decentralization countdown" tada icon and info tab ([PR 2625](https://github.com/input-output-hk/daedalus/pull/2625))
-- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 
 ## 4.2.1
 

@@ -34,8 +34,8 @@ if (!isStartedByLauncher) {
 
   try {
     // app may not be available at this moment so we need to use try-catch
-    //dialog.showErrorBox(dialogTitle, dialogMessage);
-    //app.exit(1);
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
   } catch (e) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
