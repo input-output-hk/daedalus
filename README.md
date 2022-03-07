@@ -153,8 +153,8 @@ http://localhost:65432/metadata/query
 
 ### Windows
 
-This Option is only for troubleshoot windows specific Issues with hardware wallets. It is not recommended to use Windows as a developer environment.
-Most of the commands need `nix` and will run on Linux or macOS.
+This option is only for troubleshooting windows specific issues with hardware wallets. It is not recommended to use Windows as a developer environment.
+Most of the commands need `nix` and will run only on Linux or macOS.
 
 #### Requisites
 - Windows 10/11
@@ -166,7 +166,7 @@ Most of the commands need `nix` and will run on Linux or macOS.
 - Microsoft Visual Studio 2017 (Include Desktop development with C++) *
 - `yarn config set msvsversion 2015 --global`
 
-*needed for node-sass@4.14.1
+*needed for compiling node-sass@4.14.1 on Windows
 
 #### Steps
 - `yarn install`
