@@ -36,7 +36,6 @@ class Settings extends Component<InjectedContainerProps> {
     const { isSynced } = networkStatus;
     const { currentRoute } = app;
     const { location } = router;
-
     const menu = (
       <SettingsMenu
         isSyncing={!isSynced}
