@@ -4,13 +4,13 @@ import React from 'react';
 import noop from 'lodash/noop';
 import { cleanup, screen, waitFor } from '@testing-library/react';
 
-import WalletToken from './WalletToken';
-
-import createTestBed from '../../../../../../../tests/_utils/TestBed';
+import createTestBed from 'tests/_utils/TestBed';
 import {
   withDecimalPlacesToken,
   zeroDecimalPlacesToken,
-} from '../../../../../../../tests/mocks/asset';
+} from 'tests/mocks/asset';
+
+import WalletToken from './WalletToken';
 
 const DEFAULT_WALLET_PROPS = {
   isFavorite: false,

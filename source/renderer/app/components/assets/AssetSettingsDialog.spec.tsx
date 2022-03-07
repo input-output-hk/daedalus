@@ -4,13 +4,13 @@ import React from 'react';
 import noop from 'lodash/noop';
 import { cleanup, screen, waitFor } from '@testing-library/react';
 
-import AssetSettingsDialog from './AssetSettingsDialog';
-
-import createTestBed from '../../../../../tests/_utils/TestBed';
+import createTestBed from 'tests/_utils/TestBed';
 import {
   withDecimalPlacesToken,
   zeroDecimalPlacesToken,
-} from '../../../../../tests/mocks/asset';
+} from 'tests/mocks/asset';
+
+import AssetSettingsDialog from './AssetSettingsDialog';
 
 describe('AssetSettingsDialog', () => {
   afterEach(() => cleanup());
