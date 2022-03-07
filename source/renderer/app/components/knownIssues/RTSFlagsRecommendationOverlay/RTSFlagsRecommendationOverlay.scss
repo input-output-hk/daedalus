@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/overlay-backdrop';
+@import '../../../themes/mixins/layers.scss';
 
 // TODO reduce duplication with AlertsOverlay
 // https://input-output.atlassian.net/browse/DDW-928
@@ -15,7 +16,7 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  z-index: 22;
+  z-index: $dialog-z-index;
   @include overlay-backrop;
 
   .actionBtn {

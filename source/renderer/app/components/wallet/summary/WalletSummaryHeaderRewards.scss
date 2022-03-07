@@ -1,0 +1,35 @@
+.component {
+  font-family: var(--font-light);
+  :global(.amount) {
+    font-family: var(--font-medium);
+  }
+}
+
+.questionMark {
+  height: 19px;
+  margin-left: 4px;
+  width: 10px;
+
+  :global {
+    .SVGInline {
+      svg {
+        height: 10px;
+        width: 10px;
+        path {
+          fill: var(--theme-bordered-box-text-color);
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+
+  &:hover :global {
+    .SVGInline {
+      svg {
+        path {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}
