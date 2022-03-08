@@ -44,6 +44,7 @@ export type HwDeviceStatus =
   | 'launching_cardano_app'
   | 'exporting_public_key'
   | 'exporting_public_key_failed'
+  | 'incorrect_passphrase_provided'
   | 'ready'
   | 'verifying_transaction'
   | 'verifying_transaction_failed'
@@ -62,6 +63,7 @@ export const HwDeviceStatuses: {
   LAUNCHING_CARDANO_APP: HwDeviceStatus;
   EXPORTING_PUBLIC_KEY: HwDeviceStatus;
   EXPORTING_PUBLIC_KEY_FAILED: HwDeviceStatus;
+  INCORRECT_PASSPHRASE_PROVIDED: HwDeviceStatus;
   READY: HwDeviceStatus;
   VERIFYING_TRANSACTION: HwDeviceStatus;
   VERIFYING_TRANSACTION_FAILED: HwDeviceStatus;
@@ -82,6 +84,7 @@ export const HwDeviceStatuses: {
   LAUNCHING_CARDANO_APP: 'launching_cardano_app',
   EXPORTING_PUBLIC_KEY: 'exporting_public_key',
   EXPORTING_PUBLIC_KEY_FAILED: 'exporting_public_key_failed',
+  INCORRECT_PASSPHRASE_PROVIDED: 'incorrect_passphrase_provided',
   WRONG_FIRMWARE: 'wrong_firmware',
   WRONG_CARDANO_APP_VERSION: 'wrong_cardano_app_version',
   UNSUPPORTED_DEVICE: 'unsupported_device',

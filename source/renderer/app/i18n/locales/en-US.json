@@ -827,6 +827,7 @@
   "wallet.hardware.deviceStatus.exportingPublicKeyError": "Disconnect and reconnect your hardware wallet to restart the process.",
   "wallet.hardware.deviceStatus.exporting_public_key": "Export the public key on your device",
   "wallet.hardware.deviceStatus.exporting_public_key_failed": "Exporting the public key failed",
+  "wallet.hardware.deviceStatus.incorrect_passphrase_provided": "The passphrase you have entered does not match the current wallet",
   "wallet.hardware.deviceStatus.launching_cardano_app": "Launch Cardano application on your device",
   "wallet.hardware.deviceStatus.ready": "Device ready",
   "wallet.hardware.deviceStatus.trezor_bridge_failure": "Trezor Bridge is not installed! {instructionsLink}",
