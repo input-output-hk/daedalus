@@ -219,7 +219,7 @@
   "knownIssues.dialog.enableRtsFlagsMode.explanation": "有効にすると、CardanoノードはRAM使用量の削減を試みます。変更を有効にするために、Daedalusを再起動する必要があります。",
   "knownIssues.dialog.enableRtsFlagsMode.title": "RAM管理（RTSフラグ）を有効にする",
   "knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel": "Daedalusを手動で再起動する必要があることを理解しました。",
-  "knownIssues.rtsRecommendationOverlay.content": "システム仕様がDaedalusの推奨ハードウェア要件を満たしていません。<br /><br />RAMが16GB未満のコンピューターでメモリー使用量を削減できる試験的設定であるRAM管理（RTSフラグ）を有効にすることができます。",
+  "knownIssues.rtsRecommendationOverlay.content": "<p>システム仕様がDaedalusの推奨ハードウェア要件を満たしていません。</p><p>RAMが16GB未満のコンピューターでメモリー使用量を削減できる試験的設定であるRAM管理（RTSフラグ）を有効にすることができます。</p><p>[有効にして終了する] ボタンをクリックすると有効化できます。変更を有効にするためには、Daedalusを再起動する必要があります。有効化または無効化は、いつでもヘルプメニューから実行できます。</p>",
   "knownIssues.rtsRecommendationOverlay.decideLaterButtonLabel": "あとで決める",
   "knownIssues.rtsRecommendationOverlay.enableAndQuitButtonLabel": "有効にして終了する",
   "knownIssues.rtsRecommendationOverlay.title": "推奨ハードウェア要件ステータス",

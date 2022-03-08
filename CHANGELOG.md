@@ -1,9 +1,10 @@
 # Changelog
 
-## 4.9.0
+## vNext
 
 ### Features
 
+- Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Chores
