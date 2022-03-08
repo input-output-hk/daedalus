@@ -1108,7 +1108,7 @@ type Props = {
 };
 ```
 
-For preventing syntax errors, leave a comma after the last key/value pair incase the type definition's properties are rearranged or expanded upon in the future.
+For preventing syntax errors, leave a comma after the last key/value pair in case the type definition's properties are rearranged or expanded upon in the future.
 
 :white_check_mark: ***Do***
 

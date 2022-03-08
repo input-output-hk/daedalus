@@ -39,7 +39,7 @@ export const getPathFromDirectoryName = (
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
 
-    case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
+    case ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS:
       return app.getPath('downloads');
 
     default:

@@ -1,7 +1,7 @@
 import { Given, When, Then } from "cucumber";
 import { expect } from "chai";
 import { navigateTo } from "../../../navigation/e2e/steps/helpers";
-import { waitUntilWaletNamesEqual } from "../../../wallets/e2e/steps/helpers";
+import { waitUntilWalletNamesEqual } from "../../../wallets/e2e/steps/helpers";
 
 Given(/^I am on the settings screen$/, async function () {
   await navigateTo.call(this, '/settings');
@@ -39,7 +39,7 @@ When(/^I click outside "name" input field$/, function () {
   return this.client.click('.WalletSettings_component');
 });
 Then(/^I should see new wallet name "([^"]*)"$/, async function (walletName) {
-  return waitUntilWaletNamesEqual.call(this, walletName);
+  return waitUntilWalletNamesEqual.call(this, walletName);
 });
 Then(/^I should see "([^"]*)" label in password field$/, function (label) {
   const selector = `.${label}Label`;

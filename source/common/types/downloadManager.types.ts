@@ -47,7 +47,7 @@ export type DownloadRequestOptions = {
   httpsRequestOptions?: Record<string, any>;
   // Override the https request options, ex: to add SSL Certs
   progressIsThrottled?: boolean;
-  // by default, the progress is sent every second. if `false` it will be sent every milisecond
+  // by default, the progress is sent every second. if `false` it will be sent every millisecond
   persistLocalData?: boolean; // by default, the localdata information is deleted after the end of the download
 };
 // https://www.npmjs.com/package/node-downloader-helper
@@ -138,7 +138,7 @@ export type DownloadInfoProgress = {
   downloaded: number;
   // downloaded size in bytes
   progress: number;
-  // progress porcentage 0-100%
+  // progress percentage 0-100%
   speed: number; // download speed in bytes
 };
 export type DownloadInfoEnd = {
@@ -147,7 +147,7 @@ export type DownloadInfoEnd = {
   totalSize: number;
   // total file size got from the server
   incomplete: boolean;
-  // true/false if the download endend but still incomplete
+  // true/false if the download ended but still incomplete
   onDiskSize: number;
   // total size of file on the disk
   downloadedSize: number; // the total size downloaded
