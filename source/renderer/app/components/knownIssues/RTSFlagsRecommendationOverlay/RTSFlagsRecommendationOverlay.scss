@@ -96,6 +96,14 @@
         background-color: rgba(45, 45, 45, 0.5);
       }
     }
+
+    & p {
+      margin-bottom: 11px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .title {

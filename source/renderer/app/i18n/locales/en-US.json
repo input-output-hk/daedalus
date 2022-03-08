@@ -219,7 +219,7 @@
   "knownIssues.dialog.enableRtsFlagsMode.explanation": "When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.",
   "knownIssues.dialog.enableRtsFlagsMode.title": "Enable RAM management (RTS Flags)",
   "knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel": "I understand that I will need to manually launch Daedalus",
-  "knownIssues.rtsRecommendationOverlay.content": "Your system specifications do not meet Daedalus’ recommended hardware requirements. <br /><br />You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.",
+  "knownIssues.rtsRecommendationOverlay.content": "<p>Your system specifications do not meet Daedalus’ recommended hardware requirements.</p><p>You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.</p><p>You can enable it now by clicking the ‘Enable and quit’ button. Note that you will have to restart Daedalus for this change to take effect. To enable or disable it at any time, go to the Help menu.</p>",
   "knownIssues.rtsRecommendationOverlay.decideLaterButtonLabel": "Decide later",
   "knownIssues.rtsRecommendationOverlay.enableAndQuitButtonLabel": "Enable and quit",
   "knownIssues.rtsRecommendationOverlay.title": "Recommended hardware requirements status",
