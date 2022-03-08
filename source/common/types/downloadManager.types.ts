@@ -1,7 +1,17 @@
-export type AllowedDownloadDirectories =
+export type AllowedDownloadDirectoriesValues =
   | 'stateDirectory'
   | 'downloads'
   | 'desktop';
+
+export type AllowedDownloadDirectoriesKeys =
+  | 'DOWNLOADS'
+  | 'DESKTOP'
+  | 'STATE_DIRECTORY';
+
+export type AllowedDownloadDirectoriesMap = {
+  [day in AllowedDownloadDirectoriesKeys]: AllowedDownloadDirectoriesValues;
+};
+
 // https://www.npmjs.com/package/node-downloader-helper
 export type DownloadRequest = {
   /**
@@ -12,7 +22,7 @@ export type DownloadRequest = {
    */
   id?: string;
   fileUrl: string;
-  destinationDirectoryName?: AllowedDownloadDirectories;
+  destinationDirectoryName?: AllowedDownloadDirectoriesValues;
   options?: DownloadRequestOptions | null | undefined;
   resumeDownload?: {
     temporaryFilename: string;
@@ -82,7 +92,7 @@ export type DownloadInfo = {
   fileUrl: string;
   originalFilename: string;
   temporaryFilename: string;
-  destinationDirectoryName: AllowedDownloadDirectories;
+  destinationDirectoryName: AllowedDownloadDirectoriesValues;
   destinationPath: string;
   options: DownloadRequestOptions;
 };

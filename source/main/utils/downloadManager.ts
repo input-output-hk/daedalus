@@ -17,7 +17,7 @@ import type {
   DownloadMainResponse,
 } from '../../common/ipc/api';
 import type {
-  AllowedDownloadDirectories,
+  AllowedDownloadDirectoriesValues,
   DownloadInfoInit,
   DownloadInfoProgress,
   DownloadInfoEnd,
@@ -31,7 +31,7 @@ export const downloads = {};
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
 export const getPathFromDirectoryName = (
-  directoryName: AllowedDownloadDirectories
+  directoryName: AllowedDownloadDirectoriesValues
 ) => {
   const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
 
