@@ -72,7 +72,7 @@ export const createHardwareWalletConnectionChannel = () =>
   new MockIpcChannel('GET_HARDWARE_WALLET_CONNECTION_CHANNEL');
 
 export const pollCardarnoApp = (deviceId: string) =>
-  new Promise((resolve) => {
+  new Promise((resolve, reject) => {
     const cardanoAppChannel = createCardanoAppChannel();
 
     const interval = setInterval(async () => {
@@ -85,6 +85,10 @@ export const pollCardarnoApp = (deviceId: string) =>
         clearInterval(interval);
         return resolve(cardanoAppChannelReply);
       } catch (err) {
+        if (err.code === 'DEVICE_NOT_CONNECTED') {
+          clearInterval(interval);
+          return reject(err);
+        }
         return null;
       }
     }, 2000);

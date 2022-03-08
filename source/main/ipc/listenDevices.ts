@@ -19,11 +19,6 @@ export type Device = {
   usage: number;
 };
 
-// listen(console.log);
-
-const deviceToLog = ({ productId, locationId, deviceAddress }) =>
-  `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
-
 let usbDebounce = 100;
 export const setUsbDebounce = (n: number) => {
   usbDebounce = n;
@@ -31,16 +26,20 @@ export const setUsbDebounce = (n: number) => {
 
 let listDevices = getDevices();
 
-const flatDevice = (d) => d.path;
+const flatDevice = (d: Device) => d.path;
 
 const getFlatDevices = () => [
-  ...new Set(getDevices().map((d) => flatDevice(d))),
+  ...new Set(getDevices().map((d: Device) => flatDevice(d))),
 ];
 
 const getDeviceByPaths = (paths) =>
-  listDevices.find((d) => paths.includes(flatDevice(d)));
+  listDevices.find((d: Device) => paths.includes(flatDevice(d)));
 
-let lastDevices = getFlatDevices();
+const lastDevices = new Map();
+
+const addLastDevice = (newDevices: Device[]) =>
+  newDevices.forEach((d) => lastDevices.set(d.path, d));
+addLastDevice(listDevices);
 
 const getPayloadData = (type: 'add' | 'remove', device: Device) => {
   const descriptor: string = device.path;
@@ -78,40 +77,36 @@ export const listenDevices = (
   const poll = () => {
     log('hid-listen', 'Polling for added or removed devices');
 
-    let changeFound = false;
     const currentDevices = getFlatDevices();
-    const newDevices = currentDevices.filter((d) => !lastDevices.includes(d));
+    const newDevices = currentDevices.filter((d) => !lastDevices.has(d));
 
     if (newDevices.length > 0) {
       log('hid-listen', 'New device found:', newDevices);
 
       listDevices = getDevices();
       onAdd(getPayloadData('add', getDeviceByPaths(newDevices)));
-
-      changeFound = true;
+      addLastDevice(listDevices);
     } else {
       log('hid-listen', 'No new device found');
     }
 
-    const removeDevices = lastDevices.filter(
-      (d) => !currentDevices.includes(d)
-    );
+    const removeDevices = Array.from(lastDevices.keys())
+      .filter((d) => !currentDevices.includes(d))
+      .map((d) => d);
 
     if (removeDevices.length > 0) {
-      log('hid-listen', 'Removed device found:', removeDevices);
+      const key = removeDevices[0];
+      const removedDevice = lastDevices.get(key);
+      log('hid-listen', 'Removed device found:', {
+        removeDevices,
+        devices: removedDevice,
+      });
 
-      onRemove(getPayloadData('remove', getDeviceByPaths(removeDevices)));
-      listDevices = listDevices.filter(
-        (d) => !removeDevices.includes(flatDevice(d))
-      );
+      onRemove(getPayloadData('remove', removedDevice));
 
-      changeFound = true;
+      lastDevices.delete(key);
     } else {
       log('hid-listen', 'No removed device found');
-    }
-
-    if (changeFound) {
-      lastDevices = currentDevices;
     }
   };
 
