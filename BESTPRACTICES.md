@@ -1204,7 +1204,7 @@ const Names = () => (<div>
 ## Formatting Selectors
 
 * Use class selectors instead of ID selectors.
-* Use camelCase or dashed-case instead of PascelCase or names_with_underscores.
+* Use camel case or dashed-case instead of pascal case or names_with_underscores.
 * Give each selector its own line.
 * Put a space before the opening brace `{` in rule declarations.
 * Put closing braces `}` of rule declarations on a new line.

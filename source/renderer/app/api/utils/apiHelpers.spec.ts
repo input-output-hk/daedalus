@@ -20,7 +20,7 @@ describe('throw error if not enough Ada to support tokens', () => {
       requiresAdaToRemainToSupportNativeTokens: false,
     });
   });
-  it('should not throw error if error code is "cannot_cover_fee" but message does not match reegex', () => {
+  it('should not throw error if error code is "cannot_cover_fee" but message does not match regex', () => {
     const error: ErrorType = {
       message: 'other message',
       code: 'cannot_cover_fee',

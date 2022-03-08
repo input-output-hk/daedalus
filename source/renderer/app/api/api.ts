@@ -232,7 +232,7 @@ import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers'
 export default class AdaApi {
   config: RequestConfig;
   // We need to preserve all asset metadata during single runtime in order
-  // to avoid losing it in case of Token Metadata Registry server unvailability
+  // to avoid losing it in case of Token Metadata Registry server unavailability
   storedAssetMetadata: StoredAssetMetadata = {};
 
   constructor(isTest: boolean, config: RequestConfig) {
@@ -1926,7 +1926,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronLedgerWallet success', {
         wallet,
       });
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; delegation... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronLedgerWallet error', {

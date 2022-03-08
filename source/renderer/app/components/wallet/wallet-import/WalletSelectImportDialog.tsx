@@ -42,10 +42,10 @@ const messages = defineMessages({
     description:
       'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
   },
-  unamedWalletsTitle: {
-    id: 'wallet.select.import.dialog.unamedWalletsTitle',
+  unnamedWalletsTitle: {
+    id: 'wallet.select.import.dialog.unnamedWalletsTitle',
     defaultMessage: '!!!Unnamed wallets',
-    description: 'unamedWalletsTitle',
+    description: 'unnamedWalletsTitle',
   },
   passwordProtected: {
     id: 'wallet.select.import.dialog.passwordProtected',
@@ -392,11 +392,11 @@ class WalletSelectImportDialog extends Component<Props> {
               })}
 
               {!!walletsWithoutNames.length && (
-                <div className={styles.unamedWalletsTitle}>
+                <div className={styles.unnamedWalletsTitle}>
                   {!!walletsWithNames.length && (
                     <hr className={styles.separatorMiddle} />
                   )}
-                  <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
+                  <p>{intl.formatMessage(messages.unnamedWalletsTitle)}</p>
                 </div>
               )}
 
