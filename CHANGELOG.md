@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
 
 ## 4.9.0
