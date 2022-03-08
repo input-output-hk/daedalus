@@ -12,6 +12,7 @@ import {
   DATE_JAPANESE_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
+import RTSFlagsRecommendationOverlay from '../../../source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -107,5 +108,11 @@ storiesOf('News|Overlays', module)
         }, {}),
         dateOptionsIntl[props.locale][0].value
       )}
+    />
+  ))
+  .add('RTS Recommendation', () => (
+    <RTSFlagsRecommendationOverlay
+      onConfirm={action('onConfirm')}
+      onClose={action('onClose')}
     />
   ));
