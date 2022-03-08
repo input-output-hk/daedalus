@@ -239,14 +239,12 @@ class HardwareWalletStatus extends Component<Props, State> {
         setTimeout(() => {
           // Status remains unchanged in 1.5s - set as new status
           if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
-            console.log('HW status', nextProps.hwDeviceStatus);
             this.setState({
               hwDeviceStatus: nextProps.hwDeviceStatus,
             });
           }
         }, 4000);
       } else {
-        console.log('HW status', nextProps.hwDeviceStatus);
         this.setState({
           hwDeviceStatus: nextProps.hwDeviceStatus,
         });
