@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -57,15 +57,20 @@ function StakePoolsSearchComponent({
     null
   );
 
-  const autoSelectOnFocus = () =>
+  const [focus, setFocus] = useState(false);
+
+  const autoSelectOnFocus = () => {
     searchInput?.current
-      ? searchInput?.current?.inputElement.current.select()
+      ? searchInput.current.inputElement?.current?.select()
       : false;
+
+    setFocus(true);
+  };
 
   const handleClearSearch = () => {
     onClearSearch();
-
     searchInput?.current?.inputElement.current.focus();
+    setFocus(true);
   };
 
   const hasSearchClearButton = () => {
@@ -96,7 +101,13 @@ function StakePoolsSearchComponent({
       {({ scrollElementRef }) => (
         <div className={styles.component}>
           <div className={styles.container}>
-            <SVGInline svg={searchIcon} className={styles.searchIcon} />
+            <SVGInline
+              svg={searchIcon}
+              className={classnames(
+                styles.searchIcon,
+                focus && styles.focusSearchIcon
+              )}
+            />
             <Input
               autoFocus
               label={label || null}
@@ -105,6 +116,8 @@ function StakePoolsSearchComponent({
               ref={(input) => {
                 searchInput.current = input;
               }}
+              onFocus={autoSelectOnFocus}
+              onBlur={() => setFocus(false)}
               placeholder={
                 placeholder ||
                 intl.formatMessage(messages.searchInputPlaceholder)
@@ -112,7 +125,6 @@ function StakePoolsSearchComponent({
               skin={InputSkin}
               value={search}
               maxLength={150}
-              onFocus={autoSelectOnFocus}
             />
             {hasSearchClearButton && (
               <div className={clearSearchClasses}>
