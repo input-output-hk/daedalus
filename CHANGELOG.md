@@ -16,6 +16,7 @@
 ### Fixes
 
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
+- Sets minimum transaction fee to ada input field when tokens are removed ([PR 2918](https://github.com/input-output-hk/daedalus/pull/2918))
 
 ## 4.9.0
 
