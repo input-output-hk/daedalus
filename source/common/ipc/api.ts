@@ -478,8 +478,8 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectiontRendererResponse = Record<string, any>;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionRendererResponse = Record<string, any>;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;

@@ -56,7 +56,7 @@ Given(/^I have a "([^"]*)" (byron )?wallet$/, async function (walletName, _type)
 
   await waitUntilWalletIsLoaded.call(this, walletName);
 });
-Given(/^I have a "([^"]*)" byron wallet for transfering funds$/, async function (walletName) {
+Given(/^I have a "([^"]*)" byron wallet for transferring funds$/, async function (walletName) {
   await restoreLegacyWallet(this.client, {
     walletName,
     hasFunds: true,

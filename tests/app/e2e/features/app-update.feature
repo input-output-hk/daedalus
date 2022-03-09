@@ -68,7 +68,7 @@ Feature: App Update
 
   Scenario: 2.2.0 is installed
     Given I open the 2.0.0 build
-    Then I should not see the green dot in the beel
+    Then I should not see the green dot in the bell
     And I should not see the update item in the newsfeed
     And I should not see the update overlay
 

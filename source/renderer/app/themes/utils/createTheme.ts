@@ -259,7 +259,7 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.3)}`,
       '--theme-about-window-daedalus-icon-color': `${text.secondary}`,
       '--theme-about-window-cardano-icon-color': `${text.secondary}`,
-      '--theme-about-window-title-varsion-color': `${text.secondary}`,
+      '--theme-about-window-title-version-color': `${text.secondary}`,
       '--theme-about-window-title-stroke-color': `${text.secondary}`,
       '--theme-about-window-content-color': `${text.secondary}`,
       '--theme-about-window-content-text-color': `${text.secondary}`,
