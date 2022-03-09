@@ -86,7 +86,7 @@ function StakePoolsSearchComponent({
     isGridRewardsView ? styles.selected : null,
   ]);
   const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
-  const searchInputClases = classnames([
+  const searchInputClasses = classnames([
     styles.searchInput,
     isBigSearchComponent ? styles.inputExtrasSearch : null,
     IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
@@ -111,7 +111,7 @@ function StakePoolsSearchComponent({
             <Input
               autoFocus
               label={label || null}
-              className={searchInputClases}
+              className={searchInputClasses}
               onChange={onSearch}
               ref={(input) => {
                 searchInput.current = input;

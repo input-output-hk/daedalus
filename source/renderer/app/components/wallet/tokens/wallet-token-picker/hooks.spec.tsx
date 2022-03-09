@@ -83,7 +83,7 @@ describe('WalletTokenPicker hooks', () => {
     ],
   ];
   test.each(toggleCases)(
-    'useCheckboxes toogle checkbox for %s',
+    'useCheckboxes toggle checkbox for %s',
     (testId, assets, sequence, expected) => {
       const hook = setup(useCheckboxes, {
         assets,
@@ -112,7 +112,7 @@ describe('WalletTokenPicker hooks', () => {
       expect(hook.isClearAllMode).toEqual(false);
     }
   );
-  const toogleAllFnCases = [
+  const toggleAllFnCases = [
     // testId, [assets, previouslyCheckedIds], alreadyChecked, expected [checkedCount, checkedIds]
     [
       'less than 30 assets',
@@ -139,8 +139,8 @@ describe('WalletTokenPicker hooks', () => {
       [30, [...Array(28).keys()].map(String)],
     ],
   ];
-  test.each(toogleAllFnCases)(
-    'useCheckboxes toogle toogleAllFn for %s',
+  test.each(toggleAllFnCases)(
+    'useCheckboxes toggle toggleAllFn for %s',
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(testId: string | string[] | (nu... Remove this comment to see the full error message
     (testId, [assets, previouslyCheckedIds], alreadyChecked, expected) => {
       const hook = setup(useCheckboxes, {
@@ -157,8 +157,8 @@ describe('WalletTokenPicker hooks', () => {
       }
 
       act(() => {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'toogleAllFn' does not exist on type '{}'... Remove this comment to see the full error message
-        hook.toogleAllFn();
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'toggleAllFn' does not exist on type '{}'... Remove this comment to see the full error message
+        hook.toggleAllFn();
       });
       // @ts-ignore ts-migrate(2339) FIXME: Property 'totalCheckedCount' does not exist on typ... Remove this comment to see the full error message
       expect(hook.totalCheckedCount).toBe(expected[0]);

@@ -18,8 +18,8 @@ import type {
   getHardwareWalletTransportMainResponse,
   getExtendedPublicKeyRendererRequest,
   getExtendedPublicKeyMainResponse,
-  getHardwareWalletConnectiontMainRequest,
-  getHardwareWalletConnectiontRendererResponse,
+  getHardwareWalletConnectionMainRequest,
+  getHardwareWalletConnectionRendererResponse,
   signTransactionLedgerMainResponse,
   signTransactionLedgerRendererRequest,
   signTransactionTrezorMainResponse,
@@ -56,8 +56,8 @@ export const getCardanoAdaAppChannel: RendererIpcChannel<
 > = new RendererIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
 // IpcChannel<Incoming, Outgoing>
 export const getHardwareWalletConnectionChannel: RendererIpcChannel<
-  getHardwareWalletConnectiontMainRequest,
-  getHardwareWalletConnectiontRendererResponse
+  getHardwareWalletConnectionMainRequest,
+  getHardwareWalletConnectionRendererResponse
 > = new RendererIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
 // IpcChannel<Incoming, Outgoing>
 export const signTransactionLedgerChannel: RendererIpcChannel<

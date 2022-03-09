@@ -32,12 +32,12 @@ const messages = defineMessages({
   },
   formattedBalanceLabel: {
     id: 'assets.settings.dialog.formattedAmount.label',
-    defaultMessage: '!!!Unformated amount',
+    defaultMessage: '!!!Unformatted amount',
     description: '"formattedBalanceLabel" for the Asset settings dialog',
   },
   unformattedBalanceLabel: {
     id: 'assets.settings.dialog.unformattedAmount.label',
-    defaultMessage: '!!!Formated amount',
+    defaultMessage: '!!!Formatted amount',
     description: '"unformattedBalanceLabel" for the Asset settings dialog',
   },
   decimalPrecisionLabel: {

@@ -67,7 +67,7 @@ const WalletTokens = observer((props: Props) => {
   /**
    *
    * This function adds a `inserting` or `removing`
-   * state before actually proceding with these actions
+   * state before actually proceeding with these actions
    * so the UI element insertion/removal can be animated,
    * preventing undesirable jumps in the tokens list
    *

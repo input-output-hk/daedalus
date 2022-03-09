@@ -432,11 +432,11 @@ export default class WalletsStore extends Store {
   };
   @action
   _createWalletChangeStep = (isBack = false) => {
-    const currrentCreateWalletStep = this.createWalletStep || 0;
+    const currentCreateWalletStep = this.createWalletStep || 0;
     this.createWalletStep =
       isBack === true
-        ? currrentCreateWalletStep - 1
-        : currrentCreateWalletStep + 1;
+        ? currentCreateWalletStep - 1
+        : currentCreateWalletStep + 1;
     this.createWalletShowAbortConfirmation = false;
   };
   @action
@@ -472,7 +472,7 @@ export default class WalletsStore extends Store {
   @action
   _restoreWalletChangeStep = (isBack = false) => {
     // Reset restore requests to clear previous errors
-    const currrentRestoreWalletStep = this.restoreWalletStep || 0;
+    const currentRestoreWalletStep = this.restoreWalletStep || 0;
 
     this._restoreWalletResetRequests();
 
@@ -482,8 +482,8 @@ export default class WalletsStore extends Store {
 
     this.restoreWalletStep =
       isBack === true
-        ? currrentRestoreWalletStep - 1
-        : currrentRestoreWalletStep + 1;
+        ? currentRestoreWalletStep - 1
+        : currentRestoreWalletStep + 1;
     this.restoreWalletShowAbortConfirmation = false;
   };
   @action
@@ -1634,10 +1634,10 @@ export default class WalletsStore extends Store {
   _updateCertificateStep = (isBack = false) => {
     this._updateGeneratingCertificateError();
 
-    const currrentCertificateStep = this.certificateStep || 0;
+    const currentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack
-      ? currrentCertificateStep - 1
-      : currrentCertificateStep + 1;
+      ? currentCertificateStep - 1
+      : currentCertificateStep + 1;
   };
   @action
   _closeCertificateGeneration = () => {
