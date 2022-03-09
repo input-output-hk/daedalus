@@ -24,13 +24,14 @@
   svg {
     opacity: 0.3;
     width: 15px;
+
     g > g {
       fill: var(--theme-staking-stake-pools-search-icon-color);
     }
   }
 }
 
-.focusSearchIcon {
+.searchIconFocus {
   svg {
     opacity: 0.7;
   }

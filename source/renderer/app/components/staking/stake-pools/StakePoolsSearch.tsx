@@ -57,20 +57,20 @@ function StakePoolsSearchComponent({
     null
   );
 
-  const [focus, setFocus] = useState(false);
+  const [isSearchInputFocused, setSearchInputFocused] = useState(false);
 
   const autoSelectOnFocus = () => {
     searchInput?.current
       ? searchInput.current.inputElement?.current?.select()
       : false;
 
-    setFocus(true);
+    setSearchInputFocused(true);
   };
 
   const handleClearSearch = () => {
     onClearSearch();
     searchInput?.current?.inputElement.current.focus();
-    setFocus(true);
+    setSearchInputFocused(true);
   };
 
   const hasSearchClearButton = () => {
@@ -105,7 +105,7 @@ function StakePoolsSearchComponent({
               svg={searchIcon}
               className={classnames(
                 styles.searchIcon,
-                focus && styles.focusSearchIcon
+                isSearchInputFocused && styles.searchIconFocus
               )}
             />
             <Input
@@ -117,7 +117,7 @@ function StakePoolsSearchComponent({
                 searchInput.current = input;
               }}
               onFocus={autoSelectOnFocus}
-              onBlur={() => setFocus(false)}
+              onBlur={() => setSearchInputFocused(false)}
               placeholder={
                 placeholder ||
                 intl.formatMessage(messages.searchInputPlaceholder)
