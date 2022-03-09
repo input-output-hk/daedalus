@@ -10,6 +10,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
+import { InView } from '../../widgets/InView';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -152,11 +153,14 @@ type State = {
   isPreloading: boolean;
   stakePoolsOrder: string;
   stakePoolsSortBy: string;
+  isHeaderStuck: boolean;
 };
 const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
+  isHeaderStuck: false,
+  isTest: true,
 };
 
 @observer
@@ -176,10 +180,11 @@ class StakePoolsTable extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted)
+      if (this._isMounted) {
         this.setState({
           isPreloading: false,
         });
+      }
     }, 0);
   }
 
@@ -215,11 +220,15 @@ class StakePoolsTable extends Component<Props, State> {
       listName,
       onSelect,
       selectedPoolId,
-      currentLocale,
       onTableHeaderMouseEnter,
       onTableHeaderMouseLeave,
     } = this.props;
-    const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
+    const {
+      isPreloading,
+      stakePoolsSortBy,
+      stakePoolsOrder,
+      isHeaderStuck,
+    } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
     if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
@@ -375,8 +384,14 @@ class StakePoolsTable extends Component<Props, State> {
         <div className={componentClasses}>
           {sortedStakePoolList.length > 0 && (
             <BorderedBox>
+              <InView
+                onChange={(visible) =>
+                  this.setState({ isHeaderStuck: !visible })
+                }
+              />
               <table>
                 <thead
+                  className={isHeaderStuck ? styles.isHeaderStuck : ''}
                   onMouseEnter={onTableHeaderMouseEnter}
                   onMouseLeave={onTableHeaderMouseLeave}
                 >
