@@ -11,24 +11,24 @@ import { daedalusTheme } from '../../source/renderer/app/themes/daedalus';
 import { themeOverrides } from '../../source/renderer/app/themes/overrides';
 
 const TestBed = ({ children }: { children: ReactElement }) => (
-    <ThemeProvider
-        theme={daedalusTheme}
-        skins={SimpleSkins}
-        variables={SimpleDefaults}
-        themeOverrides={themeOverrides}
-      >
-            <IntlProvider locale="en-US" messages={translations}>
-                <BrowserLocalStorageBridge>
-                    <DiscreetModeFeatureProvider>
-                        {children}
-                    </DiscreetModeFeatureProvider>
-                </BrowserLocalStorageBridge>
-            </IntlProvider>
-    </ThemeProvider>
+  <ThemeProvider
+    theme={daedalusTheme}
+		skins={SimpleSkins}
+		variables={SimpleDefaults}
+		themeOverrides={themeOverrides}
+	>
+		<IntlProvider locale="en-US" messages={translations}>
+			<BrowserLocalStorageBridge>
+				<DiscreetModeFeatureProvider>
+					{children}
+				</DiscreetModeFeatureProvider>
+			</BrowserLocalStorageBridge>
+		</IntlProvider>
+	</ThemeProvider>
 );
 
 const createTestBed = (component: ReactElement) => {
-    return render(<TestBed>{component}</TestBed>);
+  return render(<TestBed>{component}</TestBed>);
 }
 
 export default createTestBed;
