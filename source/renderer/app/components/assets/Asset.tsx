@@ -180,9 +180,10 @@ class Asset extends Component<Props, State> {
       recommendedDecimals,
       assetName,
     } = asset;
-    const hasName = !!metadata?.name;
+    const hasMetadataName = !!metadata?.name;
     const name =
-      metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`);
+      metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';
+
     const displayName = metadataNameChars
       ? ellipsis(name, metadataNameChars)
       : name;
@@ -212,7 +213,7 @@ class Asset extends Component<Props, State> {
             data-testid="assetName"
             className={classnames(
               styles.metadataName,
-              !hasName && styles.ascii
+              !hasMetadataName && styles.ascii
             )}
           >
             {displayName}
