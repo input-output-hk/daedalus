@@ -97,10 +97,15 @@
   line-height: 48px;
   margin-left: 10px;
   padding: 0 20px;
-  width: 118px;
+  width: auto;
 
   & > span {
     display: flex;
+    margin-right: 15px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   button {

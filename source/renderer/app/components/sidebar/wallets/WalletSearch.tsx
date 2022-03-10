@@ -30,10 +30,10 @@ const WalletSearchComponent = ({
 }: Props) => {
   const hasValue = !!searchValue.length;
   return (
-    <label htmlFor="sideBarwalletSearch" className={styles.component}>
+    <label htmlFor="sidebarWalletSearch" className={styles.component}>
       <SVGInline svg={searchIcon} className={styles.searchIcon} />
       <Input
-        id="sideBarwalletSearch"
+        id="sidebarWalletSearch"
         className={styles.input}
         onChange={onSearch}
         spellCheck={false}

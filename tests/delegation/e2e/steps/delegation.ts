@@ -170,7 +170,7 @@ Then(/^The "([^"]*)" wallet option should display the correct Stake Pool ticker$
 Then('I close the delegation process dialog', async function () {
   await this.waitAndClick('.DialogCloseButton_component');
 });
-Given(/^I sucessfully delegate my "([^"]*)" wallet$/, {
+Given(/^I successfully delegate my "([^"]*)" wallet$/, {
   timeout: 60000
 }, async function (walletName) {
   const delegateActionSelector = `//div[@class="WalletRow_title" and text()="${walletName}"]//parent::div//parent::div//span[@class="WalletRow_actionDelegate"]`;

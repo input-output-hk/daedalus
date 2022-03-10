@@ -431,7 +431,7 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
-  // Check stake pool transaction state and reset pending state when transction is "in_ledger"
+  // Check stake pool transaction state and reset pending state when transaction is "in_ledger"
   @action
   checkTransaction = (request: {
     transactionId: string;
@@ -658,7 +658,7 @@ export default class HardwareWalletsStore extends Store {
           '[HW-DEBUG] HWStore - Establish connection:: New Transaction / Address verification initiated - check device'
         );
 
-        // Return device that belongs to active hardwate wallet if is already plugged-in
+        // Return device that belongs to active hardware wallet if is already plugged-in
         if (
           recognizedPairedHardwareWallet &&
           !recognizedPairedHardwareWallet.disconnected
@@ -762,7 +762,7 @@ export default class HardwareWalletsStore extends Store {
         logger.debug(
           '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: Start process with last UNPAIRED device'
         );
-        // Start listeners for specific (last pluged) device
+        // Start listeners for specific (last plugged) device
         let devicePath = null;
         let isTrezor = false;
 
@@ -787,7 +787,7 @@ export default class HardwareWalletsStore extends Store {
         }
 
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        logger.debug('[HW-DEBUG] HWStore - Transport retreived');
+        logger.debug('[HW-DEBUG] HWStore - Transport retrieved');
       } else {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug(
@@ -1152,7 +1152,7 @@ export default class HardwareWalletsStore extends Store {
             transportDevice: toJS(transportDevice),
           });
           runInAction(
-            'HardwareWalletsStore:: Set transport device fomr tx init',
+            'HardwareWalletsStore:: Set transport device for tx init',
             () => {
               this.transportDevice = transportDevice;
             }
@@ -1724,7 +1724,7 @@ export default class HardwareWalletsStore extends Store {
        * ============  Exporting aborted  =============
        * e.statusCode === 28169 // Ledger
        * e.code === 'Failure_ActionCancelled' // Trezor
-       * ============  Exporting cancellet - device unplugged during action  =============
+       * ============  Exporting cancelled - device unplugged during action  =============
        * e.name === DisconnectedDevice // Ledger
        * e.error === 'device disconnected during action' // Trezor
        */
@@ -1920,7 +1920,7 @@ export default class HardwareWalletsStore extends Store {
       (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
     );
     const recognizedDevicePath = get(recognizedDevice, 'path', null);
-    logger.debug('[HW-DEBUG] sign Trezor:: recognizedDevicePath and walelt: ', {
+    logger.debug('[HW-DEBUG] sign Trezor:: recognizedDevicePath and wallet: ', {
       walletId,
       deviceId,
       isTransactionInitiated: this.isTransactionInitiated,
@@ -2236,7 +2236,7 @@ export default class HardwareWalletsStore extends Store {
       const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
       unsignedTxAuxiliaryData = {
         nonce,
-        // unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
+        // unique increasable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
         rewardDestinationAddress: {
           address: stakeAddress,
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
@@ -2434,7 +2434,7 @@ export default class HardwareWalletsStore extends Store {
           transportDevice: toJS(transportDevice),
         });
         runInAction(
-          'HardwareWalletsStore:: Set transport device fomr tx init',
+          'HardwareWalletsStore:: Set transport device for tx init',
           () => {
             this.transportDevice = transportDevice;
           }

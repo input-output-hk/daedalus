@@ -16,9 +16,9 @@ import { PoolPopOver } from '../widgets/PoolPopOver';
 import styles from './WalletRow.scss';
 import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collapse... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardware... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,

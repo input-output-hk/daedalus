@@ -10,7 +10,7 @@ const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
 let shelleyMnemonicsIndex = 0;
-export const noWalletsErrorMessage = `The byron wallet for funds transfering was already used and has no longer funds.
+export const noWalletsErrorMessage = `The byron wallet for funds transferring was already used and has no longer funds.
     Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 export const restoreWalletWithFunds = async (client: Record<string, any>, {
   walletName
@@ -197,7 +197,7 @@ export const waitUntilWalletIsLoaded = async function (walletName: string): Prom
   });
   return wallet;
 };
-export const waitUntilWaletNamesEqual = function (walletName: string) {
+export const waitUntilWalletNamesEqual = function (walletName: string) {
   const context = this;
   return context.client.waitUntil(async () => {
     const currentWalletName = await getNameOfActiveWalletInSidebar.call(context);
