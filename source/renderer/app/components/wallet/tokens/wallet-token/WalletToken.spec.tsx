@@ -12,7 +12,7 @@ import {
 
 import WalletToken from './WalletToken';
 
-const DEFAULT_WALLET_PROPS = {
+const defaultWalletProps = {
   isFavorite: false,
   isInsertingAsset: false,
   isLoading: false,
@@ -30,7 +30,7 @@ describe('WalletToken', () => {
 
   it('should not show a warning when an asset is set to zero recommended decimal places', async () => {
     createTestBed(
-      <WalletToken asset={zeroDecimalPlacesToken} {...DEFAULT_WALLET_PROPS} />
+      <WalletToken asset={zeroDecimalPlacesToken} {...defaultWalletProps} />
     );
     await waitFor(() => screen.getByText(zeroDecimalPlacesToken.policyId));
     expect(screen.queryByTestId('warning-icon')).not.toBeInTheDocument();
@@ -38,7 +38,7 @@ describe('WalletToken', () => {
 
   it('should show a warning when an asset is not set to the recommended decimal places', async () => {
     createTestBed(
-      <WalletToken asset={withDecimalPlacesToken} {...DEFAULT_WALLET_PROPS} />
+      <WalletToken asset={withDecimalPlacesToken} {...defaultWalletProps} />
     );
     await waitFor(() => screen.getByText(withDecimalPlacesToken.policyId));
     expect(screen.queryAllByTestId('warning-icon').length).toEqual(2);
