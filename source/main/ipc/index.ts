@@ -21,8 +21,10 @@ import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
+import usbDetect from 'usb-detection';
 
 export default (window: BrowserWindow) => {
+  usbDetect.startMonitoring();
   compressLogsApi();
   downloadLogsApi();
   getLogsApi();
