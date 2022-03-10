@@ -56,10 +56,8 @@ export const handleCheckBlockReplayProgress = (
 
   tail.on('line', (line) => {
     if (
-      !(
-        isItFreshLog(applicationStartDate, line) &&
-        containProgressKeywords(line)
-      )
+      !isItFreshLog(applicationStartDate, line) ||
+      !containProgressKeywords(line)
     ) {
       return;
     }
