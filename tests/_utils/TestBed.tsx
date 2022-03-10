@@ -13,18 +13,18 @@ import { themeOverrides } from '../../source/renderer/app/themes/overrides';
 const TestBed = ({ children }: { children: ReactElement }) => (
   <ThemeProvider
     theme={daedalusTheme}
-		skins={SimpleSkins}
-		variables={SimpleDefaults}
-		themeOverrides={themeOverrides}
-	>
-		<IntlProvider locale="en-US" messages={translations}>
-			<BrowserLocalStorageBridge>
-				<DiscreetModeFeatureProvider>
-					{children}
-				</DiscreetModeFeatureProvider>
-			</BrowserLocalStorageBridge>
-		</IntlProvider>
-	</ThemeProvider>
+    skins={SimpleSkins}
+    variables={SimpleDefaults}
+    themeOverrides={themeOverrides}
+  >
+    <IntlProvider locale="en-US" messages={translations}>
+      <BrowserLocalStorageBridge>
+        <DiscreetModeFeatureProvider>
+          {children}
+        </DiscreetModeFeatureProvider>
+      </BrowserLocalStorageBridge>
+    </IntlProvider>
+  </ThemeProvider>
 );
 
 const createTestBed = (component: ReactElement) => {
