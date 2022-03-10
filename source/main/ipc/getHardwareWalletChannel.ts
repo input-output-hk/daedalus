@@ -1,8 +1,7 @@
 import { BrowserWindow } from 'electron';
-import moment from 'moment';
-import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { identifyUSBProductId } from '@ledgerhq/devices';
-import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
+import TransportNodeHid, {
+  getDevices,
+} from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import TrezorConnect, {
   DEVICE,

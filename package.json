@@ -244,6 +244,7 @@
     "moment": "2.29.0",
     "nanoid": "3.2.0",
     "node-downloader-helper": "1.0.18",
+    "node-hid": "2.1.1",
     "omit-deep-lodash": "1.1.5",
     "pbkdf2": "3.0.17",
     "pdfkit": "0.8.3",
@@ -281,7 +282,7 @@
     "tcp-port-used": "1.0.1",
     "trezor-connect": "8.2.4-extended",
     "unorm": "1.6.0",
-    "usb-detection": "4.13.0",
+    "usb-detection": "4.14.1",
     "validator": "13.7.0"
   },
   "devEngines": {

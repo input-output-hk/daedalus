@@ -1,5 +1,7 @@
-import { identifyUSBProductId } from '@ledgerhq/devices';
+import { identifyUSBProductId, ledgerUSBVendorId } from '@ledgerhq/devices';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
+
+import usbDetect from 'usb-detection';
 
 import { log } from '@ledgerhq/logs';
 import debounce from 'lodash/debounce';
@@ -17,6 +19,17 @@ export type Device = {
   interface: number;
   usagePage: number;
   usage: number;
+};
+
+let monitoring = false;
+
+const monitor = () => {
+  if (!monitoring) {
+    monitoring = true;
+    usbDetect.startMonitoring();
+  }
+
+  return () => {};
 };
 
 let usbDebounce = 100;
@@ -49,6 +62,11 @@ const getPayloadData = (type: 'add' | 'remove', device: Device) => {
 
 // No better way for now. see https://github.com/LedgerHQ/ledgerjs/issues/434
 process.on('exit', () => {
+  if (monitoring) {
+    // redeem the monitoring so the process can be terminated.
+    usbDetect.stopMonitoring();
+  }
+
   if (timer) {
     clearInterval(timer);
   }
@@ -67,6 +85,11 @@ export const listenDevices = (
   onAdd: (arg0: Payload) => void,
   onRemove: (arg0: Payload) => void
 ) => {
+  const addEvent = `add:${ledgerUSBVendorId}`;
+  const removeEvent = `remove:${ledgerUSBVendorId}`;
+
+  monitor();
+
   Promise.resolve(getDevices()).then((devices) => {
     // this needs to run asynchronously so the subscription is defined during this phase
     for (const device of devices) {
@@ -112,5 +135,6 @@ export const listenDevices = (
 
   const debouncedPoll = debounce(poll, usbDebounce);
 
-  timer = setInterval(debouncedPoll, 1000);
+  usbDetect.on(addEvent, debouncedPoll);
+  usbDetect.on(removeEvent, debouncedPoll);
 };
