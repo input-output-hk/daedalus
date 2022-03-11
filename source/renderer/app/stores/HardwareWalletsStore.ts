@@ -151,6 +151,10 @@ const useCardanoAppInterval = (
     addressVerification
   );
 
+interface ResetInitiatedConnectionArgs {
+  isAborted: boolean;
+}
+
 interface FindAssociatedWalletByExtendedPublicKeyArgs {
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
 }
@@ -1486,7 +1490,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  _resetInitiatedConnection = ({ isAborted }) => {
+  _resetInitiatedConnection = ({ isAborted }: ResetInitiatedConnectionArgs) => {
     runInAction('HardwareWalletsStore:: Re-run initiated connection', () => {
       this.hwDeviceStatus = isAborted
         ? HwDeviceStatuses.CONNECTING
@@ -1590,7 +1594,7 @@ export default class HardwareWalletsStore extends Store {
       deviceId,
     });
 
-    const recognizedHardwareWalletConnectionData = find(
+    const hardwareWalletConnectionData = find(
       this.hardwareWalletsConnectionData,
       (hardwareWalletData) =>
         extendedPublicKey.chainCodeHex ===
@@ -1599,10 +1603,8 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletData.extendedPublicKey.publicKeyHex
     );
 
-    return recognizedHardwareWalletConnectionData
-      ? this.stores.wallets.getWalletById(
-          recognizedHardwareWalletConnectionData.id
-        )
+    return hardwareWalletConnectionData
+      ? this.stores.wallets.getWalletById(hardwareWalletConnectionData.id)
       : null;
   };
 
@@ -1611,22 +1613,22 @@ export default class HardwareWalletsStore extends Store {
   _deletePendingDeviceWithGivenPath = async ({
     path,
   }: DeletePendingDeviceWithGivenPathArgs) => {
-    const recognizedDevice = find(
+    const device = find(
       this.hardwareWalletDevices,
       // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'HardwareWa... Remove this comment to see the full error message
       (device) => device.path === path
     );
 
-    if (!recognizedDevice) return;
+    if (!device) return;
 
     logger.debug(
       '[HW-DEBUG] HWStore - __deletePendingDeviceWithGivenPath - UNSET Device with path: ',
       {
-        recognizedDevice: recognizedDevice.id,
+        deviceId: device.id,
       }
     );
     await this._unsetHardwareWalletDevice({
-      deviceId: recognizedDevice.id,
+      deviceId: device.id,
     });
   };
 
@@ -1726,8 +1728,8 @@ export default class HardwareWalletsStore extends Store {
 
     this.verifyAddress({
       address,
-      path: devicePath,
       isTrezor,
+      path: devicePath,
     });
   };
 
@@ -1807,12 +1809,8 @@ export default class HardwareWalletsStore extends Store {
 
       // Check if sender wallet match transaction initialization
       if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
-        if (expectedWalletId) {
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-          logger.debug(
-            '[HW-DEBUG] HWStore - Device not belongs to this wallet'
-          );
-        }
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+        logger.debug('[HW-DEBUG] HWStore - Device not belongs to this wallet');
         this._discardConnectedDeviceAndReInitiateTransaction({
           walletId: expectedWalletId,
         });
@@ -1842,6 +1840,7 @@ export default class HardwareWalletsStore extends Store {
       );
 
       if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
+        logger.debug('[HW-DEBUG] HWStore - Device not belongs to this wallet');
         this._discardConnectedDeviceAndReInitiateAddressVerification({
           address,
           walletId: expectedWalletId,
