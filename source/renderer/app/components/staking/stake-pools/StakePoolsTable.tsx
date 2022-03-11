@@ -160,7 +160,6 @@ const initialState = {
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
   isHeaderStuck: false,
-  isTest: true,
 };
 
 @observer
@@ -180,11 +179,10 @@ class StakePoolsTable extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted) {
+      if (this._isMounted)
         this.setState({
           isPreloading: false,
         });
-      }
     }, 0);
   }
 
