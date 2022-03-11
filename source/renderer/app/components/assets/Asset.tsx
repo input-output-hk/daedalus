@@ -209,7 +209,9 @@ class Asset extends Component<Props, State> {
               })}
               className={styles.warningIconWrapper}
             >
-              <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              <span data-testid="warning-icon">
+                <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              </span>
             </PopOver>
           </div>
         )}
