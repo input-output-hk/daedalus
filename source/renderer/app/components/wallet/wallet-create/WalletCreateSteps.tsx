@@ -18,7 +18,7 @@ const messages = defineMessages({
   stepsCounter: {
     id: 'wallet.create.dialog.stepsCounter',
     defaultMessage: '!!!Step {currentStep} of {totalSteps}',
-    description: 'Step couters in the wallet create dialog.',
+    description: 'Step counters in the wallet create dialog.',
   },
   instructionsStep: {
     id: 'wallet.create.dialog.instructionsStep',

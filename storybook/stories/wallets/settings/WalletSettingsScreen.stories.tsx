@@ -235,7 +235,7 @@ export default (props: { locale: Locale }) => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletId="walletid"
+      walletId="walletId"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       delegationStakePoolStatus={delegationStakePoolStatus}
       lastDelegationStakePoolStatus={delegationStakePoolStatus}

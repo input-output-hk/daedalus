@@ -230,7 +230,7 @@ class VirtualTransactionList extends Component<Props> {
   };
   updateVisibleExpandedTxRowHeights = () => {
     const expandedTxMap = this.props.getExpandedTransactions();
-    // This is needed because a spreaded Map results in an array of [key, value]
+    // This is needed because a spread Map results in an array of [key, value]
     const expandedTxArray = [...expandedTxMap].map((mapValue) => mapValue[1]);
     const visibleExpandedTx = expandedTxArray.filter((tx) => {
       const index = this.findIndexForTx(tx);
