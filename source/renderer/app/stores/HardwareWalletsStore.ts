@@ -151,7 +151,7 @@ const useCardanoAppInterval = (
     addressVerification
   );
 
-interface RecognizeSoftwareWalletByExtendedPublicKeyArgs {
+interface FindAssociatedWalletByExtendedPublicKeyArgs {
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
 }
 
@@ -182,17 +182,23 @@ interface ProceedWithAddressVerificationAfterConnectingDeviceArgs {
   walletId: string;
 }
 
-interface HandleIdentifiedSoftwareWalletArgs {
+interface HandleAssociatedWalletArgs {
   address?: WalletAddress | null;
+  associatedWallet: Wallet;
+  expectedWalletId?: string;
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
-  forcedPath?: string;
-  recognizedSoftwareWallet: Wallet;
-  walletId?: string;
+  path?: string;
 }
 
-interface CreateNewSoftwareWalletForRecognizedPendingDeviceArgs {
+interface CreateNewWalletForRecognizedPendingDeviceArgs {
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
-  forcedPath?: string;
+  path?: string;
+}
+
+interface IdentifyAndHandleAssociatedWalletArgs {
+  address?: WalletAddress;
+  path?: string;
+  expectedWalletId?: string;
 }
 
 const { network, isDev } = global.environment;
@@ -726,10 +732,10 @@ export default class HardwareWalletsStore extends Store {
 
           if (this.isExportKeyAborted) {
             if (isTrezor) {
-              await this._identifyAndHandleSoftwareWallet({
+              await this._identifyAndHandleAssociatedWallet({
                 address: this.unfinishedWalletAddressVerification,
+                expectedWalletId: activeWalletId,
                 path: recognizedPairedHardwareWallet.path,
-                walletId: activeWalletId,
               });
             } else {
               this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
@@ -778,10 +784,10 @@ export default class HardwareWalletsStore extends Store {
           // Force export again and proceed (continue) with last action
           if (this.isExportKeyAborted) {
             if (isTrezor) {
-              await this._identifyAndHandleSoftwareWallet({
+              await this._identifyAndHandleAssociatedWallet({
                 address: this.unfinishedWalletAddressVerification,
+                expectedWalletId: activeWalletId,
                 path: lastDeviceTransport.path,
-                walletId: activeWalletId,
               });
             } else {
               this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
@@ -902,7 +908,7 @@ export default class HardwareWalletsStore extends Store {
         });
 
         if (deviceType === DeviceTypes.TREZOR) {
-          await this._identifyAndHandleSoftwareWallet({
+          await this._identifyAndHandleAssociatedWallet({
             path: transportDevice.path,
           });
         } else {
@@ -1006,10 +1012,10 @@ export default class HardwareWalletsStore extends Store {
           );
         }
 
-        await this._identifyAndHandleSoftwareWallet({
+        await this._identifyAndHandleAssociatedWallet({
           address,
+          expectedWalletId: walletId,
           path,
-          walletId,
         });
       }
     } catch (error) {
@@ -1249,17 +1255,17 @@ export default class HardwareWalletsStore extends Store {
         walletId,
         address
       );
-      const recognizedSoftwareWallet = await this._recognizeSoftwareWalletByExtendedPublicKey(
+      const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
         { extendedPublicKey }
       );
 
-      if (recognizedSoftwareWallet) {
-        await this._handleIdentifiedSoftwareWallet({
-          recognizedSoftwareWallet,
-          extendedPublicKey,
-          forcedPath: devicePath,
-          walletId,
+      if (associatedWallet) {
+        await this._handleAssociatedWallet({
           address,
+          associatedWallet,
+          expectedWalletId: walletId,
+          extendedPublicKey,
+          path: devicePath,
         });
       } else {
         logger.debug(
@@ -1575,16 +1581,16 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  _recognizeSoftwareWalletByExtendedPublicKey = async ({
+  _findAssociatedWalletByExtendedPublicKey = async ({
     extendedPublicKey,
-  }: RecognizeSoftwareWalletByExtendedPublicKeyArgs): Promise<Wallet | null> => {
+  }: FindAssociatedWalletByExtendedPublicKeyArgs): Promise<Wallet | null> => {
     const deviceId =
       extendedPublicKey?.deviceId || this.transportDevice.deviceId;
     logger.debug('[HW-DEBUG] HWStore - EXPORT - deviceID: ', {
       deviceId,
     });
 
-    const recognizedStoredWallet = find(
+    const recognizedHardwareWalletConnectionData = find(
       this.hardwareWalletsConnectionData,
       (hardwareWalletData) =>
         extendedPublicKey.chainCodeHex ===
@@ -1593,8 +1599,10 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletData.extendedPublicKey.publicKeyHex
     );
 
-    return recognizedStoredWallet
-      ? this.stores.wallets.getWalletById(recognizedStoredWallet.id)
+    return recognizedHardwareWalletConnectionData
+      ? this.stores.wallets.getWalletById(
+          recognizedHardwareWalletConnectionData.id
+        )
       : null;
   };
 
@@ -1724,28 +1732,27 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  _handleIdentifiedSoftwareWallet = async ({
+  _handleAssociatedWallet = async ({
     address,
+    associatedWallet,
+    expectedWalletId,
     extendedPublicKey,
-    forcedPath,
-    recognizedSoftwareWallet,
-    walletId,
-  }: HandleIdentifiedSoftwareWalletArgs) => {
-    const { deviceType, path, deviceName, deviceModel } = this.transportDevice;
+    path,
+  }: HandleAssociatedWalletArgs) => {
+    const { deviceType, deviceName, deviceModel } = this.transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
-    const devicePath = forcedPath || path;
+    const devicePath = path || this.transportDevice.path;
     const deviceId =
       extendedPublicKey.deviceId || this.transportDevice.deviceId;
 
     // Check if public key matches already restored hardware wallet public key
     // Update LC data and redirect to paired wallet
-
     logger.debug('[HW-DEBUG] HWStore - I have recognized wallet: ', {
-      recognizedWallet: recognizedSoftwareWallet.id,
+      recognizedWallet: associatedWallet.id,
     });
 
     this._setHardwareWalletLocalData({
-      walletId: recognizedSoftwareWallet.id,
+      walletId: associatedWallet.id,
       data: {
         disconnected: false,
         // @ts-ignore ts-migrate(2322) FIXME: Type '{ disconnected: false; data: { deviceType: D... Remove this comment to see the full error message
@@ -1754,14 +1761,14 @@ export default class HardwareWalletsStore extends Store {
           deviceModel,
           deviceName,
           path: devicePath,
-          paired: recognizedSoftwareWallet.id,
+          paired: associatedWallet.id,
           // device paired with software wallet
           disconnected: false, // device physically disconnected
         },
       },
     });
 
-    await this._deletePendingDeviceWithGivenPath({ path: forcedPath });
+    await this._deletePendingDeviceWithGivenPath({ path });
 
     if (deviceId) {
       logger.debug('[HW-DEBUG] HWStore - SET device from key export: ', {
@@ -1777,7 +1784,7 @@ export default class HardwareWalletsStore extends Store {
           deviceModel,
           deviceName,
           path: devicePath,
-          paired: recognizedSoftwareWallet.id,
+          paired: associatedWallet.id,
           // device paired with software wallet
           disconnected: false,
           // device physically disconnected
@@ -1789,30 +1796,32 @@ export default class HardwareWalletsStore extends Store {
     // Prevent redirect / check if device is valid / proceed with tx
     if (this.isTransactionInitiated) {
       logger.debug(
-        '[HW-DEBUG] HWStore - Re-initiate tx from _handleIdentifiedSoftwareWallet: ',
+        '[HW-DEBUG] HWStore - Re-initiate tx from _handleAssociatedWallet: ',
         {
-          walletId,
-          recognizedWalletId: recognizedSoftwareWallet.id,
+          expectedWalletId,
+          recognizedWalletId: associatedWallet.id,
           deviceId,
           devicePath,
         }
       );
 
       // Check if sender wallet match transaction initialization
-      if (!walletId || recognizedSoftwareWallet.id !== walletId) {
-        if (walletId) {
+      if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
+        if (expectedWalletId) {
           // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug(
             '[HW-DEBUG] HWStore - Device not belongs to this wallet'
           );
         }
-        this._discardConnectedDeviceAndReInitiateTransaction({ walletId });
+        this._discardConnectedDeviceAndReInitiateTransaction({
+          walletId: expectedWalletId,
+        });
       } else {
         this._proceedWithTransactionAfterConnectingDevice({
           isTrezor,
           deviceId,
           devicePath,
-          walletId,
+          walletId: expectedWalletId,
         });
       }
 
@@ -1822,27 +1831,27 @@ export default class HardwareWalletsStore extends Store {
     // Prevent redirect / check if device is valid / proceed with address verification
     if (this.isAddressVerificationInitiated && address) {
       logger.debug(
-        '[HW-DEBUG] HWStore - Re-initiate Address verification from _handleIdentifiedSoftwareWallet: ',
+        '[HW-DEBUG] HWStore - Re-initiate Address verification from _handleAssociatedWallet: ',
         {
           address: toJS(address),
           devicePath,
-          walletId,
-          recognizedWalletId: recognizedSoftwareWallet.id,
+          expectedWalletId,
+          recognizedWalletId: associatedWallet.id,
           deviceId,
         }
       );
 
-      if (!walletId || recognizedSoftwareWallet.id !== walletId) {
+      if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
         this._discardConnectedDeviceAndReInitiateAddressVerification({
           address,
-          walletId,
+          walletId: expectedWalletId,
         });
       } else {
         this._proceedWithAddressVerificationAfterConnectingDevice({
           address,
           devicePath,
           isTrezor,
-          walletId,
+          walletId: expectedWalletId,
         });
       }
 
@@ -1850,17 +1859,17 @@ export default class HardwareWalletsStore extends Store {
     }
 
     // --> Else
-    this.stores.wallets.goToWalletRoute(recognizedSoftwareWallet.id);
+    this.stores.wallets.goToWalletRoute(associatedWallet.id);
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
   @action
-  _createNewSoftwareWalletForRecognizedPendingDevice = async ({
+  _createNewWalletForRecognizedPendingDevice = async ({
     extendedPublicKey,
-    forcedPath,
-  }: CreateNewSoftwareWalletForRecognizedPendingDeviceArgs) => {
-    const { deviceType, path, deviceName, deviceModel } = this.transportDevice;
-    const devicePath = forcedPath || path;
+    path,
+  }: CreateNewWalletForRecognizedPendingDeviceArgs) => {
+    const { deviceType, deviceName, deviceModel } = this.transportDevice;
+    const devicePath = path || this.transportDevice.path;
     const deviceId =
       extendedPublicKey.deviceId || this.transportDevice.deviceId;
 
@@ -1920,31 +1929,27 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  _identifyAndHandleSoftwareWallet = async ({
+  _identifyAndHandleAssociatedWallet = async ({
     address,
     path,
-    walletId,
-  }: {
-    address?: WalletAddress;
-    path?: string;
-    walletId?: string;
-  }) => {
+    expectedWalletId,
+  }: IdentifyAndHandleAssociatedWalletArgs) => {
     const extendedPublicKey = await this._requestExtendedPublicKey(
       path,
-      walletId,
+      expectedWalletId,
       address
     );
-    const recognizedSoftwareWallet = await this._recognizeSoftwareWalletByExtendedPublicKey(
+    const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
       { extendedPublicKey }
     );
 
-    if (recognizedSoftwareWallet) {
-      await this._handleIdentifiedSoftwareWallet({
-        recognizedSoftwareWallet,
-        walletId,
-        extendedPublicKey,
-        forcedPath: path,
+    if (associatedWallet) {
+      await this._handleAssociatedWallet({
         address,
+        associatedWallet,
+        expectedWalletId,
+        extendedPublicKey,
+        path,
       });
     } else {
       const deviceId =
@@ -1959,12 +1964,12 @@ export default class HardwareWalletsStore extends Store {
       if (this.isTransactionInitiated) {
         // Software Wallet not recognized and TX initiated. Show error
         this._discardConnectedDeviceAndReInitiateTransaction({
-          walletId,
+          walletId: expectedWalletId,
         });
       } else {
-        await this._createNewSoftwareWalletForRecognizedPendingDevice({
+        await this._createNewWalletForRecognizedPendingDevice({
           extendedPublicKey,
-          forcedPath: path,
+          path,
         });
       }
     }
@@ -2604,21 +2609,20 @@ export default class HardwareWalletsStore extends Store {
           }
         );
 
-        const forcedPath = transportDevice.path;
         const extendedPublicKey = await this._requestExtendedPublicKey(
-          forcedPath,
+          transportDevice.path,
           walletId
         );
-        const recognizedSoftwareWallet = await this._recognizeSoftwareWalletByExtendedPublicKey(
+        const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
           { extendedPublicKey }
         );
 
-        if (recognizedSoftwareWallet) {
-          await this._handleIdentifiedSoftwareWallet({
-            recognizedSoftwareWallet,
-            walletId,
+        if (associatedWallet) {
+          await this._handleAssociatedWallet({
+            associatedWallet,
+            expectedWalletId: walletId,
             extendedPublicKey,
-            forcedPath,
+            path: transportDevice.path,
           });
         } else {
           const deviceId =
