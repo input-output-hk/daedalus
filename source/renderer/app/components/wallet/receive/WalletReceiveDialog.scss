@@ -134,7 +134,7 @@
     .verificationInstructions {
       font-family: var(--font-light);
       line-height: 1.38;
-      margin-top: 20px;
+      margin: 20px 0 12px;
 
       b {
         font-family: var(--font-medium);
@@ -144,7 +144,6 @@
     :global {
       .RadioSet_component {
         margin-bottom: 0;
-        margin-top: 12px;
 
         .RadioSet_label {
           margin: 0 0 20px 0;
