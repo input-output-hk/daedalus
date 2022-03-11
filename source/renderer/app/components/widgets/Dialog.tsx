@@ -69,16 +69,20 @@ export default class Dialog extends Component<Props> {
       fullSize,
       scrollWrapperRef,
     } = this.props;
+
     const { items, direction } = Array.isArray(actions)
       ? { ...defaultActionOptions, items: actions }
       : { ...defaultActionOptions, ...actions };
+
     let themeOverrides;
     if (defaultThemeOverrides) themeOverrides = dialogOverrides;
     else if (fullSize) themeOverrides = dialogFullSizeOverride;
+
     const classActionsClasses = classnames([
       styles.actions,
       styles[`${direction}Direction`],
     ]);
+
     return (
       <Modal
         isOpen
@@ -108,12 +112,12 @@ export default class Dialog extends Component<Props> {
                 if (scrollWrapperRef) scrollWrapperRef.current = ref;
               }}
             >
-              <div className={styles.content}>{children}</div>
+              {children}
             </div>
           )}
-          {footer && <div>{footer}</div>}
+          {footer && <div className={styles.footer}>{actions}</div>}
 
-          {items && (
+          {!!items?.length && (
             <div className={classActionsClasses}>
               {map(items, (action, key) => {
                 const buttonClasses = classnames([

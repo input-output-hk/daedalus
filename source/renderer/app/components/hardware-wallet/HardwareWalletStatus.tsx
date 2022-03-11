@@ -258,17 +258,16 @@ class HardwareWalletStatus extends Component<Props, State> {
     const { hwDeviceStatus } = this.state;
     const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
     const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
-    const hasErrored = hwDeviceErrorStatuses.includes(hwDeviceStatus);
-    const hasPassphraseLabel = hwDevicePassphraseRelatedStatuses.includes(
-      hwDeviceStatus
-    );
+    const isError = hwDeviceErrorStatuses.includes(hwDeviceStatus);
+    const passphraseLabelVisible =
+      isTrezor && hwDevicePassphraseRelatedStatuses.includes(hwDeviceStatus);
     const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
       hwDeviceStatus
     );
 
     const componentClasses = classnames(styles.component, {
       [styles.isReady]: isReady,
-      [styles.isError]: hasErrored,
+      [styles.isError]: isError,
     });
 
     let instructionsLink;
@@ -328,7 +327,7 @@ class HardwareWalletStatus extends Component<Props, State> {
                 label
               )}
             </div>
-            {hasPassphraseLabel && isTrezor && (
+            {passphraseLabelVisible && (
               <div className={styles.passphraseLabel}>
                 {intl.formatMessage(messages.enterPassphrase)}
               </div>
@@ -340,7 +339,7 @@ class HardwareWalletStatus extends Component<Props, State> {
           {isReady && (
             <SVGInline svg={checkIcon} className={styles.checkIcon} />
           )}
-          {hasErrored && (
+          {isError && (
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
         </div>
