@@ -1661,12 +1661,9 @@ export default class HardwareWalletsStore extends Store {
     deviceId,
     devicePath,
   }: ProceedWithTransactionAfterConnectingDeviceArgs) => {
-    logger.debug(
-      '[HW-DEBUG] HWStore - Transaction Initiated - Close: ',
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-      walletId
-    );
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+    logger.debug('[HW-DEBUG] HWStore - Transaction Initiated - Close: ', {
+      walletId,
+    });
     logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
     runInAction('HardwareWalletsStore:: Initiate transaction', () => {
       this.isTransactionInitiated = false;
@@ -1686,14 +1683,11 @@ export default class HardwareWalletsStore extends Store {
     address,
     walletId,
   }: DiscardConnectedDeviceAndReInitiateAddressVerificationArgs) => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('[HW-DEBUG] HWStore - Device not belongs to this wallet');
     // Show message to reconnect proper software wallet device pair
-    logger.debug(
-      '[HW-DEBUG] unfinishedWalletAddressVerification SET: ',
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-      walletId
-    );
+    logger.debug('[HW-DEBUG] unfinishedWalletAddressVerification SET: ', {
+      walletId,
+    });
     runInAction(
       'HardwareWalletsStore:: set HW device CONNECTING FAILED',
       () => {
@@ -1713,12 +1707,9 @@ export default class HardwareWalletsStore extends Store {
     isTrezor,
     walletId,
   }: ProceedWithAddressVerificationAfterConnectingDeviceArgs) => {
-    logger.debug(
-      '[HW-DEBUG] HWStore - Address Verification - Close: ',
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-      walletId
-    );
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+    logger.debug('[HW-DEBUG] HWStore - Address Verification - Close: ', {
+      walletId,
+    });
     logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
     runInAction('HardwareWalletsStore:: Initiate transaction', () => {
       this.isAddressVerificationInitiated = false;
@@ -1809,7 +1800,6 @@ export default class HardwareWalletsStore extends Store {
 
       // Check if sender wallet match transaction initialization
       if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.debug('[HW-DEBUG] HWStore - Device not belongs to this wallet');
         this._discardConnectedDeviceAndReInitiateTransaction({
           walletId: expectedWalletId,
@@ -1896,7 +1886,6 @@ export default class HardwareWalletsStore extends Store {
         firmwareVersion: null,
       },
     });
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('[HW-DEBUG] HWStore - HW created / restored');
     // Get all Pending devices with this path and delete
     const recognizedPendingDevice = find(
