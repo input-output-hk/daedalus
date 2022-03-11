@@ -7,6 +7,10 @@
 - Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
+### Fixes
+
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
+
 ### Chores
 
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
