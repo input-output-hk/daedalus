@@ -1,30 +1,34 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useState, useCallback } from 'react';
 
 type Props = {
-  onChange: (visible: boolean) => void;
+  children: (props: {
+    isInViewport: boolean;
+    setTargetRef: (target: HTMLElement) => void;
+  }) => JSX.Element;
 };
 
-export const InView = ({ onChange }: Props) => {
-  const elementRef = useRef(null);
+export const InView = ({ children }: Props) => {
+  const [isInViewport, setIsInViewport] = useState(true);
+  const targetRef = useRef(null);
   const observerRef = useRef(
     new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        onChange(entry.isIntersecting);
+        setIsInViewport(entry.isIntersecting);
       });
     })
   );
 
-  const setElementRef = useCallback((element) => {
-    if (elementRef.current) {
-      observerRef.current.unobserve(elementRef.current);
+  const setTargetRef = useCallback((target: HTMLElement) => {
+    if (targetRef.current) {
+      observerRef.current.unobserve(targetRef.current);
     }
 
-    if (element) {
-      observerRef.current.observe(element);
+    if (target) {
+      observerRef.current.observe(target);
     }
 
-    elementRef.current = element;
+    targetRef.current = target;
   }, []);
 
-  return <div ref={setElementRef} />;
+  return children({ isInViewport, setTargetRef });
 };

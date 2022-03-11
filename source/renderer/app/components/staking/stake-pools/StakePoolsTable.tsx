@@ -153,13 +153,11 @@ type State = {
   isPreloading: boolean;
   stakePoolsOrder: string;
   stakePoolsSortBy: string;
-  isHeaderStuck: boolean;
 };
 const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
-  isHeaderStuck: false,
 };
 
 @observer
@@ -221,12 +219,7 @@ class StakePoolsTable extends Component<Props, State> {
       onTableHeaderMouseEnter,
       onTableHeaderMouseLeave,
     } = this.props;
-    const {
-      isPreloading,
-      stakePoolsSortBy,
-      stakePoolsOrder,
-      isHeaderStuck,
-    } = this.state;
+    const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
     if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
@@ -377,31 +370,35 @@ class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRetiring),
       },
     ];
+
     return (
       <div>
         <div className={componentClasses}>
           {sortedStakePoolList.length > 0 && (
             <BorderedBox>
-              <InView
-                onChange={(visible) =>
-                  this.setState({ isHeaderStuck: !visible })
-                }
-              />
               <table>
-                <thead
-                  className={isHeaderStuck ? styles.isHeaderStuck : ''}
-                  onMouseEnter={onTableHeaderMouseEnter}
-                  onMouseLeave={onTableHeaderMouseLeave}
-                >
-                  <tr>
-                    <StakePoolsTableHeader
-                      availableTableHeaders={availableTableHeaders}
-                      stakePoolsSortBy={stakePoolsSortBy}
-                      stakePoolsOrder={stakePoolsOrder}
-                      onHandleSort={this.handleSort}
-                    />
-                  </tr>
-                </thead>
+                <InView>
+                  {({ isInViewport, setTargetRef }) => (
+                    <>
+                      <caption ref={setTargetRef} />
+                      <thead
+                        className={!isInViewport ? styles.headerStuck : ''}
+                        onMouseEnter={onTableHeaderMouseEnter}
+                        onMouseLeave={onTableHeaderMouseLeave}
+                      >
+                        <tr>
+                          <StakePoolsTableHeader
+                            availableTableHeaders={availableTableHeaders}
+                            stakePoolsSortBy={stakePoolsSortBy}
+                            stakePoolsOrder={stakePoolsOrder}
+                            onHandleSort={this.handleSort}
+                          />
+                        </tr>
+                      </thead>
+                    </>
+                  )}
+                </InView>
+
                 <tbody>
                   <StakePoolsTableBody
                     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
