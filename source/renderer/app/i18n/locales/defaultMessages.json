@@ -886,7 +886,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Unformated amount",
+        "defaultMessage": "!!!Unformatted amount",
         "description": "\"formattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
@@ -900,7 +900,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Formated amount",
+        "defaultMessage": "!!!Formatted amount",
         "description": "\"unformattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
@@ -7406,7 +7406,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Amit Sagar, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Lucas Araujo, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Renan Ferreira, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
+        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Lucas Araujo, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Renan Ferreira, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
@@ -11857,7 +11857,7 @@
       },
       {
         "defaultMessage": "!!!unformatted amount",
-        "description": "Label for \"unformated amount\"",
+        "description": "Label for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 94
@@ -11871,7 +11871,7 @@
       },
       {
         "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "Message for \"unformated amount\"",
+        "description": "Message for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 101
@@ -11885,7 +11885,7 @@
       },
       {
         "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "Message for \"unformated amount\"",
+        "description": "Message for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 108
@@ -14107,7 +14107,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This transaction was submitted to the Cardano network some time ago, but hasn’t been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.",
+        "defaultMessage": "!!!This transaction was submitted to the Cardano network some time ago, but has not been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.",
         "description": "Content for the pending transaction cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -15470,7 +15470,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet create dialog.",
+        "description": "Step counters in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 22
@@ -15774,15 +15774,15 @@
       },
       {
         "defaultMessage": "!!!Unnamed wallets",
-        "description": "unamedWalletsTitle",
+        "description": "unnamedWalletsTitle",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.tsx",
-        "id": "wallet.select.import.dialog.unamedWalletsTitle",
+        "id": "wallet.select.import.dialog.unnamedWalletsTitle",
         "start": {
-          "column": 22,
+          "column": 23,
           "line": 45
         }
       },
@@ -16630,7 +16630,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet restore dialog.",
+        "description": "Step counters in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 29

@@ -8,7 +8,7 @@ import FilterDialog from './FilterDialog';
 import type { FilterDialogProps } from './FilterDialog';
 import styles from './WalletTransactionsHeader.scss';
 import TinyButton from '../../widgets/forms/TinyButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/download... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-icon.inline.svg';
 
 export const messages = defineMessages({

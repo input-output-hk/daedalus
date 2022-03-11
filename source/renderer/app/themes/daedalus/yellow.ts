@@ -7,7 +7,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-about-window-header-bottom-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-about-window-daedalus-icon-color': '#2d2d2d',
     '--theme-about-window-cardano-icon-color': '#2d2d2d',
-    '--theme-about-window-title-varsion-color': '#2d2d2d',
+    '--theme-about-window-title-version-color': '#2d2d2d',
     '--theme-about-window-title-stroke-color': '#2d2d2d',
     '--theme-about-window-content-color': '#2d2d2d',
     '--theme-about-window-content-text-color': '#2d2d2d',

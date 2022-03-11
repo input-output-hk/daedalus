@@ -168,7 +168,7 @@ Then(/^I click on stake pools tab button/, async function () {
 Then(/^I am on the Staking pool screen/, async function () {
   await this.client.waitForVisible(STAKE_POOL_PAGE);
 });
-Then(/^I should't see loading message anymore/, function () {
+Then(/^I shouldn't see loading message anymore/, function () {
   return this.client.waitForVisible(LOADING_MESSAGE_SELECTOR, null, true);
 });
 Then(/^I should see stake pools listed/, async function () {

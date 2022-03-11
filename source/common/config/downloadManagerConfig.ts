@@ -1,14 +1,13 @@
 // https://www.npmjs.com/package/node-downloader-helper
 import type {
-  AllowedDownloadDirectories,
+  AllowedDownloadDirectoriesValues,
+  AllowedDownloadDirectoriesKeys,
+  AllowedDownloadDirectoriesMap,
   DownloadState,
   DownloadEventType,
 } from '../types/downloadManager.types';
 
-export const ALLOWED_DOWNLOAD_DIRECTORIES: Record<
-  string,
-  AllowedDownloadDirectories
-> = {
+export const ALLOWED_DOWNLOAD_DIRECTORIES: AllowedDownloadDirectoriesMap = {
   DOWNLOADS: 'downloads',
   DESKTOP: 'desktop',
   STATE_DIRECTORY: 'stateDirectory',
