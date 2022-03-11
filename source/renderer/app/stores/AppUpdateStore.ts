@@ -183,7 +183,7 @@ export default class AppUpdateStore extends Store {
     /*
      * The update was already installed and the installer was already deleted.
      * We can't simply compare with the `package.json` version
-     * otherwise we would trigger the localdata cleaning on every app load
+     * otherwise we would trigger the local data cleaning on every app load
      */
     if (appUpdateCompleted === version) return false;
 
@@ -332,7 +332,7 @@ export default class AppUpdateStore extends Store {
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ id: string; options: { progres... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ id: string; options: { progress... Remove this comment to see the full error message
       options: {
         progressIsThrottled: false,
         persistLocalData: true,

@@ -7,7 +7,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-about-window-header-bottom-border-color': '#ffffff4d',
     '--theme-about-window-daedalus-icon-color': '#ffffff',
     '--theme-about-window-cardano-icon-color': '#ffffff',
-    '--theme-about-window-title-varsion-color': '#ffffff',
+    '--theme-about-window-title-version-color': '#ffffff',
     '--theme-about-window-title-stroke-color': '#ffffff',
     '--theme-about-window-content-color': '#ffffff',
     '--theme-about-window-content-text-color': '#ffffff',

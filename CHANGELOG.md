@@ -4,6 +4,7 @@
 
 ### Features
 
+- Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Fixes
@@ -12,11 +13,13 @@
 
 ### Chores
 
+- Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 - Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
 
 ### Fixes
 
+- Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
 
 ## 4.9.0
@@ -32,6 +35,7 @@
 
 - Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
 - Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+- Fixed the gap between Stake Pool View options ([PR 2899](https://github.com/input-output-hk/daedalus/pull/2899))
 
 ### Chores
 

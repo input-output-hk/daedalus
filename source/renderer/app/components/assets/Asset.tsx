@@ -179,7 +179,7 @@ class Asset extends Component<Props, State> {
       styles.pill,
       hasError ? styles.error : null,
     ]);
-    const [startCharAmount, endCharAmoout] = small ? [9, 4] : [12, 12];
+    const [startCharAmount, endCharAmount] = small ? [9, 4] : [12, 12];
     let warningPopOverMessage;
 
     if (hasWarning) {
@@ -194,7 +194,7 @@ class Asset extends Component<Props, State> {
         <div className={styles.fingerprint}>
           {fullFingerprint
             ? fingerprint
-            : ellipsis(fingerprint || '', startCharAmount, endCharAmoout)}
+            : ellipsis(fingerprint || '', startCharAmount, endCharAmount)}
         </div>
         {name && (
           <div className={styles.metadataName}>
@@ -209,7 +209,9 @@ class Asset extends Component<Props, State> {
               })}
               className={styles.warningIconWrapper}
             >
-              <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              <span data-testid="warning-icon">
+                <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              </span>
             </PopOver>
           </div>
         )}

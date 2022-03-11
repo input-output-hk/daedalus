@@ -8,7 +8,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.3)',
     '--theme-about-window-daedalus-icon-color': '#e9f4fe',
     '--theme-about-window-cardano-icon-color': '#e9f4fe',
-    '--theme-about-window-title-varsion-color': '#e9f4fe',
+    '--theme-about-window-title-version-color': '#e9f4fe',
     '--theme-about-window-title-stroke-color': '#e9f4fe',
     '--theme-about-window-content-color': '#fafbfc',
     '--theme-about-window-content-text-color': 'rgba(250, 251, 252, 0.7)',

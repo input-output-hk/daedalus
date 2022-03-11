@@ -862,13 +862,13 @@
         "description": "\"title\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -876,41 +876,41 @@
         "description": "\"description\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Unformated amount",
+        "defaultMessage": "!!!Unformatted amount",
         "description": "\"formattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.formattedAmount.label",
         "start": {
           "column": 25,
-          "line": 33
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Formated amount",
+        "defaultMessage": "!!!Formatted amount",
         "description": "\"unformattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.unformattedAmount.label",
         "start": {
           "column": 27,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -918,13 +918,13 @@
         "description": "\"decimalPrecisionLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.decimalPrecision.label",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -932,13 +932,13 @@
         "description": "\"recommended\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.recommended",
         "start": {
           "column": 15,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -946,13 +946,13 @@
         "description": "\"default\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.default",
         "start": {
           "column": 11,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -960,13 +960,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.warning.available",
         "start": {
           "column": 27,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -974,13 +974,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.warning.notUsing",
         "start": {
           "column": 26,
-          "line": 64
+          "line": 65
         }
       }
     ],
@@ -1620,7 +1620,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your system specifications do not meet Daedalus’ recommended hardware requirements.<br />You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.",
+        "defaultMessage": "!!!<p>Your system specifications do not meet Daedalus’ recommended hardware requirements.</p><p>You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.</p><p>You can enable it now by clicking the ‘Enable and quit’ button. Note that you will have to restart Daedalus for this change to take effect. To enable or disable it at any time, go to the Help menu.</p>",
         "description": "Content of the RTS flags recommendation overlay",
         "end": {
           "column": 3,
@@ -7392,7 +7392,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Amit Sagar, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Lucas Araujo, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Renan Ferreira, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
+        "defaultMessage": "!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Daniel Main, Danilo Prates, Darko Mijić, Dmitrii Gaico, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Lucas Araujo, Manus McCole, Marcin Mazurek, Michael Bishop, Michael Chappell, Mior Sufian, Nikola Glumac, Piotr Stachyra, Przemysław Włodek, Renan Ferreira, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Szymon Masłowski, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
@@ -11843,7 +11843,7 @@
       },
       {
         "defaultMessage": "!!!unformatted amount",
-        "description": "Label for \"unformated amount\"",
+        "description": "Label for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 94
@@ -11857,7 +11857,7 @@
       },
       {
         "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "Message for \"unformated amount\"",
+        "description": "Message for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 101
@@ -11871,7 +11871,7 @@
       },
       {
         "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "Message for \"unformated amount\"",
+        "description": "Message for \"unformatted amount\"",
         "end": {
           "column": 5,
           "line": 108
@@ -14093,7 +14093,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This transaction was submitted to the Cardano network some time ago, but hasn’t been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.",
+        "defaultMessage": "!!!This transaction was submitted to the Cardano network some time ago, but has not been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.",
         "description": "Content for the pending transaction cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -15456,7 +15456,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet create dialog.",
+        "description": "Step counters in the wallet create dialog.",
         "end": {
           "column": 3,
           "line": 22
@@ -15760,15 +15760,15 @@
       },
       {
         "defaultMessage": "!!!Unnamed wallets",
-        "description": "unamedWalletsTitle",
+        "description": "unnamedWalletsTitle",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/components/wallet/wallet-import/WalletSelectImportDialog.tsx",
-        "id": "wallet.select.import.dialog.unamedWalletsTitle",
+        "id": "wallet.select.import.dialog.unnamedWalletsTitle",
         "start": {
-          "column": 22,
+          "column": 23,
           "line": 45
         }
       },
@@ -16616,7 +16616,7 @@
       },
       {
         "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet restore dialog.",
+        "description": "Step counters in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 29
