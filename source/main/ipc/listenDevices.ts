@@ -3,7 +3,7 @@ import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 
 import usbDetect from 'usb-detection';
 
-import { log } from '@ledgerhq/logs';
+import { log, listen } from '@ledgerhq/logs';
 import debounce from 'lodash/debounce';
 
 export type Device = {
@@ -21,7 +21,12 @@ export type Device = {
   usage: number;
 };
 
+listen(console.log);
+
 let monitoring = false;
+
+const deviceToLog = ({ productId, locationId, deviceAddress }) =>
+  `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
 
 const monitor = () => {
   if (!monitoring) {
@@ -87,6 +92,7 @@ export const listenDevices = (
 ) => {
   const addEvent = `add:${ledgerUSBVendorId}`;
   const removeEvent = `remove:${ledgerUSBVendorId}`;
+  let timeout;
 
   monitor();
 
@@ -135,6 +141,30 @@ export const listenDevices = (
 
   const debouncedPoll = debounce(poll, usbDebounce);
 
-  usbDetect.on(addEvent, debouncedPoll);
-  usbDetect.on(removeEvent, debouncedPoll);
+  const add = (device: usbDetect.Device) => {
+    log('usb-detection', `add: ${deviceToLog(device)}`);
+
+    if (!timeout) {
+      // a time is needed for the device to actually be connectable over HID..
+      // we also take this time to not emit the device yet and potentially cancel it if a remove happens.
+      timeout = setTimeout(() => {
+        debouncedPoll();
+        timeout = null;
+      }, usbDebounce);
+    }
+  };
+
+  const remove = (device: usbDetect.Device) => {
+    log('usb-detection', `remove: ${deviceToLog(device)}`);
+
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    } else {
+      debouncedPoll();
+    }
+  };
+
+  usbDetect.on(addEvent, add);
+  usbDetect.on(removeEvent, remove);
 };
