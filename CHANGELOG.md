@@ -4,6 +4,7 @@
 
 ### Features
 
+- Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
 - Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
