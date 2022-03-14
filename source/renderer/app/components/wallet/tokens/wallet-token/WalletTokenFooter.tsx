@@ -11,13 +11,13 @@ import type { AssetToken } from '../../../../api/assets/types';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/asse... Remove this comment to see the full error message
 import warningIcon from '../../../../assets/images/asset-token-warning-ic.inline.svg';
 import { messages } from './WalletToken.messages';
-import { isRecommendedDecimal } from './helpers';
 
 type Props = {
   asset: AssetToken;
   className?: string;
   intl: intlShape.isRequired;
   isLoading: boolean;
+  hasWarning: boolean;
   onAssetSettings?: (...args: Array<any>) => any;
   onOpenAssetSend?: (...args: Array<any>) => any;
 };
@@ -28,14 +28,12 @@ const WalletTokenFooter = (props: Props) => {
     className,
     intl,
     isLoading,
+    hasWarning,
     onAssetSettings,
     onOpenAssetSend,
   } = props;
   const { recommendedDecimals, decimals } = asset;
-  const hasWarning = isRecommendedDecimal({
-    decimals,
-    recommendedDecimals,
-  });
+
   const warningPopOverMessage =
     typeof decimals === 'number'
       ? messages.settingsWarningPopOverNotUsing
@@ -74,7 +72,11 @@ const WalletTokenFooter = (props: Props) => {
               label={
                 <>
                   {intl.formatMessage(messages.settingsButtonLabel)}
-                  {hasWarning && <SVGInline svg={warningIcon} />}
+                  {hasWarning && (
+                    <span data-testid="warning-icon">
+                      <SVGInline svg={warningIcon} />
+                    </span>
+                  )}
                 </>
               }
               onClick={() =>
