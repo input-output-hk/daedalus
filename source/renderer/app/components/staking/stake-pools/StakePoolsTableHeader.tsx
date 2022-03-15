@@ -9,45 +9,44 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import { defaultTableOrdering } from './StakePoolsTable';
 
 type TableHeaderProps = {
-  availableTableHeaders: Array<{
-    name: string;
-    title: any;
-  }>;
+  name: string;
   stakePoolsSortBy: string;
   stakePoolsOrder: string;
   onHandleSort: (...args: Array<any>) => any;
+  children: React.ReactNode;
 };
 
 @observer
 class StakePoolsTableHeader extends Component<TableHeaderProps> {
   render() {
     const {
-      availableTableHeaders,
+      name,
       stakePoolsSortBy,
       stakePoolsOrder,
       onHandleSort,
+      children,
+      ...headerProps
     } = this.props;
-    return map(availableTableHeaders, (tableHeader) => {
-      const isSorted =
-        tableHeader.name === stakePoolsSortBy ||
-        (tableHeader.name === 'ticker' && stakePoolsSortBy === 'ticker');
-      const defaultOrdering = defaultTableOrdering[tableHeader.name];
-      const sortIconClasses = classNames([
-        styles.sortIcon,
-        isSorted ? styles.sorted : null,
-        isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
-        styles[`${defaultOrdering}DefaultOrdering`],
-      ]);
-      return (
-        <th
-          key={tableHeader.name}
-          onClick={() => onHandleSort(tableHeader.name)}
-        >
-          {tableHeader.title}
-          <SVGInline svg={sortIcon} className={sortIconClasses} />
-        </th>
-      );
-    });
+    const isSorted =
+      name === stakePoolsSortBy ||
+      (name === 'ticker' && stakePoolsSortBy === 'ticker');
+    const defaultOrdering = defaultTableOrdering[name];
+    const sortIconClasses = classNames([
+      styles.sortIcon,
+      isSorted ? styles.sorted : null,
+      isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
+      styles[`${defaultOrdering}DefaultOrdering`],
+    ]);
+    return (
+      <div
+        className={styles.th}
+        onClick={() => onHandleSort(name)}
+        {...headerProps}
+      >
+        {children}
+        <SVGInline svg={sortIcon} className={sortIconClasses} />
+      </div>
+    );
   }
 }
 
