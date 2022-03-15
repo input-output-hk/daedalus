@@ -10,7 +10,6 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
-import { InView } from '../../widgets/InView';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -377,28 +376,14 @@ class StakePoolsTable extends Component<Props, State> {
           {sortedStakePoolList.length > 0 && (
             <BorderedBox>
               <table>
-                <InView>
-                  {({ isInViewport, setTargetRef }) => (
-                    <>
-                      <caption ref={setTargetRef} />
-                      <thead
-                        className={!isInViewport ? styles.headerStuck : ''}
-                        onMouseEnter={onTableHeaderMouseEnter}
-                        onMouseLeave={onTableHeaderMouseLeave}
-                      >
-                        <tr>
-                          <StakePoolsTableHeader
-                            availableTableHeaders={availableTableHeaders}
-                            stakePoolsSortBy={stakePoolsSortBy}
-                            stakePoolsOrder={stakePoolsOrder}
-                            onHandleSort={this.handleSort}
-                          />
-                        </tr>
-                      </thead>
-                    </>
-                  )}
-                </InView>
-
+                <StakePoolsTableHeader
+                  availableTableHeaders={availableTableHeaders}
+                  stakePoolsSortBy={stakePoolsSortBy}
+                  stakePoolsOrder={stakePoolsOrder}
+                  onHandleSort={this.handleSort}
+                  onTableHeaderMouseEnter={onTableHeaderMouseEnter}
+                  onTableHeaderMouseLeave={onTableHeaderMouseLeave}
+                />
                 <tbody>
                   <StakePoolsTableBody
                     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.

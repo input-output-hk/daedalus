@@ -1,13 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
 
-type Props = {
-  children: (props: {
-    isInViewport: boolean;
-    setTargetRef: (target: HTMLElement) => void;
-  }) => JSX.Element;
-};
-
-export const InView = ({ children }: Props) => {
+export const useInViewPort = () => {
   const [isInViewport, setIsInViewport] = useState(true);
   const targetRef = useRef(null);
   const observerRef = useRef(
@@ -30,5 +23,5 @@ export const InView = ({ children }: Props) => {
     targetRef.current = target;
   }, []);
 
-  return children({ isInViewport, setTargetRef });
+  return { isInViewport, setTargetRef };
 };
