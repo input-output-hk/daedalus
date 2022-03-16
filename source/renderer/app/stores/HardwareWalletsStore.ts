@@ -1264,13 +1264,15 @@ export default class HardwareWalletsStore extends Store {
       );
 
       if (associatedWallet) {
-        await this._handleAssociatedWallet({
-          address,
-          associatedWallet,
-          expectedWalletId: walletId,
-          extendedPublicKey,
-          path: devicePath,
-        });
+        await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+          {
+            address,
+            associatedWallet,
+            expectedWalletId: walletId,
+            extendedPublicKey,
+            path: devicePath,
+          }
+        );
       } else {
         logger.debug(
           '[HW-DEBUG] HWStore - Software wallet not recognized - Setting error states'
@@ -1725,7 +1727,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  _handleAssociatedWallet = async ({
+  _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting = async ({
     address,
     associatedWallet,
     expectedWalletId,
@@ -1789,7 +1791,7 @@ export default class HardwareWalletsStore extends Store {
     // Prevent redirect / check if device is valid / proceed with tx
     if (this.isTransactionInitiated) {
       logger.debug(
-        '[HW-DEBUG] HWStore - Re-initiate tx from _handleAssociatedWallet: ',
+        '[HW-DEBUG] HWStore - Re-initiate tx from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
         {
           expectedWalletId,
           recognizedWalletId: associatedWallet.id,
@@ -1819,7 +1821,7 @@ export default class HardwareWalletsStore extends Store {
     // Prevent redirect / check if device is valid / proceed with address verification
     if (this.isAddressVerificationInitiated && address) {
       logger.debug(
-        '[HW-DEBUG] HWStore - Re-initiate Address verification from _handleAssociatedWallet: ',
+        '[HW-DEBUG] HWStore - Re-initiate Address verification from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
         {
           address: toJS(address),
           devicePath,
@@ -1932,13 +1934,15 @@ export default class HardwareWalletsStore extends Store {
     );
 
     if (associatedWallet) {
-      await this._handleAssociatedWallet({
-        address,
-        associatedWallet,
-        expectedWalletId,
-        extendedPublicKey,
-        path,
-      });
+      await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+        {
+          address,
+          associatedWallet,
+          expectedWalletId,
+          extendedPublicKey,
+          path,
+        }
+      );
     } else {
       const deviceId =
         extendedPublicKey.deviceId || this.transportDevice.deviceId;
@@ -2606,12 +2610,14 @@ export default class HardwareWalletsStore extends Store {
         );
 
         if (associatedWallet) {
-          await this._handleAssociatedWallet({
-            associatedWallet,
-            expectedWalletId: walletId,
-            extendedPublicKey,
-            path: transportDevice.path,
-          });
+          await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+            {
+              associatedWallet,
+              expectedWalletId: walletId,
+              extendedPublicKey,
+              path: transportDevice.path,
+            }
+          );
         } else {
           const deviceId =
             extendedPublicKey.deviceId || this.transportDevice.deviceId;
