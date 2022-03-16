@@ -21,6 +21,7 @@
 - Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
 - Sets minimum transaction fee to ada input field when tokens are removed ([PR 2918](https://github.com/input-output-hk/daedalus/pull/2918))
+- Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
 
 ### Chores
 
