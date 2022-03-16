@@ -1,0 +1,18 @@
+$columns: 3;
+
+.root {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: var(--theme-backup-mnemonic-background-color);
+  color: var(--theme-dialog-text-color);
+  font-family: var(--font-medium);
+}
+
+.inputList {
+  width: calc(#{percentage(1 / $columns)} - 30px);
+}
+
+.inputWrapper {
+  margin-bottom: 10px;
+}

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { join } from 'lodash';
+import React, { Component, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
@@ -20,6 +19,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
 } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { MnemonicInput } from '../mnemonics-input';
 
 const messages = defineMessages({
   headline: {
@@ -56,13 +56,6 @@ const messages = defineMessages({
     description:
       '"Paper wallet create certificate verification dialog" recovery phrase hint.',
   },
-  recoveryPhraseNoResults: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults',
-    defaultMessage: '!!!No results',
-    description:
-      '"Paper wallet create certificate verification dialog" recovery phrase no results label.',
-  },
   clearButtonLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.button.clearLabel',
     defaultMessage: '!!!Clear',
@@ -90,6 +83,7 @@ type State = {
   storingConfirmed: boolean;
   recoveringConfirmed: boolean;
   isRecoveryPhraseValid: boolean;
+  error: boolean;
 };
 type Props = {
   walletCertificateRecoveryPhrase: string;
@@ -112,6 +106,7 @@ class VerificationDialog extends Component<Props, State> {
     storingConfirmed: false,
     recoveringConfirmed: false,
     isRecoveryPhraseValid: false,
+    error: false,
   };
   onStoringConfirmation = () => {
     this.setState((prevState) => ({
@@ -123,7 +118,6 @@ class VerificationDialog extends Component<Props, State> {
       recoveringConfirmed: !prevState.recoveringConfirmed,
     }));
   };
-  recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
@@ -157,7 +151,7 @@ class VerificationDialog extends Component<Props, State> {
               }
 
               const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
-              const enteredRecoveryPhrase = join(enteredWordsArray, ' ');
+              const enteredRecoveryPhrase = enteredWordsArray.join(' ');
               const isRecoveryPhraseValid =
                 fullRecoveryPhrase === enteredRecoveryPhrase;
               this.setState({
@@ -184,11 +178,18 @@ class VerificationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
   );
+  handleMnemonicInputChange = (value) => {
+    if (this.state.error) {
+      this.setState((prevState) => ({ ...prevState, error: false }));
+    }
+
+    this.form.$('recoveryPhrase').bind().onChange(value);
+  };
+
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -197,24 +198,19 @@ class VerificationDialog extends Component<Props, State> {
           recoveryPhrase,
         });
       },
-      onError: () => {},
+      onError: () => {
+        this.setState((prevState) => ({ ...prevState, error: true }));
+      },
     });
   };
   resetForm = () => {
     const { form } = this;
-    const autocomplete = this.recoveryPhraseAutocomplete;
     // Cancel all debounced field validations
     form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
     form.showErrors(false);
-    // Autocomplete has to be reset manually
-    autocomplete.clear();
-
-    if (autocomplete && autocomplete.focus) {
-      autocomplete.focus();
-    }
 
     this.setState({
       storingConfirmed: false,
@@ -230,6 +226,7 @@ class VerificationDialog extends Component<Props, State> {
       storingConfirmed,
       recoveringConfirmed,
       isRecoveryPhraseValid,
+      error,
     } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
@@ -251,10 +248,12 @@ class VerificationDialog extends Component<Props, State> {
         className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: !storingConfirmed || !recoveringConfirmed,
+        disabled: error,
         onClick: this.submit.bind(this),
       },
     ];
+    const mnemonicInputProps = recoveryPhraseField.bind();
+
     return (
       <Dialog
         className={dialogClasses}
@@ -277,23 +276,13 @@ class VerificationDialog extends Component<Props, State> {
             </strong>
           </p>
           <div className={styles.content}>
-            <Autocomplete
-              className={styles.recoveryPhrase}
-              options={suggestedMnemonics}
-              maxSelections={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-              ref={(autocomplete) => {
-                this.recoveryPhraseAutocomplete = autocomplete;
-              }}
-              {...recoveryPhraseField.bind()}
-              error={recoveryPhraseField.error}
-              maxVisibleOptions={5}
-              noResultsMessage={intl.formatMessage(
-                messages.recoveryPhraseNoResults
-              )}
-              skin={AutocompleteSkin}
-              optionHeight={50}
+            <MnemonicInput
+              {...mnemonicInputProps}
+              onChange={this.handleMnemonicInputChange}
+              availableWords={suggestedMnemonics.sort()}
+              wordsCount={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+              error={!!recoveryPhraseField.error}
             />
-
             <Checkbox
               className={storingUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
