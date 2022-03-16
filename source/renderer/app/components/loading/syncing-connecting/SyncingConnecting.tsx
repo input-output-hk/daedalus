@@ -190,12 +190,14 @@ class SyncingConnecting extends Component<Props, State> {
             />
           )}
           {showNewsFeedIcon && (
-            <NewsFeedIcon
-              onNewsFeedIconClick={onToggleNewsFeedIconClick}
-              newsFeedIconClass={newsFeedIconStyles}
-              hasNotification={hasNotification}
-              hasUpdate={hasUpdate}
-            />
+            <div className={styles.newsFeedContainer}>
+              <NewsFeedIcon
+                onNewsFeedIconClick={onToggleNewsFeedIconClick}
+                newsFeedIconClass={newsFeedIconStyles}
+                hasNotification={hasNotification}
+                hasUpdate={hasUpdate}
+              />
+            </div>
           )}
           <LogosDisplay isConnected={isConnected} />
         </div>

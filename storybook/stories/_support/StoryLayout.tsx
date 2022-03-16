@@ -243,21 +243,10 @@ class StoryLayout extends Component<Props> {
         // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         isProduction
         isMainnet
-        {...(boolean('hasTadaIcon', true)
-          ? {
-              hasTadaIcon: true,
-            }
-          : {})}
       />
-      <span
-        className={classNames(
-          topBarStyles.rectangle,
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
-          boolean('hasTadaIcon') && topBarStyles.hasTadaIcon
-        )}
-      />
+      <span className={topBarStyles.rectangle} />
       {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
-      <DiscreetToggleTopBar hasTadaIcon={boolean('hasTadaIcon')} />
+      <DiscreetToggleTopBar />
       {/* @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1. */}
       {boolean('hasTadaIcon') && (
         <TadaButton onClick={action('onClickTadaButton')} shouldAnimate />

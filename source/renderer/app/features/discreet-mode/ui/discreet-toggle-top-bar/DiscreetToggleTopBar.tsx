@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
@@ -14,12 +13,12 @@ type Props = {
   hasTadaIcon?: boolean;
 };
 
-const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
+const DiscreetToggleTopBar = ({ intl }: Props) => {
   const { isDiscreetMode, toggleDiscreetMode } = useDiscreetModeFeature();
   const [visible, setVisible] = useState(false);
   return (
     <div
-      className={classnames(styles.root, hasTadaIcon && styles.hasTadaIcon)}
+      className={styles.root}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >

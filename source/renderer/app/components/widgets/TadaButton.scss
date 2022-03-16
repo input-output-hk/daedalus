@@ -1,9 +1,10 @@
 .component {
   cursor: pointer;
   font-size: 19px;
-  position: absolute;
-  right: 94px;
+  margin-left: 8px;
+  margin-right: 18px;
   transform-origin: bottom left;
+
   &.animate {
     animation: animation 0.7s cubic-bezier(0.7, 0, 0.24, 1.01) infinite;
     svg {
@@ -13,6 +14,7 @@
     }
   }
 }
+
 .icon {
   svg {
     height: 32px;

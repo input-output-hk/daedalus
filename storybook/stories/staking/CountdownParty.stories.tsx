@@ -21,26 +21,12 @@ storiesOf('Decentralization | Countdown', module)
     return (
       <div>
         <TopBar
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          onToggleSidebar={action('onToggleSidebar')}
-          formattedWalletAmount={1.0}
-          currentRoute=""
-          showSubMenuToggle
-          showSubMenus
           onTransferFunds={action('onTransferFunds')}
           onWalletAdd={action('onWalletAdd')}
           hasRewardsWallets={false}
           isShelleyActivated
-          isDecentralizedEffectActive
         >
-          <NodeSyncStatusIcon
-            isSynced
-            syncPercentage={100}
-            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-            isProduction
-            isMainnet
-            hasTadaIcon={isAlonzoActivated}
-          />
+          <NodeSyncStatusIcon isSynced syncPercentage={100} />
           {isAlonzoActivated && (
             <TadaButton
               onClick={action('onIconClick')}
