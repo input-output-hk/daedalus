@@ -113,7 +113,6 @@ function StakePoolsTableComponent({
     numberOfRankedStakePools,
     onOpenExternalLink,
     onSelect,
-    selectedPoolId,
     showWithSelectButton,
   });
 

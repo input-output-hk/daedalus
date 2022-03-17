@@ -88,7 +88,6 @@ type UseCreateColumnsArgs = {
   onSelect?: (...args: Array<any>) => any;
   containerClassName: string;
   numberOfRankedStakePools: number;
-  selectedPoolId?: string;
   onOpenExternalLink: (...args: Array<any>) => any;
   intl: Intl;
 };
@@ -99,7 +98,6 @@ export const useCreateColumns = ({
   currentTheme,
   onOpenExternalLink,
   onSelect,
-  selectedPoolId,
   containerClassName,
   showWithSelectButton,
 }: UseCreateColumnsArgs) =>
@@ -157,7 +155,6 @@ export const useCreateColumns = ({
               currentTheme={currentTheme}
               onOpenExternalLink={onOpenExternalLink}
               onSelect={onSelect}
-              isSelected={selectedPoolId === stakePool.id}
               stakePool={stakePool}
               containerClassName={containerClassName}
               numberOfRankedStakePools={numberOfRankedStakePools}

@@ -30,7 +30,6 @@ export function PoolPopOver(props: {
   containerClassName: string;
   numberOfRankedStakePools: number;
   isGridRewardsView?: boolean;
-  isSelected?: boolean;
 }) {
   // Track hover state manually to optimize performance by lazy init pop overs
   const [isHovered, setIsHovered] = useState(false);
