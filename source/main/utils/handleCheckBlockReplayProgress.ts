@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
-import { Tail } from './tail';
+import { Tail } from 'tail';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
