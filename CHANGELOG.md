@@ -9,6 +9,7 @@
 
 ### Fixes
 
+- Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
 - Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
 - Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
