@@ -16,12 +16,10 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsRegis... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
-import { NEXT_VOTING_FUND_NUMBER } from '../../../config/votingConfig';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
@@ -78,6 +76,7 @@ type Props = {
   transactionError?: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   selectedWallet: Wallet | null | undefined;
+  nextFundNumber: number;
   isTrezor: boolean;
   isHardwareWallet: boolean;
   isSubmitting: boolean;
@@ -158,6 +157,7 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       selectedWallet,
       isTrezor,
       isHardwareWallet,
+      nextFundNumber,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -186,12 +186,13 @@ class VotingRegistrationStepsRegister extends Component<Props> {
         actions={actions}
         onBack={onBack}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
             values={{
-              nextVotingFundNumber: NEXT_VOTING_FUND_NUMBER,
+              nextVotingFundNumber: nextFundNumber,
             }}
           />
         </p>

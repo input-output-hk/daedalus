@@ -89,6 +89,7 @@ module.exports = {
     // Jest does not support WASM imports from ESM modules
     // https://github.com/facebook/jest/issues/9430
     '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
+    'tests/(.*)': '<rootDir>/tests/$1',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

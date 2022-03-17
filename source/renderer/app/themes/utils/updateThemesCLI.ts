@@ -21,7 +21,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
   rl.on('line', (line) => {
     switch (line.trim()) {
       case 'yes': {
-        logMsg(chalk`\n{cyan Upating themes...}\n`);
+        logMsg(chalk`\n{cyan Updating themes...}\n`);
         // combines pending theme updates with existing theme outputs
         const updatedThemes = updateThemes(pendingUpdates);
 
@@ -41,7 +41,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
           chalk`{cyan Prettier is now formatting the updated theme files.}`
         );
         logMsg(
-          chalk`{cyan Once Prettier finshes, please check the diff and commit the changes if all is correct.}`
+          chalk`{cyan Once Prettier finishes, please check the diff and commit the changes if all is correct.}`
         );
         logMsg(chalk`\n{cyan Prettier in progress...}\n`);
         process.exit(0);

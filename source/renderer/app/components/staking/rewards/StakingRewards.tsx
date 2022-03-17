@@ -9,6 +9,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   bigNumberComparator,
   stringComparator,
@@ -20,7 +21,6 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingRewards.scss' or its ... Remove this comment to see the full error message
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
@@ -57,10 +57,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet',
     description: 'Table header "Wallet" label on staking rewards page',
   },
-  tableHeaderReward: {
-    id: 'staking.rewards.tableHeader.reward',
+  tableHeaderRewardTotal: {
+    id: 'staking.rewards.tableHeader.total',
     defaultMessage: '!!!Total rewards earned (ADA)',
-    description: 'Table header "Reward" label on staking rewards page',
+    description: 'Table header "Total Reward" label on staking rewards page',
+  },
+  tableHeaderRewardUnspent: {
+    id: 'staking.rewards.tableHeader.unspent',
+    defaultMessage: '!!!Unspent (ADA)',
+    description: 'Table header "Unspent" label on staking rewards page',
   },
   tableHeaderRewardsAddress: {
     id: 'staking.rewards.tableHeader.rewardsAddress',
@@ -93,7 +98,8 @@ const REWARD_FIELDS = {
   WALLET_NAME: 'wallet',
   IS_RESTORING: 'isRestoring',
   SYNCING_PROGRESS: 'syncingProgress',
-  REWARD: 'reward',
+  REWARD_TOTAL: 'total',
+  REWARD_UNSPENT: 'unspent',
   REWARDS_ADDRESS: 'rewardsAddress',
 };
 const REWARD_ORDERS = {
@@ -116,7 +122,7 @@ type State = {
 };
 
 @observer
-class StakingRewards extends Component<Props, State> {
+export class StakingRewards extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -140,23 +146,22 @@ class StakingRewards extends Component<Props, State> {
   ) => {
     const { onExportCsv } = this.props;
     const { intl } = this.context;
-    const exportedHeader = [
-      ...availableTableHeaders.map((header) => header.title),
-      intl.formatMessage(messages.tableHeaderDate),
-    ];
-    const date = new Date().toISOString();
+    const exportedHeader = availableTableHeaders.map((header) => header.title);
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
+      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL)?.toFixed(
+        DECIMAL_PLACES_IN_ADA
+      );
+      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT)?.toFixed(
         DECIMAL_PLACES_IN_ADA
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
       return [
         rewardWallet,
         rewardsAddress,
-        isRestoring ? '-' : rewardAmount,
-        date,
+        isRestoring ? '-' : rewardTotal,
+        isRestoring ? '-' : rewardUnspent,
       ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
@@ -169,9 +174,14 @@ class StakingRewards extends Component<Props, State> {
     const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
     return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
-      const rewardCompareResult = bigNumberComparator(
-        rewardA.reward,
-        rewardB.reward,
+      const totalCompareResult = bigNumberComparator(
+        rewardA.total,
+        rewardB.total,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const unspentCompareResult = bigNumberComparator(
+        rewardA.unspent,
+        rewardB.unspent,
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
       const walletNameCompareResult = stringComparator(
@@ -185,40 +195,28 @@ class StakingRewards extends Component<Props, State> {
         rewardsOrder === REWARD_ORDERS.ASCENDING
       );
 
-      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
-        if (rewardCompareResult === 0 && walletAddressCompareResult === 0) {
-          return walletNameCompareResult;
-        }
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_TOTAL) {
+        if (totalCompareResult !== 0) return totalCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return walletAddressCompareResult;
+      }
 
-        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-          return walletAddressCompareResult;
-        }
-
-        return rewardCompareResult;
+      if (rewardsSortBy === REWARD_FIELDS.REWARD_UNSPENT) {
+        if (unspentCompareResult !== 0) return unspentCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return walletAddressCompareResult;
       }
 
       if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-        if (walletNameCompareResult === 0 && walletAddressCompareResult) {
-          return rewardCompareResult;
-        }
-
-        if (rewardCompareResult === 0 && walletNameCompareResult === 0) {
-          return walletAddressCompareResult;
-        }
-
-        return walletNameCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        if (totalCompareResult !== 0) return totalCompareResult;
+        return walletAddressCompareResult;
       }
 
       if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
-        if (walletAddressCompareResult === 0 && rewardCompareResult === 0) {
-          return walletNameCompareResult;
-        }
-
-        if (walletAddressCompareResult === 0 && walletNameCompareResult === 0) {
-          return rewardCompareResult;
-        }
-
-        return walletAddressCompareResult;
+        if (walletAddressCompareResult !== 0) return walletAddressCompareResult;
+        if (walletNameCompareResult !== 0) return walletNameCompareResult;
+        return totalCompareResult;
       }
 
       return 0;
@@ -253,9 +251,15 @@ class StakingRewards extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRewardsAddress),
       },
       {
-        name: REWARD_FIELDS.REWARD,
+        name: REWARD_FIELDS.REWARD_TOTAL,
         title: `${intl.formatMessage(
-          messages.tableHeaderReward
+          messages.tableHeaderRewardTotal
+        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
+      },
+      {
+        name: REWARD_FIELDS.REWARD_UNSPENT,
+        title: `${intl.formatMessage(
+          messages.tableHeaderRewardUnspent
         )} (${intl.formatMessage(globalMessages.adaUnit)})`,
       },
     ];
@@ -323,6 +327,7 @@ class StakingRewards extends Component<Props, State> {
                       ]);
                       return (
                         <th
+                          className={styles[tableHeader.name]}
                           key={tableHeader.name}
                           onClick={() =>
                             this.handleRewardsSort(tableHeader.name)
@@ -346,9 +351,13 @@ class StakingRewards extends Component<Props, State> {
                       reward,
                       REWARD_FIELDS.SYNCING_PROGRESS
                     );
-                    const rewardAmount = get(
+                    const rewardTotal = get(
                       reward,
-                      REWARD_FIELDS.REWARD
+                      REWARD_FIELDS.REWARD_TOTAL
+                    ).toFormat(DECIMAL_PLACES_IN_ADA);
+                    const rewardUnspent = get(
+                      reward,
+                      REWARD_FIELDS.REWARD_UNSPENT
                     ).toFormat(DECIMAL_PLACES_IN_ADA);
                     const rewardsAddress = get(
                       reward,
@@ -397,11 +406,9 @@ class StakingRewards extends Component<Props, State> {
                             </div>
                           )}
                         </td>
-                        <td className={styles.rewardAmount}>
-                          {isRestoring ? (
-                            '-'
-                          ) : (
-                            <RewardAmount amount={rewardAmount} />
+                        <td className={styles.rewardTotal}>
+                          {!isRestoring && (
+                            <RewardAmount amount={rewardTotal} />
                           )}
                           {isRestoring && (
                             <div className={styles.syncingProgress}>
@@ -418,6 +425,13 @@ class StakingRewards extends Component<Props, State> {
                             </div>
                           )}
                         </td>
+                        <td className={styles.rewardUnspent}>
+                          {isRestoring ? (
+                            '-'
+                          ) : (
+                            <RewardAmount amount={rewardUnspent} />
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
@@ -432,7 +446,7 @@ class StakingRewards extends Component<Props, State> {
             )}
           </BorderedBox>
           <div className={styles.note}>
-            <div className={styles.noteContent}>
+            <div>
               <FormattedHTMLMessage {...messages.note} />
             </div>
           </div>
@@ -459,5 +473,3 @@ class StakingRewards extends Component<Props, State> {
     });
   };
 }
-
-export default StakingRewards;

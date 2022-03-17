@@ -63,7 +63,7 @@ Feature: Wallet Delegation
     Then I should see a "This wallet does not contain the minimum amount of 10 ADA which is required for delegation to be available. Please select a wallet with " message
     Given I close the wizard
     And I send 11 ADA from the "Wallet Sender" wallet to the "Wallet Receiver" wallet
-    Then I sucessfully delegate my "Wallet Receiver" wallet
+    Then I successfully delegate my "Wallet Receiver" wallet
 
   Scenario: "Delegation" wizard is showing the correct error message if the user submits wrong spending password
     Given I have the following wallets:

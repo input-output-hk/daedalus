@@ -183,6 +183,7 @@ export enum WalletSettingsStateEnum {
   disabled = 'disabled',
   enabled = 'enabled',
 }
+
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 export type RebuildAppMenuRendererRequest = {
   isNavigationEnabled: boolean;
@@ -451,7 +452,7 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 /**
  * Channel for checking block replay progress
  */
-export const GET_BLOCK_SYNC_STATUS_CHANNEL = 'GetBlockSyncProgressChannel';
+export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
 export type GetBlockSyncProgressType = BlockSyncType;
 export type GetBlockSyncProgressRendererRequest = void;
 export type GetBlockSyncProgressMainResponse = {
@@ -477,8 +478,8 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectiontRendererResponse = Record<string, any>;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionRendererResponse = Record<string, any>;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;

@@ -4,7 +4,6 @@ import { orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsTable.scss' or its... Remove this comment to see the full error message
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -277,7 +276,7 @@ class StakePoolsTable extends Component<Props, State> {
             key="ranking"
             placement="bottom"
             content={
-              <div className={styles.tooltipWithHTMLContent}>
+              <div className={styles.tooltipWithHtmlContent}>
                 <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
               </div>
             }
@@ -390,11 +389,7 @@ class StakePoolsTable extends Component<Props, State> {
                     />
                   </tr>
                 </thead>
-                <tbody
-                  className={
-                    currentLocale === 'ja-JP' ? styles.japaneseHeader : null
-                  }
-                >
+                <tbody>
                   <StakePoolsTableBody
                     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
                     sortedStakePoolList={sortedStakePoolList}

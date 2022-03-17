@@ -432,11 +432,11 @@ export default class WalletsStore extends Store {
   };
   @action
   _createWalletChangeStep = (isBack = false) => {
-    const currrentCreateWalletStep = this.createWalletStep || 0;
+    const currentCreateWalletStep = this.createWalletStep || 0;
     this.createWalletStep =
       isBack === true
-        ? currrentCreateWalletStep - 1
-        : currrentCreateWalletStep + 1;
+        ? currentCreateWalletStep - 1
+        : currentCreateWalletStep + 1;
     this.createWalletShowAbortConfirmation = false;
   };
   @action
@@ -472,7 +472,7 @@ export default class WalletsStore extends Store {
   @action
   _restoreWalletChangeStep = (isBack = false) => {
     // Reset restore requests to clear previous errors
-    const currrentRestoreWalletStep = this.restoreWalletStep || 0;
+    const currentRestoreWalletStep = this.restoreWalletStep || 0;
 
     this._restoreWalletResetRequests();
 
@@ -482,8 +482,8 @@ export default class WalletsStore extends Store {
 
     this.restoreWalletStep =
       isBack === true
-        ? currrentRestoreWalletStep - 1
-        : currrentRestoreWalletStep + 1;
+        ? currentRestoreWalletStep - 1
+        : currentRestoreWalletStep + 1;
     this.restoreWalletShowAbortConfirmation = false;
   };
   @action
@@ -503,7 +503,6 @@ export default class WalletsStore extends Store {
 
       this._restoreWalletResetData();
 
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.dialogs.closeActiveDialog.trigger();
     }
   };
@@ -619,7 +618,6 @@ export default class WalletsStore extends Store {
         await this._patchWalletRequestWithNewWallet(wallet);
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.dialogs.closeActiveDialog.trigger();
       }
     } catch (error) {
@@ -638,7 +636,6 @@ export default class WalletsStore extends Store {
 
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
       this.refreshWalletsData();
@@ -684,7 +681,6 @@ export default class WalletsStore extends Store {
         });
       }
     });
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
@@ -738,7 +734,6 @@ export default class WalletsStore extends Store {
       }
     ).promise;
     this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-    // @ts-ignore
     return unscrambledRecoveryPhrase;
   };
   @action
@@ -787,12 +782,14 @@ export default class WalletsStore extends Store {
     passphrase,
     assets,
     assetsAmounts: assetsAmountsStr,
+    hasAssetsRemainingAfterTransaction,
   }: {
     receiver: string;
     amount: string;
     passphrase: string;
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
+    hasAssetsRemainingAfterTransaction?: boolean;
   }) => {
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
@@ -818,9 +815,9 @@ export default class WalletsStore extends Store {
       walletId: wallet.id,
       isLegacy: wallet.isLegacy,
       assets: formattedAssets,
+      hasAssetsRemainingAfterTransaction,
     });
     this.refreshWalletsData();
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
     this.goToWalletRoute(wallet.id);
@@ -1198,7 +1195,6 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -1208,7 +1204,7 @@ export default class WalletsStore extends Store {
         }
       });
       runInAction('refresh address data', () => {
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ walletId: string; allRequest: LocalizedCac... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
         this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
           walletId,
           allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
@@ -1217,7 +1213,7 @@ export default class WalletsStore extends Store {
         this.stores.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ walletId: string; recentRequest: Localized... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
         this.stores.transactions.transactionsRequests = walletIds.map(
           (walletId) => ({
             walletId,
@@ -1235,7 +1231,6 @@ export default class WalletsStore extends Store {
 
         this.stores.transactions._refreshTransactionData();
       });
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
       this.actions.wallets.refreshWalletsDataSuccess.trigger();
     }
   };
@@ -1257,7 +1252,6 @@ export default class WalletsStore extends Store {
     if (!importedWallet)
       throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
     this.importFromFileRequest.reset();
     this.goToWalletRoute(importedWallet.id);
@@ -1384,9 +1378,11 @@ export default class WalletsStore extends Store {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
+
       const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
         .promise;
       // Generate 9-words (additional) mnemonic
+
       const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
         .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
@@ -1395,6 +1391,7 @@ export default class WalletsStore extends Store {
       const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
       this.walletCertificatePassword = spendingPassword;
       // Generate paper wallet scrambled mnemonic
+
       const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
         {
           passphrase: spendingPassword,
@@ -1449,8 +1446,10 @@ export default class WalletsStore extends Store {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
     const { isMainnet } = this.environment;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'buildLabel' does not exist on type 'type... Remove this comment to see the full error message
-    const { buildLabel } = global;
+    const {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'buildLabel' does not exist on type 'type... Remove this comment to see the full error message
+      buildLabel,
+    } = global;
 
     try {
       await paperWalletPdfGenerator({
@@ -1635,21 +1634,19 @@ export default class WalletsStore extends Store {
   _updateCertificateStep = (isBack = false) => {
     this._updateGeneratingCertificateError();
 
-    const currrentCertificateStep = this.certificateStep || 0;
+    const currentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack
-      ? currrentCertificateStep - 1
-      : currrentCertificateStep + 1;
+      ? currentCertificateStep - 1
+      : currentCertificateStep + 1;
   };
   @action
   _closeCertificateGeneration = () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
 
     this._resetCertificateData();
   };
   @action
   _closeRewardsCsvGeneration = () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
 
     this._resetRewardsCsvData();

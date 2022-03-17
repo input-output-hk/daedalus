@@ -11,7 +11,6 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransferFundsStep2Dialog.scs... Remove this comment to see the full error message
 import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -254,7 +253,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
         </div>
         <Input
           type="password"
-          className={styles.currentPassword}
           {...spendingPasswordField.bind()}
           error={spendingPasswordField.error}
           skin={InputSkin}

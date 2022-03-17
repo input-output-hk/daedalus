@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokens.scss' or its co... Remove this comment to see the full error message
 import styles from './WalletTokens.scss';
 import Wallet from '../../../../domains/Wallet';
 import WalletTokensList from '../wallet-tokens-list/WalletTokensList';
@@ -68,7 +67,7 @@ const WalletTokens = observer((props: Props) => {
   /**
    *
    * This function adds a `inserting` or `removing`
-   * state before actually proceding with these actions
+   * state before actually proceeding with these actions
    * so the UI element insertion/removal can be animated,
    * preventing undesirable jumps in the tokens list
    *

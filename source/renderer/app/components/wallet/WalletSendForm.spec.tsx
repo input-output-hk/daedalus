@@ -174,32 +174,50 @@ describe('wallet/Wallet Send Form', () => {
     return mock;
   }
 
+  const MINIMUM_AMOUNT_UPDATED_MESSAGE_TEST_ID =
+    'WalletSendForm::minimumAmountNotice::updated';
+
+  function assertMinimumAmountNoticeMessage(minimumAda: number) {
+    expect(
+      screen.getByTestId(MINIMUM_AMOUNT_UPDATED_MESSAGE_TEST_ID)
+    ).toHaveTextContent(
+      `Note: the ada field was automatically updated because this transaction requires a minimum of ${minimumAda} ADA.`
+    );
+  }
+
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
     expect.assertions(4);
+
     const minimumAda = 2;
-    const calculateTransactionFeeMock = createTransactionFeeMock(2, minimumAda);
+    const calculateTransactionFeeMock = createTransactionFeeMock(1, minimumAda);
+
     render(
       <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
     );
+
     enterReceiverAddress();
+
     const removeToken1 = await addToken();
+
     await waitForMinimumAdaRequiredMsg();
     assertAdaInput(minimumAda);
+
     const minimumAmountNoticeTestId =
       'WalletSendForm::minimumAmountNotice::updated';
+
     expect(screen.getByTestId(minimumAmountNoticeTestId)).toHaveTextContent(
       `Note: the ada field was automatically updated because this transaction requires a minimum of ${minimumAda} ADA.`
     );
+
     await removeToken1();
-    const minimumAdaRequiredMsg = screen.getByTestId('minimumAdaRequiredMsg');
-    await within(minimumAdaRequiredMsg).findByText(
-      `to the minimum of 1 ADA required`
-    );
-    assertAdaInput(0);
-    expect(
-      screen.queryByTestId(minimumAmountNoticeTestId)
-    ).not.toBeInTheDocument();
+
+    await waitForMinimumAdaRequiredMsg(1);
+
+    assertAdaInput(1);
+
+    expect(screen.queryByTestId(minimumAmountNoticeTestId)).toBeInTheDocument();
   });
+
   test('should display an update button when Ada input field is less than minimum required', async () => {
     expect.assertions(3);
     const minimumAda = 2;
@@ -227,6 +245,7 @@ describe('wallet/Wallet Send Form', () => {
     await waitForElementToBeRemoved(updateButton);
     assertAdaInput(minimumAda);
   });
+
   test('should favour user Ada input instead of minimum required when the value is greater than the minimum one', async () => {
     expect.assertions(2);
     const minimumAda = 2.5;
@@ -253,6 +272,7 @@ describe('wallet/Wallet Send Form', () => {
       `Note: the ada field was automatically updated to ${userAdaAmount} ADA because now it fulfills the minimum amount of 1 ADA for the transaction.`
     );
   });
+
   test('should remove message when user entry is higher than minimum amount', async () => {
     expect.assertions(3);
     const minimumAda = 2.5;
@@ -287,6 +307,7 @@ describe('wallet/Wallet Send Form', () => {
       screen.queryByTestId(minimumAmountNoticeTestId)
     ).not.toBeInTheDocument();
   });
+
   test('should not display any minimum amount notice message when ada input is greater than minimum amount', async () => {
     expect.assertions(2);
     const calculateTransactionFeeMock = jest.fn().mockResolvedValue({
@@ -311,6 +332,7 @@ describe('wallet/Wallet Send Form', () => {
       screen.findByTestId('WalletSendForm::minimumAmountNotice::restored')
     ).rejects.toBeTruthy();
   });
+
   test('should apply minimum fee to ada field when user has removed the previous update', async () => {
     expect.assertions(3);
     const minimumAda = 2;
@@ -334,6 +356,7 @@ describe('wallet/Wallet Send Form', () => {
     await waitForMinimumAdaRequiredMsg();
     assertAdaInput(minimumAda);
   });
+
   test('should format ada input field using numeric format profile', async () => {
     expect.assertions(1);
     const minimumAda = 2;
@@ -350,6 +373,7 @@ describe('wallet/Wallet Send Form', () => {
     const adaInput = getInput('Ada');
     expect(adaInput).toHaveValue(`${minimumAda},000000`);
   });
+
   test('should calculate transaction fee even when one of the assets are empty', async () => {
     expect.assertions(2);
     const minimumAda = 2;
@@ -364,5 +388,31 @@ describe('wallet/Wallet Send Form', () => {
     await addToken(minimumAda, 1);
     await waitForMinimumAdaRequiredMsg();
     assertAdaInput(minimumAda);
+  });
+
+  test('should keep transaction fee when assets are removed and ada field is untouched', async () => {
+    expect.assertions(3);
+
+    const fee = 2;
+    const minimumAda = 1;
+    const calculateTransactionFeeMock = createTransactionFeeMock(1, fee);
+
+    render(
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
+    );
+
+    enterReceiverAddress();
+
+    const removeToken = await addToken();
+    await waitForMinimumAdaRequiredMsg();
+
+    assertAdaInput(fee);
+
+    await removeToken();
+
+    await waitForMinimumAdaRequiredMsg(minimumAda);
+
+    assertAdaInput(minimumAda);
+    assertMinimumAmountNoticeMessage(minimumAda);
   });
 });

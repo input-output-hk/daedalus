@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsChoos... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsChooseWallet.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
@@ -75,6 +74,7 @@ type Props = {
   selectedWalletId: string | null | undefined;
   isWalletAcceptable: (...args: Array<any>) => any;
   getStakePoolById: (...args: Array<any>) => any;
+  nextFundNumber: number;
 };
 type State = {
   selectedWalletId: string | null | undefined;
@@ -111,6 +111,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
+      nextFundNumber,
     } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const selectedWallet: Wallet | null | undefined = wallets.find(
@@ -167,6 +168,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
           <FormattedHTMLMessage {...messages.description} />
