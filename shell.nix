@@ -116,7 +116,8 @@ let
       ln -svf $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
       ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
       ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/usb-detection/build/${BUILDTYPE}/detection.node ${BUILDTYPE}/
+      # XXX: right now we only build Release/detection.node (TODO: investigate why – @michalrus)
+      ln -svf $PWD/node_modules/usb-detection/build/Release/detection.node ${BUILDTYPE}/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
