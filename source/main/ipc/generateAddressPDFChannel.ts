@@ -16,7 +16,7 @@ import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/arial-... Remove this comment to see the full error message
 import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/NotoSa... Remove this comment to see the full error message
-import fontMono from '../../common/assets/pdf/NotoSansMono-Regular.ttf';
+import fontMono from '../../common/assets/pdf/UbuntuMono-Regular.ttf';
 
 export const generateAddressPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -112,7 +112,7 @@ export const handleAddressPDFRequests = () => {
           });
           doc.moveDown();
           // Address
-          doc.font(fontBufferMono).fontSize(9).text(address, {
+          doc.font(fontBufferMono).fontSize(10).text(address, {
             align: 'center',
           });
 
