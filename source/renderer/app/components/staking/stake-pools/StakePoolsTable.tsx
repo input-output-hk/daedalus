@@ -145,7 +145,10 @@ function StakePoolsTableComponent({
           {row.cells.map((cell) => {
             return (
               /* eslint-disable-next-line react/jsx-key */
-              <div {...cell.getCellProps()} className={styles.td}>
+              <div
+                {...cell.getCellProps({ style: { width: undefined } })}
+                className={styles.td}
+              >
                 {cell.render('Cell')}
               </div>
             );
@@ -196,7 +199,9 @@ function StakePoolsTableComponent({
                           >
                             {headerGroup.headers.map((column) => (
                               <StakePoolsTableHeader
-                                {...column.getHeaderProps()}
+                                {...column.getHeaderProps({
+                                  style: { width: undefined },
+                                })}
                                 stakePoolsSortBy={stakePoolsSortBy}
                                 stakePoolsOrder={stakePoolsOrder}
                                 onHandleSort={handleSort}
@@ -222,7 +227,7 @@ function StakePoolsTableComponent({
                               height={height || 0}
                               isScrolling={isScrolling}
                               onScroll={onChildScroll}
-                              overscanRowCount={2}
+                              overscanRowCount={10}
                               rowCount={rows.length}
                               rowHeight={36}
                               rowRenderer={RenderRow}

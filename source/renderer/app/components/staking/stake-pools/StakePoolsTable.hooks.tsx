@@ -17,16 +17,19 @@ import {
 } from '../../../utils/formatters';
 import { messages } from './StakePoolsTable.messages';
 
+const ascOrder = 'asc';
+const descOrder = 'desc';
+
 export const defaultTableOrdering = {
-  ranking: 'asc',
-  ticker: 'asc',
-  saturation: 'asc',
-  cost: 'asc',
-  profitMargin: 'asc',
-  producedBlocks: 'desc',
-  nonMyopicMemberRewards: 'desc',
-  pledge: 'asc',
-  retiring: 'asc',
+  ranking: ascOrder,
+  ticker: ascOrder,
+  saturation: ascOrder,
+  cost: ascOrder,
+  profitMargin: ascOrder,
+  producedBlocks: descOrder,
+  nonMyopicMemberRewards: descOrder,
+  pledge: ascOrder,
+  retiring: ascOrder,
 };
 
 interface UseSortedStakePoolListArgs {
@@ -320,5 +323,5 @@ export const useCreateColumns = ({
         },
       },
     ],
-    []
+    [numberOfRankedStakePools]
   );
