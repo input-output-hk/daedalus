@@ -290,7 +290,7 @@ npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "Installing nodejs dependencies..."
-  procs "yarn" ["install"] empty
+  procs "yarn" ["install", "--frozen-lockfile"] empty
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty

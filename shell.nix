@@ -30,7 +30,7 @@ let
     buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
     shellHook = ''
       git diff > pre-yarn.diff
-      yarn
+      yarn --frozen-lockfile
       git diff > post-yarn.diff
       diff pre-yarn.diff post-yarn.diff > /dev/null
       if [ $? != 0 ]
@@ -130,7 +130,7 @@ let
         npm cache clean --force
         ''
       }
-      yarn install
+      yarn install --frozen-lockfile
       yarn build:electron
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
