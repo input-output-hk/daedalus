@@ -41,15 +41,6 @@ class Step1ConfigurationContainer extends Component<Props> {
     return walletAmount && walletAmount.gte(minRewardsFunds);
   };
 
-  componentDidMount() {
-    const { app } = this.props.stores;
-    const { closeNewsFeed } = this.props.actions.app;
-
-    if (app.newsFeedIsOpen) {
-      closeNewsFeed.trigger();
-    }
-  }
-
   render() {
     const { actions, stores, onBack, onClose } = this.props;
     const { app, staking, wallets } = stores;
