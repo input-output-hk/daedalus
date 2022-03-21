@@ -1,11 +1,10 @@
 import { BrowserWindow } from 'electron';
 import fs from 'fs';
-import moment, { Moment } from 'moment';
-import readline from 'readline';
+import moment from 'moment';
 import path from 'path';
+import { Tail } from 'tail';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
-import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 
@@ -48,30 +47,23 @@ export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string
 ) => {
-  const checkBlockReplayProgress = async () => {
-    const filename = 'node.log';
-    const logFilePath = `${logsDirectoryPath}/pub/`;
-    const filePath = path.join(logFilePath, filename);
-    if (!fs.existsSync(filePath)) return;
-    const fileStream = fs.createReadStream(filePath);
-    const rl = readline.createInterface({
-      input: fileStream,
-    });
-    const progress = [];
+  const filename = 'node.log';
+  const logFilePath = `${logsDirectoryPath}/pub/`;
+  const filePath = path.join(logFilePath, filename);
+  if (!fs.existsSync(filePath)) return;
 
-    for await (const line of rl) {
-      if (
-        containProgressKeywords(line) &&
-        isItFreshLog(applicationStartDate, line)
-      ) {
-        progress.push(line);
-      }
+  const tail = new Tail(filePath);
+
+  tail.on('line', (line) => {
+    if (
+      !isItFreshLog(applicationStartDate, line) ||
+      !containProgressKeywords(line)
+    ) {
+      return;
     }
 
-    if (!progress.length) return;
-    const finalProgress = progress.slice(-1).pop();
-    const percentage = finalProgress.match(/Progress:([\s\d.,]+)%/)?.[1];
-    const progressType = getProgressType(finalProgress);
+    const percentage = line.match(/Progress:([\s\d.,]+)%/)?.[1];
+    const progressType = getProgressType(line);
     if (!percentage || !progressType) {
       return;
     }
@@ -81,15 +73,5 @@ export const handleCheckBlockReplayProgress = (
       { progress: finalProgressPercentage, type: progressType },
       mainWindow.webContents
     );
-  };
-
-  const setBlockReplayProgressCheckingInterval = () => {
-    setInterval(async () => {
-      checkBlockReplayProgress();
-    }, BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL);
-  };
-
-  // Start default interval
-  setBlockReplayProgressCheckingInterval();
-  return checkBlockReplayProgress;
+  });
 };
