@@ -5,7 +5,7 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './Asset.scss';
-import { ellipsis } from '../../utils/strings';
+import { ellipsis, hexToString } from '../../utils/strings';
 import AssetContent from './AssetContent';
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
@@ -173,8 +173,20 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
-    const { name } = metadata || {};
+    const {
+      fingerprint,
+      metadata,
+      decimals,
+      recommendedDecimals,
+      assetName,
+    } = asset;
+    const hasMetadataName = !!metadata?.name;
+    const name =
+      metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';
+
+    const displayName = metadataNameChars
+      ? ellipsis(name, metadataNameChars)
+      : name;
     const contentStyles = classnames([
       styles.pill,
       hasError ? styles.error : null,
@@ -196,9 +208,15 @@ class Asset extends Component<Props, State> {
             ? fingerprint
             : ellipsis(fingerprint || '', startCharAmount, endCharAmount)}
         </div>
-        {name && (
-          <div className={styles.metadataName}>
-            {metadataNameChars ? ellipsis(name, metadataNameChars) : name}
+        {displayName && (
+          <div
+            data-testid="assetName"
+            className={classnames(
+              styles.metadataName,
+              !hasMetadataName && styles.ascii
+            )}
+          >
+            {displayName}
           </div>
         )}
         {hasWarning && (
