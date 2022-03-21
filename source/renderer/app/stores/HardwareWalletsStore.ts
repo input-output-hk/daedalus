@@ -1,5 +1,14 @@
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast, includes } from 'lodash';
+import {
+  get,
+  map,
+  find,
+  findLast,
+  includes,
+  last,
+  sortBy,
+  filter,
+} from 'lodash';
 import semver from 'semver';
 import {
   TransactionSigningMode,
@@ -638,15 +647,14 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      const lastUnpairedDevice = findLast(
-        this.hardwareWalletDevices,
-        (hardwareWalletDevice) =>
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'paired' does not exist on type 'Hardware... Remove this comment to see the full error message
-          !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected
-      );
+      const lastUnpairedDevice = this.getLastUnpairedDevice();
+
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug(
-        '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START'
+        '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START',
+        {
+          lastUnpairedDevice: toJS(lastUnpairedDevice),
+        }
       );
       // Tx Special cases!
       // This means that transaction needs to be signed but we don't know device connected to Software wallet
@@ -2657,10 +2665,19 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
 
     // Start connection establishing process if devices listener flag is UP
+    const isCardanoAppInProgress =
+      !disconnected && this.cardanoAdaAppPollingInterval !== null;
+
+    logger.debug('[HW-DEBUG] HWStore - establish connection guard: ', {
+      isCardanoAppInProgress,
+      isListeningForDevice: this.isListeningForDevice,
+    });
+
     if (
-      this.isListeningForDevice &&
-      !disconnected &&
-      (!eventType || eventType === DeviceEvents.CONNECT)
+      (this.isListeningForDevice &&
+        !disconnected &&
+        (!eventType || eventType === DeviceEvents.CONNECT)) ||
+      isCardanoAppInProgress
     ) {
       runInAction('HardwareWalletsStore:: remove device listener', () => {
         this.isListeningForDevice = false;
@@ -2728,6 +2745,23 @@ export default class HardwareWalletsStore extends Store {
       );
     }
   };
+
+  getLastUnpairedDevice = () =>
+    last(
+      sortBy(
+        filter(
+          Object.entries(this.hardwareWalletDevices).map(([key, value]) => ({
+            ...value,
+            id: key,
+          })),
+          (hardwareWalletDevice) =>
+            // @ts-ignore ts-migrate(2339) FIXME: Property 'paired' does not exist on type 'Hardware... Remove this comment to see the full error message
+            !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected
+        ),
+        ['id']
+      )
+    );
+
   @action
   resetInitializedConnection = async (
     params:
@@ -2964,6 +2998,7 @@ export default class HardwareWalletsStore extends Store {
 
     if (this.cardanoAdaAppPollingInterval) {
       clearInterval(this.cardanoAdaAppPollingInterval);
+      this.cardanoAdaAppPollingInterval = null;
     }
   };
 }
