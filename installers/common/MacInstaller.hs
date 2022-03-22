@@ -299,6 +299,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
     ) externalYarn
   mktree ((fromText pathtoapp) </> "Contents/Resources/app/build")
+  mktree ((fromText pathtoapp) </> "Contents/PlugIns")
   mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node") ]
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
