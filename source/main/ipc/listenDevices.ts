@@ -1,10 +1,13 @@
 import { identifyUSBProductId, ledgerUSBVendorId } from '@ledgerhq/devices';
-import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
+import TransportNodeHid, {
+  getDevices,
+} from '@ledgerhq/hw-transport-node-hid-noevents';
 
 import usbDetect from 'usb-detection';
 
 import { log, listen } from '@ledgerhq/logs';
 import debounce from 'lodash/debounce';
+import { logger } from '../utils/logging';
 
 export type Device = {
   vendorId: number;
@@ -21,7 +24,7 @@ export type Device = {
   usage: number;
 };
 
-listen(console.log);
+listen(logger.info);
 
 let monitoring = false;
 
@@ -104,19 +107,19 @@ export const listenDevices = (
   });
 
   const poll = () => {
-    log('hid-listen', 'Polling for added or removed devices');
+    log('[HID-LISTEN]', 'Polling for added or removed devices');
 
     const currentDevices = getFlatDevices();
     const newDevices = currentDevices.filter((d) => !lastDevices.has(d));
 
     if (newDevices.length > 0) {
-      log('hid-listen', 'New device found:', newDevices);
+      log('[HID-LISTEN]', 'New device found:', newDevices);
 
       listDevices = getDevices();
       onAdd(getPayloadData('add', getDeviceByPaths(newDevices)));
       addLastDevice(listDevices);
     } else {
-      log('hid-listen', 'No new device found');
+      log('[HID-LISTEN]', 'No new device found');
     }
 
     const removeDevices = Array.from(lastDevices.keys())
@@ -126,7 +129,7 @@ export const listenDevices = (
     if (removeDevices.length > 0) {
       const key = removeDevices[0];
       const removedDevice = lastDevices.get(key);
-      log('hid-listen', 'Removed device found:', {
+      log('[HID-LISTEN]', 'Removed device found:', {
         removeDevices,
         devices: removedDevice,
       });
@@ -135,14 +138,14 @@ export const listenDevices = (
 
       lastDevices.delete(key);
     } else {
-      log('hid-listen', 'No removed device found');
+      log('[HID-LISTEN]', 'No removed device found');
     }
   };
 
   const debouncedPoll = debounce(poll, usbDebounce);
 
   const add = (device: usbDetect.Device) => {
-    log('usb-detection', `add: ${deviceToLog(device)}`);
+    log('[USB-DETECTION]', `add: ${deviceToLog(device)}`);
 
     if (!timeout) {
       // a time is needed for the device to actually be connectable over HID..
@@ -155,7 +158,7 @@ export const listenDevices = (
   };
 
   const remove = (device: usbDetect.Device) => {
-    log('usb-detection', `remove: ${deviceToLog(device)}`);
+    log('[USB-DETECTION]', `remove: ${deviceToLog(device)}`);
 
     if (timeout) {
       clearTimeout(timeout);
@@ -165,6 +168,12 @@ export const listenDevices = (
     }
   };
 
-  usbDetect.on(addEvent, add);
-  usbDetect.on(removeEvent, remove);
+  if (TransportNodeHid.isSupported()) {
+    logger.info('[LISTEN-LEDGER-DEVICES] Using usb-detection');
+    usbDetect.on(addEvent, add);
+    usbDetect.on(removeEvent, remove);
+  } else {
+    logger.info('[LISTEN-LEDGER-DEVICES] Using polling');
+    timer = setInterval(debouncedPoll, 1000);
+  }
 };
