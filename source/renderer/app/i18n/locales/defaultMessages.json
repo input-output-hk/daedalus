@@ -862,13 +862,13 @@
         "description": "\"title\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -876,13 +876,13 @@
         "description": "\"description\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -890,13 +890,13 @@
         "description": "\"formattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.formattedAmount.label",
         "start": {
           "column": 25,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -904,13 +904,13 @@
         "description": "\"unformattedBalanceLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.unformattedAmount.label",
         "start": {
           "column": 27,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -918,13 +918,13 @@
         "description": "\"decimalPrecisionLabel\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.decimalPrecision.label",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -932,13 +932,13 @@
         "description": "\"recommended\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.recommended",
         "start": {
           "column": 15,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -946,13 +946,13 @@
         "description": "\"default\" for the Asset settings dialog",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.settings.dialog.default",
         "start": {
           "column": 11,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -960,13 +960,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.warning.available",
         "start": {
           "column": 27,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -974,13 +974,13 @@
         "description": "Asset settings recommended pop over content",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
         "id": "assets.warning.notUsing",
         "start": {
           "column": 26,
-          "line": 64
+          "line": 65
         }
       }
     ],

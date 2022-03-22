@@ -702,8 +702,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(233, 244, 254, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(233, 244, 254, 1)',
     '--rp-select-input-bg-color': 'transparent',
+    '--rp-select-input-bg-color-disabled': 'rgba(233, 244, 254, 0.05)',
     '--rp-select-input-border-color': 'rgba(233, 244, 254, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(233, 244, 254, 0.7)',
+    '--rp-select-input-border-color-disabled': 'transparent',
     '--rp-select-input-text-color': 'rgba(233, 244, 254, 1)',
     '--rp-select-input-placeholder-color': 'rgba(233, 244, 254, 0.5)',
   },
@@ -874,7 +876,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-table-title-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
-    '--theme-staking-stake-pools-search-icon-color': '#8793a1',
+    '--theme-staking-stake-pools-search-icon-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(233, 244, 254, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color':
