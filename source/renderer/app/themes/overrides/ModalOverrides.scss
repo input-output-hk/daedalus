@@ -1,9 +1,10 @@
 @import '../mixins/overlay-backdrop';
+@import '../mixins/layers.scss';
 
 .overlay {
   @include overlay-backrop;
   overflow: hidden;
-  z-index: 100;
+  z-index: $backdrop-z-index;
 }
 
 .modal {
