@@ -55,6 +55,7 @@ import {
 } from '../../common/ipc/api';
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+import { buildTrezorDeviceParams } from '../utils/buildTrezorDeviceParams';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -303,9 +304,7 @@ export const handleHardwareWalletRequests = async (
 
         try {
           deviceFeatures = await TrezorConnect.getFeatures({
-            device: {
-              path: devicePath,
-            },
+            device: buildTrezorDeviceParams(devicePath),
           });
 
           logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
@@ -510,11 +509,8 @@ export const handleHardwareWalletRequests = async (
           '[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()'
         );
         const result = await TrezorConnect.cardanoGetAddress({
-          device: {
-            path: devicePath,
-            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-            showOnTrezor: true,
-          },
+          showOnTrezor: true,
+          device: buildTrezorDeviceParams(devicePath),
           addressParameters: {
             addressType,
             path: `m/${spendingPathStr}`,
@@ -728,9 +724,7 @@ export const handleHardwareWalletRequests = async (
         // Check if Trezor instantiated
         logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
         const deviceFeatures = await TrezorConnect.getFeatures({
-          device: {
-            path: devicePath,
-          },
+          device: buildTrezorDeviceParams(devicePath),
         });
 
         if (deviceFeatures.success) {
@@ -871,9 +865,7 @@ export const handleHardwareWalletRequests = async (
       );
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ inputs: TrezorSignTransactionI... Remove this comment to see the full error message
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-        device: {
-          path: devicePath,
-        },
+        device: buildTrezorDeviceParams(devicePath),
         ...dataToSign,
       });
 
