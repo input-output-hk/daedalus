@@ -179,6 +179,7 @@ makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
                   "#\n" %
                   "# See /var/log/install.log to debug this\n" %
+                  "exec >> /tmp/daedalus-install.log 2>&1\n" %
                   "\n" %
                   "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
                   "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
