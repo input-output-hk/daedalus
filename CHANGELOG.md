@@ -11,6 +11,7 @@
 
 ### Fixes
 
+- Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
 - Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
 - Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
 - Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
