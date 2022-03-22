@@ -1,6 +1,6 @@
 /**
  * It generates stake pool dummy json content
- * Command to run: npx ts-node source/renderer/app/config/generateStakePoolFakeData.ts
+ * Command to run: yarn ts-node source/renderer/app/config/generateStakePoolFakeData.ts
  */
 import faker from '@faker-js/faker';
 import fs from 'fs';
