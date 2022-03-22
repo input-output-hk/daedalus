@@ -302,7 +302,11 @@ export const handleHardwareWalletRequests = async (
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel::TREZOR ');
 
         try {
-          deviceFeatures = await TrezorConnect.getFeatures();
+          deviceFeatures = await TrezorConnect.getFeatures({
+            device: {
+              path: devicePath,
+            },
+          });
 
           logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
           logger.info('[HW-DEBUG] Trezor connect success');
@@ -506,7 +510,11 @@ export const handleHardwareWalletRequests = async (
           '[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()'
         );
         const result = await TrezorConnect.cardanoGetAddress({
-          showOnTrezor: true,
+          device: {
+            path: devicePath,
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+            showOnTrezor: true,
+          },
           addressParameters: {
             addressType,
             path: `m/${spendingPathStr}`,
@@ -719,7 +727,11 @@ export const handleHardwareWalletRequests = async (
       if (isTrezor) {
         // Check if Trezor instantiated
         logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
-        const deviceFeatures = await TrezorConnect.getFeatures();
+        const deviceFeatures = await TrezorConnect.getFeatures({
+          device: {
+            path: devicePath,
+          },
+        });
 
         if (deviceFeatures.success) {
           logger.info(
@@ -859,6 +871,9 @@ export const handleHardwareWalletRequests = async (
       );
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ inputs: TrezorSignTransactionI... Remove this comment to see the full error message
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+        device: {
+          path: devicePath,
+        },
         ...dataToSign,
       });
 
