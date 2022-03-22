@@ -246,10 +246,7 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
-    const {
-      getHardwareWalletLocalData,
-      getHardwareWalletsLocalData,
-    } = global.daedalus.api.localStorage;
+    const { getHardwareWalletsLocalData } = global.daedalus.api.localStorage;
 
     try {
       const wallets: Array<AdaWallet | LegacyAdaWallet> = await getWallets(
@@ -281,7 +278,9 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet: AdaWallet) => {
           const { id } = wallet;
-          const walletData = await getHardwareWalletLocalData(id);
+
+          const walletData = hwLocalData[id];
+
           return _createWalletFromServerData({
             ...wallet,
             isHardwareWallet:
