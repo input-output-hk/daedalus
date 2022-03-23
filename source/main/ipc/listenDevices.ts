@@ -26,18 +26,16 @@ export type Device = {
 
 listen(logger.info);
 
-let monitoring = false;
+let isMonitoring = false;
 
 const deviceToLog = ({ productId, locationId, deviceAddress }) =>
   `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
 
 const monitor = () => {
-  if (!monitoring) {
-    monitoring = true;
+  if (!isMonitoring) {
+    isMonitoring = true;
     usbDetect.startMonitoring();
   }
-
-  return () => {};
 };
 
 let usbDebounce = 100;
@@ -45,22 +43,22 @@ export const setUsbDebounce = (n: number) => {
   usbDebounce = n;
 };
 
-let listDevices = getDevices();
+let deviceList = getDevices();
 
-const flatDevice = (d: Device) => d.path;
+const getDevicePath = (d: Device) => d.path;
 
 const getFlatDevices = () => [
-  ...new Set(getDevices().map((d: Device) => flatDevice(d))),
+  ...new Set(getDevices().map((d: Device) => getDevicePath(d))),
 ];
 
 const getDeviceByPaths = (paths) =>
-  listDevices.find((d: Device) => paths.includes(flatDevice(d)));
+  deviceList.find((d: Device) => paths.includes(getDevicePath(d)));
 
 const lastDevices = new Map();
 
 const addLastDevice = (newDevices: Device[]) =>
   newDevices.forEach((d) => lastDevices.set(d.path, d));
-addLastDevice(listDevices);
+addLastDevice(deviceList);
 
 const getPayloadData = (type: 'add' | 'remove', device: Device) => {
   const descriptor: string = device.path;
@@ -70,7 +68,7 @@ const getPayloadData = (type: 'add' | 'remove', device: Device) => {
 
 // No better way for now. see https://github.com/LedgerHQ/ledgerjs/issues/434
 process.on('exit', () => {
-  if (monitoring) {
+  if (isMonitoring) {
     // redeem the monitoring so the process can be terminated.
     usbDetect.stopMonitoring();
   }
@@ -113,13 +111,20 @@ export const listenDevices = (
     const newDevices = currentDevices.filter((d) => !lastDevices.has(d));
 
     if (newDevices.length > 0) {
-      log('[HID-LISTEN]', 'New device found:', newDevices);
+      log('[HID-LISTEN]', 'New device found:', {
+        newDevices,
+        currentDevices,
+        lastDevices: Array.from(lastDevices.keys()),
+      });
 
-      listDevices = getDevices();
+      deviceList = getDevices();
       onAdd(getPayloadData('add', getDeviceByPaths(newDevices)));
-      addLastDevice(listDevices);
+      addLastDevice(deviceList);
     } else {
-      log('[HID-LISTEN]', 'No new device found');
+      log('[HID-LISTEN]', 'No new device found', {
+        currentDevices,
+        lastDevices: Array.from(lastDevices.keys()),
+      });
     }
 
     const removeDevices = Array.from(lastDevices.keys())
@@ -132,13 +137,18 @@ export const listenDevices = (
       log('[HID-LISTEN]', 'Removed device found:', {
         removeDevices,
         devices: removedDevice,
+        currentDevices,
+        lastDevices: Array.from(lastDevices.keys()),
       });
 
       onRemove(getPayloadData('remove', removedDevice));
 
       lastDevices.delete(key);
     } else {
-      log('[HID-LISTEN]', 'No removed device found');
+      log('[HID-LISTEN]', 'No removed device found', {
+        currentDevices,
+        lastDevices: Array.from(lastDevices.keys()),
+      });
     }
   };
 
