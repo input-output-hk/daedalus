@@ -1840,9 +1840,9 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@./cardano-foundation-ledgerjs-hw-app-cardano-v5.0.0-rc4.tgz":
+"@cardano-foundation/ledgerjs-hw-app-cardano@https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v5.0.0-rc4/cardano-foundation-ledgerjs-hw-app-cardano-v5.0.0-rc4.tgz":
   version "5.0.0-rc4"
-  resolved "./cardano-foundation-ledgerjs-hw-app-cardano-v5.0.0-rc4.tgz#0f430d9a5e22106e0c4f578e9d06d9deb7ccb464"
+  resolved "https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v5.0.0-rc4/cardano-foundation-ledgerjs-hw-app-cardano-v5.0.0-rc4.tgz#0f430d9a5e22106e0c4f578e9d06d9deb7ccb464"
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     "@types/ledgerhq__hw-transport" "^4.21.3"
