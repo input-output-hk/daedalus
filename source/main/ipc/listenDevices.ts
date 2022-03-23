@@ -152,8 +152,6 @@ export const listenDevices = (
     }
   };
 
-  const debouncedPoll = debounce(poll, usbDebounce);
-
   const add = (device: usbDetect.Device) => {
     log('[USB-DETECTION]', `add: ${deviceToLog(device)}`);
 
@@ -161,9 +159,9 @@ export const listenDevices = (
       // a time is needed for the device to actually be connectable over HID..
       // we also take this time to not emit the device yet and potentially cancel it if a remove happens.
       timeout = setTimeout(() => {
-        debouncedPoll();
+        poll();
         timeout = null;
-      }, usbDebounce);
+      }, 1500);
     }
   };
 
@@ -174,7 +172,7 @@ export const listenDevices = (
       clearTimeout(timeout);
       timeout = null;
     } else {
-      debouncedPoll();
+      poll();
     }
   };
 
@@ -184,6 +182,7 @@ export const listenDevices = (
     usbDetect.on(removeEvent, remove);
   } else {
     logger.info('[LISTEN-LEDGER-DEVICES] Using polling');
+    const debouncedPoll = debounce(poll, usbDebounce);
     timer = setInterval(debouncedPoll, 1000);
   }
 };
