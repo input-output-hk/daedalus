@@ -191,7 +191,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "4.0.0",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "./cardano-foundation-ledgerjs-hw-app-cardano-v5.0.0-rc4.tgz",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "@ledgerhq/hw-transport-node-hid": "5.51.1",
     "aes-js": "3.1.2",
