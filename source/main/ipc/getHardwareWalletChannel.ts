@@ -653,6 +653,12 @@ export const handleHardwareWalletRequests = async (
         const hasPathChanged = !includes(devicePaths, oldPath);
         const newPath = hasPathChanged ? last(devicePaths) : oldPath;
 
+        if (hasPathChanged) {
+          logger.info(
+            `[HW-DEBUG] Device path changed from ${oldPath} to ${newPath}`
+          );
+        }
+
         if (!newPath) {
           logger.info(
             '[HW-DEBUG] ERROR in Cardano App (Device paths list is empty)',
