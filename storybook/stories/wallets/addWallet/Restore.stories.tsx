@@ -20,7 +20,7 @@ import SuccessDialog from '../../../../source/renderer/app/components/wallet/wal
 type Props = {
   locale: string;
 };
-storiesOf('Wallets/Add Wallet', module)
+storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Restore - Step 1', () => {
     const walletKindSelect = select(
@@ -98,6 +98,7 @@ storiesOf('Wallets/Add Wallet', module)
       />
     );
   })
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add('Restore - Step 3', (props: Props) => {
     const { locale } = props;
     return (

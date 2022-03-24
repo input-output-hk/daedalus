@@ -8,7 +8,6 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InstructionsDialog.scss' or ... Remove this comment to see the full error message
 import styles from './InstructionsDialog.scss';
 import { handleFormErrors } from '../../../utils/ReactToolboxMobxForm';
 import {
@@ -129,7 +128,6 @@ class InstructionsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onPrint, inProgress, onOpenExternalLink, network, error } =
       this.props;
-    const dialogClasses = classnames([styles.component, 'instructionsDialog']);
     const printButtonClasses = classnames([
       'printButton',
       inProgress ? styles.submitButtonSpinning : null,
@@ -156,7 +154,7 @@ class InstructionsDialog extends Component<Props> {
     );
     return (
       <Dialog
-        className={dialogClasses}
+        className="instructionsDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick

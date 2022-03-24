@@ -17,11 +17,9 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletReceiveDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
@@ -158,6 +156,10 @@ type State = {
   isReverifying: boolean;
 };
 
+interface FormFields {
+  noteInput: string;
+}
+
 @observer
 class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
@@ -168,8 +170,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     isInvalidAddressConfirmed: false,
     isReverifying: false,
   };
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
-  form = new ReactToolboxMobxForm({
+  form = new ReactToolboxMobxForm<FormFields>({
     fields: {
       noteInput: {
         value: '',
@@ -179,7 +180,6 @@ class WalletReceiveDialog extends Component<Props, State> {
     },
   });
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { noteInput } = form.values();
@@ -187,6 +187,7 @@ class WalletReceiveDialog extends Component<Props, State> {
         onDownloadPDF(noteInput);
       },
       onError: (err) => {
+        // @ts-ignore Argument of type 'MobxReactForm<Fields>' is not assignable to parameter of type 'string'.
         throw new Error(err);
       },
     });
@@ -271,14 +272,9 @@ class WalletReceiveDialog extends Component<Props, State> {
       isReverifying,
     } = this.state;
     const { intl } = this.context;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const noteInputField = this.form.$('noteInput');
     const deviceType = isHardwareWallet && isTrezor ? 'Trezor' : 'Ledger';
     const isSubmitting = false;
-    const buttonClasses = classnames([
-      'attention',
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
     const supportButtonLabel = !isSubmitting ? (
       intl.formatMessage(messages.supportRequestButtonLabel)
     ) : (
@@ -294,7 +290,7 @@ class WalletReceiveDialog extends Component<Props, State> {
       );
       actions = [
         {
-          className: buttonClasses,
+          className: 'attention',
           label: supportButtonLabel,
           onClick: onSupportRequestClick.bind(this, supportRequestLinkUrl),
           disabled: !isInvalidAddressConfirmed,
@@ -497,7 +493,7 @@ class WalletReceiveDialog extends Component<Props, State> {
                 <p className={styles.warningTitle}>
                   {intl.formatMessage(messages.invalidAddressWarningTitle)}
                 </p>
-                <p className={styles.warningDescription}>
+                <p>
                   {intl.formatMessage(
                     messages.invalidAddressWarningDescription,
                     {

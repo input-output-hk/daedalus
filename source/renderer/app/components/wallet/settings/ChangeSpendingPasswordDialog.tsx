@@ -16,7 +16,6 @@ import {
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ChangeSpendingPasswordDialog... Remove this comment to see the full error message
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
@@ -99,6 +98,12 @@ type Props = {
   currentLocale: string;
 };
 
+interface FormFields {
+  currentPassword: string;
+  spendingPassword: string;
+  repeatPassword: string;
+}
+
 @observer
 class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
@@ -109,8 +114,7 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         currentPassword: {
@@ -199,7 +203,6 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { currentPassword, spendingPassword } = form.values();
@@ -243,13 +246,9 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const currentPasswordField = form.$('currentPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const newPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
     const currentPasswordError =
       // @ts-ignore ts-migrate(2339) FIXME: Property 'code' does not exist on type 'Localizabl... Remove this comment to see the full error message

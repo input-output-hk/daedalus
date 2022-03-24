@@ -49,6 +49,7 @@ export type ApiTokens = Array<ApiToken>;
 export type Token = {
   policyId: string;
   assetName: string;
+  assetNameASCII?: string;
   quantity: BigNumber;
   address?: string | null | undefined;
   uniqueId: string;

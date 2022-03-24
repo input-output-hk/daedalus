@@ -181,16 +181,22 @@ export default class AddressesStore extends Store {
   _resetErrors = () => {
     this.error = null;
   };
-  isInternalAddress = (address: string): boolean =>
-    findIndex(this.all, {
-      id: address,
-    }) > -1;
-  getAddressIndex = (address: string): number =>
-    this.all.length -
-    findIndex(this.all, {
-      id: address,
-    }) -
-    1;
+  isInternalAddress = (address: string): boolean => {
+    return (
+      findIndex(this.all, {
+        id: address,
+      }) > -1
+    );
+  };
+  getAddressIndex = (address: string): number => {
+    return (
+      this.all.length -
+      findIndex(this.all, {
+        id: address,
+      }) -
+      1
+    );
+  };
   getAccountIndexByWalletId = async (
     walletId: string
   ): Promise<number | null | undefined> => {

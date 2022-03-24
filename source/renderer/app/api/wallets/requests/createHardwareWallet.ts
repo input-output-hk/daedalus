@@ -13,8 +13,8 @@ export const createHardwareWallet = (
   }: {
     walletInitData: WalletInitData;
   }
-): Promise<AdaWallet> =>
-  request(
+): Promise<AdaWallet> => {
+  return request(
     {
       method: 'POST',
       path: '/v2/wallets',
@@ -23,3 +23,4 @@ export const createHardwareWallet = (
     {},
     walletInitData
   );
+};

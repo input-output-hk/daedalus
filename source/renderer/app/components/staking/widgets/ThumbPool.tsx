@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { PoolPopOver } from './PoolPopOver';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ThumbPool.scss' or its corre... Remove this comment to see the full error message
 import styles from './ThumbPool.scss';
 import { getColorFromRange } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';

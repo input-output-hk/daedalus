@@ -14,14 +14,12 @@ export const useFeature = (feature: Feature) => {
     // Start feature store before first render is done
     feature.start();
   }, []);
-  useEffect(
-    () =>
-      // Stop store on unmount
-      () => {
-        feature.stop();
-      },
-    []
-  );
+  useEffect(() => {
+    // Stop store on unmount
+    return () => {
+      feature.stop();
+    };
+  }, []);
 };
 
 /**

@@ -79,7 +79,7 @@ const stakePoolsOptions = stakePoolsList.reduce((obj, pool) => {
   obj[`[${ticker}] ${name} - (${ranking})`] = pool;
   return obj;
 }, {});
-storiesOf('Common/ItemsDropdown', module)
+storiesOf('Common|ItemsDropdown', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();
@@ -160,10 +160,11 @@ storiesOf('Common/ItemsDropdown', module)
           `${number('Amount', 1000000000, {}, 'First wallet')}`,
           undefined,
           undefined,
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'SelectTypeKnobValue' is not assi... Remove this comment to see the full error message
           select(
             'Stake pool',
             stakePoolsOptions,
+            // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
             STAKE_POOLS[0],
             'First wallet'
           ),
@@ -209,7 +210,7 @@ storiesOf('Common/ItemsDropdown', module)
       '1000000000',
       undefined,
       undefined,
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'SelectTypeKnobValue' is not assi... Remove this comment to see the full error message
       select('Wallet - Stake pool', stakePoolsOptions, STAKE_POOLS[0]),
       true,
       undefined,
@@ -246,17 +247,19 @@ storiesOf('Common/ItemsDropdown', module)
       {
         assetId: assets[0].fingerprint,
       },
-      (store) => (
-        <AssetsDropdown
-          assets={assets}
-          // @ts-ignore ts-migrate(2322) FIXME: Type '{ assets: AssetToken[]; value: string; onCha... Remove this comment to see the full error message
-          value={store.state.assetId}
-          onChange={(assetId) =>
-            store.set({
-              assetId,
-            })
-          }
-        />
-      )
+      (store) => {
+        return (
+          <AssetsDropdown
+            assets={assets}
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ assets: AssetToken[]; value: string; onCha... Remove this comment to see the full error message
+            value={store.state.assetId}
+            onChange={(assetId) =>
+              store.set({
+                assetId,
+              })
+            }
+          />
+        );
+      }
     )
   );

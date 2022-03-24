@@ -16,7 +16,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import {
   generateHash,
-  generatePolicyIdHash, // generat eAsset,
+  generatePolicyIdHash, // generate eAsset,
 } from '../../_support/utils';
 import {
   WalletTransaction,
@@ -106,19 +106,16 @@ const transactionTokens = [
     fingerprint: 'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
   },
 ];
-const decorators = [
-  withKnobs,
-  (story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ),
-];
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets/Transactions', module).add(
-  'Transaction',
-  () => {
+storiesOf('Wallets|Transactions', module)
+  .addDecorator(withKnobs)
+  .addDecorator((story, context) => (
+    <StoryProvider>
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    </StoryProvider>
+  )) // ====== Stories ======
+  .add('Transaction', () => {
     const direction = select(
       'direction',
       {
@@ -213,8 +210,4 @@ storiesOf('Wallets/Transactions', module).add(
         onCopyAssetParam={action('onCopyAssetParam')}
       />
     );
-  },
-  {
-    decorators,
-  }
-);
+  });

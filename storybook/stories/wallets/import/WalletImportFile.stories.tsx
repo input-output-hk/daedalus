@@ -27,7 +27,7 @@ const getWallet = (
   },
 });
 
-storiesOf('Wallets/Import File', module)
+storiesOf('Wallets|Import File', module)
   .addDecorator(WalletsWrapper)
   .add('Step 1 - Import File', () => (
     <VerticalFlexContainer>
@@ -53,10 +53,10 @@ storiesOf('Wallets/Import File', module)
       WalletImportStatuses,
       WalletImportStatuses.PENDING
     );
-    const namedWallets = [...Array(number('Wallets with name', 5))].map(
+    const namedWallets = [
+      ...Array(number('Wallets with name', 5)),
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-      (x, index: number) => getWallet(index, true, statusSelect)
-    );
+    ].map((x, index: number) => getWallet(index, true, statusSelect));
     const unnamedWallets = [...Array(number('Wallets with no name', 5))].map(
       (x, index: number) => getWallet(index, false)
     );

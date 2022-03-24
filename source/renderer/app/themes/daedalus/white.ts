@@ -7,7 +7,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-about-window-header-bottom-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-about-window-daedalus-icon-color': '#29b595',
     '--theme-about-window-cardano-icon-color': '#29b595',
-    '--theme-about-window-title-varsion-color': '#2d2d2d',
+    '--theme-about-window-title-version-color': '#2d2d2d',
     '--theme-about-window-title-stroke-color': '#2d2d2d',
     '--theme-about-window-content-color': '#2d2d2d',
     '--theme-about-window-content-text-color': '#2d2d2d',
@@ -159,6 +159,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-connecting-background-color8': 'rgba(249, 249, 249, 1)',
     '--theme-connecting-text-color': '#2d2d2d',
     '--theme-connecting-description-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-connecting-sync-progress-color': '#2d2d2d',
   },
   dapps: {
     '--theme-dapp-transaction-request-separator': '#2d2d2d',
@@ -280,6 +281,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#29b595',
     '--theme-dialog-fullsize-button-label-color-hover': '#fff',
     '--theme-dialog-fullsize-field-background-color': 'rgba(45, 45, 45, 0.07)',
+    '--theme-dialog-fullsize-secondary-text-action-color': '45, 45, 45',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
@@ -625,7 +627,7 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-input-bg-color': '#fff',
     '--rp-input-bg-color-disabled': 'rgba(45, 45, 45, 0.05)',
     '--rp-input-border-color': 'rgba(45, 45, 45, 0.3)',
-    '--rp-input-border-color-disabled': 'rgba(45, 45, 45, 0.05)',
+    '--rp-input-border-color-disabled': 'transparent',
     '--rp-input-border-color-errored': '#ea4c5b',
     '--rp-input-border-color-focus': 'rgba(45, 45, 45, 0.7)',
     '--rp-input-line-height': '22px',
@@ -685,8 +687,10 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(45, 45, 45, 0.7)',
     '--rp-select-input-bg-color': 'transparent',
+    '--rp-select-input-bg-color-disabled': 'rgba(45, 45, 45, 0.05)',
     '--rp-select-input-border-color': 'rgba(45, 45, 45, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(45, 45, 45, 0.7)',
+    '--rp-select-input-border-color-disabled': 'transparent',
     '--rp-select-input-text-color': '#2d2d2d',
     '--rp-select-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
   },
@@ -787,6 +791,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.5)',
     '--theme-sidebar-category-networkInfo-background-color': '#29b595',
     '--theme-sidebar-category-networkInfo-text-color': '#fff',
+    '--theme-sidebar-sort-button-background-color': '45, 45, 45',
+    '--theme-sidebar-search-field-border-color': '45, 45, 45',
   },
   splash: {
     '--theme-splash-network-background-color': 'rgba(255, 255, 255, 0.96)',
@@ -1008,6 +1014,10 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(41, 181, 149, 0.05)',
     '--theme-tokens-list-header-expanded-background-color-hover':
       'rgba(41, 181, 149, 0.03)',
+    '--theme-tokens-picker-toolbar-box-shadow': 'rgba(0, 0, 0, 0.25)',
+    '--theme-tokens-picker-toolbar-border-bottom-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-tokens-picker-token-separator': 'rgba(94, 96, 102, 0.15)',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

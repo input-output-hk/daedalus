@@ -19,6 +19,12 @@ import {
   checkIsWindows,
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
+// Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
+// actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
+//
+// TODO figure out better place for it - can't import from config.js as it would be a circular dep
+// https://input-output.atlassian.net/browse/DDW-928
+export const RECOMMENDED_RAM_IN_BYTES = 15 * 1024 * 1024 * 1024;
 
 /* ==================================================================
 =                           Evaluations                             =
@@ -36,14 +42,10 @@ const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
-const isWatchMode =
-  (process.env.IS_WATCH_MODE && process.env.IS_WATCH_MODE === 'true') || false;
-const keepLocalClusterRunning =
-  (process.env.KEEP_LOCAL_CLUSTER_RUNNING &&
-    process.env.KEEP_LOCAL_CLUSTER_RUNNING === 'true') ||
-  false;
+const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.32.1'; // TODO: pick up this value from process.env
+const NODE_VERSION = '1.33.0'; // TODO: pick up this value from process.env
+
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -51,13 +53,12 @@ const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const cpu = os.cpus();
 const ram = os.totalmem();
+const hasMetHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS =
-  (process.env.MOBX_DEV_TOOLS && process.env.MOBX_DEV_TOOLS === 'true') ||
-  false;
+const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
@@ -101,6 +102,7 @@ export const environment: Environment = Object.assign(
     isLinux,
     isBlankScreenFixActive,
     keepLocalClusterRunning,
+    hasMetHardwareRequirements,
   },
   process.env
 );

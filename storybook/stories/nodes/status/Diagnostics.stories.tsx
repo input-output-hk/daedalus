@@ -12,6 +12,10 @@ const systemInfo = {
   cpu: 'Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz',
   ram: '32.0 GB',
   availableDiskSpace: '500 GB',
+  // TODO add one more example with low-end device
+  // https://input-output.atlassian.net/browse/DDW-928e
+  hasMetHardwareRequirements: true,
+  isRTSFlagsModeEnabled: false,
 };
 const coreInfo = {
   daedalusVersion: '0.14.0',
@@ -28,7 +32,7 @@ const coreInfo = {
   daedalusStateDirectoryPath:
     '/Users/daedalus/Library/Application Support/Daedalus Demo',
 };
-storiesOf('Nodes/Status', module)
+storiesOf('Nodes|Status', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs) // ====== Stories ======
   .add('Daedalus Diagnostics', () => (

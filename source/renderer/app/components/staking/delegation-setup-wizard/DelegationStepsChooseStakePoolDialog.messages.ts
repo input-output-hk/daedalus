@@ -40,14 +40,14 @@ export const getMessages = () => {
     delegatedStakePoolLabel: {
       id: 'staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel',
       defaultMessage:
-        '!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
+        '!!!You are already delegating <span>{selectedWalletName}</span> wallet to <span class="ticker">[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
       description:
         '"You are already delegating to stake pool" label on the delegation setup "choose stake pool" dialog.',
     },
     delegatedStakePoolNextLabel: {
       id: 'staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel',
       defaultMessage:
-        '!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span>[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
+        '!!!You are already pending delegation <span>{selectedWalletName}</span> wallet to <span class="ticker">[{selectedPoolTicker}]</span> stake pool. <span>If you wish to re-delegate your stake, please select a different pool.</span>',
       description:
         '"You are already delegating to stake pool" label on the delegation setup "choose stake pool" dialog.',
     },

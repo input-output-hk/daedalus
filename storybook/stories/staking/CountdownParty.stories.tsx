@@ -9,13 +9,10 @@ import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
 
-const decorators = [
-  withKnobs,
-  (story) => <StoryDecorator>{story()}</StoryDecorator>,
-];
-storiesOf('Decentralization / Countdown', module).add(
-  'Countdown party',
-  () => {
+storiesOf('Decentralization | Countdown', module)
+  .addDecorator(withKnobs)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
+  .add('Countdown party', () => {
     const isAlonzoActivated = boolean('isAlonzoActivated', false);
     const date = isAlonzoActivated
       ? new Date().getTime() - 100000000
@@ -70,8 +67,4 @@ storiesOf('Decentralization / Countdown', module).add(
         />
       </div>
     );
-  },
-  {
-    decorators,
-  }
-);
+  });

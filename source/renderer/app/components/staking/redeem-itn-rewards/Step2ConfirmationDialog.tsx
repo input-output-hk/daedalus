@@ -7,7 +7,6 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step2ConfirmationDialog.scss... Remove this comment to see the full error message
 import styles from './Step2ConfirmationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';
@@ -77,6 +76,10 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
@@ -85,8 +88,7 @@ class Step2ConfirmationDialog extends Component<Props> {
   static defaultProps = {
     error: null,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -104,12 +106,14 @@ class Step2ConfirmationDialog extends Component<Props> {
           ),
           value: '',
           validators: [
-            ({ field }) => [
-              isValidSpendingPassword(field.value),
-              this.context.intl.formatMessage(
-                globalMessages.invalidSpendingPassword
-              ),
-            ],
+            ({ field }) => {
+              return [
+                isValidSpendingPassword(field.value),
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
+            },
           ],
         },
       },
@@ -125,7 +129,6 @@ class Step2ConfirmationDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -161,13 +164,11 @@ class Step2ConfirmationDialog extends Component<Props> {
       ? amount
       : transactionFees;
     const { name: walletName } = wallet;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
     const actions = {
       direction: 'column',
       items: [
         {
-          className: isSubmitting ? styles.isSubmitting : null,
           // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
           disabled: !form.isValid,
           primary: true,

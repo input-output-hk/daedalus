@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import type { Row } from '../types';
 import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SimpleTransactionList.scss' ... Remove this comment to see the full error message
 import styles from './SimpleTransactionList.scss';
 
 type Props = {

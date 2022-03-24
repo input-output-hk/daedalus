@@ -85,19 +85,19 @@ Then('I should see {int} addresses', async function (numberOfAddresses) {
     addresses = [addresses];
   }
 
-  
+  ;
   expect(addresses.length).to.equal(numberOfAddresses);
 });
 Then('I should see the following addresses:', async function (table) {
-  const expectedAdresses = table.hashes();
+  const expectedAddresses = table.hashes();
   let addresses;
   await this.client.waitUntil(async () => {
     addresses = await this.client.getAttribute(SELECTORS.ADDRESS_COMPONENT, 'class');
-    return addresses.length === expectedAdresses.length;
+    return addresses.length === expectedAddresses.length;
   });
 
   if (addresses) {
-    addresses.forEach((address, index) => expect(address).to.include(expectedAdresses[index].ClassName));
+    addresses.forEach((address, index) => expect(address).to.include(expectedAddresses[index].ClassName));
   }
 });
 Then('The active address should be the newest one', async function () {

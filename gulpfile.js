@@ -51,6 +51,8 @@ gulp.task(
   )
 );
 
+gulp.task('typedef:sass', shell.task('yarn typedef:sass --watch'));
+
 gulp.task(
   'clear:cache',
   shell.task('rimraf ./node_modules/.cache && rimraf .cache-loader')

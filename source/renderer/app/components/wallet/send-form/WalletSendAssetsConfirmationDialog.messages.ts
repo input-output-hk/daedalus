@@ -90,19 +90,19 @@ export const getMessages = () => {
     unformattedAmountLabel: {
       id: 'wallet.send.confirmationDialog.unformattedAmountLabel',
       defaultMessage: '!!!unformatted amount',
-      description: 'Label for "unformated amount"',
+      description: 'Label for "unformatted amount"',
     },
     unformattedAmountMessageForSoftwareWallets: {
       id: 'wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets',
       defaultMessage:
         '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
-      description: 'Message for "unformated amount"',
+      description: 'Message for "unformatted amount"',
     },
     unformattedAmountMessageForHardwareWallets: {
       id: 'wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets',
       defaultMessage:
         '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
-      description: 'Message for "unformated amount"',
+      description: 'Message for "unformatted amount"',
     },
     emptyingWarning: {
       id: 'wallet.send.confirmationDialog.emptyingWarning',

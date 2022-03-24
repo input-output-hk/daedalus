@@ -40,6 +40,7 @@ import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
+import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
 import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
@@ -84,6 +85,7 @@ import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
+import { hexToString } from '../utils/strings';
 import {
   unscrambleMnemonics,
   scrambleMnemonics,
@@ -126,7 +128,7 @@ import type {
   GetNetworkParametersApiResponse,
 } from './network/types';
 // Transactions Types
-import type {
+import {
   Transaction,
   TransactionFee,
   TransactionWithdrawals,
@@ -148,7 +150,7 @@ import type {
   ICOPublicKeyParams,
 } from './transactions/types';
 // Wallets Types
-import type {
+import {
   AdaWallet,
   AdaWallets,
   CreateHardwareWalletRequest,
@@ -203,6 +205,8 @@ import type {
 import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
+  GetCatalystFundResponse,
+  CatalystFund,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -211,7 +215,7 @@ import { getSHA256HexForString } from './utils/hashing';
 import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
-import ApiError from '../domains/ApiError';
+import ApiError, { ErrorType } from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import type {
   GetAssetsRequest,
@@ -223,11 +227,12 @@ import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
+import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 
 export default class AdaApi {
   config: RequestConfig;
   // We need to preserve all asset metadata during single runtime in order
-  // to avoid losing it in case of Token Metadata Registry server unvailability
+  // to avoid losing it in case of Token Metadata Registry server unavailability
   storedAssetMetadata: StoredAssetMetadata = {};
 
   constructor(isTest: boolean, config: RequestConfig) {
@@ -240,13 +245,13 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWallets called');
-    const { getHardwareWalletLocalData, getHardwareWalletsLocalData } =
-      global.daedalus.api.localStorage;
+    const { getHardwareWalletsLocalData } = global.daedalus.api.localStorage;
 
     try {
-      const wallets: AdaWallets = await getWallets(this.config);
+      const wallets: Array<AdaWallet | LegacyAdaWallet> = await getWallets(
+        this.config
+      );
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -267,14 +272,15 @@ export default class AdaApi {
           },
           isLegacy: true,
         };
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
         wallets.push({ ...legacyAdaWallet, ...extraLegacyWalletProps });
       });
       // @TODO - Remove this once we get hardware wallet flag from WBE
       return await Promise.all(
-        wallets.map(async (wallet) => {
+        wallets.map(async (wallet: AdaWallet) => {
           const { id } = wallet;
-          const walletData = await getHardwareWalletLocalData(id);
+
+          const walletData = hwLocalData[id];
+
           return _createWalletFromServerData({
             ...wallet,
             isHardwareWallet:
@@ -453,18 +459,19 @@ export default class AdaApi {
       parameters: request,
     });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
+
     const params = Object.assign(
       {},
       {
         order: order || 'descending',
+      },
+      !!fromDate && {
+        start: `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`,
+      },
+      !!toDate && {
+        end: `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`,
       }
     );
-    if (fromDate)
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'start' does not exist on type '{ order: ... Remove this comment to see the full error message
-      params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
-    if (toDate)
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'end' does not exist on type '{ order: "a... Remove this comment to see the full error message
-      params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
 
     try {
       let response;
@@ -832,7 +839,9 @@ export default class AdaApi {
     }
   };
   createTransaction = async (
-    request: CreateTransactionRequest
+    request: CreateTransactionRequest & {
+      hasAssetsRemainingAfterTransaction: boolean;
+    }
   ): Promise<WalletTransaction> => {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
@@ -845,6 +854,7 @@ export default class AdaApi {
       isLegacy,
       assets,
       withdrawal = TransactionWithdrawal,
+      hasAssetsRemainingAfterTransaction,
     } = request;
 
     try {
@@ -884,7 +894,8 @@ export default class AdaApi {
       logger.error('AdaApi::createTransaction error', {
         error,
       });
-      throw new ApiError(error)
+
+      const apiError = new ApiError(error)
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
@@ -892,8 +903,18 @@ export default class AdaApi {
           linkLabel: 'tooBigTransactionErrorLinkLabel',
           linkURL: 'tooBigTransactionErrorLinkURL',
         })
-        .where('code', 'transaction_is_too_big')
-        .result();
+        .where('code', 'transaction_is_too_big');
+
+      const { requiresAdaToRemainToSupportNativeTokens, adaToRemain } =
+        doesWalletRequireAdaToRemainToSupportTokens(
+          error,
+          hasAssetsRemainingAfterTransaction
+        );
+      if (requiresAdaToRemainToSupportNativeTokens) {
+        apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
+      }
+
+      throw apiError.result();
     }
   };
   // For testing purpose ONLY
@@ -1020,6 +1041,7 @@ export default class AdaApi {
       const { fee, minimumAda } = _createTransactionFeeFromServerData(response);
 
       const amountWithFee = formattedTxAmount.plus(fee);
+      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
       const isRewardsRedemptionRequest = Array.isArray(withdrawal);
 
       if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
@@ -1067,6 +1089,7 @@ export default class AdaApi {
         .set(notEnoughMoneyError, true)
         .where('code', 'not_enough_money')
         .set('utxoTooSmall', true, {
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'exec' does not exist on type '{}'.
           minimumAda: get(
             /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
             2,
@@ -1135,7 +1158,7 @@ export default class AdaApi {
         walletId,
         data,
       });
-      // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
+      // @TODO - handle CHANGE parameter on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);
       // Calculate fee from inputs and outputs
       const inputsData = [];
@@ -1145,7 +1168,7 @@ export default class AdaApi {
       let totalOutputs = new BigNumber(0);
       map(response.inputs, (input) => {
         const inputAmount = new BigNumber(input.amount.quantity.toString());
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type '{ addres... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
         const inputAssets = map(input.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1160,11 +1183,12 @@ export default class AdaApi {
           derivationPath: input.derivation_path,
           assets: inputAssets,
         };
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
         inputsData.push(inputData);
       });
       map(outputs, (output) => {
         const outputAmount = new BigNumber(output.amount.quantity.toString());
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type '{ addres... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
         const outputAssets = map(output.assets, (asset) => ({
           policyId: asset.policy_id,
           assetName: asset.asset_name,
@@ -1177,6 +1201,7 @@ export default class AdaApi {
           derivationPath: output.derivation_path || null,
           assets: outputAssets,
         };
+        // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
         outputsData.push(outputData);
       });
 
@@ -1187,6 +1212,7 @@ export default class AdaApi {
             rewardAccountPath: certificate.reward_account_path,
             pool: certificate.pool || null,
           };
+          // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
           certificatesData.push(certificateData);
         });
       }
@@ -1454,14 +1480,12 @@ export default class AdaApi {
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
   getWalletRecoveryPhrase(): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
 
     try {
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1473,14 +1497,12 @@ export default class AdaApi {
   }
 
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
 
     try {
       const response: Promise<Array<string>> = new Promise((resolve) =>
         resolve(generateAdditionalMnemonics())
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
       return response;
     } catch (error) {
@@ -1494,7 +1516,6 @@ export default class AdaApi {
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
   ): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input: scrambledInput } = request;
 
@@ -1507,7 +1528,6 @@ export default class AdaApi {
           })
         )
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -1521,7 +1541,6 @@ export default class AdaApi {
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<Array<string>> {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
 
@@ -1530,7 +1549,6 @@ export default class AdaApi {
         passphrase,
         scrambledInput,
       });
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return Promise.resolve(response);
     } catch (error) {
@@ -1904,7 +1922,7 @@ export default class AdaApi {
       logger.debug('AdaApi::restoreByronLedgerWallet success', {
         wallet,
       });
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; dele... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ address_pool_gap: number; delegation... Remove this comment to see the full error message
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::restoreByronLedgerWallet error', {
@@ -2093,7 +2111,6 @@ export default class AdaApi {
         });
       }
 
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
@@ -2136,7 +2153,6 @@ export default class AdaApi {
     }
   };
   getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getSmashSettings called');
 
     try {
@@ -2194,10 +2210,9 @@ export default class AdaApi {
       );
 
       if (!isSmashServerValid) {
-        const error = {
+        const error: ErrorType = {
           code: 'invalid_smash_server',
         };
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ code: string; }' is not assign... Remove this comment to see the full error message
         throw new ApiError(error);
       }
 
@@ -2322,8 +2337,7 @@ export default class AdaApi {
     });
 
     try {
-      // @ts-ignore ts-migrate(2322) FIXME: Type '[]' is not assignable to type 'Promise<[]>'.
-      const response: Promise<[]> = await exportWalletAsJSON(this.config, {
+      const response: [] = await exportWalletAsJSON(this.config, {
         walletId,
         filePath,
       });
@@ -2469,7 +2483,6 @@ export default class AdaApi {
     }
   };
   testReset = async (): Promise<void> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::testReset called');
 
     try {
@@ -2483,7 +2496,6 @@ export default class AdaApi {
           })
         )
       );
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('AdaApi::testReset success');
     } catch (error) {
       logger.error('AdaApi::testReset error', {
@@ -2493,7 +2505,6 @@ export default class AdaApi {
     }
   };
   getNetworkInfo = async (): Promise<GetNetworkInfoResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkInfo called');
 
     try {
@@ -2554,6 +2565,7 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getNetworkClock = async (
     isForceCheck: boolean
   ): Promise<GetNetworkClockResponse> => {
@@ -2582,6 +2594,7 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+  // @ts-ignore ts-migrate(2583) FIXME: Cannot find name 'Promise'. Do you need to change ... Remove this comment to see the full error message
   getNetworkParameters = async (): Promise<GetNetworkParametersResponse> => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNetworkParameters called');
@@ -2626,7 +2639,6 @@ export default class AdaApi {
     }
   };
   getNews = async (): Promise<GetNewsResponse> => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('AdaApi::getNews called');
     // Fetch news json
     let rawNews: string;
@@ -2919,6 +2931,42 @@ export default class AdaApi {
     fakeStakePoolsJson: Array<StakePool>
   ) => void;
   setStakePoolsFetchingFailed: () => void;
+  getCatalystFund = async (): Promise<CatalystFund> => {
+    logger.debug('AdaApi::getCatalystFund called', {});
+
+    try {
+      const catalystFund = await getCatalystFund();
+
+      logger.debug('AdaApi::getCatalystFund success', {
+        catalystFund,
+      });
+
+      return {
+        current: {
+          number: catalystFund.id + 1,
+          startTime: new Date(catalystFund.fund_start_time),
+          endTime: new Date(catalystFund.fund_end_time),
+          resultsTime: new Date(
+            catalystFund.chain_vote_plans?.[0]?.chain_committee_end_time
+          ),
+          registrationSnapshotTime: new Date(
+            catalystFund.registration_snapshot_time
+          ),
+        },
+        next: {
+          number: catalystFund.id + 2,
+          startTime: new Date(catalystFund.next_fund_start_time),
+          registrationSnapshotTime: new Date(
+            catalystFund.next_registration_snapshot_time
+          ),
+        },
+      };
+    } catch (error) {
+      logger.error('AdaApi::getCatalystFund error', {
+        error,
+      });
+    }
+  };
 } // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletFromServerData = action(
@@ -2984,6 +3032,7 @@ const _createWalletFromServerData = action(
           uniqueId,
           policyId,
           assetName,
+          assetNameASCII: hexToString(assetName),
           quantity: new BigNumber(quantity.toString()),
         };
       }),
@@ -2994,6 +3043,7 @@ const _createWalletFromServerData = action(
           uniqueId,
           policyId,
           assetName,
+          assetNameASCII: hexToString(assetName),
           quantity: new BigNumber(quantity.toString()),
         };
       }),

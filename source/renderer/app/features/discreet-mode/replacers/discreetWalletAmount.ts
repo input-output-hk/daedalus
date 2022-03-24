@@ -8,14 +8,13 @@ export type DiscreetWalletAmountProps = {
   withCurrency?: boolean;
   long?: boolean;
 };
-export const discreetWalletAmount: DiscreetValueReplacer =
-  ({
-    amount,
-    withCurrency = true,
-    long = true,
-    currency = 'ADA',
-  }: DiscreetWalletAmountProps) =>
-  (isDiscreetMode, replacement) => {
+export const discreetWalletAmount: DiscreetValueReplacer = ({
+  amount,
+  withCurrency = true,
+  long = true,
+  currency = 'ADA',
+}: DiscreetWalletAmountProps) => {
+  return (isDiscreetMode, replacement) => {
     if (!isDiscreetMode) {
       return formattedWalletAmount(amount, withCurrency, long, currency);
     }
@@ -26,3 +25,4 @@ export const discreetWalletAmount: DiscreetValueReplacer =
 
     return `${replacement} ${currency}`;
   };
+};

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { take } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import type { AssetToken } from '../../api/assets/types';
 import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
+import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
@@ -23,6 +25,9 @@ export const messages = defineMessages({
   },
 });
 type Props = InjectedProps;
+type OpenAssetSettingsDialogArgs = {
+  asset: AssetToken;
+};
 
 @inject('stores', 'actions')
 @observer
@@ -57,20 +62,37 @@ class WalletSummaryPage extends Component<Props> {
       },
     });
   };
+  openAssetSettingsDialog = ({ asset }: OpenAssetSettingsDialogArgs) => {
+    const { assets, dialogs } = this.props.actions;
+    assets.setEditedAsset.trigger({
+      asset,
+    });
+    dialogs.open.trigger({
+      dialog: AssetSettingsDialog,
+    });
+  };
+
+  get assetSettingsDialogWasOpened() {
+    return this.props.stores.uiDialogs.isOpen(AssetSettingsDialog);
+  }
 
   render() {
     const { intl } = this.context;
     const { stores, actions } = this.props;
-    const { app, wallets, addresses, transactions, profile, assets, currency } =
-      stores;
-    const { all, getAsset, assetSettingsDialogWasOpened, favorites } = assets;
-    const { isInternalAddress } = addresses;
     const {
-      onAssetSettingsOpen,
-      onOpenAssetSend,
-      onCopyAssetParam,
-      onToggleFavorite,
-    } = actions.assets;
+      app,
+      wallets,
+      addresses,
+      transactions,
+      profile,
+      assets,
+      currency,
+      staking,
+    } = stores;
+    const { all, getAsset, favorites } = assets;
+    const { isInternalAddress } = addresses;
+    const { onOpenAssetSend, onCopyAssetParam, onToggleFavorite } =
+      actions.assets;
     const {
       openExternalLink,
       environment: { network },
@@ -147,6 +169,7 @@ class WalletSummaryPage extends Component<Props> {
       <VerticalFlexContainer>
         <WalletSummary
           wallet={wallet}
+          reward={staking.getRewardForWallet(wallet)}
           numberOfRecentTransactions={recent.length}
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
@@ -162,10 +185,10 @@ class WalletSummaryPage extends Component<Props> {
           currencySelected={selected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
           assets={assetTokens}
-          assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
+          assetSettingsDialogWasOpened={this.assetSettingsDialogWasOpened}
           onOpenAssetSend={onOpenAssetSend.trigger}
           onCopyAssetParam={onCopyAssetParam.trigger}
-          onAssetSettings={onAssetSettingsOpen.trigger}
+          onAssetSettings={this.openAssetSettingsDialog}
           onExternalLinkClick={app.openExternalLink}
           onViewAllButtonClick={onViewAllButtonClick}
           tokenFavorites={favorites}

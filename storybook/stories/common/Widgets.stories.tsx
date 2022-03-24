@@ -79,7 +79,7 @@ const messages = defineMessages({
     description: 'Save description.',
   },
 });
-storiesOf('Common/Widgets', module)
+storiesOf('Common|Widgets', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();
@@ -139,125 +139,92 @@ storiesOf('Common/Widgets', module)
       </div>
     </div>
   ))
-  .add(
-    'BigButtonForDialogs',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, props: { locale: strin... Remove this comment to see the full error message
-    (
-      _,
-      props: {
-        locale: string;
-      }
-    ) => {
-      console.log('_', _);
-      return (
-        <div>
-          <div
-            style={{
-              width: '300px',
-              height: '200px',
-              display: 'flex',
-            }}
-          >
-            <BigButtonForDialogs
-              description={intl[props.locale].formatMessage(
-                messages.createNewWallet
-              )}
-              label={intl[props.locale].formatMessage(messages.create)}
-              icon={createIcon}
-              onClick={() => {}}
-            />
-          </div>
-          <div
-            style={{
-              width: '300px',
-              height: '200px',
-              display: 'flex',
-            }}
-          >
-            <BigButtonForDialogs
-              description={intl[props.locale].formatMessage(
-                messages.joinSharedWallet
-              )}
-              label={intl[props.locale].formatMessage(messages.join)}
-              icon={joinSharedIcon}
-              onClick={() => {}}
-              isDisabled
-            />
-          </div>
-          <div
-            style={{
-              width: '300px',
-              height: '200px',
-              display: 'flex',
-            }}
-          >
-            <BigButtonForDialogs
-              description={intl[props.locale].formatMessage(
-                messages.importExistingWallet
-              )}
-              label={intl[props.locale].formatMessage(messages.import)}
-              icon={importIcon}
-              onClick={() => {}}
-            />
-          </div>
-        </div>
-      );
-    }
-  )
-  .add(
-    'MnemonicInputWidget - 9 words',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, props: { locale: strin... Remove this comment to see the full error message
-    (
-      _,
-      props: {
-        locale: string;
-      }
-    ) => {
-      const tokens = observable(['', '', '', '', '', '', '', '', '']);
-      return (
-        <div
-          style={{
-            padding: 20,
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
+  .add('BigButtonForDialogs', (props: { locale: string }) => (
+    <div>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
+        <BigButtonForDialogs
+          description={intl[props.locale].formatMessage(
+            messages.createNewWallet
+          )}
+          label={intl[props.locale].formatMessage(messages.create)}
+          icon={createIcon}
+          onClick={() => {}}
+        />
+      </div>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
+        <BigButtonForDialogs
+          description={intl[props.locale].formatMessage(
+            messages.joinSharedWallet
+          )}
+          label={intl[props.locale].formatMessage(messages.join)}
+          icon={joinSharedIcon}
+          onClick={() => {}}
+          isDisabled
+        />
+      </div>
+      <div
+        style={{
+          width: '300px',
+          height: '200px',
+          display: 'flex',
+        }}
+      >
+        <BigButtonForDialogs
+          description={intl[props.locale].formatMessage(
+            messages.importExistingWallet
+          )}
+          label={intl[props.locale].formatMessage(messages.import)}
+          icon={importIcon}
+          onClick={() => {}}
+        />
+      </div>
+    </div>
+  ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
+  .add('MnemonicInputWidget - 9 words', (props: { locale: string }) => {
+    const tokens = observable(['', '', '', '', '', '', '', '', '']);
+    return (
+      <div
+        style={{
+          padding: 20,
+        }}
+      >
+        <MnemonicInputWidget
+          label={intl[props.locale].formatMessage(messages.recoveryPhrase)}
+          tokens={tokens}
+          onTokenChanged={(index, token) => {
+            tokens[index] = token;
           }}
-        >
-          <MnemonicInputWidget
-            label={intl[props.locale].formatMessage(messages.recoveryPhrase)}
-            tokens={tokens}
-            onTokenChanged={(index, token) => {
-              tokens[index] = token;
-            }}
-          />
-        </div>
-      );
-    }
-  )
+        />
+      </div>
+    );
+  })
   .add('TinySwitch', () => <TinySwitch />)
-  .add(
-    'TinySwitch - short label',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, props: { locale: strin... Remove this comment to see the full error message
-    (
-      _,
-      props: {
-        locale: string;
-      }
-    ) => <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
-  )
-  .add(
-    'ButtonLink',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, props: { locale: strin... Remove this comment to see the full error message
-    (
-      _,
-      props: {
-        locale: string;
-      }
-    ) => (
-      <ButtonLink
-        label={intl[props.locale].formatMessage(messages.save)}
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        onClick={action('onClick')}
-      />
-    )
-  )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
+  .add('TinySwitch - short label', (props: { locale: string }) => (
+    <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
+  ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
+  .add('ButtonLink', (props: { locale: string }) => (
+    <ButtonLink
+      label={intl[props.locale].formatMessage(messages.save)}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      onClick={action('onClick')}
+    />
+  ))
   .add('NormalSwitch', () => (
     <div>
       <NormalSwitch onChange={action('onChange')} />

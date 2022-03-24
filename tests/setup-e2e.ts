@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs";
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module 'spectron' or its corresponding... Remove this comment to see the full error message
 import { Application } from "spectron";
 import { BeforeAll, Before, After, AfterAll, setDefaultTimeout } from "cucumber";
 import electronPath from "electron";
@@ -34,6 +33,7 @@ const defaultWalletKeyFilePath = path.resolve(__dirname, './wallets/e2e/document
 
 const startApp = async () => {
   const app = new Application({
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'typeof Electron' is not assignable to type '... Remove this comment to see the full error message
     path: electronPath,
     args: ['./dist/main/index.js'],
     requireName: 'spectronRequire',

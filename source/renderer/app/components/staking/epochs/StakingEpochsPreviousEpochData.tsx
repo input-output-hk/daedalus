@@ -11,7 +11,6 @@ import {
   sortData,
 } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -131,33 +130,31 @@ class StakingEpochsPreviousEpochData extends Component<Props, State> {
               </td>
               <td>
                 <span className={styles.mediumText}>{slotsElected[0]}</span>
-                <span>
-                  {` ${intl.formatMessage(messages.tableBodySlots)} - `}
-                </span>
-                <span className={styles.mediumText}>
-                  {`${slotsElected[1]}%`}
-                </span>
+                <span>{` ${intl.formatMessage(
+                  messages.tableBodySlots
+                )} - `}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${slotsElected[1]}%`}</span>
               </td>
               <td>
-                <span>
-                  {`${performance[0]} ${intl.formatMessage(
-                    messages.tableBodyOf
-                  )} ${performance[1]} - `}
-                </span>
-                <span className={styles.mediumText}>
-                  {`${performance[2]}%`}
-                </span>
+                <span>{`${performance[0]} ${intl.formatMessage(
+                  messages.tableBodyOf
+                )} ${performance[1]} - `}</span>
+                <span
+                  className={styles.mediumText}
+                >{`${performance[2]}%`}</span>
               </td>
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>
-                <span className={styles.uppercaseText}>
-                  {` ${intl.formatMessage(globalMessages.adaUnit)} `}
-                </span>
+                <span className={styles.uppercaseText}>{` ${intl.formatMessage(
+                  globalMessages.adaUnit
+                )} `}</span>
                 <span>{`${intl.formatMessage(messages.tableBodyOf)} `}</span>
                 <span className={styles.mediumText}>{sharedRewards[1]}</span>
-                <span className={styles.uppercaseText}>
-                  {` ${intl.formatMessage(globalMessages.adaUnit)}`}
-                </span>
+                <span className={styles.uppercaseText}>{` ${intl.formatMessage(
+                  globalMessages.adaUnit
+                )}`}</span>
               </td>
             </tr>
           );

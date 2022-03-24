@@ -43,9 +43,11 @@ const copy = async () => {
     }
 
     fromPrefix = fromPrefix.trim();
-    ({ items: foundProperties, category: fromCategory } =
+    ({
+      items: foundProperties,
+      category: fromCategory,
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | { aboutWindow: { '--the... Remove this comment to see the full error message
-      findPropertiesFromPrefix(firstTheme, fromPrefix));
+    } = findPropertiesFromPrefix(firstTheme, fromPrefix));
 
     // No properties found
     if (!foundProperties.length) {
@@ -113,9 +115,11 @@ const copy = async () => {
     }
 
     toPrefix = toPrefix.trim();
-    ({ items: existingProperties, category: toCategory } =
+    ({
+      items: existingProperties,
+      category: toCategory,
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | { aboutWindow: { '--the... Remove this comment to see the full error message
-      findPropertiesFromPrefix(firstTheme, toPrefix));
+    } = findPropertiesFromPrefix(firstTheme, toPrefix));
     // Check existing properties with the given new prefix
     const conflictingProperties = existingProperties.filter(
       (existingProperty) => {

@@ -242,27 +242,31 @@ export const ShelleyTxWithdrawal = (
     encodeCBOR,
   };
 };
-export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => ({
-  type: CERTIFICATE_TYPE[cert.certificateType],
-  params: {
-    stakeCredential: {
-      type: StakeCredentialParamsType.KEY_PATH,
-      keyPath: derivationPathToLedgerPath(cert.rewardAccountPath),
+export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
+  return {
+    type: CERTIFICATE_TYPE[cert.certificateType],
+    params: {
+      stakeCredential: {
+        type: StakeCredentialParamsType.KEY_PATH,
+        keyPath: derivationPathToLedgerPath(cert.rewardAccountPath),
+      },
+      poolKeyHashHex: cert.pool
+        ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
+        : null,
     },
-    poolKeyHashHex: cert.pool
-      ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
-      : null,
-  },
-});
+  };
+};
 export const prepareLedgerWithdrawal = (
   withdrawal: CoinSelectionWithdrawal
-) => ({
-  stakeCredential: {
-    type: StakeCredentialParamsType.KEY_PATH,
-    keyPath: derivationPathToLedgerPath(withdrawal.derivationPath),
-  },
-  amount: withdrawal.amount.quantity.toString(),
-});
+) => {
+  return {
+    stakeCredential: {
+      type: StakeCredentialParamsType.KEY_PATH,
+      keyPath: derivationPathToLedgerPath(withdrawal.derivationPath),
+    },
+    amount: withdrawal.amount.quantity.toString(),
+  };
+};
 export const ShelleyFee = (fee: number) => {
   function encodeCBOR(encoder: any) {
     return encoder.pushAny(fee);
@@ -409,12 +413,16 @@ export const CachedDeriveXpubFactory = (
   return deriveXpub;
 };
 // Helpers
-export const indexIsHardened = (index: number) => index >= HARDENED_THRESHOLD;
-export const prepareLedgerInput = (input: CoinSelectionInput) => ({
-  txHashHex: input.id,
-  outputIndex: input.index,
-  path: derivationPathToLedgerPath(input.derivationPath),
-});
+export const indexIsHardened = (index: number) => {
+  return index >= HARDENED_THRESHOLD;
+};
+export const prepareLedgerInput = (input: CoinSelectionInput) => {
+  return {
+    txHashHex: input.id,
+    outputIndex: input.index,
+    path: derivationPathToLedgerPath(input.derivationPath),
+  };
+};
 export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
@@ -491,15 +499,17 @@ export const cborizeTxVotingRegistration = ({
   stakePubKey,
   rewardDestinationAddress,
   nonce,
-}: TxAuxiliaryData) => [
-  61284,
-  new Map<number, Buffer | number>([
-    [1, Buffer.from(votingPubKey, 'hex')],
-    [2, Buffer.from(stakePubKey, 'hex')],
-    [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
-    [4, Number(nonce)],
-  ]),
-];
+}: TxAuxiliaryData) => {
+  return [
+    61284,
+    new Map<number, Buffer | number>([
+      [1, Buffer.from(votingPubKey, 'hex')],
+      [2, Buffer.from(stakePubKey, 'hex')],
+      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
+      [4, Number(nonce)],
+    ]),
+  ];
+};
 export const cborizeTxAuxiliaryVotingData = (
   txAuxiliaryData: TxAuxiliaryData,
   signatureHex: string

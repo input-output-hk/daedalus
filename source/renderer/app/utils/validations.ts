@@ -56,11 +56,13 @@ export const isUnicaseString = (
 /**
  * Enforces passwords without spaces and a minimum of 10 characters and a maximum of 255 characters.
  */
-export const isValidSpendingPassword = (
-  password: string
-): boolean => // Should contain at least 10 characters
-  password.length >= MIN_PASSWORD_LENGTH &&
-  password.length <= MAX_PASSWORD_LENGTH;
+export const isValidSpendingPassword = (password: string): boolean => {
+  // Should contain at least 10 characters
+  return (
+    password.length >= MIN_PASSWORD_LENGTH &&
+    password.length <= MAX_PASSWORD_LENGTH
+  );
+};
 // eslint-disable-next-line max-len
 export const isValidRepeatPassword = (
   spendingPassword: string,
@@ -118,7 +120,8 @@ export function errorOrIncompleteMarker(error: string) {
 /**
  * Voting PIN code validation
  */
-export const isValidPinCode = (pinCode: string, length: number): boolean =>
-  pinCode.length === length;
+export const isValidPinCode = (pinCode: string, length: number): boolean => {
+  return pinCode.length === length;
+};
 export const isValidRepeatPinCode = (pinCode: string, repeatPinCode: string) =>
   pinCode === repeatPinCode;

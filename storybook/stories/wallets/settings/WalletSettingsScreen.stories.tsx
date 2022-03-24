@@ -136,12 +136,13 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export const WalletSettingsScreen = (props: { locale: Locale }) => {
+export default (props: { locale: Locale }) => {
   const { locale } = props;
+  // @ts-ignore ts-migrate(2339) FIXME: Property 'type' does not exist on type 'SelectType... Remove this comment to see the full error message
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ 'Never Checked - Ok': { type: ... Remove this comment to see the full error message
     recoveryPhraseVerificationDateOptions,
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
     'Already Checked - Ok',
     recoveryPhraseId
   );
@@ -234,7 +235,7 @@ export const WalletSettingsScreen = (props: { locale: Locale }) => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletId="walletid"
+      walletId="walletId"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       delegationStakePoolStatus={delegationStakePoolStatus}
       lastDelegationStakePoolStatus={delegationStakePoolStatus}

@@ -8,14 +8,14 @@ import type {
 } from '../api/transactions/types';
 import type { Tokens } from '../api/assets/types';
 import type { TransactionMetadata } from '../types/TransactionMetadata';
-import { EnumMap } from '../types/enumTypes';
 
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
   FAILED: 'expired',
 };
-
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const TransactionTypes: EnumMap<string, TransactionType> = {
   CARD: 'card',
   EXPEND: 'expend',

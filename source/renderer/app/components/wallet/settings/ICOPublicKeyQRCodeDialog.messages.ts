@@ -1,9 +1,7 @@
 import { defineMessages } from 'react-intl';
-import { ReactIntlMessage } from '../../../types/i18nTypes';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export const messages: {
-  [key: string]: ReactIntlMessage;
-} = defineMessages({
+export const messages: Record<string, ReactIntlMessage> = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.icoPublicKey',
     defaultMessage: '!!!ICO Public Key',

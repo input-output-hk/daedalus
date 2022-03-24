@@ -91,14 +91,11 @@ export const StakingUndelegateConfirmationStory = (props: {
     isTrezor={boolean('isTrezor', false)}
   />
 );
-export const StakingUndelegateConfirmationResultStory = (
-  _: any,
-  {
-    locale,
-  }: {
-    locale: string;
-  }
-) => (
+export const StakingUndelegateConfirmationResultStory = ({
+  locale,
+}: {
+  locale: string;
+}) => (
   <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.

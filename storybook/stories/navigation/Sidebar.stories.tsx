@@ -105,13 +105,14 @@ const sidebarMenusHardware = observable({
   },
 });
 let emptyMenus;
-storiesOf('Navigation/Sidebar', module)
+storiesOf('Navigation|Sidebar', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
   .addDecorator(withKnobs) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('No Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
@@ -129,6 +130,7 @@ storiesOf('Navigation/Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Wallets Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
@@ -146,10 +148,12 @@ storiesOf('Navigation/Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Wallet Selected', (props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ wallets: { items: { id: string; title: str... Remove this comment to see the full error message
       menus={sidebarMenus}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
@@ -164,6 +168,7 @@ storiesOf('Navigation/Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Hardware Wallet Selected', (props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -182,6 +187,7 @@ storiesOf('Navigation/Sidebar', module)
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Delegation Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
@@ -201,6 +207,7 @@ storiesOf('Navigation/Sidebar', module)
   ))
   .add(
     'Decentralization Progress Category',
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
     (props: { currentTheme: string }) => (
       <Sidebar
         menus={emptyMenus}
@@ -219,6 +226,7 @@ storiesOf('Navigation/Sidebar', module)
       />
     )
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Network label', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}

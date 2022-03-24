@@ -17,11 +17,13 @@ export const TrezorTransactionSigningMode = {
   ORDINARY_TRANSACTION: 0,
   POOL_REGISTRATION_AS_OWNER: 1,
 };
-export const prepareTrezorInput = (input: CoinSelectionInput) => ({
-  path: derivationPathToString(input.derivationPath),
-  prev_hash: input.id,
-  prev_index: input.index,
-});
+export const prepareTrezorInput = (input: CoinSelectionInput) => {
+  return {
+    path: derivationPathToString(input.derivationPath),
+    prev_hash: input.id,
+    prev_index: input.index,
+  };
+};
 export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
   let tokenBundle = [];
 
@@ -65,10 +67,12 @@ export const prepareTrezorCertificate = (cert: CoinSelectionCertificate) => {
 };
 export const prepareTrezorWithdrawal = (
   withdrawal: CoinSelectionWithdrawal
-) => ({
-  path: derivationPathToString(withdrawal.derivationPath),
-  amount: withdrawal.amount.quantity.toString(),
-});
+) => {
+  return {
+    path: derivationPathToString(withdrawal.derivationPath),
+    amount: withdrawal.amount.quantity.toString(),
+  };
+};
 export type TrezorVotingDataType = {
   votingKey: string;
   nonce: string;

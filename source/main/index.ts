@@ -1,7 +1,10 @@
 import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import type { Event } from 'electron';
+import { client } from 'electron-connect';
 import EventEmitter from 'events';
+import { WalletSettingsStateEnum } from '../common/ipc/api';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
 import {
@@ -19,6 +22,7 @@ import mainErrorHandler from './utils/mainErrorHandler';
 import {
   launcherConfig,
   pubLogsFolderPath,
+  RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
 import { setupCardanoNode } from './cardano/setup';
@@ -40,12 +44,17 @@ import type {
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
+import {
+  getRtsFlagsSettings,
+  storeRtsFlagsSettings,
+} from './utils/rtsFlagsSettings';
+import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
+import { containsRTSFlags } from './utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
@@ -54,6 +63,7 @@ let cardanoNode: CardanoNode;
 const {
   isDev,
   isTest,
+  isWatchMode,
   isBlankScreenFixActive,
   isSelfnode,
   network,
@@ -80,6 +90,7 @@ const safeExit = async () => {
   pauseActiveDownloads();
 
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
       code: 0,
     });
@@ -95,20 +106,30 @@ const safeExit = async () => {
 
   try {
     const pid = cardanoNode.pid || 'null';
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
       pid,
     });
     await cardanoNode.stop();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
       code: 0,
     });
     safeExitWithCode(0);
   } catch (error) {
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
       error,
     });
     safeExitWithCode(0);
   }
+};
+
+const handleWindowClose = async (event: Event | null | undefined) => {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+  logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  event?.preventDefault();
+  await safeExit();
 };
 
 const onAppReady = async () => {
@@ -142,13 +163,17 @@ const onAppReady = async () => {
     process.env.PATH,
     process.env.DAEDALUS_INSTALL_DIRECTORY,
   ].join(path.delimiter);
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(`Daedalus is starting at ${startTime}`, {
     startTime,
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Updating System-info.json file', { ...systemInfo.data });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(`Current working directory is: ${process.cwd()}`, {
     cwd: process.cwd(),
   });
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('System and user locale', {
     systemLocale,
     userLocale,
@@ -157,50 +182,48 @@ const onAppReady = async () => {
   await installChromeExtensions(isDev);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('Setting up Main Window...');
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-  mainWindow = createMainWindow(userLocale, () =>
+  mainWindow = createMainWindow(
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
+    userLocale,
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Electron.Screen' is not assignab... Remove this comment to see the full error message
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
+  const currentRtsFlags = getRtsFlagsSettings(network) || [];
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-  logger.info('Setting up Cardano Node...');
-  cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
+  logger.info(
+    `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
+  );
+  cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,
+    walletSettingsState: WalletSettingsStateEnum.hidden,
   });
-  enableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        const locale = getLocale(network);
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: true,
-        });
-        resolve();
-      })
-  );
   rebuildApplicationMenu.onReceive(
-    (data) =>
+    ({ walletSettingsState, isNavigationEnabled }) =>
       new Promise((resolve) => {
         const locale = getLocale(network);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         buildAppMenus(mainWindow, cardanoNode, locale, {
-          isNavigationEnabled: data.isNavigationEnabled,
+          isNavigationEnabled,
+          walletSettingsState,
         });
         // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
         mainWindow.updateTitle(locale);
+        // @ts-ignore ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         resolve();
       })
   );
   setStateSnapshotLogChannel.onReceive(
-    (data: SetStateSnapshotLogMainResponse) =>
-      Promise.resolve(logStateSnapshot(data))
+    (data: SetStateSnapshotLogMainResponse) => {
+      return Promise.resolve(logStateSnapshot(data));
+    }
   );
   generateWalletMigrationReportChannel.onReceive(
-    (data: GenerateWalletMigrationReportRendererRequest) =>
-      Promise.resolve(generateWalletMigrationReport(data))
+    (data: GenerateWalletMigrationReportRendererRequest) => {
+      return Promise.resolve(generateWalletMigrationReport(data));
+    }
   );
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)
@@ -209,6 +232,12 @@ const onAppReady = async () => {
     Promise.resolve(app.getPath('desktop'))
   );
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
+  toggleRTSFlagsModeChannel.onReceive(() => {
+    const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
+    storeRtsFlagsSettings(environment.network, flagsToSet);
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
+    return handleWindowClose();
+  });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow, cardanoNode);
 
   const onMainError = (error: string) => {
@@ -219,22 +248,22 @@ const onAppReady = async () => {
   };
 
   mainErrorHandler(onMainError);
+  handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
-  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
-  mainWindow.on('close', async (event) => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info(
-      'mainWindow received <close> event. Safe exiting Daedalus now.'
-    );
-    event.preventDefault();
-    await safeExit();
-  });
+
+  if (isWatchMode) {
+    // Connect to electron-connect server which restarts / reloads windows on file changes
+    client.create(mainWindow);
+  }
+
+  mainWindow.on('close', handleWindowClose);
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('Prevented creation of new browser window', {
         url,
       });
@@ -250,6 +279,7 @@ const onAppReady = async () => {
 
     if (isSelfnode) {
       if (keepLocalClusterRunning || isTest) {
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info(
           'ipcMain: Keeping the local cluster running while exiting Daedalus',
           {

@@ -7,7 +7,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTransactionsList.scss'... Remove this comment to see the full error message
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';

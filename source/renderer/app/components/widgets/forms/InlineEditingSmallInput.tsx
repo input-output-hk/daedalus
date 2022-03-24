@@ -9,7 +9,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineEditingSmallInput.scss... Remove this comment to see the full error message
 import styles from './InlineEditingSmallInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
@@ -40,6 +39,10 @@ type State = {
   isActive: boolean;
 };
 
+interface FormFields {
+  inputField: string;
+}
+
 @observer
 class InlineEditingSmallInput extends Component<Props, State> {
   state = {
@@ -50,8 +53,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
     onStopEditing: () => {},
     onCancelEditing: () => {},
   };
-  validator = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  validator = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         inputField: {
@@ -76,7 +78,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
@@ -131,7 +132,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     }
   };
   onCancel = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
     this.setState({
@@ -171,7 +171,6 @@ class InlineEditingSmallInput extends Component<Props, State> {
     } = this.props;
     const { isActive } = this.state;
     let { successfullyUpdated } = this.props;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const inputField = validator.$('inputField');
     const arrowIconIsVisible = inputField.value !== this.props.inputFieldValue;
     const componentStyles = classnames([

@@ -2,6 +2,110 @@
 
 ## vNext
 
+### Features
+
+- Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
+- Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
+- Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
+
+### Fixes
+
+- Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
+- Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
+- Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
+- Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
+- Sets minimum transaction fee to ada input field when tokens are removed ([PR 2918](https://github.com/input-output-hk/daedalus/pull/2918))
+
+### Chores
+
+- Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
+- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
+- Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.0
+
+### Features
+
+- Added display of current/unspent rewards ([PR 2803](https://github.com/input-output-hk/daedalus/pull/2803))
+- Improve the syncing screen by showing syncing progress split into three stages ([PR 2877](https://github.com/input-output-hk/daedalus/pull/2877))
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+- Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+
+### Fixes
+
+- Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+- Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+- Fixed the gap between Stake Pool View options ([PR 2899](https://github.com/input-output-hk/daedalus/pull/2899))
+
+### Chores
+
+- Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+
+## 4.9.0-FC1
+
+### Features
+
+- Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
+- Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
+- Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
+- Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
+- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+- Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791), [PR 2859](https://github.com/input-output-hk/daedalus/pull/2859))
+
+### Fixes
+
+- Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
+- Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
+- Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
+- Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
+  
+### Chores
+
+- Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
+- Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
+
+## 4.8.0
+
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+
+### Chores
+
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+
+## 4.8.0-FC1
+
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+
+### Chores
+
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+
+## 4.7.0
+
+### Features
+
+- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
+
 ### Fixes
 
 - Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))

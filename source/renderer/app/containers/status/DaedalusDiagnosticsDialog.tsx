@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnosticsDialog.sc... Remove this comment to see the full error message
 import styles from './DaedalusDiagnosticsDialog.scss';
-import { formattedBytesToSize } from '../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
+import { buildSystemInfo } from '../../utils/buildSystemInfo';
 
 type Props = InjectedDialogContainerProps;
 
@@ -49,20 +48,13 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
       networkTip,
       localTip,
       environment,
-      diskSpaceAvailable,
       tlsConfig,
       cardanoNodePID,
       cardanoWalletPID,
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
-    const systemInfo = {
-      platform: environment.os,
-      platformVersion: environment.platformVersion,
-      cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
-      ram: formattedBytesToSize(environment.ram),
-      availableDiskSpace: diskSpaceAvailable,
-    };
+    const systemInfo = buildSystemInfo(environment, networkStatus);
     const {
       network,
       version,
@@ -100,7 +92,7 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
           systemInfo={systemInfo}
           coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
-          // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: { platform: any; platformVersi... Remove this comment to see the full error message
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ systemInfo: SystemInfo; coreInfo: { daedal... Remove this comment to see the full error message
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
           isStaging={environment.isStaging}

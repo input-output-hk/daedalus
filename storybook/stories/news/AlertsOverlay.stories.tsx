@@ -12,6 +12,7 @@ import {
   DATE_JAPANESE_OPTIONS,
 } from '../../../source/renderer/app/config/profileConfig';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
+import RTSFlagsRecommendationOverlay from '../../../source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -86,34 +87,32 @@ const getAlerts = (locale: string) => [
   }),
 ];
 
-storiesOf('News/Overlays', module)
+storiesOf('News|Overlays', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
-  .add(
-    'Alerts',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, props: { locale: strin... Remove this comment to see the full error message
-    (
-      _,
-      props: {
-        locale: string;
-      }
-    ) => (
-      <AlertsOverlay
-        allAlertsCount={getAlerts(props.locale).length}
-        alerts={getAlerts(props.locale)}
-        onCloseOpenAlert={() => null}
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        onProceedNewsAction={action('onProceedNewsAction')}
-        currentDateFormat={select(
-          'currentDateFormat',
-          dateOptionsIntl[props.locale].reduce((obj, { label, value }) => {
-            obj[label] = value;
-            return obj;
-          }, {}),
-          dateOptionsIntl[props.locale][0].value
-        )}
-      />
-    )
-  );
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
+  .add('Alerts', (props: { locale: string }) => (
+    <AlertsOverlay
+      allAlertsCount={getAlerts(props.locale).length}
+      alerts={getAlerts(props.locale)}
+      onCloseOpenAlert={() => null}
+      onMarkNewsAsRead={action('onMarkNewsAsRead')}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptionsIntl[props.locale].reduce((obj, { label, value }) => {
+          obj[label] = value;
+          return obj;
+        }, {}),
+        dateOptionsIntl[props.locale][0].value
+      )}
+    />
+  ))
+  .add('RTS Recommendation', () => (
+    <RTSFlagsRecommendationOverlay
+      onConfirm={action('onConfirm')}
+      onClose={action('onClose')}
+    />
+  ));

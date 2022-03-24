@@ -1,3 +1,5 @@
+import '../../source/renderer/app/themes/index.global.scss';
+import './_support/environment';
 // Wallets
 import './wallets';
 // Nodes

@@ -21,17 +21,24 @@ type Props = {
   getStakePoolById: (...args: Array<any>) => any;
   numberOfStakePools: number;
   onSearch?: (...args: Array<any>) => any;
+  onChange?: (...args: Array<any>) => any;
+  selectionRenderer?: (...args: Array<any>) => any;
+  placeholder?: string;
+  value?: string;
+  errorPosition?: string;
+  disabled?: boolean;
   wallets?: Array<Partial<Wallet>>;
 };
 export const onSearchWalletsDropdown = (
   searchValue: string,
   options: Array<any>
-) =>
-  filter(options, (option) => {
+) => {
+  return filter(options, (option) => {
     const { walletName, detail } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
     return [walletName, detail].some((item) => regex.test(item));
   });
+};
 
 function WalletsDropdown({
   className,

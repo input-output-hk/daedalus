@@ -6,7 +6,6 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ItemDropdownOption from './ItemDropdownOption';
 import type { ItemDropdown } from './ItemDropdownOption';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ItemsDropdown.scss' or its c... Remove this comment to see the full error message
 import styles from './ItemsDropdown.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -31,16 +30,18 @@ import globalMessages from '../../../i18n/global-messages';
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>;
   className?: string;
+  disabled?: boolean;
 };
 export const onSearchItemsDropdown = (
   searchValue: string,
   options: Array<any>
-) =>
-  filter(options, (option) => {
+) => {
+  return filter(options, (option) => {
     const { label, detail, value } = option;
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
     return regex.test(label) || regex.test(detail) || regex.test(value);
   });
+};
 export default class ItemsDropdown extends Component<ItemDropdownProps> {
   static contextTypes = {
     intl: intlShape.isRequired,

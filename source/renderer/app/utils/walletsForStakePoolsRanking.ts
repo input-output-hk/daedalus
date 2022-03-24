@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js';
 import Wallet from '../domains/Wallet';
 import { MIN_DELEGATION_FUNDS } from '../config/stakingConfig';
 
-export const getFilteredWallets = (wallets: Array<Wallet>): Array<Wallet> =>
-  wallets.filter(
+export const getFilteredWallets = (wallets: Array<Wallet>): Array<Wallet> => {
+  return wallets.filter(
     (w: Wallet) =>
       w.amount.isGreaterThanOrEqualTo(new BigNumber(MIN_DELEGATION_FUNDS)) &&
       !w.isLegacy
   );
+};
 export const getAllAmounts = (wallets: Array<Wallet>): BigNumber => {
   const filteredWallets = getFilteredWallets(wallets);
 

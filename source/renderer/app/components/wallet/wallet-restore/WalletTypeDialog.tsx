@@ -6,7 +6,6 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import RadioSet from '../../widgets/RadioSet';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTypeDialog.scss' or it... Remove this comment to see the full error message
 import styles from './WalletTypeDialog.scss';
 import {
   WALLET_KINDS,
@@ -245,7 +244,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         ]}
         onClose={onClose}
       >
-        <div className={styles.component}>
+        <div>
           {this.getWalletKind(
             WALLET_KINDS,
             messages.labelWalletKind,

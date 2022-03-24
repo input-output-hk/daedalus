@@ -2,6 +2,7 @@
 
 .component {
   bottom: 64px;
+  font-family: var(--font-regular);
   position: absolute;
   text-align: center;
   width: 100%;
@@ -13,14 +14,12 @@
 }
 
 .headline {
-  font-family: var(--font-regular);
   font-size: 18px;
   margin-bottom: 14px;
 }
 
 .description {
   color: var(--theme-connecting-description-color);
-  font-family: var(--font-regular);
   font-size: 16px;
   line-height: 22px;
   margin: 0 auto;

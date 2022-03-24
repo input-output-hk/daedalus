@@ -131,4 +131,28 @@ export default defineMessages({
     description:
       'Label for the "Calculating fees" message for amount input field.',
   },
+  updateAdaAmountButton: {
+    id: 'wallet.send.form.asset.updateAdaAmountButton',
+    defaultMessage: '!!!UPDATE',
+    description:
+      'Label for the "UPDATE" button responsible to set minimum amount required for transaction .',
+  },
+  updateAdaAmountDescription: {
+    id: 'wallet.send.form.updateAdaAmountDescription',
+    defaultMessage: '!!!to the minimum of {minimumAda} ADA required',
+    description:
+      'Description for the "UPDATE" button when ADA amount is less than required ',
+  },
+  minimumAmountNotice: {
+    id: 'wallet.send.form.minimumAmountNote',
+    defaultMessage:
+      '!!!<b>Note:</b> the ada field was automatically updated because this transaction requires a minimum of {minimumAda} ADA.',
+    description: 'Minimum amount update notice',
+  },
+  restoredAdaAmount: {
+    id: 'wallet.send.form.restoredAdaAmount',
+    defaultMessage:
+      '!!!<b>Note:</b> the ada field was automatically updated to {adaAmount} ADA because now it fulfills the minimum amount of {minimumAda} ADA for the transaction.',
+    description: 'Restored ada amount to original user input',
+  },
 });

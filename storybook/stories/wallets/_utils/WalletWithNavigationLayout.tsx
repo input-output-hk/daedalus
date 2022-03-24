@@ -12,12 +12,12 @@ type Props = {
   stores?: {} | null | undefined;
 };
 const walletStories = {
-  send: 'Wallets/Send',
-  receive: 'Wallets/Receive',
-  transactions: 'Wallets/Transactions',
-  tokens: 'Wallets/Tokens',
-  summary: 'Wallets/Summary',
-  settings: 'Wallets/Settings',
+  send: 'Wallets|Send',
+  receive: 'Wallets|Receive',
+  transactions: 'Wallets|Transactions',
+  tokens: 'Wallets|Tokens',
+  summary: 'Wallets|Summary',
+  settings: 'Wallets|Settings',
 };
 export default class WalletWithNavigationLayout extends Component<Props> {
   static defaultProps = {
@@ -25,7 +25,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
     storiesProps: null,
   };
   getItemFromContext = (context: contextType) => {
-    return context.kind.replace('Wallets/', '').toLocaleLowerCase();
+    return context.kind.replace('Wallets|', '').toLocaleLowerCase();
   };
 
   render() {
@@ -33,7 +33,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
     const activeWallet = get(stores, ['wallets', 'active']);
     const { hasPassword, isLegacy, isNotResponding } = activeWallet;
     const contextItem = context.kind
-      .replace('Wallets/', '')
+      .replace('Wallets|', '')
       .toLocaleLowerCase();
     return (
       <WalletWithNavigation
@@ -43,7 +43,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         isLegacy={isLegacy}
         isNotResponding={isNotResponding}
         isSetWalletPasswordDialogOpen={false}
-        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(item: any) => any' is not assig... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(item: any) => any' is not assigned... Remove this comment to see the full error message
         onWalletNavItemClick={linkTo((item) => walletStories[item])}
         onSetWalletPassword={() => {}}
         onOpenExternalLink={() => {}}

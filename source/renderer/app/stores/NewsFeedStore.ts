@@ -136,7 +136,7 @@ export default class NewsFeedStore extends Store {
 
       // If no incidents and incident poller interval active, reset interval and set regular one
       if (!hasIncident && this.pollingNewsOnIncidentIntervalId) {
-        // Clear regulat interval
+        // Clear regular interval
         if (this.pollingNewsOnIncidentIntervalId) {
           clearInterval(this.pollingNewsOnIncidentIntervalId);
           this.pollingNewsOnIncidentIntervalId = null;

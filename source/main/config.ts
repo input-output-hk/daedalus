@@ -103,7 +103,7 @@ export const windowOptions: WindowOptionsType = {
     nodeIntegration: isTest,
     webviewTag: false,
     enableRemoteModule: isTest,
-    preload: path.join(__dirname, './preload.ts'),
+    preload: path.join(__dirname, './preload.js'),
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
     additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
   },
@@ -132,11 +132,11 @@ export const buildLabel = getBuildLabel(
 );
 // Logging config
 export const ALLOWED_LOGS = [
-  'Daedalus.tson',
-  'System-info.tson',
-  'Daedalus-versions.tson',
-  'State-snapshot.tson',
-  'Wallet-migration-report.tson',
+  'Daedalus.json',
+  'System-info.json',
+  'Daedalus-versions.json',
+  'State-snapshot.json',
+  'Wallet-migration-report.json',
   'cardano-wallet.log',
   'node.log',
 ];
@@ -171,12 +171,13 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks pace
 
-export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
-
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
   'https://metadata.cardano-testnet.iohkdev.io';
+export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
+
 // Used by mock-token-metadata-server
 export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =
   process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
+export const RTS_FLAGS = ['-c'];

@@ -5,7 +5,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterBody.scss' o... Remove this comment to see the full error message
 import styles from './DelegationCenterBody.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { FutureEpoch, NextEpoch } from '../../../api/network/types';
@@ -91,14 +90,14 @@ class DelegationCenterBody extends Component<Props> {
     return (
       <div className={componentClasses}>
         {isLoading ? (
-          <div className={styles.loadinBlockWrapper}>
+          <div>
             <p>{intl.formatMessage(messages.loadingStakePoolsMessage)}</p>
             {loadingSpinner}
           </div>
         ) : (
           <div>
             <div className={styles.bodyTitle}>
-              <div className={styles.leftBodyTitle}>{title}</div>
+              <div>{title}</div>
               {nextEpochNumber && futureEpochNumber && (
                 <div className={styles.rightBodyTitle}>
                   <span>{currentEpochTitle}</span>

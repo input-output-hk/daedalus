@@ -23,8 +23,9 @@ export default class WalletWithNavigationLayout extends Component<Props> {
     stores: null,
     storiesProps: null,
   };
-  getItemFromContext = (context: contextType) =>
-    context.kind.replace('Wallets|', '').toLocaleLowerCase();
+  getItemFromContext = (context: contextType) => {
+    return context.kind.replace('Wallets|', '').toLocaleLowerCase();
+  };
 
   render() {
     const { stores, context, children } = this.props;

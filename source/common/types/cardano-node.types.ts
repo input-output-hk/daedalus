@@ -1,4 +1,3 @@
-import { EnumMap } from '../../renderer/app/types/enumTypes';
 import {
   MAINNET,
   TESTNET,
@@ -54,7 +53,7 @@ export type CardanoNodeState =
   | 'errored'
   | 'unknown'
   | 'unrecoverable';
-
+// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'EnumMap'.
 export const CardanoNodeStates: EnumMap<string, CardanoNodeState> = {
   STARTING: 'starting',
   RUNNING: 'running',
@@ -136,6 +135,7 @@ export type CardanoStatus = {
   hasBeenConnected: boolean;
   cardanoNodePID: number;
   cardanoWalletPID: number;
+  isRTSFlagsModeEnabled: boolean;
 };
 export type NetworkMagicType = Array<number | null | undefined>;
 export const NetworkMagics: {
@@ -159,3 +159,8 @@ export const NetworkMagics: {
   // Cardano Selfnode network magic
   [SELFNODE]: [1, null],
 };
+export enum BlockSyncType {
+  pushingLedger = 'pushingLedger',
+  replayedBlock = 'replayedBlock',
+  validatingChunk = 'validatingChunk',
+}

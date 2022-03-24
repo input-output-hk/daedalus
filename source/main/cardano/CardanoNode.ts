@@ -29,6 +29,7 @@ import { CardanoSelfnodeLauncher } from './CardanoSelfnodeLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
 import type { Logger } from '../../common/types/logging.types';
+import { containsRTSFlags } from '../utils/containsRTSFlags';
 
 /* eslint-disable consistent-return */
 type Actions = {
@@ -84,6 +85,7 @@ export type CardanoNodeConfig = {
   // Path to cardano-cli executable
   isStaging: boolean;
   metadataUrl?: string;
+  rtsFlags: Array<string>;
 };
 const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
@@ -229,6 +231,7 @@ export class CardanoNode {
     return Object.assign({}, this._status, {
       cardanoNodePID: get(this, '_node.pid', 0),
       cardanoWalletPID: get(this, '_node.wpid', 0),
+      isRTSFlagsModeEnabled: containsRTSFlags(this._config.rtsFlags),
     });
   }
 
@@ -519,7 +522,7 @@ export class CardanoNode {
   }
 
   /**
-   * Kills cardano-node and waitsup to `killTimeout` for the node to
+   * Kills cardano-node and waits up to `killTimeout` for the node to
    * report the exit message.
    *
    * @returns {Promise<void>} resolves if the node could be killed, rejects with error otherwise.

@@ -79,8 +79,8 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return true;
   };
 
-  const installUpdate = async (filePath) =>
-    new Promise((resolve, reject) => {
+  const installUpdate = async (filePath) => {
+    return new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
       const { updateRunnerBin } = launcherConfig;
@@ -171,6 +171,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
         return resolve(response(true, functionPrefix));
       });
     });
+  };
 
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {

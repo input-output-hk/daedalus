@@ -7,6 +7,7 @@ import { action } from '@storybook/addon-actions';
 import {
   generateAssetToken,
   generateHash,
+  generateRewardForWallet,
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -162,8 +163,9 @@ const walletAssets = assets.total.map((assetTotal) => {
 });
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets/Summary', module)
+storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Wallet Summary', ({ locale }: { locale: string }) => {
     const currencyState = select(
       'Currency state',
@@ -188,19 +190,22 @@ storiesOf('Wallets/Summary', module)
 
     const currencySelected = select(
       'currencySelected',
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
       currenciesList,
       {
         id: 'uniswap-state-dollar',
         symbol: 'usd',
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type '{ "en-US"... Remove this comment to see the full error message
         name: 'unified Stable Dollar',
       },
       'Currency'
     );
+    const wallet = generateWallet('Wallet name', '45119903750165', assets);
+    const reward = generateRewardForWallet(wallet, '0');
     const [firstAsset] = walletAssets;
     return (
       <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
+        wallet={wallet}
+        reward={reward}
         numberOfTransactions={number(
           'Number of transactions',
           100,
@@ -227,6 +232,7 @@ storiesOf('Wallets/Summary', module)
         currentLocale={locale}
         currencyIsFetchingRate={currencyIsFetchingRate}
         currencyIsActive={currencyIsActive}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         currencySelected={currencySelected}
         currencyRate={0.321}
         onToggleFavorite={action('onToggleFavorite')}

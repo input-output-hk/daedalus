@@ -33,7 +33,7 @@ import type { DiscreetModeFeature } from '../../../features/discreet-mode';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import { Slider } from '../../widgets/Slider';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsRanking.scss' or i... Remove this comment to see the full error message
+import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import styles from './StakePoolsRanking.scss';
 
 const messages = defineMessages({
@@ -388,42 +388,50 @@ class StakePoolsRanking extends Component<Props, State> {
             />
           ) : null}
         </div>
-        <div className={styles.lower}>
-          <div className={styles.row}>
-            <div className={styles.col}>
-              <div className={styles.outOfSliderRangeStart} />
-            </div>
-            <div className={styles.slider}>
-              <Slider
-                min={Math.round(
-                  MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
-                )}
-                minDisplayValue={MIN_DELEGATION_FUNDS}
-                max={Math.round(maxDelegationFundsLog * RANKING_SLIDER_RATIO)}
-                maxDisplayValue={maxDelegationFunds}
-                value={sliderValue}
-                displayValue={displayValue}
-                showRawValue
-                onChange={this.onSliderChange}
-                onAfterChange={rankStakePools}
-                disabled={isLoading || isRanking}
-                showTooltip
-                minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
-                maxTooltip={intl.formatMessage(messages.rankingMaxTooltip)}
-              />
-            </div>
-            <div className={styles.col}>
-              <div className={styles.outOfRangeMaxAmount}>
-                <PopOver
-                  content={intl.formatMessage(messages.rankingExtraTooltip)}
-                >
-                  {shortNumber(CIRCULATING_SUPPLY)}
-                </PopOver>
+        <StakingPageScrollContext.Consumer>
+          {({ scrollElementRef }) => (
+            <div className={styles.lower}>
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.outOfSliderRangeStart} />
+                </div>
+                <div className={styles.slider}>
+                  <Slider
+                    min={Math.round(
+                      MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+                    )}
+                    minDisplayValue={MIN_DELEGATION_FUNDS}
+                    max={Math.round(
+                      maxDelegationFundsLog * RANKING_SLIDER_RATIO
+                    )}
+                    maxDisplayValue={maxDelegationFunds}
+                    value={sliderValue}
+                    displayValue={displayValue}
+                    showRawValue
+                    onChange={this.onSliderChange}
+                    onAfterChange={rankStakePools}
+                    disabled={isLoading || isRanking}
+                    showTooltip
+                    minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
+                    maxTooltip={intl.formatMessage(messages.rankingMaxTooltip)}
+                    tooltipAppendTo={() => scrollElementRef.current}
+                  />
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.outOfRangeMaxAmount}>
+                    <PopOver
+                      content={intl.formatMessage(messages.rankingExtraTooltip)}
+                      appendTo={() => scrollElementRef.current}
+                    >
+                      {shortNumber(CIRCULATING_SUPPLY)}
+                    </PopOver>
+                  </div>
+                  <div className={styles.outOfSliderRangeEnd} />
+                </div>
               </div>
-              <div className={styles.outOfSliderRangeEnd} />
             </div>
-          </div>
-        </div>
+          )}
+        </StakingPageScrollContext.Consumer>
       </div>
     );
   }

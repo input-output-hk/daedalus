@@ -8,17 +8,16 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Asset from './Asset';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetSettingsDialog.scss' or... Remove this comment to see the full error message
 import styles from './AssetSettingsDialog.scss';
 import globalMessages from '../../i18n/global-messages';
 import type { AssetToken } from '../../api/assets/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import {
   DEFAULT_DECIMAL_PRECISION,
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
+import { isRecommendedDecimal } from '../wallet/tokens/wallet-token/helpers';
 
 const messages = defineMessages({
   title: {
@@ -34,12 +33,12 @@ const messages = defineMessages({
   },
   formattedBalanceLabel: {
     id: 'assets.settings.dialog.formattedAmount.label',
-    defaultMessage: '!!!Unformated amount',
+    defaultMessage: '!!!Unformatted amount',
     description: '"formattedBalanceLabel" for the Asset settings dialog',
   },
   unformattedBalanceLabel: {
     id: 'assets.settings.dialog.unformattedAmount.label',
-    defaultMessage: '!!!Formated amount',
+    defaultMessage: '!!!Formatted amount',
     description: '"unformattedBalanceLabel" for the Asset settings dialog',
   },
   decimalPrecisionLabel: {
@@ -137,7 +136,6 @@ class AssetSettingsDialog extends Component<Props, State> {
     const { decimals: savedDecimals, recommendedDecimals } = asset;
     const { decimals } = this.state;
     const hasSavedDecimals = typeof savedDecimals === 'number';
-    const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
       value,
     }));
@@ -155,8 +153,12 @@ class AssetSettingsDialog extends Component<Props, State> {
         onClick: () => onSubmit(asset, decimals),
       },
     ];
-    const hasWarning =
-      hasRecommendedDecimals && savedDecimals !== recommendedDecimals;
+
+    const hasWarning = isRecommendedDecimal({
+      recommendedDecimals,
+      decimals: savedDecimals,
+    });
+
     let warningPopOverMessage;
 
     if (hasWarning) {
@@ -169,7 +171,9 @@ class AssetSettingsDialog extends Component<Props, State> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.title)}
-        subtitle={<Asset asset={asset} className={styles.assetToken} />}
+        subtitle={
+          <Asset asset={asset} small={false} className={styles.assetToken} />
+        }
         actions={actions}
         closeOnOverlayClick
         onClose={onCancel}
@@ -200,7 +204,6 @@ class AssetSettingsDialog extends Component<Props, State> {
           <Select
             options={options}
             value={decimals}
-            className={styles.decimalsDropdown}
             label={
               <span className={styles.decimalsDropdownLabel}>
                 {intl.formatMessage(messages.decimalPrecisionLabel)}
@@ -210,10 +213,12 @@ class AssetSettingsDialog extends Component<Props, State> {
                       recommendedDecimals,
                     })}
                   >
-                    <SVGInline
-                      className={styles.warningIcon}
-                      svg={warningIcon}
-                    />
+                    <span data-testid="warning-icon">
+                      <SVGInline
+                        className={styles.warningIcon}
+                        svg={warningIcon}
+                      />
+                    </span>
                   </PopOver>
                 )}
               </span>

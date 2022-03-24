@@ -86,24 +86,29 @@ export default (api: AdaApi) => {
     }
 
     // Always mutate newsfeed target version to current app version
-    const newsFeedItems = map(testingNewsFeedData.items, (item) => ({
-      ...item,
-      target: {
-        ...item.target,
-        daedalusVersion: item.target.daedalusVersion ? packageJsonVersion : '',
-      },
-    }));
+    const newsFeedItems = map(testingNewsFeedData.items, (item) => {
+      return {
+        ...item,
+        target: {
+          ...item.target,
+          daedalusVersion: item.target.daedalusVersion
+            ? packageJsonVersion
+            : '',
+        },
+      };
+    });
     TESTING_NEWSFEED_JSON = { ...testingNewsFeedData, items: newsFeedItems };
   };
 
-  api.getNews = (): Promise<GetNewsResponse> =>
-    new Promise((resolve, reject) => {
+  api.getNews = (): Promise<GetNewsResponse> => {
+    return new Promise((resolve, reject) => {
       if (!TESTING_NEWSFEED_JSON) {
         reject(new Error('Unable to fetch news'));
       } else {
         resolve(TESTING_NEWSFEED_JSON);
       }
     });
+  };
 
   api.setTestingWallet = (
     testingWalletData: Record<string, any>,
@@ -155,10 +160,12 @@ export default (api: AdaApi) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 
-  api.getNetworkClock = async () => ({
-    status: 'available',
-    offset: LOCAL_TIME_DIFFERENCE,
-  });
+  api.getNetworkClock = async () => {
+    return {
+      status: 'available',
+      offset: LOCAL_TIME_DIFFERENCE,
+    };
+  };
 
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};

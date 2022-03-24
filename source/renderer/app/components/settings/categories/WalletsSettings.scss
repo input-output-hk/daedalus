@@ -24,10 +24,6 @@
     position: relative;
   }
 
-  .switch {
-    margin: 0;
-  }
-
   .label {
     display: block;
     font-family: var(--font-semibold);
@@ -75,5 +71,11 @@
     border: none;
     height: 1px;
     margin: 15px 0;
+  }
+
+  :global {
+    .SimpleOptions_search:before {
+      opacity: 1;
+    }
   }
 }

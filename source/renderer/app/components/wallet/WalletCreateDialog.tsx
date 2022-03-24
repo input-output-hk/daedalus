@@ -20,11 +20,9 @@ import {
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateDialog.scss' or ... Remove this comment to see the full error message
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/info-icon.... Remove this comment to see the full error message
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
@@ -96,6 +94,12 @@ type State = {
   isSubmitting: boolean;
 };
 
+interface FormFields {
+  repeatPassword: string;
+  spendingPassword: string;
+  walletName: string;
+}
+
 @observer
 class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
@@ -112,8 +116,7 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 
   walletNameInput: Input;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         walletName: {
@@ -188,7 +191,6 @@ class WalletCreateDialog extends Component<Props, State> {
     this.setState({
       isSubmitting: false,
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         this.setState({
@@ -223,13 +225,9 @@ class WalletCreateDialog extends Component<Props, State> {
       styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletNameField = form.$('walletName');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = form.$('spendingPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const repeatedPasswordField = form.$('repeatPassword');
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
     const canSubmit = !isSubmitting && form.isValid;
     const buttonLabel = !isSubmitting ? (
       this.context.intl.formatMessage(messages.createPersonalWallet)

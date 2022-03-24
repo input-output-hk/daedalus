@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletTokens from '../../components/wallet/tokens/WalletTokens';
+import type { AssetToken } from '../../api/assets/types';
+import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
+import WalletTokens from '../../components/wallet/tokens/wallet-tokens/WalletTokens';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { getAssetTokens } from '../../utils/assets';
 
 type Props = InjectedProps;
+type OpenAssetSettingsDialogArgs = {
+  asset: AssetToken;
+};
 const WalletTokensPage = inject(
   'stores',
   'actions'
@@ -12,17 +17,24 @@ const WalletTokensPage = inject(
   observer((props: Props) => {
     const { actions, stores } = props;
     const { assets, profile, wallets, app } = stores;
-    const {
-      all,
-      assetSettingsDialogWasOpened,
-      favorites,
-      insertingAssetUniqueId,
-      removingAssetUniqueId,
-    } = assets;
-    const { onAssetSettingsOpen, onOpenAssetSend, onToggleFavorite } =
+    const { all, favorites, insertingAssetUniqueId, removingAssetUniqueId } =
+      assets;
+    const { setEditedAsset, onOpenAssetSend, onToggleFavorite } =
       actions.assets;
+    const { open } = actions.dialogs;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
+    const openAssetSettingsDialog = useCallback(
+      ({ asset }: OpenAssetSettingsDialogArgs) => {
+        setEditedAsset.trigger({
+          asset,
+        });
+        open.trigger({
+          dialog: AssetSettingsDialog,
+        });
+      },
+      [open, setEditedAsset]
+    );
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -35,11 +47,10 @@ const WalletTokensPage = inject(
     return (
       <WalletTokens
         assets={assetTokens}
-        assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
         currentLocale={currentLocale}
         insertingAssetUniqueId={insertingAssetUniqueId}
         isLoadingAssets={isLoadingAssets}
-        onAssetSettings={onAssetSettingsOpen.trigger}
+        onAssetSettings={openAssetSettingsDialog}
         onCopyAssetParam={() => {}}
         onOpenAssetSend={onOpenAssetSend.trigger}
         onToggleFavorite={onToggleFavorite.trigger}

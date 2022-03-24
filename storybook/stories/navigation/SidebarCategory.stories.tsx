@@ -11,7 +11,7 @@ const category = {
   icon: walletsIcon,
   route: 'WALLETS',
 };
-storiesOf('Navigation/Sidebar', module)
+storiesOf('Navigation|Sidebar', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Inactive', () => (
     <SidebarCategory

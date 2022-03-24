@@ -40,7 +40,7 @@ let
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
-  # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
+  # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
@@ -55,7 +55,7 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgs.nodejs-16_x;
+    nodejs = pkgs.nodejs-14_x;
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
@@ -319,8 +319,6 @@ let
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
-      runTsc = self.callPackage ./tests/tsc.nix {};
-      runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
     nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };

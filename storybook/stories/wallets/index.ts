@@ -1,5 +1,6 @@
 // Screens sets
 import './summary/WalletSummary.stories';
+import './summary/WalletSummaryHeader.stories';
 import './send/WalletSend.stories';
 import './receive/WalletReceive.stories';
 import './transactions/TransactionsList.stories';
@@ -8,6 +9,7 @@ import './transactions/TransactionMetadata.stories';
 import './transactions/Utxo.stories';
 import './tokens/WalletTokens.stories';
 import './tokens/WalletTokensList.stories';
+import '../../../source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories';
 import './settings/WalletSettings.stories';
 import './addWallet/AddWallet.stories';
 import './import/WalletImportFile.stories';

@@ -5,17 +5,16 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PinCode.scss' or its corresp... Remove this comment to see the full error message
 import styles from './PinCode.scss';
 
 type Props = {
-  id: string;
+  id?: string;
   name: string;
   type: string;
   autoFocus: boolean;
   onChange?: (...args: Array<any>) => any;
   label: string;
-  length: number;
+  length?: number;
   disabled: boolean;
   value: Array<string>;
   error: string | null;
@@ -77,34 +76,36 @@ export default class PinCode extends Component<Props> {
     return (
       <div className={styles.pinCodeInput}>
         {/* @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0. */}
-        {map(Array(length).fill(), (action, key) => (
-          <NumericInput
-            ref={(input) => {
-              if (
-                !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
-                this.inputsRef[key] !== input
-              )
-                this.inputsRef[key] = input;
-            }}
-            id={id}
-            name={name}
-            type={type}
-            className={pinCodeClasses}
-            label={null}
-            key={key}
-            themeId={IDENTIFIERS.INPUT}
-            skin={InputSkin}
-            onChange={(number) => this.onChange(number, key)}
-            value={value ? value[key] : undefined}
-            autoFocus={autoFocus && key === 0}
-            disabled={
-              disabled ||
-              (key !== 0 &&
-                (!value ||
-                  !Object.prototype.hasOwnProperty.call(value, key - 1)))
-            }
-          />
-        ))}
+        {map(Array(length).fill(), (action, key) => {
+          return (
+            <NumericInput
+              ref={(input) => {
+                if (
+                  !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
+                  this.inputsRef[key] !== input
+                )
+                  this.inputsRef[key] = input;
+              }}
+              id={id}
+              name={name}
+              type={type}
+              className={pinCodeClasses}
+              label={null}
+              key={key}
+              themeId={IDENTIFIERS.INPUT}
+              skin={InputSkin}
+              onChange={(number) => this.onChange(number, key)}
+              value={value ? value[key] : undefined}
+              autoFocus={autoFocus && key === 0}
+              disabled={
+                disabled ||
+                (key !== 0 &&
+                  (!value ||
+                    !Object.prototype.hasOwnProperty.call(value, key - 1)))
+              }
+            />
+          );
+        })}
       </div>
     );
   };

@@ -26,6 +26,10 @@ import Wallet, {
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/types';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
+import {
+  WalletSortBy,
+  WalletSortOrder,
+} from '../../../source/renderer/app/types/sidebarTypes';
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
@@ -34,7 +38,6 @@ import SidebarLayout from '../../../source/renderer/app/components/layout/Sideba
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/c... Remove this comment to see the full error message
 import topBarStyles from '../../../source/renderer/app/components/layout/TopBar.scss';
 
 export type StoriesProps = {
@@ -92,11 +95,12 @@ class StoryLayout extends Component<Props> {
         obj[option.label] = option.value;
         return obj;
       }, {}),
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ value: string; label: string; ... Remove this comment to see the full error message
       NUMBER_OPTIONS[0]
     );
     const FORMAT = {
       ...DEFAULT_NUMBER_FORMAT,
-      // @ts-ignore ts-migrate(2538) FIXME: Type '{ value: string; label: string; }' cannot be... Remove this comment to see the full error message
+      // @ts-ignore ts-migrate(2538) FIXME: Type 'PropertyKey[]' cannot be used as an index ty... Remove this comment to see the full error message
       ...NUMBER_FORMATS[currentNumberFormat],
     };
     BigNumber.config({
@@ -165,6 +169,13 @@ class StoryLayout extends Component<Props> {
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId,
+        onWalletSortBy: action('sortWallet'),
+        onSearch: action('searchWallet'),
+      },
+      searchValue: '',
+      walletSortConfig: {
+        sortOrder: WalletSortOrder.Asc,
+        sortBy: WalletSortBy.Date,
       },
     },
   });

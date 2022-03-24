@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import type { Reward } from '../../../api/staking/types';
 import Wallet from '../../../domains/Wallet';
 import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
-import WalletTokensList from '../tokens/WalletTokensList';
+import WalletTokensList from '../tokens/wallet-tokens-list/WalletTokensList';
 import { MAX_TOKENS_ON_SUMMARY_PAGE } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -18,6 +19,7 @@ const messages = defineMessages({
 });
 type Props = {
   wallet: Wallet;
+  reward: Reward;
   numberOfRecentTransactions: number;
   numberOfTransactions?: number;
   numberOfPendingTransactions: number;
@@ -50,6 +52,7 @@ class WalletSummary extends Component<Props> {
   render() {
     const {
       wallet,
+      reward,
       numberOfPendingTransactions,
       numberOfRecentTransactions,
       numberOfTransactions,
@@ -78,6 +81,7 @@ class WalletSummary extends Component<Props> {
       <>
         <WalletSummaryHeader
           wallet={wallet}
+          reward={reward}
           numberOfRecentTransactions={numberOfRecentTransactions}
           numberOfTransactions={numberOfTransactions}
           numberOfPendingTransactions={numberOfPendingTransactions}

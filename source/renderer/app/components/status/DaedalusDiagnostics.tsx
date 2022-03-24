@@ -13,25 +13,18 @@ import SVGInline from 'react-svg-inline';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/clipboard-... Remove this comment to see the full error message
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/sand-clock... Remove this comment to see the full error message
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import {
-  formattedNumber,
-  formattedCpuModel,
-  formattedSize,
-} from '../../utils/formatters';
+import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
+import { ErrorType } from '../../domains/ApiError';
 
 const messages = defineMessages({
   systemInfo: {
@@ -73,6 +66,43 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc',
     description: '"Support" link URL while disk space is unknown',
+  },
+  hasMetHardwareRequirementsLabel: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatus',
+    defaultMessage: '!!!Recommended system requirements status',
+    description:
+      'Displayed on the left of the Recommended system requirements status row',
+  },
+  hasMetHardwareRequirementsStatusLowValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowValue',
+    defaultMessage: '!!!Low',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are insufficient',
+  },
+  hasMetHardwareRequirementsStatusGoodValue: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodValue',
+    defaultMessage: '!!!Good',
+    description:
+      'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
+  },
+  hasMetHardwareRequirementsStatusLowTooltip: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
+    defaultMessage:
+      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Low',
+  },
+  hasMetHardwareRequirementsStatusGoodTooltip: {
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
+    defaultMessage:
+      '!!!Your system specifications meet Daedalus’ recommended hardware requirements',
+    description:
+      'Visible on hovering over Recommended system requirement status when status is Good',
+  },
+  isRTSFlagsModeEnabled: {
+    id: 'daedalus.diagnostics.dialog.isRTSFlagsModeEnabled',
+    defaultMessage: '!!!RTS Flags Mode',
+    description: 'Indicates whether RTS Flags Mode is enabled or not',
   },
   coreInfo: {
     id: 'daedalus.diagnostics.dialog.coreInfo',
@@ -301,13 +331,23 @@ const messages = defineMessages({
   },
   statusOn: {
     id: 'daedalus.diagnostics.dialog.statusOn',
-    defaultMessage: '!!!YES',
-    description: 'YES',
+    defaultMessage: '!!!Yes',
+    description: 'Yes',
   },
   statusOff: {
     id: 'daedalus.diagnostics.dialog.statusOff',
-    defaultMessage: '!!!NO',
-    description: 'NO',
+    defaultMessage: '!!!No',
+    description: 'No',
+  },
+  statusOnForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOnForUserSettings',
+    defaultMessage: '!!!On',
+    description: 'On',
+  },
+  statusOffForUserSettings: {
+    id: 'daedalus.diagnostics.dialog.statusOffForUserSettings',
+    defaultMessage: '!!!Off',
+    description: 'Off',
   },
   serviceUnreachable: {
     id: 'daedalus.diagnostics.dialog.serviceUnreachable',
@@ -410,15 +450,17 @@ class DaedalusDiagnostics extends Component<Props, State> {
     }
   }
 
-  getSectionRow = (messageId: string, content?: Node) => (
-    <div className={styles.layoutRow}>
-      <div className={styles.sectionTitle}>
-        <span>{this.context.intl.formatMessage(messages[messageId])}</span>
-        {content}
-        <hr />
+  getSectionRow = (messageId: string, content?: Node) => {
+    return (
+      <div className={styles.layoutRow}>
+        <div className={styles.sectionTitle}>
+          <span>{this.context.intl.formatMessage(messages[messageId])}</span>
+          {content}
+          <hr />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
   getRow = (messageId: string, value: Node | boolean) => {
     const { intl } = this.context;
     const key = intl.formatMessage(messages[messageId]);
@@ -483,11 +525,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu: cpuInOriginalFormat,
+      cpu,
       ram,
       availableDiskSpace: availableDiskSpaceInOriginalFormat,
+      hasMetHardwareRequirements,
+      isRTSFlagsModeEnabled,
     } = systemInfo;
-    const cpu = formattedCpuModel(cpuInOriginalFormat);
     const availableDiskSpace = formattedSize(
       availableDiskSpaceInOriginalFormat
     );
@@ -508,7 +551,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
-    const { message, code } = connectionError;
+    const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );
@@ -555,6 +598,37 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   />
                 )
               )}
+              {getRow(
+                'hasMetHardwareRequirementsLabel',
+                <PopOver
+                  content={intl.formatMessage(
+                    hasMetHardwareRequirements
+                      ? messages.hasMetHardwareRequirementsStatusGoodTooltip
+                      : messages.hasMetHardwareRequirementsStatusLowTooltip
+                  )}
+                >
+                  <div
+                    className={classNames(
+                      styles.layoutData,
+                      hasMetHardwareRequirements ? styles.green : styles.red
+                    )}
+                  >
+                    {intl.formatMessage(
+                      hasMetHardwareRequirements
+                        ? messages.hasMetHardwareRequirementsStatusGoodValue
+                        : messages.hasMetHardwareRequirementsStatusLowValue
+                    )}
+                  </div>
+                </PopOver>
+              )}
+              {getRow(
+                'isRTSFlagsModeEnabled',
+                intl.formatMessage(
+                  isRTSFlagsModeEnabled
+                    ? messages.statusOnForUserSettings
+                    : messages.statusOffForUserSettings
+                )
+              )}
             </div>
             <div>
               {getSectionRow('coreInfo')}
@@ -565,8 +639,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'blankScreenFix',
                 isBlankScreenFixActive
-                  ? intl.formatMessage(messages.statusOn)
-                  : intl.formatMessage(messages.statusOff)
+                  ? intl.formatMessage(messages.statusOnForUserSettings)
+                  : intl.formatMessage(messages.statusOffForUserSettings)
               )}
               {getRow(
                 'stateDirectoryPath',

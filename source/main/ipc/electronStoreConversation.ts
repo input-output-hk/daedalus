@@ -31,14 +31,13 @@ const reset = async () => {
   await unset(keys.CURRENCY_SELECTED);
   await unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
   await unset(keys.DISCREET_MODE_ENABLED);
-  await unset(keys.DISCREET_MODE_SETTINGS_TOOLTIP);
-  await unset(keys.DISCREET_MODE_NOTIFICATION);
   await unset(keys.DOWNLOAD_MANAGER);
   await unset(keys.HARDWARE_WALLET_DEVICES);
   await unset(keys.HARDWARE_WALLETS);
   await unset(keys.READ_NEWS);
   await unset(keys.SMASH_SERVER);
   await unset(keys.STAKING_INFO_WAS_OPEN);
+  await unset(keys.STAKE_POOLS_LIST_VIEW_TOOLTIP);
   await unset(keys.TERMS_OF_USE_ACCEPTANCE);
   await unset(keys.THEME);
   await unset(keys.USER_DATE_FORMAT_ENGLISH);

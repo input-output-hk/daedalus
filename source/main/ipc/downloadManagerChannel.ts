@@ -206,8 +206,9 @@ const getDownloadLocalData = async ({
 };
 
 const getDownloadsLocalData =
-  // @ts-ignore ts-migrate(2322) FIXME: Type 'unknown' is not assignable to type 'Download... Remove this comment to see the full error message
-  async (): Promise<DownloadsLocalDataMainResponse> => localStorage.getAll();
+  async (): Promise<DownloadsLocalDataMainResponse> => {
+    return localStorage.getAll() as Promise<DownloadsLocalDataMainResponse>;
+  };
 
 const clearDownloadLocalData = async ({
   fileName,

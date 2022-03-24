@@ -14,4 +14,6 @@ export default class AppActions {
   // Daedalus Diagnostics dialog actions
   closeDaedalusDiagnosticsDialog: Action<any> = new Action();
   openDaedalusDiagnosticsDialog: Action<any> = new Action();
+  closeToggleRTSFlagsModeDialog: Action<any> = new Action();
+  openToggleRTSFlagsModeDialog: Action<any> = new Action();
 }

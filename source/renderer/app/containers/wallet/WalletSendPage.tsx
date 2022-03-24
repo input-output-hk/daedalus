@@ -6,6 +6,8 @@ import {
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
+import WalletSendAssetsConfirmationDialog from '../../components/wallet/send-form/WalletSendAssetsConfirmationDialog';
+import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
@@ -56,15 +58,12 @@ class WalletSendPage extends Component<Props> {
       minimumAda,
     };
   };
-  openDialog = (
-    dialog: (...args: Array<any>) => any,
-    isHardwareWallet: boolean,
-    walletId: string
-  ) => {
+
+  submit = (isHardwareWallet: boolean, walletId: string) => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
-      dialog,
+      dialog: WalletSendAssetsConfirmationDialog,
     });
 
     if (isHardwareWallet && !isFlight) {
@@ -73,8 +72,22 @@ class WalletSendPage extends Component<Props> {
       });
     }
   };
-  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) =>
-    allAssets.find((asset) => asset.uniqueId === uniqueId);
+
+  openTokenPickerDialog = () => {
+    this.props.actions.dialogs.open.trigger({
+      dialog: WalletTokenPicker,
+    });
+  };
+
+  closeTokenPickerDialog = () => {
+    const { actions, stores } = this.props;
+    if (!stores.uiDialogs.isOpen(WalletTokenPicker)) return;
+    actions.dialogs.closeActiveDialog.trigger();
+  };
+
+  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
+    return allAssets.find((asset) => asset.uniqueId === uniqueId);
+  };
 
   render() {
     const { stores, actions } = this.props;
@@ -91,7 +104,7 @@ class WalletSendPage extends Component<Props> {
     const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all: allAssets, activeAsset, getAsset } = assetsStore;
+    const { all: allAssets, activeAsset, getAsset, favorites } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, allAssets)
@@ -99,7 +112,7 @@ class WalletSendPage extends Component<Props> {
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
-    const { isHardwareWallet } = wallet;
+    const { isHardwareWallet, name: walletName } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
@@ -136,12 +149,14 @@ class WalletSendPage extends Component<Props> {
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
-        onOpenDialogAction={(params) =>
-          this.openDialog(params.dialog, isHardwareWallet, wallet.id)
-        }
+        onSubmit={() => this.submit(isHardwareWallet, wallet.id)}
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}
+        tokenFavorites={favorites}
+        walletName={walletName}
+        onTokenPickerDialogOpen={this.openTokenPickerDialog}
+        onTokenPickerDialogClose={this.closeTokenPickerDialog}
       />
     );
   }

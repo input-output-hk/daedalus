@@ -1,11 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Sidebar.scss' or its corresp... Remove this comment to see the full error message
 import styles from './Sidebar.scss';
 import { shouldShowWalletSubMenu } from './helpers';
 import SidebarCategory from './SidebarCategory';
-import SidebarCategoryWrapper from './SidebarCategoryWrapper';
 import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
@@ -59,17 +57,13 @@ const Sidebar = ({
           const content = getCategoryContent(category.name, network);
           const isActive = activeSidebarCategory === category.route;
           return (
-            <SidebarCategoryWrapper
+            <SidebarCategory
               key={category.name}
-              categoryName={category.name}
-            >
-              <SidebarCategory
-                category={category}
-                isActive={isActive}
-                onClick={onActivateCategory}
-                content={content}
-              />
-            </SidebarCategoryWrapper>
+              category={category}
+              isActive={isActive}
+              onClick={onActivateCategory}
+              content={content}
+            />
           );
         })}
       </div>
@@ -77,11 +71,16 @@ const Sidebar = ({
         <SidebarWalletsMenu
           wallets={menus?.wallets?.items || []}
           onAddWallet={onAddWallet}
-          onWalletItemClick={menus?.wallets?.actions?.onWalletItemClick}
+          onWalletItemClick={menus?.wallets?.actions.onWalletItemClick}
           isActiveWallet={(id) => id === menus?.wallets?.activeWalletId}
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isShelleyActivated={isShelleyActivated}
           visible={isShowingSubMenus}
+          onWalletSortBy={menus?.wallets?.actions.onWalletSortBy}
+          sortBy={menus?.wallets?.walletSortConfig?.sortBy}
+          sortOrder={menus?.wallets?.walletSortConfig?.sortOrder}
+          searchValue={menus?.wallets?.searchValue}
+          onSearch={menus?.wallets?.actions.onSearch}
         />
       )}
     </div>

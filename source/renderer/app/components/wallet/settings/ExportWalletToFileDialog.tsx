@@ -65,6 +65,10 @@ type State = {
   exportType: ExportType;
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 class ExportWalletToFileDialog extends Component<Props, State> {
   static contextTypes = {
@@ -82,8 +86,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   // onChangeExportType(exportType: ExportType) {
   //   this.setState({ exportType });
   // }
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -96,7 +99,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
           ),
           value: '',
           validators: [
-            () =>
+            () => {
               // if (field.value === '') {
               //   return [
               //     false,
@@ -105,7 +108,8 @@ class ExportWalletToFileDialog extends Component<Props, State> {
               //     ),
               //   ];
               // }
-              [true],
+              return [true];
+            },
           ],
         },
       },
@@ -121,7 +125,6 @@ class ExportWalletToFileDialog extends Component<Props, State> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: async (form) => {
         const { spendingPassword } = form.values();

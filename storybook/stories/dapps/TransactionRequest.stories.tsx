@@ -37,7 +37,7 @@ const allAssets = [
     }
   ),
 ];
-storiesOf('dApps/TransactionRequest', module)
+storiesOf('dApps|TransactionRequest', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
@@ -169,6 +169,7 @@ storiesOf('dApps/TransactionRequest', module)
       }
     )
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Notifications', ({ locale }: { locale: string }) => {
     let text1 = 'Opening transaction received via link...';
     let text2 = 'Transaction received via link';

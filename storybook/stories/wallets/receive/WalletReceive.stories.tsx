@@ -16,8 +16,9 @@ const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
-storiesOf('Wallets/Receive', module)
+storiesOf('Wallets|Receive', module)
   .addDecorator(WalletsWrapper)
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
     const showDialog = boolean('showDialog', false);
     return (
@@ -63,52 +64,55 @@ storiesOf('Wallets/Receive', module)
   })
   .add(
     'Receive - sequential with address verification',
-    ({ locale }: { locale: string }) => (
-      <VerticalFlexContainer>
-        <WalletReceiveSequential
-          walletAddresses={[
-            ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
-              generateAddress(true)
-            ),
-            ...Array.from(Array(number('Addresses', 10))).map(() =>
-              generateAddress()
-            ),
-          ]}
-          onShareAddress={action('onShareAddress')}
-          onCopyAddress={action('onCopyAddress')}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-          currentLocale={locale}
-          onToggleSubMenus={onToggleSubMenus}
-          isShowingSubMenus
-          onToggleUsedAddresses={action('onToggleUsedAddresses')}
-          showUsed={boolean('showUsed', false)}
-        />
-        <WalletReceiveDialog
-          address={generateAddress()}
-          onCopyAddress={action('onCopyAddress')}
-          onDownloadPDF={action('onDownloadPDF')}
-          onSaveQRCodeImage={action('onSaveQRCodeImage')}
-          onClose={action('onClose')}
-          hwDeviceStatus={select(
-            'Address verification state',
-            {
-              Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
-              Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
-              Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
-            },
-            HwDeviceStatuses.VERIFYING_ADDRESS
-          )}
-          isHardwareWallet
-          walletName="Ledger Nano S"
-          isAddressDerived={false}
-          isAddressChecked={false}
-          onChangeVerificationStatus={action('onChangeVerificationStatus')}
-          onSupportRequestClick={action('onSupportRequestClick')}
-          isTrezor={boolean('isTrezor', false)}
-        />
-      </VerticalFlexContainer>
-    )
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
+    ({ locale }: { locale: string }) => {
+      return (
+        <VerticalFlexContainer>
+          <WalletReceiveSequential
+            walletAddresses={[
+              ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+                generateAddress(true)
+              ),
+              ...Array.from(Array(number('Addresses', 10))).map(() =>
+                generateAddress()
+              ),
+            ]}
+            onShareAddress={action('onShareAddress')}
+            onCopyAddress={action('onCopyAddress')}
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+            isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+            currentLocale={locale}
+            onToggleSubMenus={onToggleSubMenus}
+            isShowingSubMenus
+            onToggleUsedAddresses={action('onToggleUsedAddresses')}
+            showUsed={boolean('showUsed', false)}
+          />
+          <WalletReceiveDialog
+            address={generateAddress()}
+            onCopyAddress={action('onCopyAddress')}
+            onDownloadPDF={action('onDownloadPDF')}
+            onSaveQRCodeImage={action('onSaveQRCodeImage')}
+            onClose={action('onClose')}
+            hwDeviceStatus={select(
+              'Address verification state',
+              {
+                Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
+                Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
+                Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
+              },
+              HwDeviceStatuses.VERIFYING_ADDRESS
+            )}
+            isHardwareWallet
+            walletName="Ledger Nano S"
+            isAddressDerived={false}
+            isAddressChecked={false}
+            onChangeVerificationStatus={action('onChangeVerificationStatus')}
+            onSupportRequestClick={action('onSupportRequestClick')}
+            isTrezor={boolean('isTrezor', false)}
+          />
+        </VerticalFlexContainer>
+      );
+    }
   )
   .add('Receive - random', () => {
     const isSidebarExpanded = boolean('isSidebarExpanded', false);

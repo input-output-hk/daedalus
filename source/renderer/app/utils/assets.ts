@@ -37,10 +37,12 @@ export const filterAssets = (
 export const getZeroToken = ({
   policyId,
   assetName,
+  assetNameASCII,
   uniqueId,
 }: Asset): Token => ({
   policyId,
   assetName,
+  assetNameASCII,
   uniqueId,
   quantity: new BigNumber(0),
 });
@@ -50,7 +52,7 @@ export const getZeroToken = ({
  * Then retrieves the token with the same uniqueId
  * @param asset - asset details
  * @param tokens - list of Tokens
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getToken = (asset: Asset, tokens: Tokens) => {
   let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
@@ -67,12 +69,13 @@ export const getToken = (asset: Asset, tokens: Tokens) => {
  * then merges them into an AssetToken
  * @param asset - asset details
  * @param token - token details
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetToken = (
   {
     policyId,
     assetName,
+    assetNameASCII,
     fingerprint,
     metadata,
     decimals,
@@ -83,6 +86,7 @@ export const getAssetToken = (
 ): AssetToken => ({
   policyId,
   assetName,
+  assetNameASCII,
   quantity,
   address,
   fingerprint,
@@ -97,7 +101,7 @@ export const getAssetToken = (
  * then merges them into AssetTokens
  * @param assets - list of asset details
  * @param tokens - list of token details
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokens = (
   assets: Array<Asset>,
@@ -113,18 +117,19 @@ export const getAssetTokens = (
  * and combines with the data from the Asset
  * @param asset - asset details
  * @param getAsset - function that returns an asset
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokenFromToken = (
   asset: Token,
   getAsset: (...args: Array<any>) => any
 ): AssetToken => {
-  const { policyId, assetName, quantity, address } = asset;
+  const { policyId, assetName, assetNameASCII, quantity, address } = asset;
   const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
     getAsset(policyId, assetName) || {};
   return {
     policyId,
     assetName,
+    assetNameASCII,
     quantity,
     address,
     fingerprint,
@@ -261,11 +266,13 @@ export const searchAssets = (
   }
 
   return filter(assets, (asset) => {
-    const { policyId, assetName, fingerprint, metadata } = asset;
+    const { policyId, assetName, assetNameASCII, fingerprint, metadata } =
+      asset;
     const { name, ticker, description } = metadata || {};
     const checkList = [
       policyId,
       assetName,
+      assetNameASCII,
       fingerprint,
       metadata,
       name,

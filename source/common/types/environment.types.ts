@@ -24,6 +24,7 @@ export type Environment = {
   os: string;
   cpu: string;
   ram: number;
+  hasMetHardwareRequirements: boolean;
   installerVersion: string;
   version: string;
   isWindows: boolean;
@@ -71,3 +72,9 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   development: 'Development',
 };
+export type CpuThreadData = {
+  model: string;
+  speed: number;
+  times: Record<string, number>;
+};
+export type Cpu = Array<CpuThreadData>;

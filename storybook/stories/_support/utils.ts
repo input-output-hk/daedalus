@@ -5,7 +5,7 @@ import moment from 'moment';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import seedrandom from 'seedrandom';
-
+import type { Reward } from '../../../source/renderer/app/api/staking/types';
 import Wallet, {
   WalletSyncStateStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -32,11 +32,13 @@ import type {
   WalletTokens,
   AssetToken,
 } from '../../../source/renderer/app/api/assets/types';
+import { hexToString } from '../../../source/renderer/app/utils/strings';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
 
-const random = seedrandom('daedalus', { global: false });
-
+const random = seedrandom('daedalus', {
+  global: false,
+});
 export const EXAMPLE_METADATA = JSONBigInt.parse(`{
       "0": {
         "string": "some string"
@@ -82,10 +84,12 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
         ]
       }
     }`);
-export const generateHash = () =>
-  hash.sha512().update(random().toString()).digest('hex');
-export const generatePolicyIdHash = () =>
-  hash.sha224().update(random().toString()).digest('hex');
+export const generateHash = () => {
+  return hash.sha512().update(random().toString()).digest('hex');
+};
+export const generatePolicyIdHash = () => {
+  return hash.sha224().update(random().toString()).digest('hex');
+};
 
 const statusProgress = (status) =>
   status === WalletSyncStateStatuses.RESTORING
@@ -104,7 +108,7 @@ export const generateWallet = (
     available: [],
     total: [],
   },
-  reward = 0,
+  reward: string | number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
   status: SyncStateStatus = WalletSyncStateStatuses.READY,
@@ -136,6 +140,17 @@ export const generateWallet = (
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
+export const generateRewardForWallet = (
+  wallet: Wallet,
+  unspent: string | number = '0'
+): Reward => ({
+  wallet: wallet.name,
+  total: wallet.reward,
+  unspent: new BigNumber(unspent).dividedBy(LOVELACES_PER_ADA),
+  isRestoring: wallet.isRestoring,
+  syncingProgress: 100,
+  rewardsAddress: 'stake_fake_address',
+});
 export const generateAssetDomain = (
   policyId: string,
   assetName = '',
@@ -163,6 +178,7 @@ export const generateAssetToken = (
 ): AssetToken => ({
   policyId,
   assetName,
+  assetNameASCII: hexToString(assetName),
   fingerprint,
   metadata,
   quantity: new BigNumber(quantity),

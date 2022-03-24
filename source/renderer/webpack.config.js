@@ -43,6 +43,9 @@ module.exports = {
   optimization: {
     minimize: false,
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+  },
   devServer: {
     hot: true,
     static: {

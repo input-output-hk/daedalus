@@ -7,7 +7,6 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../source/renderer/ap... Remove this comment to see the full error message
 import topBarStyles from '../../../../source/renderer/app/components/layout/TopBar.scss';
 import NodeSyncStatusIcon from '../../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import TadaButton from '../../../../source/renderer/app/components/widgets/TadaButton';
@@ -114,25 +113,28 @@ const topBarProductionEnv = (currentTheme) => (
   </TopBar>
 );
 
-storiesOf('Nodes/Environment', module)
+storiesOf('Nodes|Environment', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
     </StoryProvider>
   ))
   .addDecorator(withKnobs) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Testnet', (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarTestEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Staging', (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarStagingEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   .add('Production', (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarProductionEnv(props.currentTheme)}

@@ -1,6 +1,4 @@
 import { BrowserWindow } from 'electron';
-
-/* eslint import/no-unresolved: "off" */
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';

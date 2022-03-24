@@ -24,7 +24,6 @@ import {
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Step1ConfigurationDialog.scs... Remove this comment to see the full error message
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -143,8 +142,19 @@ type Props = {
   wallets: Array<Wallet>;
 };
 
+type State = {
+  wasRecoveryPhraseValidAtLeastOnce: boolean;
+};
+
+interface FormFields {
+  checkboxAcceptance1: string;
+  checkboxAcceptance2: string;
+  walletsDropdown: string;
+  recoveryPhrase: string;
+}
+
 @observer
-class Step1ConfigurationDialog extends Component<Props> {
+class Step1ConfigurationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -152,9 +162,13 @@ class Step1ConfigurationDialog extends Component<Props> {
     error: null,
     recoveryPhrase: [],
   };
+
+  state = {
+    wasRecoveryPhraseValidAtLeastOnce: false,
+  };
+
   recoveryPhraseAutocomplete: Autocomplete;
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         recoveryPhrase: {
@@ -172,6 +186,16 @@ class Step1ConfigurationDialog extends Component<Props> {
                 this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
               ],
             }),
+          hooks: {
+            onChange: (field) => {
+              if (
+                this.state.wasRecoveryPhraseValidAtLeastOnce === false &&
+                field.isValid
+              ) {
+                this.setState({ wasRecoveryPhraseValidAtLeastOnce: true });
+              }
+            },
+          },
         },
         walletsDropdown: {
           type: 'select',
@@ -198,7 +222,6 @@ class Step1ConfigurationDialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: () => this.props.onContinue(),
     });
@@ -207,11 +230,9 @@ class Step1ConfigurationDialog extends Component<Props> {
   get canSubmit() {
     const { isCalculatingReedemFees, wallet, error } = this.props;
     const { form } = this;
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const { checked: checkboxAcceptance2isChecked } = form.$(
       'checkboxAcceptance2'
     );
@@ -221,7 +242,6 @@ class Step1ConfigurationDialog extends Component<Props> {
       !error &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'isValid' does not exist on type 'ReactTo... Remove this comment to see the full error message
       form.isValid
     );
   }
@@ -270,29 +290,21 @@ class Step1ConfigurationDialog extends Component<Props> {
           />
         </p>
       );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const recoveryPhraseField = form.$('recoveryPhrase');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const walletsDropdownField = form.$('walletsDropdown');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-    const validRecoveryPhase = recoveryPhraseField.isValid;
-    const buttonClasses = classnames([
-      'primary',
-      isCalculatingReedemFees ? styles.isSubmitting : null,
-    ]);
-    const walletsDropdownClasses = classnames([
-      styles.walletsDropdown,
-      !validRecoveryPhase ? styles.disabled : null,
-    ]);
+    const walletsDropdownDisabled = !(
+      recoveryPhraseField.isValid ||
+      this.state.wasRecoveryPhraseValidAtLeastOnce
+    );
+
     const actions = {
       direction: 'column',
       items: [
         {
-          className: buttonClasses,
+          className: 'primary',
           disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
@@ -372,7 +384,6 @@ class Step1ConfigurationDialog extends Component<Props> {
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown
-              className={walletsDropdownClasses}
               {...walletsDropdownField.bind()}
               numberOfStakePools={4}
               wallets={wallets}
@@ -383,6 +394,7 @@ class Step1ConfigurationDialog extends Component<Props> {
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"
+              disabled={walletsDropdownDisabled}
             />
           </div>
           <Checkbox

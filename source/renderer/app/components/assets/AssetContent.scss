@@ -30,7 +30,7 @@
     margin-left: 10px;
     max-height: 48px;
     overflow-y: auto;
-    width: calc(100% - 140px);
+    width: calc(100% - 100px);
 
     &:not(:first-of-type) {
       margin-top: 10px;
@@ -109,7 +109,7 @@
   flex-direction: column;
   width: 100%;
 
-  .assetASCIIName {
+  .assetAsciiName {
     opacity: 0.5;
   }
 }

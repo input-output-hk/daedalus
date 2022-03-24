@@ -39,97 +39,73 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Instruction for recovery word on delete wallet dialog',
   },
 });
-const decorators = [(story) => <StoryDecorator>{story()}</StoryDecorator>];
-storiesOf('Wallets/Settings', module)
-  .add(
-    'Delete - Countdown',
-    () => (
-      <div>
-        <WalletSettingsActionConfirmationDialog
-          walletName="My Wallet"
-          hasWalletFunds
-          countdownFn={() => 10}
-          isBackupNoticeAccepted={false}
-          messages={messages}
-          confirmationValue="babushka"
-          onAcceptBackupNotice={() => {}}
-          onContinue={() => {}}
-          onCancel={() => {}}
-          onConfirmationValueChange={() => {}}
-          isSubmitting={false}
-        />
-      </div>
-    ),
-    {
-      decorators,
-    }
-  )
-  .add(
-    'Delete - Accepted & filled incorrectly',
-    () => (
-      <div>
-        <WalletSettingsActionConfirmationDialog
-          walletName="My Wallet"
-          hasWalletFunds
-          countdownFn={() => 0}
-          isBackupNoticeAccepted
-          messages={messages}
-          confirmationValue="babushka"
-          onAcceptBackupNotice={() => {}}
-          onContinue={() => {}}
-          onCancel={() => {}}
-          onConfirmationValueChange={action('onRecoveryWordChange')}
-          isSubmitting={false}
-        />
-      </div>
-    ),
-    {
-      decorators,
-    }
-  )
-  .add(
-    'Delete - Accepted & filled correctly',
-    () => (
-      <div>
-        <WalletSettingsActionConfirmationDialog
-          walletName="My Wallet"
-          hasWalletFunds
-          countdownFn={() => 0}
-          isBackupNoticeAccepted
-          messages={messages}
-          confirmationValue="My Wallet"
-          onAcceptBackupNotice={() => {}}
-          onContinue={() => {}}
-          onCancel={() => {}}
-          onConfirmationValueChange={action('onRecoveryWordChange')}
-          isSubmitting={false}
-        />
-      </div>
-    ),
-    {
-      decorators,
-    }
-  )
-  .add(
-    'Delete - Accepted, filled correctly & submitting',
-    () => (
-      <div>
-        <WalletSettingsActionConfirmationDialog
-          walletName="My Wallet"
-          hasWalletFunds
-          countdownFn={() => 0}
-          isBackupNoticeAccepted
-          messages={messages}
-          confirmationValue="My Wallet"
-          onAcceptBackupNotice={() => {}}
-          onContinue={() => {}}
-          onCancel={() => {}}
-          onConfirmationValueChange={action('onRecoveryWordChange')}
-          isSubmitting
-        />
-      </div>
-    ),
-    {
-      decorators,
-    }
-  );
+storiesOf('Wallets|Settings', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
+  .add('Delete - Countdown', () => (
+    <div>
+      <WalletSettingsActionConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 10}
+        isBackupNoticeAccepted={false}
+        messages={messages}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
+      />
+    </div>
+  ))
+  .add('Delete - Accepted & filled incorrectly', () => (
+    <div>
+      <WalletSettingsActionConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 0}
+        isBackupNoticeAccepted
+        messages={messages}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting={false}
+      />
+    </div>
+  ))
+  .add('Delete - Accepted & filled correctly', () => (
+    <div>
+      <WalletSettingsActionConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 0}
+        isBackupNoticeAccepted
+        messages={messages}
+        confirmationValue="My Wallet"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting={false}
+      />
+    </div>
+  ))
+  .add('Delete - Accepted, filled correctly & submitting', () => (
+    <div>
+      <WalletSettingsActionConfirmationDialog
+        walletName="My Wallet"
+        hasWalletFunds
+        countdownFn={() => 0}
+        isBackupNoticeAccepted
+        messages={messages}
+        confirmationValue="My Wallet"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting
+      />
+    </div>
+  ));

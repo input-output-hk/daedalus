@@ -8,7 +8,6 @@ import {
 import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsChooseWalletD... Remove this comment to see the full error message
 import styles from './DelegationStepsChooseWalletDialog.scss';

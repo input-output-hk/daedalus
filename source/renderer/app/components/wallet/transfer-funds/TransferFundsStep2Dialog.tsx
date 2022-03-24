@@ -11,7 +11,6 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TransferFundsStep2Dialog.scs... Remove this comment to see the full error message
 import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -94,13 +93,16 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
+interface FormFields {
+  spendingPassword: string;
+}
+
 @observer
 class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  form = new ReactToolboxMobxForm(
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
+  form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
         spendingPassword: {
@@ -136,7 +138,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
     }
   );
   submit = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'submit' does not exist on type 'ReactToo... Remove this comment to see the full error message
     this.form.submit({
       onSuccess: (form) => {
         const { spendingPassword } = form.values();
@@ -146,7 +147,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
     });
   };
   handleSubmitOnEnter = (event: KeyboardEvent) =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
 
@@ -177,7 +177,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletAmount,
       false
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property '$' does not exist on type 'ReactToolboxM... Remove this comment to see the full error message
     const spendingPasswordField = this.form.$('spendingPassword');
     const buttonClasses = classnames([
       'confirmButton',
@@ -254,7 +253,6 @@ class TransferFundsStep2Dialog extends Component<Props> {
         </div>
         <Input
           type="password"
-          className={styles.currentPassword}
           {...spendingPasswordField.bind()}
           error={spendingPasswordField.error}
           skin={InputSkin}

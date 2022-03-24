@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './InlineNotification.scss' or ... Remove this comment to see the full error message
 import styles from './InlineNotification.scss';
 
 type Props = {

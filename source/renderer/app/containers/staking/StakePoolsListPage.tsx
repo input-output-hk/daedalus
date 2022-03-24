@@ -83,6 +83,8 @@ class StakePoolsListPage extends Component<Props> {
           stake={stake}
           onDelegate={this.handleDelegate}
           isLoading={isLoading}
+          isListViewTooltipVisible={staking.stakePoolsListViewTooltipVisible}
+          onListViewVisited={staking.hideStakePoolsListViewTooltip}
           isFetching={isFetchingStakePools}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}

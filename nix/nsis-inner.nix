@@ -43,7 +43,7 @@ in stdenv.mkDerivation {
   '';
 
   meta = with lib; {
-    descripition = "System to create Windows installers";
+    description = "System to create Windows installers";
     homepage = "https://nsis.sourceforge.io/";
   };
 }

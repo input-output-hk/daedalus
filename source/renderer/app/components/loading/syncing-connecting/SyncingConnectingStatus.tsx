@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SyncingConnectingStatus.scss... Remove this comment to see the full error message
+import React, { Component } from 'react';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
+import {
+  BlockSyncType,
+  CardanoNodeState,
+  CardanoNodeStates,
+} from '../../../../../common/types/cardano-node.types';
 import styles from './SyncingConnectingStatus.scss';
-import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
-import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
+import SyncingProgress from './SyncingProgress';
 
 const messages = defineMessages({
   starting: {
@@ -15,7 +18,7 @@ const messages = defineMessages({
   startingDescription: {
     id: 'loading.screen.startingCardanoDescription',
     defaultMessage:
-      '!!!This process validates the integrity of local blockchain data and could take several minutes.',
+      '!!!This process validates the integrity of local blockchain data.',
     description: 'Message "Starting Cardano node" on the loading screen.',
   },
   stopping: {
@@ -77,17 +80,11 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
-  verifyingBlockchain: {
-    id: 'loading.screen.verifyingBlockchainMessage',
-    defaultMessage:
-      '!!!Verifying the blockchain ({verificationProgress}% complete)',
-    description:
-      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
-  },
 });
-type Props = {
+
+interface Props {
   cardanoNodeState: CardanoNodeState | null | undefined;
-  verificationProgress: number;
+  blockSyncProgress: Record<BlockSyncType, number>;
   hasLoadedCurrentLocale: boolean;
   hasBeenConnected: boolean;
   isTlsCertInvalid: boolean;
@@ -95,11 +92,13 @@ type Props = {
   isNodeStopping: boolean;
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
-};
+}
+
 export default class SyncingConnectingStatus extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   _getConnectingMessage = (): {
     connectingMessage: string;
     connectingDescription?: string;
@@ -107,7 +106,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const {
       cardanoNodeState,
       hasBeenConnected,
-      isVerifyingBlockchain,
       isTlsCertInvalid,
       isConnected,
     } = this.props;
@@ -156,8 +154,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
         connectingMessage = messages.unrecoverable;
         break;
 
+      case CardanoNodeStates.RUNNING:
       default:
-        // also covers CardanoNodeStates.RUNNING state
         connectingMessage = hasBeenConnected
           ? messages.reconnecting
           : messages.connecting;
@@ -169,9 +167,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
 
     if (isTlsCertInvalid && isConnectingMessage) {
       connectingMessage = messages.tlsCertificateNotValidError;
-    } else if (isVerifyingBlockchain && isConnectingMessage) {
-      connectingMessage = messages.verifyingBlockchain;
-      connectingDescription = messages.startingDescription;
     }
 
     return {
@@ -187,10 +182,27 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopping,
       isNodeStopped,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
       hasLoadedCurrentLocale,
-      verificationProgress,
+      blockSyncProgress,
+      cardanoNodeState,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
+
+    const { connectingMessage, connectingDescription } =
+      this._getConnectingMessage();
+
+    if (
+      cardanoNodeState === CardanoNodeStates.RUNNING &&
+      isVerifyingBlockchain
+    ) {
+      return (
+        <div className={styles.component}>
+          <SyncingProgress {...blockSyncProgress} />
+        </div>
+      );
+    }
+
     const showEllipsis =
       !isConnected && (isNodeStopped || (isTlsCertInvalid && !isNodeStopping));
     const componentStyles = classNames([
@@ -202,15 +214,10 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
-    const { connectingMessage, connectingDescription } =
-      this._getConnectingMessage();
-
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(connectingMessage, {
-            verificationProgress,
-          })}
+          {intl.formatMessage(connectingMessage)}
         </h1>
         <div className={styles.description}>
           {connectingDescription && (

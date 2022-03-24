@@ -11,7 +11,6 @@ import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePools.scss' or its corr... Remove this comment to see the full error message
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import { formattedNumber } from '../../../utils/formatters';
@@ -71,24 +70,26 @@ const messages = defineMessages({
 });
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
 type Props = {
-  wallets: Array<Wallet>;
   currentLocale: string;
-  stakePoolsList: Array<StakePool>;
-  onOpenExternalLink: (...args: Array<any>) => any;
   currentTheme: string;
-  updateDelegatingStake: (...args: Array<any>) => any;
+  getStakePoolById: (...args: Array<any>) => any;
+  isFetching: boolean;
+  isListViewTooltipVisible?: boolean;
+  isLoading: boolean;
+  isRanking: boolean;
+  maxDelegationFunds: number;
+  onDelegate: (...args: Array<any>) => any;
+  onListViewVisited: () => void;
+  onOpenExternalLink: (...args: Array<any>) => any;
+  onSmashSettingsClick: (...args: Array<any>) => any;
   rankStakePools: (...args: Array<any>) => any;
   selectedDelegationWalletId?: string | null | undefined;
-  stake?: number | null | undefined;
-  onDelegate: (...args: Array<any>) => any;
-  isLoading: boolean;
-  isFetching: boolean;
-  isRanking: boolean;
-  stakePoolsDelegatingList: Array<StakePool>;
-  getStakePoolById: (...args: Array<any>) => any;
-  onSmashSettingsClick: (...args: Array<any>) => any;
   smashServerUrl: string | null | undefined;
-  maxDelegationFunds: number;
+  stake?: number | null | undefined;
+  stakePoolsDelegatingList: Array<StakePool>;
+  stakePoolsList: Array<StakePool>;
+  updateDelegatingStake: (...args: Array<any>) => any;
+  wallets: Array<Wallet>;
 };
 type State = {
   search: string;
@@ -135,12 +136,13 @@ class StakePools extends Component<Props, State> {
       isListView: false,
     });
   };
-  handleListView = () =>
+  handleListView = () => {
     this.setState({
       isGridView: false,
       isGridRewardsView: false,
       isListView: true,
     });
+  };
   handleSetListActive = (selectedList: string) =>
     this.setState({
       selectedList,
@@ -169,9 +171,11 @@ class StakePools extends Component<Props, State> {
       selectedDelegationWalletId,
       stake,
       onOpenExternalLink,
+      onListViewVisited,
       currentTheme,
-      isLoading,
       isFetching,
+      isListViewTooltipVisible,
+      isLoading,
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
@@ -269,7 +273,9 @@ class StakePools extends Component<Props, State> {
               onGridView={this.handleGridView}
               onGridRewardsView={this.handleGridRewardsView}
               onListView={this.handleListView}
+              onListViewVisited={onListViewVisited}
               isListView={isListView}
+              isListViewTooltipVisible={isListViewTooltipVisible}
               isGridView={isGridView}
               isGridRewardsView={isGridRewardsView}
               // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
@@ -284,23 +290,41 @@ class StakePools extends Component<Props, State> {
                     </span>
                   </span>
                 </h2>
-                <StakingPageScrollContext.Consumer>
-                  {(stakePoolsScrollContext) => (
-                    <StakePoolsList
-                      stakePoolsList={stakePoolsDelegatingList}
-                      onOpenExternalLink={onOpenExternalLink}
-                      currentTheme={currentTheme}
-                      containerClassName="StakingWithNavigation_page"
-                      onSelect={this.onDelegate}
-                      numberOfRankedStakePools={numberOfRankedStakePools}
-                      isGridRewardsView={isGridRewardsView}
-                      showWithSelectButton
-                      scrollElementRef={
-                        stakePoolsScrollContext.scrollElementRef
-                      }
-                    />
-                  )}
-                </StakingPageScrollContext.Consumer>
+                {isListView ? (
+                  <StakePoolsTable
+                    listName={SELECTED_INDEX_TABLE}
+                    currentLocale={currentLocale}
+                    stakePoolsList={stakePoolsDelegatingList}
+                    onOpenExternalLink={onOpenExternalLink}
+                    currentTheme={currentTheme}
+                    isListActive={selectedList === SELECTED_INDEX_TABLE}
+                    setListActive={this.handleSetListActive}
+                    containerClassName="StakingWithNavigation_page"
+                    onSelect={this.onDelegate}
+                    numberOfRankedStakePools={numberOfRankedStakePools}
+                    showWithSelectButton
+                    onTableHeaderMouseEnter={this.handleTableHeaderMouseEnter}
+                    onTableHeaderMouseLeave={this.handleTableHeaderMouseLeave}
+                  />
+                ) : (
+                  <StakingPageScrollContext.Consumer>
+                    {(stakePoolsScrollContext) => (
+                      <StakePoolsList
+                        stakePoolsList={stakePoolsDelegatingList}
+                        onOpenExternalLink={onOpenExternalLink}
+                        currentTheme={currentTheme}
+                        containerClassName="StakingWithNavigation_page"
+                        onSelect={this.onDelegate}
+                        numberOfRankedStakePools={numberOfRankedStakePools}
+                        isGridRewardsView={isGridRewardsView}
+                        showWithSelectButton
+                        scrollElementRef={
+                          stakePoolsScrollContext.scrollElementRef
+                        }
+                      />
+                    )}
+                  </StakingPageScrollContext.Consumer>
+                )}
               </Fragment>
             )}
             {isListView && (

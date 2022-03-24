@@ -89,33 +89,31 @@ const decorator = (story, context) => {
   );
 };
 
-storiesOf('Decentralization / Countdown', module).add(
-  pageNames.countdown,
-  () => (
-    <div>
-      <StakingCountdown
-        startDateTime={startDateTimeKnob(
-          'Decentralization Start DateTime',
-          defaultStartDateTime
-        )}
-        onLearnMoreClick={action('onLearnMoreClick')}
-      />
-    </div>
-  ),
-  {
-    id: 'countdown',
-  },
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 4.
-  {
-    decorators: [decorator],
-  }
-);
-storiesOf('Decentralization / Staking', module)
+storiesOf('Decentralization | Countdown', module)
+  .addDecorator(decorator)
+  .add(
+    pageNames.countdown,
+    () => (
+      <div>
+        <StakingCountdown
+          startDateTime={startDateTimeKnob(
+            'Decentralization Start DateTime',
+            defaultStartDateTime
+          )}
+          onLearnMoreClick={action('onLearnMoreClick')}
+        />
+      </div>
+    ),
+    {
+      id: 'countdown',
+    }
+  );
+storiesOf('Decentralization | Staking', module)
   .addDecorator(decorator) // ====== Stories ======
   .add(
     pageNames['delegation-center'],
-    (_, props) => (
-      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: true; componentId: ... Remove this comment to see the full error message
+    (props) => (
+      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: true; id: string; n... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
     ),
     {
@@ -124,7 +122,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Center - Loading',
-    (_, props) => (
+    (props) => (
       // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; isEpochsInfoAvailable: tr... Remove this comment to see the full error message
       <StakingDelegationCenterStory
         {...props}
@@ -138,8 +136,8 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Center - Not an Shelley era',
-    (_, props) => (
-      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: false; componentId:... Remove this comment to see the full error message
+    (props) => (
+      // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: false; id: string; ... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
     {
@@ -152,17 +150,19 @@ storiesOf('Decentralization / Staking', module)
       minDelegationFunds={number('minDelegationFunds', 10)}
     />
   ))
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add(pageNames['stake-pools'], StakePoolsStory, {
     id: 'stake-pools',
   })
   .add(
     `${pageNames['stake-pools']} - Loading`,
-    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; componentId: string; titl... Remove this comment to see the full error message
-    (_, props) => <StakePoolsStory {...props} isLoading />,
+    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; id: string; name: string;... Remove this comment to see the full error message
+    (props) => <StakePoolsStory {...props} isLoading />,
     {
       id: 'stake-pools-loading',
     }
   )
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
   .add(pageNames['stake-pools-table'], StakePoolsTableStory, {
     id: 'stake-pools-table',
   })
@@ -217,7 +217,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Wizard',
-    (_, props) => {
+    (props) => {
       const oversaturationPercentage = number('Oversaturation Percentage', 0, {
         min: 0,
         max: 1000,
@@ -239,14 +239,14 @@ storiesOf('Decentralization / Staking', module)
   .add(
     'Delegation Wizard - Delegation Not Available',
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-    (_, props) => <StakingDelegationSteps {...props} isDisabled />,
+    (props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
     }
   )
   .add(
     'Undelegate Confirmation',
-    (_, props) => (
+    (props) => (
       <StakingUndelegateConfirmationStory
         {...props}
         isHardwareWallet={boolean('isHardwareWallet', false)}
@@ -258,7 +258,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Undelegate Confirmation - unknownn stake pool',
-    (_, props) => (
+    (props) => (
       <StakingUndelegateConfirmationStory {...props} unknownStakePool />
     ),
     {
@@ -267,13 +267,13 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Undelegate Confirmation Result',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: any, { locale, }: { locale: ... Remove this comment to see the full error message
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale, }: { locale: string; ... Remove this comment to see the full error message
     StakingUndelegateConfirmationResultStory,
     {
       id: 'undelegate-confirmation-result',
     }
   );
-storiesOf('Decentralization / Redeem ITN Rewards', module)
+storiesOf('Decentralization | Redeem ITN Rewards', module)
   .addDecorator(decorator) // ====== Stories ======
   .add('Step 1', Step1ConfigurationDialogStory, {
     id: 'redeem-itn-wallets-story',

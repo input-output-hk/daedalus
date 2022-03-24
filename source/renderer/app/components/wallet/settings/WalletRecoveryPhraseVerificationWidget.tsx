@@ -14,7 +14,6 @@ import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inlin
 import iconWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
 import iconNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseVerifica... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseVerificationWidget.scss';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES as statuses,
@@ -246,7 +245,7 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
     return (
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.title)}</h2>
-        <div className={styles.description}>
+        <div>
           {intl.formatMessage(messages.description, {
             wordCount,
           })}
@@ -272,7 +271,6 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
           <SVGInline svg={icon} className={styles.statusIcon} />
           <FormattedHTMLMessage
             {...message}
-            className={styles.statusMessage}
             values={{
               timeAgo,
               timeUntilWarning,

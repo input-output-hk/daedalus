@@ -7,9 +7,11 @@ import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
+import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 
 const rendererErrorHandler = new RendererErrorHandler();
-const { isDev, isTest, isLinux, isBlankScreenFixActive } = environment;
+const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
+const rtsFlags = getRtsFlagsSettings(network);
 const id = 'window';
 
 const getWindowTitle = (locale: string): string => {
@@ -19,6 +21,8 @@ const getWindowTitle = (locale: string): string => {
   let title = buildLabel;
   if (isBlankScreenFixActive)
     title += ` ${translation('title.blankScreenFix')}`;
+  if (!!rtsFlags && rtsFlags?.length > 0)
+    title += ` ${translation('title.usingRtsFlags')}`;
   return title;
 };
 
@@ -34,15 +38,12 @@ type WindowOptionsType = {
   };
   icon?: string;
 };
-export const createMainWindow = (
-  locale: string,
-  getWindowBounds: () => Rectangle | null | undefined
-) => {
+export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
-    ...getWindowBounds(),
+    ...windowBounds,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -76,13 +77,7 @@ export const createMainWindow = (
     if (event.sender !== window.webContents) return;
     window.close();
   });
-
-  if (isDev) {
-    window.loadURL(`http://localhost:8080`);
-  } else {
-    window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  }
-
+  window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
@@ -149,8 +144,6 @@ export const createMainWindow = (
    * window constructor above was buggy (height was not correctly applied)
    */
   window.on('ready-to-show', () => {
-    const windowBounds = getWindowBounds();
-
     if (windowBounds) {
       window.setBounds(windowBounds);
     }

@@ -119,3 +119,6 @@ Debug
 /cardano-cli
 /cardano-wallet
 .vscode
+
+# Typescript
+*.scss.d.ts

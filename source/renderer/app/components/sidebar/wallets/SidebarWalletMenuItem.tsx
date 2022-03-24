@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+import highlightWords from 'highlight-words';
 import SVGInline from 'react-svg-inline';
 import LegacyBadge, {
   LEGACY_BADGE_MODES,
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarWalletMenuItem.scss' ... Remove this comment to see the full error message
 import styles from './SidebarWalletMenuItem.scss';
 import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
@@ -27,6 +27,7 @@ type Props = {
   hasNotification: boolean;
   isHardwareWalletDisconnected?: boolean;
   isHardwareWallet: boolean;
+  searchValue: string;
 };
 
 @observer
@@ -46,6 +47,7 @@ class SidebarWalletMenuItem extends Component<Props> {
       hasNotification,
       isHardwareWalletDisconnected,
       isHardwareWallet,
+      searchValue,
     } = this.props;
     const showLegacyBadge = isLegacy && isShelleyActivated;
     const componentStyles = classNames([
@@ -62,13 +64,30 @@ class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWalletDisconnected &&
       isHardwareWalletIndicatorEnabled
         ? styles.disconnected
-        : styles.connected,
+        : null,
     ]);
+    const chunks = highlightWords({
+      text: title,
+      query: `/(${searchValue.split('').join('|')})/i`,
+    });
     return (
-      <button className={componentStyles} onClick={onClick}>
+      <button
+        className={componentStyles}
+        onClick={onClick}
+        data-testid="walletMenu"
+      >
         <div className={styles.meta}>
           <div className={styles.topContainer}>
-            <div className={styles.title}>{title}</div>
+            <div className={styles.title} data-testid={title}>
+              {chunks.map(({ text, match, key }) => (
+                <span
+                  key={key}
+                  className={match ? styles.searchMatch : styles.searchUnmatch}
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
             {isHardwareWallet && (
               <div className={styles.hardwareWalletsIconWrapper}>
                 <SVGInline svg={hardwareWalletsIcon} className={hwIconStyles} />

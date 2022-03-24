@@ -35,8 +35,8 @@ type Props = {
   totalAvailable: number;
 };
 const assetDetails = {
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c':
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       '',
@@ -54,8 +54,8 @@ const assetDetails = {
         logo: '',
       }
     ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       '',
@@ -73,8 +73,8 @@ const assetDetails = {
         logo: '',
       }
     ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       '',
@@ -92,8 +92,8 @@ const assetDetails = {
         logo: '',
       }
     ),
+  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b':
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
     generateAssetToken(
       '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       '',
@@ -152,9 +152,10 @@ const getAsset = (
   assetName: string
 ): Asset | null | undefined => assetDetails[`${policyId}${assetName}`];
 
-const decorators = [
-  withKnobs,
-  (getStory, props) => {
+/* eslint-disable consistent-return */
+storiesOf('Wallets|Transactions', module)
+  .addDecorator(withKnobs)
+  .addDecorator((getStory, props) => {
     const transactionsOption = select(
       'Transactions',
       {
@@ -168,120 +169,99 @@ const decorators = [
       'groupedByDays'
     );
     return (
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       <WalletsTransactionsWrapper
         {...props}
         transactionsOption={transactionsOption}
         getStory={getStory}
       />
     );
-  },
-  WalletsWrapper,
-];
-
-/* eslint-disable consistent-return */
-storiesOf('Wallets/Transactions', module)
-  .add(
-    'Transactions List',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, context: Props) => Ele... Remove this comment to see the full error message
-    (_, context: Props) => {
-      const {
-        defaultFilterOptions,
-        filterOptions,
-        locale,
-        onFilter,
-        populatedFilterOptions,
-        transactions,
-        totalAvailable,
-      } = context;
-      return (
-        <>
-          <WalletTransactions
-            activeWallet={generateWallet(
-              'Wallet name',
-              '45119903750165',
-              assets
-            )}
-            currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-            currentLocale={locale}
-            currentNumberFormat={NUMBER_OPTIONS[0].value}
-            currentTimeFormat={TIME_OPTIONS[0].value}
-            defaultFilterOptions={defaultFilterOptions}
-            filterOptions={filterOptions}
-            deletePendingTransaction={action('deletePendingTransaction')}
-            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-            formattedWalletAmount={formattedWalletAmount}
-            getUrlByType={action('getUrlByType')}
-            hasMoreToLoad={false}
-            isInternalAddress={() => {
-              return true;
-            }}
-            isDeletingTransaction={false}
-            isLoadingTransactions={false}
-            onFilter={onFilter}
-            onLoadMore={action('onLoadMore')}
-            onOpenExternalLink={action('onOpenExternalLink')}
-            onRequestCSVFile={action('onRequestCSVFile')}
-            populatedFilterOptions={populatedFilterOptions}
-            totalAvailable={totalAvailable}
-            transactions={transactions}
-            hasAssetsEnabled={false}
-            getAsset={getAsset}
-            onCopyAssetParam={() => {}}
-          />
-        </>
-      );
-    },
-    {
-      decorators,
-    }
-  )
-  .add(
-    'Wallet Tokens Transactions List',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(_: Args, context: Props) => Ele... Remove this comment to see the full error message
-    (_, context: Props) => {
-      const {
-        defaultFilterOptions,
-        filterOptions,
-        locale,
-        onFilter,
-        populatedFilterOptions,
-        transactions,
-        totalAvailable,
-      } = context;
-      const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-      return (
-        <WalletTransactions
-          activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
-          currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-          currentLocale={locale}
-          currentNumberFormat={NUMBER_OPTIONS[0].value}
-          currentTimeFormat={TIME_OPTIONS[0].value}
-          defaultFilterOptions={defaultFilterOptions}
-          filterOptions={filterOptions}
-          deletePendingTransaction={action('deletePendingTransaction')}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          formattedWalletAmount={formattedWalletAmount}
-          getUrlByType={action('getUrlByType')}
-          hasMoreToLoad={false}
-          isInternalAddress={() => {
-            return true;
-          }}
-          isDeletingTransaction={false}
-          isLoadingTransactions={false}
-          onFilter={onFilter}
-          onLoadMore={action('onLoadMore')}
-          onOpenExternalLink={action('onOpenExternalLink')}
-          onRequestCSVFile={action('onRequestCSVFile')}
-          populatedFilterOptions={populatedFilterOptions}
-          totalAvailable={totalAvailable}
-          transactions={transactions}
-          hasAssetsEnabled={hasAssetsEnabled}
-          getAsset={getAsset}
-          onCopyAssetParam={() => {}}
-        />
-      );
-    },
-    {
-      decorators,
-    }
-  );
+  })
+  .addDecorator(WalletsWrapper) // ====== Stories ======
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
+  .add('Transactions List', (props: Props) => {
+    const {
+      defaultFilterOptions,
+      filterOptions,
+      locale,
+      onFilter,
+      populatedFilterOptions,
+      transactions,
+      totalAvailable,
+    } = props;
+    return (
+      <WalletTransactions
+        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentLocale={locale}
+        currentNumberFormat={NUMBER_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+        defaultFilterOptions={defaultFilterOptions}
+        filterOptions={filterOptions}
+        deletePendingTransaction={action('deletePendingTransaction')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        formattedWalletAmount={formattedWalletAmount}
+        getUrlByType={action('getUrlByType')}
+        hasMoreToLoad={false}
+        isInternalAddress={() => {
+          return true;
+        }}
+        isDeletingTransaction={false}
+        isLoadingTransactions={false}
+        onFilter={onFilter}
+        onLoadMore={action('onLoadMore')}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onRequestCSVFile={action('onRequestCSVFile')}
+        populatedFilterOptions={populatedFilterOptions}
+        totalAvailable={totalAvailable}
+        transactions={transactions}
+        hasAssetsEnabled={false}
+        getAsset={getAsset}
+        onCopyAssetParam={() => {}}
+      />
+    );
+  })
+  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
+  .add('Wallet Tokens Transactions List', (props: Props) => {
+    const {
+      defaultFilterOptions,
+      filterOptions,
+      locale,
+      onFilter,
+      populatedFilterOptions,
+      transactions,
+      totalAvailable,
+    } = props;
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+    return (
+      <WalletTransactions
+        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentLocale={locale}
+        currentNumberFormat={NUMBER_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+        defaultFilterOptions={defaultFilterOptions}
+        filterOptions={filterOptions}
+        deletePendingTransaction={action('deletePendingTransaction')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        formattedWalletAmount={formattedWalletAmount}
+        getUrlByType={action('getUrlByType')}
+        hasMoreToLoad={false}
+        isInternalAddress={() => {
+          return true;
+        }}
+        isDeletingTransaction={false}
+        isLoadingTransactions={false}
+        onFilter={onFilter}
+        onLoadMore={action('onLoadMore')}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onRequestCSVFile={action('onRequestCSVFile')}
+        populatedFilterOptions={populatedFilterOptions}
+        totalAvailable={totalAvailable}
+        transactions={transactions}
+        hasAssetsEnabled={hasAssetsEnabled}
+        getAsset={getAsset}
+        onCopyAssetParam={() => {}}
+      />
+    );
+  });
