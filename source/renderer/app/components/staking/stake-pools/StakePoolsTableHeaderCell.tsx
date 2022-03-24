@@ -17,7 +17,7 @@ type TableHeaderProps = {
 };
 
 @observer
-class StakePoolsTableHeader extends Component<TableHeaderProps> {
+class StakePoolsTableHeaderCell extends Component<TableHeaderProps> {
   render() {
     const {
       name,
@@ -27,9 +27,7 @@ class StakePoolsTableHeader extends Component<TableHeaderProps> {
       children,
       ...headerProps
     } = this.props;
-    const isSorted =
-      name === stakePoolsSortBy ||
-      (name === 'ticker' && stakePoolsSortBy === 'ticker');
+    const isSorted = name === stakePoolsSortBy;
     const defaultOrdering = defaultTableOrdering[name];
     const sortIconClasses = classNames([
       styles.sortIcon,
@@ -50,4 +48,4 @@ class StakePoolsTableHeader extends Component<TableHeaderProps> {
   }
 }
 
-export { StakePoolsTableHeader };
+export { StakePoolsTableHeaderCell };

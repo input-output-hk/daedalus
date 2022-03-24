@@ -7,28 +7,28 @@ import List from 'react-virtualized/dist/commonjs/List';
 import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { Intl } from '../../../types/i18nTypes';
-
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import { StakePoolsTableHeader } from './StakePoolsTableHeader';
+import { StakePoolsTableHeaderCell } from './StakePoolsTableHeaderCell';
 import {
   useSortedStakePoolList,
   useCreateColumns,
-} from './StakePoolsTable.hooks';
+  StakePoolsOrder,
+} from './hooks';
 
 export const defaultTableOrdering = {
-  ranking: 'asc',
-  ticker: 'asc',
-  saturation: 'asc',
-  cost: 'asc',
-  profitMargin: 'asc',
-  producedBlocks: 'desc',
-  nonMyopicMemberRewards: 'desc',
-  pledge: 'asc',
-  retiring: 'asc',
+  ranking: StakePoolsOrder.Asc,
+  ticker: StakePoolsOrder.Asc,
+  saturation: StakePoolsOrder.Asc,
+  cost: StakePoolsOrder.Asc,
+  profitMargin: StakePoolsOrder.Asc,
+  producedBlocks: StakePoolsOrder.Desc,
+  nonMyopicMemberRewards: StakePoolsOrder.Desc,
+  pledge: StakePoolsOrder.Asc,
+  retiring: StakePoolsOrder.Asc,
 };
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
@@ -51,12 +51,12 @@ type Props = {
 };
 type State = {
   isPreloading: boolean;
-  stakePoolsOrder: 'asc' | 'desc';
-  stakePoolsSortBy: string;
+  stakePoolsOrder: StakePoolsOrder;
+  stakePoolsSortBy: keyof StakePool;
 };
 const initialState: State = {
   isPreloading: true,
-  stakePoolsOrder: 'asc',
+  stakePoolsOrder: StakePoolsOrder.Asc,
   stakePoolsSortBy: 'ranking',
 };
 
@@ -81,12 +81,15 @@ function StakePoolsTableComponent({
   }, []);
 
   const handleSort = useCallback(
-    (newSortBy: string) => {
+    (newSortBy: keyof StakePool) => {
       const { stakePoolsOrder, stakePoolsSortBy } = state;
       let newOrder = defaultTableOrdering[newSortBy];
 
       if (newSortBy === stakePoolsSortBy) {
-        newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
+        newOrder =
+          stakePoolsOrder === StakePoolsOrder.Asc
+            ? StakePoolsOrder.Desc
+            : StakePoolsOrder.Asc;
       }
 
       setState((s) => ({
@@ -197,7 +200,7 @@ function StakePoolsTableComponent({
                             className={styles.tr}
                           >
                             {headerGroup.headers.map((column) => (
-                              <StakePoolsTableHeader
+                              <StakePoolsTableHeaderCell
                                 {...column.getHeaderProps({
                                   style: { width: undefined },
                                 })}
@@ -208,7 +211,7 @@ function StakePoolsTableComponent({
                                 key={column.id}
                               >
                                 {column.render('Header')}
-                              </StakePoolsTableHeader>
+                              </StakePoolsTableHeaderCell>
                             ))}
                           </div>
                         ))}
