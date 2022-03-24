@@ -1542,9 +1542,9 @@ export default class HardwareWalletsStore extends Store {
               walletId
             );
             runInAction(
-              'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+              'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
               () => {
-                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+                this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
                 this.activeDevicePath = null;
                 this.unfinishedWalletTxSigning = walletId;
                 this.isExportKeyAborted = false;
@@ -1602,7 +1602,7 @@ export default class HardwareWalletsStore extends Store {
               'HardwareWalletsStore:: set HW device CONNECTING FAILED',
               () => {
                 this.isAddressVerificationInitiated = false;
-                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+                this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
                 this.activeDevicePath = null;
                 this.unfinishedWalletAddressVerification = address;
                 this.isExportKeyAborted = false;
@@ -2055,18 +2055,6 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
       });
     } catch (error) {
-      if (error.code === 'Device_InvalidState') {
-        runInAction(
-          'HardwareWalletsStore:: set Transaction verifying failed - wrong Trezor passphrase',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
-            this.isTransactionInitiated = true;
-          }
-        );
-
-        throw error;
-      }
-
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
