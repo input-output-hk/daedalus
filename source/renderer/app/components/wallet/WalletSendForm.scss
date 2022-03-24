@@ -52,9 +52,11 @@
 }
 
 .estimatedFeeInput {
+  margin-bottom: 30px;
+
   input {
     background-color: var(--rp-input-bg-color-disabled) !important;
-    border-color: var(--rp-input-bg-color-disabled) !important;
+    border-color: var(--rp-input-border-color-disabled) !important;
     font-family: var(--font-regular);
     pointer-events: none;
 
@@ -62,13 +64,41 @@
       font-family: var(--font-regular);
     }
   }
+
+  &.withOffset {
+    margin-bottom: 20px;
+  }
+}
+
+.minimumAmountNotice {
+  align-items: center;
+  background-color: var(--rp-input-bg-color-disabled);
+  border-radius: 4px;
+  color: var(--theme-button-flat-text-color);
+  display: flex;
+  font-family: var(--font-light);
+  font-style: italic;
+  line-height: 22px;
+  margin: 20px 0 30px 0;
+  padding: 14px 20px;
+  width: 100%;
+
+  b {
+    font-family: var(--font-medium);
+    font-weight: normal;
+  }
+}
+
+.assetInput,
+.receiverInput,
+.depositInput {
+  margin-bottom: 20px;
 }
 
 .assetInput,
 .receiverInput,
 .estimatedFeeInput,
 .depositInput {
-  margin-bottom: 20px;
   position: relative;
 
   :global {
@@ -99,40 +129,30 @@
     padding-left: 20px;
     position: absolute;
     right: 10px;
-
-    .clearReceiverButton {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
-      );
-      border-radius: 3px;
-      cursor: pointer;
-      height: 28px;
-      width: 28px;
-
-      &:hover {
-        background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
-        );
-      }
-
-      .clearReceiverIcon {
-        > svg {
-          position: relative;
-          top: 0.5px;
-          width: 10px;
-
-          > g > g {
-            fill: var(--theme-staking-stake-pools-search-clear-button-color);
-          }
-        }
-      }
-    }
   }
 
   &.sameReceiverInput {
     input {
       border-color: var(--rp-password-input-warning-score-color) !important;
     }
+  }
+}
+
+.adaInput {
+  position: relative;
+
+  .clearAdaContainer {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    height: 48px;
+    padding-left: 20px;
+    position: absolute;
+    right: 50px;
+  }
+
+  .dividerContainer {
+    margin: 0px;
   }
 }
 
@@ -189,9 +209,15 @@
   color: var(--theme-input-placeholder-color);
   font-family: var(--font-regular);
   font-size: 14px;
+  height: 20px;
   line-height: 1.36;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  margin: 10px 0;
+
+  & > span {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+  }
 }
 
 .addAssetButton {
@@ -201,6 +227,7 @@
   height: 20px;
   letter-spacing: 0.5px;
   line-height: 1.2;
+  margin-right: 6px;
   margin-top: 0;
   padding: 0 8px;
   text-transform: uppercase;
@@ -220,6 +247,10 @@
   position: absolute;
   right: 11px;
   top: 46.5px;
+
+  span {
+    display: flex;
+  }
 
   .calculatingFeesSpinnerButton {
     background-color: var(

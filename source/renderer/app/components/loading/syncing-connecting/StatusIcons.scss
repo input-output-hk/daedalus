@@ -9,27 +9,12 @@
   z-index: 2500;
 
   .icon {
+    display: block;
     height: 24px;
-    padding: 2px;
     width: 24px;
     svg {
-      height: 20px;
-      width: 20px;
-    }
-    &.icon-nodeState {
-      padding-right: 4px;
-      padding-top: 0;
-      svg {
-        height: 22px;
-        width: 22px;
-      }
-    }
-    &.icon-isNodeResponding {
-      padding: 3.2px 0 0;
-      svg {
-        height: 17.6px;
-        width: 24px;
-      }
+      height: 24px;
+      width: 24px;
     }
   }
 
@@ -38,14 +23,14 @@
   }
 }
 
-.icon-on path:nth-of-type(2) {
+.iconOn path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-on-color);
 }
-.icon-off path:nth-of-type(2) {
+.iconOff path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-off-color);
 }
-.icon-unloaded,
-.icon-unknown {
+.iconUnloaded,
+.iconUnknown {
   &.syncing {
     path:nth-of-type(2) {
       fill: var(--theme-loading-status-icons-unloaded-syncing-color);
@@ -57,7 +42,7 @@
     }
   }
 }
-.icon-unknown {
+.iconUnknown {
   opacity: 0.3;
 }
 

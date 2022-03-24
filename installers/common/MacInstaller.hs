@@ -152,6 +152,8 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*"/keccak.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
@@ -174,27 +176,6 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <true/>
   </dict>
 </plist>|]
-
-makePostInstall :: Format a (Text -> a)
-makePostInstall = "#!/usr/bin/env bash\n" %
-                  "#\n" %
-                  "# See /var/log/install.log to debug this\n" %
-                  "\n" %
-                  "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
-                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
-
-makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
-makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-    Cardano     _ -> common
-  where
-    common = do
-      tmp <- fromString <$> (liftIO $ getEnv "TMP")
-      tempdir <- mktempdir tmp "scripts"
-      liftIO $ do
-        cp "data/scripts/dockutil" (tempdir </> "dockutil")
-        writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
-        chmod executable (tempdir </> "postinstall")
-      pure $ tt tempdir
 
 makeSigningDir :: Managed (T.Text, T.Text)
 makeSigningDir = do
@@ -232,20 +213,24 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
+      , "@protobufjs"
       , "@trezor"
       , "base-x"
       , "base64-js"
       , "bchaddrjs"
+      , "bech32"
       , "big-integer"
-      , "bigi"
       , "bignumber.js"
       , "bip66"
       , "bitcoin-ops"
       , "blake2b"
+      , "blake-hash"
       , "blake2b-wasm"
+      , "bn.js"
+      , "brorand"
       , "bs58"
       , "bs58check"
-      , "bytebuffer-old-fixed-webpack"
+      , "bytebuffer"
       , "call-bind"
       , "cashaddrjs"
       , "cbor-web"
@@ -253,13 +238,14 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "create-hmac"
       , "cross-fetch"
       , "define-properties"
-      , "ecurve"
+      , "elliptic"
       , "es-abstract"
       , "function-bind"
       , "get-intrinsic"
       , "has"
       , "has-symbols"
-      , "hd-wallet"
+      , "hash.js"
+      , "hmac-drbg"
       , "ieee754"
       , "inherits"
       , "int64-buffer"
@@ -267,16 +253,16 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "json-stable-stringify"
       , "keccak"
       , "long"
-      , "merkle-lib"
       , "ms"
+      , "minimalistic-assert"
+      , "minimalistic-crypto-utils"
       , "nanoassert"
       , "node-fetch"
       , "object-keys"
       , "object.values"
       , "parse-uri"
-      , "protobufjs-old-fixed-webpack"
+      , "protobufjs"
       , "pushdata-bitcoin"
-      , "queue"
       , "randombytes"
       , "regenerator-runtime"
       , "runtypes"
@@ -284,8 +270,9 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "semver-compare"
       , "tiny-worker"
       , "trezor-connect"
-      , "trezor-link"
+      , "tiny-secp256k1"
       , "typeforce"
+      , "util-deprecate"
       , "varuint-bitcoin"
       , "wif"
       ]
@@ -381,27 +368,21 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       exit $ ExitFailure 1
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
-makeInstaller opts@Options{oOutputDir} darwinConfig@DarwinConfig{dcPkgName} componentRoot pkg = do
+makeInstaller Options{oOutputDir} DarwinConfig{dcPkgName} componentRoot pkg = do
   echo "Making installer ..."
-  let tempPkg1 = format fp (oOutputDir </> pkg)
-      tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
+  let
+    tempPkg1 = format fp (oOutputDir </> pkg)
+    tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
+    pkgargs :: [ T.Text ]
+    pkgargs =
+         [ "--identifier", dcPkgName
+         , "--component", tt componentRoot
+         , "--install-location", "/Applications"
+         , tempPkg1
+         ]
 
   mktree oOutputDir
-  with (makeScriptsDir opts darwinConfig) $ \scriptsDir -> do
-    let
-      pkgargs :: [ T.Text ]
-      pkgargs =
-           [ "--identifier"
-           , dcPkgName
-           , "--scripts", scriptsDir
-           , "--component"
-           , tt componentRoot
-           , "--install-location"
-           , "/Applications"
-           , tempPkg1
-           ]
-    run "ls" [ "-ltrh", scriptsDir ]
-    run "pkgbuild" pkgargs
+  run "pkgbuild" pkgargs
 
   run "productbuild" [ "--product", "data/plist"
                      , "--package", tempPkg1

@@ -30,7 +30,7 @@ let
       });
     };
   };
-  pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
+  pkgs = import sources.nixpkgs { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
@@ -40,7 +40,7 @@ let
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
-  # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
+  # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
@@ -51,6 +51,7 @@ let
   ostable.x86_64-darwin = "macos64";
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
+    inherit (pkgs) hello cabal2nix;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -313,13 +314,11 @@ let
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
-    yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
+    yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
-      runFlow = self.callPackage ./tests/flow.nix {};
-      runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
     nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };

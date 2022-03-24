@@ -1,0 +1,226 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .toolbar {
+    border-bottom: 1px solid
+      var(--theme-tokens-picker-toolbar-border-bottom-color);
+    display: flex;
+    margin: 0 15px;
+    padding: 20px 0;
+    transition-duration: 0.2s;
+    transition-property: box-shadow border-color;
+    transition-timing-function: ease-in-out;
+  }
+
+  .search {
+    padding: 0 15px 0px 15px;
+  }
+
+  .scrollNotTop {
+    border-bottom-color: transparent;
+  }
+
+  .toolbarContainer {
+    box-shadow: 0 10px 10px -10px var(--theme-tokens-picker-toolbar-box-shadow);
+  }
+
+  .filterSelect {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+
+    :global {
+      .SimpleOptions_selectedOption:after {
+        border: none;
+      }
+
+      .SimpleOptions_option {
+        padding: 6px 12px;
+      }
+
+      .SimpleInput_customValueWrapper .SimpleInput_input {
+        border: none;
+        height: auto;
+        padding: 0;
+        width: 110%;
+      }
+
+      .SimpleInput_customValueBlock {
+        height: auto;
+        padding-right: 10px;
+      }
+
+      .SelectOverrides_selectInput {
+        align-items: center;
+        display: flex;
+        position: relative;
+
+        &:after {
+          bottom: 0;
+          left: 0;
+          margin-top: 1px;
+          position: relative;
+        }
+
+        &:hover:after {
+          background-color: var(--rp-select-arrow-bg-color-open);
+        }
+      }
+
+      .SimpleBubble_bubble {
+        border: none;
+        left: -12px;
+        min-width: initial;
+      }
+
+      .ScrollbarsCustom-Content {
+        padding: 0 !important;
+      }
+
+      .ScrollbarsCustom,
+      .ScrollbarsCustom-Wrapper,
+      .ScrollbarsCustom-Scroller {
+        position: relative !important;
+      }
+    }
+  }
+
+  .filterCounter {
+    opacity: 0.5;
+  }
+
+  .filterOption {
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    white-space: nowrap;
+  }
+
+  .count {
+    font-family: var(--font-light);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-left: auto;
+  }
+
+  .toggleAllButton {
+    background: var(--theme-widgets-asset-token-fingerprint-background-color);
+    border-radius: 3px;
+    color: var(--theme-widgets-asset-token-text-color);
+    cursor: pointer;
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-left: 6px;
+    padding: 0 6px;
+    white-space: nowrap;
+
+    &:disabled {
+      cursor: initial;
+      opacity: 0.3;
+    }
+  }
+
+  .noResults {
+    display: inline-block;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-left: 30px;
+    margin-top: 30px;
+  }
+
+  .list {
+    margin-right: -2px;
+    max-height: 450px;
+    overflow-y: scroll;
+    padding-left: 15px;
+    padding-right: 12px;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-button {
+      display: inline;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: none;
+    }
+  }
+
+  .listItem {
+    display: flex;
+
+    &:first-of-type {
+      padding-top: 6px;
+    }
+
+    &:not(:last-of-type) {
+      .token {
+        border-bottom: 1px solid var(--theme-tokens-picker-token-separator);
+      }
+    }
+  }
+
+  .checkbox {
+    align-self: flex-start;
+    margin-right: 20px;
+    margin-top: 14px;
+  }
+
+  :global(.SimpleCheckbox_disabled) {
+    opacity: 0.3;
+  }
+
+  .token {
+    flex: 1;
+
+    &:global(.WalletToken_isExpanded) {
+      padding-bottom: 14px;
+    }
+  }
+
+  .tokenHeader {
+    padding-bottom: 14px;
+    padding-top: 14px;
+
+    :global(.WalletTokenHeader_asset) {
+      margin-left: 12px;
+    }
+  }
+
+  .tokenFooter {
+    margin-top: 14px;
+    padding-top: 5px;
+  }
+}
+
+.dialog {
+  margin-left: -15px;
+  margin-right: -15px;
+
+  :global {
+    .Dialog_content {
+      display: flex;
+      width: 100%;
+    }
+
+    .DialogCloseButton_component {
+      right: 15px;
+    }
+
+    .Dialog_contentWrapper {
+      display: flex;
+      overflow-y: hidden;
+    }
+
+    .Dialog_actions {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+}

@@ -1,3 +1,5 @@
+@import '../stakingConfig';
+
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
     .StakePoolThumbnail_content {
@@ -11,8 +13,17 @@
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
 
+    .Dialog_contentWrapper {
+      margin-left: -4px;
+      padding-left: 4px;
+    }
+
     .Dialog_contentWrapper::-webkit-scrollbar-track {
       margin-top: -8px;
+    }
+
+    .ticker {
+      text-transform: uppercase;
     }
   }
 
@@ -80,11 +91,10 @@
             --theme-delegation-steps-choose-stake-pool-selected-ticker-color
           );
           font-family: var(--font-semibold);
-          font-size: 14px;
-          letter-spacing: -0.5px;
           line-height: 1.57;
           margin-top: 8px;
           text-align: center;
+          @extend %stakePoolTicker;
         }
 
         .icon {
@@ -158,7 +168,7 @@
 
   .retiringPoolFooter {
     color: var(--theme-staking-stake-pool-retirement-background-color);
-    font-family: var(--font-medium);
+    font-family: var(--font-regular);
     font-size: 16px;
     line-height: 1.38;
     margin: 20px 0;

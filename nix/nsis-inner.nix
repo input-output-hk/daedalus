@@ -42,8 +42,8 @@ in stdenv.mkDerivation {
     scons install "${sconsArgs}"
   '';
 
-  meta = with stdenv.lib; {
-    descripition = "System to create Windows installers";
+  meta = with lib; {
+    description = "System to create Windows installers";
     homepage = "https://nsis.sourceforge.io/";
   };
 }

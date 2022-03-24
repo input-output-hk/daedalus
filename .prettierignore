@@ -11,6 +11,8 @@
 
 # But not these file types
 !*.js
+!*.ts
+!*.tsx
 !*.scss
 !*.json
 

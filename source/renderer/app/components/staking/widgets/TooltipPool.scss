@@ -14,6 +14,9 @@ $tooltip-width: 280px;
   z-index: 1000;
 
   :global {
+    span.SimpleLink_root {
+      font-size: var(--rp-button-font-size);
+    }
     button.SimpleButton_root {
       background-color: var(
         --theme-staking-stake-pool-tooltip-delegate-button-background-color
@@ -227,11 +230,11 @@ $tooltip-width: 280px;
 .ticker {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   display: inline-block;
-  font-size: 14px;
   line-height: 1.36;
   margin-bottom: 9px;
   opacity: 0.6;
   vertical-align: middle;
+  @extend %stakePoolTicker;
 }
 
 .retirement {
@@ -364,7 +367,7 @@ $tooltip-width: 280px;
         }
       }
 
-      .tooltipWithHTMLContent {
+      .tooltipWithHtmlContent {
         p {
           -webkit-box-orient: horizontal;
           display: block;

@@ -1,3 +1,5 @@
+@import '../stakingConfig';
+
 .component {
   height: 69px;
   padding: 9px 0 0;
@@ -15,14 +17,14 @@
   .ticker {
     color: var(--theme-staking-stake-pool-ticker-color);
     font-family: var(--font-semibold);
-    font-size: 14px;
-    letter-spacing: -0.5px;
     line-height: 1;
     margin: 0 0 1px;
     text-align: center;
+    @extend %stakePoolTicker;
   }
 
   .ranking {
+    font-family: var(--font-bold);
     font-size: 20px;
     font-weight: bold;
     position: relative;
@@ -110,7 +112,6 @@
   }
 
   .colorBand {
-    border-radius: 0 0 4px 4px;
     bottom: 0;
     display: block;
     height: 5px;

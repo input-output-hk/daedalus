@@ -86,6 +86,10 @@ mainnet-genesis-dryrun-with-stakeholders.json
 
 # nix-build results
 result*
+!result*.js
+!result*.jsx
+!result*.ts
+!result*.tsx
 
 # Npm
 package-lock.json
@@ -115,3 +119,6 @@ Debug
 /cardano-cli
 /cardano-wallet
 .vscode
+
+# Typescript
+*.scss.d.ts

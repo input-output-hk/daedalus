@@ -26,14 +26,36 @@ Daedalus - Cryptocurrency Wallet
    ```
    and then add the following lines:
    ```
+   build-users-group = nixbld
+
+   max-jobs = auto
+   cores = 0
+   sandbox = false
+
+   require-sigs = true
+   trusted-users = root
+   allowed-users = *
+
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-   max-jobs = 2  # run at most two builds at once
-   cores = 0     # the builder will use all available CPU cores
-   extra-sandbox-paths = /System/Library/Frameworks
+   extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
+
+   # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
+   # system = x86_64-darwin
    ```
+
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
+
+**Notes:**
+
+If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remote key was not OK) try the next steps:
+1. Reinstall nix
+   ```bash
+   $ nix-env -e *
+   $ curl -L https://nixos.org/nix/install | sh
+   ```
+2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
 ## Development
 
@@ -43,6 +65,7 @@ Daedalus - Cryptocurrency Wallet
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
+    1. Alternatively: run `yarn nix:selfnode yarn dev` to achieve the same thing in a single command. Note: after `yarn dev` exits, you will still remain in the `nix-shell`.
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
    - Byron wallets: `yarn byron:wallet:importer`
    - Shelley wallets: `yarn shelley:wallet:importer`
@@ -72,31 +95,37 @@ Daedalus - Cryptocurrency Wallet
 
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:mainnet yarn dev`
 
 #### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:flight yarn dev`
 
 #### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:testnet yarn dev`
 
 #### Staging
 
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:staging yarn dev`
 
 #### Shelley QA
 
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:shelley_qa yarn dev`
 
 #### Alonzo Purple
 
 1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
+3. Or in one command: `yarn nix:alonzo_purple yarn dev`
 
 #### Native token metadata server
 
@@ -171,6 +200,15 @@ Make sure to list bootstrap in externals in `webpack.config.base.js` or the app 
 ```js
 externals: ['bootstrap']
 ```
+
+### Debugging
+
+You can debug the main process by following one of these approaches:
+- [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
+- [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
+- [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
+
+The inspector runs on port 9229
 
 ## Testing
 

@@ -72,7 +72,6 @@
           left: -140px;
           outline: none;
           position: relative;
-          top: 2px;
           width: 12px;
         }
 
@@ -137,6 +136,13 @@
   }
 
   :global {
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-bottom: -8px;
+      margin-top: -8px;
+    }
+    .Dialog_subtitle {
+      margin-bottom: 4px;
+    }
     .LoadingSpinner_component {
       .LoadingSpinner_icon {
         svg {

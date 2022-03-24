@@ -24,10 +24,11 @@
   .left {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
 
     .title {
       @extend %accentText;
+      margin-bottom: 4px;
 
       .hardwareWalletsIcon {
         svg {
@@ -66,7 +67,9 @@
       background-color: var(--theme-button-flat-background-color-disabled);
       border-radius: 4px;
       height: 71px;
+      overflow: hidden;
       padding: 25px 9px;
+      position: relative;
       text-align: center;
       width: 80px;
 
@@ -111,8 +114,7 @@
 
       .stakePoolTicker {
         @extend %accentText;
-        font-size: 14px;
-        letter-spacing: -0.5px;
+        @extend %stakePoolTicker;
         line-height: 1.57;
       }
 
@@ -133,12 +135,13 @@
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          padding: 7px 0 0 0;
+          padding: 6px 0 0 0;
         }
 
         .stakePoolTicker {
           padding-left: 0;
           position: relative;
+          text-transform: uppercase;
           top: 0;
           transition: top 200ms ease-in-out;
         }
@@ -163,7 +166,8 @@
         }
 
         .stakePoolUnknown {
-          transition: margin-top 200ms ease-in-out;
+          transition: margin-top 200ms ease-in-out,
+            padding-top 200ms ease-in-out;
         }
 
         .noDataDash {
@@ -274,13 +278,14 @@
 
         .stakePoolUnknown,
         .nonDelegatedText {
-          transition: margin-top 200ms ease-in-out;
+          transition: margin-top 200ms ease-in-out,
+            padding-top 200ms ease-in-out;
         }
 
         .action {
-          bottom: -26px;
-          margin-left: -12px;
-          position: relative;
+          bottom: 0;
+          left: 0;
+          position: absolute;
         }
       }
     }
@@ -331,7 +336,7 @@
 
     &.isRestoring {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
     }
   }
 
@@ -340,12 +345,9 @@
       .stakePoolTile {
         &.futureStakePoolTileUndelegated,
         &.futureStakePoolTileUndefined {
-          .stakePoolUnknown {
-            margin-top: -6px;
-          }
-
+          .stakePoolUnknown,
           .nonDelegatedText {
-            margin-top: -5px;
+            margin-top: -6px;
           }
         }
 

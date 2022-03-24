@@ -5,15 +5,179 @@
 ### Features
 
 - Implemented custom browser protocol to launch Daedalus ([PR 2606](https://github.com/input-output-hk/daedalus/pull/2606))
-- Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
+- Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
+- Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
+- Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
+- Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Fixes
 
-- Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
-- Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+- Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
+- Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
+- Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
+- Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
+- Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
+- Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
+- Sets minimum transaction fee to ada input field when tokens are removed ([PR 2918](https://github.com/input-output-hk/daedalus/pull/2918))
 
 ### Chores
 
+- Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
+- Removed `dockutil` due compatibility issues with MacOs Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
+- Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
+- Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
+- Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.0
+
+### Features
+
+- Added display of current/unspent rewards ([PR 2803](https://github.com/input-output-hk/daedalus/pull/2803))
+- Improve the syncing screen by showing syncing progress split into three stages ([PR 2877](https://github.com/input-output-hk/daedalus/pull/2877))
+- Improved stake pool searchbar ([PR 2847](https://github.com/input-output-hk/daedalus/pull/2847))
+- Implemented catalyst dynamic content ([PR 2856](https://github.com/input-output-hk/daedalus/pull/2856))
+
+### Fixes
+
+- Fixed main container zIndex ([PR 2863](https://github.com/input-output-hk/daedalus/pull/2863))
+- Fixed ui overlap issues ([PR 2881](https://github.com/input-output-hk/daedalus/pull/2881))
+- Fixed the gap between Stake Pool View options ([PR 2899](https://github.com/input-output-hk/daedalus/pull/2899))
+
+### Chores
+
+- Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
+
+## 4.9.0-FC1
+
+### Features
+
+- Added table view for delegated stake pools list ([PR 2837](https://github.com/input-output-hk/daedalus/pull/2837))
+- Removed Discreet mode notification ([PR 2852](https://github.com/input-output-hk/daedalus/pull/2852))
+- Unified CPU info in diagnostics dialog ([PR 2818](https://github.com/input-output-hk/daedalus/pull/2818))
+- Implemented wallet sorting on sidebar menu ([PR 2775](https://github.com/input-output-hk/daedalus/pull/2775))
+- Implemented new token picker ([PR 2787](https://github.com/input-output-hk/daedalus/pull/2787))
+- Improved wallet send form ([PR 2791](https://github.com/input-output-hk/daedalus/pull/2791), [PR 2859](https://github.com/input-output-hk/daedalus/pull/2859))
+
+### Fixes
+
+- Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
+- Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
+- Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
+- Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
+  
+### Chores
+
+- Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))
+- Updated the list of team members ([PR 2805](https://github.com/input-output-hk/daedalus/pull/2805))
+
+## 4.8.0
+
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+
+### Chores
+
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+
+## 4.8.0-FC1
+
+### Features
+
+- Added dynamic RTS flags setting ([PR 2758](https://github.com/input-output-hk/daedalus/pull/2758/files))
+- Improved UI/UX of RTS flags settings ([PR 2842](https://github.com/input-output-hk/daedalus/pull/2842), [PR 2846](https://github.com/input-output-hk/daedalus/pull/2846))
+- Updated messages about Cardano node sync on the initial screen ([PR 2827](https://github.com/input-output-hk/daedalus/pull/2827), [PR 2831](https://github.com/input-output-hk/daedalus/pull/2831))
+
+### Chores
+
+- Updated check-disk-space version ([PR 2845](https://github.com/input-output-hk/daedalus/pull/2845))
+- Updated CWB and Cardano Node ([PR 2822](https://github.com/input-output-hk/daedalus/pull/2822))
+
+### Fixes
+
+- Fixed blockchain verification progress text ([PR 2840](https://github.com/input-output-hk/daedalus/pull/2840))
+
+## 4.7.0
+
+### Features
+
+- Updated Catalyst dates ([PR 2812](https://github.com/input-output-hk/daedalus/pull/2812))
+
+### Fixes
+
+- Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
+- Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
+
+### Chores
+
+- Integrated Chromatic for visual regression testing ([PR 2776](https://github.com/input-output-hk/daedalus/pull/2776))
+- Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
+- Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
+- Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
+
+## 4.6.0
+
+### Features
+
+- Implement catalyst state snapshot phase ([PR 2771](https://github.com/input-output-hk/daedalus/pull/2771))
+- Implemented "discreet mode" ([PR 2723](https://github.com/input-output-hk/daedalus/pull/2723), [PR 2724](https://github.com/input-output-hk/daedalus/pull/2724), [PR 2725](https://github.com/input-output-hk/daedalus/pull/2725), [PR 2742](https://github.com/input-output-hk/daedalus/pull/2742), [PR 2740](https://github.com/input-output-hk/daedalus/pull/2740), [PR 2756](https://github.com/input-output-hk/daedalus/pull/2756))
+- Updated slider component to only execute onAfterChange if slider had moved ([PR 2766](https://github.com/input-output-hk/daedalus/pull/2766))
+
+### Fixes
+
+- Fixed app update for specific platform ([PR 2759](https://github.com/input-output-hk/daedalus/pull/2759))
+- Fixed checkbox tick offset ([PR 2751](https://github.com/input-output-hk/daedalus/pull/2751))
+
+### Chores
+
+- Improve startup and shutdown messages ([PR 2770](https://github.com/input-output-hk/daedalus/pull/2770))
+- Updated `cardano-wallet` to version `2021-11-11` ([PR 2765](https://github.com/input-output-hk/daedalus/pull/2765))
+- Added jest library for unit testing ([PR 2633](https://github.com/input-output-hk/daedalus/pull/2633))
+- Updated `cardano-launcher` to version `0.20211105.1`
+
+## 4.5.2
+
+### Fixes
+
+- Fixed Cardano Node starting/stopping issues
+
+## 4.5.1
+
+### Fixes
+
+- Fixed cardano-node startup race condition
+- Fixed automatic closing of the wallet "Restoration" dialog during restoration of a first wallet in UI
+- Fixed Daedalus 4.5.0 Windows deployment issue
+
+## 4.5.0
+
+### Features
+
+- Implemented "Catalyst Fund7" voting registration changes ([PR 2732](https://github.com/input-output-hk/daedalus/pull/2732))
+- Added "Over-saturation" warning in the delegation wizard ([PR 2733](https://github.com/input-output-hk/daedalus/pull/2733), [PR 2738](https://github.com/input-output-hk/daedalus/pull/2738))
+- Added Catalyst footer links ([PR 2721](https://github.com/input-output-hk/daedalus/pull/2721))
+
+### Fixes
+
+- Fixed the Delegation popover timeout ([PR 2722](https://github.com/input-output-hk/daedalus/pull/2722))
+- Fixed issues relating to minimum window size in Daedalus ([PR 2719](https://github.com/input-output-hk/daedalus/pull/2719))
+- Updated "Trezor T" image shown on the "Pair a hardware wallet device" dialog ([PR 2712](https://github.com/input-output-hk/daedalus/pull/2712))
+- Fixed transaction timestamps localization ([PR 2702](https://github.com/input-output-hk/daedalus/pull/2702))
+- Small UI/UX Fixes ([PR 2685](https://github.com/input-output-hk/daedalus/pull/2685), [PR 2744](https://github.com/input-output-hk/daedalus/pull/2744))
+
+### Chores
+
+- Removed "Alonzo tada" icon and "Alonzo countdown" screen ([PR 2708](https://github.com/input-output-hk/daedalus/pull/2708))
+- Improved the Daedalus startup by avoiding unnecessary Cardano Node restarts ([PR 2716](https://github.com/input-output-hk/daedalus/pull/2716))
+- Updated README with solution steps for the nix SSL issue ([PR 2727](https://github.com/input-output-hk/daedalus/pull/2727))
+- Covered LedgerJS v4.0.0 breaking changes ([PR 2697](https://github.com/input-output-hk/daedalus/pull/2697))
 - Added hardware wallet support for all non-public testnets ([PR 2672](https://github.com/input-output-hk/daedalus/pull/2672))
 
 ## 4.4.1

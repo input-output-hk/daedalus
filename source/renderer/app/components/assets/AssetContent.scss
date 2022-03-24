@@ -19,7 +19,7 @@
     line-height: 1.33;
     text-align: right;
     white-space: nowrap;
-    width: 120px;
+    width: 70px;
   }
 
   dd {
@@ -30,7 +30,7 @@
     margin-left: 10px;
     max-height: 48px;
     overflow-y: auto;
-    width: calc(100% - 140px);
+    width: calc(100% - 100px);
 
     &:not(:first-of-type) {
       margin-top: 10px;
@@ -109,7 +109,7 @@
   flex-direction: column;
   width: 100%;
 
-  .assetASCIIName {
+  .assetAsciiName {
     opacity: 0.5;
   }
 }
@@ -118,6 +118,7 @@
   font-size: 12px;
   line-height: 16px;
   opacity: 0.4;
+  overflow: hidden;
 }
 
 .value {
@@ -125,14 +126,16 @@
   font-size: 12px;
   line-height: 16px;
   overflow: visible;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .copyIcon {
-  display: inline-block;
+  &:before {
+    content: '\00a0';
+  }
+  display: inline;
   height: 10px;
   line-height: 0;
-  margin-left: 5px;
   opacity: 0;
   transition: opacity 0s;
 

@@ -1,3 +1,5 @@
+$stake-pools-search-z-index: 25;
+
 .component {
   display: flex;
   flex-direction: column;
@@ -14,7 +16,7 @@
   flex-shrink: 0;
   height: 50px;
   position: relative;
-  z-index: 2;
+  z-index: $stake-pools-search-z-index;
 }
 
 .page {
@@ -22,7 +24,8 @@
   flex-direction: column;
   height: calc(100% - 50px);
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: overlay;
+  padding-right: 20px;
   position: relative;
   &::-webkit-scrollbar-thumb {
     &:vertical {
