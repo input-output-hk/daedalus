@@ -135,31 +135,6 @@ export const AddressVerificationCheckStatuses: {
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
-const useCardanoAppInterval = (
-  getCardanoAdaApp: any,
-  interval: number,
-  path: string | null | undefined,
-  address: string | null | undefined,
-  addressVerification: WalletAddress | null | undefined
-) =>
-  setInterval(
-    (devicePath, txWalletId, verificationAddress): any => {
-      try {
-        return getCardanoAdaApp({
-          path: devicePath,
-          walletId: txWalletId,
-          address: verificationAddress,
-        });
-      } catch (_error) {
-        return null;
-      }
-    },
-    interval,
-    path,
-    address,
-    addressVerification
-  );
-
 const { network, isDev } = global.environment;
 const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
 export default class HardwareWalletsStore extends Store {
@@ -262,8 +237,10 @@ export default class HardwareWalletsStore extends Store {
   activeVotingWalletId: string | null | undefined = null;
   @observable
   votingData: VotingDataType | null | undefined = null;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
-  cardanoAdaAppPollingInterval: IntervalID | null | undefined = null;
+  cardanoAdaAppPollingInterval: {
+    stop: () => void;
+    isRunning: () => boolean;
+  } | null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   checkTransactionTimeInterval: IntervalID | null | undefined = null;
 
@@ -333,6 +310,56 @@ export default class HardwareWalletsStore extends Store {
       });
     }
   };
+
+  useCardanoAppInterval = (
+    devicePath: string | null | undefined,
+    txWalletId: string | null | undefined,
+    verificationAddress?: WalletAddress | null | undefined
+  ) => {
+    this.cardanoAdaAppPollingInterval?.stop();
+
+    const poller = () => {
+      let canRun = true;
+      let isRunning = false;
+
+      const run = async () => {
+        try {
+          if (!canRun) {
+            return;
+          }
+
+          isRunning = true;
+
+          await this.getCardanoAdaApp({
+            path: devicePath,
+            walletId: txWalletId,
+            address: verificationAddress,
+          });
+        } catch (_error) {
+          if (!canRun) {
+            return;
+          }
+
+          isRunning = false;
+
+          setTimeout(run, CARDANO_ADA_APP_POLLING_INTERVAL);
+        }
+      };
+
+      run();
+
+      return {
+        stop: () => {
+          canRun = false;
+          isRunning = false;
+        },
+        isRunning: () => isRunning,
+      };
+    };
+
+    this.cardanoAdaAppPollingInterval = poller();
+  };
+
   getAvailableDevices = async (params: { isTrezor: boolean }) => {
     const { isTrezor } = params;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -696,9 +723,7 @@ export default class HardwareWalletsStore extends Store {
                 this.unfinishedWalletAddressVerification
               );
             } else {
-              this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
-                this.getCardanoAdaApp,
-                CARDANO_ADA_APP_POLLING_INTERVAL,
+              this.useCardanoAppInterval(
                 recognizedPairedHardwareWallet.path,
                 activeWalletId,
                 this.unfinishedWalletAddressVerification
@@ -748,9 +773,7 @@ export default class HardwareWalletsStore extends Store {
                 this.unfinishedWalletAddressVerification
               );
             } else {
-              this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
-                this.getCardanoAdaApp,
-                CARDANO_ADA_APP_POLLING_INTERVAL,
+              this.useCardanoAppInterval(
                 lastDeviceTransport.path,
                 activeWalletId,
                 this.unfinishedWalletAddressVerification
@@ -879,11 +902,7 @@ export default class HardwareWalletsStore extends Store {
           );
           this.stopCardanoAdaAppFetchPoller();
           // @ts-ignore ts-migrate(2554) FIXME: Expected 5 arguments, but got 3.
-          this.cardanoAdaAppPollingInterval = useCardanoAppInterval(
-            this.getCardanoAdaApp,
-            CARDANO_ADA_APP_POLLING_INTERVAL,
-            devicePath
-          );
+          this.useCardanoAppInterval(devicePath);
         }
       } else {
         runInAction(
@@ -1076,18 +1095,7 @@ export default class HardwareWalletsStore extends Store {
           );
         }
 
-        this.cardanoAdaAppPollingInterval = setInterval(
-          (devicePath, txWalletId, verificationAddress) =>
-            this.getCardanoAdaApp({
-              path: devicePath,
-              walletId: txWalletId,
-              address: verificationAddress,
-            }),
-          CARDANO_ADA_APP_POLLING_INTERVAL,
-          error.path,
-          walletId,
-          address
-        );
+        this.useCardanoAppInterval(error.path, walletId, address);
       }
 
       throw error;
@@ -1209,15 +1217,9 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
       this.stopCardanoAdaAppFetchPoller();
-      this.cardanoAdaAppPollingInterval = setInterval(
-        (verificationDevicePath, addressToVerify) =>
-          this.getCardanoAdaApp({
-            path: verificationDevicePath,
-            walletId,
-            address: addressToVerify,
-          }),
-        CARDANO_ADA_APP_POLLING_INTERVAL,
+      this.useCardanoAppInterval(
         devicePath,
+        // @ts-ignore Argument of type 'WalletAddress' is not assignable to parameter of type 'string'.ts(2345)
         address
       );
     }
@@ -2439,16 +2441,7 @@ export default class HardwareWalletsStore extends Store {
 
       if (walletId) {
         this.stopCardanoAdaAppFetchPoller();
-        this.cardanoAdaAppPollingInterval = setInterval(
-          (path, wid) =>
-            this.getCardanoAdaApp({
-              path,
-              walletId: wid,
-            }),
-          CARDANO_ADA_APP_POLLING_INTERVAL,
-          devicePath,
-          walletId
-        );
+        this.useCardanoAppInterval(devicePath, walletId);
       }
     }
   };
@@ -2666,7 +2659,7 @@ export default class HardwareWalletsStore extends Store {
 
     // Start connection establishing process if devices listener flag is UP
     const isCardanoAppInProgress =
-      !disconnected && this.cardanoAdaAppPollingInterval !== null;
+      !disconnected && this.cardanoAdaAppPollingInterval?.isRunning();
 
     logger.debug('[HW-DEBUG] HWStore - establish connection guard: ', {
       isCardanoAppInProgress,
@@ -2997,7 +2990,7 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - STOP Ada App poller');
 
     if (this.cardanoAdaAppPollingInterval) {
-      clearInterval(this.cardanoAdaAppPollingInterval);
+      this.cardanoAdaAppPollingInterval.stop();
       this.cardanoAdaAppPollingInterval = null;
     }
   };
