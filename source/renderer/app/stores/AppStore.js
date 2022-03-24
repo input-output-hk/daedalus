@@ -216,6 +216,8 @@ export default class AppStore extends Store {
      *  web+cardano://stake?COSD
      */
 
+    console.log('_handleCustomProtocol()', url); // TODO: <michalrus> remove me
+
     const queryParams = url.split('web+cardano:')[1].replace('//', '');
     const actionAndDataParams = queryParams.split('?');
     const actionParam = actionAndDataParams[0];

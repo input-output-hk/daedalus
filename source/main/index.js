@@ -14,7 +14,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-// import { handleCustomProtocol } from './utils/handleCustomProtocol';
+import { handleCustomProtocol } from './utils/handleCustomProtocol';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -57,7 +57,10 @@ import {
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
-let deeplinkingUrl;
+
+/* -------------------------------- unnecessary? – @michalrus
+let deeplinksingUrl;
+*/
 
 const {
   isDev,
@@ -112,7 +115,9 @@ const safeExit = async () => {
 };
 
 const onAppReady = async () => {
+  /* -------------------------------- unnecessary? – @michalrus
   logger.info('[Custom-Protocol] APP READY');
+  */
   setupLogging();
   logUsedVersion(
     environment.version,
@@ -165,11 +170,13 @@ const onAppReady = async () => {
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
 
+  /* -------------------------------- unnecessary? – @michalrus
   logger.info('[Custom-Protocol] deeplinkingUrl ON READY - URL: ', { deeplinkingUrl });
   logger.info('[Custom-Protocol] deeplinkingUrl ON READY - Get processArgv: ', {
     processArgv: process.argv,
     platform: process.platform,
   });
+  */
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -268,6 +275,11 @@ const onAppReady = async () => {
   );
 
   // Register custom browser protocol
+
+  // TODO: this is unethical! user hostility – don’t touch my default programs, esp. when not asking me – @michalrus
+  //       on Linux, the installer does this – *once*
+  //       we should probably do the same thing on Windows and macOS
+
   if (process.platform === 'win32') {
     logger.info('[Custom-Protocol] Set Windows protocol params: ', {
       platform: process.platform,
@@ -287,11 +299,13 @@ const onAppReady = async () => {
       platform: process.platform,
     });
     app.setAsDefaultProtocolClient('web+cardano');
+    /* -------------------------------- unnecessary? – @michalrus
     if (process.platform !== 'linux') {
       childProcess.exec(
         'xdg-mime default Daedalus*.desktop x-scheme-handler/web+cardano'
       );
     }
+    */
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
     logger.info('[Custom-Protocol] isDefaultProtocolClient set Mac / Linux: ', {
@@ -299,8 +313,9 @@ const onAppReady = async () => {
     });
   }
 
-  /* app.on('open-url', (event, url) => {
+  app.on('open-url', (event, url) => {
     event.preventDefault();
+    /* -------------------------------- unnecessary? – @michalrus
     // Check
     const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
     logger.info('[Custom-Protocol] ON READY (open-url) isDefaultProtocolClient: ', {
@@ -311,20 +326,30 @@ const onAppReady = async () => {
       event,
       url,
     });
+    */
+    logger.info('[Custom-Protocol] will handleCustomProtocol via open-url', {
+      'url': url
+    });
     mainWindow.focus();
+    /* -------------------------------- unnecessary? – @michalrus
     try {
+    */
       handleCustomProtocol(url, mainWindow);
+    /* -------------------------------- unnecessary? – @michalrus
     } catch (error) {
       logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
       throw error;
     }
-  }); */
+    */
+  });
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
     contents.on('new-window', (event, url) => {
+      /* -------------------------------- unnecessary? – @michalrus
       logger.info('[Custom-Protocol] ON new-window', { url });
+      */
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
       logger.info('Prevented creation of new browser window', { url });
@@ -377,6 +402,8 @@ const onAppReady = async () => {
 
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
 const isSingleInstance = app.requestSingleInstanceLock();
+
+/* -------------------------------- unnecessary? – @michalrus
 logger.info('[Custom-Protocol] isSingleInstance', { isSingleInstance });
 
 app.on('will-finish-launching', () => {
@@ -395,8 +422,9 @@ app.on('open-url', (event, url) => {
   event.preventDefault()
   deeplinkingUrl = `${url}-#2`;
 })
+*/
 
-/*
+/* -------------------------------- unnecessary? – @michalrus
 if (!isSingleInstance) {
   logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
   app.quit();
@@ -417,14 +445,18 @@ if (!isSingleInstance) {
       }
     }
   });
-} */
+}
+*/
 
 if (!isSingleInstance) {
+  /* -------------------------------- unnecessary? – @michalrus
   logger.info('[Custom-Protocol] isSingleInstance - QUIT: ', { isSingleInstance });
+  */
   safeExitWithCode(0)
 } else {
+  /* -------------------------------- unnecessary? – @michalrus
   logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
-  /* app.on('will-finish-launching' , () => {
+  app.on('will-finish-launching' , () => {
     logger.info('[Custom-Protocol] will-finish-launching');
     app.on('open-url', (event, url) => {
       event.preventDefault();
@@ -443,12 +475,29 @@ if (!isSingleInstance) {
         });
       }
     });
-  }); */
-  app.on('second-instance', () => {
-    logger.info('[Custom-Protocol] isSingleInstance - Is second instance');
+  });
+  */
+
+  // XXX: This is used on Windows and Linux, as macOS has its own
+  // app.on(`open-url`) mechanism. Moreover, the `cardano-launcher`
+  // binary will not allow a second instance on a
+  // non-Windows/non-Linux machine. And even there, it will only allow
+  // it if passed a URL to open.
+  //
+  // The code below is actually run in the first instance, with
+  // Electron handling the underlying magic
+  // cross-platform. – @michalrus
+
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    let url = commandLine[commandLine.length - 1]; // Never empty.
+    logger.info('[Custom-Protocol] will handleCustomProtocol via second-instance', {
+      'url': url,
+      'commandLine': commandLine
+    });
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
+      handleCustomProtocol(url, mainWindow);
     }
   });
   app.on('ready', onAppReady);

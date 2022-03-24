@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "url",
+        "branch": "feature/ddw-691-cardano-launcher-url",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "225393cfbffc987820df2a8100f5669423c26fbf",
-        "sha256": "0bzgn43m29653f6a6xylygqhx106qqbyggka0rci81gk4p55h3yc",
+        "rev": "c7d62f81727e32864c755aa664d2ae8f650d62e7",
+        "sha256": "0sjd86vrw10dvrg0i8xmqcf4zhvslvdac9g9gwqa28bz0z2bpyq3",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/225393cfbffc987820df2a8100f5669423c26fbf.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/c7d62f81727e32864c755aa664d2ae8f650d62e7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
