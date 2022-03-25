@@ -1,5 +1,6 @@
 @import '../../../themes/mixins/link';
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/layers';
 
 .component {
   .headerWrapper {
@@ -105,7 +106,7 @@
       padding: 0 20px;
       position: sticky;
       top: 0;
-      z-index: 999;
+      z-index: $sticky-header-z-index;
 
       tr {
         border: 0;

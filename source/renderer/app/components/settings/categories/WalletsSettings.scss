@@ -72,4 +72,10 @@
     height: 1px;
     margin: 15px 0;
   }
+
+  :global {
+    .SimpleOptions_search:before {
+      opacity: 1;
+    }
+  }
 }
