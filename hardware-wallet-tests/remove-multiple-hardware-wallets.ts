@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-standalone-expect */
 import expect from 'expect';
 
 import {
@@ -6,7 +5,7 @@ import {
   createHardwareWalletConnectionChannel,
   createSequentialResult,
   initLedgerChannel,
-  createSequentialPromptMessages,
+  createTestInstructions,
 } from './utils';
 
 const expectedSequence = createSequentialResult([
@@ -35,7 +34,7 @@ export const run = () => {
 
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  const promptMessages = createSequentialPromptMessages([
+  const promptMessages = createTestInstructions([
     'Connect Nano S',
     'Connect Nano X',
     'Disconnect Nano S',

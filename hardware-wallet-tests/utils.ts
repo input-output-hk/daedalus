@@ -1,18 +1,23 @@
 import expect from 'expect';
-import chalk from 'chalk';
 import createIPCMock from 'electron-mock-ipc';
+import chalk from 'chalk';
 import {
   IpcChannel,
   IpcReceiver,
   IpcSender,
 } from '../source/common/ipc/lib/IpcChannel';
+import {
+  GET_INIT_LEDGER_CONNECT_CHANNEL,
+  GET_CARDANO_ADA_APP_CHANNEL,
+  GET_EXTENDED_PUBLIC_KEY_CHANNEL,
+  GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
+  DEVICE_NOT_CONNECTED,
+} from '../source/common/ipc/api';
 
 import { createChannels } from '../source/main/ipc/createHardwareWalletIPCChannels';
 import { handleHardwareWalletRequests } from '../source/main/ipc/getHardwareWalletChannel';
 
-const mocked = createIPCMock();
-const { ipcMain } = mocked;
-const { ipcRenderer } = mocked;
+const { ipcMain, ipcRenderer } = createIPCMock();
 
 export { ipcMain, ipcRenderer };
 
@@ -57,44 +62,52 @@ export const createAndRegisterHardwareWalletChannels = () =>
 
 export const initLedgerChannel = () => {
   const initLedgerConnectChannel = new MockIpcChannel(
-    'GET_INIT_LEDGER_CONNECT_CHANNEL'
+    GET_INIT_LEDGER_CONNECT_CHANNEL
   );
   initLedgerConnectChannel.request({}, ipcRenderer, ipcMain);
 };
 
 export const createCardanoAppChannel = () =>
-  new MockIpcChannel('GET_CARDANO_ADA_APP_CHANNEL');
+  new MockIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
 
 export const createGetPublicKeyChannel = () =>
-  new MockIpcChannel('GET_EXTENDED_PUBLIC_KEY_CHANNEL');
+  new MockIpcChannel(GET_EXTENDED_PUBLIC_KEY_CHANNEL);
 
 export const createHardwareWalletConnectionChannel = () =>
-  new MockIpcChannel('GET_HARDWARE_WALLET_CONNECTION_CHANNEL');
+  new MockIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
 
-export const pollCardarnoApp = (deviceId: string) =>
+export const requestLaunchingCardanoAppOnLedger = (deviceId: string) =>
   new Promise((resolve, reject) => {
     const cardanoAppChannel = createCardanoAppChannel();
 
     const interval = setInterval(async () => {
       try {
-        const cardanoAppChannelReply = await cardanoAppChannel.request(
+        const cardanoAppChannelResponse = await cardanoAppChannel.request(
           { path: deviceId },
           ipcRenderer,
           ipcRenderer
         );
         clearInterval(interval);
-        return resolve(cardanoAppChannelReply);
+        return resolve(cardanoAppChannelResponse);
       } catch (err) {
-        if (err.code === 'DEVICE_NOT_CONNECTED') {
+        if (err.code === DEVICE_NOT_CONNECTED) {
           clearInterval(interval);
           return reject(err);
         }
-        return null;
       }
     }, 2000);
   });
 
-export const createSequentialResult = (sequence) => {
+interface Result {
+  disconnected: boolean;
+  deviceType: string;
+  deviceId: string | null;
+  deviceModel: string;
+  deviceName: string;
+  path: string;
+}
+
+export const createSequentialResult = (sequence: Array<Partial<Result>>) => {
   const common = {
     disconnected: expect.any(Boolean),
     deviceType: expect.any(String),
@@ -112,7 +125,7 @@ export const createSequentialResult = (sequence) => {
 export const log = (message: string) =>
   console.log(chalk.whiteBright.bgBlackBright.bold(message)); // eslint-disable-line no-console
 
-export const createSequentialPromptMessages = (messages: string[]) => {
+export const createTestInstructions = (messages: string[]) => {
   messages.forEach((m, i) => log(`${i + 1} - ${m}`));
 
   return () => log(messages.shift());

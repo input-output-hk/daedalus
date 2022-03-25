@@ -1,20 +1,19 @@
-/* eslint-disable jest/no-standalone-expect */
 import expect from 'expect';
 
 import {
   createAndRegisterHardwareWalletChannels,
   createHardwareWalletConnectionChannel,
   initLedgerChannel,
-  createSequentialPromptMessages,
+  createTestInstructions,
   createGetPublicKeyChannel,
   ipcRenderer,
-  pollCardarnoApp,
+  requestLaunchingCardanoAppOnLedger,
 } from './utils';
 
 export const run = () => {
   expect.assertions(3);
 
-  createSequentialPromptMessages([
+  createTestInstructions([
     'Start test runner',
     'Plug Ledger Nano S to your computer',
     'Start Cardano APP on Nano S',
@@ -27,7 +26,7 @@ export const run = () => {
   const publicKeyChannel = createGetPublicKeyChannel();
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (params: { path: string }) => {
         expect(params).toEqual({
@@ -40,9 +39,11 @@ export const run = () => {
         });
 
         try {
-          const cardanoAppChannelReply = await pollCardarnoApp(params.path);
+          const cardanoAppChannelResponse = await requestLaunchingCardanoAppOnLedger(
+            params.path
+          );
 
-          expect(cardanoAppChannelReply).toEqual({
+          expect(cardanoAppChannelResponse).toEqual({
             minor: expect.any(Number),
             major: expect.any(Number),
             patch: expect.any(Number),
@@ -66,7 +67,7 @@ export const run = () => {
             deviceId: expect.any(String),
           });
 
-          resolve(null);
+          resolve();
         } catch (err) {
           return null;
         }

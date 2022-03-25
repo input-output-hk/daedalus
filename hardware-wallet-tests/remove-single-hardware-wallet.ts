@@ -1,18 +1,17 @@
-/* eslint-disable jest/no-standalone-expect */
 import expect from 'expect';
 
 import {
   createAndRegisterHardwareWalletChannels,
   createHardwareWalletConnectionChannel,
   initLedgerChannel,
-  createSequentialPromptMessages,
+  createTestInstructions,
   createSequentialResult,
 } from './utils';
 
 export const run = () => {
   expect.assertions(3);
 
-  const promptMessages = createSequentialPromptMessages([
+  const promptMessages = createTestInstructions([
     'Plug Ledger Nano S to your computer',
     'Disconnect Nano S',
   ]);

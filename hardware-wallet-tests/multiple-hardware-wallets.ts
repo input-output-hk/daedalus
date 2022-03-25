@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-standalone-expect */
 import expect from 'expect';
 
 import {
@@ -6,7 +5,7 @@ import {
   createHardwareWalletConnectionChannel,
   createSequentialResult,
   initLedgerChannel,
-  createSequentialPromptMessages,
+  createTestInstructions,
 } from './utils';
 
 export const run = () => {
@@ -16,7 +15,7 @@ export const run = () => {
 
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  const promptMessages = createSequentialPromptMessages([
+  const promptMessages = createTestInstructions([
     'Start test runner',
     'Plug Ledger Nano S to your computer',
     'Plug Ledger Nano X to your computer',
@@ -37,9 +36,9 @@ export const run = () => {
 
   return new Promise((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
-      async (params: { path: string; deviceModel: string }) => {
+      async (message: { path: string; deviceModel: string }) => {
         const [expectedValue, isOver] = expectedSequence();
-        expect(params).toEqual(expectedValue);
+        expect(message).toEqual(expectedValue);
 
         if (isOver) {
           resolve(null);

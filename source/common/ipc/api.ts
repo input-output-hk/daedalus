@@ -511,3 +511,4 @@ export type showAddressMainResponse = void;
 export const TOGGLE_RTS_FLAGS_MODE_CHANNEL = 'TOGGLE_RTS_FLAGS_MODE_CHANNEL';
 export type ToggleRTSFlagsModeRendererRequest = void;
 export type ToggleRTSFlagsModeMainResponse = void;
+export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
