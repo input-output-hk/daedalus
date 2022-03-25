@@ -11,6 +11,7 @@
 
 ### Fixes
 
+- Fixed tooltip being hidden on hover in diagnostics ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
 - Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
 - Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
