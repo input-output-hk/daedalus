@@ -36,7 +36,7 @@ const assets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    '',
+    '546f6b656e2077697468206c61726765206e616d65',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     400
   ),
