@@ -30,6 +30,7 @@ import {
   isLedgerEnabled,
   getHardwareWalletsNetworkConfig,
 } from '../config/hardwareWalletsConfig';
+import { DEVICE_NOT_CONNECTED } from '../../../common/ipc/api';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
   getHardwareWalletTransportChannel,
@@ -1023,7 +1024,7 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      if (error.code === 'DEVICE_NOT_CONNECTED') {
+      if (error.code === DEVICE_NOT_CONNECTED) {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
         this.stopCardanoAdaAppFetchPoller();
@@ -2359,12 +2360,7 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletConnectionData.device.deviceType === DeviceTypes.TREZOR
         ) {
           // Do I have unpaired Trezor devices
-          const lastUnpairedDevice = findLast(
-            this.hardwareWalletDevices,
-            (hardwareWalletDevice) =>
-              // @ts-ignore ts-migrate(2339) FIXME: Property 'paired' does not exist on type 'Hardware... Remove this comment to see the full error message
-              !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected
-          );
+          const lastUnpairedDevice = this.getLastUnpairedDevice();
 
           if (lastUnpairedDevice) {
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.

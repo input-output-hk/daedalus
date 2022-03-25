@@ -13,7 +13,10 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
-import { listenDevices } from './listenDevices';
+import {
+  deviceDetection,
+  waitForDevice,
+} from './hardwareWallets/ledger/deviceDetection';
 import { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { logger } from '../utils/logging';
 import { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
@@ -270,7 +273,7 @@ export const handleHardwareWalletRequests = async (
       try {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER');
-        let transportList = await TransportNodeHid.list();
+        const transportList = await TransportNodeHid.list();
         let hw;
         let lastConnectedPath;
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -286,27 +289,19 @@ export const handleHardwareWalletRequests = async (
           try {
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport');
-            hw = await TransportNodeHid.create();
-            transportList = await TransportNodeHid.list();
-            lastConnectedPath = last(transportList);
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-            logger.info(
-              `[HW-DEBUG] getHardwareWalletTransportChannel::lastConnectedPath=${JSON.stringify(
-                lastConnectedPath
-              )}`
-            );
-            const deviceList = getDevices();
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-            logger.info(
-              `[HW-DEBUG] getHardwareWalletTransportChannel::deviceList=${JSON.stringify(
-                deviceList
-              )}`
-            );
-            const device = find(deviceList, ['path', lastConnectedPath]);
+
+            const { device } = await waitForDevice();
+            if (devicesMemo[device.path]) {
+              logger.info('[HW-DEBUG] CLOSING EXISTING TRANSPORT');
+              await devicesMemo[device.path].transport.close();
+            }
+            const transport = await TransportNodeHid.open(device.path);
+            hw = transport;
+            lastConnectedPath = device.path;
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport - DONE');
             // @ts-ignore
-            deviceConnection = new AppAda(hw);
+            deviceConnection = new AppAda(transport);
             devicesMemo[lastConnectedPath] = {
               device,
               transport: hw,
@@ -414,7 +409,7 @@ export const handleHardwareWalletRequests = async (
         observer.next(payload);
       };
 
-      listenDevices(onAdd, onRemove);
+      deviceDetection(onAdd, onRemove);
 
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
@@ -728,6 +723,7 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
+      logger.info('[HW-DEBUG] EXPORT KEY ERROR', error);
       throw error;
     }
   });
