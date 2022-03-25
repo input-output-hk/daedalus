@@ -661,6 +661,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   >
                     <div className={styles.stateDirectoryPath}>
                       <PopOver
+                        zIndex={10000}
                         maxWidth={400}
                         content={
                           <div className={styles.tooltipLabelWrapper}>
