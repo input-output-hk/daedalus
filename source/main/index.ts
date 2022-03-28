@@ -65,10 +65,6 @@ import { containsRTSFlags } from './utils/containsRTSFlags';
 let mainWindow: BrowserWindow;
 let cardanoNode: CardanoNode;
 
-/* -------------------------------- unnecessary? – @michalrus
-let deeplinksingUrl;
-*/
-
 const {
   isDev,
   isTest,
@@ -142,9 +138,6 @@ const handleWindowClose = async (event: Event | null | undefined) => {
 };
 
 const onAppReady = async () => {
-  /* -------------------------------- unnecessary? – @michalrus
-  logger.info('[Custom-Protocol] APP READY');
-  */
   setupLogging();
   logUsedVersion(
     environment.version,
@@ -201,14 +194,6 @@ const onAppReady = async () => {
     restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
-
-  /* -------------------------------- unnecessary? – @michalrus
-  logger.info('[Custom-Protocol] deeplinkingUrl ON READY - URL: ', { deeplinkingUrl });
-  logger.info('[Custom-Protocol] deeplinkingUrl ON READY - Get processArgv: ', {
-    processArgv: process.argv,
-    platform: process.platform,
-  });
-  */
 
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -287,16 +272,24 @@ const onAppReady = async () => {
     logger.info('[Custom-Protocol] Set Windows protocol params: ', {
       platform: process.platform,
     });
-    const cardanoLauncherExe = path.resolve(path.dirname(process.execPath), 'cardano-launcher.exe');
-    logger.info("[Custom-Protocol] cardano-launcher.exe:", {
+    const cardanoLauncherExe = path.resolve(
+      path.dirname(process.execPath),
+      'cardano-launcher.exe'
+    );
+    logger.info('[Custom-Protocol] cardano-launcher.exe:', {
       cardanoLauncherExe,
     });
     app.setAsDefaultProtocolClient('web+cardano', cardanoLauncherExe);
     // Check
-    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] Check isDefaultProtocolClient set Windows: ', {
-      isDefaultProtocolClientSet,
-    });
+    const isDefaultProtocolClientSet = app.isDefaultProtocolClient(
+      'web+cardano'
+    );
+    logger.info(
+      '[Custom-Protocol] Check isDefaultProtocolClient set Windows: ',
+      {
+        isDefaultProtocolClientSet,
+      }
+    );
   } else {
     logger.info('[Custom-Protocol] Set Mac / Linux protocol params: ', {
       platform: process.platform,
@@ -310,41 +303,13 @@ const onAppReady = async () => {
     }
     */
     // Check
-    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
+    const isDefaultProtocolClientSet = app.isDefaultProtocolClient(
+      'web+cardano'
+    );
     logger.info('[Custom-Protocol] isDefaultProtocolClient set Mac / Linux: ', {
       isDefaultProtocolClientSet,
     });
   }
-
-  app.on('open-url', (event, url) => {
-    event.preventDefault();
-    /* -------------------------------- unnecessary? – @michalrus
-    // Check
-    const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-    logger.info('[Custom-Protocol] ON READY (open-url) isDefaultProtocolClient: ', {
-      isDefaultProtocolClientSet,
-      processArgv: process.argv,
-    });
-    logger.info('[Custom-Protocol] ON READY (open-url) Open params', {
-      event,
-      url,
-    });
-    */
-    logger.info('[Custom-Protocol] will handleCustomProtocol via open-url', {
-      'url': url
-    });
-    mainWindow.focus();
-    /* -------------------------------- unnecessary? – @michalrus
-    try {
-    */
-      handleCustomProtocol(url, mainWindow);
-    /* -------------------------------- unnecessary? – @michalrus
-    } catch (error) {
-      logger.info('[Custom-Protocol] ON READY (open-url) Open handler error: ', error);
-      throw error;
-    }
-    */
-  });
 
   mainWindow.on('close', handleWindowClose);
 
@@ -352,9 +317,6 @@ const onAppReady = async () => {
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
     contents.on('new-window', (event, url) => {
-      /* -------------------------------- unnecessary? – @michalrus
-      logger.info('[Custom-Protocol] ON new-window', { url });
-      */
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -411,86 +373,39 @@ const onAppReady = async () => {
 
     await safeExit();
   });
+
+  // The following works only on macOS (either notifying already-running or first launch):
+  app.on('open-url', (event, url) => {
+    event.preventDefault();
+    logger.info('[Custom-Protocol] will handleCustomProtocol via open-url', {
+      url: url,
+    });
+    mainWindow.focus();
+    handleCustomProtocol(url, mainWindow);
+  });
+
+  // If first-instance launched by clicking on a `web+cardano:` URL on Windows/Linux:
+  const args = process.argv.slice(1); // First element is `execPath`.
+  if (args.length > 0) {
+    const lastArg = args[args.length - 1];
+    if (!lastArg.startsWith('-')) {
+      logger.info(
+        '[Custom-Protocol] will handleCustomProtocol via initial first-instance argv',
+        {
+          url: lastArg,
+        }
+      );
+      handleCustomProtocol(lastArg, mainWindow);
+    }
+  }
 };
 
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
-const isSingleInstance = app.requestSingleInstanceLock();
+const isFirstInstance = app.requestSingleInstanceLock();
 
-/* -------------------------------- unnecessary? – @michalrus
-logger.info('[Custom-Protocol] isSingleInstance', { isSingleInstance });
-
-app.on('will-finish-launching', () => {
-  logger.info('[Custom-Protocol] will-finish-launching');
-  // Protocol handler for osx
-  app.on('open-url', (event, url) => {
-    logger.info('[Custom-Protocol] will-finish-launching - Open URL: ', { url });
-    event.preventDefault()
-    deeplinkingUrl = `${url}-#1`;
-  })
-})
-
-// Protocol handler for osx
-app.on('open-url', (event, url) => {
-  logger.info('[Custom-Protocol] Open URL: ', { url });
-  event.preventDefault()
-  deeplinkingUrl = `${url}-#2`;
-})
-*/
-
-/* -------------------------------- unnecessary? – @michalrus
-if (!isSingleInstance) {
-  logger.info('[Custom-Protocol] isSingleInstance - Quit: ', { isSingleInstance });
-  app.quit();
+if (!isFirstInstance) {
+  safeExitWithCode(0);
 } else {
-  logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
-  // Only create a new window if no windows are already open (prevents your app being open multiple times)
-  app.whenReady().then(onAppReady);
-  app.on('activate', () => {
-    logger.info('[Custom-Protocol] Activate: ', { getAllWindows: BrowserWindow.getAllWindows() });
-    if (BrowserWindow.getAllWindows().length === 0) {
-      logger.info('[Custom-Protocol] Activate - new window');
-      onAppReady();
-    } else {
-      logger.info('[Custom-Protocol] Activate - restore / focus?');
-      if (mainWindow) {
-        if (mainWindow.isMinimized()) mainWindow.restore();
-        mainWindow.focus();
-      }
-    }
-  });
-}
-*/
-
-if (!isSingleInstance) {
-  /* -------------------------------- unnecessary? – @michalrus
-  logger.info('[Custom-Protocol] isSingleInstance - QUIT: ', { isSingleInstance });
-  */
-  safeExitWithCode(0)
-} else {
-  /* -------------------------------- unnecessary? – @michalrus
-  logger.info('[Custom-Protocol] isSingleInstance - Continue: ', { isSingleInstance });
-  app.on('will-finish-launching' , () => {
-    logger.info('[Custom-Protocol] will-finish-launching');
-    app.on('open-url', (event, url) => {
-      event.preventDefault();
-
-      // Check
-      const isDefaultProtocolClientSet = app.isDefaultProtocolClient('web+cardano');
-      logger.info('[Custom-Protocol] will-finish-launching (open-url) - isDefaultProtocolClient: ', {
-        isDefaultProtocolClientSet,
-        processArgv: process.argv,
-      });
-
-      if (isDefaultProtocolClientSet) {
-        logger.info('[Custom-Protocol] will-finish-launching (open-url) - Open params', {
-          event,
-          url,
-        });
-      }
-    });
-  });
-  */
-
   // XXX: This is used on Windows and Linux, as macOS has its own
   // app.on(`open-url`) mechanism. Moreover, the `cardano-launcher`
   // binary will not allow a second instance on a
@@ -501,12 +416,16 @@ if (!isSingleInstance) {
   // Electron handling the underlying magic
   // cross-platform. – @michalrus
 
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    let url = commandLine[commandLine.length - 1]; // Never empty.
-    logger.info('[Custom-Protocol] will handleCustomProtocol via second-instance', {
-      'url': url,
-      'commandLine': commandLine
-    });
+  app.on('second-instance', (event, argv, workingDirectory) => {
+    const url = argv[argv.length - 1]; // Never empty.
+
+    logger.info(
+      '[Custom-Protocol] will handleCustomProtocol via second-instance',
+      {
+        url: url,
+        commandLine: argv,
+      }
+    );
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
