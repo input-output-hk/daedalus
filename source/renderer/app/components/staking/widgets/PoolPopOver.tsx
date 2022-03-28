@@ -6,6 +6,7 @@ import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
 import styles from './PoolPopOver.scss';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 /**
  * Stake pool tooltip component that can be wrapped around
@@ -52,9 +53,8 @@ export function PoolPopOver(props: {
         {props.children}
       </div>
       {isHovered ? ( // Init the pop over only when the target is hovered
-        <PopOver
+        <TopLevelPopOver
           interactive
-          zIndex={10000}
           className="PoolPopOver"
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
           duration={0}

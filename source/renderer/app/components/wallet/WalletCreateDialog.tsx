@@ -25,6 +25,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import TopLevelPopOver from '../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -278,13 +279,12 @@ class WalletCreateDialog extends Component<Props, State> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
               />
-              <PopOver
-                zIndex={10000}
+              <TopLevelPopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </PopOver>
+              </TopLevelPopOver>
             </div>
             <div className={styles.spendingPasswordField}>
               <PasswordInput

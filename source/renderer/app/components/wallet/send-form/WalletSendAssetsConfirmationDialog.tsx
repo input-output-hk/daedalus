@@ -30,6 +30,7 @@ import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
 import globalMessages from '../../../i18n/global-messages';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const SHOW_TOTAL_AMOUNT = false;
 type Props = {
@@ -382,7 +383,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                             {intl.formatMessage(
                               messages.unformattedAmountLabel
                             )}
-                            <PopOver
+                            <TopLevelPopOver
                               content={
                                 <div className="UnformattedAmountTooltip">
                                   <FormattedHTMLMessage
@@ -400,7 +401,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                               <div className={styles.questionMark}>
                                 <SVGInline svg={questionMarkIcon} />
                               </div>
-                            </PopOver>
+                            </TopLevelPopOver>
                             {':'}
                           </div>
                           <div className={styles.unformattedAmount}>

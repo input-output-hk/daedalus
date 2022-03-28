@@ -39,6 +39,7 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   ranking: {
@@ -388,7 +389,7 @@ class TooltipPool extends Component<Props, State> {
                 <div className={styles.fieldLabel}>
                   {intl.formatMessage(messages[field.key])}
                 </div>
-                <PopOver
+                <TopLevelPopOver
                   offset={[0, 10]}
                   key={field.key}
                   content={
@@ -402,7 +403,7 @@ class TooltipPool extends Component<Props, State> {
                   <div className={styles.questionMark}>
                     <SVGInline svg={questionMarkIcon} />
                   </div>
-                </PopOver>
+                </TopLevelPopOver>
               </div>
             </div>
           );

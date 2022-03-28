@@ -38,6 +38,7 @@ import {
 } from '../../config/cryptoConfig';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import TopLevelPopOver from '../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   title: {
@@ -608,12 +609,12 @@ class WalletRestoreDialog extends Component<Props, State> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
               />
-              <PopOver
+              <TopLevelPopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </PopOver>
+              </TopLevelPopOver>
             </div>
             <div className={styles.spendingPasswordField}>
               <PasswordInput

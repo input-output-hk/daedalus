@@ -28,6 +28,7 @@ import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   title: {
@@ -416,7 +417,7 @@ class WalletSelectImportDialog extends Component<Props> {
                     </div>
                     <div className={styles.walletsInputField}>
                       {!wallet.name ? (
-                        <PopOver
+                        <TopLevelPopOver
                           content={intl.formatMessage(
                             messages.enterWalletNameTooltip
                           )}
@@ -430,7 +431,7 @@ class WalletSelectImportDialog extends Component<Props> {
                             nameValidator,
                             onWalletNameChange
                           )}
-                        </PopOver>
+                        </TopLevelPopOver>
                       ) : (
                         <>
                           {this.getInlineEditingSmallInput(
