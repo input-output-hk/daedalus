@@ -279,6 +279,7 @@ class WalletCreateDialog extends Component<Props, State> {
                 {...spendingPasswordField.bind()}
               />
               <PopOver
+                zIndex={10000}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
