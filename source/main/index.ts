@@ -376,18 +376,20 @@ const onAppReady = async () => {
   });
 
   // If first-instance launched by clicking on a `web+cardano:` URL on Windows/Linux:
-  const args = process.argv.slice(1); // First element is `execPath`.
-  if (args.length > 0) {
-    const lastArg = args[args.length - 1];
-    if (!lastArg.startsWith('-')) {
-      logger.info(
-        '[Custom-Protocol] will handleCustomProtocol via initial first-instance argv',
-        {
-          url: lastArg,
-        }
-      );
-      handleCustomProtocol(lastArg, mainWindow);
-    }
+  // (First element is `execPath`, we want to exclude arguments starting with '-' or
+  // '/' (some `/nix/store` paths on Ubuntu.)
+  const plausibleArgs = process.argv.slice(1).filter((arg) => !(arg.startsWith('-') || arg.startsWith('/')));
+  if (plausibleArgs.length > 0) {
+    const lastArg = plausibleArgs[plausibleArgs.length - 1];
+    logger.info(
+      '[Custom-Protocol] will handleCustomProtocol via initial first-instance argv',
+      {
+        url: lastArg,
+        argv: process.argv,
+        plausibleArgs
+      }
+    );
+    handleCustomProtocol(lastArg, mainWindow);
   }
 
   // If first-instance launched by `open-url` on Darwin:
