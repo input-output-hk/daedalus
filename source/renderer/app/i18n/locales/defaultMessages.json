@@ -3792,6 +3792,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallets",
+        "description": "Text for the tooltip of wallets category",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.wallets",
+        "start": {
+          "column": 11,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Staking",
+        "description": "Text for the tooltip of staking category",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.staking",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Text for the tooltip of settings category",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.settings",
+        "start": {
+          "column": 12,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Voting",
+        "description": "Text for the tooltip of voting category",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.voting",
+        "start": {
+          "column": 10,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Mainnet vx",
         "description": "Label for mainnet network with version.",
         "end": {
@@ -17673,6 +17734,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Newsfeed",
+        "description": "Newsfeed",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/widgets/NewsFeedIcon.tsx",
+        "id": "news.newsfeed.iconTooltip",
+        "start": {
+          "column": 15,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/NewsFeedIcon.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Blocks synced {percentage}%",
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
@@ -18401,7 +18481,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Toggle discreet mode on.",
+        "defaultMessage": "!!!Toggle discreet mode on",
         "description": "Text for the tooltip on \"discreet mode\" button when mode is on",
         "end": {
           "column": 3,
@@ -18415,7 +18495,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Toggle discreet mode off.",
+        "defaultMessage": "!!!Toggle discreet mode off",
         "description": "Text for the tooltip on \"discreet mode\" button when mode is off",
         "end": {
           "column": 3,
@@ -18426,20 +18506,6 @@
         "start": {
           "column": 7,
           "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!You can toggle auto discreet mode in <b>Settings</b>.",
-        "description": "Text for the tooltip on \"discreet mode\" button description",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar.messages.ts",
-        "id": "discreetMode.discreetToggle.description",
-        "start": {
-          "column": 15,
-          "line": 16
         }
       }
     ],
