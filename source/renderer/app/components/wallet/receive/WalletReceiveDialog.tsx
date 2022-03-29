@@ -27,6 +27,7 @@ import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWallet
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   inputLabel: {
@@ -390,17 +391,17 @@ class WalletReceiveDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.addressPathsWrapper}>
-            <PopOver content={intl.formatMessage(messages.spendingPathTooltip)}>
+            <TopLevelPopOver content={intl.formatMessage(messages.spendingPathTooltip)}>
               <div className={styles.spendingPath}>
                 {constructedPaths.spendingPath}
               </div>
-            </PopOver>
+            </TopLevelPopOver>
 
-            <PopOver content={intl.formatMessage(messages.stakingPathTooltip)}>
+            <TopLevelPopOver content={intl.formatMessage(messages.stakingPathTooltip)}>
               <div className={styles.stakingPath}>
                 {constructedPaths.stakingPath}
               </div>
-            </PopOver>
+            </TopLevelPopOver>
           </div>
 
           <div className={styles.address}>{address.id}</div>
