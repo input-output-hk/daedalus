@@ -31,6 +31,9 @@ const WalletTokensPage = inject(
     const { open } = actions.dialogs;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
+
+    useSendPageNavigationEvent('Wallet tokens');
+
     const openAssetSettingsDialog = useCallback(
       ({ asset }: OpenAssetSettingsDialogArgs) => {
         setEditedAsset.trigger({

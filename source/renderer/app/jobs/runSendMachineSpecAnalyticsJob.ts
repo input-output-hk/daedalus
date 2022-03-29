@@ -6,8 +6,7 @@ import { AnalyticsAcceptanceStatus } from '../analytics/types';
 
 export const runSendMachineSpecAnalyticsJob = async (
   analytics: AnalyticsClient,
-  localStorage: LocalStorageApi,
-  environment: Environment
+  localStorage: LocalStorageApi
 ) => {
   const analyticsAccepted =
     (await localStorage.getAnalyticsAcceptance()) ===
@@ -17,13 +16,7 @@ export const runSendMachineSpecAnalyticsJob = async (
   if (!analyticsAccepted || machineSpecSent) return;
 
   try {
-    await analytics.sendMachineSpec({
-      cpuModel: environment.cpu[0].model,
-      ramBytes: environment.ram,
-      os: environment.os,
-      osArch: environment.system,
-    });
-
+    await analytics.sendMachineSpec();
     await localStorage.setAnalyticsMachineSpecSent();
   } catch (error) {
     logger.error('AnalyticsClient::sendMachineSpec error', { error });

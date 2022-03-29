@@ -7,9 +7,11 @@ import {
   getUtxoChartData,
   getWalletUtxosTotalAmount,
 } from '../../utils/utxoUtils';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Wallet UTxO distribution')
 @inject('stores', 'actions')
 @observer
 class WalletUtxoPage extends Component<Props> {

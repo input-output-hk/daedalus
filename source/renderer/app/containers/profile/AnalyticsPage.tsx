@@ -25,8 +25,7 @@ class AnalyticsPage extends Component<InjectedProps> {
     // fire and forget - even if it fails it will be retried when application starts
     runSendMachineSpecAnalyticsJob(
       this.props.stores.analytics.analyticsClient,
-      this.props.stores.profile.api.localStorage,
-      global.environment
+      this.props.stores.profile.api.localStorage
     );
   };
 

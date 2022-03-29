@@ -12,11 +12,13 @@ class InitialSettingsPage extends Component<InjectedProps> {
     actions: null,
     stores: null,
   };
+
   onSubmit = async () => {
     const { actions } = this.props;
     const { finishInitialScreenSettings } = actions.profile;
     finishInitialScreenSettings.trigger();
   };
+
   handleSelectItem = async (param: string, value: string) => {
     const { actions } = this.props;
     const { updateUserLocalSetting } = actions.profile;

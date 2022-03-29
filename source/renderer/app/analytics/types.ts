@@ -1,12 +1,6 @@
-export interface MachineSpecPayload {
-  cpuModel: string;
-  ramBytes: number;
-  os: string;
-  osArch: string;
-}
-
 export interface AnalyticsClient {
-  sendMachineSpec(payload: MachineSpecPayload): Promise<void>;
+  sendMachineSpec(): Promise<void>;
+  sendPageNavigationEvent(pageTitle: string, route: string): Promise<void>;
 }
 
 export enum AnalyticsAcceptanceStatus {

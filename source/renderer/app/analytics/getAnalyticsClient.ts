@@ -12,7 +12,7 @@ const getAnalyticsClient = async (
 ) => {
   if (!client) {
     client = environment.analyticsEnabled
-      ? new MatomoClient(environment.network, await localStorage.getUserID())
+      ? new MatomoClient(environment, await localStorage.getUserID())
       : getAnalyticsClientMock();
   }
 

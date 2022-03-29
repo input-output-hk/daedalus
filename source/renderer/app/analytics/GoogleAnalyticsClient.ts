@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { AnalyticsClient, MachineSpecPayload } from './types';
+import { AnalyticsClient } from './types';
+import { Environment } from '../../../common/types/environment.types';
+import formatCpuInfo from '../utils/formatCpuInfo';
 
 interface GaCustomEventProps {
   /** @see https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ec */
@@ -17,7 +19,8 @@ class GoogleAnalytics implements AnalyticsClient {
   constructor(
     private apiKey: string,
     private network: string,
-    private userId: string
+    private userId: string,
+    private environment: Environment
   ) {}
 
   private buildCustomEventPayload = (props: GaCustomEventProps) =>
@@ -44,7 +47,7 @@ class GoogleAnalytics implements AnalyticsClient {
    * Since it is not a real `event` by the design of Google Analytics (because it will be sent just once), we are using
    * event `action` property as event `subcategory` to simplify reporting in GA web panel.
    */
-  sendMachineSpec = async (payload: MachineSpecPayload) => {
+  sendMachineSpec = async () => {
     const eventPayload = this.buildCustomEventBatchPayload([
       {
         category: 'machine_spec_v1',
@@ -54,27 +57,31 @@ class GoogleAnalytics implements AnalyticsClient {
       {
         category: 'machine_spec_v1',
         action: 'cpu_model',
-        label: payload.cpuModel,
+        label: formatCpuInfo(this.environment.cpu),
       },
       {
         category: 'machine_spec_v1',
         action: 'ram_bytes',
-        label: payload.ramBytes.toString(),
+        label: this.environment.ram.toString(),
       },
       {
         category: 'machine_spec_v1',
         action: 'os',
-        label: payload.os,
+        label: this.environment.os,
       },
       {
         category: 'machine_spec_v1',
         action: 'os_arch',
-        label: payload.osArch,
+        label: this.environment.system,
       },
     ]);
 
     await axios.post('https://www.google-analytics.com/batch', eventPayload);
   };
+
+  async sendPageNavigationEvent() {
+    throw new Error('Not implemented');
+  }
 }
 
 export { GoogleAnalytics };

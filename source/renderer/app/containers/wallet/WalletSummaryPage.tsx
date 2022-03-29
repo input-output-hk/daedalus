@@ -15,6 +15,7 @@ import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { getAssetTokens, sortAssets } from '../../utils/assets';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -29,6 +30,7 @@ type OpenAssetSettingsDialogArgs = {
   asset: AssetToken;
 };
 
+@sendPageNavigationEventOnRender('Wallet summary')
 @inject('stores', 'actions')
 @observer
 class WalletSummaryPage extends Component<Props> {

@@ -38,11 +38,7 @@ const initializeDaedalus = async () => {
     api.localStorage,
     environment
   );
-  runSendMachineSpecAnalyticsJob(
-    analyticsClient,
-    api.localStorage,
-    environment
-  );
+  runSendMachineSpecAnalyticsJob(analyticsClient, api.localStorage);
   const routingStore = new RouterStore();
   const hashHistory = createHashHistory();
   const stores = setupStores(api, actions, routingStore);
