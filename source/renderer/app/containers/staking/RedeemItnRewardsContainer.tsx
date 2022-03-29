@@ -8,11 +8,13 @@ import RedemptionUnavailableContainer from './dialogs/redeem-itn-rewards/Redempt
 import LoadingOverlay from '../../components/staking/redeem-itn-rewards/LoadingOverlay';
 import { REDEEM_ITN_REWARDS_STEPS } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Redeem ITN rewards')
 class RedeemItnRewardsContainer extends Component<Props> {
   static defaultProps = {
     actions: null,

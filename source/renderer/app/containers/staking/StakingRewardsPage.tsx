@@ -5,6 +5,7 @@ import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -17,6 +18,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Staking Rewards')
 class StakingRewardsPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

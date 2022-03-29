@@ -20,7 +20,6 @@ import {
   LocalStorageFeatureProvider,
 } from './features';
 import { getAnalyticsClient } from './analytics';
-import { runSendMachineSpecAnalyticsJob } from './jobs/runSendMachineSpecAnalyticsJob';
 
 // run MobX in strict mode
 configure({
@@ -34,11 +33,6 @@ const { isTest } = environment;
 
 const initializeDaedalus = async () => {
   const api = setupApi(isTest);
-  const analyticsClient = await getAnalyticsClient(
-    api.localStorage,
-    environment
-  );
-  runSendMachineSpecAnalyticsJob(analyticsClient, api.localStorage);
   const routingStore = new RouterStore();
   const hashHistory = createHashHistory();
   const stores = setupStores(api, actions, routingStore);

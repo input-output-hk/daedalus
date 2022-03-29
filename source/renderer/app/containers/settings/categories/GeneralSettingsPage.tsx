@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('General Settings')
 class GeneralSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

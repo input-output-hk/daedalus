@@ -40,45 +40,6 @@ class GoogleAnalytics implements AnalyticsClient {
   private buildCustomEventBatchPayload = (propsArr: GaCustomEventProps[]) =>
     propsArr.map(this.buildCustomEventPayload).join('\n');
 
-  /**
-   * This event collects machine spec.
-   *
-   * Important:
-   * Since it is not a real `event` by the design of Google Analytics (because it will be sent just once), we are using
-   * event `action` property as event `subcategory` to simplify reporting in GA web panel.
-   */
-  sendMachineSpec = async () => {
-    const eventPayload = this.buildCustomEventBatchPayload([
-      {
-        category: 'machine_spec_v1',
-        action: 'network',
-        label: this.network,
-      },
-      {
-        category: 'machine_spec_v1',
-        action: 'cpu_model',
-        label: formatCpuInfo(this.environment.cpu),
-      },
-      {
-        category: 'machine_spec_v1',
-        action: 'ram_bytes',
-        label: this.environment.ram.toString(),
-      },
-      {
-        category: 'machine_spec_v1',
-        action: 'os',
-        label: this.environment.os,
-      },
-      {
-        category: 'machine_spec_v1',
-        action: 'os_arch',
-        label: this.environment.system,
-      },
-    ]);
-
-    await axios.post('https://www.google-analytics.com/batch', eventPayload);
-  };
-
   async sendPageNavigationEvent() {
     throw new Error('Not implemented');
   }

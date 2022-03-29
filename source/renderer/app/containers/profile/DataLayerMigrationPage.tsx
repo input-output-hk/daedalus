@@ -3,8 +3,10 @@ import { inject, observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import DataLayerMigrationForm from '../../components/profile/data-layer-migration/DataLayerMigrationForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
+@sendPageNavigationEventOnRender('Data Layer Migration Page')
 @observer
 class DataLayerMigrationPage extends Component<InjectedProps> {
   static defaultProps = {

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import StakePoolsSettings from '../../../components/settings/categories/StakePoolsSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Stake Pools Settings')
 class StakePoolsSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

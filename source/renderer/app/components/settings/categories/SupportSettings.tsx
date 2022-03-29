@@ -9,7 +9,6 @@ import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
 import AnalyticsForm from '../../profile/analytics/AnalyticsForm';
 import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
-import { runSendMachineSpecAnalyticsJob } from '../../../jobs/runSendMachineSpecAnalyticsJob';
 import { InjectedProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -113,12 +112,6 @@ class SupportSettings extends Component<SupportSettingsProps> {
       analyticsAccepted
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
-    );
-
-    // fire and forget - even if it fails it will be retried when application starts
-    runSendMachineSpecAnalyticsJob(
-      this.props.stores.analytics.analyticsClient,
-      this.props.stores.profile.api.localStorage
     );
   };
 

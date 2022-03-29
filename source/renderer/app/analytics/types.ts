@@ -1,6 +1,5 @@
 export interface AnalyticsClient {
-  sendMachineSpec(): Promise<void>;
-  sendPageNavigationEvent(pageTitle: string, route: string): Promise<void>;
+  sendPageNavigationEvent(pageTitle: string): Promise<void>;
 }
 
 export enum AnalyticsAcceptanceStatus {

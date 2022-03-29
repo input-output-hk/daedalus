@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import StakingCountdown from '../../components/staking/countdown/StakingCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -15,13 +16,14 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Staking Countdown')
 class StakingCountdownPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
   static defaultProps = {
     actions: null,
-    stores: {},
+    stores: null,
   };
   handleLearnMoreClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.persist();

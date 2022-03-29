@@ -4,10 +4,11 @@ import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { runSendMachineSpecAnalyticsJob } from '../../jobs/runSendMachineSpecAnalyticsJob';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
+@sendPageNavigationEventOnRender('Analytics')
 @observer
 class AnalyticsPage extends Component<InjectedProps> {
   static defaultProps = {
@@ -20,12 +21,6 @@ class AnalyticsPage extends Component<InjectedProps> {
       analyticsAccepted
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
-    );
-
-    // fire and forget - even if it fails it will be retried when application starts
-    runSendMachineSpecAnalyticsJob(
-      this.props.stores.analytics.analyticsClient,
-      this.props.stores.profile.api.localStorage
     );
   };
 

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import DisplaySettings from '../../../components/settings/categories/DisplaySettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Display Settings')
 class DisplaySettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

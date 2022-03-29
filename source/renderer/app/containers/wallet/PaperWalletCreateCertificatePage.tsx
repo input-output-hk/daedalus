@@ -12,6 +12,7 @@ import CompletionDialog from '../../components/wallet/paper-wallet-certificate/C
 import CompletionDialogContainer from './dialogs/paper-wallet-certificate/CompletionDialogContainer';
 import ConfirmationDialog from '../../components/wallet/paper-wallet-certificate/ConfirmationDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 type State = {
@@ -21,6 +22,7 @@ type State = {
 
 @inject('actions', 'stores')
 @observer
+@sendPageNavigationEventOnRender('Creatte Paper Wallet Certificate')
 class PaperWalletCreateCertificatePage extends Component<Props, State> {
   static defaultProps = {
     actions: null,

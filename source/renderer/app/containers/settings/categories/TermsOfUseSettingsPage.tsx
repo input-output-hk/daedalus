@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TermsOfUseSettings from '../../../components/settings/categories/TermsOfUseSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores')
 @observer
+@sendPageNavigationEventOnRender('Terms Of Use')
 class TermsOfUseSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

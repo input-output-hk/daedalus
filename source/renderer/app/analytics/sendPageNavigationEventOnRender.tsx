@@ -1,9 +1,4 @@
-import React, {
-  Component,
-  ComponentClass,
-  ComponentType,
-  ReactNode,
-} from 'react';
+import React, { Component, ComponentClass } from 'react';
 import { inject } from 'mobx-react';
 import { InjectedProps } from '../types/injectedPropsType';
 
@@ -17,17 +12,12 @@ export function sendPageNavigationEventOnRender(
     > {
       componentDidMount() {
         this.props.stores.analytics.analyticsClient.sendPageNavigationEvent(
-          title,
-          window.location.toString()
+          title
         );
       }
 
       render() {
-        return (
-          <React.Fragment>
-            <WrappedComponent {...this.props} />
-          </React.Fragment>
-        );
+        return <WrappedComponent {...this.props} />;
       }
     }
 

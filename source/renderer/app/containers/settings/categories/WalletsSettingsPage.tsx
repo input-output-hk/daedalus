@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletsSettings from '../../../components/settings/categories/WalletsSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
 @observer
+@sendPageNavigationEventOnRender('Wallets Settings')
 class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

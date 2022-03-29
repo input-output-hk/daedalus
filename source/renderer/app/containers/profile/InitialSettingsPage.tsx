@@ -4,8 +4,10 @@ import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 @inject('stores', 'actions')
+@sendPageNavigationEventOnRender('Initial Settings')
 @observer
 class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = {

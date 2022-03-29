@@ -65,6 +65,12 @@ const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
 
+const analyticsApiEndpoint = 'https://mazurek.matomo.cloud/matomo.php';
+const analyticsSideIdMap = {
+  testnet: 3,
+  mainnet: 4,
+};
+
 /* ==================================================================
 =                       Compose environment                         =
 ================================================================== */
@@ -106,6 +112,8 @@ export const environment: Environment = Object.assign(
     keepLocalClusterRunning,
     hasMetHardwareRequirements,
     analyticsEnabled,
+    analyticsApiEndpoint,
+    analyticsSiteId: analyticsSideIdMap[NETWORK] || null,
   },
   process.env
 );
