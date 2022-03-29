@@ -20,11 +20,14 @@ func main() {
 	launcherConfig := filepath.Join(installDir, "../Resources/launcher-config.yaml")
 	helper := filepath.Join(installDir, "../Resources/helper")
 
-
 	if err = exec.Command(helper).Run(); err != nil {
 		panic(err)
 	}
-	if err = exec.Command("cardano-launcher", "--config", launcherConfig).Run(); err != nil {
+
+	originalArgs := os.Args[1:];
+	launcherArgs := []string{"--config", launcherConfig};
+
+	if err = exec.Command("cardano-launcher", append(launcherArgs, originalArgs...)...).Run(); err != nil {
 		panic(err)
 	}
 }

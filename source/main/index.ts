@@ -64,6 +64,7 @@ import { containsRTSFlags } from './utils/containsRTSFlags';
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: CardanoNode;
+let darwinURLWeAreLaunchedWith: string;
 
 const {
   isDev,
@@ -374,16 +375,6 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  // The following works only on macOS (either notifying already-running or first launch):
-  app.on('open-url', (event, url) => {
-    event.preventDefault();
-    logger.info('[Custom-Protocol] will handleCustomProtocol via open-url', {
-      url: url,
-    });
-    mainWindow.focus();
-    handleCustomProtocol(url, mainWindow);
-  });
-
   // If first-instance launched by clicking on a `web+cardano:` URL on Windows/Linux:
   const args = process.argv.slice(1); // First element is `execPath`.
   if (args.length > 0) {
@@ -398,7 +389,43 @@ const onAppReady = async () => {
       handleCustomProtocol(lastArg, mainWindow);
     }
   }
+
+  // If first-instance launched by `open-url` on Darwin:
+  if (darwinURLWeAreLaunchedWith) {
+    logger.info(
+      '[Custom-Protocol] will handleCustomProtocol via initial open-url',
+      {
+        url: darwinURLWeAreLaunchedWith,
+      }
+    );
+    handleCustomProtocol(darwinURLWeAreLaunchedWith, mainWindow);
+  }
 };
+
+// The following works only on macOS (either notifying already-running or first launch).
+// The handler for `open-url` needs to be set up in `will-finish-launching`, or else, it
+// won’t catch the first URL, if the app was started by clicking on a URL.
+app.on('will-finish-launching', () => {
+  app.on('open-url', (event, url) => {
+    event.preventDefault();
+    if (!mainWindow) {
+      // The app was launched by 'open-url', we're currently just before `app.on('ready')`
+      // we have to handle this URL only after `mainWindow` exists:
+      logger.info('[Custom-Protocol] app launched by open-url', {
+        url,
+      });
+      darwinURLWeAreLaunchedWith = url;
+    } else {
+      // Subsequent 'open-url':
+      logger.info('[Custom-Protocol] will handleCustomProtocol via subsequent open-url', {
+        url,
+      });
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+      handleCustomProtocol(url, mainWindow);
+    }
+  });
+});
 
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
 const isFirstInstance = app.requestSingleInstanceLock();
@@ -419,17 +446,19 @@ if (!isFirstInstance) {
   app.on('second-instance', (event, argv, workingDirectory) => {
     const url = argv[argv.length - 1]; // Never empty.
 
-    logger.info(
-      '[Custom-Protocol] will handleCustomProtocol via second-instance',
-      {
-        url: url,
-        commandLine: argv,
-      }
-    );
     if (mainWindow) {
+      logger.info(
+        '[Custom-Protocol] will handleCustomProtocol via second-instance',
+        {
+          url,
+          commandLine: argv,
+        }
+      );
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
       handleCustomProtocol(url, mainWindow);
+    } else {
+      logger.error('[Custom-Protocol] should not happen; second-instance without mainWindow', { url });
     }
   });
   app.on('ready', onAppReady);
