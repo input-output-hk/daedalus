@@ -4,7 +4,6 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';

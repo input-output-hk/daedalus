@@ -8,7 +8,6 @@ import {
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -217,7 +216,7 @@ class WalletSelectImportDialog extends Component<Props> {
 
       if (disabled) {
         statusIcon = (
-          <PopOver
+          <TopLevelPopOver
             content={
               invalidWalletName ? (
                 this.context.intl.formatMessage(messages.enterWalletNameTooltip)
@@ -234,7 +233,7 @@ class WalletSelectImportDialog extends Component<Props> {
             placement={isOpeningUpward ? 'top' : 'bottom'}
           >
             {statusIcon}
-          </PopOver>
+          </TopLevelPopOver>
         );
       }
     } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
