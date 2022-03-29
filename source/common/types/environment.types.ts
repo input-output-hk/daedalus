@@ -35,7 +35,7 @@ export type Environment = {
   keepLocalClusterRunning: boolean;
   analyticsEnabled: boolean;
   analyticsApiEndpoint: string;
-  analyticsSideId: string;
+  analyticsSiteId: string;
 };
 // constants
 export const PRODUCTION = 'production';

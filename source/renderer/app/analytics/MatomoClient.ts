@@ -19,7 +19,7 @@ export class MatomoClient implements AnalyticsClient {
 
   constructor(private environment: Environment, private userId: string) {
     this.matomoTracker = new MatomoTracker(
-      this.environment.analyticsSideId,
+      this.environment.analyticsSiteId,
       this.environment.analyticsApiEndpoint
     );
   }
