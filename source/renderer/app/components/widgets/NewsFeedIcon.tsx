@@ -40,7 +40,7 @@ function NewsFeedIcon({
     <div className={styles.component}>
       <PopOver
         appendTo="parent"
-        delay={[100, 500]}
+        delay={[300, 0]}
         offset={[0, 0]}
         content={
           <span className={styles.tooltip}>

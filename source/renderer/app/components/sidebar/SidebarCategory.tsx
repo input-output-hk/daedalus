@@ -40,7 +40,7 @@ function SidebarCategory({
   const iconClassName = classNames(styles.icon, styles[`${className}Icon`]);
   return (
     <PopOver
-      delay={[100, 500]}
+      delay={[300, 0]}
       offset={[0, -20]}
       content={tooltipTextId && intl.formatMessage(messages[tooltipTextId])}
       placement="bottom"

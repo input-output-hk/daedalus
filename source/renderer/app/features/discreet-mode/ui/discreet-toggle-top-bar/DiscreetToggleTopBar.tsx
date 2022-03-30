@@ -20,7 +20,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
     <div className={classnames(styles.root, hasTadaIcon && styles.hasTadaIcon)}>
       <PopOver
         appendTo="parent"
-        delay={[100, 500]}
+        delay={[300, 0]}
         offset={[0, 0]}
         content={
           <span className={styles.tooltip}>
