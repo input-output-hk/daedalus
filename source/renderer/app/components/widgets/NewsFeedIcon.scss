@@ -3,20 +3,6 @@
   right: 29px;
   top: 20px;
 
-  &.notificationDot {
-    @extend .dot;
-
-    &:after {
-      background: var(
-        --theme-news-feed-icon-red-dot-background-color
-      ) !important;
-    }
-  }
-
-  &.updateDot {
-    @extend .dot;
-  }
-
   .button {
     border-radius: 50%;
     cursor: pointer;
@@ -29,6 +15,20 @@
       background-color: var(
         --theme-news-feed-icon-toggle-hover-background-color
       );
+    }
+
+    &.notificationDot {
+      @extend .dot;
+
+      &:after {
+        background: var(
+          --theme-news-feed-icon-red-dot-background-color
+        ) !important;
+      }
+    }
+
+    &.updateDot {
+      @extend .dot;
     }
   }
 
