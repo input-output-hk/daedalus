@@ -27,6 +27,12 @@
   }
 }
 
-.tooltip {
-  white-space: nowrap;
+.popOverRoot {
+  width: 200px;
+
+  .popOverContent {
+    b {
+      font-family: var(--font-semibold);
+    }
+  }
 }
