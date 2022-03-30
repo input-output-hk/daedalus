@@ -42,7 +42,7 @@ function SidebarCategory({
     <PopOver
       delay={[100, 500]}
       offset={[0, -20]}
-      content={intl.formatMessage(messages[tooltipTextId])}
+      content={tooltipTextId && intl.formatMessage(messages[tooltipTextId])}
       placement="bottom"
     >
       <button className={componentStyles} onClick={() => onClick(route)}>

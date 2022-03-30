@@ -36,6 +36,7 @@ export const CATEGORIES_BY_NAME = {
     name: 'STAKING_DELEGATION_COUNTDOWN',
     icon: delegationIcon,
     route: ROUTES.STAKING.COUNTDOWN,
+    tooltipTextId: 'staking',
   },
   STAKING: {
     name: 'STAKING',
