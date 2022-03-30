@@ -4,9 +4,9 @@ import StakePoolsSettings from '../../../components/settings/categories/StakePoo
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
+@sendPageNavigationEventOnRender('Stake Pools Settings')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Stake Pools Settings')
 class StakePoolsSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

@@ -5,8 +5,8 @@ import DataLayerMigrationForm from '../../components/profile/data-layer-migratio
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@inject('stores', 'actions')
 @sendPageNavigationEventOnRender('Data Layer Migration Page')
+@inject('stores', 'actions')
 @observer
 class DataLayerMigrationPage extends Component<InjectedProps> {
   static defaultProps = {

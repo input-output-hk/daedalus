@@ -15,9 +15,9 @@ const messages = defineMessages({
   },
 });
 
+@sendPageNavigationEventOnRender('Support')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Support')
 class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,

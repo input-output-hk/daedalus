@@ -12,9 +12,9 @@ import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigat
 
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Redeem ITN rewards')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Redeem ITN rewards')
 class RedeemItnRewardsContainer extends Component<Props> {
   static defaultProps = {
     actions: null,

@@ -4,9 +4,9 @@ import GeneralSettings from '../../../components/settings/categories/GeneralSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
+@sendPageNavigationEventOnRender('General Settings')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('General Settings')
 class GeneralSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

@@ -22,7 +22,6 @@ type State = {
 
 @inject('actions', 'stores')
 @observer
-@sendPageNavigationEventOnRender('Creatte Paper Wallet Certificate')
 class PaperWalletCreateCertificatePage extends Component<Props, State> {
   static defaultProps = {
     actions: null,

@@ -12,6 +12,7 @@ import {
   MIN_DELEGATION_FUNDS,
 } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
@@ -22,6 +23,7 @@ const initialState = {
   selectedList: null,
 };
 
+@sendPageNavigationEventOnRender('Delegation Center')
 @inject('actions', 'stores')
 @observer
 class DelegationCenterPage extends Component<Props, State> {

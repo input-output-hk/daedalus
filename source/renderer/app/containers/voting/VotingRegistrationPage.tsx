@@ -15,9 +15,9 @@ import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigat
 
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Voting Registration')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Voting Registration')
 class VotingRegistrationPage extends Component<Props> {
   static defaultProps = {
     actions: null,

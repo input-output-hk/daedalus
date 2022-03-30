@@ -4,9 +4,9 @@ import DisplaySettings from '../../../components/settings/categories/DisplaySett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
+@sendPageNavigationEventOnRender('Display Settings')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Display Settings')
 class DisplaySettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

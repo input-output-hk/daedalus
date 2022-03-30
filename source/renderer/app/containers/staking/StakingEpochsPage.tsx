@@ -8,9 +8,9 @@ import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigat
 
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Staking Countdown')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Staking Countdown')
 class StakingEpochsPage extends Component<Props> {
   static defaultProps = {
     actions: null,

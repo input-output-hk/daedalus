@@ -14,9 +14,9 @@ const messages = defineMessages({
 });
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Staking Countdown')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Staking Countdown')
 class StakingCountdownPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

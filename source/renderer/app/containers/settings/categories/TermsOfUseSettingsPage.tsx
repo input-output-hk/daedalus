@@ -4,9 +4,9 @@ import TermsOfUseSettings from '../../../components/settings/categories/TermsOfU
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
+@sendPageNavigationEventOnRender('Terms Of Use')
 @inject('stores')
 @observer
-@sendPageNavigationEventOnRender('Terms Of Use')
 class TermsOfUseSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

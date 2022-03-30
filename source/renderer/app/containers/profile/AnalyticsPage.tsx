@@ -7,8 +7,8 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@inject('stores', 'actions')
 @sendPageNavigationEventOnRender('Analytics')
+@inject('stores', 'actions')
 @observer
 class AnalyticsPage extends Component<InjectedProps> {
   static defaultProps = {

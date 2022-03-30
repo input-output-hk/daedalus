@@ -4,9 +4,9 @@ import WalletsSettings from '../../../components/settings/categories/WalletsSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
+@sendPageNavigationEventOnRender('Wallets Settings')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Wallets Settings')
 class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,

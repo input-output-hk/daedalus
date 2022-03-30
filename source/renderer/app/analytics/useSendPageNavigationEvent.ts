@@ -1,3 +1,6 @@
+import { useStores } from '../hooks/useStores';
+
 export const useSendPageNavigationEvent = (pageTitle: string) => {
-  console.warn('Not implemented');
+  const { analytics } = useStores();
+  analytics.analyticsClient.sendPageNavigationEvent(pageTitle);
 };

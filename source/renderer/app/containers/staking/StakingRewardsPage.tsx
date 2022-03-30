@@ -16,9 +16,9 @@ const messages = defineMessages({
 });
 type Props = InjectedProps;
 
+@sendPageNavigationEventOnRender('Staking Rewards')
 @inject('stores', 'actions')
 @observer
-@sendPageNavigationEventOnRender('Staking Rewards')
 class StakingRewardsPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,

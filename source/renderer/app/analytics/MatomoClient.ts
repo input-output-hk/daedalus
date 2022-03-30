@@ -38,6 +38,16 @@ export class MatomoClient implements AnalyticsClient {
     });
   };
 
+  sendEvent = async (category: string, action: string): Promise<void> => {
+    this.matomoTracker.track({
+      _id: this.userId,
+      ca: 1,
+      e_c: category,
+      e_a: action,
+      url: this.getAnalyticsURL(),
+    });
+  };
+
   private getAnalyticsURL() {
     return 'http://daedalus/' + window.location.hash.replace('#/', '');
   }

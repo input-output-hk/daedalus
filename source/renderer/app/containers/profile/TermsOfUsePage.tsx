@@ -6,8 +6,8 @@ import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@inject('stores', 'actions')
 @sendPageNavigationEventOnRender('Terms Of Use')
+@inject('stores', 'actions')
 @observer
 class TermsOfUsePage extends Component<InjectedProps> {
   static defaultProps = {

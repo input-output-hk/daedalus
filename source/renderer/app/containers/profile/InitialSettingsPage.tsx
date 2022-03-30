@@ -6,8 +6,8 @@ import InitialSettings from '../../components/profile/initial-settings/InitialSe
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@inject('stores', 'actions')
 @sendPageNavigationEventOnRender('Initial Settings')
+@inject('stores', 'actions')
 @observer
 class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
