@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -307,14 +306,14 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               {!isSpendingPasswordSet && (
-                <PopOver
+                <TopLevelPopOver
                   content={
                     <FormattedHTMLMessage {...messages.passwordTooltip} />
                   }
                   key="tooltip"
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </PopOver>
+                </TopLevelPopOver>
               )}
             </div>
           </div>

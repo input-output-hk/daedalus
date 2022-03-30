@@ -12,6 +12,7 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { messages } from './ICOPublicKeyQRCodeDialog.messages';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 type Props = {
   walletName: string;
@@ -66,9 +67,9 @@ const ICOPublicKeyQRCodeDialog = observer((props: Props) => {
         />
       </div>
       <div className={styles.addressPathsWrapper}>
-        <PopOver content={intl.formatMessage(messages.derivationPathTooltip)}>
+        <TopLevelPopOver content={intl.formatMessage(messages.derivationPathTooltip)}>
           <div className={styles.spendingPath}>{derivationPath}</div>
-        </PopOver>
+        </TopLevelPopOver>
       </div>
 
       <div className={styles.walletPublicKey}>{walletPublicKey}</div>

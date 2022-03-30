@@ -5,7 +5,6 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
@@ -24,6 +23,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   description1: {
@@ -276,14 +276,14 @@ class ConfigurationDialog extends Component<Props> {
                   onKeyPress={this.handleSubmitOnEnter}
                   {...spendingPasswordField.bind()}
                 />
-                <PopOver
+                <TopLevelPopOver
                   content={
                     <FormattedHTMLMessage {...messages.passwordTooltip} />
                   }
                   key="tooltip"
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </PopOver>
+                </TopLevelPopOver>
               </div>
               <div className={styles.spendingPasswordField}>
                 <PasswordInput
