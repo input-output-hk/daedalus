@@ -193,6 +193,7 @@ export default class AppStore extends Store {
       this.gpuStatus = gpuStatus;
     });
   };
+
   @action
   _updateRouteLocation = (options: {
     route: string;

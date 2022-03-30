@@ -3,12 +3,10 @@ import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
 import formatCpuInfo from '../utils/formatCpuInfo';
 
-enum Dimension {
-  CPU = 'dimension2',
-  RAM = 'dimension3',
-  OS = 'dimension4',
-  Version = 'dimension5',
-}
+const CPU_DIMENSION_KEY = 'dimension2';
+const RAM_DIMENSION_KEY = 'dimension3';
+const OS_DIMENSION_KEY = 'dimension4';
+const VERSION_DIMENSION_KEY = 'dimension5';
 
 /**
  * Matomo API reference:
@@ -29,12 +27,12 @@ export class MatomoClient implements AnalyticsClient {
       _id: this.userId,
       action_name: pageTitle,
       url: this.getAnalyticsURL(),
-      [Dimension.CPU]: formatCpuInfo(this.environment.cpu),
-      [Dimension.RAM]: Math.round(
+      [CPU_DIMENSION_KEY]: formatCpuInfo(this.environment.cpu),
+      [RAM_DIMENSION_KEY]: Math.round(
         this.environment.ram / 1024 / 1024 / 1024
       ).toString(),
-      [Dimension.OS]: this.environment.os,
-      [Dimension.Version]: this.environment.version,
+      [OS_DIMENSION_KEY]: this.environment.os,
+      [VERSION_DIMENSION_KEY]: this.environment.version,
     });
   };
 

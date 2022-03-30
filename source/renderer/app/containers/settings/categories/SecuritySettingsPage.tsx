@@ -3,9 +3,11 @@ import { observer } from 'mobx-react';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import SecuritySettings from '../../../components/settings/categories/SecuritySettings';
 import { useSendPageNavigationEvent } from '../../../analytics/useSendPageNavigationEvent';
+import { useAnalytics } from '../../../components/analytics';
 
 const SecuritySettingsPage = () => {
-  useSendPageNavigationEvent('Security Settings');
+  useAnalytics().sendPageNavigationEvent('Security Settings');
+
   const discreetModeFeature = useDiscreetModeFeature();
 
   return (

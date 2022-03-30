@@ -119,10 +119,12 @@ class StakePools extends Component<Props, State> {
     this.setState({
       search,
     });
+
   handleClearSearch = () =>
     this.setState({
       search: '',
     });
+
   handleGridView = () => {
     this.setState({
       isGridView: true,

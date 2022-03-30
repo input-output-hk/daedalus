@@ -7,6 +7,7 @@ import DelegationSetupWizardDialog from '../../components/staking/delegation-set
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
+import { useAnalytics } from '../../components/analytics';
 
 type Props = InjectedProps;
 
