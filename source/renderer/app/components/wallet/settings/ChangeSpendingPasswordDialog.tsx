@@ -5,6 +5,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -20,7 +21,6 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
-import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -290,12 +290,12 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
                 {...currentPasswordField.bind()}
                 onKeyPress={this.handleSubmitOnEnter}
               />
-              <TopLevelPopOver
+              <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </TopLevelPopOver>
+              </PopOver>
             </div>
           )}
 
@@ -306,14 +306,14 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               {!isSpendingPasswordSet && (
-                <TopLevelPopOver
+                <PopOver
                   content={
                     <FormattedHTMLMessage {...messages.passwordTooltip} />
                   }
                   key="tooltip"
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </TopLevelPopOver>
+                </PopOver>
               )}
             </div>
           </div>

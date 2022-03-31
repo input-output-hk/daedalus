@@ -14,6 +14,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
@@ -27,8 +28,7 @@ import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
-import TopLevelPopOver from '../../widgets/TopLevelPopOver';
-
+ 
 const messages = defineMessages({
   title: {
     id: 'wallet.select.import.dialog.title',
@@ -216,7 +216,7 @@ class WalletSelectImportDialog extends Component<Props> {
 
       if (disabled) {
         statusIcon = (
-          <TopLevelPopOver
+          <PopOver
             content={
               invalidWalletName ? (
                 this.context.intl.formatMessage(messages.enterWalletNameTooltip)
@@ -233,7 +233,7 @@ class WalletSelectImportDialog extends Component<Props> {
             placement={isOpeningUpward ? 'top' : 'bottom'}
           >
             {statusIcon}
-          </TopLevelPopOver>
+          </PopOver>
         );
       }
     } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
@@ -416,7 +416,7 @@ class WalletSelectImportDialog extends Component<Props> {
                     </div>
                     <div className={styles.walletsInputField}>
                       {!wallet.name ? (
-                        <TopLevelPopOver
+                        <PopOver
                           content={intl.formatMessage(
                             messages.enterWalletNameTooltip
                           )}
@@ -430,7 +430,7 @@ class WalletSelectImportDialog extends Component<Props> {
                             nameValidator,
                             onWalletNameChange
                           )}
-                        </TopLevelPopOver>
+                        </PopOver>
                       ) : (
                         <>
                           {this.getInlineEditingSmallInput(

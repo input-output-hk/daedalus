@@ -4,6 +4,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import QRCode from 'qrcode.react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
@@ -11,7 +12,6 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import styles from './PublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
-import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 type Props = {
   walletName: string;
@@ -68,9 +68,9 @@ const WalletPublicKeyQRCodeDialog = observer((props: Props) => {
         />
       </div>
       <div className={styles.addressPathsWrapper}>
-        <TopLevelPopOver content={intl.formatMessage(messages.derivationPathTooltip)}>
+        <PopOver content={intl.formatMessage(messages.derivationPathTooltip)}>
           <div className={styles.spendingPath}>{derivationPath}</div>
-        </TopLevelPopOver>
+        </PopOver>
       </div>
 
       <div className={styles.walletPublicKey}>{walletPublicKey}</div>

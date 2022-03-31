@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -29,7 +30,6 @@ import { getMessages } from './WalletSendAssetsConfirmationDialog.messages';
 import { shouldShowEmptyWalletWarning } from '../../../utils/walletUtils';
 import { hasTokensLeftAfterTransaction } from '../../../utils/assets';
 import globalMessages from '../../../i18n/global-messages';
-import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 const SHOW_TOTAL_AMOUNT = false;
 type Props = {
@@ -382,7 +382,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                             {intl.formatMessage(
                               messages.unformattedAmountLabel
                             )}
-                            <TopLevelPopOver
+                            <PopOver
                               content={
                                 <div className="UnformattedAmountTooltip">
                                   <FormattedHTMLMessage
@@ -400,7 +400,7 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
                               <div className={styles.questionMark}>
                                 <SVGInline svg={questionMarkIcon} />
                               </div>
-                            </TopLevelPopOver>
+                            </PopOver>
                             {':'}
                           </div>
                           <div className={styles.unformattedAmount}>

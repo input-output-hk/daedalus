@@ -8,7 +8,7 @@ import SVGInline from 'react-svg-inline';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/exclama... Remove this comment to see the full error message
 import exclamationPointIcon from '../../../assets/images/exclamation-point.inline.svg';
 import styles from './FormFieldSkinTooltip.scss';
-import TopLevelPopOver from '../TopLevelPopOver';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 
 type Props = {
   className: string;
@@ -41,12 +41,12 @@ export const FormFieldSkin = (props: Props) => (
       >
         {props.label}
         {props.error && (
-          <TopLevelPopOver content={props.error} key="tooltip" placement="bottom">
+          <PopOver content={props.error} key="tooltip" placement="bottom">
             <SVGInline
               svg={exclamationPointIcon}
               className={styles.exclamationPointIcon}
             />
-          </TopLevelPopOver>
+          </PopOver>
         )}
       </label>
     )}

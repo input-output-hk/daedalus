@@ -7,6 +7,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
@@ -37,7 +38,6 @@ import {
 } from '../../config/cryptoConfig';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import TopLevelPopOver from '../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   title: {
@@ -608,12 +608,12 @@ class WalletRestoreDialog extends Component<Props, State> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
               />
-              <TopLevelPopOver
+              <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </TopLevelPopOver>
+              </PopOver>
             </div>
             <div className={styles.spendingPasswordField}>
               <PasswordInput

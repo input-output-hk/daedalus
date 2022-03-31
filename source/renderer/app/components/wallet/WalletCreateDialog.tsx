@@ -7,6 +7,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -24,7 +25,6 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import TopLevelPopOver from '../widgets/TopLevelPopOver';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -278,12 +278,12 @@ class WalletCreateDialog extends Component<Props, State> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
               />
-              <TopLevelPopOver
+              <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </TopLevelPopOver>
+              </PopOver>
             </div>
             <div className={styles.spendingPasswordField}>
               <PasswordInput

@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
 import styles from './PoolPopOver.scss';
-import TopLevelPopOver from '../../widgets/TopLevelPopOver';
 
 /**
  * Stake pool tooltip component that can be wrapped around
@@ -52,7 +52,7 @@ export function PoolPopOver(props: {
         {props.children}
       </div>
       {isHovered ? ( // Init the pop over only when the target is hovered
-        <TopLevelPopOver
+        <PopOver
           interactive
           className="PoolPopOver"
           delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
