@@ -25,7 +25,7 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
       onAdd(newDevice);
     }
 
-    const removedDevice = deviceTracker.findNewDevice();
+    const removedDevice = deviceTracker.findRemovedDevice();
 
     if (removedDevice) {
       onRemove(removedDevice);

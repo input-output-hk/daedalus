@@ -8,8 +8,8 @@ import {
   getCardanoAdaAppRendererRequest,
   getExtendedPublicKeyMainResponse,
   getExtendedPublicKeyRendererRequest,
-  getHardwareWalletConnectiontMainRequest,
-  getHardwareWalletConnectiontRendererResponse,
+  getHardwareWalletConnectionMainRequest,
+  getHardwareWalletConnectionRendererResponse,
   getHardwareWalletTransportMainResponse,
   getHardwareWalletTransportRendererRequest,
   handleInitLedgerConnectMainResponse,
@@ -36,6 +36,9 @@ import {
   SHOW_ADDRESS_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
+  WAIT_FOR_LEDGER_DEVICES,
+  waitForLedgerDevicesRequest,
+  waitForLedgerDevicesResponse,
 } from '../../common/ipc/api';
 
 export interface HardwareWalletChannels {
@@ -53,8 +56,8 @@ export interface HardwareWalletChannels {
   >;
 
   getHardwareWalletConnectionChannel: IpcChannel<
-    getHardwareWalletConnectiontMainRequest,
-    getHardwareWalletConnectiontRendererResponse
+    getHardwareWalletConnectionMainRequest,
+    getHardwareWalletConnectionRendererResponse
   >;
 
   signTransactionLedgerChannel: IpcChannel<
@@ -96,6 +99,11 @@ export interface HardwareWalletChannels {
     showAddressRendererRequest,
     showAddressMainResponse
   >;
+
+  waitForLedgerDevicesChannel: IpcChannel<
+    waitForLedgerDevicesRequest,
+    waitForLedgerDevicesResponse
+  >;
 }
 
 export const createChannels = (
@@ -122,5 +130,6 @@ export const createChannels = (
     deriveXpubChannel: new Channel(DERIVE_XPUB_CHANNEL),
     deriveAddressChannel: new Channel(DERIVE_ADDRESS_CHANNEL),
     showAddressChannel: new Channel(SHOW_ADDRESS_CHANNEL),
+    waitForLedgerDevicesChannel: new Channel(WAIT_FOR_LEDGER_DEVICES),
   };
 };

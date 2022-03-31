@@ -34,7 +34,7 @@ const logToLevel = (level: string) => (
   });
 
 export const logger: Logger = {
-  debug: logToLevel('debug'),
+  debug: logToLevel('info'),
   info: logToLevel('info'),
   error: logToLevel('error'),
   warn: logToLevel('warn'),

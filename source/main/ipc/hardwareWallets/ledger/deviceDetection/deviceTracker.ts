@@ -71,6 +71,10 @@ export class DeviceTracker {
       .map((d) => d);
     const knownDevicesPath = Array.from(this.knownDevices.keys());
 
+    logger.info('[HW-DEBUG] DeviceTracker - Removed device path', {
+      removedDevicePath,
+    });
+
     if (removedDevicePath) {
       const removedDevice = this.knownDevices.get(removedDevicePath);
       this.knownDevices.delete(removedDevicePath);

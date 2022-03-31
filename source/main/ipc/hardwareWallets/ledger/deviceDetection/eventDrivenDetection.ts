@@ -68,7 +68,7 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
       clearTimeout(timeout);
       timeout = null;
     } else {
-      const removedDevice = deviceTracker.findNewDevice();
+      const removedDevice = deviceTracker.findRemovedDevice();
 
       if (removedDevice) {
         onRemove(removedDevice);

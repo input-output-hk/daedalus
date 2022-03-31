@@ -1,14 +1,5 @@
 import { observable, action, runInAction, computed } from 'mobx';
-import {
-  get,
-  map,
-  find,
-  findLast,
-  includes,
-  last,
-  sortBy,
-  filter,
-} from 'lodash';
+import { get, map, find, includes, last, sortBy, filter } from 'lodash';
 import semver from 'semver';
 import {
   TransactionSigningMode,
@@ -44,6 +35,7 @@ import {
   resetTrezorActionChannel,
   deriveAddressChannel,
   showAddressChannel,
+  waitForLedgerDevicesChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -244,6 +236,7 @@ export default class HardwareWalletsStore extends Store {
   } | null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   checkTransactionTimeInterval: IntervalID | null | undefined = null;
+  connectedHardwareWalletsDevices: Set<string> = new Set();
 
   setup() {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -678,7 +671,7 @@ export default class HardwareWalletsStore extends Store {
       const lastUnpairedDevice = this.getLastUnpairedDevice();
 
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.debug(
+      logger.info(
         '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START',
         {
           lastUnpairedDevice: toJS(lastUnpairedDevice),
@@ -690,7 +683,7 @@ export default class HardwareWalletsStore extends Store {
 
       if (this.isTransactionInitiated || this.isAddressVerificationInitiated) {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        logger.debug(
+        logger.info(
           '[HW-DEBUG] HWStore - Establish connection:: New Transaction / Address verification initiated - check device'
         );
 
@@ -783,6 +776,10 @@ export default class HardwareWalletsStore extends Store {
           } // End of special case
         }
 
+        logger.debug('[HW-DEBUG] HWStore - return lastDeviceTransport', {
+          lastDeviceTransport: toJS(lastDeviceTransport),
+        });
+
         return lastDeviceTransport;
       }
 
@@ -814,8 +811,20 @@ export default class HardwareWalletsStore extends Store {
             devicePath,
             isTrezor,
           });
-        } else {
+        } else if (
+          this.connectedHardwareWalletsDevices.has(
+            lastUnpairedDevice?.device?.path
+          )
+        ) {
           transportDevice = lastUnpairedDevice;
+        } else {
+          logger.debug(
+            '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: last unpaired device not connected'
+          );
+          runInAction('HardwareWalletsStore:: set device listener', () => {
+            this.isListeningForDevice = true;
+          });
+          return null;
         }
 
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -1024,9 +1033,12 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      if (error.code === DEVICE_NOT_CONNECTED) {
+      if (error.code === DEVICE_NOT_CONNECTED && !this.isTransactionInitiated) {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
+        logger.info(
+          '[HW-DEBUG] HW Store::getCardanoAdaApp::DEVICE_NOT_CONNECTED'
+        );
         this.stopCardanoAdaAppFetchPoller();
         runInAction(
           'HardwareWalletsStore:: Re-run initiated connection',
@@ -2378,7 +2390,12 @@ export default class HardwareWalletsStore extends Store {
           // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug('[HW-DEBUG] INITIATE tx - I have transport');
         } else {
+          logger.info('[HW-DEBUG] HW STORE WAIT FOR LEDGER DEVICE');
+          await waitForLedgerDevicesChannel.request();
           transportDevice = await this.establishHardwareWalletConnection();
+          logger.info('[HW-DEBUG] HW STORE Transport received', {
+            transportDevice,
+          });
         }
 
         if (!transportDevice) {
@@ -2399,6 +2416,16 @@ export default class HardwareWalletsStore extends Store {
         });
         throw e;
       }
+    } else if (
+      deviceType === DeviceTypes.LEDGER &&
+      !this.connectedHardwareWalletsDevices.has(devicePath)
+    ) {
+      logger.info(
+        '[HW-DEBUG] HWStore::initiateTransaction::Device not connected'
+      );
+      const transportDevice = await this.establishHardwareWalletConnection();
+      console.log('transportDevice', transportDevice);
+      devicePath = transportDevice.path;
     }
 
     runInAction(
@@ -2494,6 +2521,12 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
       params,
     });
+
+    if (disconnected) {
+      this.connectedHardwareWalletsDevices.delete(path);
+    } else {
+      this.connectedHardwareWalletsDevices.add(path);
+    }
 
     // Handle Trezor Bridge instance checker
     if (error && deviceType === DeviceTypes.TREZOR) {
@@ -2666,7 +2699,7 @@ export default class HardwareWalletsStore extends Store {
       (this.isListeningForDevice &&
         !disconnected &&
         (!eventType || eventType === DeviceEvents.CONNECT)) ||
-      isCardanoAppInProgress
+      (isCardanoAppInProgress && !this.isTransactionInitiated)
     ) {
       runInAction('HardwareWalletsStore:: remove device listener', () => {
         this.isListeningForDevice = false;

@@ -22,6 +22,7 @@ import { logger } from '../utils/logging';
 import { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
 
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
+import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -101,6 +102,7 @@ class EventObserver {
         } else {
           logger.info('[HW-DEBUG] CONSTRUCTOR REMOVE');
           devicesMemo = omit(devicesMemo, [device.path]);
+
           this.getHardwareWalletConnectionChannel.send(
             {
               disconnected: true,
@@ -151,6 +153,7 @@ export const handleHardwareWalletRequests = async (
     deriveXpubChannel,
     deriveAddressChannel,
     showAddressChannel,
+    waitForLedgerDevicesChannel,
   }: HardwareWalletChannels
 ) => {
   let deviceConnection = null;
@@ -220,6 +223,12 @@ export const handleHardwareWalletRequests = async (
     });
   };
 
+  waitForLedgerDevicesChannel.onRequest(async () => {
+    logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::waiting');
+    await waitForDevice();
+    logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::found');
+  });
+
   getHardwareWalletTransportChannel.onRequest(
     async (request: HardwareWalletTransportDeviceRequest) => {
       const { isTrezor, devicePath } = request;
@@ -283,6 +292,28 @@ export const handleHardwareWalletRequests = async (
           )}`
         );
 
+        const openTransportLayer = async (
+          pathToOpen: string,
+          device: Device
+        ) => {
+          if (devicesMemo[pathToOpen]) {
+            logger.info('[HW-DEBUG] CLOSING EXISTING TRANSPORT');
+            await devicesMemo[pathToOpen].transport.close();
+          }
+          const transport = await TransportNodeHid.open(pathToOpen);
+          hw = transport;
+          lastConnectedPath = pathToOpen;
+
+          logger.info('[HW-DEBUG] INIT NEW transport - DONE');
+
+          deviceConnection = new AppAda(transport);
+          devicesMemo[lastConnectedPath] = {
+            device,
+            transport: hw,
+            AdaConnection: deviceConnection,
+          };
+        };
+
         // @ts-ignore
         if (transportList && !transportList.length) {
           // Establish connection with last device
@@ -291,22 +322,26 @@ export const handleHardwareWalletRequests = async (
             logger.info('[HW-DEBUG] INIT NEW transport');
 
             const { device } = await waitForDevice();
-            if (devicesMemo[device.path]) {
-              logger.info('[HW-DEBUG] CLOSING EXISTING TRANSPORT');
-              await devicesMemo[device.path].transport.close();
-            }
-            const transport = await TransportNodeHid.open(device.path);
-            hw = transport;
-            lastConnectedPath = device.path;
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-            logger.info('[HW-DEBUG] INIT NEW transport - DONE');
-            // @ts-ignore
-            deviceConnection = new AppAda(transport);
-            devicesMemo[lastConnectedPath] = {
-              device,
-              transport: hw,
-              AdaConnection: deviceConnection,
-            };
+
+            await openTransportLayer(device.path, device);
+
+            // const { device } = await waitForDevice();
+            // if (devicesMemo[device.path]) {
+            //   logger.info('[HW-DEBUG] CLOSING EXISTING TRANSPORT');
+            //   await devicesMemo[device.path].transport.close();
+            // }
+            // const transport = await TransportNodeHid.open(device.path);
+            // hw = transport;
+            // lastConnectedPath = device.path;
+            // // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
+            // logger.info('[HW-DEBUG] INIT NEW transport - DONE');
+            // // @ts-ignore
+            // deviceConnection = new AppAda(transport);
+            // devicesMemo[lastConnectedPath] = {
+            //   device,
+            //   transport: hw,
+            //   AdaConnection: deviceConnection,
+            // };
           } catch (e) {
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
@@ -314,14 +349,18 @@ export const handleHardwareWalletRequests = async (
           }
         } else if (!devicePath || !devicesMemo[devicePath]) {
           // Use first like native usb nodeHID
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-          logger.info('[HW-DEBUG] USE First');
           // @ts-ignore
           lastConnectedPath = transportList[0]; // eslint-disable-line
+          logger.info('[HW-DEBUG] USE First transport', { lastConnectedPath });
 
           if (devicesMemo[lastConnectedPath]) {
-            hw = devicesMemo[lastConnectedPath].transport;
-            deviceConnection = devicesMemo[lastConnectedPath].AdaConnection;
+            await openTransportLayer(
+              lastConnectedPath,
+              devicesMemo[lastConnectedPath].device
+            );
+
+            // hw = devicesMemo[lastConnectedPath].transport;
+            // deviceConnection = devicesMemo[lastConnectedPath].AdaConnection;
           } else {
             throw new Error('Device not connected!');
           }
@@ -336,12 +375,8 @@ export const handleHardwareWalletRequests = async (
         const { deviceModel } = hw;
 
         if (deviceModel) {
-          // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-          logger.info(
-            '[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER case RESPONSE'
-          );
           const { id, productName } = deviceModel;
-          return Promise.resolve({
+          const ledgerData = {
             deviceId: null,
             // @TODO - to be defined
             deviceType: 'ledger',
@@ -351,7 +386,14 @@ export const handleHardwareWalletRequests = async (
             // e.g. Ledger Nano S
             path: lastConnectedPath || devicePath,
             firmwareVersion: null,
-          });
+          };
+
+          logger.info(
+            '[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER case RESPONSE',
+            { ledgerData }
+          );
+
+          return Promise.resolve(ledgerData);
         }
 
         throw new Error('Missing device info');
