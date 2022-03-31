@@ -26,8 +26,6 @@ import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
 import { ErrorType } from '../../domains/ApiError';
 
-const popupZIndex = 10000;
-
 const messages = defineMessages({
   systemInfo: {
     id: 'daedalus.diagnostics.dialog.system.info',
@@ -590,7 +588,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('platformVersion', platformVersion)}
               {getRow(
                 'cpu',
-                <PopOver zIndex={popupZIndex} content={cpu}>
+                <PopOver content={cpu}>
                   {cpu}
                 </PopOver>
               )}
@@ -610,7 +608,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow(
                 'hasMetHardwareRequirementsLabel',
                 <PopOver
-                  zIndex={popupZIndex}
                   content={intl.formatMessage(
                     hasMetHardwareRequirements
                       ? messages.hasMetHardwareRequirementsStatusGoodTooltip
@@ -669,7 +666,6 @@ class DaedalusDiagnostics extends Component<Props, State> {
                   >
                     <div className={styles.stateDirectoryPath}>
                       <PopOver
-                        zIndex={popupZIndex}
                         maxWidth={400}
                         content={
                           <div className={styles.tooltipLabelWrapper}>
