@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
-import type { Node } from 'react';
+import React from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -11,13 +9,14 @@ import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 import styles from './SidebarCategory.scss';
 import { messages } from './SidebarCategory.messages';
 import type { Intl } from '../../types/i18nTypes';
+import { TOOLTIP_DELAY } from '../../config/timingConfig';
 
 type Props = {
   category: SidebarCategoryInfo;
   intl: Intl;
   isActive: boolean;
   onClick: (...args: Array<any>) => any;
-  content?: Node;
+  content?: React.ReactNode;
 };
 
 function SidebarCategory({
@@ -33,14 +32,12 @@ function SidebarCategory({
     styles.component,
     className,
     styles[className],
-    {
-      [styles.active]: isActive,
-    }
+    isActive && styles.active
   );
   const iconClassName = classNames(styles.icon, styles[`${className}Icon`]);
   return (
     <PopOver
-      delay={[300, 0]}
+      delay={TOOLTIP_DELAY}
       offset={[0, -20]}
       content={tooltipTextId && intl.formatMessage(messages[tooltipTextId])}
       placement="bottom"

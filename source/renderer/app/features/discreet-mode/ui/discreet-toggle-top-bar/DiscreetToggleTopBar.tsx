@@ -8,6 +8,7 @@ import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';
 import { DiscreetModeToggleComponent } from '../discreet-toggle/DiscreetModeToggle';
 import type { Intl } from '../../../../types/i18nTypes';
+import { TOOLTIP_DELAY } from '../../../../config/timingConfig';
 
 type Props = {
   intl: Intl;
@@ -20,7 +21,7 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
     <div className={classnames(styles.root, hasTadaIcon && styles.hasTadaIcon)}>
       <PopOver
         appendTo="parent"
-        delay={[300, 0]}
+        delay={TOOLTIP_DELAY}
         offset={[0, 0]}
         className={styles.popOverRoot}
         content={

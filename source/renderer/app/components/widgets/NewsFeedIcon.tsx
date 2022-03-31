@@ -6,6 +6,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './NewsFeedIcon.scss';
 import type { Intl } from '../../types/i18nTypes';
+import { TOOLTIP_DELAY } from '../../config/timingConfig';
 
 type Props = {
   intl: Intl;
@@ -32,15 +33,15 @@ function NewsFeedIcon({
 }: Props) {
   const buttonClasses = classNames([
     styles.button,
-    hasNotification && !hasUpdate ? styles.notificationDot : null,
-    hasUpdate ? styles.updateDot : null,
+    hasNotification && !hasUpdate && styles.notificationDot,
+    hasUpdate && styles.updateDot,
     newsFeedIconClass,
   ]);
   return (
     <div className={styles.component}>
       <PopOver
         appendTo="parent"
-        delay={[300, 0]}
+        delay={TOOLTIP_DELAY}
         offset={[0, 0]}
         content={
           <span className={styles.tooltip}>

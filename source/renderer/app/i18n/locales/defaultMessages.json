@@ -17738,13 +17738,13 @@
         "description": "Newsfeed",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/widgets/NewsFeedIcon.tsx",
         "id": "news.newsfeed.iconTooltip",
         "start": {
           "column": 15,
-          "line": 19
+          "line": 20
         }
       }
     ],
@@ -17757,13 +17757,13 @@
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.tsx",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       }
     ],
