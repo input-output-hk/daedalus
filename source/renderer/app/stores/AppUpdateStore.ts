@@ -102,9 +102,21 @@ export default class AppUpdateStore extends Store {
   }
 
   // ================= REACTIONS ==================
-  _watchForNewsfeedUpdates = () => {
+  _watchForNewsfeedUpdates = async () => {
     const { update } = this.stores.newsFeed.newsFeedData;
-    if (update) this._checkNewAppUpdate(update);
+    if (update) {
+      this._checkNewAppUpdate(update);
+    } else {
+      const isFileInDownloads = await this._checkFileExists();
+      if (isFileInDownloads && !this.availableUpdate) {
+        this._clearDownloads();
+      }
+    }
+  };
+
+  _clearDownloads = async () => {
+    this._removeUpdateFile();
+    await this._removeLocalDataInfo();
   };
 
   // ==================== PUBLIC ==================
@@ -185,7 +197,9 @@ export default class AppUpdateStore extends Store {
      * We can't simply compare with the `package.json` version
      * otherwise we would trigger the local data cleaning on every app load
      */
-    if (appUpdateCompleted === version) return false;
+    if (appUpdateCompleted === version) {
+      return false;
+    }
 
     // Was the update already installed?
     if (this.isUpdateInstalled(update)) {
@@ -261,26 +275,31 @@ export default class AppUpdateStore extends Store {
     await this._removeLocalDataInfo();
     return this._requestUpdateDownload(update);
   };
+
   _removeLocalDataInfo = async () => {
     clearDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
+
   _removeUpdateFile = () => {
     deleteDownloadedFile.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
+
   _getUpdateDownloadLocalData = async (): Promise<
     DownloadLocalDataMainResponse
   > =>
     getDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
+
   _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
     checkFileExistsChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
+
   _manageUpdateResponse = ({
     eventType,
     info,
@@ -329,6 +348,7 @@ export default class AppUpdateStore extends Store {
       fileUrl: '',
     });
   };
+
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
@@ -339,6 +359,7 @@ export default class AppUpdateStore extends Store {
       },
     });
   };
+
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   _requestUpdateDownload = (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
@@ -352,6 +373,7 @@ export default class AppUpdateStore extends Store {
       },
     });
   };
+
   _installUpdate = async () => {
     if (
       !this.availableUpdate ||
@@ -384,6 +406,7 @@ export default class AppUpdateStore extends Store {
       hash,
     });
   };
+
   _manageQuitAndInstallResponse = ({
     status,
     data,
@@ -412,6 +435,7 @@ export default class AppUpdateStore extends Store {
       hash: '',
     });
   };
+
   _setAppAutomaticUpdateFailed = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setAppAutomaticUpdateFailedRequest.execute();
@@ -419,15 +443,18 @@ export default class AppUpdateStore extends Store {
       this.isAutomaticUpdateFailed = true;
     });
   };
+
   @action
   _openAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = true;
     this.isUpdatePostponed = false;
   };
+
   @action
   _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
   };
+
   @action
   _postponeUpdate = () => {
     this.isUpdatePostponed = true;
