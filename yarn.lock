@@ -11689,12 +11689,12 @@ markdown-escapes@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/markdown-escapes/-/markdown-escapes-1.0.4.tgz#c95415ef451499d7602b91095f3c8e8975f78535"
 
-markdown-loader@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/markdown-loader/-/markdown-loader-5.1.0.tgz#4efd5006b1514ca966141c661a47e542a9836e6e"
+markdown-loader@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/markdown-loader/-/markdown-loader-7.0.0.tgz#012cdd3a1f724585869c70168f4a5c4cb84bedbf"
   dependencies:
     loader-utils "^1.2.3"
-    marked "^0.7.0"
+    marked "^4.0.12"
 
 markdown-table@^2.0.0:
   version "2.0.0"
@@ -11709,9 +11709,9 @@ markdown-to-jsx@^6.11.4:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-marked@0.8.2, marked@^0.7.0:
-  version "0.8.2"
-  resolved "https://registry.npmjs.org/marked/-/marked-0.8.2.tgz#4faad28d26ede351a7a1aaa5fec67915c869e355"
+marked@^4.0.12:
+  version "4.0.12"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.0.12.tgz#2262a4e6fd1afd2f13557726238b69a48b982f7d"
 
 marky@^1.2.0:
   version "1.2.2"
