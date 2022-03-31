@@ -94,7 +94,6 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       API_VERSION: 'dev',
       NETWORK: 'development',
-      MOBX_DEV_TOOLS: 'false',
       BUILD_NUMBER: 'dev',
       IS_WATCH_MODE: 'false',
       KEEP_LOCAL_CLUSTER_RUNNING: 'false',

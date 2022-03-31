@@ -58,6 +58,7 @@
     "react/destructuring-assignment": 0,
     "react/display-name": 0,
     "react/jsx-curly-brace-presence": 0,
+    "react/jsx-curly-newline": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-fragments": 0,
     "react/jsx-no-bind": "warn",
@@ -89,7 +90,6 @@
     "API": true,
     "API_VERSION": true,
     "NETWORK": true,
-    "MOBX_DEV_TOOLS": true,
     "BUILD_NUMBER": true,
     "Process": true // TODO: remove after fix
   },

@@ -77,7 +77,11 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     if (event.sender !== window.webContents) return;
     window.close();
   });
-  window.loadURL(`file://${__dirname}/../renderer/index.html`);
+  if (isDev) {
+    window.loadURL(`http://localhost:8080`);
+  } else {
+    window.loadURL(`file://${__dirname}/../renderer/index.html`);
+  }
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });

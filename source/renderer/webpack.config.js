@@ -3,6 +3,9 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { exec } = require('child_process');
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 class DevMainPlugin {
   apply(compiler) {
@@ -25,10 +28,6 @@ class DevMainPlugin {
   }
 }
 
-const { exec } = require('child_process');
-
-const isDevelopment = process.env.NODE_ENV === 'development';
-
 module.exports = {
   entry: {
     index: './source/renderer/index.ts',
@@ -42,9 +41,6 @@ module.exports = {
   devtool: 'source-map',
   optimization: {
     minimize: false,
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   devServer: {
     hot: true,
@@ -155,7 +151,6 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       API_VERSION: 'dev',
       NETWORK: 'development',
-      MOBX_DEV_TOOLS: 'false',
       BUILD_NUMBER: 'dev',
     }),
     new HtmlWebpackPlugin({
@@ -167,6 +162,6 @@ module.exports = {
       filename: 'styles.css',
     }),
     isDevelopment && new ReactRefreshWebpackPlugin(),
-    isDevelopment && new DevMainPlugin(),
+    // isDevelopment && new DevMainPlugin(),
   ].filter(Boolean),
 };
