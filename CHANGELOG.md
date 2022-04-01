@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.9.1
+
+### Fixes
+
+- Fixed macOS installer on Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
+
+### Chores
+
+- Upgrade ledgerjs-hw-app-cardano to 5.0.0 ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
+
 ## 4.9.0
 
 ### Features
