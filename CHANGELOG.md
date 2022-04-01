@@ -4,6 +4,7 @@
 
 ### Features
 
+- Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
 - Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
 - Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
 - Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
@@ -11,7 +12,8 @@
 
 ### Fixes
 
-- Fixed tooltip being hidden on hover in diagnostics ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
+- Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
+- Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
 - Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
 - Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
