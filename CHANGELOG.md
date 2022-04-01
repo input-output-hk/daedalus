@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
 - Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
 - Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
