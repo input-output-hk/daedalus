@@ -162,6 +162,6 @@ module.exports = {
       filename: 'styles.css',
     }),
     isDevelopment && new ReactRefreshWebpackPlugin(),
-    // isDevelopment && new DevMainPlugin(),
+    isDevelopment && new DevMainPlugin(),
   ].filter(Boolean),
 };
