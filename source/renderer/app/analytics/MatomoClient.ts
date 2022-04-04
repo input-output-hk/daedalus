@@ -2,6 +2,11 @@ import MatomoTracker from 'matomo-tracker';
 import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
 import formatCpuInfo from '../utils/formatCpuInfo';
+import {
+  ANALYTICS_API_ENDPOINT,
+  DEV_MODE_SITE_MAP_ID,
+  NETWORK_TO_ANALYTICS_SITE_ID_MAP,
+} from '../config/analyticsConfig';
 
 const CPU_DIMENSION_KEY = 'dimension2';
 const RAM_DIMENSION_KEY = 'dimension3';
@@ -17,8 +22,8 @@ export class MatomoClient implements AnalyticsClient {
 
   constructor(private environment: Environment, private userId: string) {
     this.matomoTracker = new MatomoTracker(
-      this.environment.analyticsSiteId,
-      this.environment.analyticsApiEndpoint
+      this.getMatomoSiteId(environment),
+      ANALYTICS_API_ENDPOINT
     );
   }
 
@@ -48,5 +53,13 @@ export class MatomoClient implements AnalyticsClient {
 
   private getAnalyticsURL() {
     return 'http://daedalus/' + window.location.hash.replace('#/', '');
+  }
+
+  private getMatomoSiteId(environment: Environment) {
+    if (environment.isDev) {
+      return DEV_MODE_SITE_MAP_ID;
+    }
+
+    return NETWORK_TO_ANALYTICS_SITE_ID_MAP[environment.network];
   }
 }

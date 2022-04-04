@@ -34,8 +34,6 @@ export type Environment = {
   isBlankScreenFixActive: boolean;
   keepLocalClusterRunning: boolean;
   analyticsEnabled: boolean;
-  analyticsApiEndpoint: string;
-  analyticsSiteId: string;
 };
 // constants
 export const PRODUCTION = 'production';

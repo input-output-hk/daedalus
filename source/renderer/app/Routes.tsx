@@ -65,7 +65,7 @@ export const Routes = withRouter(() => (
             />
             <Route
               path={ROUTES.WALLETS.SUMMARY}
-              component={WalletSummaryPage}
+              component={<WalletSummaryPage />}
             />
             <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
             <Route

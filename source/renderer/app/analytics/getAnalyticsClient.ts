@@ -5,7 +5,6 @@ import LocalStorageApi from '../api/utils/localStorage';
 import { MatomoClient } from './MatomoClient';
 
 let client: AnalyticsClient;
-
 const getAnalyticsClient = async (
   localStorage: LocalStorageApi,
   environment: Environment
