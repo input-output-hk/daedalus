@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './BigButtonForDialogs.scss' or... Remove this comment to see the full error message
 import styles from './BigButtonForDialogs.scss';
 
 type Props = {

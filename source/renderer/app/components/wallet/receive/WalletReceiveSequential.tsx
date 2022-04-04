@@ -7,7 +7,6 @@ import TinySwitch from '../../widgets/forms/TinySwitch';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import { VirtualAddressesList } from './VirtualAddressesList';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletReceiveSequential.scss... Remove this comment to see the full error message
 import styles from './WalletReceiveSequential.scss';
 import AddressSequential from './AddressSequential';
 
@@ -160,7 +159,7 @@ class WalletReceiveSequential extends Component<Props, State> {
       <div className={styles.component}>
         <BorderedBox fullHeight>
           <div className={styles.container}>
-            <div className={styles.instructions}>
+            <div>
               <h2 className={styles.instructionsTitle}>
                 {intl.formatMessage(messages.instructionsTitle)}
               </h2>

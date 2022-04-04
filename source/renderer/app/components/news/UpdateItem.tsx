@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import moment from 'moment';
 import News /* , { NewsTypes } */ from '../../domains/News';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UpdateItem.scss' or its corr... Remove this comment to see the full error message
 import styles from './UpdateItem.scss';
 
 type Props = {

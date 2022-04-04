@@ -6,7 +6,6 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import Dialog from '../../../widgets/Dialog';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRestoreDialog.scss' or... Remove this comment to see the full error message
 import styles from './WalletRestoreDialog.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { DialogActionItems } from '../../../widgets/Dialog';
@@ -26,7 +25,7 @@ const messages = defineMessages({
   stepsCounter: {
     id: 'wallet.restore.dialog.stepsCounter',
     defaultMessage: '!!!Step {currentStep} of {totalSteps}',
-    description: 'Step couters in the wallet restore dialog.',
+    description: 'Step counters in the wallet restore dialog.',
   },
 });
 type Props = {

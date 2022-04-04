@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import About from '../../components/static/About';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AboutDialog.scss' or its cor... Remove this comment to see the full error message
 import styles from './AboutDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 

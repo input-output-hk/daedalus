@@ -8,7 +8,6 @@ import AnimateHeight from 'react-animate-height';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import News, { NewsTypes } from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NewsItem.scss' or its corres... Remove this comment to see the full error message
 import styles from './NewsItem.scss';
 
 type Props = {
@@ -133,7 +132,7 @@ class NewsItem extends Component<Props, State> {
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(currentDateFormat)}
         </div>
-        <div className={styles.newsItemContentWrapper}>
+        <div>
           <AnimateHeight
             duration={expandWithoutTransition ? 0 : 500}
             height={this.state.newsItemExpanded ? 'auto' : 0}

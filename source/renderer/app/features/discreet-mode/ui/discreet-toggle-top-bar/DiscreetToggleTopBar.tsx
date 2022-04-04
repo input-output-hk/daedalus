@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DiscreetToggleTopBar.scss' o... Remove this comment to see the full error message
 import styles from './DiscreetToggleTopBar.scss';
 import { messages } from './DiscreetToggleTopBar.messages';
 import { useDiscreetModeFeature } from '../../context';

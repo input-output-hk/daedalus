@@ -4,7 +4,6 @@ import { injectIntl } from 'react-intl';
 import { ExternalLinkButton } from '../../widgets/ExternalLinkButton';
 import { VOTING_REWARD } from '../../../config/votingConfig';
 import type { Intl } from '../../../types/i18nTypes';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Headline.scss' or its corres... Remove this comment to see the full error message
 import styles from './Headline.scss';
 import { messages } from './Headline.messages';
 

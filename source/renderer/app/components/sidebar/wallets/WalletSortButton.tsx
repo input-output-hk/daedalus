@@ -7,7 +7,6 @@ import type { WalletSortOrderOptions } from '../../../types/sidebarTypes';
 import { WalletSortOrder } from '../../../types/sidebarTypes';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sort-ar... Remove this comment to see the full error message
 import arrow from '../../../assets/images/sort-arrow.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSortButton.scss' or it... Remove this comment to see the full error message
 import styles from './WalletSortButton.scss';
 
 type Props = {

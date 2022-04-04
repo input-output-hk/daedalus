@@ -93,6 +93,7 @@ class WalletSummaryPage extends Component<Props> {
       profile,
       assets,
       currency,
+      staking,
     } = stores;
     const { all, getAsset, favorites } = assets;
     const { isInternalAddress } = addresses;
@@ -177,6 +178,7 @@ class WalletSummaryPage extends Component<Props> {
       <VerticalFlexContainer>
         <WalletSummary
           wallet={wallet}
+          reward={staking.getRewardForWallet(wallet)}
           numberOfRecentTransactions={recent.length}
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}

@@ -9,7 +9,7 @@ const {
 Given(/^I have accepted "Terms of use"$/, async function () {
   await acceptTerms(this.client);
 });
-Given(/^I didnt accept "Terms of use"$/, async function () {
+Given(/^I didn't accept "Terms of use"$/, async function () {
   await this.client.execute(() => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.reset();

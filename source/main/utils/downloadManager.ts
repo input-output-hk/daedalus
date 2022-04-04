@@ -17,7 +17,7 @@ import type {
   DownloadMainResponse,
 } from '../../common/ipc/api';
 import type {
-  AllowedDownloadDirectories,
+  AllowedDownloadDirectoriesValues,
   DownloadInfoInit,
   DownloadInfoProgress,
   DownloadInfoEnd,
@@ -31,7 +31,7 @@ export const downloads = {};
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
 export const getPathFromDirectoryName = (
-  directoryName: AllowedDownloadDirectories
+  directoryName: AllowedDownloadDirectoriesValues
 ) => {
   const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
 
@@ -39,7 +39,7 @@ export const getPathFromDirectoryName = (
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
 
-    case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
+    case ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS:
       return app.getPath('downloads');
 
     default:
