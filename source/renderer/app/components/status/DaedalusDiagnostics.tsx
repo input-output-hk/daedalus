@@ -586,12 +586,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getSectionRow('systemInfo')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
-              {getRow(
-                'cpu',
-                <PopOver content={cpu}>
-                  {cpu}
-                </PopOver>
-              )}
+              {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
               {getRow('ram', ram)}
               {getRow(
                 'availableDiskSpace',

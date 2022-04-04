@@ -28,7 +28,7 @@ import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
 import Dialog from '../../widgets/Dialog';
- 
+
 const messages = defineMessages({
   title: {
     id: 'wallet.select.import.dialog.title',
