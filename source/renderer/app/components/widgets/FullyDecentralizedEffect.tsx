@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './FullyDecentralizedEffect.scs... Remove this comment to see the full error message
 import styles from './FullyDecentralizedEffect.scss';
 
 type Props = {

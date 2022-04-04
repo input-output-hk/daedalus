@@ -7,7 +7,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRecoveryPhraseDisplayD... Remove this comment to see the full error message
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';

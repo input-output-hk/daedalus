@@ -207,6 +207,9 @@ export default class AppStore extends Store {
   };
   @action
   _updateActiveDialog = (currentDialog: ApplicationDialog) => {
+    if (this.newsFeedIsOpen) {
+      this.newsFeedIsOpen = false;
+    }
     if (this.activeDialog !== currentDialog) this.activeDialog = currentDialog;
   };
   @action

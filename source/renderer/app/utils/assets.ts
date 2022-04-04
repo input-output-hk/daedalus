@@ -52,7 +52,7 @@ export const getZeroToken = ({
  * Then retrieves the token with the same uniqueId
  * @param asset - asset details
  * @param tokens - list of Tokens
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getToken = (asset: Asset, tokens: Tokens) => {
   let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
@@ -69,7 +69,7 @@ export const getToken = (asset: Asset, tokens: Tokens) => {
  * then merges them into an AssetToken
  * @param asset - asset details
  * @param token - token details
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetToken = (
   {
@@ -101,7 +101,7 @@ export const getAssetToken = (
  * then merges them into AssetTokens
  * @param assets - list of asset details
  * @param tokens - list of token details
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokens = (
   assets: Array<Asset>,
@@ -117,7 +117,7 @@ export const getAssetTokens = (
  * and combines with the data from the Asset
  * @param asset - asset details
  * @param getAsset - function that returns an asset
- * See Asset/Token differences at the begining of this doc
+ * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokenFromToken = (
   asset: Token,

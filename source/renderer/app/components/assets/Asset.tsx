@@ -4,13 +4,10 @@ import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './Asset.scss' or its correspon... Remove this comment to see the full error message
 import styles from './Asset.scss';
-import { ellipsis } from '../../utils/strings';
+import { ellipsis, hexToString } from '../../utils/strings';
 import AssetContent from './AssetContent';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import settingsIcon from '../../assets/images/asset-token-settings-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/asset-toke... Remove this comment to see the full error message
 import warningIcon from '../../assets/images/asset-token-warning-ic.inline.svg';
 import { ASSET_TOKEN_DISPLAY_DELAY } from '../../config/timingConfig';
 import type { Asset as AssetProps } from '../../api/assets/types';
@@ -176,13 +173,25 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const { fingerprint, metadata, decimals, recommendedDecimals } = asset;
-    const { name } = metadata || {};
+    const {
+      fingerprint,
+      metadata,
+      decimals,
+      recommendedDecimals,
+      assetName,
+    } = asset;
+    const hasMetadataName = !!metadata?.name;
+    const name =
+      metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';
+
+    const displayName = metadataNameChars
+      ? ellipsis(name, metadataNameChars)
+      : name;
     const contentStyles = classnames([
       styles.pill,
       hasError ? styles.error : null,
     ]);
-    const [startCharAmount, endCharAmoout] = small ? [9, 4] : [12, 12];
+    const [startCharAmount, endCharAmount] = small ? [9, 4] : [12, 12];
     let warningPopOverMessage;
 
     if (hasWarning) {
@@ -197,11 +206,17 @@ class Asset extends Component<Props, State> {
         <div className={styles.fingerprint}>
           {fullFingerprint
             ? fingerprint
-            : ellipsis(fingerprint || '', startCharAmount, endCharAmoout)}
+            : ellipsis(fingerprint || '', startCharAmount, endCharAmount)}
         </div>
-        {name && (
-          <div className={styles.metadataName}>
-            {metadataNameChars ? ellipsis(name, metadataNameChars) : name}
+        {displayName && (
+          <div
+            data-testid="assetName"
+            className={classnames(
+              styles.metadataName,
+              !hasMetadataName && styles.ascii
+            )}
+          >
+            {displayName}
           </div>
         )}
         {hasWarning && (
@@ -212,7 +227,9 @@ class Asset extends Component<Props, State> {
               })}
               className={styles.warningIconWrapper}
             >
-              <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              <span data-testid="warning-icon">
+                <SVGInline className={styles.warningIcon} svg={warningIcon} />
+              </span>
             </PopOver>
           </div>
         )}
@@ -250,7 +267,6 @@ class Asset extends Component<Props, State> {
             '--rp-pop-over-box-shadow':
               '0 5px 20px 0 var(--theme-widgets-asset-token-box-shadow)',
           }}
-          contentClassName={styles.popOver}
           content={popOverContent}
           visible={isPillPopOverVisible}
           appendTo="parent"
@@ -288,7 +304,6 @@ class Asset extends Component<Props, State> {
     return (
       <button className={styles.settingsButton} onClick={onClickSettingsBind}>
         <PopOver
-          className={styles.test}
           content={intl.formatMessage(messages.settingsCogPopOver)}
           visible={isSettingsPopOverVisible}
         >

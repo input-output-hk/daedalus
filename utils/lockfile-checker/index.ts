@@ -61,7 +61,7 @@ function check() {
     !blake2bGitRefDependency
   ) {
     console.log('\n \x1b[32m', 'All good, yarn.lock is clean!\n', '\x1b[0m');
-    return;
+    process.exit(0);
   }
 
   console.log(`\x1b[31myarn.lock is not VALID.`, '\x1b[0m');
@@ -108,6 +108,7 @@ function check() {
   }
 
   console.log('To FIX issues run: \x1b[36m yarn lockfile:fix\n', '\x1b[0m');
+  process.exit(1);
 }
 
 function fix() {

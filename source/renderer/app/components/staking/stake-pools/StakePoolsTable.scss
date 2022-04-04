@@ -1,5 +1,6 @@
 @import '../../../themes/mixins/link';
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/layers';
 
 .component {
   .headerWrapper {
@@ -105,7 +106,7 @@
       padding: 0 20px;
       position: sticky;
       top: 0;
-      z-index: 999;
+      z-index: $sticky-header-z-index;
 
       tr {
         border: 0;
@@ -113,7 +114,7 @@
         justify-content: space-between;
         width: 100%;
 
-        .tooltipWithHTMLContent {
+        .tooltipWithHtmlContent {
           p {
             -webkit-box-orient: horizontal;
             display: block;
@@ -218,7 +219,7 @@
       -ms-user-select: none;
       user-select: none;
 
-      // Right alligned cells need this padding
+      // Right aligned cells need this padding
       // because of the sorting icon
       &:nth-child(7),
       &:nth-child(8) {
@@ -227,6 +228,7 @@
 
       .ticker {
         color: var(--theme-staking-stake-pool-tooltip-link-color);
+        text-transform: uppercase;
       }
 
       &:nth-child(2) {

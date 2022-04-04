@@ -522,7 +522,7 @@ export class CardanoNode {
   }
 
   /**
-   * Kills cardano-node and waitsup to `killTimeout` for the node to
+   * Kills cardano-node and waits up to `killTimeout` for the node to
    * report the exit message.
    *
    * @returns {Promise<void>} resolves if the node could be killed, rejects with error otherwise.

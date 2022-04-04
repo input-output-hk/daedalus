@@ -9,7 +9,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletBackupPrivacyWarningDi... Remove this comment to see the full error message
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({

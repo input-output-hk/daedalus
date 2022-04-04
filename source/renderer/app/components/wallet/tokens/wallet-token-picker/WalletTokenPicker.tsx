@@ -8,12 +8,11 @@ import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';
 import WalletTokenPickerCheckbox from './WalletTokenPickerCheckbox';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokenPicker.scss' or i... Remove this comment to see the full error message
 import styles from './WalletTokenPicker.scss';
 import { messages } from './WalletTokenPicker.messages';
 import {
   filterSelectOptions,
-  getToogleAllLabel,
+  getToggleAllLabel,
   getTokenCounterText,
 } from './helpers';
 import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
@@ -48,7 +47,7 @@ const WalletTokenPicker = ({
     isMaxTotalCount,
     isToggleAllDisabled,
     isClearAllMode,
-    toogleAllFn,
+    toggleAllFn,
     toggleCheckbox,
   } = useCheckboxes({
     assets,
@@ -126,11 +125,11 @@ const WalletTokenPicker = ({
               })}
             </span>
             <button
-              className={styles.toogleAllButton}
-              onClick={toogleAllFn}
+              className={styles.toggleAllButton}
+              onClick={toggleAllFn}
               disabled={isToggleAllDisabled}
             >
-              {intl.formatMessage(messages[getToogleAllLabel(isClearAllMode)], {
+              {intl.formatMessage(messages[getToggleAllLabel(isClearAllMode)], {
                 maxTokens: MAX_TOKENS,
               })}
             </button>

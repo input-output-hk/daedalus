@@ -5,7 +5,6 @@ import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { intlShape, defineMessages } from 'react-intl';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ItemDropdownOption.scss' or ... Remove this comment to see the full error message
 import styles from './ItemDropdownOption.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
@@ -52,8 +51,8 @@ export default class ItemDropdownOption extends Component<ItemDropdown> {
     if (!isSyncing) return null;
     return (
       <div className={styles.syncingSpinner}>
-        <PopOver content={syncingLabel} className={styles.syncingLabel}>
-          <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
+        <PopOver content={syncingLabel}>
+          <SVGInline svg={tinySpinnerIcon} />
         </PopOver>
       </div>
     );

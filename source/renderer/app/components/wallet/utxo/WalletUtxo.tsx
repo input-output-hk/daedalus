@@ -20,7 +20,6 @@ import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
 import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletUtxo.scss' or its corr... Remove this comment to see the full error message
 import styles from './WalletUtxo.scss';
 import type { TickProps } from './WalletUtxoTick';
 import { WalletUtxoDescription } from './WalletUtxoDescription';
@@ -180,7 +179,6 @@ export default class WalletUtxo extends Component<Props, State> {
                   >
                     <BarChart data={chartData} barSize={23}>
                       <CartesianGrid
-                        className={styles.cartesianGrid}
                         horizontal={false}
                         vertical={false}
                         y={-10}
@@ -195,7 +193,6 @@ export default class WalletUtxo extends Component<Props, State> {
                         tick={(props: TickProps) => (
                           <Tick {...props} textAnchor="start" vertical />
                         )}
-                        className={styles.xAxis}
                         y={0}
                       >
                         <Label

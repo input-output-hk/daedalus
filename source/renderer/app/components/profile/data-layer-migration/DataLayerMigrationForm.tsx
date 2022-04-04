@@ -4,7 +4,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DataLayerMigrationForm.scss'... Remove this comment to see the full error message
 import styles from './DataLayerMigrationForm.scss';
 
 const messages = defineMessages({

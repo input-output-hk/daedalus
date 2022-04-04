@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './MnemonicInputWidget.scss' or... Remove this comment to see the full error message
 import styles from './MnemonicInputWidget.scss';
 
 const messages = defineMessages({
@@ -33,7 +32,7 @@ class MnemonicInputWidget extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div>{error}</div>}
         <div className={styles.tokens}>
           {tokens.map((token, index) => (
             <Input

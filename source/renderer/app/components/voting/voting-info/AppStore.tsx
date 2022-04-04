@@ -7,7 +7,6 @@ import downloadAppStoreIcon from '../../../assets/images/voting/download-app-sto
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/voting/... Remove this comment to see the full error message
 import downloadPlayStoreIcon from '../../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AppStore.scss' or its corres... Remove this comment to see the full error message
 import styles from './AppStore.scss';
 import { messages } from './AppStore.messages';
 

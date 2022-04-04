@@ -13,14 +13,12 @@ import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { PoolPopOver } from '../widgets/PoolPopOver';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRow.scss' or its corre... Remove this comment to see the full error message
 import styles from './WalletRow.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletRowPopOverOverrides.sc... Remove this comment to see the full error message
 import popOverThemeOverrides from './WalletRowPopOverOverrides.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collaps... Remove this comment to see the full error message
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/collapse... Remove this comment to see the full error message
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardwar... Remove this comment to see the full error message
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/hardware... Remove this comment to see the full error message
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -320,9 +318,7 @@ class WalletRow extends Component<Props, WalletRowState> {
                     className={styles.stakePoolTile}
                     ref={this.stakePoolFirstTileRef}
                   >
-                    <div
-                      className={!delegatedStakePool ? styles.unknown : null}
-                    >
+                    <div>
                       {delegatedStakePool ? (
                         <div className={styles.stakePoolName}>
                           <div
@@ -353,11 +349,7 @@ class WalletRow extends Component<Props, WalletRowState> {
               <SVGInline svg={arrow} className={styles.arrow} />
               <div className={styles.stakePoolTile}>
                 {nextPendingDelegatedStakePoolId ? (
-                  <div
-                    className={
-                      !nextPendingDelegatedStakePool ? styles.unknown : null
-                    }
-                  >
+                  <div>
                     {nextPendingDelegatedStakePool ? (
                       <div className={styles.stakePoolTicker}>
                         {nextPendingDelegatedStakePool.ticker}
