@@ -3,7 +3,8 @@
 ## 4.9.1
 
 ### Fixes
-
+ 
+- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
 - Fixed macOS installer on Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
 
 ### Chores
