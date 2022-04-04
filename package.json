@@ -6,6 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "dev": "yarn dev:renderer",
+    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" gulp dev",
     "dev:main": "cross-env NODE_ENV=development yarn build:main --watch",
     "dev:renderer": "cross-env NODE_ENV=development yarn webpack serve -c source/renderer/webpack.config.js --progress",
     "build": "yarn build:cleanup && yarn build:main && yarn build:renderer",
