@@ -8,7 +8,7 @@
 
 ### Chores
 
-- Upgrade ledgerjs-hw-app-cardano to 5.0.0 ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
+- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 
 ## 4.9.0
 
