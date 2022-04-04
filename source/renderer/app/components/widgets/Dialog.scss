@@ -39,22 +39,25 @@
     }
 
     &::-webkit-scrollbar-track {
-      margin-bottom: -8px;
+      margin-bottom: -7px;
       margin-top: 12px;
     }
 
     .content {
       margin-bottom: 1px;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
   & > .actions {
     display: flex;
     flex-shrink: 0;
-    margin-top: 10px;
 
     &:not(:empty) {
-      margin-top: 30px;
+      margin-top: 10px;
     }
 
     &.columnDirection {
