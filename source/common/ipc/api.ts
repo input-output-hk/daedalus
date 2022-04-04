@@ -474,6 +474,7 @@ export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyRe
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
+  product?: string;
 };
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
@@ -514,4 +515,6 @@ export type ToggleRTSFlagsModeMainResponse = void;
 export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
 export const WAIT_FOR_LEDGER_DEVICES = 'WAIT_FOR_LEDGER_DEVICES';
 export type waitForLedgerDevicesRequest = void;
-export type waitForLedgerDevicesResponse = void;
+export type waitForLedgerDevicesResponse = {
+  device: { path: string; product: string };
+};

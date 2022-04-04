@@ -68,7 +68,8 @@
     "lockfile:check": "ts-node utils/lockfile-checker/index.ts --check",
     "lockfile:fix": "ts-node utils/lockfile-checker/index.ts --fix",
     "postinstall": "./scripts/postinstall.sh",
-    "typedef:sass": "typed-scss-modules source/renderer/app"
+    "typedef:sass": "typed-scss-modules source/renderer/app",
+    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" IS_WATCH_MODE=true gulp dev"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"

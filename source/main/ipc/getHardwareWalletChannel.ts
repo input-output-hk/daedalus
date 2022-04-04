@@ -19,7 +19,10 @@ import {
 } from './hardwareWallets/ledger/deviceDetection';
 import { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { logger } from '../utils/logging';
-import { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
+import {
+  HardwareWalletTransportDeviceRequest,
+  TransportDevice,
+} from '../../common/types/hardware-wallets.types';
 
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
@@ -92,6 +95,7 @@ class EventObserver {
                   deviceName: deviceModel.productName,
                   // e.g. Test Name
                   path: device.path,
+                  product: device.product,
                 },
                 this.mainWindow
               );
@@ -114,6 +118,10 @@ class EventObserver {
               deviceName: deviceModel.productName,
               // e.g. Test Name
               path: device.path,
+
+              productId: device.productId,
+
+              product: device.product,
             },
             this.mainWindow
           );
@@ -225,8 +233,14 @@ export const handleHardwareWalletRequests = async (
 
   waitForLedgerDevicesChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::waiting');
-    await waitForDevice();
+    const trackedDevice = await waitForDevice();
     logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::found');
+    return {
+      device: {
+        path: trackedDevice.device.path,
+        product: trackedDevice.device.product,
+      },
+    };
   });
 
   getHardwareWalletTransportChannel.onRequest(
@@ -268,7 +282,7 @@ export const handleHardwareWalletRequests = async (
               deviceName: label,
               path: devicePath,
               firmwareVersion,
-            });
+            } as TransportDevice);
           }
 
           throw deviceFeatures.payload; // Error is in payload
@@ -324,24 +338,6 @@ export const handleHardwareWalletRequests = async (
             const { device } = await waitForDevice();
 
             await openTransportLayer(device.path, device);
-
-            // const { device } = await waitForDevice();
-            // if (devicesMemo[device.path]) {
-            //   logger.info('[HW-DEBUG] CLOSING EXISTING TRANSPORT');
-            //   await devicesMemo[device.path].transport.close();
-            // }
-            // const transport = await TransportNodeHid.open(device.path);
-            // hw = transport;
-            // lastConnectedPath = device.path;
-            // // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-            // logger.info('[HW-DEBUG] INIT NEW transport - DONE');
-            // // @ts-ignore
-            // deviceConnection = new AppAda(transport);
-            // devicesMemo[lastConnectedPath] = {
-            //   device,
-            //   transport: hw,
-            //   AdaConnection: deviceConnection,
-            // };
           } catch (e) {
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info('[HW-DEBUG] INIT NEW transport - ERROR');
@@ -358,9 +354,6 @@ export const handleHardwareWalletRequests = async (
               lastConnectedPath,
               devicesMemo[lastConnectedPath].device
             );
-
-            // hw = devicesMemo[lastConnectedPath].transport;
-            // deviceConnection = devicesMemo[lastConnectedPath].AdaConnection;
           } else {
             throw new Error('Device not connected!');
           }
@@ -376,7 +369,7 @@ export const handleHardwareWalletRequests = async (
 
         if (deviceModel) {
           const { id, productName } = deviceModel;
-          const ledgerData = {
+          const ledgerData: TransportDevice = {
             deviceId: null,
             // @TODO - to be defined
             deviceType: 'ledger',
@@ -583,9 +576,57 @@ export const handleHardwareWalletRequests = async (
     }
   });
   getCardanoAdaAppChannel.onRequest(async (request) => {
-    const { path } = request;
+    const { path, product } = request;
 
     try {
+      if (!devicesMemo[path]) {
+        const deviceList = getDevices();
+        const device =
+          find(deviceList, ['product', product]) ||
+          find(deviceList, ['path', path]);
+
+        logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: Path not found', {
+          product,
+          deviceList,
+          oldPath: path,
+        });
+
+        if (!device) {
+          logger.info('[HW-DEBUG] Device not instantiated!', {
+            path,
+            devicesMemo,
+          });
+          // eslint-disable-next-line
+          throw {
+            code: 'DEVICE_NOT_CONNECTED',
+          };
+        }
+
+        const newTransport = await TransportNodeHid.open(device.path);
+        const newDeviceConnection = new AppAda(newTransport);
+
+        logger.info('[HW-DEBUG] getCardanoAdaAppChannel::Use new device path', {
+          product,
+          device,
+          newPath: device.path,
+          oldPath: path,
+        });
+
+        devicesMemo[device.path] = {
+          device,
+          transport: newTransport,
+          AdaConnection: newDeviceConnection,
+        };
+
+        if (device.path !== path) {
+          // eslint-disable-next-line
+          throw {
+            code: 'DEVICE_PATH_CHANGED',
+            path: device.path,
+          };
+        }
+      }
+
       if (!path || !devicesMemo[path]) {
         logger.info('[HW-DEBUG] Device not instantiated!', {
           path,

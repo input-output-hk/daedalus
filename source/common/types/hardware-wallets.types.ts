@@ -290,6 +290,7 @@ export type HardwareWalletConnectionRequest = {
   deviceModel: string;
   deviceName: string;
   path: string | null | undefined;
+  product: string | null;
   error?: {
     payload: {
       code: string;
