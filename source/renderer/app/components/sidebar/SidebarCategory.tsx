@@ -6,7 +6,6 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { camelCase } from 'lodash';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SidebarCategory.scss' or its... Remove this comment to see the full error message
 import styles from './SidebarCategory.scss';
 
 type Props = {

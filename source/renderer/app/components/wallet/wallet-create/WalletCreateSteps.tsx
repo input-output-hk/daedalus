@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateSteps.scss' or i... Remove this comment to see the full error message
 import styles from './WalletCreateSteps.scss';
 import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
 import type { RestoreWalletStep } from '../../../types/walletRestoreTypes';
@@ -19,7 +18,7 @@ const messages = defineMessages({
   stepsCounter: {
     id: 'wallet.create.dialog.stepsCounter',
     defaultMessage: '!!!Step {currentStep} of {totalSteps}',
-    description: 'Step couters in the wallet create dialog.',
+    description: 'Step counters in the wallet create dialog.',
   },
   instructionsStep: {
     id: 'wallet.create.dialog.instructionsStep',

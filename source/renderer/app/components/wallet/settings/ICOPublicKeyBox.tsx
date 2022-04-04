@@ -1,7 +1,6 @@
 import React from 'react';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import BorderedBox from '../../widgets/BorderedBox';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSettings.scss' or its ... Remove this comment to see the full error message
 import styles from './WalletSettings.scss';
 import PublicKeyQRCodeDialog from './ICOPublicKeyQRCodeDialog';
 import ICOPublicKeyDialog from './ICOPublicKeyDialog';

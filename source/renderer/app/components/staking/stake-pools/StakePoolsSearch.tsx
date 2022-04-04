@@ -1,11 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakePoolsSearch.scss' or it... Remove this comment to see the full error message
 import styles from './StakePoolsSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message
 import searchIcon from '../../../assets/images/search.inline.svg';
@@ -58,15 +57,20 @@ function StakePoolsSearchComponent({
     null
   );
 
-  const autoSelectOnFocus = () =>
+  const [isSearchInputFocused, setSearchInputFocused] = useState(false);
+
+  const autoSelectOnFocus = () => {
     searchInput?.current
-      ? searchInput?.current?.inputElement.current.select()
+      ? searchInput.current.inputElement?.current?.select()
       : false;
+
+    setSearchInputFocused(true);
+  };
 
   const handleClearSearch = () => {
     onClearSearch();
-
     searchInput?.current?.inputElement.current.focus();
+    setSearchInputFocused(true);
   };
 
   const hasSearchClearButton = () => {
@@ -82,7 +86,7 @@ function StakePoolsSearchComponent({
     isGridRewardsView ? styles.selected : null,
   ]);
   const isBigSearchComponent = isListView || isGridView || isGridRewardsView;
-  const searchInputClases = classnames([
+  const searchInputClasses = classnames([
     styles.searchInput,
     isBigSearchComponent ? styles.inputExtrasSearch : null,
     IS_GRID_REWARDS_VIEW_AVAILABLE ? styles.withGridRewardsView : null,
@@ -97,15 +101,23 @@ function StakePoolsSearchComponent({
       {({ scrollElementRef }) => (
         <div className={styles.component}>
           <div className={styles.container}>
-            <SVGInline svg={searchIcon} className={styles.searchIcon} />
+            <SVGInline
+              svg={searchIcon}
+              className={classnames(
+                styles.searchIcon,
+                isSearchInputFocused && styles.searchIconFocus
+              )}
+            />
             <Input
               autoFocus
               label={label || null}
-              className={searchInputClases}
+              className={searchInputClasses}
               onChange={onSearch}
               ref={(input) => {
                 searchInput.current = input;
               }}
+              onFocus={autoSelectOnFocus}
+              onBlur={() => setSearchInputFocused(false)}
               placeholder={
                 placeholder ||
                 intl.formatMessage(messages.searchInputPlaceholder)
@@ -113,7 +125,6 @@ function StakePoolsSearchComponent({
               skin={InputSkin}
               value={search}
               maxLength={150}
-              onFocus={autoSelectOnFocus}
             />
             {hasSearchClearButton && (
               <div className={clearSearchClasses}>

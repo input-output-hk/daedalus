@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletTokensSearch.scss' or ... Remove this comment to see the full error message
 import styles from './WalletTokensSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/sear... Remove this comment to see the full error message
 import searchIcon from '../../../../assets/images/search.inline.svg';
@@ -26,19 +25,20 @@ type Props = {
 
 const WalletTokensSearch = (props: Props) => {
   const { searchValue, onSearch, intl } = props;
-  const [focus, setFocus] = useState(false);
+  const [isSearchInputFocused, setSearchInputFocused] = useState(false);
+
   return (
     <div className={styles.component}>
       <SVGInline
         svg={searchIcon}
         className={classNames(
           styles.searchIcon,
-          focus && styles.focusSearchIcon
+          isSearchInputFocused && styles.searchIconFocus
         )}
       />
       <Input
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onFocus={() => setSearchInputFocused(true)}
+        onBlur={() => setSearchInputFocused(false)}
         onChange={onSearch}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}

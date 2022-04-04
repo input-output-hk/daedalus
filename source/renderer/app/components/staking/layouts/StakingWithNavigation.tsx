@@ -2,7 +2,6 @@ import React, { Component, createRef } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import StakingNavigation from '../navigation/StakingNavigation';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingWithNavigation.scss' ... Remove this comment to see the full error message
 import styles from './StakingWithNavigation.scss';
 
 type Props = {

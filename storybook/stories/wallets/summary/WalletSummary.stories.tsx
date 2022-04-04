@@ -7,6 +7,7 @@ import { action } from '@storybook/addon-actions';
 import {
   generateAssetToken,
   generateHash,
+  generateRewardForWallet,
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -198,10 +199,13 @@ storiesOf('Wallets|Summary', module)
       },
       'Currency'
     );
+    const wallet = generateWallet('Wallet name', '45119903750165', assets);
+    const reward = generateRewardForWallet(wallet, '0');
     const [firstAsset] = walletAssets;
     return (
       <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
+        wallet={wallet}
+        reward={reward}
         numberOfTransactions={number(
           'Number of transactions',
           100,
@@ -258,6 +262,7 @@ storiesOf('Wallets|Summary', module)
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
         assetSettingsDialogWasOpened={boolean(
           'assetSettingsDialogWasOpened',

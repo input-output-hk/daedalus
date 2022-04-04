@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetsTransactionConfirmatio... Remove this comment to see the full error message
 import styles from './AssetsTransactionConfirmation.scss';
 import AssetTransactionConfirmation from './AssetTransactionConfirmation';
 import Wallet from '../../domains/Wallet';

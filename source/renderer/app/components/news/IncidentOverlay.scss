@@ -1,4 +1,5 @@
 @import '../../themes/mixins/overlay-backdrop';
+@import '../../themes/mixins/layers.scss';
 
 .component {
   align-items: center;
@@ -12,7 +13,7 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  z-index: 22;
+  z-index: $dialog-z-index;
   @include overlay-backrop;
 
   .actionBtn {
