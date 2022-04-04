@@ -4,9 +4,7 @@ import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@sendPageNavigationEventOnRender('Initial Settings')
 @inject('stores', 'actions')
 @observer
 class InitialSettingsPage extends Component<InjectedProps> {
@@ -14,13 +12,11 @@ class InitialSettingsPage extends Component<InjectedProps> {
     actions: null,
     stores: null,
   };
-
   onSubmit = async () => {
     const { actions } = this.props;
     const { finishInitialScreenSettings } = actions.profile;
     finishInitialScreenSettings.trigger();
   };
-
   handleSelectItem = async (param: string, value: string) => {
     const { actions } = this.props;
     const { updateUserLocalSetting } = actions.profile;

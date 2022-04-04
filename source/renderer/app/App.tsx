@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { Provider, observer } from 'mobx-react';
+import { observer, Provider } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
+import { History } from 'history';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides';
@@ -28,7 +29,7 @@ import { AnalyticsProvider } from './components/analytics';
 class App extends Component<{
   stores: StoresMap;
   actions: ActionsMap;
-  history: Record<string, any>;
+  history: History;
 }> {
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc

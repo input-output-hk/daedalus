@@ -11,11 +11,9 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
 import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Voting Registration')
 @inject('stores', 'actions')
 @observer
 class VotingRegistrationPage extends Component<Props> {

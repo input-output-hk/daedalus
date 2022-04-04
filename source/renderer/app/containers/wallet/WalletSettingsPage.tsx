@@ -19,11 +19,9 @@ import {
 import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Wallet settings')
 @inject('stores', 'actions')
 @observer
 class WalletSettingsPage extends Component<Props> {

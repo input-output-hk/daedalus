@@ -4,11 +4,9 @@ import StakingEpochs from '../../components/staking/epochs/StakingEpochs';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import PREVIOUS_EPOCHS from '../../config/stakingPreviousEpoch.dummy.json';
 import CURRENT_EPOCHS from '../../config/stakingCurrentEpoch.dummy.json';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Staking Countdown')
 @inject('stores', 'actions')
 @observer
 class StakingEpochsPage extends Component<Props> {

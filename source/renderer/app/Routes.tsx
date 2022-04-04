@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
@@ -35,6 +35,7 @@ import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsPage from './containers/profile/AnalyticsPage';
+import { TrackedRoute } from './analytics/TrackedRoute';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -45,17 +46,31 @@ export const Routes = withRouter(() => (
           path={ROUTES.ROOT}
           component={() => <Redirect to={ROUTES.WALLETS.ROOT} />}
         />
-        <Route
+        <TrackedRoute
+          pageTitle="Initial Settings"
           path={ROUTES.PROFILE.INITIAL_SETTINGS}
           component={InitialSettingsPage}
         />
-        <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
-        <Route path={ROUTES.PROFILE.ANALYTICS} component={AnalyticsPage} />
-        <Route
+        <TrackedRoute
+          pageTitle="Terms Of Use"
+          path={ROUTES.PROFILE.TERMS_OF_USE}
+          component={TermsOfUsePage}
+        />
+        <TrackedRoute
+          pageTitle="Analytics"
+          path={ROUTES.PROFILE.ANALYTICS}
+          component={AnalyticsPage}
+        />
+        <TrackedRoute
+          pageTitle="Data Layer Migration Page"
           path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
           component={DataLayerMigrationPage}
         />
-        <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
+        <TrackedRoute
+          pageTitle="Add Wallet"
+          path={ROUTES.WALLETS.ADD}
+          component={WalletAddPage}
+        />
         <Route path={ROUTES.WALLETS.ROOT}>
           <Wallet>
             <Route
@@ -63,25 +78,41 @@ export const Routes = withRouter(() => (
               path={ROUTES.WALLETS.ROOT}
               component={() => <Redirect to={ROUTES.WALLETS.SUMMARY} />}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Wallet Summary"
               path={ROUTES.WALLETS.SUMMARY}
-              component={<WalletSummaryPage />}
+              component={() => <WalletSummaryPage />}
             />
-            <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
-            <Route
+            <TrackedRoute
+              pageTitle="Send Screen"
+              path={ROUTES.WALLETS.SEND}
+              component={WalletSendPage}
+            />
+            <TrackedRoute
+              pageTitle="Receive Screen"
               path={ROUTES.WALLETS.RECEIVE}
               component={WalletReceivePage}
             />
-            <Route path={ROUTES.WALLETS.TOKENS} component={WalletTokensPage} />
-            <Route
+            <TrackedRoute
+              pageTitle="Tokens"
+              path={ROUTES.WALLETS.TOKENS}
+              component={WalletTokensPage}
+            />
+            <TrackedRoute
+              pageTitle="Transactions"
               path={ROUTES.WALLETS.TRANSACTIONS}
               component={WalletTransactionsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Wallet Settings"
               path={ROUTES.WALLETS.SETTINGS}
               component={WalletSettingsPage}
             />
-            <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
+            <TrackedRoute
+              pageTitle="Wallet UTxO distribution"
+              path={ROUTES.WALLETS.UTXO}
+              component={WalletUtxoPage}
+            />
           </Wallet>
         </Route>
         <Route path={ROUTES.SETTINGS.ROOT}>
@@ -91,31 +122,38 @@ export const Routes = withRouter(() => (
               path={ROUTES.SETTINGS.ROOT}
               component={() => <Redirect to={ROUTES.SETTINGS.GENERAL} />}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="General Settings"
               path={ROUTES.SETTINGS.GENERAL}
               component={GeneralSettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Wallets Settings"
               path={ROUTES.SETTINGS.WALLETS}
               component={WalletsSettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Stakee Pools Settings"
               path={ROUTES.SETTINGS.STAKE_POOLS}
               component={StakePoolsSettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Terms of Use"
               path={ROUTES.SETTINGS.TERMS_OF_USE}
               component={TermsOfUseSettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Support"
               path={ROUTES.SETTINGS.SUPPORT}
               component={SupportSettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Display Settings"
               path={ROUTES.SETTINGS.DISPLAY}
               component={DisplaySettingsPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Security Settings"
               path={ROUTES.SETTINGS.SECURITY}
               component={SecuritySettingsPage}
             />
@@ -134,33 +172,47 @@ export const Routes = withRouter(() => (
                 <Redirect to={ROUTES.STAKING.DELEGATION_CENTER} />
               )}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Staking Countdown"
               path={ROUTES.STAKING.COUNTDOWN}
               component={StakingCountdownPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Delegation Center"
               path={ROUTES.STAKING.DELEGATION_CENTER}
               component={DelegationCenterPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Stake Pools List"
               path={ROUTES.STAKING.STAKE_POOLS}
               component={StakePoolsListPage}
             />
-            <Route
+            <TrackedRoute
+              pageTitle="Staking Rewards"
               path={ROUTES.STAKING.REWARDS}
               component={StakingRewardsPage}
             />
-            <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
+            <TrackedRoute
+              pageTitle="Staking Epochs"
+              path={ROUTES.STAKING.EPOCHS}
+              component={StakingEpochsPage}
+            />
             {IS_STAKING_INFO_PAGE_AVAILABLE && (
-              <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+              <TrackedRoute
+                pageTitle="Staking info"
+                path={ROUTES.STAKING.INFO}
+                component={StakingInfoPage}
+              />
             )}
           </Staking>
-          <Route
+          <TrackedRoute
+            pageTitle="Redeem ITN rewards"
             path={ROUTES.REDEEM_ITN_REWARDS}
             component={RedeemItnRewardsContainer}
           />
         </Route>
-        <Route
+        <TrackedRoute
+          pageTitle="Voting Registration"
           path={ROUTES.VOTING.REGISTRATION}
           component={VotingRegistrationPage}
         />

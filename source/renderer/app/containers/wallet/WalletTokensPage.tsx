@@ -5,7 +5,6 @@ import AssetSettingsDialog from '../../components/assets/AssetSettingsDialog';
 import WalletTokens from '../../components/wallet/tokens/wallet-tokens/WalletTokens';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { getAssetTokens } from '../../utils/assets';
-import { useSendPageNavigationEvent } from '../../analytics/useSendPageNavigationEvent';
 
 type Props = InjectedProps;
 type OpenAssetSettingsDialogArgs = {
@@ -32,9 +31,6 @@ const WalletTokensPage = inject(
     const { open } = actions.dialogs;
     const { active: activeWallet } = wallets;
     const { currentLocale } = profile;
-
-    useSendPageNavigationEvent('Wallet tokens');
-
     const openAssetSettingsDialog = useCallback(
       ({ asset }: OpenAssetSettingsDialogArgs) => {
         setEditedAsset.trigger({

@@ -6,12 +6,9 @@ import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizar
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
-import { useAnalytics } from '../../components/analytics';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Stake Pools List')
 @inject('stores', 'actions')
 @observer
 class StakePoolsListPage extends Component<Props> {
@@ -81,8 +78,8 @@ class StakePoolsListPage extends Component<Props> {
     return (
       <Fragment>
         <StakePools
+          analyticsClient={this.props.stores.analytics.analyticsClient}
           wallets={all}
-          analyticsClient={analytics.analyticsClient}
           currentLocale={currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}

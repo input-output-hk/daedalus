@@ -4,7 +4,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -15,7 +14,6 @@ const messages = defineMessages({
   },
 });
 
-@sendPageNavigationEventOnRender('Support')
 @inject('stores', 'actions')
 @observer
 class SupportSettingsPage extends Component<InjectedProps> {

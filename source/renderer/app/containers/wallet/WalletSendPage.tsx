@@ -12,11 +12,9 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Wallet send page')
 @inject('stores', 'actions')
 @observer
 class WalletSendPage extends Component<Props> {

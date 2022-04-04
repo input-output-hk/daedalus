@@ -4,11 +4,9 @@ import WalletTransactions from '../../components/wallet/transactions/WalletTrans
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Wallet transactions')
 @inject('stores', 'actions')
 @observer
 class WalletTransactionsPage extends Component<Props> {

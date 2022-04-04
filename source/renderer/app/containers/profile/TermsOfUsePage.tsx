@@ -4,9 +4,7 @@ import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@sendPageNavigationEventOnRender('Terms Of Use')
 @inject('stores', 'actions')
 @observer
 class TermsOfUsePage extends Component<InjectedProps> {

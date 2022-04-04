@@ -12,7 +12,6 @@ import CompletionDialog from '../../components/wallet/paper-wallet-certificate/C
 import CompletionDialogContainer from './dialogs/paper-wallet-certificate/CompletionDialogContainer';
 import ConfirmationDialog from '../../components/wallet/paper-wallet-certificate/ConfirmationDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 type State = {

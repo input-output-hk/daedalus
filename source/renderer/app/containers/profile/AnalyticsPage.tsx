@@ -5,9 +5,7 @@ import TopBarLayout from '../../components/layout/TopBarLayout';
 import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
-@sendPageNavigationEventOnRender('Analytics')
 @inject('stores', 'actions')
 @observer
 class AnalyticsPage extends Component<InjectedProps> {

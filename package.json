@@ -195,6 +195,8 @@
     "@cardano-foundation/ledgerjs-hw-app-cardano": "4.0.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "@ledgerhq/hw-transport-node-hid": "5.51.1",
+    "@types/react-router": "^5.1.18",
+    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "8.3.4",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",

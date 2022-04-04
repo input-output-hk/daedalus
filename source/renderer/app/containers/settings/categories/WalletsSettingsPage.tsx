@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletsSettings from '../../../components/settings/categories/WalletsSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../../analytics/sendPageNavigationEventOnRender';
 
-@sendPageNavigationEventOnRender('Wallets Settings')
 @inject('stores', 'actions')
 @observer
 class WalletsSettingsPage extends Component<InjectedProps> {

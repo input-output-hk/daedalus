@@ -13,7 +13,6 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 import type { WalletLocalData } from '../../api/utils/localStorage';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 const messages = defineMessages({
   address: {
@@ -27,7 +26,6 @@ type State = {
   addressToShare?: WalletAddress | null | undefined;
 };
 
-@sendPageNavigationEventOnRender('Wallet receive page')
 @inject('stores', 'actions')
 @observer
 class WalletReceivePage extends Component<Props, State> {

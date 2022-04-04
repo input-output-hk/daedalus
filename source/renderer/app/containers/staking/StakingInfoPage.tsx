@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakingInfoCountdown from '../../components/staking/info/StakingInfoCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Staking Info')
 @inject('stores', 'actions')
 @observer
 class StakingInfoPage extends Component<Props> {

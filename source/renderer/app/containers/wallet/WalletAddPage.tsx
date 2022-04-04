@@ -16,11 +16,9 @@ import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialogContainerOld from './dialogs/WalletRestoreDialogContainerOld';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletImportDialogContainer from './dialogs/WalletImportDialogContainer';
-import { sendPageNavigationEventOnRender } from '../../analytics/sendPageNavigationEventOnRender';
 
 type Props = InjectedProps;
 
-@sendPageNavigationEventOnRender('Add wallet')
 @inject('actions', 'stores')
 @observer
 class WalletAddPage extends Component<Props> {
