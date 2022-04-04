@@ -13,7 +13,7 @@
       },
       "target": {
         "daedalusVersion": ">=2.0.0-ITN1",
-        "platforms":["darwin","win32","linux"]
+        "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
         "label": {

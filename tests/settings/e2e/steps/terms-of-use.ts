@@ -1,11 +1,9 @@
-import { Given, When, Then } from "cucumber";
-import { expect } from "chai";
-import { termsOfUseHelpers } from "./helpers";
+import { Given, When, Then } from 'cucumber';
+import { expect } from 'chai';
+import { termsOfUseHelpers } from './helpers';
 
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
-const {
-  acceptTerms
-} = termsOfUseHelpers;
+const { acceptTerms } = termsOfUseHelpers;
 Given(/^I have accepted "Terms of use"$/, async function () {
   await acceptTerms(this.client);
 });
@@ -28,9 +26,12 @@ Then(/^I should not see the "Terms of use" screen anymore$/, function () {
   return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true);
 });
 Then(/^I should have "Terms of use" accepted$/, async function () {
-  const result = await this.client.executeAsync(done => {
+  const result = await this.client.executeAsync((done) => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-    daedalus.stores.profile.getTermsOfUseAcceptanceRequest.execute().then(done).catch(error => done(error));
+    daedalus.stores.profile.getTermsOfUseAcceptanceRequest
+      .execute()
+      .then(done)
+      .catch((error) => done(error));
   });
   expect(result.value).to.equal(true);
 });
