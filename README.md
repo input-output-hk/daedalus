@@ -240,9 +240,8 @@ You can link libraries with Daedalus using one of the following steps:
 1) From the Daedalus root directory, go to `node_modules/react` and `yarn link`.
 2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
 3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
-
 4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
-5) Finally, run `yarn build:watch` from the package dependency's root directory, run `yarn build:watch`.
+5) Finally, run `yarn build:watch` from the package dependency's root directory.
 
 ## Testing
 
