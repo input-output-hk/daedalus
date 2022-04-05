@@ -825,12 +825,23 @@ export default class HardwareWalletsStore extends Store {
           lastUnpairedDevicePath = lastUnpairedDevice.device.path;
         }
 
+        logger.debug(
+          '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: compare last unpaired path',
+          {
+            connectedHardwareWalletsDevices: Array.from(
+              this.connectedHardwareWalletsDevices.keys()
+            ),
+            lastUnpairedDevicePath,
+          }
+        );
+
         if (lastUnpairedDevice.deviceType === DeviceTypes.TREZOR) {
           transportDevice = await getHardwareWalletTransportChannel.request({
             devicePath,
             isTrezor,
           });
         } else if (
+          lastUnpairedDevicePath &&
           this.connectedHardwareWalletsDevices.has(lastUnpairedDevicePath)
         ) {
           logger.debug(
@@ -2637,10 +2648,31 @@ export default class HardwareWalletsStore extends Store {
       params,
     });
 
-    if (disconnected) {
-      this.connectedHardwareWalletsDevices.delete(path);
+    if (path) {
+      if (disconnected) {
+        logger.debug(
+          '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::removing path from memory ',
+          {
+            path,
+          }
+        );
+        this.connectedHardwareWalletsDevices.delete(path);
+      } else {
+        this.connectedHardwareWalletsDevices.set(path, product);
+        logger.debug(
+          '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::adding path to memory ',
+          {
+            path,
+          }
+        );
+      }
     } else {
-      this.connectedHardwareWalletsDevices.set(path, product);
+      logger.debug(
+        '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::missing path',
+        {
+          path,
+        }
+      );
     }
 
     // Handle Trezor Bridge instance checker
