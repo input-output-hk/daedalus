@@ -1096,12 +1096,31 @@ export default class HardwareWalletsStore extends Store {
           (recognizedDevice) => recognizedDevice.path === path
         );
 
+        logger.info(
+          '[HW-DEBUG] HW Store::getCardanoAdaApp::DEVICE_PATH_CHANGED',
+          {
+            path,
+            newPath: error.path,
+            pairedDevice,
+            walletId,
+          }
+        );
+
+        if (this.isWalletPairingInitiated) {
+          logger.info(
+            '[HW-DEBUG] HW Store::getCardanoAdaApp::wallet pairing::Retry with new path',
+            {
+              newPath: error.path,
+            }
+          );
+          this.useCardanoAppInterval(error.path, walletId, address);
+          return;
+        }
+
         if (
           !pairedDevice &&
           walletId &&
-          (this.isTransactionInitiated ||
-            this.isAddressVerificationInitiated ||
-            this.isWalletPairingInitiated)
+          (this.isTransactionInitiated || this.isAddressVerificationInitiated)
         ) {
           this.useCardanoAppInterval(error.path, walletId, address);
           throw error;
