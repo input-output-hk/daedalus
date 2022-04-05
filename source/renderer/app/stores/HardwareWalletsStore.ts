@@ -213,6 +213,8 @@ export default class HardwareWalletsStore extends Store {
   @observable
   isAddressVerificationInitiated = false;
   @observable
+  isWalletPairingInitiated = false;
+  @observable
   unfinishedWalletAddressVerification: WalletAddress | null | undefined = null;
   @observable
   isAddressDerived = false;
@@ -1068,7 +1070,8 @@ export default class HardwareWalletsStore extends Store {
       if (
         error.code === DEVICE_NOT_CONNECTED &&
         !this.isTransactionInitiated &&
-        !this.isAddressVerificationInitiated
+        !this.isAddressVerificationInitiated &&
+        !this.isWalletPairingInitiated
       ) {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
@@ -1096,7 +1099,9 @@ export default class HardwareWalletsStore extends Store {
         if (
           !pairedDevice &&
           walletId &&
-          (this.isTransactionInitiated || this.isAddressVerificationInitiated)
+          (this.isTransactionInitiated ||
+            this.isAddressVerificationInitiated ||
+            this.isWalletPairingInitiated)
         ) {
           this.useCardanoAppInterval(error.path, walletId, address);
           throw error;
@@ -1419,6 +1424,24 @@ export default class HardwareWalletsStore extends Store {
       throw error;
     }
   };
+
+  @action
+  initiateWalletPairing = () => {
+    if (this.isWalletPairingInitiated) return;
+    logger.debug('[HW-DEBUG] HWStore::initiateWalletPairing');
+
+    this.isWalletPairingInitiated = true;
+
+    this.establishHardwareWalletConnection();
+  };
+
+  @action
+  resetWalletPairing = () => {
+    this.stopCardanoAdaAppFetchPoller();
+
+    this.isWalletPairingInitiated = false;
+  };
+
   @action
   showAddress = async (params: {
     address: WalletAddress;
