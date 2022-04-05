@@ -1446,7 +1446,6 @@ export default class HardwareWalletsStore extends Store {
 
   @action
   initiateWalletPairing = () => {
-    if (this.isWalletPairingInitiated) return;
     logger.debug('[HW-DEBUG] HWStore::initiateWalletPairing');
 
     this.isWalletPairingInitiated = true;
