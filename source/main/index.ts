@@ -186,7 +186,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
     userLocale,
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Electron.Screen' is not assignab... Remove this comment to see the full error message
-    restoreSavedWindowBounds(screen, requestElectronStore)
+    () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];

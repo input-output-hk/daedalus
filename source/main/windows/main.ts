@@ -38,12 +38,15 @@ type WindowOptionsType = {
   };
   icon?: string;
 };
-export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
+export const createMainWindow = (
+  locale: string,
+  getSavedWindowBounds: () => Rectangle
+) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
-    ...windowBounds,
+    ...getSavedWindowBounds(),
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -148,13 +151,13 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
    * window constructor above was buggy (height was not correctly applied)
    */
   window.on('ready-to-show', () => {
-    if (windowBounds) {
-      window.setBounds(windowBounds);
+    const savedWindowBounds = getSavedWindowBounds();
+    if (savedWindowBounds) {
+      window.setBounds(savedWindowBounds);
     }
   });
   window.on('closed', (event) => {
     event.preventDefault();
-
     if (ledgerStatus.listening && !!ledgerStatus.Listener) {
       ledgerStatus.Listener.unsubscribe();
       setTimeout(() => app.quit(), 5000);
