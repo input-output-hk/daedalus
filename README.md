@@ -233,7 +233,7 @@ You can link libraries with Daedalus using one of the following steps:
 1) Install `yalc` globally using `yarn global add yalc`.
 2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
 3) Switch to Daedalus and run `yalc add <package-name>` or `yalc link <package-name>`.
-4) You should be able to start Daedalus and see the changes you are making locally in the package dependency.
+4) You should be able to start Daedalus and see the changes you are making locally in the library.
 
 #### 2) Using `yarn link`
 
@@ -241,7 +241,7 @@ You can link libraries with Daedalus using one of the following steps:
 2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
 3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
 4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
-5) Finally, run `yarn build:watch` from the package dependency's root directory.
+5) Finally, run `yarn build:watch` from the library's root directory.
 
 ## Testing
 
