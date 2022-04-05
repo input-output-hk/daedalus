@@ -2005,14 +2005,15 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-4.0.0.tgz#d4532b23e2ccd652f94a469106933aad821a65e7"
+"@cardano-foundation/ledgerjs-hw-app-cardano@5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-5.0.0.tgz#38d929abe7946a418d6c9788895a3114e6f7e293"
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     "@types/ledgerhq__hw-transport" "^4.21.3"
     base-x "^3.0.5"
     bech32 "^1.1.4"
+    blake2 "^4.0.2"
     int64-buffer "^1.0.1"
 
 "@cnakazawa/watch@^1.0.3":
@@ -5410,6 +5411,12 @@ blake-hash@^2.0.0:
     node-addon-api "^3.0.0"
     node-gyp-build "^4.2.2"
     readable-stream "^3.6.0"
+
+blake2@^4.0.2:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/blake2/-/blake2-4.1.1.tgz#0c23524776ebbf76b3ffecb6fa73422a33f20526"
+  dependencies:
+    nan "^2.15.0"
 
 blake2b-wasm@^1.1.0:
   version "1.1.7"
@@ -12816,7 +12823,7 @@ nan@^2.12.1:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.1.tgz#d7be34dfa3105b91494c3147089315eff8874b01"
 
-nan@^2.13.2:
+nan@^2.13.2, nan@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
 
