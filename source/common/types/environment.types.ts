@@ -33,7 +33,7 @@ export type Environment = {
   isLinux: boolean;
   isBlankScreenFixActive: boolean;
   keepLocalClusterRunning: boolean;
-  analyticsEnabled: boolean;
+  analyticsFeatureEnabled: boolean;
 };
 // constants
 export const PRODUCTION = 'production';

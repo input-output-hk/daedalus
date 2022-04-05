@@ -112,6 +112,7 @@ class SupportSettings extends Component<SupportSettingsProps> {
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
+    this.props.stores.analytics.resetAnalyticsClient();
   };
 
   render() {

@@ -1,3 +1,3 @@
 export { getAnalyticsClient } from './getAnalyticsClient';
-export { getAnalyticsClientMock } from './getAnalyticsClientMock';
+export { NoopAnalyticsClient } from './noopAnalyticsClient';
 export { AnalyticsClient } from './types';

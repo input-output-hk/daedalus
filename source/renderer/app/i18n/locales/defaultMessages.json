@@ -18080,13 +18080,13 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.tsx",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 10
+          "line": 9
         }
       }
     ],
@@ -18193,13 +18193,13 @@
         "description": "\"Learn more\" link URL in the staking countdown page",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 12
         },
         "file": "source/renderer/app/containers/staking/StakingCountdownPage.tsx",
         "id": "staking.countdown.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 9
+          "line": 8
         }
       }
     ],
@@ -18212,13 +18212,13 @@
         "description": "\"Learn more\" link URL in the staking rewards page",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 14
         },
         "file": "source/renderer/app/containers/staking/StakingRewardsPage.tsx",
         "id": "staking.rewards.learnMore.linkUrl",
         "start": {
           "column": 20,
-          "line": 11
+          "line": 10
         }
       }
     ],
@@ -18475,13 +18475,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.tsx",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 19
+          "line": 18
         }
       }
     ],
@@ -18494,13 +18494,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 20
         }
       }
     ],

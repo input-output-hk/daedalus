@@ -1,8 +1,8 @@
 import { AnalyticsClient } from './types';
 
-const getAnalyticsClientMock = (): AnalyticsClient => ({
+const NoopAnalyticsClient: AnalyticsClient = {
   sendPageNavigationEvent: () => Promise.resolve(),
   sendEvent: () => Promise.resolve(),
-});
+};
 
-export { getAnalyticsClientMock };
+export { NoopAnalyticsClient };

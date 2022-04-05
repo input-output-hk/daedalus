@@ -43,7 +43,7 @@ const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const isWatchMode = process.env.IS_WATCH_MODE;
-const analyticsEnabled = isMainnet || isStaging || isTestnet;
+const analyticsFeatureEnabled = isMainnet || isStaging || isTestnet;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const NODE_VERSION = '1.33.0'; // TODO: pick up this value from process.env
@@ -105,7 +105,7 @@ export const environment: Environment = Object.assign(
     isBlankScreenFixActive,
     keepLocalClusterRunning,
     hasMetHardwareRequirements,
-    analyticsEnabled,
+    analyticsFeatureEnabled,
   },
   process.env
 );

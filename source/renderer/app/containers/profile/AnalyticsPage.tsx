@@ -6,9 +6,13 @@ import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog'
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 
+interface State {
+  pageViewEventSent: boolean;
+}
+
 @inject('stores', 'actions')
 @observer
-class AnalyticsPage extends Component<InjectedProps> {
+class AnalyticsPage extends Component<InjectedProps, State> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -20,6 +24,13 @@ class AnalyticsPage extends Component<InjectedProps> {
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
+
+    if (!this.state.pageViewEventSent && analyticsAccepted) {
+      this.props.stores.analytics.analyticsClient.sendPageNavigationEvent(
+        'Analytics'
+      );
+      this.setState({ pageViewEventSent: true });
+    }
   };
 
   render() {

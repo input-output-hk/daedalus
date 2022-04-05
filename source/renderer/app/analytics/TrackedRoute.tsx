@@ -11,12 +11,13 @@ export const TrackedRoute: FC<TrackedRouteProps> = (props) => {
   const { pageTitle, ...restProps } = props;
 
   useEffect(() => {
+    // TODO investigate how to use this properly
     const match = matchPath(window.location.hash.replace('#', ''), props);
 
     if (match !== null) {
       analytics.sendPageNavigationEvent(props.pageTitle);
     }
-  }, [window.location.pathname, props]);
+  }, [window.location.hash, props]);
 
   return <Route {...restProps} />;
 };
