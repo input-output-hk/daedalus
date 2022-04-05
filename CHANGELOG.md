@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
 - Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
 - Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
