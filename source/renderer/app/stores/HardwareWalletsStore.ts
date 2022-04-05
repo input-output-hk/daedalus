@@ -831,6 +831,15 @@ export default class HardwareWalletsStore extends Store {
         } else if (
           this.connectedHardwareWalletsDevices.has(lastUnpairedDevicePath)
         ) {
+          logger.debug(
+            '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: last unpaired matched with connected devices',
+            {
+              connectedHardwareWalletsDevices: Array.from(
+                this.connectedHardwareWalletsDevices.keys()
+              ),
+              lastUnpairedDevicePath,
+            }
+          );
           transportDevice = lastUnpairedDevice;
         } else {
           logger.debug(
@@ -923,7 +932,13 @@ export default class HardwareWalletsStore extends Store {
           const devicePath = transportDevice.path;
           // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
           logger.debug(
-            '[HW-DEBUG] HWStore - getCardanoAdaApp - from  establishHardwareWalletConnection'
+            '[HW-DEBUG] HWStore - getCardanoAdaApp - from  establishHardwareWalletConnection',
+            {
+              devicePath,
+              connectedHardwareWalletsDevices: Array.from(
+                this.connectedHardwareWalletsDevices.keys()
+              ),
+            }
           );
           this.stopCardanoAdaAppFetchPoller();
           // @ts-ignore ts-migrate(2554) FIXME: Expected 5 arguments, but got 3.

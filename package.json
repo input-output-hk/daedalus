@@ -11,7 +11,6 @@
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
-    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" gulp dev",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e:fail-fast",
     "test:jest": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:generate:report": "ts-node tests/reporter.ts",
