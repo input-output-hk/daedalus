@@ -24,6 +24,7 @@
 
 ### Chores
 
+- Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
 - Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
 - Removed `dockutil` due compatibility issues with MacOs Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
