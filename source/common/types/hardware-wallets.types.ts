@@ -99,15 +99,28 @@ export const CertificateTypes: {
   STAKE_DEREGISTRATION: 1,
   STAKE_DELEGATION: 2,
 };
-export type TransportDevice = {
+
+export type LedgerTransportDevice = {
   deviceId: string | null | undefined;
   // @TODO - mark as mandatory parameter once Ledger improver
-  deviceType: DeviceType;
+  deviceType: 'ledger';
+  deviceModel: string;
+  deviceName: string;
+  path: string | null | undefined;
+};
+
+export type TrezorTransportDevice = {
+  deviceId: string | null | undefined;
+  // @TODO - mark as mandatory parameter once Ledger improver
+  deviceType: 'trezor';
   deviceModel: string;
   deviceName: string;
   path: string | null | undefined;
   firmwareVersion: string | null | undefined;
 };
+
+export type TransportDevice = LedgerTransportDevice | TrezorTransportDevice;
+
 export type Certificate = {
   address: string;
   type: string;

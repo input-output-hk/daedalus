@@ -13,8 +13,18 @@ export type Device = {
   usage: number;
 };
 
+export type DeviceModel = {
+  id: string;
+  productName: string;
+  productIdMM: number;
+  legacyUsbProductId: number;
+  usbOnly: boolean;
+  memorySize: number;
+  blockSize: number;
+};
+
 export type TrackedDevice = {
-  deviceModel: string;
+  deviceModel: DeviceModel;
   descriptor: string;
   device: Device;
 };

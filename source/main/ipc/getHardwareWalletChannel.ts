@@ -26,6 +26,7 @@ import {
 
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
+import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -55,7 +56,7 @@ class EventObserver {
     this.getHardwareWalletConnectionChannel = getHardwareWalletConnectionChannel;
   }
 
-  next = async (event) => {
+  next = async (event: DeviceDetectionPayload) => {
     try {
       const transportList = await TransportNodeHid.list();
       const connectionChanged = event.type === 'add' || event.type === 'remove';
@@ -69,8 +70,7 @@ class EventObserver {
 
       if (connectionChanged) {
         logger.info('[HW-DEBUG] Ledger NEXT - connection changed');
-        const device = get(event, 'device', {});
-        const deviceModel = get(event, 'deviceModel', {});
+        const { device, deviceModel } = event;
 
         if (event.type === 'add') {
           if (!devicesMemo[device.path]) {
@@ -118,9 +118,6 @@ class EventObserver {
               deviceName: deviceModel.productName,
               // e.g. Test Name
               path: device.path,
-
-              productId: device.productId,
-
               product: device.product,
             },
             this.mainWindow
@@ -233,13 +230,19 @@ export const handleHardwareWalletRequests = async (
 
   waitForLedgerDevicesChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::waiting');
-    const trackedDevice = await waitForDevice();
+    const { device, deviceModel } = await waitForDevice();
     logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::found');
     return {
-      device: {
-        path: trackedDevice.device.path,
-        product: trackedDevice.device.product,
-      },
+      disconnected: false,
+      deviceType: 'ledger',
+      deviceId: null,
+      // Available only when Cardano APP opened
+      deviceModel: deviceModel.id,
+      // e.g. nanoS
+      deviceName: deviceModel.productName,
+      // e.g. Test Name
+      path: device.path,
+      product: device.product,
     };
   });
 

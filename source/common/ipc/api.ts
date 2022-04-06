@@ -1,3 +1,4 @@
+import { BridgeInfo, Device as TrezorDevice, UdevInfo } from 'trezor-connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -463,6 +464,38 @@ export type GetBlockSyncProgressMainResponse = {
 /**
  * Channels for connecting / interacting with Hardware Wallet devices
  */
+
+export type LedgerDevicePayload = {
+  disconnected: boolean;
+  deviceType: 'ledger';
+  deviceId: string | null;
+  deviceModel: string;
+  deviceName: string;
+  path: string;
+  product: string;
+};
+
+export type TrezorDevicePayload = {
+  disconnected: boolean;
+  deviceId: string;
+  deviceType: 'trezor';
+  deviceModel: TrezorDevice;
+  // e.g. "1" or "T"
+  deviceName: string;
+  path: string;
+  eventType: string;
+};
+
+export type TrezorDeviceErrorPayload = {
+  error?: {
+    payload: {
+      error: string;
+      bridge?: BridgeInfo;
+      udev?: UdevInfo;
+    };
+  };
+};
+
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
 export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
@@ -480,7 +513,10 @@ export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
 export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectionRendererResponse = Record<string, any>;
+export type getHardwareWalletConnectionRendererResponse =
+  | LedgerDevicePayload
+  | TrezorDevicePayload
+  | TrezorDeviceErrorPayload;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
@@ -515,6 +551,4 @@ export type ToggleRTSFlagsModeMainResponse = void;
 export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
 export const WAIT_FOR_LEDGER_DEVICES = 'WAIT_FOR_LEDGER_DEVICES';
 export type waitForLedgerDevicesRequest = void;
-export type waitForLedgerDevicesResponse = {
-  device: { path: string; product: string };
-};
+export type waitForLedgerDevicesResponse = LedgerDevicePayload;

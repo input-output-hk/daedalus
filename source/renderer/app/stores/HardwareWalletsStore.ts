@@ -21,7 +21,11 @@ import {
   isLedgerEnabled,
   getHardwareWalletsNetworkConfig,
 } from '../config/hardwareWalletsConfig';
-import { DEVICE_NOT_CONNECTED } from '../../../common/ipc/api';
+import {
+  DEVICE_NOT_CONNECTED,
+  LedgerDevicePayload,
+  TrezorDevicePayload,
+} from '../../../common/ipc/api';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
   getHardwareWalletTransportChannel,
@@ -239,7 +243,10 @@ export default class HardwareWalletsStore extends Store {
   } | null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   checkTransactionTimeInterval: IntervalID | null | undefined = null;
-  connectedHardwareWalletsDevices: Map<string, string> = new Map();
+  connectedHardwareWalletsDevices: Map<
+    string,
+    LedgerDevicePayload | TrezorDevicePayload
+  > = new Map();
 
   setup() {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -309,8 +316,8 @@ export default class HardwareWalletsStore extends Store {
   };
 
   waitForLedgerDevices = async () => {
-    const { device } = await waitForLedgerDevicesChannel.request();
-    this.connectedHardwareWalletsDevices.set(device.path, device.product);
+    const device = await waitForLedgerDevicesChannel.request();
+    this.connectedHardwareWalletsDevices.set(device.path, device);
     return device;
   };
 
@@ -324,7 +331,15 @@ export default class HardwareWalletsStore extends Store {
     const poller = () => {
       let canRun = true;
       let isRunning = false;
-      const product = this.connectedHardwareWalletsDevices.get(devicePath);
+
+      const connectedDevice = this.connectedHardwareWalletsDevices.get(
+        devicePath
+      );
+
+      const product =
+        connectedDevice?.deviceType === 'ledger'
+          ? connectedDevice?.product
+          : null;
 
       const run = async () => {
         try {
@@ -827,11 +842,19 @@ export default class HardwareWalletsStore extends Store {
             '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: wait for new ledger devices'
           );
 
-          const { path } = await this.waitForLedgerDevices();
+          const ledgerDevice = await this.waitForLedgerDevices();
+
+          logger.debug('[HW-DEBUG] HWStore - Use ledger device as transport', {
+            transportDevice: toJS(transportDevice),
+          });
+
+          runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
+            this.transportDevice = ledgerDevice;
+          });
 
           this.stopCardanoAdaAppFetchPoller();
           // @ts-ignore ts-migrate(2554) FIXME: Expected 5 arguments, but got 3.
-          this.useCardanoAppInterval(path);
+          this.useCardanoAppInterval(ledgerDevice.path);
           return null;
         }
 
@@ -2634,7 +2657,15 @@ export default class HardwareWalletsStore extends Store {
           path,
         }
       );
-      this.connectedHardwareWalletsDevices.set(path, product);
+      this.connectedHardwareWalletsDevices.set(path, {
+        product,
+        path,
+        disconnected,
+        deviceId,
+        deviceModel,
+        deviceName,
+        deviceType,
+      });
     }
 
     // Handle Trezor Bridge instance checker

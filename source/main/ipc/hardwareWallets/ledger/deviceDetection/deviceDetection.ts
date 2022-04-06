@@ -6,13 +6,13 @@ import { detectDevices as useEventDrivenDetection } from './eventDrivenDetection
 import { detectDevices as usePollingDrivenDetection } from './pollingDrivenDetection';
 import { Detector, TrackedDevice, DectorUnsubscriber } from './types';
 
-type Payload = {
+export type DeviceDetectionPayload = {
   type: 'add' | 'remove';
 } & TrackedDevice;
 
 export const deviceDetection = (
-  onAdd: (arg0: Payload) => void,
-  onRemove: (arg0: Payload) => void
+  onAdd: (arg0: DeviceDetectionPayload) => void,
+  onRemove: (arg0: DeviceDetectionPayload) => void
 ) => {
   Promise.resolve(DeviceTracker.getDevices()).then((devices) => {
     // this needs to run asynchronously so the subscription is defined during this phase

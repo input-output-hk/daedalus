@@ -2,7 +2,7 @@ import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import { identifyUSBProductId } from '@ledgerhq/devices';
 
 import { logger } from '../../../../utils/logging';
-import { Device, TrackedDevice } from './types';
+import { Device, TrackedDevice, DeviceModel } from './types';
 
 export class DeviceTracker {
   knownDevices: Map<string, TrackedDevice>;
@@ -21,7 +21,7 @@ export class DeviceTracker {
     const descriptor: string = device.path;
     const deviceModel = (identifyUSBProductId(
       device.productId
-    ) as unknown) as string;
+    ) as unknown) as DeviceModel;
 
     return { device, deviceModel, descriptor } as TrackedDevice;
   }
