@@ -1459,10 +1459,12 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action
-  resetWalletPairing = () => {
+  resetWalletPairing = async () => {
     this.stopCardanoAdaAppFetchPoller();
 
     this.isWalletPairingInitiated = false;
+
+    return this.cleanUpPendingDevices();
   };
 
   @action
@@ -1858,6 +1860,8 @@ export default class HardwareWalletsStore extends Store {
       this._refreshHardwareWalletsLocalData();
 
       this._refreshHardwareWalletDevices();
+
+      await this.resetWalletPairing();
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('[HW-DEBUG] HWStore - Export key error');
@@ -1923,6 +1927,8 @@ export default class HardwareWalletsStore extends Store {
           }
         );
       }
+
+      await this.resetWalletPairing();
 
       // Pass other errors to caller (establishHardwareWalletConnection() in this case) and handle additional actions if needed
       throw error;
@@ -2827,19 +2833,14 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletDevices();
 
     // Start connection establishing process if devices listener flag is UP
-    const isCardanoAppInProgress =
-      !disconnected && this.cardanoAdaAppPollingInterval?.isRunning();
-
     logger.debug('[HW-DEBUG] HWStore - establish connection guard: ', {
-      isCardanoAppInProgress,
       isListeningForDevice: this.isListeningForDevice,
     });
 
     if (
-      (this.isListeningForDevice &&
-        !disconnected &&
-        (!eventType || eventType === DeviceEvents.CONNECT)) ||
-      isCardanoAppInProgress
+      this.isListeningForDevice &&
+      !disconnected &&
+      (!eventType || eventType === DeviceEvents.CONNECT)
     ) {
       runInAction('HardwareWalletsStore:: remove device listener', () => {
         this.isListeningForDevice = false;
@@ -2925,6 +2926,34 @@ export default class HardwareWalletsStore extends Store {
         ['id']
       )
     );
+
+  cleanUpPendingDevices = async () => {
+    const transformedData: Array<{
+      id: string;
+      isPending: boolean;
+    }> = Object.entries(this.hardwareWalletDevices).map(([key, value]) => ({
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'paired' does not exist on type 'Hardware... Remove this comment to see the full error message
+      isPending: value.isPending,
+      id: key,
+    }));
+
+    const pendingHardwareWallets = transformedData.filter(
+      ({ isPending }) => isPending
+    );
+
+    const pendingHardwareWalletsIds = pendingHardwareWallets.map(
+      ({ id }) => id
+    );
+
+    const unsetHardwareWalletDeviceRequests = pendingHardwareWalletsIds.map(
+      (id) =>
+        this._unsetHardwareWalletDevice({
+          deviceId: id,
+        })
+    );
+
+    return Promise.all(unsetHardwareWalletDeviceRequests);
+  };
 
   @action
   resetInitializedConnection = async (
