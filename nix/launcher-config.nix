@@ -31,6 +31,11 @@ let
       cluster = "alonzo-purple";
       networkName = "alonzo-purple";
     };
+    marlowe_pioneers = {
+      cardanoEnv = cardanoLib.environments.marlowe-pioneers;
+      cluster = "marlowe-pioners";
+      networkName = "marlowe-pioneers";
+    };
   };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
@@ -90,6 +95,7 @@ let
       testnet = "Testnet";
       shelley_qa = "Shelley QA";
       alonzo_purple = "Alonzo Purple";
+      marlowe_pioneers = "Marlowe Pioneers";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;

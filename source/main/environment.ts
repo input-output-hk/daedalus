@@ -6,6 +6,7 @@ import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
   evaluateNetwork,
   checkIsAlonzoPurple,
+  checkIsMarlowePioneers,
   checkIsShelleyQA,
   checkIsDev,
   checkIsTest,
@@ -39,6 +40,7 @@ const isMainnet = checkIsMainnet(NETWORK);
 const isStaging = checkIsStaging(NETWORK);
 const isTestnet = checkIsTestnet(NETWORK);
 const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
+const isMarlowePioneers = checkIsMarlowePioneers(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
@@ -83,6 +85,7 @@ export const environment: Environment = Object.assign(
     isStaging,
     isTestnet,
     isAlonzoPurple,
+    isMarlowePioneers,
     isShelleyQA,
     isSelfnode,
     isDevelopment,

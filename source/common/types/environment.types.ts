@@ -11,6 +11,7 @@ export type Environment = {
   isStaging: boolean;
   isTestnet: boolean;
   isAlonzoPurple: boolean;
+  isMarlowePioneers: boolean;
   isShelleyQA: boolean;
   isSelfnode: boolean;
   isDevelopment: boolean;
@@ -44,6 +45,7 @@ export const TESTNET = 'testnet';
 export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
 export const ALONZO_PURPLE = 'alonzo_purple';
+export const MARLOWE_PIONEERS = 'marlowe_pioneers';
 export const SELFNODE = 'selfnode';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
@@ -61,6 +63,7 @@ export type Network =
   | 'staging'
   | 'shelley_qa'
   | 'alonzo_purple'
+  | 'marlowe_pioneers'
   | 'selfnode'
   | 'development';
 export const networkPrettyNames = {
@@ -69,6 +72,7 @@ export const networkPrettyNames = {
   staging: 'Staging',
   shelley_qa: 'Shelley QA',
   alonzo_purple: 'Alonzo Purple',
+  marlowe_pioneers: 'Marlowe Pioneers',
   selfnode: 'Selfnode',
   development: 'Development',
 };

@@ -3876,17 +3876,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
+        "defaultMessage": "!!!Marlowe Pioneers",
+        "description": "Label for marlowe_pioneers with version.",
         "end": {
           "column": 3,
           "line": 41
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.tsx",
+        "id": "test.environment.marlowePioneersLabel",
+        "start": {
+          "column": 20,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.tsx",
         "id": "test.environment.selfnodeLabel",
         "start": {
           "column": 12,
-          "line": 37
+          "line": 42
         }
       },
       {
@@ -3894,13 +3908,13 @@
         "description": "Label for development with version.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 51
         },
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.tsx",
         "id": "test.environment.developmentLabel",
         "start": {
           "column": 15,
-          "line": 42
+          "line": 47
         }
       }
     ],
@@ -17762,17 +17776,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
+        "defaultMessage": "!!!Marlowe Pioneers",
+        "description": "Label for marlowe_pioneers with version.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.tsx",
+        "id": "test.environment.marlowePioneersLabel",
+        "start": {
+          "column": 20,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Selfnode vx",
+        "description": "Label for selfnode with version.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.tsx",
         "id": "test.environment.selfnodeLabel",
         "start": {
           "column": 12,
-          "line": 32
+          "line": 37
         }
       },
       {
@@ -17780,13 +17808,13 @@
         "description": "Label for development with version.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 46
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.tsx",
         "id": "test.environment.developmentLabel",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 42
         }
       }
     ],
@@ -19008,17 +19036,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Development",
-        "description": "\"development\" Cardano network",
+        "defaultMessage": "!!!Marlowe Pioneers",
+        "description": "\"Marlowe Pioneers\" Cardano network",
         "end": {
           "column": 3,
           "line": 229
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
+        "id": "environment.network.marlowe_pioneers",
+        "start": {
+          "column": 28,
+          "line": 225
+        }
+      },
+      {
+        "defaultMessage": "!!!Development",
+        "description": "\"development\" Cardano network",
+        "end": {
+          "column": 3,
+          "line": 234
+        },
+        "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 225
+          "line": 230
         }
       },
       {
@@ -19026,13 +19068,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 234
+          "line": 239
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 230
+          "line": 235
         }
       },
       {
@@ -19040,13 +19082,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 239
+          "line": 244
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 235
+          "line": 240
         }
       },
       {
@@ -19054,13 +19096,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 244
+          "line": 249
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 240
+          "line": 245
         }
       },
       {
@@ -19068,13 +19110,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 249
+          "line": 254
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 245
+          "line": 250
         }
       },
       {
@@ -19082,13 +19124,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 254
+          "line": 259
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 250
+          "line": 255
         }
       },
       {
@@ -19096,13 +19138,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 259
+          "line": 264
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 255
+          "line": 260
         }
       },
       {
@@ -19110,13 +19152,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 264
+          "line": 269
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 260
+          "line": 265
         }
       },
       {
@@ -19124,13 +19166,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 269
+          "line": 274
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 265
+          "line": 270
         }
       },
       {
@@ -19138,13 +19180,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 274
+          "line": 279
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 270
+          "line": 275
         }
       },
       {
@@ -19152,13 +19194,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 279
+          "line": 284
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 275
+          "line": 280
         }
       },
       {
@@ -19166,13 +19208,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 284
+          "line": 289
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 280
+          "line": 285
         }
       },
       {
@@ -19180,13 +19222,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 289
+          "line": 294
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 285
+          "line": 290
         }
       },
       {
@@ -19194,13 +19236,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 294
+          "line": 299
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 290
+          "line": 295
         }
       },
       {
@@ -19208,13 +19250,13 @@
         "description": "Reveal label.",
         "end": {
           "column": 3,
-          "line": 299
+          "line": 304
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.reveal",
         "start": {
           "column": 10,
-          "line": 295
+          "line": 300
         }
       },
       {
@@ -19222,13 +19264,13 @@
         "description": "Hide label.",
         "end": {
           "column": 3,
-          "line": 304
+          "line": 309
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.hide",
         "start": {
           "column": 8,
-          "line": 300
+          "line": 305
         }
       },
       {
@@ -19236,13 +19278,13 @@
         "description": "View label.",
         "end": {
           "column": 3,
-          "line": 309
+          "line": 314
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.view",
         "start": {
           "column": 8,
-          "line": 305
+          "line": 310
         }
       },
       {
@@ -19250,13 +19292,13 @@
         "description": "Copy label.",
         "end": {
           "column": 3,
-          "line": 314
+          "line": 319
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.labels.copy",
         "start": {
           "column": 8,
-          "line": 310
+          "line": 315
         }
       },
       {
@@ -19264,13 +19306,13 @@
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,
-          "line": 321
+          "line": 326
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.info.featureUnavailableWhileSyncing",
         "start": {
           "column": 34,
-          "line": 315
+          "line": 320
         }
       },
       {
@@ -19278,13 +19320,13 @@
         "description": "Dropdown search \"No results\" message",
         "end": {
           "column": 3,
-          "line": 326
+          "line": 331
         },
         "file": "source/renderer/app/i18n/global-messages.ts",
         "id": "global.search.noResultsMessage",
         "start": {
           "column": 26,
-          "line": 322
+          "line": 327
         }
       }
     ],

@@ -222,6 +222,11 @@ export default defineMessages({
     defaultMessage: '!!!Alonzo Purple',
     description: '"Alonzo Purple" Cardano network',
   },
+  network_marlowe_pioneers: {
+    id: 'environment.network.marlowe_pioneers',
+    defaultMessage: '!!!Marlowe Pioneers',
+    description: '"Marlowe Pioneers" Cardano network',
+  },
   network_development: {
     id: 'environment.network.development',
     defaultMessage: '!!!Development',

@@ -4,6 +4,7 @@ import {
   STAGING,
   SHELLEY_QA,
   ALONZO_PURPLE,
+  MARLOWE_PIONEERS,
   SELFNODE,
 } from './environment.types';
 
@@ -28,6 +29,7 @@ export type NetworkNames =
   | 'staging'
   | 'shelley_qa'
   | 'alonzo_purple'
+  | 'marlowe_pioneers'
   | 'selfnode'
   | 'development'
   | string;
@@ -38,6 +40,7 @@ export const NetworkNameOptions = {
   staging: 'staging',
   shelley_qa: 'shelley_qa',
   alonzo_purple: 'alonzo_purple',
+  marlowe_pioneers: 'marlowe_pioneers',
   selfnode: 'selfnode',
   development: 'development',
 };
@@ -72,6 +75,7 @@ export type CardanoPidOptions =
   | 'staging-PREVIOUS-CARDANO-PID'
   | 'shelley_qa-PREVIOUS-CARDANO-PID'
   | 'alonzo_purple-PREVIOUS-CARDANO-PID'
+  | 'marlowe_pioneers-PREVIOUS-CARDANO-PID'
   | 'selfnode-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
   | string;
@@ -143,6 +147,7 @@ export const NetworkMagics: {
   testnet: NetworkMagicType;
   staging: NetworkMagicType;
   alonzo_purple: NetworkMagicType;
+  marlowe_pioneers: NetworkMagicType;
   shelley_qa: NetworkMagicType;
   selfnode: NetworkMagicType;
 } = {
@@ -154,6 +159,8 @@ export const NetworkMagics: {
   [TESTNET]: [1097911063, 0],
   // Cardano Alonzo Purple network magic
   [ALONZO_PURPLE]: [8, 0],
+  // Cardano Marlowe Pioneers network magic
+  [MARLOWE_PIONEERS]: [1565, 0],
   // Cardano Shelley QA network magic
   [SHELLEY_QA]: [3, 0],
   // Cardano Selfnode network magic

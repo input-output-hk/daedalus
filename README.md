@@ -120,6 +120,11 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+##### Marlowe Pioneers
+
+1. Run `yarn nix:marlowe_pioneers` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
 ##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.

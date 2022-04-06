@@ -34,6 +34,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Alonzo Purple',
     description: 'Label for alonzo_purple with version.',
   },
+  marlowe_pioneers: {
+    id: 'test.environment.marlowePioneersLabel',
+    defaultMessage: '!!!Marlowe Pioneers',
+    description: 'Label for marlowe_pioneers with version.',
+  },
   selfnode: {
     id: 'test.environment.selfnodeLabel',
     defaultMessage: '!!!Selfnode vx',
