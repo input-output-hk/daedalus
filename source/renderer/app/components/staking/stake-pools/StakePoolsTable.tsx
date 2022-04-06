@@ -17,9 +17,13 @@ import {
   useSortedStakePoolList,
   useCreateColumns,
   StakePoolsOrder,
+  StakePoolSortableProps,
 } from './hooks';
 
-export const defaultTableOrdering = {
+export const defaultTableOrdering: Record<
+  StakePoolSortableProps,
+  StakePoolsOrder
+> = {
   ranking: StakePoolsOrder.Asc,
   ticker: StakePoolsOrder.Asc,
   saturation: StakePoolsOrder.Asc,
@@ -52,7 +56,7 @@ type Props = {
 type State = {
   isPreloading: boolean;
   stakePoolsOrder: StakePoolsOrder;
-  stakePoolsSortBy: keyof StakePool;
+  stakePoolsSortBy: StakePoolSortableProps;
 };
 const initialState: State = {
   isPreloading: true,
@@ -72,7 +76,6 @@ function StakePoolsTableComponent({
   onOpenExternalLink,
   containerClassName,
   onSelect,
-  selectedPoolId,
 }: Props) {
   const [state, setState] = useState<State>(initialState);
 
@@ -81,7 +84,7 @@ function StakePoolsTableComponent({
   }, []);
 
   const handleSort = useCallback(
-    (newSortBy: keyof StakePool) => {
+    (newSortBy: StakePoolSortableProps) => {
       const { stakePoolsOrder, stakePoolsSortBy } = state;
       let newOrder = defaultTableOrdering[newSortBy];
 

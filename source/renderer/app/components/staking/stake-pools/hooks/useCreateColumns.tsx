@@ -18,6 +18,7 @@ import {
   toFixedUserFormat,
 } from '../../../../utils/formatters';
 import { messages } from '../StakePoolsTable.messages';
+import { StakePoolSortableProps } from './types';
 
 type UseCreateColumnsArgs = {
   currentTheme: string;
@@ -29,6 +30,11 @@ type UseCreateColumnsArgs = {
   intl: Intl;
 };
 
+type StakePoolColumn = Column<StakePool> & {
+  id: StakePoolSortableProps;
+  accessor: StakePoolSortableProps;
+};
+
 export const useCreateColumns = ({
   numberOfRankedStakePools,
   intl,
@@ -38,7 +44,7 @@ export const useCreateColumns = ({
   containerClassName,
   showWithSelectButton,
 }: UseCreateColumnsArgs) =>
-  useMemo<Column<StakePool>[]>(
+  useMemo<StakePoolColumn[]>(
     () => [
       {
         id: 'ranking',

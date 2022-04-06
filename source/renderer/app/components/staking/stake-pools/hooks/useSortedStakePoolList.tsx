@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { orderBy } from 'lodash';
 import StakePool from '../../../../domains/StakePool';
+import { StakePoolSortableProps } from './types';
 
 export enum StakePoolsOrder {
   Asc = 'asc',
@@ -9,7 +10,7 @@ export enum StakePoolsOrder {
 
 interface UseSortedStakePoolListArgs {
   stakePoolList: StakePool[];
-  sortBy: keyof StakePool;
+  sortBy: StakePoolSortableProps;
   order: StakePoolsOrder;
 }
 
