@@ -817,50 +817,21 @@ export default class HardwareWalletsStore extends Store {
           '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: Listening for device'
         );
 
-        let lastUnpairedDevicePath;
-
-        if ('path' in lastUnpairedDevice) {
-          lastUnpairedDevicePath = lastUnpairedDevice.path;
-        } else if ('device' in lastUnpairedDevice) {
-          lastUnpairedDevicePath = lastUnpairedDevice.device.path;
-        }
-
-        logger.debug(
-          '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: compare last unpaired path',
-          {
-            connectedHardwareWalletsDevices: Array.from(
-              this.connectedHardwareWalletsDevices.keys()
-            ),
-            lastUnpairedDevicePath,
-          }
-        );
-
         if (lastUnpairedDevice.deviceType === DeviceTypes.TREZOR) {
           transportDevice = await getHardwareWalletTransportChannel.request({
             devicePath,
             isTrezor,
           });
-        } else if (
-          lastUnpairedDevicePath &&
-          this.connectedHardwareWalletsDevices.has(lastUnpairedDevicePath)
-        ) {
-          logger.debug(
-            '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: last unpaired matched with connected devices',
-            {
-              connectedHardwareWalletsDevices: Array.from(
-                this.connectedHardwareWalletsDevices.keys()
-              ),
-              lastUnpairedDevicePath,
-            }
-          );
-          transportDevice = lastUnpairedDevice;
         } else {
           logger.debug(
-            '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: last unpaired device not connected'
+            '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: wait for new ledger devices'
           );
-          runInAction('HardwareWalletsStore:: set device listener', () => {
-            this.isListeningForDevice = true;
-          });
+
+          const { path } = await this.waitForLedgerDevices();
+
+          this.stopCardanoAdaAppFetchPoller();
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 5 arguments, but got 3.
+          this.useCardanoAppInterval(path);
           return null;
         }
 
