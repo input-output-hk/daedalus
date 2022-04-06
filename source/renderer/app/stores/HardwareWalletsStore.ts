@@ -2619,31 +2619,22 @@ export default class HardwareWalletsStore extends Store {
       params,
     });
 
-    if (path) {
-      if (disconnected) {
-        logger.debug(
-          '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::removing path from memory ',
-          {
-            path,
-          }
-        );
-        this.connectedHardwareWalletsDevices.delete(path);
-      } else {
-        this.connectedHardwareWalletsDevices.set(path, product);
-        logger.debug(
-          '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::adding path to memory ',
-          {
-            path,
-          }
-        );
-      }
-    } else {
+    if (disconnected) {
       logger.debug(
-        '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::missing path',
+        '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::removing path from memory ',
         {
           path,
         }
       );
+      this.connectedHardwareWalletsDevices.delete(path);
+    } else {
+      logger.debug(
+        '[HW-DEBUG] HWStore - CHANGE status::in-memory-path::adding path to memory ',
+        {
+          path,
+        }
+      );
+      this.connectedHardwareWalletsDevices.set(path, product);
     }
 
     // Handle Trezor Bridge instance checker
