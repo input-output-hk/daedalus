@@ -2719,7 +2719,10 @@ export default class HardwareWalletsStore extends Store {
     if (disconnected && deviceType === DeviceTypes.LEDGER) {
       // Remove all stored Ledger instances from LC - both pending and paired (with software Wallets)
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.debug('[HW-DEBUG] HWStore - device disconnected');
+      logger.debug('[HW-DEBUG] HWStore - device disconnected', {
+        hardwareWalletDevices: toJS(hardwareWalletDevices),
+        path,
+      });
       const recognizedLedgerDevice = find(
         hardwareWalletDevices,
         // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'HardwareWa... Remove this comment to see the full error message
