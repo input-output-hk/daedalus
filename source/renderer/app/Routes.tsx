@@ -46,8 +46,7 @@ export const Routes = withRouter(() => (
           path={ROUTES.ROOT}
           component={() => <Redirect to={ROUTES.WALLETS.ROOT} />}
         />
-        <TrackedRoute
-          pageTitle="Initial Settings"
+        <Route
           path={ROUTES.PROFILE.INITIAL_SETTINGS}
           component={InitialSettingsPage}
         />

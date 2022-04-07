@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import styles from './NormalSwitch.scss';
 
 type Props = {
+  className?: string;
   checked?: boolean;
   label?: string;
   onChange?: (...args: Array<any>) => any;
@@ -14,7 +15,6 @@ export default class NormalSwitch extends Component<Props> {
   render() {
     return (
       <Checkbox
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'className' does not exist on type 'Reado... Remove this comment to see the full error message
         className={classnames(styles.component, this.props.className)}
         themeId={IDENTIFIERS.SWITCH}
         skin={SwitchSkin}
