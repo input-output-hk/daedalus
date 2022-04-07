@@ -1578,7 +1578,10 @@ export default class HardwareWalletsStore extends Store {
         isTrezor,
         devicePath,
       });
-      const deviceId = extendedPublicKey.deviceId || transportDevice.deviceId;
+      const deviceId =
+        extendedPublicKey.deviceId ||
+        transportDevice.deviceId ||
+        extendedPublicKey.publicKeyHex;
       logger.debug('[HW-DEBUG] HWStore - EXPORT - deviceID: ', {
         deviceId,
       });
@@ -2944,6 +2947,10 @@ export default class HardwareWalletsStore extends Store {
     const pendingHardwareWalletsIds = pendingHardwareWallets.map(
       ({ id }) => id
     );
+
+    logger.debug('[HW-DEBUG] HWStore - cleanUpPendingDevices - cleanup ids: ', {
+      pendingHardwareWalletsIds,
+    });
 
     const unsetHardwareWalletDeviceRequests = pendingHardwareWalletsIds.map(
       (id) =>
