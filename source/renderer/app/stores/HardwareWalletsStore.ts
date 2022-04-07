@@ -842,15 +842,7 @@ export default class HardwareWalletsStore extends Store {
             '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: wait for new ledger devices'
           );
 
-          const ledgerDevice = await this.waitForLedgerDevices();
-
-          logger.debug('[HW-DEBUG] HWStore - Use ledger device as transport', {
-            transportDevice: toJS(transportDevice),
-          });
-
-          runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
-            this.transportDevice = ledgerDevice;
-          });
+          const ledgerDevice = await this.waitForLedgerTransportDevice();
 
           this.stopCardanoAdaAppFetchPoller();
           // @ts-ignore ts-migrate(2554) FIXME: Expected 5 arguments, but got 3.
@@ -1547,6 +1539,24 @@ export default class HardwareWalletsStore extends Store {
       this.verifyAddress(this.tempAddressToVerify);
     }
   };
+
+  waitForLedgerTransportDevice = async () => {
+    const ledgerDevice = await this.waitForLedgerDevices();
+
+    logger.debug(
+      '[HW-DEBUG] HWStore::getLedgerTransportDevice::Use ledger device as transport',
+      {
+        transportDevice: toJS(ledgerDevice),
+      }
+    );
+
+    runInAction('HardwareWalletsStore:: set HW transportDevice', () => {
+      this.transportDevice = ledgerDevice;
+    });
+
+    return ledgerDevice;
+  };
+
   @action
   _getExtendedPublicKey = async (
     forcedPath: string | null | undefined,
@@ -2522,8 +2532,9 @@ export default class HardwareWalletsStore extends Store {
           logger.debug('[HW-DEBUG] INITIATE tx - I have transport');
         } else {
           logger.info('[HW-DEBUG] HW STORE WAIT FOR LEDGER DEVICE');
-          await this.waitForLedgerDevices();
-          transportDevice = await this.establishHardwareWalletConnection();
+
+          transportDevice = await this.waitForLedgerTransportDevice();
+
           logger.info('[HW-DEBUG] HW STORE Transport received', {
             transportDevice,
           });
@@ -2547,15 +2558,12 @@ export default class HardwareWalletsStore extends Store {
         });
         throw e;
       }
-    } else if (
-      deviceType === DeviceTypes.LEDGER &&
-      !this.connectedHardwareWalletsDevices.has(devicePath)
-    ) {
+    } else if (deviceType === DeviceTypes.LEDGER) {
       logger.info(
         '[HW-DEBUG] HWStore::initiateTransaction::Device not connected'
       );
-      const connectedDevice = await this.waitForLedgerDevices();
-      devicePath = connectedDevice.path;
+      const ledgerDevice = await this.waitForLedgerTransportDevice();
+      devicePath = ledgerDevice.path;
     }
 
     runInAction(
