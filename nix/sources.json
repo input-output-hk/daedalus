@@ -29,10 +29,22 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "a5085acbd2670c24251cf8d76a4e83c77a2679ba",
-        "sha256": "1apzfy7qdgf6l0lb3icqz3rvaq2w3a53xq6wvhqnbfi8i7cacy03",
+        "rev": "45f33a4cb09999b37fcbda7dfed8183b4245e69a",
+        "sha256": "1zf13phlblr25s2wd1gj4w637zv2rdyp8wnjjaad45ycxmaaz10c",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a5085acbd2670c24251cf8d76a4e83c77a2679ba.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/45f33a4cb09999b37fcbda7dfed8183b4245e69a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "flake-compat": {
+        "branch": "fixes",
+        "description": null,
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "flake-compat",
+        "rev": "7da118186435255a30b5ffeabba9629c344c0bec",
+        "sha256": "01iwymbnyadqj1xfl0xhk8582v7k9b2m6s6yxp3r805w4g3h1k62",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/flake-compat/archive/7da118186435255a30b5ffeabba9629c344c0bec.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
