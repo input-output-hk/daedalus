@@ -647,17 +647,17 @@ export const handleHardwareWalletRequests = async (
       const { version } = await deviceConnection.getVersion();
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
-      const { serial } = await deviceConnection.getSerial();
+      const { serialHex } = await deviceConnection.getSerial();
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
-        `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serial}`
+        `[HW-DEBUG] getCardanoAdaAppChannel:: deviceSerial: ${serialHex}`
       );
       const { minor, major, patch } = version;
       return Promise.resolve({
         minor,
         major,
         patch,
-        deviceId: serial,
+        deviceId: serialHex,
       });
     } catch (error) {
       const errorCode = error.code || '';
@@ -806,7 +806,7 @@ export const handleHardwareWalletRequests = async (
       return Promise.resolve({
         publicKeyHex: extendedPublicKey.publicKeyHex,
         chainCodeHex: extendedPublicKey.chainCodeHex,
-        deviceId: deviceSerial.serial,
+        deviceId: deviceSerial.serialHex,
       });
     } catch (error) {
       logger.info('[HW-DEBUG] EXPORT KEY ERROR', error);

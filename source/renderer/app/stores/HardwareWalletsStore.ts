@@ -1578,10 +1578,8 @@ export default class HardwareWalletsStore extends Store {
         isTrezor,
         devicePath,
       });
-      const deviceId =
-        extendedPublicKey.deviceId ||
-        transportDevice.deviceId ||
-        extendedPublicKey.publicKeyHex;
+      const deviceId = extendedPublicKey.deviceId || transportDevice.deviceId;
+
       logger.debug('[HW-DEBUG] HWStore - EXPORT - deviceID: ', {
         deviceId,
       });
