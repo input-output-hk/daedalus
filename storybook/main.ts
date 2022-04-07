@@ -3,8 +3,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'webpack'.
 const webpack = require('webpack');
 
-const isCi = process.env.CI && process.env.CI !== '';
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   stories: ['../storybook/stories/index.ts'],
   addons: [
     '@storybook/addon-knobs',
@@ -12,9 +14,6 @@ module.exports = {
     '@storybook/addon-links',
     './addons/DaedalusMenu/register',
   ],
-  core: {
-    builder: 'webpack5',
-  },
   // Make whatever fine-grained changes you need
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
@@ -51,20 +50,25 @@ module.exports = {
     config.module.rules.push(
       {
         test: /\.tsx?$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              cacheCompression: false,
-              cacheDirectory: true,
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react',
-                '@babel/preset-typescript',
-              ],
+        loader: 'swc-loader',
+        options: {
+          parseMap: true,
+          sourceMaps: true,
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              tsx: true,
+              decorators: true,
             },
+            transform: {
+              react: {
+                runtime: 'automatic',
+              },
+            },
+            target: 'es2019',
+            loose: false,
           },
-        ],
+        },
       },
       {
         test: /\.scss/,

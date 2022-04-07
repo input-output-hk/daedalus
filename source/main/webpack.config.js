@@ -66,20 +66,16 @@ module.exports = {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
-        use: [
-          {
-            loader: 'swc-loader',
-            options: {
-              jsc: {
-                parser: {
-                  syntax: 'typescript',
-                },
-                target: 'es2019',
-                loose: false,
-              },
+        loader: 'swc-loader',
+        options: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
             },
+            target: 'es2019',
+            loose: false,
           },
-        ],
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,

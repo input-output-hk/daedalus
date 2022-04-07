@@ -36,27 +36,23 @@ module.exports = {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/main/,
-        use: [
-          {
-            loader: 'swc-loader',
-            options: {
-              jsc: {
-                parser: {
-                  syntax: 'typescript',
-                  tsx: true,
-                  decorators: true,
-                },
-                transform: {
-                  react: {
-                    refresh: isDevelopment,
-                  },
-                },
-                target: 'es2019',
-                loose: false,
+        loader: 'swc-loader',
+        options: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              tsx: true,
+              decorators: true,
+            },
+            transform: {
+              react: {
+                refresh: isDevelopment,
               },
             },
+            target: 'es2019',
+            loose: false,
           },
-        ],
+        },
       },
       {
         test: /\.scss/,
