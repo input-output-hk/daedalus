@@ -132,7 +132,7 @@ const handleWindowClose = async (event: Event | null | undefined) => {
 
 const onAppReady = async () => {
   setupLogging();
-  logUsedVersion(
+  await logUsedVersion(
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );

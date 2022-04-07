@@ -1,25 +1,39 @@
 const webpack = require('webpack');
 const path = require('path');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 class ManageElectronProcessPlugin {
+  isRunning = false;
+  _process = null;
+  _shouldRestart = false;
+  start() {
+    this._process = spawn('yarn', ['electron', '.'], {
+      stdio: 'inherit',
+      shell: true,
+    });
+    this.isRunning = true;
+    // Handle next electron shutdown
+    this._process.once('close', () => this.onProcessClose());
+  }
+  restart() {
+    this._shouldRestart = true;
+    this._process.kill();
+  }
+  onProcessClose() {
+    this._process = null;
+    this.isRunning = false;
+    if (this._shouldRestart) {
+      this.start();
+      this._shouldRestart = false;
+    }
+  }
   apply(compiler) {
     if (compiler.options.watch) {
-      let electronMainProcess = null;
-      let isMainProcessBeingRestarted = false;
       compiler.hooks.done.tap('RestartElectronPlugin', () => {
-        if (electronMainProcess === null) {
-          electronMainProcess = exec('yarn electron .');
-          electronMainProcess.once('close', () => {
-            electronMainProcess = null;
-            if (isMainProcessBeingRestarted) {
-              electronMainProcess = exec('yarn electron .');
-              isMainProcessBeingRestarted = false;
-            }
-          });
-        } else if (!isMainProcessBeingRestarted) {
-          isMainProcessBeingRestarted = true;
-          electronMainProcess.kill();
+        if (this.isRunning) {
+          this.restart();
+        } else {
+          this.start();
         }
       });
     }
@@ -39,7 +53,7 @@ module.exports = {
   },
   mode: isDevelopment ? 'development' : 'production',
   target: 'electron-main',
-  devtool: 'source-map',
+  devtool: isDevelopment ? 'eval-source-map' : 'source-map',
   optimization: {
     minimize: false,
   },
@@ -54,10 +68,15 @@ module.exports = {
         exclude: /source\/renderer/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: 'swc-loader',
             options: {
-              cacheCompression: false,
-              cacheDirectory: true,
+              jsc: {
+                parser: {
+                  syntax: 'typescript',
+                },
+                target: 'es2019',
+                loose: false,
+              },
             },
           },
         ],

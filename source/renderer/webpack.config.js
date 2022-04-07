@@ -16,7 +16,7 @@ module.exports = {
   },
   mode: isDevelopment ? 'development' : 'production',
   target: 'web',
-  devtool: 'source-map',
+  devtool: isDevelopment ? 'eval-source-map' : 'source-map',
   optimization: {
     minimize: false,
   },
@@ -38,13 +38,22 @@ module.exports = {
         exclude: /source\/main/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: 'swc-loader',
             options: {
-              cacheCompression: false,
-              cacheDirectory: true,
-              plugins: [
-                isDevelopment && require.resolve('react-refresh/babel'),
-              ].filter(Boolean),
+              jsc: {
+                parser: {
+                  syntax: 'typescript',
+                  tsx: true,
+                  decorators: true,
+                },
+                transform: {
+                  react: {
+                    refresh: isDevelopment,
+                  },
+                },
+                target: 'es2019',
+                loose: false,
+              },
             },
           },
         ],
