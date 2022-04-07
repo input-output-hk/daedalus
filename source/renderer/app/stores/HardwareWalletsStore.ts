@@ -1562,6 +1562,10 @@ export default class HardwareWalletsStore extends Store {
     const { transportDevice } = this;
 
     if (!transportDevice) {
+      logger.debug(
+        '[HW-DEBUG] HWStore::_getExtendedPublicKey:: Device not recognized '
+      );
+
       throw new Error(
         'Can not export extended public key: Device not recognized!'
       );
