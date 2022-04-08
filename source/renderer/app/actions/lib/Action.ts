@@ -3,7 +3,7 @@ import { bindAll } from 'lodash';
 /**
  * Listener type as Function that takes specific params <P>
  */
-export type Listener<P> = (params: P) => any;
+export type Listener<P> = (params: P) => void;
 /**
  * Action class with typed params
  */
@@ -30,8 +30,8 @@ export default class Action<Params> {
     this.listeners.push(listener);
   }
 
-  trigger(params?: Params) {
-    this.listeners.forEach((listener) => listener(params));
+  async trigger(params?: Params): Promise<void> {
+    await Promise.all(this.listeners.map((listener) => listener(params)));
   }
 
   remove(listener: Listener<Params>) {

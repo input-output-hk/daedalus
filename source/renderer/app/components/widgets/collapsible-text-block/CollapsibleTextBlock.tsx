@@ -19,14 +19,14 @@ export const CollapsibleTextBlock = injectIntl(
 
     return (
       <>
-        <p className={styles.header}>
+        <h2 className={styles.header}>
           {header}
           <button className={styles.toggleButton} onClick={handleToggle}>
             {intl.formatMessage(
               expanded ? globalMessages.hide : globalMessages.view
             )}
           </button>
-        </p>
+        </h2>
         {expanded && children}
       </>
     );

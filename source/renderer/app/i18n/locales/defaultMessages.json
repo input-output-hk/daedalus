@@ -310,13 +310,13 @@
         "description": "\"title\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 27
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 23
         }
       },
       {
@@ -324,13 +324,13 @@
         "description": "\"subtitle\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.subtitle",
         "start": {
           "column": 12,
-          "line": 29
+          "line": 28
         }
       },
       {
@@ -338,13 +338,13 @@
         "description": "\"checkboxLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 35
+          "line": 34
         }
       },
       {
@@ -352,13 +352,13 @@
         "description": "\"buttonLaunchInstallerLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.button.launchInstaller.label",
         "start": {
           "column": 30,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -366,13 +366,13 @@
         "description": "\"buttonInstallUpdateLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 49
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.button.installUpdate.label",
         "start": {
           "column": 28,
-          "line": 46
+          "line": 45
         }
       },
       {
@@ -380,13 +380,13 @@
         "description": "\"manualUpdateLinkLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.postponeInstall.link.label",
         "start": {
           "column": 28,
-          "line": 51
+          "line": 50
         }
       },
       {
@@ -394,13 +394,13 @@
         "description": "\"installingUpdateLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 59
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.installingUpdate.link.label",
         "start": {
           "column": 25,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -408,13 +408,13 @@
         "description": "\"downloadProgressLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 64
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.downloadProgressLabel",
         "start": {
           "column": 25,
-          "line": 61
+          "line": 60
         }
       },
       {
@@ -422,13 +422,13 @@
         "description": "\"downloadTimeLeft\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 69
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.downloadTimeLeft",
         "start": {
           "column": 20,
-          "line": 66
+          "line": 65
         }
       },
       {
@@ -436,13 +436,13 @@
         "description": "\"downloadProgressData\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 74
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.downloadProgressData",
         "start": {
           "column": 24,
-          "line": 71
+          "line": 70
         }
       },
       {
@@ -450,13 +450,13 @@
         "description": "\"manualUpdateDescriptionError\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 80
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.description.error",
         "start": {
           "column": 32,
-          "line": 76
+          "line": 75
         }
       },
       {
@@ -464,13 +464,13 @@
         "description": "\"manualUpdateDescriptionErrorLinux\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 86
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.description.errorLinux",
         "start": {
           "column": 37,
-          "line": 82
+          "line": 81
         }
       },
       {
@@ -478,13 +478,13 @@
         "description": "\"manualUpdateDescriptionAction\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 91
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.description.action",
         "start": {
           "column": 33,
-          "line": 88
+          "line": 87
         }
       },
       {
@@ -492,13 +492,13 @@
         "description": "\"manualUpdateButtonLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 96
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.button.label",
         "start": {
           "column": 27,
-          "line": 93
+          "line": 92
         }
       },
       {
@@ -506,13 +506,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Mainnet",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 102
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.button.url.mainnet",
         "start": {
           "column": 35,
-          "line": 98
+          "line": 97
         }
       },
       {
@@ -520,13 +520,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Flight",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 107
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.button.url.flight",
         "start": {
           "column": 34,
-          "line": 104
+          "line": 103
         }
       },
       {
@@ -534,13 +534,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Testnet",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 114
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.tsx",
         "id": "appUpdate.overlay.manualUpdate.button.url.testnet",
         "start": {
           "column": 35,
-          "line": 109
+          "line": 108
         }
       }
     ],
@@ -2907,27 +2907,83 @@
         "description": "Analytics form title",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 8
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
         "id": "analytics.form.title",
         "start": {
           "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!All data is anonymous and is only used for product development purposes.",
+        "description": "Analytics data collection description",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "id": "analytics.form.description",
+        "start": {
+          "column": 15,
           "line": 9
         }
       },
       {
         "defaultMessage": "!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.",
-        "description": "Analytics data collection description",
+        "description": "Analytics data collection description, including TOC link",
         "end": {
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
-        "id": "analytics.form.description",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "id": "analytics.form.descriptionWithTOCLink",
         "start": {
-          "column": 15,
-          "line": 14
+          "column": 26,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Terms and Conditions",
+        "description": "Terms and Conditions link text",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "id": "analytics.form.tocLink",
+        "start": {
+          "column": 11,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!What ToC says about this?",
+        "description": "TOC details title",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "id": "analytics.form.tocDetailsTitle",
+        "start": {
+          "column": 19,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!1.6 Privacy. No one will use your data. Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto sunt explicabo.",
+        "description": "TOC details",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "id": "analytics.form.tocDetails",
+        "start": {
+          "column": 14,
+          "line": 31
         }
       },
       {
@@ -2935,13 +2991,13 @@
         "description": "Data collection details title",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 41
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
         "id": "analytics.form.dataCollectionDetailsTitle",
         "start": {
           "column": 30,
-          "line": 21
+          "line": 37
         }
       },
       {
@@ -2949,13 +3005,13 @@
         "description": "Description for the user behaviour data collection",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 46
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
         "id": "analytics.form.dataCollectionDetailsUserBehaviour",
         "start": {
           "column": 38,
-          "line": 26
+          "line": 42
         }
       },
       {
@@ -2963,13 +3019,13 @@
         "description": "Description for the device info data collection",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 51
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
         "id": "analytics.form.dataCollectionDetailsDeviceInfo",
         "start": {
           "column": 35,
-          "line": 31
+          "line": 47
         }
       },
       {
@@ -2977,17 +3033,17 @@
         "description": "Data collection agreement switch button label",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 56
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.tsx",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
         "id": "analytics.form.dataCollectionSwitchText",
         "start": {
           "column": 30,
-          "line": 36
+          "line": 52
         }
       }
     ],
-    "path": "source/renderer/app/components/profile/analytics/AnalyticsForm.json"
+    "path": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.json"
   },
   {
     "descriptors": [
@@ -3581,13 +3637,13 @@
         "description": "Title \"Help and support\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 8
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.faq.title",
         "start": {
           "column": 12,
-          "line": 14
+          "line": 4
         }
       },
       {
@@ -3595,13 +3651,13 @@
         "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 15
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.faq.content",
         "start": {
           "column": 14,
-          "line": 19
+          "line": 9
         }
       },
       {
@@ -3609,13 +3665,13 @@
         "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 21
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.faq.faqLink",
         "start": {
           "column": 11,
-          "line": 26
+          "line": 16
         }
       },
       {
@@ -3623,13 +3679,13 @@
         "description": "Title \"Steps for creating a support request\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 27
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.title",
         "start": {
           "column": 14,
-          "line": 32
+          "line": 22
         }
       },
       {
@@ -3637,13 +3693,13 @@
         "description": "Title \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 32
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.downloadLogs.title",
         "start": {
           "column": 26,
-          "line": 38
+          "line": 28
         }
       },
       {
@@ -3651,13 +3707,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 39
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.downloadLogs.description",
         "start": {
           "column": 32,
-          "line": 43
+          "line": 33
         }
       },
       {
@@ -3665,13 +3721,13 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 45
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.downloadLogs.link",
         "start": {
           "column": 25,
-          "line": 50
+          "line": 40
         }
       },
       {
@@ -3679,13 +3735,13 @@
         "description": "Title \"Report a problem\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 50
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.reportProblem.title",
         "start": {
           "column": 27,
-          "line": 56
+          "line": 46
         }
       },
       {
@@ -3693,13 +3749,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 57
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.reportProblem.description",
         "start": {
           "column": 33,
-          "line": 61
+          "line": 51
         }
       },
       {
@@ -3707,17 +3763,17 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 63
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.tsx",
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
         "id": "settings.support.steps.reportProblem.link",
         "start": {
           "column": 26,
-          "line": 68
+          "line": 58
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/categories/SupportSettings.json"
+    "path": "source/renderer/app/components/settings/categories/SupportSettings.messages.json"
   },
   {
     "descriptors": [

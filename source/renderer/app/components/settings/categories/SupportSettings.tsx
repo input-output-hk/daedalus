@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, Intl } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
@@ -9,84 +9,28 @@ import globalMessages from '../../../i18n/global-messages';
 import AnalyticsForm from '../../profile/analytics/AnalyticsForm';
 import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
 import { InjectedProps } from '../../../types/injectedPropsType';
-
-const messages = defineMessages({
-  faqTitle: {
-    id: 'settings.support.faq.title',
-    defaultMessage: '!!!Help and support',
-    description: 'Title "Help and support" on the support settings page.',
-  },
-  faqContent: {
-    id: 'settings.support.faq.content',
-    defaultMessage:
-      '!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.',
-    description:
-      'Content for the "Help and support" section on the support settings page.',
-  },
-  faqLink: {
-    id: 'settings.support.faq.faqLink',
-    defaultMessage: '!!!Known Issues',
-    description:
-      '"Known Issues" link in the "Help and support" section on the support settings page',
-  },
-  stepsTitle: {
-    id: 'settings.support.steps.title',
-    defaultMessage: '!!!Steps for creating a support request:',
-    description:
-      'Title "Steps for creating a support request" on the support settings page.',
-  },
-  stepsDownloadLogsTitle: {
-    id: 'settings.support.steps.downloadLogs.title',
-    defaultMessage: '!!!Download the logs',
-    description: 'Title "Download the logs" on the support settings page.',
-  },
-  stepsDownloadLogsDescription: {
-    id: 'settings.support.steps.downloadLogs.description',
-    defaultMessage:
-      '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
-    description:
-      'Description of "Download the logs" on the support settings page.',
-  },
-  stepsDownloadLogsLink: {
-    id: 'settings.support.steps.downloadLogs.link',
-    defaultMessage: '!!!download your logs here',
-    description:
-      '"download your logs here" link in the Logs section on the support settings page',
-  },
-  stepsReportProblemTitle: {
-    id: 'settings.support.steps.reportProblem.title',
-    defaultMessage: '!!!Report a problem',
-    description: 'Title "Report a problem" on the support settings page.',
-  },
-  stepsReportProblemDescription: {
-    id: 'settings.support.steps.reportProblem.description',
-    defaultMessage:
-      '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
-    description:
-      'Description of "Download the logs" on the support settings page.',
-  },
-  stepsReportProblemLink: {
-    id: 'settings.support.steps.reportProblem.link',
-    defaultMessage: '!!!download your logs here',
-    description:
-      '"download your logs here" link in the Logs section on the support settings page',
-  },
-});
+import { messages } from './SupportSettings.messages';
+import { Separator } from '../../widgets/separator/Separator';
 
 interface SupportSettingsProps extends InjectedProps {
+  intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
   onSupportRequestClick: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
   disableDownloadLogs: boolean;
 }
 
+interface SupportSettingsState {
+  analyticsAccepted: boolean;
+  pageViewEventSent: boolean;
+}
+
 @inject('stores', 'actions')
 @observer
-class SupportSettings extends Component<SupportSettingsProps> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
+class SupportSettings extends Component<
+  SupportSettingsProps,
+  SupportSettingsState
+> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -94,6 +38,7 @@ class SupportSettings extends Component<SupportSettingsProps> {
 
   state = {
     analyticsAccepted: false,
+    pageViewEventSent: false,
   };
 
   async componentDidMount() {
@@ -106,13 +51,26 @@ class SupportSettings extends Component<SupportSettingsProps> {
   }
 
   onAnalyticsAcceptanceChange = async (analyticsAccepted: boolean) => {
-    this.setState({ analyticsAccepted });
-    this.props.actions.profile.acceptAnalytics.trigger(
+    await this.props.actions.profile.acceptAnalytics.trigger(
       analyticsAccepted
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
-    this.props.stores.analytics.resetAnalyticsClient();
+    await this.props.stores.analytics.resetAnalyticsClient();
+
+    let { pageViewEventSent } = this.state;
+
+    if (!pageViewEventSent && analyticsAccepted) {
+      this.props.stores.analytics.analyticsClient.sendPageNavigationEvent(
+        'Support Settings'
+      );
+      pageViewEventSent = true;
+    }
+
+    this.setState({
+      analyticsAccepted,
+      pageViewEventSent,
+    });
   };
 
   render() {
@@ -121,8 +79,8 @@ class SupportSettings extends Component<SupportSettingsProps> {
       onSupportRequestClick,
       onDownloadLogs,
       disableDownloadLogs,
+      intl,
     } = this.props;
-    const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
     const faqLink = (
       <span className={styles.faqLink}>
@@ -156,59 +114,60 @@ class SupportSettings extends Component<SupportSettingsProps> {
       />
     );
     return (
-      <div className={styles.component}>
-        {/* Help and Support */}
+      <>
+        <div className={styles.supportGuide}>
+          {/* Help and Support */}
 
-        <h1>{intl.formatMessage(messages.faqTitle)}</h1>
+          <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 
-        <p>
-          <FormattedMessage
-            {...messages.faqContent}
-            values={{
-              faqLink,
-            }}
-          />
-        </p>
+          <p>
+            <FormattedMessage
+              {...messages.faqContent}
+              values={{
+                faqLink,
+              }}
+            />
+          </p>
 
-        {/* Steps for creating a support request: */}
+          {/* Steps for creating a support request: */}
 
-        <h1>{intl.formatMessage(messages.stepsTitle)}</h1>
+          <h1>{intl.formatMessage(messages.stepsTitle)}</h1>
 
-        <ol>
-          <li>
-            <h2>{intl.formatMessage(messages.stepsDownloadLogsTitle)}</h2>
-            <p>
-              <FormattedMessage
-                {...messages.stepsDownloadLogsDescription}
-                values={{
-                  stepsDownloadLogsLink,
-                }}
-              />
-            </p>
-          </li>
-          <li>
-            <h2>{intl.formatMessage(messages.stepsReportProblemTitle)}</h2>
-            <p>
-              <FormattedMessage
-                {...messages.stepsReportProblemDescription}
-                values={{
-                  reportProblemLink,
-                }}
-              />
-            </p>
-          </li>
-        </ol>
-
-        <hr />
-
+          <ol className={styles.creatingSupportRequestInstruction}>
+            <li>
+              <h2>{intl.formatMessage(messages.stepsDownloadLogsTitle)}</h2>
+              <p>
+                <FormattedMessage
+                  {...messages.stepsDownloadLogsDescription}
+                  values={{
+                    stepsDownloadLogsLink,
+                  }}
+                />
+              </p>
+            </li>
+            <li>
+              <h2>{intl.formatMessage(messages.stepsReportProblemTitle)}</h2>
+              <p>
+                <FormattedMessage
+                  {...messages.stepsReportProblemDescription}
+                  values={{
+                    reportProblemLink,
+                  }}
+                />
+              </p>
+            </li>
+          </ol>
+        </div>
+        <Separator />
         <AnalyticsForm
           intl={intl}
           onAnalyticsAcceptanceChange={this.onAnalyticsAcceptanceChange}
+          // TODO can this not be read from mobx?
           analyticsAccepted={this.state.analyticsAccepted}
         />
-      </div>
+      </>
     );
   }
 }
 
-export default SupportSettings;
+export default injectIntl(SupportSettings);

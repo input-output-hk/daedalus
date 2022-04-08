@@ -34,7 +34,7 @@ import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
-import AnalyticsPage from './containers/profile/AnalyticsPage';
+import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import { TrackedRoute } from './analytics/TrackedRoute';
 
 export const Routes = withRouter(() => (
@@ -50,15 +50,10 @@ export const Routes = withRouter(() => (
           path={ROUTES.PROFILE.INITIAL_SETTINGS}
           component={InitialSettingsPage}
         />
-        <TrackedRoute
-          pageTitle="Terms Of Use"
-          path={ROUTES.PROFILE.TERMS_OF_USE}
-          component={TermsOfUsePage}
-        />
-        <TrackedRoute
-          pageTitle="Analytics"
+        <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
+        <Route
           path={ROUTES.PROFILE.ANALYTICS}
-          component={AnalyticsPage}
+          component={AnalyticsConsentPage}
         />
         <TrackedRoute
           pageTitle="Data Layer Migration Page"

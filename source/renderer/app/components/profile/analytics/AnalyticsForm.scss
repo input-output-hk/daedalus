@@ -1,61 +1,38 @@
-.title,
-.dataCollectionTitle {
-  font-weight: bold;
+.title {
+  font-family: var(--font-medium);
   margin-bottom: 14px;
 }
 
-.dataCollectionTitle {
-  align-items: center;
-  display: flex;
-}
-
 .description {
+  font-family: var(--font-light);
+  font-size: 16px;
   margin-bottom: 20px;
 }
 
-.descriptionLink {
-  color: var(--theme-link-main-color);
+.link {
+  font-family: var(--font-regular);
+  // unfortunately, global overrides for link component set it to 14px with higher specificity
+  font-size: 16px !important;
+  word-break: break-word;
 }
 
 .dataCollectionList {
+  font-family: var(--font-regular);
   line-height: 2; // todo discuss with Sasha
   list-style: auto outside;
   padding-left: 30px;
-}
 
-.dataCollectionListItem {
-  color: var(--theme-support-settings-text-color);
-  padding-left: 12px;
+  li {
+    color: var(--theme-support-settings-text-color);
+    padding-left: 12px;
 
-  &::marker {
-    font-weight: bold;
+    &::marker {
+      font-weight: bold;
+    }
   }
 }
 
-.hr {
-  border: 0;
-  border-top: 1px solid var(--theme-dapp-transaction-request-separator);
-  margin: 20px 0;
-  opacity: 0.3;
-}
-
-.toggleButton {
-  background-color: var(
-    --theme-dapp-transaction-request-toggle-button-background-color
-  );
-  border-radius: 4px;
-  color: var(--theme-label-button-color);
-  cursor: pointer;
-  font-family: var(--font-medium);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
-  margin-left: 10px;
-  padding: 4px 8px;
-  text-transform: uppercase;
-}
-
-// TODO improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
+// TODO: improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
 .switchButton {
   flex-direction: row-reverse;
   margin: 0 0 30px;
@@ -63,4 +40,19 @@
   & label {
     margin: 0 !important;
   }
+}
+
+.tocDetails {
+  // TODO: extract to a more generic variable
+  background-color: var(
+    --theme-paper-wallet-create-certificate-dialog-explorer-link-background-color
+  );
+  border-radius: 2px;
+  // TODO: extract to a more generic variable
+  color: var(--theme-dialog-text-color);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.43;
+  margin: 10px 0 20px;
+  padding: 9px 12px;
 }

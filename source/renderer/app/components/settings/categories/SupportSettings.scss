@@ -1,7 +1,7 @@
 @import '../../../themes/mixins/error-message';
 @import '../../../themes/mixins/link';
 
-.component {
+.supportGuide {
   padding-bottom: 10px;
 
   h1 {
@@ -20,15 +20,15 @@
     margin-bottom: 6px;
   }
 
-  ol {
+  .creatingSupportRequestInstruction {
     color: var(--theme-support-settings-item-color);
     font-family: var(--font-semibold);
     list-style: decimal;
     padding-left: 17px;
-  }
 
-  li {
-    padding-left: 6.5px;
+    li {
+      padding-left: 6.5px;
+    }
   }
 
   p {

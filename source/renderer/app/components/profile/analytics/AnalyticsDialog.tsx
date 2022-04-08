@@ -34,7 +34,7 @@ const AnalyticsDialog = ({
     <div className={styles.component}>
       <div className={styles.centeredBox}>
         <AnalyticsForm
-          intl={intl}
+          showTOCSummary
           onAnalyticsAcceptanceChange={setAllowDataCollection}
           analyticsAccepted={allowDataCollection}
         />

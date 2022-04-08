@@ -1,0 +1,7 @@
+.hr {
+  border: 0;
+  // TODO: extract to a more generic variable
+  border-top: 1px solid var(--theme-dapp-transaction-request-separator);
+  margin: 20px 0;
+  opacity: 0.3;
+}

@@ -6,46 +6,32 @@ import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog'
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 
-interface State {
-  pageViewEventSent: boolean;
-}
-
 @inject('stores', 'actions')
 @observer
-class AnalyticsPage extends Component<InjectedProps, State> {
+class AnalyticsConsentPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
     stores: null,
   };
 
+  state = {
+    pageViewEventSent: false,
+  };
+
   onSubmit = async (analyticsAccepted: boolean) => {
-    this.props.actions.profile.acceptAnalytics.trigger(
+    await this.props.actions.profile.acceptAnalytics.trigger(
       analyticsAccepted
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
-
-    if (!this.state.pageViewEventSent && analyticsAccepted) {
-      this.props.stores.analytics.analyticsClient.sendPageNavigationEvent(
-        'Analytics'
-      );
-      this.setState({ pageViewEventSent: true });
-    }
+    await this.props.stores.analytics.resetAnalyticsClient();
   };
 
   render() {
-    const { app, networkStatus, profile } = this.props.stores;
+    const { networkStatus, profile } = this.props.stores;
     const { setAnalyticsAcceptanceRequest } = profile;
-    const { currentRoute } = app;
     const { isShelleyActivated } = networkStatus;
-    const topbar = (
-      <TopBar
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        currentRoute={currentRoute}
-        showSubMenuToggle={false}
-        isShelleyActivated={isShelleyActivated}
-      />
-    );
+    const topbar = <TopBar isShelleyActivated={isShelleyActivated} />;
     return (
       <TopBarLayout topbar={topbar}>
         <AnalyticsDialog
@@ -57,4 +43,4 @@ class AnalyticsPage extends Component<InjectedProps, State> {
   }
 }
 
-export default AnalyticsPage;
+export default AnalyticsConsentPage;

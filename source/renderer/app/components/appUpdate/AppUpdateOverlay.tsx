@@ -18,7 +18,6 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import { useAnalytics } from '../analytics';
 
 const messages = defineMessages({
   title: {

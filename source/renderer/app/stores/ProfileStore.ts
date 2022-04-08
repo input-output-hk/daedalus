@@ -460,7 +460,6 @@ export default class ProfileStore extends Store {
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
-      this.hasConfirmedAnalyticsAcceptanceStatus &&
       termsOfUseNotAccepted
     ) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
@@ -479,6 +478,7 @@ export default class ProfileStore extends Store {
     if (
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
+      this.areTermsOfUseAccepted &&
       !this.hasConfirmedAnalyticsAcceptanceStatus
     ) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
