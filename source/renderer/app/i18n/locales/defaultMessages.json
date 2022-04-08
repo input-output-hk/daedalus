@@ -39,13 +39,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 9
+          "line": 12
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 29,
-          "line": 5
+          "line": 8
         }
       },
       {
@@ -53,13 +53,13 @@
         "description": "\"Wallet you are trying to restore already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
           "column": 23,
-          "line": 11
+          "line": 14
         }
       },
       {
@@ -67,13 +67,13 @@
         "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.ForbiddenMnemonicError",
         "start": {
           "column": 21,
-          "line": 17
+          "line": 20
         }
       },
       {
@@ -81,13 +81,13 @@
         "description": "\"Wallet you are trying to import already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 32
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.WalletAlreadyImportedError",
         "start": {
           "column": 25,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -95,13 +95,13 @@
         "description": "\"Wallet could not be imported, please make sure you are providing a correct file.\" error message.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 25,
-          "line": 30
+          "line": 33
         }
       },
       {
@@ -109,13 +109,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 44
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -123,13 +123,13 @@
         "description": "\"Not enough money to make this transaction.\" error message.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 50
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.NotEnoughMoneyToSendError",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -137,13 +137,13 @@
         "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 57
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.CanNotCalculateTransactionFeesError",
         "start": {
           "column": 34,
-          "line": 48
+          "line": 51
         }
       },
       {
@@ -151,13 +151,13 @@
         "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 63
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.NotEnoughFundsForTransactionFeesError",
         "start": {
           "column": 18,
-          "line": 55
+          "line": 58
         }
       },
       {
@@ -165,13 +165,13 @@
         "description": "\"Your wallet contains only reward funds. Please send at least one ADA to your wallet so that you can spend the funds.\" error message",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 70
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.inputsDepleted",
         "start": {
           "column": 18,
-          "line": 61
+          "line": 64
         }
       },
       {
@@ -179,13 +179,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 75
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 23,
-          "line": 68
+          "line": 71
         }
       },
       {
@@ -193,13 +193,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 81
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 32,
-          "line": 73
+          "line": 76
         }
       },
       {
@@ -207,13 +207,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 86
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 79
+          "line": 82
         }
       },
       {
@@ -221,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 92
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 84
+          "line": 87
         }
       },
       {
@@ -235,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 99
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 90
+          "line": 93
         }
       },
       {
@@ -249,13 +249,13 @@
         "description": "\"Invalid transaction.\" error message",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 104
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.utxoTooSmall",
         "start": {
           "column": 16,
-          "line": 97
+          "line": 100
         }
       },
       {
@@ -263,13 +263,13 @@
         "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 111
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.nothingToMigrate",
         "start": {
           "column": 20,
-          "line": 102
+          "line": 105
         }
       },
       {
@@ -277,13 +277,13 @@
         "description": "\"This URL is not a valid SMASH server\" error message",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 116
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.invalidSmashServer",
         "start": {
           "column": 22,
-          "line": 109
+          "line": 112
         }
       },
       {
@@ -291,13 +291,13 @@
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 123
         },
         "file": "source/renderer/app/api/errors.ts",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens",
         "start": {
           "column": 26,
-          "line": 114
+          "line": 117
         }
       }
     ],
