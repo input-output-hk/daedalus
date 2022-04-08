@@ -11,7 +11,7 @@ runCommandCC "daedalus-cardano-bridge" {
   echo ${cardano-wallet.version} > $out/version
   cp ${cardano-wallet}/bin/* .
   cp -f ${cardano-address}/bin/cardano-address* .
-  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
+  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) "cp -f ${local-cluster}/bin/local-cluster* ."}
