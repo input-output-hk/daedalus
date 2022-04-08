@@ -34,12 +34,12 @@ export type EnumMap<
 > = O & Record<K, V & $ElementType<O, K>>;
 
 declare global {
+  let daedalus: Daedalus;
   namespace NodeJS {
     interface ProcessEnv {
       WALLET_COUNT: number;
     }
   }
-  var daedalus: Daedalus;
 }
 
 export {};

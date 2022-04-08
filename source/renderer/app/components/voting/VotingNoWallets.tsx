@@ -39,11 +39,8 @@ export default class VotingNoWallets extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onGoToCreateWalletClick,
-      minVotingFunds,
-      nextFundNumber,
-    } = this.props;
+    const { onGoToCreateWalletClick, minVotingFunds, nextFundNumber } =
+      this.props;
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />

@@ -189,10 +189,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
-    const {
-      connectingMessage,
-      connectingDescription,
-    } = this._getConnectingMessage();
+    const { connectingMessage, connectingDescription } =
+      this._getConnectingMessage();
 
     if (
       cardanoNodeState === CardanoNodeStates.RUNNING &&

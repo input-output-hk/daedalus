@@ -21,8 +21,7 @@ const messages = defineMessages({
       'Label "Wallet" for select input on the voting registration "choose wallet" step.',
   },
   selectWalletInputPlaceholder: {
-    id:
-      'voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder',
+    id: 'voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder',
     defaultMessage: '!!!Select a wallet',
     description:
       'Placeholder "Select Wallet" for select input on the voting registration "choose wallet" step.',
@@ -35,8 +34,7 @@ const messages = defineMessages({
       'errorMinVotingFunds Error Label on the voting registration "choose wallet" step.',
   },
   errorMinVotingFundsRewardsOnly: {
-    id:
-      'voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly',
+    id: 'voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly',
     defaultMessage:
       '!!!This wallet cannot be registered for voting as it contains rewards balance only.',
     description:

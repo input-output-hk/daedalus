@@ -144,9 +144,9 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkClock
   );
   @observable
-  getNetworkParametersRequest: Request<
-    GetNetworkParametersResponse
-  > = new Request(this.api.ada.getNetworkParameters);
+  getNetworkParametersRequest: Request<GetNetworkParametersResponse> = new Request(
+    this.api.ada.getNetworkParameters
+  );
   @observable
   isNotEnoughDiskSpace = false;
   @observable
@@ -511,11 +511,10 @@ export default class NetworkStatusStore extends Store {
     });
 
     try {
-      const networkClock: GetNetworkClockResponse = await this.getNetworkClockRequest.execute(
-        {
+      const networkClock: GetNetworkClockResponse =
+        await this.getNetworkClockRequest.execute({
           isForceCheck,
-        }
-      ).promise;
+        }).promise;
       // System time is correct if local time difference is below allowed threshold
       runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
         // Update localTimeDifference only in case NTP check status is not still pending
@@ -545,8 +544,8 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetNetworkInfoResponse = await this.getNetworkInfoRequest.execute()
-        .promise;
+      const networkStatus: GetNetworkInfoResponse =
+        await this.getNetworkInfoRequest.execute().promise;
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
@@ -709,8 +708,8 @@ export default class NetworkStatusStore extends Store {
     if (!this.isNodeResponding) return;
 
     try {
-      const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
-        .promise;
+      const networkParameters: GetNetworkParametersResponse =
+        await this.getNetworkParametersRequest.execute().promise;
       let {
         isShelleyActivated,
         isShelleyPending,

@@ -53,9 +53,8 @@ function StakePoolsSearchComponent({
   isGridRewardsView,
   intl,
 }: Props) {
-  const searchInput = useRef<{ inputElement: { current: HTMLInputElement } }>(
-    null
-  );
+  const searchInput =
+    useRef<{ inputElement: { current: HTMLInputElement } }>(null);
 
   const [isSearchInputFocused, setSearchInputFocused] = useState(false);
 

@@ -47,12 +47,8 @@ export default class SidebarStore extends Store {
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct
   get wallets(): Array<SidebarWalletType> {
-    const {
-      networkStatus,
-      wallets,
-      walletSettings,
-      hardwareWallets,
-    } = this.stores;
+    const { networkStatus, wallets, walletSettings, hardwareWallets } =
+      this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
     const shelleyWallets = sortWallets({
       wallets: wallets.all.filter((w) => !w.isLegacy),
@@ -71,9 +67,8 @@ export default class SidebarStore extends Store {
         [wallet.id, 'disconnected'],
         true
       );
-      const {
-        hasNotification,
-      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
+      const { hasNotification } =
+        walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
       return {
         id: wallet.id,
         title: wallet.name,
@@ -110,10 +105,8 @@ export default class SidebarStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'typ... Remove this comment to see the full error message
       environment: { isDev, isMainnet },
     } = global;
-    const {
-      CATEGORIES_BY_NAME: categories,
-      CATEGORIES_LIST: list,
-    } = sidebarConfig;
+    const { CATEGORIES_BY_NAME: categories, CATEGORIES_LIST: list } =
+      sidebarConfig;
     const categoryValidation: Record<
       string,
       boolean | ((...args: Array<any>) => any)

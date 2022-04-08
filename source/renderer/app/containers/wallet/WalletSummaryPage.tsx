@@ -91,11 +91,8 @@ class WalletSummaryPage extends Component<Props> {
     } = stores;
     const { all, getAsset, favorites } = assets;
     const { isInternalAddress } = addresses;
-    const {
-      onOpenAssetSend,
-      onCopyAssetParam,
-      onToggleFavorite,
-    } = actions.assets;
+    const { onOpenAssetSend, onCopyAssetParam, onToggleFavorite } =
+      actions.assets;
     const {
       openExternalLink,
       environment: { network },

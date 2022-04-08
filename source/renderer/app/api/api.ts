@@ -663,7 +663,8 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
+      const assetsLocaldata =
+        await global.daedalus.api.localStorage.getAssetsLocalData();
       logger.debug('AdaApi::getAssetsLocalData success', {
         assetsLocaldata,
       });
@@ -904,13 +905,11 @@ export default class AdaApi {
         })
         .where('code', 'transaction_is_too_big');
 
-      const {
-        requiresAdaToRemainToSupportNativeTokens,
-        adaToRemain,
-      } = doesWalletRequireAdaToRemainToSupportTokens(
-        error,
-        hasAssetsRemainingAfterTransaction
-      );
+      const { requiresAdaToRemainToSupportNativeTokens, adaToRemain } =
+        doesWalletRequireAdaToRemainToSupportTokens(
+          error,
+          hasAssetsRemainingAfterTransaction
+        );
       if (requiresAdaToRemainToSupportNativeTokens) {
         apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
       }
@@ -1632,9 +1631,8 @@ export default class AdaApi {
   getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
     try {
       const apiResponse = await getCurrencyList();
-      const response: GetCurrencyListResponse = currencyConfig.responses.list(
-        apiResponse
-      );
+      const response: GetCurrencyListResponse =
+        currencyConfig.responses.list(apiResponse);
       logger.debug('AdaApi::getCurrencyList success', {
         response,
       });
@@ -1651,9 +1649,8 @@ export default class AdaApi {
   ): Promise<GetCurrencyRateResponse> => {
     try {
       const apiResponse = await getCurrencyRate(currency);
-      const response: GetCurrencyRateResponse = currencyConfig.responses.rate(
-        apiResponse
-      );
+      const response: GetCurrencyRateResponse =
+        currencyConfig.responses.rate(apiResponse);
       logger.debug('AdaApi::getCurrencyRate success', {
         response,
       });
@@ -2159,9 +2156,8 @@ export default class AdaApi {
     logger.debug('AdaApi::getSmashSettings called');
 
     try {
-      const {
-        pool_metadata_source: poolMetadataSource,
-      } = await getSmashSettings(this.config);
+      const { pool_metadata_source: poolMetadataSource } =
+        await getSmashSettings(this.config);
       logger.debug('AdaApi::getSmashSettings success', {
         poolMetadataSource,
       });
@@ -2185,12 +2181,8 @@ export default class AdaApi {
         return true;
       }
 
-      const {
-        health,
-      }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
-        this.config,
-        url
-      );
+      const { health }: CheckSmashServerHealthApiResponse =
+        await checkSmashServerHealth(this.config, url);
       const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
       logger.debug('AdaApi::checkSmashServerIsValid success', {
         isValid,
@@ -2403,12 +2395,10 @@ export default class AdaApi {
     });
 
     try {
-      const response: TransferFundsCalculateFeeApiResponse = await transferFundsCalculateFee(
-        this.config,
-        {
+      const response: TransferFundsCalculateFeeApiResponse =
+        await transferFundsCalculateFee(this.config, {
           sourceWalletId,
-        }
-      );
+        });
       logger.debug('AdaApi::transferFundsCalculateFee success', {
         response,
       });
@@ -2610,9 +2600,8 @@ export default class AdaApi {
     logger.debug('AdaApi::getNetworkParameters called');
 
     try {
-      const networkParameters: GetNetworkParametersApiResponse = await getNetworkParameters(
-        this.config
-      );
+      const networkParameters: GetNetworkParametersApiResponse =
+        await getNetworkParameters(this.config);
       logger.debug('AdaApi::getNetworkParameters success', {
         networkParameters,
       });
@@ -2952,9 +2941,13 @@ export default class AdaApi {
         catalystFund,
       });
 
+      const fundNumber =
+        Number(catalystFund.fund_name?.match(/\d+/)?.[0]) ||
+        catalystFund.id + 1;
+
       return {
         current: {
-          number: catalystFund.id + 1,
+          number: fundNumber,
           startTime: new Date(catalystFund.fund_start_time),
           endTime: new Date(catalystFund.fund_end_time),
           resultsTime: new Date(
@@ -2965,7 +2958,7 @@ export default class AdaApi {
           ),
         },
         next: {
-          number: catalystFund.id + 2,
+          number: fundNumber + 1,
           startTime: new Date(catalystFund.next_fund_start_time),
           registrationSnapshotTime: new Date(
             catalystFund.next_registration_snapshot_time

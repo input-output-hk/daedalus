@@ -96,13 +96,8 @@ class VotingRegistrationStepsQrCode extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
-    const {
-      stepsList,
-      activeStep,
-      qrCode,
-      onDownloadPDF,
-      nextFundNumber,
-    } = this.props;
+    const { stepsList, activeStep, qrCode, onDownloadPDF, nextFundNumber } =
+      this.props;
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription1 = intl.formatMessage(messages.qrCodeDescription1);
     const qrCodeDescription2 = intl.formatMessage(messages.qrCodeDescription2);

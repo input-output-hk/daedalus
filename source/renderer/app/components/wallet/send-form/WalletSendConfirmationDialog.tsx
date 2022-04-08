@@ -109,12 +109,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const {
-          receiver,
-          amount,
-          amountToNaturalUnits,
-          isHardwareWallet,
-        } = this.props;
+        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } =
+          this.props;
         const { passphrase } = form.values();
         const hasAssetsRemainingAfterTransaction =
           this.props.allAvailableTokens?.length > 0;
@@ -140,13 +136,8 @@ class WalletSendConfirmationDialog extends Component<Props, State> {
   ): React.ReactElement<React.ComponentProps<any>, any> | null | undefined => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
-    const {
-      hwDeviceStatus,
-      isFlight,
-      onExternalLinkClick,
-      wallet,
-      isTrezor,
-    } = this.props;
+    const { hwDeviceStatus, isFlight, onExternalLinkClick, wallet, isTrezor } =
+      this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
       const { name } = wallet;

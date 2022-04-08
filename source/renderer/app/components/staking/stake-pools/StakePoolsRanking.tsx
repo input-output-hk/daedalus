@@ -219,11 +219,8 @@ class StakePoolsRanking extends Component<Props, State> {
     rankStakePools();
   };
   onSliderChange = (sliderValue: number) => {
-    const {
-      updateDelegatingStake,
-      maxDelegationFunds,
-      maxDelegationFundsLog,
-    } = this.props;
+    const { updateDelegatingStake, maxDelegationFunds, maxDelegationFundsLog } =
+      this.props;
     let amountValue = null;
 
     if (

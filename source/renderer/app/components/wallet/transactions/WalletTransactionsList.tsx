@@ -44,11 +44,10 @@ const messages = defineMessages({
 export type ScrollContextType = {
   setIsScrolling: (...args: Array<any>) => any;
 };
-export const WalletTransactionsListScrollContext = React.createContext<
-  ScrollContextType
->({
-  setIsScrolling: () => null,
-});
+export const WalletTransactionsListScrollContext =
+  React.createContext<ScrollContextType>({
+    setIsScrolling: () => null,
+  });
 type Props = {
   deletePendingTransaction: (...args: Array<any>) => any;
   formattedWalletAmount: (...args: Array<any>) => any;

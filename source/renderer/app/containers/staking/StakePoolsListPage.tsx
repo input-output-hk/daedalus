@@ -48,14 +48,8 @@ class StakePoolsListPage extends Component<Props> {
   };
 
   render() {
-    const {
-      uiDialogs,
-      staking,
-      app,
-      networkStatus,
-      profile,
-      wallets,
-    } = this.props.stores;
+    const { uiDialogs, staking, app, networkStatus, profile, wallets } =
+      this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
     const {

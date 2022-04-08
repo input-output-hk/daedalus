@@ -29,16 +29,14 @@ const messages = defineMessages({
       '"unformattedAmountLabel" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForHardwareWallets: {
-    id:
-      'asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets',
+    id: 'asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets',
     defaultMessage:
       '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.',
     description:
       '"unformattedAmountMessageForHardwareWallets" item on AssetTransactionConfirmation.',
   },
   unformattedAmountMessageForSoftwareWallets: {
-    id:
-      'asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets',
+    id: 'asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets',
     defaultMessage:
       '!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.',
     description:

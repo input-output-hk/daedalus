@@ -57,7 +57,6 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      chromedriver
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
@@ -134,7 +133,6 @@ let
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
-        ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'
       echo debug the node by running debug-node

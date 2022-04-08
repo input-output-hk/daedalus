@@ -1,5 +1,5 @@
-import { Given, Then, When } from "cucumber";
-import type { Daedalus } from "../../../types";
+import { Given, Then, When } from 'cucumber';
+import type { Daedalus } from '../../../types';
 
 let diskSpaceRequired;
 const HUNDRED_TB = 100 * 1e12; // 100 TB | unit: bytes
@@ -21,7 +21,14 @@ When(/^I check the disk space$/, function () {
     daedalus.stores.networkStatus._checkDiskSpace();
   }, diskSpaceRequired);
 });
-Then(/^The No Disk Space overlay should be (hidden|visible)$/, function (state) {
-  const waitForHidden = state === 'hidden';
-  return this.client.waitForVisible(NO_DISK_SPACE_COMPONENT, null, waitForHidden);
-});
+Then(
+  /^The No Disk Space overlay should be (hidden|visible)$/,
+  function (state) {
+    const waitForHidden = state === 'hidden';
+    return this.client.waitForVisible(
+      NO_DISK_SPACE_COMPONENT,
+      null,
+      waitForHidden
+    );
+  }
+);

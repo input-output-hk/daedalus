@@ -10,9 +10,6 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "prettier",
-    "prettier/babel",
-    "prettier/@typescript-eslint",
-    "prettier/react",
     "plugin:jest/recommended"
   ],
   "env": {
@@ -25,6 +22,7 @@
     "class-methods-use-this": 0,
     "consistent-return": "warn",
     "@typescript-eslint/generic-spacing": 0,
+    "@typescript-eslint/space-after-type-colon": 0,
     "jsx-a11y/alt-text": 0,
     "lines-between-class-members": 0,
     "global-require": 0,
@@ -60,6 +58,7 @@
     "react/destructuring-assignment": 0,
     "react/display-name": 0,
     "react/jsx-curly-brace-presence": 0,
+    "react/jsx-curly-newline": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-fragments": 0,
     "react/jsx-no-bind": "warn",
@@ -91,7 +90,6 @@
     "API": true,
     "API_VERSION": true,
     "NETWORK": true,
-    "MOBX_DEV_TOOLS": true,
     "BUILD_NUMBER": true,
     "Process": true // TODO: remove after fix
   },

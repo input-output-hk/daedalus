@@ -106,9 +106,9 @@ export default class VotingStore extends Store {
     this.api.ada.getWalletPublicKey
   );
   @observable
-  createVotingRegistrationTransactionRequest: Request<
-    WalletTransaction
-  > = new Request(this.api.ada.createVotingRegistrationTransaction);
+  createVotingRegistrationTransactionRequest: Request<WalletTransaction> = new Request(
+    this.api.ada.createVotingRegistrationTransaction
+  );
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
@@ -333,13 +333,8 @@ export default class VotingStore extends Store {
         const votingData = await this.prepareVotingData({
           walletId,
         });
-        const {
-          stakeAddressHex,
-          votingKey,
-          stakeKey,
-          role,
-          index,
-        } = votingData;
+        const { stakeAddressHex, votingKey, stakeKey, role, index } =
+          votingData;
         // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         const signature = await this.signMetadataRequest.execute({
           addressHex: stakeAddressHex,
@@ -352,8 +347,8 @@ export default class VotingStore extends Store {
           absoluteSlotNumber,
         });
         // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-        transaction = await this.createVotingRegistrationTransactionRequest.execute(
-          {
+        transaction =
+          await this.createVotingRegistrationTransactionRequest.execute({
             address: address.id,
             addressHex: stakeAddressHex,
             amount,
@@ -363,8 +358,7 @@ export default class VotingStore extends Store {
             stakeKey,
             signature: signature.toString('hex'),
             absoluteSlotNumber,
-          }
-        );
+          });
       }
 
       this._setTransactionId(transaction.id);
@@ -415,11 +409,8 @@ export default class VotingStore extends Store {
     if (!selectedWallet) return;
     const { name: walletName } = selectedWallet;
     const { desktopDirectoryPath } = this.stores.profile;
-    const {
-      currentLocale,
-      currentDateFormat,
-      currentTimeFormat,
-    } = this.stores.profile;
+    const { currentLocale, currentDateFormat, currentTimeFormat } =
+      this.stores.profile;
     const nextVotingFundNumber = this.catalystFund?.next?.number;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);

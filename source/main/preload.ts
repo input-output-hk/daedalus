@@ -58,10 +58,12 @@ process.once('loaded', () => {
   }
 
   // ESLint will warn about any use of eval(), even this one
-  // eslint-disable-next-line no-eval
-  global.eval = () => {
-    throw new Error('This app does not support window.eval().');
-  };
+  if (environment.isProduction) {
+    // eslint-disable-next-line no-eval
+    global.eval = () => {
+      throw new Error('This app does not support window.eval().');
+    };
+  }
 
   // Prevent context-menu for elements which don't support copy&paste options
   if (_process.env.NODE_ENV === 'production') {

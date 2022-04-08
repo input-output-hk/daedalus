@@ -488,9 +488,8 @@ export default class ProfileStore extends Store {
     }
   };
   _compressLogs = action(async ({ logs }) => {
-    const {
-      fileName = generateFileNameWithTimestamp(),
-    } = this.compressedLogsStatus;
+    const { fileName = generateFileNameWithTimestamp() } =
+      this.compressedLogsStatus;
 
     try {
       const outputPath = await compressLogsChannel.request({

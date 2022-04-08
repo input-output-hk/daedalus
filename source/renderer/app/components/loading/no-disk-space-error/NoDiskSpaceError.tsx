@@ -33,11 +33,8 @@ class NoDiskSpaceError extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
-    } = this.props;
+    const { diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended } =
+      this.props;
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />

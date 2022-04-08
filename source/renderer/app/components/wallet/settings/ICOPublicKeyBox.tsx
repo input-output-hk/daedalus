@@ -41,13 +41,8 @@ type Props = {
 };
 
 const ICOPublicKeyBox = (props: Props) => {
-  const {
-    publicKey,
-    locale,
-    onCopyICOPublicKey,
-    openDialogAction,
-    intl,
-  } = props;
+  const { publicKey, locale, onCopyICOPublicKey, openDialogAction, intl } =
+    props;
   return (
     <>
       <BorderedBox className={styles.walletPublicKeyBox}>
