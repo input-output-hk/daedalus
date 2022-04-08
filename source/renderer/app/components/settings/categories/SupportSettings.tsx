@@ -133,7 +133,7 @@ class SupportSettings extends Component<
 
           <h1>{intl.formatMessage(messages.stepsTitle)}</h1>
 
-          <ol className={styles.creatingSupportRequestInstruction}>
+          <ol>
             <li>
               <h2>{intl.formatMessage(messages.stepsDownloadLogsTitle)}</h2>
               <p>
@@ -162,7 +162,6 @@ class SupportSettings extends Component<
         <AnalyticsForm
           intl={intl}
           onAnalyticsAcceptanceChange={this.onAnalyticsAcceptanceChange}
-          // TODO can this not be read from mobx?
           analyticsAccepted={this.state.analyticsAccepted}
         />
       </>

@@ -20,12 +20,10 @@ class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
   static defaultProps = {
     actions: null,
     stores: null,
   };
-
   handleSupportRequestClick = async (
     event: React.SyntheticEvent<HTMLButtonElement>
   ) => {
@@ -44,7 +42,6 @@ class SupportSettingsPage extends Component<InjectedProps> {
     );
     this.props.stores.app.openExternalLink(supportUrl);
   };
-
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();

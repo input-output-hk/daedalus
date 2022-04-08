@@ -1,5 +1,5 @@
 import Action from './lib/Action';
-import { AnalyticsAcceptanceStatus } from '../analytics/types'; // ======= PROFILE ACTIONS =======
+import { AnalyticsAcceptanceStatus } from '../analytics/types';
 
 export default class ProfileActions {
   acceptAnalytics: Action<AnalyticsAcceptanceStatus> = new Action();

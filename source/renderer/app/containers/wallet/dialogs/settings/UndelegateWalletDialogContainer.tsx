@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { find, get } from 'lodash';
+import { get, find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';

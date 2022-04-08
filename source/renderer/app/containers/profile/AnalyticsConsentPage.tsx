@@ -14,10 +14,6 @@ class AnalyticsConsentPage extends Component<InjectedProps> {
     stores: null,
   };
 
-  state = {
-    pageViewEventSent: false,
-  };
-
   onSubmit = async (analyticsAccepted: boolean) => {
     await this.props.actions.profile.acceptAnalytics.trigger(
       analyticsAccepted

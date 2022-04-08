@@ -127,7 +127,7 @@ export const Routes = withRouter(() => (
               component={WalletsSettingsPage}
             />
             <TrackedRoute
-              pageTitle="Stakee Pools Settings"
+              pageTitle="Stake Pools Settings"
               path={ROUTES.SETTINGS.STAKE_POOLS}
               component={StakePoolsSettingsPage}
             />

@@ -137,7 +137,6 @@ class WalletSettingsPage extends Component<Props> {
           isSubmitting={updateWalletRequest.isExecuting}
           isInvalid={
             updateWalletRequest.wasExecuted &&
-            // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
             updateWalletRequest.result === false
           }
           showExportLink={!isProduction}

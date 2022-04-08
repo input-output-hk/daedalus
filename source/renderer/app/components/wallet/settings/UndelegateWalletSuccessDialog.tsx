@@ -32,7 +32,7 @@ const messages = defineMessages({
 });
 type Props = {
   walletName: string;
-  futureEpochStartTime: string | number;
+  futureEpochStartTime: string;
   currentLocale: string;
   onClose: (...args: Array<any>) => any;
 };

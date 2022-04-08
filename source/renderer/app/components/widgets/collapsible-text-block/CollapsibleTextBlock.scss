@@ -6,6 +6,7 @@
 }
 
 .toggleButton {
+  // TODO: extract to a more generic variable in a separate PR
   background-color: var(
     --theme-dapp-transaction-request-toggle-button-background-color
   );
