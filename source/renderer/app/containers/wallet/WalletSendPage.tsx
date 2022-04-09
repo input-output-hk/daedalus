@@ -108,7 +108,12 @@ class WalletSendPage extends Component<Props> {
       hardwareWallets,
       assets: assetsStore,
     } = stores;
-    const { isValidAddress, isAddressFromSameWallet } = wallets;
+    const {
+      isValidAddress,
+      isAddressFromSameWallet,
+      isDomainAddress,
+      resolveDomain,
+    } = wallets;
     const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
@@ -154,6 +159,7 @@ class WalletSendPage extends Component<Props> {
         selectedAsset={selectedAsset}
         isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
+        isDomainAddress={isDomainAddress}
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
@@ -161,6 +167,7 @@ class WalletSendPage extends Component<Props> {
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}
+        resolveDomain={resolveDomain}
         tokenFavorites={favorites}
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}

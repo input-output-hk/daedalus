@@ -17,6 +17,7 @@ import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
+import { resolveUNSAddress } from '../../../common/utils/unsResolution';
 import {
   bech32EncodePublicKey,
   isReceiverAddressType,
@@ -1138,10 +1139,21 @@ export default class WalletsStore extends Store {
       }
     });
   };
+
+  isDomainAddress = (address: string): Boolean => {
+    return address.split('.').length > 0;
+  };
+
   isValidAddress = async (address: string) => {
     const { network } = this.environment;
     const expectedNetworkTag = get(NetworkMagics, [network]);
-    const validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    const validAddressStyles: AddressStyle[] = [
+      'Byron',
+      'Icarus',
+      'Shelley',
+      'ENS',
+      'UNS',
+    ];
     this.isAddressFromSameWallet = false;
 
     if (!expectedNetworkTag) {
@@ -1241,6 +1253,14 @@ export default class WalletsStore extends Store {
     this.stores.transactions.transactionsRequests = [];
     this.isAddressFromSameWallet = false;
   };
+
+  @action
+  resolveDomain = async (address: string) => {
+    const { currentLocale } = this.stores.profile;
+    const intl = i18nContext(currentLocale);
+    return (address = await resolveUNSAddress(address, intl));
+  };
+
   @action
   _importWalletFromFile = async (params: WalletImportFromFileParams) => {
     const { filePath, walletName, spendingPassword } = params;

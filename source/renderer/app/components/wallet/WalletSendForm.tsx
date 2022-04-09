@@ -65,6 +65,7 @@ type Props = {
   selectedAsset: Asset | null | undefined;
   isLoadingAssets: boolean;
   isDialogOpen: (...args: Array<any>) => any;
+  isDomainAddress: (address: string) => boolean;
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
@@ -72,6 +73,7 @@ type Props = {
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
+  resolveDomain: (value: string) => string;
   tokenFavorites: Record<string, boolean>;
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
@@ -335,7 +337,7 @@ class WalletSendForm extends Component<Props, State> {
           value: '',
           validators: [
             async ({ field, form }) => {
-              const { value } = field;
+              let { value } = field;
 
               if (value === null || value === '') {
                 this.resetTransactionFee();
@@ -344,6 +346,14 @@ class WalletSendForm extends Component<Props, State> {
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
+              }
+
+              if (value.split('.').length > 1) {
+                try {
+                  value = await this.props.resolveDomain(value);
+                } catch (error) {
+                  return [false, error.message];
+                }
               }
 
               const isValid = await this.props.addressValidator(value);

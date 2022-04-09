@@ -33,6 +33,26 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Label for the "Ada" input in the wallet send form.',
   },
+  domainUnsupported: {
+    id: 'wallet.send.form.unsupported',
+    defaultMessage: '!!!Unsupported Domain',
+    description: 'Unsupported Domain Error',
+  },
+  domainNotFound: {
+    id: 'wallet.send.form.recordNotFound',
+    defaultMessage: '!!!No Cardano record found for this domain',
+    description: 'Not Found domain error',
+  },
+  domainUnregistered: {
+    id: 'wallet.send.form.unregistered',
+    defaultMessage: '!!!Domaon not registered',
+    description: 'Domain not registered error',
+  },
+  networkLabel: {
+    id: 'wallet.receive.pdf.networkLabel',
+    defaultMessage: '!!!Cardano Network:',
+    description: 'PDF networkLabel',
+  },
   removeLabel: {
     id: 'wallet.send.form.button.removeLabel',
     defaultMessage: '!!!Remove',

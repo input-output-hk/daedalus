@@ -31,6 +31,7 @@ type WindowOptionsType = {
   width: number;
   height: number;
   webPreferences: {
+    webSecurity: boolean;
     nodeIntegration: boolean;
     webviewTag: boolean;
     enableRemoteModule: boolean;
@@ -45,6 +46,7 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
     height: 870,
     ...windowBounds,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: isTest,
       webviewTag: false,
       // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
@@ -62,6 +64,30 @@ export const createMainWindow = (locale: string, windowBounds?: Rectangle) => {
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
+
+  window.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+    }
+  );
+
+  window.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          'Content-Security-Policy':
+            "connect-src 'https://mainnet.infura.io' 'https://polygon-mainnet.infura.io' 'unsafe-eval';",
+          'Access-Control-Allow-Origin': [
+            'https://mainnet.infura.io',
+            'https://polygon-mainnet.infura.io',
+            '*',
+          ],
+          ...details.responseHeaders,
+        },
+      });
+    }
+  );
+
   rendererErrorHandler.setup(window, createMainWindow);
   const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
