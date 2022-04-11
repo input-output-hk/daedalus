@@ -224,6 +224,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bip66"
       , "bitcoin-ops"
       , "blake2b"
+      , "blake2"
       , "blake-hash"
       , "blake2b-wasm"
       , "bn.js"

@@ -2952,9 +2952,13 @@ export default class AdaApi {
         catalystFund,
       });
 
+      const fundNumber =
+        Number(catalystFund.fund_name?.match(/\d+/)?.[0]) ||
+        catalystFund.id + 1;
+
       return {
         current: {
-          number: catalystFund.id + 1,
+          number: fundNumber,
           startTime: new Date(catalystFund.fund_start_time),
           endTime: new Date(catalystFund.fund_end_time),
           resultsTime: new Date(
@@ -2965,7 +2969,7 @@ export default class AdaApi {
           ),
         },
         next: {
-          number: catalystFund.id + 2,
+          number: fundNumber + 1,
           startTime: new Date(catalystFund.next_fund_start_time),
           registrationSnapshotTime: new Date(
             catalystFund.next_registration_snapshot_time
