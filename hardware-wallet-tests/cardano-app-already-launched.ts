@@ -36,6 +36,7 @@ export const run = () => {
           deviceModel: expect.any(String),
           deviceName: expect.any(String),
           path: expect.any(String),
+          product: expect.any(String),
         });
 
         const cardanoAppChannelReply = await cardanoAppChannel.request(

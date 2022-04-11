@@ -11,7 +11,7 @@ import {
 export const run = () => {
   expect.assertions(3);
 
-  const promptMessages = createTestInstructions([
+  createTestInstructions([
     'Plug Ledger Nano S to your computer',
     'Disconnect Nano S',
   ]);
@@ -20,7 +20,7 @@ export const run = () => {
 
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  const expectedSequence = createSequentialResult([
+  const getNextExpectedSequence = createSequentialResult([
     {
       disconnected: false,
     },
@@ -29,16 +29,13 @@ export const run = () => {
     },
   ]);
 
-  promptMessages();
-
   return new Promise((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (params: { path: string }) => {
-        const [expectedValue, isOver] = expectedSequence();
+        const [expectedValue, isOver] = getNextExpectedSequence();
         expect(params).toEqual(expectedValue);
 
         if (isOver) return resolve(null);
-        promptMessages();
       }
     );
 

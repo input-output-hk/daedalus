@@ -15,15 +15,13 @@ export const run = () => {
 
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  const promptMessages = createTestInstructions([
+  createTestInstructions([
     'Start test runner',
     'Plug Ledger Nano S to your computer',
     'Plug Ledger Nano X to your computer',
   ]);
 
-  promptMessages();
-
-  const expectedSequence = createSequentialResult([
+  const getNextExpectedSequence = createSequentialResult([
     {
       disconnected: false,
       deviceModel: 'nanoS',
@@ -37,7 +35,7 @@ export const run = () => {
   return new Promise((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (message: { path: string; deviceModel: string }) => {
-        const [expectedValue, isOver] = expectedSequence();
+        const [expectedValue, isOver] = getNextExpectedSequence();
         expect(message).toEqual(expectedValue);
 
         if (isOver) {

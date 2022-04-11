@@ -36,6 +36,7 @@ export const run = () => {
           deviceModel: expect.any(String),
           deviceName: expect.any(String),
           path: expect.any(String),
+          product: expect.any(String),
         });
 
         try {
@@ -49,28 +50,28 @@ export const run = () => {
             patch: expect.any(Number),
             deviceId: expect.any(String),
           });
-
-          const extendedPublicKey = await publicKeyChannel.request(
-            {
-              path: "1852'/1815'/0'",
-              // Shelley 1852 ADA 1815 indicator for account '0'
-              isTrezor: false,
-              devicePath: params.path,
-            },
-            ipcRenderer,
-            ipcRenderer
-          );
-
-          expect(extendedPublicKey).toEqual({
-            chainCodeHex: expect.any(String),
-            publicKeyHex: expect.any(String),
-            deviceId: expect.any(String),
-          });
-
-          resolve();
         } catch (err) {
           return null;
         }
+
+        const extendedPublicKey = await publicKeyChannel.request(
+          {
+            path: "1852'/1815'/0'",
+            // Shelley 1852 ADA 1815 indicator for account '0'
+            isTrezor: false,
+            devicePath: params.path,
+          },
+          ipcRenderer,
+          ipcRenderer
+        );
+
+        expect(extendedPublicKey).toEqual({
+          chainCodeHex: expect.any(String),
+          publicKeyHex: expect.any(String),
+          deviceId: expect.any(String),
+        });
+
+        resolve();
       }
     );
 

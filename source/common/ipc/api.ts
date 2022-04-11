@@ -1,4 +1,3 @@
-import { BridgeInfo, Device as TrezorDevice, UdevInfo } from 'trezor-connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -62,6 +61,9 @@ import type {
   TrezorSignTransactionRequest,
   TrezorSignTransactionResponse,
   HardwareWalletConnectionRequest,
+  LedgerDevicePayload,
+  TrezorDevicePayload,
+  TrezorDeviceErrorPayload,
 } from '../types/hardware-wallets.types';
 
 /**
@@ -464,37 +466,6 @@ export type GetBlockSyncProgressMainResponse = {
 /**
  * Channels for connecting / interacting with Hardware Wallet devices
  */
-
-export type LedgerDevicePayload = {
-  disconnected: boolean;
-  deviceType: 'ledger';
-  deviceId: string | null;
-  deviceModel: string;
-  deviceName: string;
-  path: string;
-  product: string;
-};
-
-export type TrezorDevicePayload = {
-  disconnected: boolean;
-  deviceId: string;
-  deviceType: 'trezor';
-  deviceModel: TrezorDevice;
-  // e.g. "1" or "T"
-  deviceName: string;
-  path: string;
-  eventType: string;
-};
-
-export type TrezorDeviceErrorPayload = {
-  error?: {
-    payload: {
-      error: string;
-      bridge?: BridgeInfo;
-      udev?: UdevInfo;
-    };
-  };
-};
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';

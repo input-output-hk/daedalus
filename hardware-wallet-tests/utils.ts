@@ -115,6 +115,7 @@ export const createSequentialResult = (sequence: Array<Partial<Result>>) => {
     deviceModel: expect.any(String),
     deviceName: expect.any(String),
     path: expect.any(String),
+    product: expect.any(String),
   };
 
   const result = sequence.map((s) => ({ ...common, ...s }));
@@ -127,6 +128,4 @@ export const log = (message: string) =>
 
 export const createTestInstructions = (messages: string[]) => {
   messages.forEach((m, i) => log(`${i + 1} - ${m}`));
-
-  return () => log(messages.shift());
 };

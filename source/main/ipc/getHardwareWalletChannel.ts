@@ -188,6 +188,7 @@ export const handleHardwareWalletRequests = async (
         // Send Transport error to Renderer
         getHardwareWalletConnectionChannel.send(
           {
+            deviceType: 'trezor',
             error: {
               payload: event.payload,
             },
@@ -381,7 +382,6 @@ export const handleHardwareWalletRequests = async (
             deviceName: productName,
             // e.g. Ledger Nano S
             path: lastConnectedPath || devicePath,
-            firmwareVersion: null,
           };
 
           logger.info(

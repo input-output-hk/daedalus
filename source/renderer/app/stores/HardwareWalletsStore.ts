@@ -21,11 +21,7 @@ import {
   isLedgerEnabled,
   getHardwareWalletsNetworkConfig,
 } from '../config/hardwareWalletsConfig';
-import {
-  DEVICE_NOT_CONNECTED,
-  LedgerDevicePayload,
-  TrezorDevicePayload,
-} from '../../../common/ipc/api';
+import { DEVICE_NOT_CONNECTED } from '../../../common/ipc/api';
 import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
   getHardwareWalletTransportChannel,
@@ -70,6 +66,8 @@ import {
   DeviceModels,
   DeviceTypes,
   DeviceEvents,
+  TrezorDevicePayload,
+  LedgerDevicePayload,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -2684,7 +2682,7 @@ export default class HardwareWalletsStore extends Store {
         deviceModel,
         deviceName,
         deviceType,
-      });
+      } as LedgerDevicePayload | TrezorDevicePayload);
     }
 
     // Handle Trezor Bridge instance checker

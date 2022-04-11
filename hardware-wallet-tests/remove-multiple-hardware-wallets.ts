@@ -8,7 +8,7 @@ import {
   createTestInstructions,
 } from './utils';
 
-const expectedSequence = createSequentialResult([
+const getNextExpectedSequence = createSequentialResult([
   {
     disconnected: false,
     deviceModel: 'nanoS',
@@ -34,27 +34,23 @@ export const run = () => {
 
   const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
-  const promptMessages = createTestInstructions([
+  createTestInstructions([
     'Connect Nano S',
     'Connect Nano X',
     'Disconnect Nano S',
     'Disconnect Nano X',
   ]);
 
-  promptMessages();
-
   return new Promise((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (params: { path: string; deviceModel: string }) => {
-        const [expectedValue, isOver] = expectedSequence();
+        const [expectedValue, isOver] = getNextExpectedSequence();
 
         expect(params).toEqual(expectedValue);
 
         if (isOver) {
           return resolve(null);
         }
-
-        promptMessages();
       }
     );
 
