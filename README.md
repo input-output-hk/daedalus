@@ -232,8 +232,9 @@ You can link libraries with Daedalus using one of the following steps:
 
 1) Install `yalc` globally using `yarn global add yalc`.
 2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
-3) Switch to Daedalus and run `yalc add <package-name>` or `yalc link <package-name>`.
+3) Switch to Daedalus and run `yalc add <package-name>` or preferably `yalc link <package-name>`.
 4) You should be able to start Daedalus and see the changes you are making locally in the library.
+5) To make sure your changes are reflected as you update code in the library, use `yalc push`.
 
 #### 2) Using `yarn link`
 
