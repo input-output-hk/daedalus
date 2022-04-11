@@ -19,6 +19,7 @@
     "jest": true
   },
   "rules": {
+    "arrow-body-style": 0,
     "class-methods-use-this": 0,
     "consistent-return": "warn",
     "@typescript-eslint/generic-spacing": 0,
