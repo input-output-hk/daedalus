@@ -15,6 +15,7 @@ import type {
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
+global.environment = true;
 const { isTest, version, isDev } = global.environment;
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',
@@ -253,9 +254,10 @@ export default class NewsFeedStore extends Store {
   setFakedNewsfeed = (params: {
     isAutomaticUpdateTest: boolean | null | undefined;
     appVersion?: string;
+    dummyJSONFile?: string;
   }) => {
     if (isDev) {
-      const { isAutomaticUpdateTest, appVersion } = params;
+      const { isAutomaticUpdateTest, appVersion, dummyJSONFile } = params;
       // Fake appVersion for news ONLY so we can check multiple cases
       global.environment.version = appVersion || version;
 
@@ -267,15 +269,29 @@ export default class NewsFeedStore extends Store {
       let rawNewsJsonQA;
 
       if (isAutomaticUpdateTest) {
-        rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
+        if (dummyJSONFile) {
+          fetch(dummyJSONFile)
+            .then((response) => response.json())
+            .then((jsondata) => {
+              runInAction(() => {
+                this.rawNewsJsonQA = jsondata;
+                this.getNews({
+                  isInit: true,
+                });
+              });
+            });
+        } else {
+          this.rawNewsJsonQA = require('../config/newsfeed-files/news-automatic-update.dummy.json');
+          this.getNews({
+            isInit: true,
+          });
+        }
       } else {
-        rawNewsJsonQA = require('../config/news.dummy.json');
+        this.rawNewsJsonQA = require('../config/news.dummy.json');
+        this.getNews({
+          isInit: true,
+        });
       }
-
-      this.rawNewsJsonQA = rawNewsJsonQA;
-      this.getNews({
-        isInit: true,
-      });
     }
   };
 

@@ -1,0 +1,64 @@
+{
+  "updatedAt": 1637233200000,
+  "items": [
+    {
+      "title": {
+        "en-US": "NEW Daedalus 5.1.0 update FIX clear download files",
+        "ja-JP": "最新更新版Daedalus 5.1.0配信"
+      },
+      "content": {
+        "en-US": "Daedalus 5.1.0 for the Cardano mainnet has an improved voting screen layout, which now includes continuous registration for Catalyst projects and footer links. The update also adds a pool over-saturation warning.\n\nPlease read the [release notes](https://iohk.zendesk.com/hc/en-us/articles/4409360119449) for more information.",
+        "ja-JP": "Cardanoメインネット用Daedalus 5.1.0は、投票画面のレイアウトを改良し、Catalystプロジェクトとフッターのリンクに継続登録を追加しました。この更新ではさらに、プールの過剰飽和警告も追加されました。\n\n詳細は[リリースノート](https://iohk.zendesk.com/hc/ja/articles/4409360119449)をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": "<5.1.0",
+        "platforms":["win32","darwin","linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "",
+          "ja-JP": ""
+        },
+        "url": {
+          "en-US": "",
+          "ja-JP": ""
+        }
+      },
+      "date": 1637233200000,
+      "type": "software-update",
+      "softwareUpdate": {
+        "linux": {
+          "version": "5.1.0",
+          "hash": "e2e44cf9a5adbe91e8de9256d27b8d4a2d33bdca75d26fef145f37a904d9b424",
+          "url": "https://ci-output-sink.s3.amazonaws.com/csl-daedalus/daedalus-4.9.0-mainnet-21546.bin"
+        }
+      }
+    },
+    {
+      "title": {
+        "en-US": "Stay safe from scammers - some important advice",
+        "ja-JP": "詐欺にご注意ください - 重要なアドバイス"
+      },
+      "content": {
+        "en-US": "Read the post on how to stay safe and spot potential Daedalus and Cardano scams.",
+        "ja-JP": "安全性に注意する方法、そして、DaedalusとCardanoの詐欺の可能性を見抜く方法についての記事をご覧ください。"
+      },
+      "target": {
+        "daedalusVersion": ">=3.0.0",
+        "platforms":["win32", "darwin", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Read the post",
+          "ja-JP": "記事を読む(英語のみ)"
+        },
+        "url": {
+          "en-US": "https://www.reddit.com/r/cardano/comments/lccorg/psa_there_is_no_such_thing_as_cardano_giveaways/",
+          "ja-JP": "https://www.reddit.com/r/cardano/comments/lccorg/psa_there_is_no_such_thing_as_cardano_giveaways/"
+        }
+      },
+      "date": 1613757600000,
+      "type": "announcement"
+    }
+  ]
+}
