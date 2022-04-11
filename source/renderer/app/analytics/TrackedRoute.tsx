@@ -6,7 +6,7 @@ export type TrackedRouteProps = RouteProps & {
   pageTitle: string;
 };
 
-export const TrackedRoute: FC<TrackedRouteProps> = (props) => {
+const TrackedRoute: FC<TrackedRouteProps> = (props) => {
   const analytics = useAnalytics();
   const { pageTitle, ...restProps } = props;
 
@@ -20,3 +20,5 @@ export const TrackedRoute: FC<TrackedRouteProps> = (props) => {
 
   return <Route {...restProps} />;
 };
+
+export default TrackedRoute;

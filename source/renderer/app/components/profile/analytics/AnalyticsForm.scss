@@ -1,9 +1,11 @@
 .title {
+  color: var(--theme-support-settings-text-color);
   font-family: var(--font-medium);
   margin-bottom: 14px;
 }
 
 .description {
+  color: var(--theme-support-settings-text-color);
   font-family: var(--font-light);
   font-size: 16px;
   margin-bottom: 20px;
@@ -17,6 +19,7 @@
 }
 
 .dataCollectionList {
+  color: var(--theme-support-settings-text-color);
   font-family: var(--font-regular);
   line-height: 2; // todo discuss with Sasha
   list-style: auto outside;
