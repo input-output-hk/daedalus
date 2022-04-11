@@ -2,8 +2,6 @@
 @import '../../../themes/mixins/link';
 
 .supportGuide {
-  padding-bottom: 10px;
-
   h1 {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-semibold);
@@ -21,19 +19,20 @@
   }
 
   ol {
-    color: var(--theme-support-settings-item-color);
+    color: var(--theme-main-body-messages-color);
     font-family: var(--font-semibold);
     list-style: decimal;
-    padding-left: 17px;
+    padding-left: 30px;
 
     li {
-      padding-left: 6.5px;
+      font-family: var(--font-medium);
+      padding-left: 12px;
     }
   }
 
   p {
     color: var(--theme-support-settings-text-color);
-    font-family: var(--font-regular);
+    font-family: var(--font-light);
     font-size: 16px;
   }
 

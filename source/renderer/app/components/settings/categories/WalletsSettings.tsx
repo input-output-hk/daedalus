@@ -9,6 +9,7 @@ import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { LocalizedCurrency } from '../../../types/currencyTypes';
+import { Separator } from '../../widgets/separator/Separator';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -87,7 +88,7 @@ class WalletSettings extends Component<Props> {
         </div>
         {currencyIsActive && (
           <div className={styles.content}>
-            <hr className={styles.separator} />
+            <Separator className={styles.separator} />
             <div className={styles.currencyPoweredBy}>
               {intl.formatMessage(messages.currencyPoweredByLabel)}
               <Link

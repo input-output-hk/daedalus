@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import {
   defineMessages,
-  intlShape,
-  injectIntl,
   FormattedHTMLMessage,
+  injectIntl,
+  intlShape,
 } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './DappTransactionRequest.scss';
@@ -18,6 +18,9 @@ import AssetsTransactionConfirmation from '../assets/AssetsTransactionConfirmati
 import { formattedWalletAmount } from '../../utils/formatters';
 import { isTokenMissingInWallet, tokenHasBalance } from '../../utils/assets';
 import type { AssetToken } from '../../api/assets/types';
+import { MonospaceTextBlock } from '../widgets/monospace-text-block/MonospaceTextBlock';
+import { CollapsibleSection } from '../widgets/collapsible-section/CollapsibleSection';
+import { Separator } from '../widgets/separator/Separator';
 
 const messages = defineMessages({
   title: {
@@ -92,16 +95,6 @@ type Props = {
   wallets: Array<Wallet>;
 };
 const DappTransactionRequest = observer((props: Props) => {
-  const [isAdditionalDataVisible, toggleAdditionalData] = useState<boolean>(
-    false
-  );
-  const [isMetadataVisible, toggleMetadata] = useState<boolean>(false);
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-  const getToggleLabel = useCallback((isVisible: boolean) =>
-    isVisible
-      ? intl.formatMessage(globalMessages.hide)
-      : intl.formatMessage(globalMessages.view)
-  );
   const {
     adaAmount,
     address,
@@ -144,6 +137,7 @@ const DappTransactionRequest = observer((props: Props) => {
       }}
     />
   ) : null;
+
   const walletsDropdownStyles = classnames([
     styles.walletsDropdown,
     walletsDropdownHasError || hasTokenError ? styles.error : null,
@@ -200,8 +194,7 @@ const DappTransactionRequest = observer((props: Props) => {
           className={styles.addWalletSelect}
         />
       )}
-
-      <hr />
+      <Separator />
       <p className={styles.label}>
         {intl.formatMessage(messages.receiverLabel)}
       </p>
@@ -219,34 +212,14 @@ const DappTransactionRequest = observer((props: Props) => {
       <div className={styles.transactionFee}>
         +{formattedWalletAmount(transactionFee)}
       </div>
-      <p className={styles.labelData}>
-        {intl.formatMessage(messages.additionalDataLabel)}
-        <button
-          className={styles.toggleButton}
-          onClick={() => toggleAdditionalData(!isAdditionalDataVisible)}
-        >
-          {getToggleLabel(isAdditionalDataVisible)}
-        </button>
-      </p>
-      {isAdditionalDataVisible && (
-        <div className={styles.additionalData}>
-          <pre>{additionalData}</pre>
-        </div>
-      )}
-      <p className={styles.labelData}>
-        {intl.formatMessage(messages.metaDataLabel)}
-        <button
-          className={styles.toggleButton}
-          onClick={() => toggleMetadata(!isMetadataVisible)}
-        >
-          {getToggleLabel(isMetadataVisible)}
-        </button>
-      </p>
-      {isMetadataVisible && (
-        <div className={styles.metadata}>
-          <pre>{metadata}</pre>
-        </div>
-      )}
+      <CollapsibleSection
+        header={intl.formatMessage(messages.additionalDataLabel)}
+      >
+        <MonospaceTextBlock>{additionalData}</MonospaceTextBlock>
+      </CollapsibleSection>
+      <CollapsibleSection header={intl.formatMessage(messages.metaDataLabel)}>
+        <MonospaceTextBlock>{metadata}</MonospaceTextBlock>
+      </CollapsibleSection>
     </Dialog>
   );
 });

@@ -6,22 +6,23 @@ import { Intl } from '../../../types/i18nTypes';
 import { messages } from './AnalyticsForm.messages';
 import { ROUTES } from '../../../routes-config';
 import { useActions } from '../../../hooks/useActions';
-import { CollapsibleTextBlock } from '../../widgets/collapsible-text-block/CollapsibleTextBlock';
+import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
 import { Separator } from '../../widgets/separator/Separator';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import { MonospaceTextBlock } from '../../widgets/monospace-text-block/MonospaceTextBlock';
 
 interface AnalyticsFormProps {
   intl: Intl;
   onAnalyticsAcceptanceChange: (analyticsAccepted: boolean) => void;
   analyticsAccepted: boolean;
-  showTOCSummary?: boolean;
+  showTCSummary?: boolean;
 }
 
 const AnalyticsForm = ({
   intl,
   onAnalyticsAcceptanceChange,
   analyticsAccepted,
-  showTOCSummary,
+  showTCSummary,
 }: AnalyticsFormProps) => {
   const actions = useActions();
   const handleTOCNavigation = useCallback(() => {
@@ -42,7 +43,7 @@ const AnalyticsForm = ({
   return (
     <>
       <h2 className={styles.title}>{intl.formatMessage(messages.title)}</h2>
-      {!showTOCSummary && (
+      {!showTCSummary && (
         <p className={styles.description}>
           <FormattedMessage
             {...messages.descriptionWithTOCLink}
@@ -52,21 +53,21 @@ const AnalyticsForm = ({
           />
         </p>
       )}
-      {showTOCSummary && (
+      {showTCSummary && (
         <>
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>
-          <CollapsibleTextBlock
+          <CollapsibleSection
             header={intl.formatMessage(messages.tocDetailsTitle)}
           >
-            <div className={styles.tocDetails}>
+            <MonospaceTextBlock>
               {intl.formatMessage(messages.tocDetails)}
-            </div>
-          </CollapsibleTextBlock>
+            </MonospaceTextBlock>
+          </CollapsibleSection>
         </>
       )}
-      <CollapsibleTextBlock
+      <CollapsibleSection
         header={intl.formatMessage(messages.dataCollectionDetailsTitle)}
       >
         <ol className={styles.dataCollectionList}>
@@ -78,7 +79,7 @@ const AnalyticsForm = ({
           </li>
         </ol>
         <Separator />
-      </CollapsibleTextBlock>
+      </CollapsibleSection>
       <NormalSwitch
         onChange={onAnalyticsAcceptanceChange}
         checked={analyticsAccepted}

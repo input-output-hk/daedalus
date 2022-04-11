@@ -1,13 +1,14 @@
 .title {
-  color: var(--theme-support-settings-text-color);
+  color: var(--theme-main-body-messages-color);
   font-family: var(--font-medium);
   margin-bottom: 14px;
 }
 
 .description {
-  color: var(--theme-support-settings-text-color);
+  color: var(--theme-main-body-messages-color);
   font-family: var(--font-light);
   font-size: 16px;
+  line-height: 1.43;
   margin-bottom: 20px;
 }
 
@@ -19,18 +20,18 @@
 }
 
 .dataCollectionList {
-  color: var(--theme-support-settings-text-color);
-  font-family: var(--font-regular);
-  line-height: 2; // todo discuss with Sasha
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-light);
+  line-height: 2;
   list-style: auto outside;
   padding-left: 30px;
 
   li {
-    color: var(--theme-support-settings-text-color);
+    color: var(--theme-main-body-messsages-color);
     padding-left: 12px;
 
     &::marker {
-      font-weight: bold;
+      font-family: var(--font-medium);
     }
   }
 }
@@ -41,21 +42,7 @@
   margin: 0 0 30px;
 
   & label {
+    font-family: var(--font-light) !important;
     margin: 0 !important;
   }
-}
-
-.tocDetails {
-  // TODO: extract to a more generic variable
-  background-color: var(
-    --theme-paper-wallet-create-certificate-dialog-explorer-link-background-color
-  );
-  border-radius: 2px;
-  // TODO: extract to a more generic variable
-  color: var(--theme-dialog-text-color);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.43;
-  margin: 10px 0 20px;
-  padding: 9px 12px;
 }

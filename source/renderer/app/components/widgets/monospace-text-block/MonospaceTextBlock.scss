@@ -1,0 +1,20 @@
+.pre {
+  background-color: var(--theme-widgets-monospace-text-block-background-color);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.38;
+  max-height: 250px;
+  overflow: auto;
+  padding: 9px 12px;
+  user-select: text;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  &::-webkit-scrollbar-corner {
+    background: transparent !important;
+  }
+
+  &::-webkit-scrollbar-button {
+    height: 2px !important;
+  }
+}

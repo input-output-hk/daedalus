@@ -1,17 +1,17 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import styles from './CollapsibleTextBlock.scss';
+import styles from './CollapsibleSection.scss';
 import { Intl } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
 
-interface CollapsibleTextBlockProps {
+interface CollapsibleSectionProps {
   intl: Intl;
   header: string;
   children: ReactNode;
 }
 
-export const CollapsibleTextBlock = injectIntl(
-  ({ intl, header, children }: CollapsibleTextBlockProps) => {
+export const CollapsibleSection = injectIntl(
+  ({ intl, header, children }: CollapsibleSectionProps) => {
     const [expanded, setExpanded] = useState(false);
     const handleToggle = useCallback(() => {
       setExpanded((previousExpanded) => !previousExpanded);
