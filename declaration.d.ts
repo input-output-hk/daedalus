@@ -1,3 +1,7 @@
+import type { request as httpRequest } from 'http';
+import type { request as httpsRequest, globalAgent } from 'https';
+import { Environment } from './source/common/types/environment.types';
+
 declare module '*.svg' {
   const content: any;
   export default content;
@@ -22,6 +26,15 @@ type Daedalus = {
   };
 };
 
+interface Http {
+  request: httpRequest;
+}
+
+interface Https {
+  request: httpsRequest;
+  Agent: globalAgent;
+}
+
 export type $ElementType<
   T extends { [P in K & any]: any },
   K extends keyof T | number
@@ -34,12 +47,17 @@ export type EnumMap<
 > = O & Record<K, V & $ElementType<O, K>>;
 
 declare global {
-  let daedalus: Daedalus;
   namespace NodeJS {
     interface ProcessEnv {
       WALLET_COUNT: number;
     }
   }
+  /* eslint-disable no-var, vars-on-top */
+  var daedalus: Daedalus;
+  var environment: Environment;
+  var http: Http;
+  var https: Https;
+  /* eslint-enable no-var, vars-on-top */
 }
 
 export {};
