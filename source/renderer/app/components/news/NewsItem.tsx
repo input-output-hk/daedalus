@@ -149,6 +149,7 @@ class NewsItem extends Component<Props, State> {
                   'inlineCode',
                   'code',
                   'html',
+                  // @ts-ignore
                   'virtualHtml',
                 ]}
               />
