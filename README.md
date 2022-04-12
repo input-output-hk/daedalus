@@ -160,7 +160,6 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 - Windows 10/11
 - Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
 - NodeJS 16
-- `yarn config set msvsversion 2015 --global`
 
 #### Steps
 - `yarn install`
