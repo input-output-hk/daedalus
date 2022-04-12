@@ -105,6 +105,7 @@
       padding: 0 20px;
       position: sticky;
       top: 0;
+      transition: box-shadow 0.1s ease-in-out;
       z-index: $sticky-header-z-index;
 
       &.stickyHeader {
@@ -148,7 +149,7 @@
       }
     }
 
-    tr:not(:last-child) {
+    .tr:not(:last-child) {
       border-bottom: 1px solid var(--theme-staking-table-border-color);
     }
 
