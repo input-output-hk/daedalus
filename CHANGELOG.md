@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
 - Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
 - Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
