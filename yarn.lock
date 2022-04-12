@@ -8253,9 +8253,9 @@ fast-password-entropy@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fast-password-entropy/-/fast-password-entropy-1.1.1.tgz#47ba9933095fd5a32fb184915fc8e76ee19cf429"
 
-fast-sass-loader@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/fast-sass-loader/-/fast-sass-loader-1.5.0.tgz#b3bcf91aaa5fd042e01c536bb338db74b03fef0c"
+fast-sass-loader@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fast-sass-loader/-/fast-sass-loader-2.0.1.tgz#9200d744b3ccb0330c12f771a71ad71196de18de"
   dependencies:
     async "^2.0.1"
     cli-source-preview "^1.0.0"

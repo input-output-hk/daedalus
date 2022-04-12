@@ -139,7 +139,7 @@
     "eslint-plugin-react": "7.21.2",
     "eslint-plugin-react-hooks": "4.1.2",
     "esm": "3.2.25",
-    "fast-sass-loader": "1.5.0",
+    "fast-sass-loader": "2.0.1",
     "file-loader": "4.2.0",
     "gulp-shell": "0.8.0",
     "hash.js": "1.1.7",
