@@ -27,22 +27,25 @@
   margin: 0 0 30px !important;
 
   & label {
+    font-family: var(--font-light);
     margin: 0 !important;
   }
 }
 
 .title,
 .dataCollectionTitle {
-  font-weight: bold;
+  font-family: var(--font-medium);
   margin-bottom: 14px;
 }
 
 .dataCollectionTitle {
   align-items: center;
   display: flex;
+  font-family: var(--font-medium);
 }
 
 .description {
+  font-family: var(--font-light);
   margin-bottom: 20px;
 }
 

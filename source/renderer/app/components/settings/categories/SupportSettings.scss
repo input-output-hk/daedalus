@@ -63,10 +63,6 @@
   }
 }
 
-.switchButton {
-  margin: 0 0 0 20px !important;
-}
-
 .analyticsSectionTitle {
   color: var(--theme-main-body-messages-color);
   font-family: var(--font-medium);
@@ -83,6 +79,10 @@
   font-family: var(--font-light);
   font-size: 16px;
   line-height: 1.43;
+}
+
+.switchButton {
+  margin: 0 0 0 20px !important;
 }
 
 .termsOfServiceLink {
