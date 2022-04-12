@@ -1,33 +1,31 @@
 /**
  * It generates stake pool dummy json content
- * Command to run: node source/renderer/app/config/generateStakePoolFakeData.js
+ * Command to run: yarn ts-node source/renderer/app/config/generateStakePoolFakeData.ts
  */
-const faker = require('faker');
+import faker from '@faker-js/faker';
+import fs from 'fs';
+import path from 'path';
+import BigNumber from 'bignumber.js';
 
-// const fs = require('fs');
-const path = require('path');
-
-const BigNumber = require('bignumber.js');
-
-function generatStakePoolsFakeData() {
+function generateStakePoolsFakeData() {
   const stakePools = [];
 
   for (let i = 1; i <= 300; i++) {
-    const relativeStake = faker.random.number(100);
-    const cost = new BigNumber(faker.random.number(100));
+    const relativeStake = faker.datatype.number(100);
+    const cost = new BigNumber(faker.datatype.number(100));
     const createdAt = faker.date.recent();
     const description = faker.lorem.words();
     const homepage = faker.internet.url();
     const id = faker.random.alphaNumeric(64);
-    const isCharity = faker.random.boolean();
+    const isCharity = faker.datatype.boolean();
     const name = faker.name.findName();
-    const performance = faker.random.number(100);
-    const pledge = new BigNumber(faker.random.number(100));
-    const producedBlocks = faker.random.number(10000000);
-    const profitMargin = faker.random.number(100);
+    const performance = faker.datatype.number(100);
+    const pledge = new BigNumber(faker.datatype.number(100));
+    const producedBlocks = faker.datatype.number(10000000);
+    const profitMargin = faker.datatype.number(100);
     const ranking = i;
     const retiring = null;
-    const saturation = faker.random.number({
+    const saturation = faker.datatype.number({
       min: 0,
       max: 120,
       precision: 0.01,
@@ -56,11 +54,10 @@ function generatStakePoolsFakeData() {
   return stakePools;
 }
 
-const fakeStakePools = generatStakePoolsFakeData();
+const fakeStakePools = generateStakePoolsFakeData();
 // @TODO - remove flow fix and move fs to main process
 
 /* eslint-disable no-undef */
-// @ts-ignore
 fs.writeFileSync(
   `${path.join(__dirname, '/')}stakingStakePools.dummy.json`,
   JSON.stringify(fakeStakePools, null, '\t')

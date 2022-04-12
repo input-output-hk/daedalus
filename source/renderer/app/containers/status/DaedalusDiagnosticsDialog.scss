@@ -1,4 +1,5 @@
 @import '../../themes/mixins/overlay-backdrop';
+@import '../../themes/mixins/layers';
 
 .overlay {
   bottom: 0;
@@ -7,7 +8,7 @@
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 9999;
+  z-index: $dialog-z-index;
   @include overlay-backrop;
 
   *::-webkit-scrollbar-button {

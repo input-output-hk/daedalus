@@ -246,10 +246,7 @@ export default class AdaApi {
 
   getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
-    const {
-      getHardwareWalletLocalData,
-      getHardwareWalletsLocalData,
-    } = global.daedalus.api.localStorage;
+    const { getHardwareWalletsLocalData } = global.daedalus.api.localStorage;
 
     try {
       const wallets: Array<AdaWallet | LegacyAdaWallet> = await getWallets(
@@ -281,7 +278,9 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet: AdaWallet) => {
           const { id } = wallet;
-          const walletData = await getHardwareWalletLocalData(id);
+
+          const walletData = hwLocalData[id];
+
           return _createWalletFromServerData({
             ...wallet,
             isHardwareWallet:
@@ -2953,9 +2952,13 @@ export default class AdaApi {
         catalystFund,
       });
 
+      const fundNumber =
+        Number(catalystFund.fund_name?.match(/\d+/)?.[0]) ||
+        catalystFund.id + 1;
+
       return {
         current: {
-          number: catalystFund.id + 1,
+          number: fundNumber,
           startTime: new Date(catalystFund.fund_start_time),
           endTime: new Date(catalystFund.fund_end_time),
           resultsTime: new Date(
@@ -2966,7 +2969,7 @@ export default class AdaApi {
           ),
         },
         next: {
-          number: catalystFund.id + 2,
+          number: fundNumber + 1,
           startTime: new Date(catalystFund.next_fund_start_time),
           registrationSnapshotTime: new Date(
             catalystFund.next_registration_snapshot_time
