@@ -5,7 +5,7 @@
   "analytics.form.dataCollectionDetailsUserBehaviour": "User behavior (where the user clicks)",
   "analytics.form.dataCollectionSwitchText": "Allow anonymous data collection",
   "analytics.form.description": "All data is anonymous and is used only for product development purposes.",
-  "analytics.form.descriptionWithTOCLink": "!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.",
+  "analytics.form.descriptionWithTOCLink": "!!!Allow anonymous data collection. All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.",
   "analytics.form.title": "Anonymous data collection",
   "analytics.form.tocDetails": "!!!1.6 Privacy. No one will use your data. Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto sunt explicabo.",
   "analytics.form.tocDetailsTitle": "!!!What ToC says about this?",

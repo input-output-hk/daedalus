@@ -4,7 +4,11 @@
   display: flex;
   font-family: var(--font-medium);
   font-size: 16px;
-  margin: 20px 0 6px;
+  margin: 20px 0 14px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .toggleButton {

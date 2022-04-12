@@ -6,11 +6,13 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
-import AnalyticsForm from '../../profile/analytics/AnalyticsForm';
 import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
 import { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from './SupportSettings.messages';
 import { Separator } from '../../widgets/separator/Separator';
+import { CollectedDataOverview } from '../../profile/analytics/CollectedDataOverview';
+import NormalSwitch from '../../widgets/forms/NormalSwitch';
+import { ROUTES } from '../../../routes-config';
 
 interface SupportSettingsProps extends InjectedProps {
   intl: Intl;
@@ -73,6 +75,12 @@ class SupportSettings extends Component<
     });
   };
 
+  handleTermsOfUseNavigation = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.TERMS_OF_USE,
+    });
+  };
+
   render() {
     const {
       onExternalLinkClick,
@@ -113,6 +121,16 @@ class SupportSettings extends Component<
         skin={LinkSkin}
       />
     );
+
+    const termsAndConditionsLink = (
+      <Link
+        className={styles.termsOfServiceLink}
+        onClick={this.handleTermsOfUseNavigation}
+        label={intl.formatMessage(messages.tocLink)}
+        hasIconAfter={false}
+      />
+    );
+
     return (
       <>
         <div className={styles.supportGuide}>
@@ -158,12 +176,28 @@ class SupportSettings extends Component<
             </li>
           </ol>
         </div>
+
         <Separator />
-        <AnalyticsForm
-          intl={intl}
-          onAnalyticsAcceptanceChange={this.onAnalyticsAcceptanceChange}
-          analyticsAccepted={this.state.analyticsAccepted}
-        />
+
+        <h2 className={styles.analyticsSectionTitle}>
+          {intl.formatMessage(messages.analyticsSectionTitle)}
+        </h2>
+        <div className={styles.analyticsSectionDescriptionContainer}>
+          <p className={styles.analyticsSectionDescription}>
+            <FormattedMessage
+              {...messages.analyticsSectionDescription}
+              values={{
+                termsAndConditionsLink,
+              }}
+            />
+          </p>
+          <NormalSwitch
+            onChange={this.onAnalyticsAcceptanceChange}
+            checked={this.state.analyticsAccepted}
+            className={styles.switchButton}
+          />
+        </div>
+        <CollectedDataOverview />
       </>
     );
   }

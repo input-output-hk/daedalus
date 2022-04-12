@@ -1,0 +1,15 @@
+.dataCollectionList {
+  color: var(--theme-main-body-messages-color);
+  font: 16px var(--font-light);
+  line-height: 2;
+  list-style: auto outside;
+  padding-left: 30px;
+
+  li {
+    padding-left: 12px;
+
+    &::marker {
+      font-weight: bold;
+    }
+  }
+}

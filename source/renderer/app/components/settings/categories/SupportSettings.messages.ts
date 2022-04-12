@@ -61,4 +61,20 @@ export const messages = defineMessages({
     description:
       '"download your logs here" link in the Logs section on the support settings page',
   },
+  analyticsSectionTitle: {
+    id: 'analytics.form.title',
+    defaultMessage: '!!!Anonymous data collection',
+    description: 'Analytics form title',
+  },
+  analyticsSectionDescription: {
+    id: 'analytics.form.descriptionWithTOCLink',
+    defaultMessage:
+      '!!!Allow anonymous data collection. All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.',
+    description: 'Analytics data collection description, including TOC link',
+  },
+  tocLink: {
+    id: 'analytics.form.tocLink',
+    defaultMessage: '!!!Terms and Conditions',
+    description: 'Terms and Conditions link text',
+  },
 });

@@ -23,8 +23,8 @@
 
 // TODO improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
 .switchButton {
-  flex-direction: row-reverse;
-  margin: 0 0 30px;
+  flex-direction: row-reverse !important;
+  margin: 0 0 30px !important;
 
   & label {
     margin: 0 !important;
@@ -48,18 +48,4 @@
 
 .descriptionLink {
   color: var(--theme-link-main-color);
-}
-
-.dataCollectionList {
-  line-height: 2; // todo discuss with Sasha
-  list-style: auto outside;
-  padding-left: 30px;
-}
-
-.dataCollectionListItem {
-  padding-left: 12px;
-
-  &::marker {
-    font-weight: bold;
-  }
 }

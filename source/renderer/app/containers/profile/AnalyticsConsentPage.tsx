@@ -1,42 +1,36 @@
-import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import React, { FC, useCallback } from 'react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
-import AnalyticsDialog from '../../components/profile/analytics/AnalyticsDialog';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import AnalyticsConsentForm from '../../components/profile/analytics/AnalyticsConsentForm';
 import { AnalyticsAcceptanceStatus } from '../../analytics/types';
+import { useActions } from '../../hooks/useActions';
+import { useStores } from '../../hooks/useStores';
 
-@inject('stores', 'actions')
-@observer
-class AnalyticsConsentPage extends Component<InjectedProps> {
-  static defaultProps = {
-    actions: null,
-    stores: null,
-  };
+const AnalyticsConsentPage: FC = () => {
+  const actions = useActions();
+  const { networkStatus, profile, analytics } = useStores();
 
-  onSubmit = async (analyticsAccepted: boolean) => {
-    await this.props.actions.profile.acceptAnalytics.trigger(
+  const handleSubmit = useCallback(async (analyticsAccepted: boolean) => {
+    await actions.profile.acceptAnalytics.trigger(
       analyticsAccepted
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
-    await this.props.stores.analytics.resetAnalyticsClient();
-  };
+    analytics.resetAnalyticsClient();
+  }, []);
 
-  render() {
-    const { networkStatus, profile } = this.props.stores;
-    const { setAnalyticsAcceptanceRequest } = profile;
-    const { isShelleyActivated } = networkStatus;
-    const topbar = <TopBar isShelleyActivated={isShelleyActivated} />;
-    return (
-      <TopBarLayout topbar={topbar}>
-        <AnalyticsDialog
-          loading={setAnalyticsAcceptanceRequest.isExecuting}
-          onConfirm={this.onSubmit}
-        />
-      </TopBarLayout>
-    );
-  }
-}
+  const { setAnalyticsAcceptanceRequest } = profile;
+  const { isShelleyActivated } = networkStatus;
+
+  const topbar = <TopBar isShelleyActivated={isShelleyActivated} />;
+  return (
+    <TopBarLayout topbar={topbar}>
+      <AnalyticsConsentForm
+        loading={setAnalyticsAcceptanceRequest.isExecuting}
+        onConfirm={handleSubmit}
+      />
+    </TopBarLayout>
+  );
+};
 
 export default AnalyticsConsentPage;
