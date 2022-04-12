@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
@@ -44,9 +44,9 @@ export const Containter = ({
   }
 
   const [areTermsAccepted, setAreTermsAccepted] = useState(false);
-  const assetTokens = getNonZeroAssetTokens(
-    activeWallet.assets.total,
-    getAsset
+  const assetTokens = useMemo(
+    () => getNonZeroAssetTokens(activeWallet.assets.total, getAsset),
+    [activeWallet.assets.total, getAsset]
   );
   const isSubmitting =
     (!isHardwareWallet && sendMoneyRequest.isExecuting) ||
