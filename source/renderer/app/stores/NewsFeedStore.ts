@@ -15,7 +15,7 @@ import type {
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
-global.environment = true;
+global.environment.isDev = true;
 const { isTest, version, isDev } = global.environment;
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'DOWNLOAD_LOGS',

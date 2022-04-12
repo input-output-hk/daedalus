@@ -31,6 +31,11 @@
           "version": "5.1.0",
           "hash": "e2e44cf9a5adbe91e8de9256d27b8d4a2d33bdca75d26fef145f37a904d9b424",
           "url": "https://ci-output-sink.s3.amazonaws.com/csl-daedalus/daedalus-4.9.0-mainnet-21546.bin"
+        },
+        "mac": {
+          "version": "5.1.0",
+          "hash": "7426ac35abf734bd88665f011becd2b8a858f466060fbeb0f4b35b805c6608b9",
+          "url": "https://ci-output-sink.s3.amazonaws.com/csl-daedalus/daedalus-4.9.0-testnet-21546.pkg"
         }
       }
     },
