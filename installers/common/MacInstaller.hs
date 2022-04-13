@@ -153,6 +153,7 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/build/Release/binding.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
 
 # Sign the whole component deeply
@@ -224,6 +225,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bip66"
       , "bitcoin-ops"
       , "blake2b"
+      , "blake2"
       , "blake-hash"
       , "blake2b-wasm"
       , "bn.js"
