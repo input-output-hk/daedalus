@@ -14,7 +14,6 @@
 
 - Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
 - Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
-- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
 - Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
 - Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
@@ -26,12 +25,21 @@
 
 ### Chores
 
-- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
-- Removed `dockutil` due compatibility issues with MacOs Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 - Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.1
+
+### Fixes
+
+- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
+- Fixed macOS installer on Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
+
+### Chores
+
+- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 
 ## 4.9.0
 
@@ -65,7 +73,6 @@
 
 ### Fixes
 
-- Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
@@ -117,12 +124,10 @@
 
 ### Fixes
 
-- Fixed immediate language updates of application top menu bar ([PR 2813](https://github.com/input-output-hk/daedalus/pull/2813))
 - Fixed receiver address validation by disallowing rewards addresses ([PR 2781](https://github.com/input-output-hk/daedalus/pull/2781))
 
 ### Chores
 
-- Integrated Chromatic for visual regression testing ([PR 2776](https://github.com/input-output-hk/daedalus/pull/2776))
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 - Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
