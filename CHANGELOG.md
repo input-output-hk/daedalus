@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
 - Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
 - Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
 - Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
