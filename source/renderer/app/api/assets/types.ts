@@ -16,16 +16,16 @@ export type ApiAsset = {
   policy_id: string;
   asset_name: string;
   fingerprint: string;
-  metadata?: AssetMetadata | null | undefined;
+  metadata?: AssetMetadata | null;
 };
 export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
   assetName: string;
-  decimals: number | null | undefined;
+  decimals?: number | null;
   fingerprint: string;
-  metadata?: AssetMetadata | null | undefined;
+  metadata?: AssetMetadata | null;
   policyId: string;
-  recommendedDecimals: number | null | undefined;
+  recommendedDecimals?: number | null;
   uniqueId: string;
 };
 
