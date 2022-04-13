@@ -94,6 +94,7 @@
 
   .table {
     border-style: hidden;
+    margin-bottom: -10px;
     user-select: text;
     width: 100%;
 
@@ -101,7 +102,7 @@
       background: var(--theme-bordered-box-background-color);
       border-radius: 4px 4px 0 0;
       display: block;
-      margin: -20px -20px 0;
+      margin: -10px -20px 0;
       padding: 0 20px;
       position: sticky;
       top: 0;
