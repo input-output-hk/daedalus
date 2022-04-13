@@ -8,7 +8,7 @@
     "dev": "concurrently --names renderer,main 'yarn dev:renderer' 'wait-on http://localhost:8080 && yarn dev:main'",
     "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" gulp dev",
     "dev:main": "cross-env NODE_ENV=development yarn build:main --watch",
-    "dev:renderer": "cross-env NODE_ENV=development yarn webpack serve -c source/renderer/webpack.config.js --progress",
+    "dev:renderer": "concurrently 'yarn typedef:sass --watch' 'cross-env NODE_ENV=development yarn webpack serve -c source/renderer/webpack.config.js --progress'",
     "build": "yarn build:cleanup && yarn build:main && yarn build:renderer",
     "build:main": "yarn webpack -c source/main/webpack.config.js --progress",
     "build:renderer": "yarn webpack -c source/renderer/webpack.config.js --progress",
