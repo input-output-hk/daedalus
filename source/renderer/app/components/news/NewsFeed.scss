@@ -13,7 +13,7 @@
   top: 0;
   transition: margin-right 400ms ease;
   width: 460px;
-  z-index: $dialog-z-index;
+  z-index: $news-feed-z-index;
 
   &.noTransition {
     transition: none;
