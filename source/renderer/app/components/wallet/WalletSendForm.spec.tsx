@@ -21,6 +21,34 @@ import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm from './WalletSendForm';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+
+jest.mock(
+  '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer',
+  () => {
+    const Dialog = ({
+      amount,
+      formattedTotalAmount,
+    }: {
+      amount: number;
+      formattedTotalAmount: number;
+    }) => {
+      return (
+        <div>
+          <span data-testid="confirmation-dialog-ada-amount">{amount}</span>
+          <span data-testid="confirmation-dialog-total-amount">
+            {formattedTotalAmount}
+          </span>
+        </div>
+      );
+    };
+
+    return {
+      __esModule: true,
+      default: Dialog,
+    };
+  }
+);
 
 describe('wallet/Wallet Send Form', () => {
   beforeEach(() => addLocaleData([...en]));
@@ -55,6 +83,9 @@ describe('wallet/Wallet Send Form', () => {
     currentNumberFormat?: string;
   }) {
     const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
+    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<
+      boolean
+    >(false);
 
     return (
       <TestDecorator>
@@ -71,9 +102,10 @@ describe('wallet/Wallet Send Form', () => {
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onSubmit={jest.fn()}
+                onSubmit={() => setConfirmationDialogOpen(true)}
                 isDialogOpen={(dialog) =>
-                  dialog === WalletTokenPicker && tokenPickerOpen
+                  (dialog === WalletTokenPicker && tokenPickerOpen) ||
+                  confirmationDialogOpen
                 }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
@@ -183,6 +215,10 @@ describe('wallet/Wallet Send Form', () => {
     ).toHaveTextContent(
       `Note: the ada field was automatically updated because this transaction requires a minimum of ${minimumAda} ADA.`
     );
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
@@ -414,5 +450,74 @@ describe('wallet/Wallet Send Form', () => {
 
     assertAdaInput(minimumAda);
     assertMinimumAmountNoticeMessage(minimumAda);
+  });
+
+  test('should wait fees to be calculated before submitting', async () => {
+    expect.assertions(2);
+
+    const mock = jest
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise(async (resolve) => {
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+
+            return resolve({
+              fee: new BigNumber(1),
+              minimumAda: new BigNumber(1),
+            });
+          })
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise(async (resolve) => {
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+
+            return resolve({
+              fee: new BigNumber(2),
+              minimumAda: new BigNumber(2),
+            });
+          })
+      );
+
+    render(<SetupWallet calculateTransactionFee={mock} />);
+
+    enterReceiverAddress();
+
+    const adaField = await screen.findByLabelText('Ada');
+    fireEvent.change(adaField, {
+      target: {
+        value: 2,
+      },
+    });
+
+    await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 1);
+
+    fireEvent.change(adaField, {
+      target: {
+        value: 1.5,
+      },
+    });
+
+    fireEvent.keyPress(adaField, {
+      key: 'Enter',
+      code: 13,
+      charCode: 13,
+      target: adaField,
+    });
+
+    const adaAmountConfirmation = await screen.findByTestId(
+      'confirmation-dialog-ada-amount',
+      {}
+    );
+
+    expect(adaAmountConfirmation).toHaveTextContent('1.500000');
+
+    const totalAmountConfirmation = screen.getByTestId(
+      'confirmation-dialog-total-amount',
+      {}
+    );
+
+    expect(totalAmountConfirmation).toHaveTextContent('3.500000');
   });
 });

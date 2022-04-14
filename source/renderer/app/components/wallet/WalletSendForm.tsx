@@ -213,7 +213,9 @@ class WalletSendForm extends Component<Props, State> {
       }, FORM_VALIDATION_DEBOUNCE_WAIT);
     }
   };
-  handleOnSubmit = () => {
+  handleOnSubmit = async () => {
+    await Promise.all(this.form.validator.promises);
+
     if (this.isDisabled()) {
       return;
     }
