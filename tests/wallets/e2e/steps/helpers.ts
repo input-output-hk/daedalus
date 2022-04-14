@@ -504,61 +504,6 @@ export default {
       text: error,
     }),
 };
-export const i18n = {
-  formatMessage: async (
-    client: Record<string, any>,
-    {
-      id,
-      values,
-    }: {
-      id: string;
-      values?: Record<string, any>;
-    }
-  ) => {
-    const translation = await client.execute(
-      (translationId, translationValues) => {
-        const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
-
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-        const locale = daedalus.stores.profile.currentLocale;
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-        const messages = daedalus.translations;
-        const intlProvider = new IntlProvider(
-          {
-            locale,
-            messages: messages[locale],
-          },
-          {}
-        );
-        return intlProvider.getChildContext().intl.formatMessage(
-          {
-            id: translationId,
-          },
-          translationValues
-        );
-      },
-      id,
-      values || {}
-    );
-    return translation.value;
-  },
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
-  setActiveLanguage: async (
-    client: Record<string, any>,
-    {
-      language,
-    }: {
-      language: string;
-    } = {}
-  ) =>
-    client.execute((value) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      daedalus.actions.profile.updateUserLocalSetting.trigger({
-        param: 'locale',
-        value,
-      });
-    }, language || DEFAULT_LANGUAGE),
-};
 export const waitForActiveRestoreNotification = (
   client: Record<string, any>,
   {
