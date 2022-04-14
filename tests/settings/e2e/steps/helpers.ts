@@ -155,7 +155,7 @@ export const migrationHelpers = {
     {
       isHidden,
     }: {
-      isHidden: boolean;
+      isHidden?: boolean;
     } = {}
   ) =>
     client.waitForVisible(
