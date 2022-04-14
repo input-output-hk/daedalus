@@ -57,6 +57,7 @@ declare global {
   var environment: Environment;
   var http: Http;
   var https: Https;
+  var isFlight: boolean;
   /* eslint-enable no-var, vars-on-top */
 }
 
