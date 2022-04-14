@@ -208,13 +208,9 @@ export const chooseCustomOptionsByIndex = async function (
   await clickOptionByIndex.call(this, timeIndex);
 };
 export const getSelectedCustomOptions = async function () {
-  const selectedValues = await this.client.execute(function () {
-    const {
-      currentNumberFormat,
-      currentDateFormat,
-      currentTimeFormat,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-    } = daedalus.stores.profile;
+  const selectedValues = await this.client.execute(() => {
+    const { currentNumberFormat, currentDateFormat, currentTimeFormat } =
+      daedalus.stores.profile;
     return {
       currentNumberFormat,
       currentDateFormat,
