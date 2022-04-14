@@ -20,14 +20,13 @@ When(
     setTimeout(callback, oneHour);
   }
 );
-// @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
 export const waitForActiveRestoreNotification = (
   client: Record<string, any>,
   {
     isHidden,
   }: {
     isHidden: boolean;
-  } = {}
+  } = { isHidden: false }
 ) => client.waitForVisible(ACTIVE_RESTORE_NOTIFICATION, null, isHidden);
 export const waitForCardanoNodeToExit = async (client: Record<string, any>) =>
   client.waitUntil(
