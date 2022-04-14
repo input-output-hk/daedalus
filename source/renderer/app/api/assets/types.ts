@@ -73,8 +73,7 @@ export type AssetMetadata = {
   name: string;
   description: string;
   ticker?: string;
-  decimals?: number;
-  // [0 .. 255]
+  decimals?: number; // [0 .. 255]
   url?: string;
   logo?: string;
 };

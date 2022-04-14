@@ -38,14 +38,8 @@ Then(
     const {
       value: { expextedWalletAmount, distribution },
     } = await this.client.executeAsync((done) => {
-      const {
-        walletUtxos,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = daedalus.stores.walletSettings || {};
-      const {
-        activeValue,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = daedalus.stores.wallets;
+      const { walletUtxos } = daedalus.stores.walletSettings || {};
+      const { activeValue } = daedalus.stores.wallets;
       done({
         expextedWalletAmount: activeValue,
         distribution: walletUtxos ? walletUtxos.distribution : {},

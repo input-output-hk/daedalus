@@ -35,7 +35,6 @@ type Props = {
   totalAvailable: number;
 };
 const assetDetails = {
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c':
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -46,15 +45,10 @@ const assetDetails = {
         name: 'MakerDAO',
         ticker: 'DAI',
         description: 'Test description',
-        unit: {
-          name: 'DAI',
-          decimals: 6,
-        },
         url: 'http://example.com',
         logo: '',
       }
     ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
     generateAssetToken(
       '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -65,15 +59,10 @@ const assetDetails = {
         name: 'TrueUSD',
         ticker: 'TUSD',
         description: 'Test description',
-        unit: {
-          name: 'TUSD',
-          decimals: 6,
-        },
         url: 'http://example.com',
         logo: '',
       }
     ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b':
     generateAssetToken(
       '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -84,15 +73,10 @@ const assetDetails = {
         name: 'Tether',
         ticker: 'USDT',
         description: 'Test description',
-        unit: {
-          name: 'USDT',
-          decimals: 6,
-        },
         url: 'http://example.com',
         logo: '',
       }
     ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b':
     generateAssetToken(
       '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
@@ -103,10 +87,6 @@ const assetDetails = {
         name: 'USD Coin',
         ticker: 'USDC',
         description: 'Test description',
-        unit: {
-          name: 'USDC',
-          decimals: 6,
-        },
         url: 'http://example.com',
         logo: '',
       }

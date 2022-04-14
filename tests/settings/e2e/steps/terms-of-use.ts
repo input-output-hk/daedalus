@@ -9,7 +9,6 @@ Given(/^I have accepted "Terms of use"$/, async function () {
 });
 Given(/^I didn't accept "Terms of use"$/, async function () {
   await this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.reset();
   });
 });
@@ -27,7 +26,6 @@ Then(/^I should not see the "Terms of use" screen anymore$/, function () {
 });
 Then(/^I should have "Terms of use" accepted$/, async function () {
   const result = await this.client.executeAsync((done) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.profile.getTermsOfUseAcceptanceRequest
       .execute()
       .then(done)

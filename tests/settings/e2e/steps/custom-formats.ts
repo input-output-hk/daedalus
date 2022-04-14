@@ -27,16 +27,11 @@ Given(
     const chosenFormats = formatsTable.hashes();
     await this.client.executeAsync((chosenFormats, done) => {
       Promise.all(
-        chosenFormats.map(
-          ({
-            param,
+        chosenFormats.map(({ param, value }) =>
+          daedalus.stores.profile._updateUserLocalSetting({
+            param: `${param}Format`,
             value,
-            // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-          }) =>
-            daedalus.stores.profile._updateUserLocalSetting({
-              param: `${param}Format`,
-              value,
-            })
+          })
         )
       ).then(done);
     }, chosenFormats);
@@ -46,7 +41,6 @@ When(
   /^the "([^"]*)" wallet has received the transaction amount$/,
   async function (walletName) {
     await this.client.waitUntil(async () => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const walletHasAmount = await this.client.execute(
         () =>
           daedalus.stores.wallets.active &&

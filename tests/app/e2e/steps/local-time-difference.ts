@@ -11,7 +11,6 @@ Given(
     const differenceTime = seconds * 1000000; // unit: microseconds
 
     await this.client.executeAsync((timeDifference, done) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.api.ada
         .setLocalTimeDifference(timeDifference)
         .then(() => daedalus.stores.networkStatus._updateNetworkStatus())

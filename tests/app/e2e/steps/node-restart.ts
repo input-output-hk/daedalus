@@ -3,7 +3,6 @@ import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 
 const CARDANO_NODE_STATE = '.cardanoNodeState .DaedalusDiagnostics_layoutData';
 Given(/^I open the "Diagnostic" screen$/, async function () {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   this.client.execute(() =>
     daedalus.actions.app.openDaedalusDiagnosticsDialog.trigger()
   );

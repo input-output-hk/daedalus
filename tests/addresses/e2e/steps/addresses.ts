@@ -28,16 +28,12 @@ Given(
   async function (numberOfAddresses) {
     for (let i = 0; i < numberOfAddresses; i++) {
       await this.client.executeAsync((done) => {
-        const {
-          active,
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-        } = daedalus.stores.wallets;
+        const { active } = daedalus.stores.wallets;
 
         if (!active) {
           return done();
         }
 
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         return daedalus.stores.addresses
           ._createByronWalletAddress({
             walletId: active.id,
@@ -143,7 +139,6 @@ Then('I should see the following addresses:', async function (table) {
 Then('The active address should be the newest one', async function () {
   const {
     value: { id: lastGeneratedAddress },
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   } = await this.client.execute(
     () => daedalus.stores.addresses.lastGeneratedAddress
   );
@@ -174,7 +169,6 @@ Then(
     );
     const walletAddresses = await this.client.executeAsync(
       (walletId, isLegacy, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.api.ada
           .getAddresses({
             walletId,

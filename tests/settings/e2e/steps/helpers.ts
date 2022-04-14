@@ -76,6 +76,7 @@ export const i18nHelpers = {
     const translation = await client.execute(
       (translationId, translationValues) => {
         const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
+
         const locale = daedalus.stores.profile.currentLocale;
         const messages = daedalus.translations;
         const intlProvider = new IntlProvider(
@@ -206,7 +207,7 @@ export const chooseCustomOptionsByIndex = async function (
   await clickOptionByIndex.call(this, timeIndex);
 };
 export const getSelectedCustomOptions = async function () {
-  const selectedValues = await this.client.execute(function () {
+  const selectedValues = await this.client.execute(() => {
     const { currentNumberFormat, currentDateFormat, currentTimeFormat } =
       daedalus.stores.profile;
     return {

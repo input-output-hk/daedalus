@@ -17,7 +17,6 @@ Given(/^I set the required space to 1 KB$/, () => {
 });
 When(/^I check the disk space$/, function () {
   this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._checkDiskSpace();
   }, diskSpaceRequired);
 });

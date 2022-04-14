@@ -346,8 +346,8 @@ export default class VotingStore extends Store {
           index,
           absoluteSlotNumber,
         });
-        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         transaction =
+          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.createVotingRegistrationTransactionRequest.execute({
             address: address.id,
             addressHex: stakeAddressHex,

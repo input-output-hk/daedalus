@@ -59,25 +59,19 @@ Given(
   /^the "([^"]*)" wallet was delegated to the first Stake Pool$/,
   async function (walletName) {
     await this.client.waitUntil(async () => {
-      const {
-        value: stakePoolsListIsLoaded,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = await this.client.executeAsync((done) =>
-        done(daedalus.stores.staking.stakePools.length > 0)
+      const { value: stakePoolsListIsLoaded } = await this.client.executeAsync(
+        (done) => done(daedalus.stores.staking.stakePools.length > 0)
       );
       return stakePoolsListIsLoaded;
     });
     const data = await this.client.executeAsync(
       (walletName, passphrase, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const pool = daedalus.stores.staking.stakePools[0];
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const wallet = daedalus.stores.wallets.getWalletByName(walletName);
 
         if (pool && wallet) {
           const { id: stakePoolId } = pool;
           const { id: walletId } = wallet;
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
           daedalus.actions.staking.joinStakePool.trigger({
             stakePoolId,
             walletId,
@@ -132,9 +126,7 @@ Given(
     };
     await this.client.execute(
       (wallet, stakePool) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.api.ada.setTestingWallets([wallet]);
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.api.ada.setTestingStakePools([stakePool]);
       },
       walletWithNoMetadata,
@@ -153,15 +145,12 @@ Then(
 Given(/^the "([^"]*)" wallet is undelegated$/, async function (wallet) {
   await this.client.executeAsync(
     (walletName, passphrase, done) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const pool = daedalus.stores.staking.stakePools[0];
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const wallet = daedalus.stores.wallets.getWalletByName(walletName);
 
       if (pool && wallet) {
         const { id: stakePoolId } = pool;
         const { id: walletId } = wallet;
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.actions.staking.quitStakePool.trigger({
           stakePoolId,
           walletId,
@@ -275,10 +264,8 @@ Given(
   async function (adaAmount, walletFrom, walletTo) {
     await this.client.executeAsync(
       (amount, senderName, receiverName, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const walletSender =
           daedalus.stores.wallets.getWalletByName(senderName);
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const walletReceiver =
           daedalus.stores.wallets.getWalletByName(receiverName);
 
@@ -291,11 +278,9 @@ Given(
           return done(new Error(notFoundWalletsErrorMessage));
         }
 
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         return daedalus.stores.addresses
           .getAddressesByWalletId(walletReceiver.id)
           .then((addresses) => {
-            // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
             daedalus.stores.wallets.sendMoneyRequest
               .execute({
                 address: addresses[0].id,
@@ -344,10 +329,7 @@ Then(
 Then(
   /^I should see a "Loading stake pools" message until the Stake Pools are loaded$/,
   async function () {
-    const {
-      value: stakePoolsLength,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-    } = await this.client.execute(
+    const { value: stakePoolsLength } = await this.client.execute(
       () => daedalus.stores.staking.stakePools.length
     );
 

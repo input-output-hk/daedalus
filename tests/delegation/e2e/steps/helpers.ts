@@ -15,10 +15,7 @@ export const getStakePoolByRanking = async (
   ranking: number
 ) => {
   const result = await client.execute((ranking) => {
-    const {
-      stakePools,
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-    } = daedalus.stores.staking;
+    const { stakePools } = daedalus.stores.staking;
     return stakePools.find(
       (stakePool) => stakePool.ranking === parseInt(ranking, 10)
     );

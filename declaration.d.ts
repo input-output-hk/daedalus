@@ -58,8 +58,12 @@ declare global {
   var environment: Environment;
   var http: Http;
   var https: Https;
+  var legacyStateDir: string;
   var isFlight: boolean;
-  var ipcRenderer: IpcRenderer;
+  var ipcRenderer: Pick<
+    IpcRenderer,
+    'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'
+  >;
   /* eslint-enable no-var, vars-on-top */
 }
 

@@ -16,17 +16,11 @@ Given(
   'the last recovery phrase veryfication was done {int} days ago',
   async function (daysAgo) {
     await this.client.executeAsync((days, done) => {
-      const {
-        id: walletId,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = daedalus.stores.wallets.active;
+      const { id: walletId } = daedalus.stores.wallets.active;
       const date = new Date();
       date.setDate(date.getDate() - days);
       const recoveryPhraseVerificationDate = date.toISOString();
-      const {
-        setWalletLocalData,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = daedalus.actions.walletsLocal;
+      const { setWalletLocalData } = daedalus.actions.walletsLocal;
       setWalletLocalData.once(done);
       setWalletLocalData.trigger({
         walletId,
@@ -56,10 +50,8 @@ When(
   async function (_type) {
     const recoveryPhrase = await this.client.execute(
       (type, mnemonics) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const activeWallet = daedalus.stores.wallets.active;
         const correctMnemonics = mnemonics[activeWallet.name];
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const incorrectMnemonics = daedalus.utils.crypto
           .generateMnemonic(correctMnemonics.length)
           .split(' ');

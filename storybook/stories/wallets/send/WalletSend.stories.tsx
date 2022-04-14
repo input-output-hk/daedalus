@@ -23,7 +23,6 @@ import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/u
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 
 const allAssets = [
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -33,22 +32,16 @@ const allAssets = [
       name: 'MakerDAO',
       ticker: 'DAI',
       description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     400
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -58,15 +51,10 @@ const allAssets = [
       name: 'Tether',
       ticker: 'USDT',
       description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -76,10 +64,6 @@ const allAssets = [
       name: 'USD Coin',
       ticker: 'USDC',
       description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }

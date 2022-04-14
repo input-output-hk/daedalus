@@ -43,7 +43,6 @@ Then(/^I click on the Export to CSV button$/, async function () {
     fileContent: exportedCSVContent,
   };
   await this.client.execute(({ fileContent, filePath }) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.wallets.generateCsv.trigger({
       fileContent,
       filePath,
