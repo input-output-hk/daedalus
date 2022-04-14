@@ -77,9 +77,7 @@ export const i18nHelpers = {
       (translationId, translationValues) => {
         const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
 
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const locale = daedalus.stores.profile.currentLocale;
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         const messages = daedalus.translations;
         const intlProvider = new IntlProvider(
           {
@@ -100,17 +98,15 @@ export const i18nHelpers = {
     );
     return translation.value;
   },
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
   setActiveLanguage: async (
     client: Record<string, any>,
     {
       language,
     }: {
-      language: string;
+      language?: string;
     } = {}
   ) =>
     client.execute((value) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.profile.updateUserLocalSetting.trigger({
         param: 'locale',
         value,
@@ -118,22 +114,20 @@ export const i18nHelpers = {
     }, language || DEFAULT_LANGUAGE),
 };
 export const initialSettingsHelpers = {
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (
     client: Record<string, any>,
     {
       isHidden,
     }: {
-      isHidden: boolean;
+      isHidden?: boolean;
     } = {}
   ) => client.waitForVisible(INITIAL_SETTINGS_FORM, null, isHidden),
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'language' is missing in type '{}' but re... Remove this comment to see the full error message
   ensureLanguageIsSelected: async (
     client: Record<string, any>,
     {
       language,
     }: {
-      language: string;
+      language?: string;
     } = {}
   ) => {
     await i18nHelpers.setActiveLanguage(client, {
@@ -149,7 +143,6 @@ export const initialSettingsHelpers = {
   },
 };
 export const migrationHelpers = {
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (
     client: Record<string, any>,
     {
@@ -165,7 +158,6 @@ export const migrationHelpers = {
     ),
   acceptMigration: async (client: Record<string, any>) => {
     await client.execute(() => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.profile.acceptDataLayerMigration.trigger();
     });
     await migrationHelpers.waitForVisible(client, {
@@ -184,7 +176,6 @@ export const termsOfUseHelpers = {
   ) => client.waitForVisible(TERMS_OF_USE_FORM, null, isHidden),
   acceptTerms: async (client: Record<string, any>) => {
     await client.execute(() => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.profile.acceptTermsOfUse.trigger();
     });
     await termsOfUseHelpers.waitForVisible(client, {
