@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
   isWalletRewardsWithdrawalPossible,
   shouldShowEmptyWalletWarning,
 } from '../../../source/renderer/app/utils/walletUtils';
+
 // As a user using a shelly wallet when sending ADA and the balance
 // after the transactions remains < 10 ADA, the following Warning message
 // is displayed in the send confirmation dialog
@@ -41,9 +43,8 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       amount: walletBalance,
       isLegacy,
       isDelegating,
-    };
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
     ).toBe(true);
@@ -61,9 +62,8 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       amount: walletBalance,
       isLegacy,
       isDelegating,
-    };
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
     ).toBe(false);
@@ -81,9 +81,8 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       amount: walletBalance,
       isLegacy,
       isDelegating,
-    };
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
     ).toBe(true);
@@ -101,9 +100,8 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       amount: walletBalance,
       isLegacy,
       isDelegating,
-    };
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
     ).toBe(false);
@@ -121,9 +119,8 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       amount: walletBalance,
       isLegacy,
       isDelegating,
-    };
+    } as Wallet;
     const hasAssets = true;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
     ).toBe(true);
