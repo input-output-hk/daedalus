@@ -101,7 +101,7 @@ BeforeAll(
   }
 );
 // Skip / Execute test depending on node integration
-Before(async function (testCase) {
+Before(async (testCase) => {
   const tags = getTagNames(testCase);
   const isWip = includes(tags, '@wip');
   if (isWip) return 'skipped';
@@ -174,13 +174,14 @@ Before(
     resetTestNews(this.client);
   }
 );
-// adds waitAndClick method to webdriver
 Before(function (testCase) {
   const { name } = testCase.pickle;
-  this.skippablePromise = skippablePromise.bind(this, name);
-  this.waitAndClick = waitAndClick.bind(this);
-  this.waitAndGetText = waitAndGetText.bind(this);
-  this.waitAndSetValue = waitAndSetValue.bind(this);
+  Object.assign(this, {
+    skippablePromise: skippablePromise.bind(this, name),
+    waitAndClick: waitAndClick.bind(this),
+    waitAndGetText: waitAndGetText.bind(this),
+    waitAndSetValue: waitAndSetValue.bind(this),
+  });
 });
 // ads intl method to webdriver
 Before(
@@ -223,7 +224,7 @@ After(
   {
     tags: '@restartApp',
   },
-  async function () {
+  async () => {
     context.app = await startApp();
   }
 );
@@ -250,7 +251,7 @@ After(
   {
     tags: '@e2e',
   },
-  async function ({ sourceLocation, result }) {
+  async ({ sourceLocation, result }) => {
     scenariosCount++;
 
     if (result.status === 'failed') {
@@ -265,7 +266,7 @@ After(
   {
     tags: '@rewardsCsv',
   },
-  async function () {
+  async () => {
     // Remove exported rewards csv
     const file = 'tests/delegation/e2e/documents/rewards_exported.csv';
     fs.unlink(file, (err) => {
