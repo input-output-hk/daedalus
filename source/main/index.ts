@@ -378,7 +378,9 @@ const onAppReady = async () => {
   // If first-instance launched by clicking on a `web+cardano:` URL on Windows/Linux:
   // (First element is `execPath`, we want to exclude arguments starting with '-' or
   // '/' (some `/nix/store` paths on Ubuntu.)
-  const plausibleArgs = process.argv.slice(1).filter((arg) => !(arg.startsWith('-') || arg.startsWith('/')));
+  const plausibleArgs = process.argv
+    .slice(1)
+    .filter((arg) => !(arg.startsWith('-') || arg.startsWith('/')));
   if (plausibleArgs.length > 0) {
     const lastArg = plausibleArgs[plausibleArgs.length - 1];
     logger.info(
@@ -386,7 +388,7 @@ const onAppReady = async () => {
       {
         url: lastArg,
         argv: process.argv,
-        plausibleArgs
+        plausibleArgs,
       }
     );
     handleCustomProtocol(lastArg, mainWindow);
@@ -419,9 +421,12 @@ app.on('will-finish-launching', () => {
       darwinURLWeAreLaunchedWith = url;
     } else {
       // Subsequent 'open-url':
-      logger.info('[Custom-Protocol] will handleCustomProtocol via subsequent open-url', {
-        url,
-      });
+      logger.info(
+        '[Custom-Protocol] will handleCustomProtocol via subsequent open-url',
+        {
+          url,
+        }
+      );
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
       handleCustomProtocol(url, mainWindow);
@@ -460,7 +465,10 @@ if (!isFirstInstance) {
       mainWindow.focus();
       handleCustomProtocol(url, mainWindow);
     } else {
-      logger.error('[Custom-Protocol] should not happen; second-instance without mainWindow', { url });
+      logger.error(
+        '[Custom-Protocol] should not happen; second-instance without mainWindow',
+        { url }
+      );
     }
   });
   app.on('ready', onAppReady);

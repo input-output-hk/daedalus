@@ -1,6 +1,7 @@
 import { observable, computed, action, runInAction } from 'mobx';
 import path from 'path';
-import { map } from 'lodash';
+import BigNumber from 'bignumber.js';
+import { computedFn } from 'mobx-utils';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -18,6 +19,11 @@ import { getCustomProtocolChannel } from '../ipc/getCustomProtocolChannel';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
+import { isReceiverAddressType } from '../utils/hardwareWalletUtils';
+import {
+  StakingParameters,
+  TransactionParameters,
+} from '../../../common/types/magic-links.types';
 
 export default class AppStore extends Store {
   @observable
@@ -32,7 +38,10 @@ export default class AppStore extends Store {
   newsFeedIsOpen = false;
   // TODO: define all possible query params Daedalus can receive from external source
   @observable
-  customProtocolParameters: Object | null | undefined = null;
+  customProtocolParameters:
+    | TransactionParameters
+    | StakingParameters
+    | undefined;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -234,79 +243,69 @@ export default class AppStore extends Store {
     });
   };
 
-  @action _handleCustomProtocol = async (url: string) => {
-    /**
-     *  Cardano custom protocol specification (Grammar)
-     *  https://github.com/cardano-foundation/CIPs/blob/master/CIP-0013/CIP-0013.md
-     *
-     *  1. cardanourn = "web+cardano:" (paymentref | stakepoolref)
-     *
-     *  paymentref = cardanoaddress [ "?" amountparam ]
-     *  cardanoaddress = *(base58 | bech32)
-     *  amountparam = "amount=" *digit [ "." *digit ]
-     *  Example:
-     *  web+cardano:addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
-     *
-     *
-     *  2. stakepoolref = "//stake?" stakepool
-     *
-     *  stakepool = poolhexid | poolticker
-     *  poolhexid = 56HEXDIG
-     *  poolticker = 3*5UNICODE
-     *  Example:
-     *  web+cardano://stake?c94e6fe1123bf111b77b57994bcd836af8ba2b3aa72cfcefbec2d3d4
-     *  web+cardano://stake?COSD
-     */
-
-    console.log('_handleCustomProtocol()', url); // TODO: <michalrus> remove me
-
-    const queryParams = url.split('web+cardano:')[1].replace('//', '');
-    const actionAndDataParams = queryParams.split('?');
-    const actionParam = actionAndDataParams[0];
-    const dataParams = actionAndDataParams[1];
-    let isAddress;
+  /**
+   *  Cardano custom protocol specification (Grammar)
+   *  https://github.com/cardano-foundation/CIPs/blob/master/CIP-0013/CIP-0013.md
+   *
+   *  1. cardanourn = "web+cardano:" (paymentref | stakepoolref)
+   *
+   *  paymentref = cardanoaddress [ "?" amountparam ]
+   *  cardanoaddress = *(base58 | bech32)
+   *  amountparam = "amount=" *digit [ "." *digit ]
+   *  Example:
+   *  web+cardano:addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
+   *
+   *
+   *  2. stakepoolref = "//stake?" stakepool
+   *
+   *  stakepool = poolhexid | poolticker
+   *  poolhexid = 56HEXDIG
+   *  poolticker = 3*5UNICODE
+   *  Example:
+   *  web+cardano://stake?c94e6fe1123bf111b77b57994bcd836af8ba2b3aa72cfcefbec2d3d4
+   *  web+cardano://stake?COSD
+   */
+  @action _handleCustomProtocol = async (url: string): Promise<void> => {
     try {
-      await introspectAddressChannel.send({ input: actionParam });
-      isAddress = true;
+      const address = new URL(url);
+      const actionParam = address.pathname?.replace('//', ''); // can be `stake` or an address
+      const params = new URLSearchParams(address.search);
+      const amountParam: BigNumber = new BigNumber(params.get('amount'));
+
+      const isAddress = computedFn(
+        async (input: string): Promise<boolean> => {
+          const response = await introspectAddressChannel.send({
+            input,
+          });
+          return !(
+            response === 'Invalid' ||
+            !isReceiverAddressType(response.introspection.address_type)
+          );
+        }
+      );
+      if ((await isAddress(actionParam)) && amountParam.isPositive()) {
+        // For now (MVP) we are handling just basic tx
+        // e.g. web+cardano://addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
+
+        if (this.stores.wallets.hasAnyWallets) {
+          runInAction('Store custom protocol data', () => {
+            this.customProtocolParameters = {
+              action: 'transaction',
+              address: actionParam,
+              amount: amountParam,
+            };
+          });
+        }
+      }
     } catch (e) {
-      isAddress = false;
+      console.error(e);
     }
-    if (isAddress && actionParam && dataParams) {
-      // For now (MVP) we are handling just basic tx
-      // e.g. web+cardano:addr_test1qrakn4h9wkq96rx2eyfhn7mydpf285pg80dma203sr3qmulqqapc66zkutqnm0zk55gvs2drll6nune7eh24ax7ld3yqy53sf0?amount=5.000000
-      const parsedQueryParams = dataParams.split('&');
-      let parsedParamsData = {};
-      map(parsedQueryParams, (queryParam) => {
-        const queryParamPair = queryParam.split('=');
-        const key = queryParamPair[0];
-        const value = queryParamPair[1];
-        parsedParamsData[key] = value;
-      });
-      if (isAddress) {
-        parsedParamsData = {
-          ...parsedParamsData,
-          address: actionParam,
-        };
-      }
-      // eslint-disable-next-line
-      console.debug('>>> _handleCustomProtocol: ', {
-        action: isAddress ? 'address' : actionParam, // e.g address / stake /...
-        data: parsedParamsData,
-        hasAnyWallets: this.stores.wallets.hasAnyWallets,
-      });
-      if (this.stores.wallets.hasAnyWallets) {
-        runInAction('Store custom protocol data', () => {
-          this.customProtocolParameters = {
-            action: isAddress ? 'address' : actionParam, // e.g address / stake /...
-            data: parsedParamsData,
-          };
-        });
-      }
-    }
+
+    return Promise.resolve();
   };
 
   @action resetCustomProptocolParams = () => {
-    this.customProtocolParameters = null;
+    this.customProtocolParameters = undefined;
   };
 
   @action

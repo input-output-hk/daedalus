@@ -88,6 +88,8 @@ describe('wallet/Wallet Send Form', () => {
                 walletName={faker.name.firstName()}
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
+                customProtocolParameters={undefined}
+                resetCustomProptocolParams={undefined}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>

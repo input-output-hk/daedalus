@@ -8,7 +8,7 @@ export const handleCustomProtocol = (
   mainWindow: BrowserWindow
 ) => {
   try {
-    logger.info('[Custom-Protocol] Send URL query params');
+    logger.info(`[Custom-Protocol] Send URL query params ur=${url}`);
     getCustomProtocolChannel.send(url, mainWindow.webContents);
   } catch (error) {
     logger.info('[Custom-Protocol] Send URL query params ERROR', { error });

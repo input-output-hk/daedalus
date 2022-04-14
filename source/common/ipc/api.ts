@@ -465,7 +465,7 @@ export type GetBlockSyncProgressMainResponse = {
  */
 export const GET_CUSTOM_PROTOCOL_CHANNEL = 'GetCustomProtocolChannel';
 export type GetCustomProtocolMainRequest = string;
-export type GetCustomProtocolRendererResponse = Object;
+export type GetCustomProtocolRendererResponse = void;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices

@@ -14,7 +14,7 @@
     "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" gulp dev",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e:fail-fast",
     "test:jest": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:generate:report": "ts-node tests/reporter.ts",
+    "test:generate:report": "npx ts-node tests/reporter.ts",
     "test:unit": "yarn cucumber:run --require 'tests/**/unit/**/*.ts' --tags '@unit and not @skip and not @wip'",
     "test:unit:rerun": "yarn cucumber:rerun --require 'tests/**/unit/**/*.ts' --tags '@unit and not @skip and not @wip'",
     "test:unit:watch": "nodemon --watch source --watch tests --exec \"yarn test:unit --tags '@unit and @watch'\"",
@@ -37,10 +37,10 @@
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source storybook utils  --ext .ts,.tsx",
     "compile": "tsc --noEmit",
     "precompile": "yarn typedef:sass",
-    "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
+    "prettier": "npx prettier \"**/*.*\"",
     "prettier:check": "yarn prettier --check",
     "prettier:format": "yarn prettier --write --loglevel warn",
-    "stylelint": "./node_modules/.bin/stylelint \"**/*.scss\"",
+    "stylelint": "npx stylelint \"**/*.scss\"",
     "stylelint:fix": "yarn stylelint --fix",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && ts-node ./translations/translation-runner.ts",
     "storybook": "start-storybook -p 6006 -c storybook --ci /",
@@ -70,7 +70,7 @@
     "typedef:sass": "typed-scss-modules source/renderer/app"
   },
   "bin": {
-    "electron": "./node_modules/.bin/electron"
+    "electron": "npx electron"
   },
   "devDependencies": {
     "@babel/cli": "7.16.0",
@@ -238,6 +238,7 @@
     "mobx-react": "6.3.0",
     "mobx-react-form": "2.0.8",
     "mobx-react-router": "4.1.0",
+    "mobx-utils": "6.0.5",
     "moment": "2.29.0",
     "nanoid": "3.2.0",
     "node-downloader-helper": "1.0.18",

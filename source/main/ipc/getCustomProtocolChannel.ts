@@ -9,6 +9,6 @@ import type {
 // IpcChannel<Incoming, Outgoing>
 
 export const getCustomProtocolChannel: MainIpcChannel<
-  GetCustomProtocolMainRequest,
-  GetCustomProtocolRendererResponse
+  GetCustomProtocolRendererResponse,
+  GetCustomProtocolMainRequest
 > = new MainIpcChannel(GET_CUSTOM_PROTOCOL_CHANNEL);

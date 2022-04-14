@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
+import React, { Component, Fragment } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
-import { intlShape, FormattedHTMLMessage } from 'react-intl';
-import { filter, get, indexOf, omit, map, without, isEmpty } from 'lodash';
+import { FormattedHTMLMessage, intlShape } from 'react-intl';
+import { filter, get, indexOf, map, omit, without } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -13,6 +13,10 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import type {
+  StakingParameters,
+  TransactionParameters,
+} from '../../../../common/types/magic-links.types';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
@@ -23,8 +27,8 @@ import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import {
-  formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
+  formattedAmountToNaturalUnits,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
@@ -35,7 +39,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import type { AssetToken, ApiTokens } from '../../api/assets/types';
+import type { ApiTokens, AssetToken } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
@@ -76,7 +80,10 @@ type Props = {
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
-  customProtocolParameters: any | null | undefined; // TBD once all custom protocol parameters are declared
+  customProtocolParameters:
+    | TransactionParameters
+    | StakingParameters
+    | undefined;
   resetCustomProptocolParams: Function | null | undefined;
 };
 
@@ -203,16 +210,9 @@ class WalletSendForm extends Component<Props, State> {
   }
 
   prefillFormWithParams = () => {
-    const address = get(this.props, [
-      'customProtocolParameters',
-      'data',
-      'address',
-    ]);
-    const amount = get(this.props, [
-      'customProtocolParameters',
-      'data',
-      'amount',
-    ]);
+    const {
+      customProtocolParameters: { address, amount },
+    } = this.props;
     if (address && amount) {
       const receiverField = this.form.$('receiver');
       receiverField.value = address;
