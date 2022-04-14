@@ -47,7 +47,6 @@ Given(
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
       const txResponse = await this.client.executeAsync((transaction, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.stores.addresses
           .getAddressesByWalletId(transaction.destinationWalletId)
           .then((addresses) =>
@@ -70,7 +69,6 @@ When(
     const walletId = getRawWalletId(wallet.id);
     const walletAddress = await this.client.executeAsync(
       (walletId, isLegacy, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.api.ada
           .getAddresses({
             walletId,
@@ -86,7 +84,6 @@ When(
     await this.client.executeAsync(
       (wallet, walletAddress, done) => {
         const checkPendingTransactions = () => {
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
           if (!daedalus.stores.transactions.pendingTransactionsCount) {
             done();
           } else {
@@ -125,7 +122,6 @@ When(
     // Get Destination wallet address
     const walletAddress = await this.client.executeAsync(
       (walletId, isLegacy, done) => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.api.ada
           .getAddresses({
             walletId,

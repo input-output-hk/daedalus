@@ -17,7 +17,6 @@ export const waitUntilUrlEquals = function (expectedUrl: string) {
 };
 export const navigateTo = function (requestedRoute: string) {
   return this.client.execute((route) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.actions.router.goToRoute.trigger({
       route,
     });
@@ -33,7 +32,6 @@ export const sidebarHelpers = {
     }
   ) => {
     await client.execute((cat) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
         showSubMenu: true,

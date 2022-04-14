@@ -14,10 +14,8 @@ Given(/^Daedalus is running$/, function () {
 Given('I am on the connecting screen', async function () {
   this.client.executeAsync((done) => {
     // Simulate that there is no connection to cardano node
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setSyncProgress(0);
 
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
   await this.client.waitForVisible('.SyncingConnectingStatus_connecting');
@@ -26,7 +24,6 @@ When(/^I refresh the main window$/, async function () {
   await refreshClient(this.client);
 });
 When(/^I close the main window$/, async function () {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute(() => daedalus.stores.window.closeWindow());
 });
 Then(/^Daedalus process is not running$/, async function () {
@@ -58,26 +55,21 @@ Given(
   'I set the syncing progress to {int} percent',
   async function (percentage) {
     this.client.executeAsync((percentage, done) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.api.ada.setSyncProgress(percentage);
 
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.networkStatus._updateNetworkStatus().then(done);
     }, percentage);
   }
 );
 When('I reset the syncing progress', async function () {
   this.client.executeAsync((done) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.ada.setSyncProgress(null);
 
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
 });
 When(/^I disconnect app$/, function () {
   this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.networkStatus._setDisconnected(true);
   });
 });

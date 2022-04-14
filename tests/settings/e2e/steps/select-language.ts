@@ -11,7 +11,6 @@ Given(/^I have selected English language$/, async function () {
 });
 Given(/^I dont have a language set$/, async function () {
   await this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.reset();
   });
 });
@@ -34,7 +33,6 @@ Then(/^I should not see the language selection screen anymore$/, function () {
 });
 Then(/^I should have Japanese language set$/, async function () {
   const result = await this.client.executeAsync((done) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.stores.profile.getProfileLocaleRequest
       .execute()
       .then(done)

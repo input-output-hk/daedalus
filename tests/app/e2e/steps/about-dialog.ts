@@ -7,11 +7,9 @@ const SELECTORS = {
   VERSION: '.About_daedalusVersion',
 };
 Given(/^I open the About dialog$/, async function () {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   this.client.execute(() => daedalus.actions.app.openAboutDialog.trigger());
 });
 When(/^I close the About dialog$/, function () {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   this.client.execute(() => daedalus.actions.app.closeAboutDialog.trigger());
 });
 Then(/^the About dialog is (hidden|visible)/, async function (state) {

@@ -6,7 +6,6 @@ const SELECTORS = {
 };
 Given(/^I haven't accepted the data layer migration$/, async function () {
   await this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.localStorage.unsetDataLayerMigrationAcceptance();
   });
 });

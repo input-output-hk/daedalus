@@ -165,7 +165,6 @@ Then(
   /^I should have newly created "([^"]*)" wallet loaded$/,
   async function (walletName) {
     await this.client.executeAsync((done) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.wallets.walletsRequest
         .execute()
         .then(done)

@@ -16,15 +16,11 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
   await this.client.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
   await this.client.executeAsync(
     (visible, SELECTORS, done) => {
-      const {
-        isShowingSubMenus,
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      } = daedalus.stores.sidebar;
+      const { isShowingSubMenus } = daedalus.stores.sidebar;
       let sidebarWillAnimate = false;
 
       if (isShowingSubMenus !== visible) {
         sidebarWillAnimate = true;
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         daedalus.actions.sidebar.toggleSubMenus.trigger();
       }
 

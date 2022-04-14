@@ -133,7 +133,6 @@ export const initialSettingsHelpers = {
     await i18nHelpers.setActiveLanguage(client, {
       language,
     });
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     client.execute(() =>
       daedalus.actions.profile.finishInitialScreenSettings.trigger()
     );

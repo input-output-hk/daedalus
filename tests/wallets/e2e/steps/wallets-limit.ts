@@ -27,7 +27,6 @@ When(
 );
 When('I delete the last wallet', async function () {
   const wallet = await getWalletByName.call(this, 'Wallet 20');
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute(
     (walletId, isLegacy) =>
       daedalus.actions.wallets.deleteWallet.trigger({

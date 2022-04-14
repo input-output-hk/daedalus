@@ -4,7 +4,6 @@ import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains
 When(/^the "([^"]*)" wallet is not responding$/, async function (walletName) {
   await this.client.execute(
     (walletName, status) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       const walletIndex: number = daedalus.stores.wallets.all.findIndex(
         (wallet) => wallet.name === walletName
       );
@@ -17,7 +16,6 @@ When(/^the "([^"]*)" wallet is not responding$/, async function (walletName) {
           status,
         },
       };
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.api.ada.setTestingWallet(modifiedWallet, walletIndex);
     },
     walletName,

@@ -43,7 +43,6 @@ const NAMED_WALLET_CHECKBOXES_SELECTOR =
 const TOOLTIP_SELECTOR =
   '.WalletSelectImportDialog_maxWalletsReachedTooltip .SimpleBubble_root .SimpleBubble_bubble';
 Given(/^I have wallet migration enabled/, async function () {
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute(() =>
     daedalus.stores.walletMigration._enableTestWalletMigration()
   );
@@ -53,7 +52,6 @@ Given(/^I set (wrong )?import path$/, async function (isWrong) {
     ? '../documents/import-files-wrong'
     : '../documents/import-files';
   const importPath = path.resolve(__dirname, importDir);
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute(
     (path) => daedalus.stores.walletMigration._setFakedImportPath(path),
     importPath
@@ -64,7 +62,6 @@ Given(/^I set (wrong )?import secret key path$/, async function (isWrong) {
     ? '../documents/import-files/Secrets-1.0/wrong-secret.key'
     : '../documents/import-files/Secrets-1.0/secret.key';
   const importPath = path.resolve(__dirname, importDir);
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   await this.client.execute(
     (path) => daedalus.stores.walletMigration._setFakedImportPath(path),
     importPath
@@ -105,7 +102,6 @@ When(
     const selectedDirectory = await this.client.getValue(
       STATE_INPUT_FOLDER_SELECTOR
     );
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     const predefinedStateDirectory = await this.client.execute(
       () => daedalus.stores.walletMigration.defaultExportSourcePath
     );
@@ -151,7 +147,6 @@ When(/^I select import from secret key$/, async function () {
 });
 When(/^I should see wallets properly listed$/, async function () {
   await this.client.waitForVisible(WALLET_SELECT_IMPORT_DIALOG_SELECTOR);
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
   const exportedWallets = await this.client.execute(
     () => daedalus.stores.walletMigration.exportedWallets
   );
