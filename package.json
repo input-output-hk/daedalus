@@ -1,13 +1,13 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "4.9.0",
+  "version": "4.9.1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
     "build:electron": "electron-rebuild -w usb --useCache -s --debug",
-    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn lockfile:check && yarn manage:translations",
+    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn lockfile:check && yarn manage:translations && yarn storybook:build",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
