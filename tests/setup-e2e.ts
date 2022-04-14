@@ -31,11 +31,14 @@ import { environment } from '../source/main/environment';
 
 global.environment = environment;
 
+interface Context {
+  app?: Application;
+}
+
 /* eslint-disable consistent-return */
-const context = {};
+const context: Context = {};
 let scenariosCount = 0;
 
-// @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
 const printMainProcessLogs = () =>
   context.app.client.getMainProcessLogs().then((logs) => {
     // eslint-disable-next-line no-console
@@ -94,7 +97,6 @@ BeforeAll(
     timeout: 5 * 60 * 1000,
   },
   async () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     context.app = await startApp();
   }
 );
@@ -112,11 +114,8 @@ Before(
   },
   async function (testCase) {
     const tags = getTagNames(testCase);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     this.app = context.app;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     this.client = context.app.client;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     this.browserWindow = context.app.browserWindow;
     // Set timeouts of various operations:
     // Determines when to interrupt a script that is being evaluated.
@@ -128,9 +127,7 @@ Before(
     // Reset backend
     await this.client.executeAsync((done) => {
       const resetBackend = () => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         if (daedalus.stores.networkStatus.isConnected) {
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
           daedalus.stores.wallets
             ._pausePolling()
             .then(() => daedalus.stores.wallets.resetWalletsData())
@@ -157,7 +154,6 @@ Before(
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {
       const waitUntilSyncedAndReady = () => {
-        // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
         if (daedalus.stores.networkStatus.isSynced) {
           done();
         } else {
@@ -197,9 +193,7 @@ Before(
         (id, values) => {
           const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
 
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
           const locale = daedalus.stores.profile.currentLocale;
-          // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
           const messages = daedalus.translations;
           const intlProvider = new IntlProvider(
             {
@@ -230,7 +224,6 @@ After(
     tags: '@restartApp',
   },
   async function () {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
     context.app = await startApp();
   }
 );
@@ -243,10 +236,8 @@ After(
   },
   async function () {
     await this.client.executeAsync((done) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.api.ada.resetTestOverrides();
 
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
       daedalus.stores.networkStatus
         ._updateNetworkStatus()
         .then(done)
@@ -265,7 +256,6 @@ After(
     if (result.status === 'failed') {
       const testName = getTestNameFromTestFile(sourceLocation.uri);
       const file = generateScreenshotFilePath(testName);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
       await saveScreenshot(context.app, file);
       await printMainProcessLogs();
     }
@@ -285,9 +275,8 @@ After(
 );
 // eslint-disable-next-line prefer-arrow-callback
 AfterAll(async function () {
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
+  // @ts-ignore
   if (allWindowsClosed || !context.app.running) return;
 
   if (scenariosCount === 0) {
@@ -298,6 +287,5 @@ AfterAll(async function () {
     return;
   }
 
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'app' does not exist on type '{}'.
   return context.app.stop();
 });

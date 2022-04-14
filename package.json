@@ -168,6 +168,7 @@
     "seedrandom": "3.0.5",
     "sinon": "9.2.2",
     "spawn-sync": "2.0.0",
+    "spectron": "14.0.0",
     "storybook-addon-swc": "1.1.7",
     "stream-browserify": "3.0.0",
     "stream-http": "3.2.0",
