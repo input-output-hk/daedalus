@@ -174,13 +174,12 @@ export const migrationHelpers = {
   },
 };
 export const termsOfUseHelpers = {
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
   waitForVisible: async (
     client: Record<string, any>,
     {
       isHidden,
     }: {
-      isHidden: boolean;
+      isHidden?: boolean;
     } = {}
   ) => client.waitForVisible(TERMS_OF_USE_FORM, null, isHidden),
   acceptTerms: async (client: Record<string, any>) => {
