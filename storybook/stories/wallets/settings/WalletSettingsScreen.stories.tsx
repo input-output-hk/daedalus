@@ -143,7 +143,7 @@ export default (props: { locale: Locale }) => {
     'Wallet Recovery Phrase Verification',
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ 'Never Checked - Ok': { type: ... Remove this comment to see the full error message
     recoveryPhraseVerificationDateOptions,
-    'Already Checked - Ok',
+    recoveryPhraseVerificationDateOptions['Already Checked - Ok'],
     recoveryPhraseId
   );
   const { recoveryPhraseVerificationDate, creationDate } = getWalletDates(
