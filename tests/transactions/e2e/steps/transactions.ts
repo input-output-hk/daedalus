@@ -33,9 +33,8 @@ Given(
         return {
           walletId: sourceWallet.id,
           destinationWalletId: destinationWallet.id,
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BigNumber' is not assignable to ... Remove this comment to see the full error message
           amount: parseInt(
-            new BigNumber(t.amount).times(LOVELACES_PER_ADA),
+            new BigNumber(t.amount).times(LOVELACES_PER_ADA).toString(),
             10
           ),
           passphrase: 'Secret1234',
