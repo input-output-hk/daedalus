@@ -1,3 +1,4 @@
+import { IpcRenderer } from 'electron';
 import type { request as httpRequest } from 'http';
 import type { request as httpsRequest, globalAgent } from 'https';
 import { Environment } from './source/common/types/environment.types';
@@ -58,6 +59,7 @@ declare global {
   var http: Http;
   var https: Https;
   var isFlight: boolean;
+  var ipcRenderer: IpcRenderer;
   /* eslint-enable no-var, vars-on-top */
 }
 
