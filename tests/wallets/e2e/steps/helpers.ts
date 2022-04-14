@@ -252,6 +252,7 @@ export const waitUntilWalletIsLoaded = async function (
   walletName: string
 ): Promise<any> {
   let wallet = null;
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const context = this;
   await context.client.waitUntil(async () => {
     // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
@@ -270,6 +271,7 @@ export const waitUntilWalletIsLoaded = async function (
   return wallet;
 };
 export const waitUntilWalletNamesEqual = function (walletName: string) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const context = this;
   return context.client.waitUntil(async () => {
     const currentWalletName = await getNameOfActiveWalletInSidebar.call(
@@ -392,6 +394,7 @@ export const getCurrentAppRoute = async function () {
   return url.substring(url.indexOf('#/') + 1); // return without the hash
 };
 export const waitUntilUrlEquals = function (expectedUrl: string) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const context = this;
   return context.client.waitUntil(async () => {
     const url = await getCurrentAppRoute.call(context);
