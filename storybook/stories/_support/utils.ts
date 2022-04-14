@@ -172,9 +172,9 @@ export const generateAssetToken = (
   assetName = '',
   fingerprint = '',
   quantity: number,
-  metadata: AssetMetadata | null | undefined,
-  decimals: number | null | undefined,
-  recommendedDecimals: number | null | undefined
+  metadata?: AssetMetadata | null,
+  decimals?: number | null,
+  recommendedDecimals?: number | null
 ): AssetToken => ({
   policyId,
   assetName,
