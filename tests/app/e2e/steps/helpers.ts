@@ -2,7 +2,6 @@ import { When } from 'cucumber';
 import { getProcessesByName } from '../../../../source/main/utils/processes';
 
 const ACTIVE_RESTORE_NOTIFICATION = '.ActiveRestoreNotification';
-// @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
 export const getCardanoNodeState = async (client: Record<string, any>) =>
   (await client.execute(() => daedalus.stores.networkStatus.cardanoNodeState))
     .value;
@@ -20,13 +19,12 @@ When(
     setTimeout(callback, oneHour);
   }
 );
-// @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
 export const waitForActiveRestoreNotification = (
   client: Record<string, any>,
   {
     isHidden,
   }: {
-    isHidden: boolean;
+    isHidden?: boolean;
   } = {}
 ) => client.waitForVisible(ACTIVE_RESTORE_NOTIFICATION, null, isHidden);
 export const waitForCardanoNodeToExit = async (client: Record<string, any>) =>
