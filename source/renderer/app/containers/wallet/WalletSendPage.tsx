@@ -114,7 +114,7 @@ class WalletSendPage extends Component<Props> {
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const { all: allAssets, activeAsset, getAsset, favorites } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
-    const { customProtocolParameters, resetCustomProptocolParams } = app;
+    const { customProtocolParameters, resetCustomProtocolParams } = app;
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, allAssets)
       : null;
@@ -167,7 +167,7 @@ class WalletSendPage extends Component<Props> {
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         customProtocolParameters={customProtocolParameters}
-        resetCustomProptocolParams={resetCustomProptocolParams}
+        resetCustomProtocolParams={resetCustomProtocolParams}
       />
     );
   }

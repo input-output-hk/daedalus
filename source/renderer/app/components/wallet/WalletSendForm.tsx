@@ -84,7 +84,7 @@ type Props = {
     | TransactionParameters
     | StakingParameters
     | undefined;
-  resetCustomProptocolParams: Function | null | undefined;
+  resetCustomProtocolParams: Function | null | undefined;
 };
 
 interface FormFields {
@@ -167,12 +167,12 @@ class WalletSendForm extends Component<Props, State> {
     const {
       onUnsetActiveAsset,
       customProtocolParameters,
-      resetCustomProptocolParams,
+      resetCustomProtocolParams,
     } = this.props;
     this._isMounted = false;
     onUnsetActiveAsset();
-    if (customProtocolParameters && resetCustomProptocolParams) {
-      resetCustomProptocolParams();
+    if (customProtocolParameters && resetCustomProtocolParams) {
+      resetCustomProtocolParams();
     }
   }
 

@@ -89,7 +89,7 @@ describe('wallet/Wallet Send Form', () => {
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
                 customProtocolParameters={undefined}
-                resetCustomProptocolParams={undefined}
+                resetCustomProtocolParams={undefined}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>

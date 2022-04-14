@@ -304,7 +304,7 @@ export default class AppStore extends Store {
     return Promise.resolve();
   };
 
-  @action resetCustomProptocolParams = () => {
+  @action resetCustomProtocolParams = () => {
     this.customProtocolParameters = undefined;
   };
 

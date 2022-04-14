@@ -227,7 +227,7 @@ storiesOf('Wallets|Send', module)
   .add('Send - No Assets', () => (
     <WalletSendForm
       customProtocolParameters={undefined}
-      resetCustomProptocolParams={action('resetCustomProptocolParams')}
+      resetCustomProtocolParams={action('resetCustomProtocolParams')}
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -257,7 +257,7 @@ storiesOf('Wallets|Send', module)
   .add('Send - Hardware wallet verifying transaction', () => (
     <WalletSendForm
       customProtocolParameters={undefined}
-      resetCustomProptocolParams={action('resetCustomProptocolParams')}
+      resetCustomProtocolParams={action('resetCustomProtocolParams')}
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -287,7 +287,7 @@ storiesOf('Wallets|Send', module)
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
     <WalletSendForm
       customProtocolParameters={undefined}
-      resetCustomProptocolParams={action('resetCustomProptocolParams')}
+      resetCustomProtocolParams={action('resetCustomProtocolParams')}
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -317,7 +317,7 @@ storiesOf('Wallets|Send', module)
   .add('Send - Hardware wallet verifying transaction failed', () => (
     <WalletSendForm
       customProtocolParameters={undefined}
-      resetCustomProptocolParams={action('resetCustomProptocolParams')}
+      resetCustomProtocolParams={action('resetCustomProtocolParams')}
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -347,7 +347,7 @@ storiesOf('Wallets|Send', module)
   .add('Send - With Assets', () => (
     <WalletSendForm
       customProtocolParameters={undefined}
-      resetCustomProptocolParams={action('resetCustomProptocolParams')}
+      resetCustomProtocolParams={action('resetCustomProtocolParams')}
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
