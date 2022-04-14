@@ -54,60 +54,65 @@ const Component = ({
                     </div>
                   </div>
                 </div>
-                {selectedAssets.map((asset, index) => (
-                  <Fragment key={asset.uniqueId}>
-                    <div className={styles.assetsContainer}>
-                      <h3>
-                        <span>
-                          {intl.formatMessage(messages.assetLabel)}
-                          &nbsp;#{index + 1}
-                        </span>
-                        <Asset
-                          asset={asset}
-                          onCopyAssetParam={onCopyAssetParam}
-                          className={styles.assetToken}
-                        />
-                      </h3>
-                      <div className={styles.amountFeesWrapper}>
-                        <div className={styles.amount}>
-                          {getFormattedAssetAmount(
-                            asset,
-                            Number(assetsAmounts[index])
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.assetsContainer}>
-                      <div className={styles.unformattedAmountLine} />
-                      <div className={styles.unformattedAmountLabel}>
-                        {intl.formatMessage(messages.unformattedAmountLabel)}
-                        <PopOver
-                          content={
-                            <div className="UnformattedAmountTooltip">
-                              <FormattedHTMLMessage
-                                {...messages[
-                                  isHardwareWallet
-                                    ? 'unformattedAmountMessageForHardwareWallets'
-                                    : 'unformattedAmountMessageForSoftwareWallets'
-                                ]}
-                                tagName="div"
-                              />
+                {selectedAssets.map(
+                  (asset, index) =>
+                    asset?.uniqueId && (
+                      <Fragment key={asset.uniqueId}>
+                        <div className={styles.assetsContainer}>
+                          <h3>
+                            <span>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{index + 1}
+                            </span>
+                            <Asset
+                              asset={asset}
+                              onCopyAssetParam={onCopyAssetParam}
+                              className={styles.assetToken}
+                            />
+                          </h3>
+                          <div className={styles.amountFeesWrapper}>
+                            <div className={styles.amount}>
+                              {getFormattedAssetAmount(
+                                asset,
+                                Number(assetsAmounts[index])
+                              )}
                             </div>
-                          }
-                          key="tooltip"
-                        >
-                          <div className={styles.questionMark}>
-                            <SVGInline svg={questionMarkIcon} />
                           </div>
-                        </PopOver>
-                        {':'}
-                      </div>
-                      <div className={styles.unformattedAmount}>
-                        {assetsAmounts[index] || 0}
-                      </div>
-                    </div>
-                  </Fragment>
-                ))}
+                        </div>
+                        <div className={styles.assetsContainer}>
+                          <div className={styles.unformattedAmountLine} />
+                          <div className={styles.unformattedAmountLabel}>
+                            {intl.formatMessage(
+                              messages.unformattedAmountLabel
+                            )}
+                            <PopOver
+                              content={
+                                <div className="UnformattedAmountTooltip">
+                                  <FormattedHTMLMessage
+                                    {...messages[
+                                      isHardwareWallet
+                                        ? 'unformattedAmountMessageForHardwareWallets'
+                                        : 'unformattedAmountMessageForSoftwareWallets'
+                                    ]}
+                                    tagName="div"
+                                  />
+                                </div>
+                              }
+                              key="tooltip"
+                            >
+                              <div className={styles.questionMark}>
+                                <SVGInline svg={questionMarkIcon} />
+                              </div>
+                            </PopOver>
+                            {':'}
+                          </div>
+                          <div className={styles.unformattedAmount}>
+                            {assetsAmounts[index] || 0}
+                          </div>
+                        </div>
+                      </Fragment>
+                    )
+                )}
               </div>
             </div>
           </div>
