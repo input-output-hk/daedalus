@@ -208,32 +208,6 @@ export const getFixedAmountByName = async function (walletName: string) {
   }, walletName);
   return walletAmount.value;
 };
-export const importWalletHelpers = {
-  // @ts-ignore ts-migrate(2741) FIXME: Property 'isHidden' is missing in type '{}' but re... Remove this comment to see the full error message
-  waitForDialog: (
-    client: Record<string, any>,
-    {
-      isHidden,
-    }: {
-      isHidden: boolean;
-    } = {}
-  ) => client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
-  clickImport: (client: Record<string, any>) =>
-    waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
-  expectError: (
-    client: Record<string, any>,
-    {
-      error,
-    }: {
-      error: string;
-    }
-  ) =>
-    expectTextInSelector(client, {
-      selector: `${IMPORT_WALLET_DIALOG}_error`,
-      text: error,
-    }),
-};
 export const importWalletWithFunds = async (
   client: Record<string, any>,
   {
@@ -431,28 +405,6 @@ export const navigateTo = function (requestedRoute: string) {
       route,
     });
   }, requestedRoute);
-};
-export const sidebar = {
-  activateCategory: async (
-    client: Record<string, any>,
-    {
-      category,
-    }: {
-      category: string;
-    }
-  ) => {
-    await client.execute((cat) => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
-      daedalus.actions.sidebar.activateSidebarCategory.trigger({
-        category: cat,
-        showSubMenu: true,
-      });
-    }, `/${category}`);
-    return client.waitForVisible(`.SidebarCategory_active.${category}`);
-  },
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
-  clickAddWalletButton: (client: Record<string, any>) =>
-    waitAndClick(client, '.SidebarWalletsMenu_addWalletButton'),
 };
 export const addWalletPage = {
   waitForVisible: (
