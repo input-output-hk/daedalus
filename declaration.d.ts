@@ -1,6 +1,7 @@
 import type { request as httpRequest } from 'http';
 import type { request as httpsRequest, globalAgent } from 'https';
 import { Environment } from './source/common/types/environment.types';
+import { IpcRenderer } from 'electron';
 
 declare module '*.svg' {
   const content: any;
@@ -57,6 +58,12 @@ declare global {
   var environment: Environment;
   var http: Http;
   var https: Https;
+  var legacyStateDir: string;
+  var isFlight: boolean;
+  var ipcRenderer: Pick<
+    IpcRenderer,
+    'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'
+  >;
   /* eslint-enable no-var, vars-on-top */
 }
 
