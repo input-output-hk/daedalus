@@ -178,13 +178,8 @@ storiesOf('Wallets|Summary', module)
 
     const currencySelected = select(
       'currencySelected',
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
       currenciesList,
-      {
-        id: 'uniswap-state-dollar',
-        symbol: 'usd',
-        name: 'unified Stable Dollar',
-      },
+      currenciesList.usd,
       'Currency'
     );
     const wallet = generateWallet('Wallet name', '45119903750165', assets);
