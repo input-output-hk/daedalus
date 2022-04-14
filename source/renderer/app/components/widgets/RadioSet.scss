@@ -1,5 +1,8 @@
 .component {
-  margin-bottom: 14px;
+  & + & {
+    margin-top: 14px;
+  }
+
   .label {
     color: var(--rp-formfield-label-text-color, #5e6066);
     display: block;
@@ -13,12 +16,18 @@
     line-height: 1.38;
     margin: var(--rp-formfield-label-margin, 0 0 10px 0);
   }
+
   .radiosContainer {
     display: flex;
+
     > div {
-      margin-bottom: 6px;
       margin-right: 40px;
+
+      &:not(:last-child) {
+        margin-bottom: 6px;
+      }
     }
+
     &.verticallyAligned {
       flex-direction: column;
     }
