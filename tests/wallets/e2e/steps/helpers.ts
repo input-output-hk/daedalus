@@ -463,9 +463,6 @@ export const addWalletPage = {
       isHidden?: boolean;
     } = {}
   ) => client.waitForVisible(ADD_WALLET, null, isHidden),
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
-  clickImportButton: (client: Record<string, any>) =>
-    waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`),
 };
 export const waitForActiveRestoreNotification = (
   client: Record<string, any>,
