@@ -244,75 +244,67 @@ export default class WalletTypeDialog extends Component<Props, State> {
         ]}
         onClose={onClose}
       >
-        <div>
-          {this.getWalletKind(
-            WALLET_KINDS,
-            messages.labelWalletKind,
-            walletKind
+        {this.getWalletKind(WALLET_KINDS, messages.labelWalletKind, walletKind)}
+        {walletKind === WALLET_KINDS.DAEDALUS &&
+          this.getWalletKind(
+            WALLET_DAEDALUS_KINDS,
+            messages.labelDaedalusWalletKind,
+            walletKindDaedalus,
+            WALLET_KINDS.DAEDALUS
           )}
-        </div>
-        <div>
-          {walletKind === WALLET_KINDS.DAEDALUS &&
-            this.getWalletKind(
-              WALLET_DAEDALUS_KINDS,
-              messages.labelDaedalusWalletKind,
-              walletKindDaedalus,
-              WALLET_KINDS.DAEDALUS
-            )}
-          {walletKind === WALLET_KINDS.YOROI &&
-            this.getWalletKind(
-              WALLET_YOROI_KINDS,
-              messages.labelYoroiWalletKind,
-              walletKindYoroi,
-              WALLET_KINDS.YOROI
-            )}
-          {walletKind === WALLET_KINDS.HARDWARE && (
-            <Fragment>
-              {this.getWalletKind(
-                WALLET_HARDWARE_KINDS,
-                messages.labelHardwareWalletKind,
-                walletKindHardware,
-                WALLET_KINDS.HARDWARE
-              )}
-              <p className={styles.hardwareWalletAcceptance}>
-                {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
-              </p>
-              <p className={styles.hardwareWalletAcceptance}>
-                {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
-              </p>
-              <p className={styles.hardwareWalletAcceptance}>
-                <b>{intl.formatMessage(messages.hardwareWalletDisclaimer3)}</b>
-              </p>
-              <Checkbox
-                className="walletSecurityRisk"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox3)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance3')
-                }
-                checked={hardwareWalletAcceptance3}
-                skin={CheckboxSkin}
-              />
-              <Checkbox
-                className="restoreSecurityNote"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance1')
-                }
-                checked={hardwareWalletAcceptance1}
-                skin={CheckboxSkin}
-              />
-              <Checkbox
-                className="walletDeleteNote"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance2')
-                }
-                checked={hardwareWalletAcceptance2}
-                skin={CheckboxSkin}
-              />
-            </Fragment>
+        {walletKind === WALLET_KINDS.YOROI &&
+          this.getWalletKind(
+            WALLET_YOROI_KINDS,
+            messages.labelYoroiWalletKind,
+            walletKindYoroi,
+            WALLET_KINDS.YOROI
           )}
-        </div>
+        {walletKind === WALLET_KINDS.HARDWARE && (
+          <Fragment>
+            {this.getWalletKind(
+              WALLET_HARDWARE_KINDS,
+              messages.labelHardwareWalletKind,
+              walletKindHardware,
+              WALLET_KINDS.HARDWARE
+            )}
+            <p className={styles.hardwareWalletAcceptance}>
+              {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
+            </p>
+            <p className={styles.hardwareWalletAcceptance}>
+              {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
+            </p>
+            <p className={styles.hardwareWalletAcceptance}>
+              <b>{intl.formatMessage(messages.hardwareWalletDisclaimer3)}</b>
+            </p>
+            <Checkbox
+              className="walletSecurityRisk"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox3)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance3')
+              }
+              checked={hardwareWalletAcceptance3}
+              skin={CheckboxSkin}
+            />
+            <Checkbox
+              className="restoreSecurityNote"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance1')
+              }
+              checked={hardwareWalletAcceptance1}
+              skin={CheckboxSkin}
+            />
+            <Checkbox
+              className="walletDeleteNote"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance2')
+              }
+              checked={hardwareWalletAcceptance2}
+              skin={CheckboxSkin}
+            />
+          </Fragment>
+        )}
       </WalletRestoreDialog>
     );
   }
