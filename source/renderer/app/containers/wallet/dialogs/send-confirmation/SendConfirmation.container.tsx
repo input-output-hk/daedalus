@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
 import { ContainerProps as Props, SubmitPayload } from './types';
-import { WalletSendConfirmationDialogView } from './View';
+import { WalletSendConfirmationDialogView } from './SendConfirmation.view';
 
 export const Containter = ({
   actions,
@@ -19,7 +19,6 @@ export const Containter = ({
   isHardwareWallet,
   formattedTotalAmount,
 }: Props) => {
-  // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
   const { isFlight } = global;
   const {
     assets: { getAsset },
@@ -60,7 +59,7 @@ export const Containter = ({
   const onSubmitCb = useCallback(
     (values: SubmitPayload) => {
       if (values.isHardwareWallet) {
-        hardwareWalletsSendMoney.trigger({});
+        hardwareWalletsSendMoney.trigger();
       } else {
         walletsSendMoney.trigger(values);
       }

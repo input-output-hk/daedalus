@@ -5,7 +5,16 @@ import LocalizableError from '../../../../i18n/LocalizableError';
 import styles from './styles.scss';
 
 interface Props {
-  error: LocalizableError | null | undefined;
+  error:
+    | (LocalizableError & {
+        values: {
+          linkPosition?: string;
+          linkLabel: string;
+          linkURL: string;
+        };
+      })
+    | null
+    | undefined;
   onExternalLinkClick: (...args: Array<any>) => any;
 }
 
@@ -20,7 +29,6 @@ export const ConfirmationError = ({ error, onExternalLinkClick }: Props) => {
     <p className={styles.error}>
       {errorHasLink ? (
         <FormattedHTMLMessageWithLink
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           message={error}
           onExternalLinkClick={onExternalLinkClick}
         />

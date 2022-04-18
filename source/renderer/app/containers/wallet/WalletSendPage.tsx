@@ -6,7 +6,7 @@ import {
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
-import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/View';
+import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
@@ -68,7 +68,6 @@ class WalletSendPage extends Component<Props> {
   };
 
   submit = (isHardwareWallet: boolean, walletId: string) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog: WalletSendConfirmationDialogView,

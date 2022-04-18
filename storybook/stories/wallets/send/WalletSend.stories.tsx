@@ -17,9 +17,8 @@ import Wallet, {
 } from '../../../../source/renderer/app/domains/Wallet';
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
-import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
-import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/View';
+import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 
 const allAssets = [
   // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
@@ -392,11 +391,11 @@ storiesOf('Wallets|Send', module)
           isTrezor={boolean('isTrezor', false)}
           formattedTotalAmount="21.000000"
           error={null}
-          onCancel={() => null}
-          onSubmitCb={() => null}
-          onTermsCheckboxClick={() => null}
-          onCopyAssetParam={() => null}
-          onExternalLinkClick={() => null}
+          onCancel={action('onCancel')}
+          onSubmitCb={action('onSubmitCb')}
+          onTermsCheckboxClick={action('onTermsCheckboxClick')}
+          onCopyAssetParam={action('onCopyAssetParam')}
+          onExternalLinkClick={action('onExternalLinkClick')}
         />
       </div>
     );
@@ -427,11 +426,11 @@ storiesOf('Wallets|Send', module)
           isHardwareWallet={boolean('isHardwareWallet', false)}
           formattedTotalAmount="21.000000"
           error={null}
-          onCancel={() => null}
-          onSubmitCb={() => null}
-          onTermsCheckboxClick={() => null}
-          onCopyAssetParam={() => null}
-          onExternalLinkClick={() => null}
+          onCancel={action('onCancel')}
+          onSubmitCb={action('onSubmitCb')}
+          onTermsCheckboxClick={action('onTermsCheckboxClick')}
+          onCopyAssetParam={action('onCopyAssetParam')}
+          onExternalLinkClick={action('onExternalLinkClick')}
         />
       </div>
     );

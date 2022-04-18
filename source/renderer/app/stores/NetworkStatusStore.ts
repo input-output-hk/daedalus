@@ -62,7 +62,6 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UNRECOVERABLE,
 ];
 // END CONSTANTS ----------------------------
-// @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
 const { isFlight } = global;
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
