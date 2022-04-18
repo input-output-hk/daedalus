@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import compose from 'lodash/fp/compose';
 import { observer } from 'mobx-react';
 import { FormattedHTMLMessage, injectIntl } from 'react-intl';
@@ -8,24 +8,21 @@ import { DialogContentWithAssets } from './DialogContentWithAssets';
 import { DialogContentWithoutAssets } from './DialogContentWithoutAssets';
 import { ConfirmationError } from './Error';
 import { PasswordInput } from './PasswordInput';
-import styles from './styles.scss';
 import { messages } from './messages';
 import Dialog from '../../../../components/widgets/Dialog';
 import DialogCloseButton from '../../../../components/widgets/DialogCloseButton';
 import { shouldShowEmptyWalletWarning } from '../../../../utils/walletUtils';
 import { hasTokensLeftAfterTransaction } from '../../../../utils/assets';
+import LoadingSpinner from '../../../../components/widgets/LoadingSpinner';
+import { ViewProps as Props } from './types';
+import { useForm } from './hooks';
 import {
   didHWTxVerificationFailed,
   doTermsNeedAcceptance,
-  hasAssetsAfterTransaction,
   isNotEnoughFundsForTokenError,
   isPasswordValid,
-  createForm,
 } from './helpers';
-import LoadingSpinner from '../../../../components/widgets/LoadingSpinner';
-import { ViewProps as Props } from './types';
-import { formattedAmountToNaturalUnits } from '../../../../utils/formatters';
-import { submitOnEnter } from '../../../../utils/form';
+import styles from './styles.scss';
 
 const View = ({
   intl,
@@ -51,56 +48,23 @@ const View = ({
   onTermsCheckboxClick,
   onCopyAssetParam,
 }: Props) => {
-  const isSendingAssets = !!selectedAssets.length;
-  const form = useMemo(() => createForm({ intl, isHardwareWallet }), [
+  const {
+    passphraseField,
+    flightCandidateCheckboxField,
+    onSubmit,
+    handleSubmitOnEnter,
+  } = useForm({
     intl,
-    isHardwareWallet,
-  ]);
-  const passphraseField = form.$('passphrase');
-  const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
-  const hasAssetsRemainingAfterTransaction = hasAssetsAfterTransaction({
+    error,
+    amount,
     assetTokens,
+    assetsAmounts,
+    receiver,
     selectedAssets,
+    isHardwareWallet,
+    onSubmitCb,
   });
-
-  const onSubmit = useCallback(
-    () =>
-      form.submit({
-        onSuccess: (form) => {
-          const { passphrase } = form.values();
-
-          const transactionData = {
-            receiver,
-            amount: formattedAmountToNaturalUnits(amount),
-            passphrase,
-            isHardwareWallet,
-            hasAssetsRemainingAfterTransaction,
-            ...(isSendingAssets
-              ? { assets: selectedAssets, assetsAmounts }
-              : {}),
-          };
-          onSubmitCb(transactionData);
-        },
-        onError: () => {},
-      }),
-    [
-      form,
-      amount,
-      hasAssetsRemainingAfterTransaction,
-      isHardwareWallet,
-      onSubmitCb,
-      receiver,
-    ]
-  );
-
-  const handleSubmitOnEnter = (event: KeyboardEvent) => {
-    if (
-      (isHardwareWallet || passphraseField.isValid) &&
-      error?.id !== 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens'
-    ) {
-      submitOnEnter(onSubmit, event);
-    }
-  };
+  const isSendingAssets = !!selectedAssets.length;
 
   const buttonLabel = !isSubmitting ? (
     intl.formatMessage(messages.sendButtonLabel)

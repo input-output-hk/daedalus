@@ -7,43 +7,6 @@ import Wallet, { HwDeviceStatus } from '../../../../domains/Wallet';
 import { AssetToken } from '../../../../api/assets/types';
 import LocalizableError from '../../../../i18n/LocalizableError';
 
-export interface FormFields {
-  flightCandidateCheckbox: string;
-  passphrase: string;
-}
-
-export type CreateForm = {
-  intl: Intl;
-  isHardwareWallet: boolean;
-};
-
-export type HasAssetsAfterTransaction = {
-  selectedAssets: AssetToken[];
-  assetTokens: AssetToken[];
-};
-
-export type SubmitPayload = {
-  receiver: string;
-  amount: string;
-  passphrase: string;
-  isHardwareWallet: boolean;
-  assets?: Array<AssetToken>;
-  assetsAmounts?: Array<string>;
-  hasAssetsRemainingAfterTransaction?: boolean;
-};
-
-export type PasswordInputProps = {
-  isHardwareWallet: boolean;
-  passphraseField: Field;
-  isFlight: boolean;
-  isTrezor: boolean;
-  areTermsAccepted: boolean;
-  walletName: string;
-  hwDeviceStatus: HwDeviceStatus;
-  onExternalLinkClick: (...args: Array<any>) => any;
-  handleSubmitOnEnter: (event: KeyboardEvent) => void;
-};
-
 type CommonProps = {
   amount: string;
   isHardwareWallet: boolean;
@@ -62,6 +25,13 @@ export type ContainerProps = CommonProps & {
   actions: ActionsMap;
 };
 
+export type SubmitPayload = {
+  passphrase: string;
+  assets?: Array<AssetToken>;
+  assetsAmounts?: Array<string>;
+  hasAssetsRemainingAfterTransaction: boolean;
+} & Pick<CommonProps, 'amount' | 'receiver' | 'isHardwareWallet'>;
+
 export type ViewProps = CommonProps & {
   intl: Intl;
   assetTokens: Array<AssetToken>;
@@ -77,17 +47,52 @@ export type ViewProps = CommonProps & {
   onCopyAssetParam: (...args: Array<any>) => any;
 };
 
-export type DialogContentWithoutAssets = {
-  intl: Intl;
-  amount: string;
-  receiver: string;
-  transactionFee: string | null | undefined;
-  formattedTotalAmount: string;
-};
+export type DialogContentWithoutAssets = Pick<
+  ViewProps,
+  'intl' | 'amount' | 'receiver' | 'transactionFee' | 'formattedTotalAmount'
+>;
 
-export type DialogContentWithAssets = {
-  isHardwareWallet: boolean;
-  selectedAssets: Array<AssetToken>;
-  assetsAmounts: Array<string>;
-  onCopyAssetParam: (...args: Array<any>) => any;
-} & DialogContentWithoutAssets;
+export type DialogContentWithAssets = Pick<
+  ViewProps,
+  'isHardwareWallet' | 'selectedAssets' | 'assetsAmounts' | 'onCopyAssetParam'
+> &
+  DialogContentWithoutAssets;
+
+export type UseForm = Pick<
+  ViewProps,
+  | 'intl'
+  | 'error'
+  | 'amount'
+  | 'receiver'
+  | 'assetTokens'
+  | 'selectedAssets'
+  | 'assetsAmounts'
+  | 'isHardwareWallet'
+  | 'onSubmitCb'
+>;
+
+export type PasswordInputProps = {
+  walletName: string;
+  passphraseField: Field;
+  handleSubmitOnEnter: (event: KeyboardEvent) => void;
+} & Pick<
+  ViewProps,
+  | 'isHardwareWallet'
+  | 'isFlight'
+  | 'isTrezor'
+  | 'areTermsAccepted'
+  | 'hwDeviceStatus'
+  | 'onExternalLinkClick'
+>;
+
+export interface FormFields {
+  flightCandidateCheckbox: string;
+  passphrase: string;
+}
+
+export type CreateForm = Pick<ViewProps, 'intl' | 'isHardwareWallet'>;
+
+export type HasAssetsAfterTransaction = Pick<
+  ViewProps,
+  'assetTokens' | 'selectedAssets'
+>;
