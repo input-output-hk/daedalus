@@ -1,5 +1,6 @@
 declare module '*.scss';
 declare module '*.inline.svg';
-declare module globalThis {
+declare namespace globalThis {
+  /* eslint-disable-next-line */
   var isFlight: boolean;
 }
