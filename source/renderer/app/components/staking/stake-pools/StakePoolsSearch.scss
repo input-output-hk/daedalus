@@ -1,5 +1,8 @@
+@import '../stakingConfig';
+
 .component {
   background: transparent;
+  display: flex;
   padding: 20px 0 0;
   position: initial;
   transition: position 1s ease-out, top 1s ease-out;
@@ -7,6 +10,7 @@
 }
 
 .container {
+  flex: 1 1 auto;
   position: relative;
 }
 
@@ -14,16 +18,22 @@
   bottom: 12.5px;
   color: var(--theme-staking-stake-pools-search-icon-color);
   left: 20px;
-  opacity: 0.3;
   position: absolute;
   z-index: 1;
 
   svg {
     opacity: 0.3;
     width: 15px;
+
     g > g {
       fill: var(--theme-staking-stake-pools-search-icon-color);
     }
+  }
+}
+
+.searchIconFocus {
+  svg {
+    opacity: 0.7;
   }
 }
 
@@ -31,7 +41,7 @@
   input {
     border-radius: 4px;
     height: 50px;
-    padding: 0 68px 0 55px;
+    padding: 0 68px 0 45px;
   }
 
   &.inputExtrasSearch {
@@ -51,15 +61,7 @@
   height: 48px;
   line-height: 48px;
   position: absolute;
-  right: 20px;
-
-  &.inputExtrasSearch {
-    right: 110px;
-
-    &.withGridRewardsView {
-      right: 145px;
-    }
-  }
+  right: 11px;
 }
 
 .clearSearchButton {
@@ -93,36 +95,38 @@
 }
 
 .viewButtons {
+  @extend %contentBorderAndBackground;
   align-items: center;
-  bottom: 0.5px;
   display: flex;
-  height: 48px;
+  height: 50px;
   justify-content: space-between;
   line-height: 48px;
-  padding-left: 20px;
-  position: absolute;
-  right: 11px;
+  margin-left: 10px;
+  padding: 0 20px;
+  width: auto;
 
-  .separator {
-    color: var(--theme-staking-stake-pools-search-clear-button-color);
-    opacity: 0.2;
-    padding-right: 10px;
-    position: relative;
-    top: -2px;
+  & > span {
+    display: flex;
+    margin-right: 15px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   button {
     border-radius: 3px;
     color: var(--theme-about-window-icon-close-button-color);
     cursor: pointer;
-    height: 28px;
-    margin: 0 2px;
-    width: 28px;
+    height: 15px;
+    width: 15px;
 
     &:hover {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
-      );
+      svg {
+        > g > g {
+          opacity: 0.7;
+        }
+      }
     }
 
     svg {

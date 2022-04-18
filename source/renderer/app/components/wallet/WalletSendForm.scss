@@ -56,7 +56,7 @@
 
   input {
     background-color: var(--rp-input-bg-color-disabled) !important;
-    border-color: var(--rp-input-bg-color-disabled) !important;
+    border-color: var(--rp-input-border-color-disabled) !important;
     font-family: var(--font-regular);
     pointer-events: none;
 
@@ -129,40 +129,30 @@
     padding-left: 20px;
     position: absolute;
     right: 10px;
-
-    .clearReceiverButton {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
-      );
-      border-radius: 3px;
-      cursor: pointer;
-      height: 28px;
-      width: 28px;
-
-      &:hover {
-        background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
-        );
-      }
-
-      .clearReceiverIcon {
-        > svg {
-          position: relative;
-          top: 0.5px;
-          width: 10px;
-
-          > g > g {
-            fill: var(--theme-staking-stake-pools-search-clear-button-color);
-          }
-        }
-      }
-    }
   }
 
   &.sameReceiverInput {
     input {
       border-color: var(--rp-password-input-warning-score-color) !important;
     }
+  }
+}
+
+.adaInput {
+  position: relative;
+
+  .clearAdaContainer {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    height: 48px;
+    padding-left: 20px;
+    position: absolute;
+    right: 50px;
+  }
+
+  .dividerContainer {
+    margin: 0px;
   }
 }
 

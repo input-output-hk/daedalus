@@ -40,7 +40,7 @@ let
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
-  # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
+  # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
@@ -319,8 +319,6 @@ let
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {
-      runFlow = self.callPackage ./tests/flow.nix {};
-      runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
     nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
