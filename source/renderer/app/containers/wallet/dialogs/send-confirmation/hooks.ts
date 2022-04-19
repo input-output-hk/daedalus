@@ -65,7 +65,7 @@ export const useForm = ({
           isHardwareWallet,
           isValid: passphraseField.isValid,
         }) &&
-        isNotEnoughFundsForTokenError(error?.id)
+        !isNotEnoughFundsForTokenError(error?.id)
       ) {
         submitOnEnter(onSubmit, event);
       }
