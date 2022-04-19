@@ -13,9 +13,11 @@
 ### Fixes
 
 - Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
+- Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
+- Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
+- Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
 - Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
 - Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
-- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
 - Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
 - Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
 - Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
@@ -27,12 +29,22 @@
 
 ### Chores
 
-- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
+- Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
-- Removed `dockutil` due compatibility issues with MacOs Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 - Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.1
+
+### Fixes
+
+- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
+- Fixed macOS installer on Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
+
+### Chores
+
+- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 
 ## 4.9.0
 

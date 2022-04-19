@@ -203,13 +203,6 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
   pkgConfig = {
-    node-sass = {
-      buildInputs = [ python2 ];
-      postInstall = ''
-        yarn --offline run build
-        rm build/config.gypi
-      '';
-    };
     electron-rebuild = {
       postInstall = ''
         if [ -d node_modules ]; then
