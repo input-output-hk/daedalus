@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "hkm/enable-aarch64-darwin",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "73f9a746362695dc2cb63ba757fbcabb81733d23",
-        "sha256": "19w4l6d9yazlmh9ch9nbdqbkliwqpvfqgyhfmxbmhdw60cpb965z",
+        "rev": "0387d9c55affd520dc1a5ea10c004e7710980f11",
+        "sha256": "1cbp4ak99ysfg4d00b5mj1ay5ymvp66w54ndy9x9yws70d82lr6l",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d3a5ad4b8e283b46ae5eb699eb68f4f4ce88de55.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/0387d9c55affd520dc1a5ea10c004e7710980f11.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
