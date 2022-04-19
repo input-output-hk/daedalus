@@ -136,6 +136,10 @@
       line-height: 1.38;
       margin: 20px 0 12px;
 
+      &:last-child {
+        margin-bottom: 0;
+      }
+
       b {
         font-family: var(--font-medium);
       }
@@ -150,7 +154,10 @@
         }
 
         .SimpleRadio_root {
-          margin-bottom: 20px;
+          &:not(:last-child),
+          &.SimpleRadio_selected {
+            margin-bottom: 20px;
+          }
 
           .SimpleRadio_label {
             line-height: 1.38;

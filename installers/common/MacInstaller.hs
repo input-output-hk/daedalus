@@ -154,6 +154,7 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-aarch6
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/build/Release/binding.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-aarch64/node.napi.node"
 
