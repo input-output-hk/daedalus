@@ -51,13 +51,6 @@ gulp.task(
   )
 );
 
-gulp.task('typedef:sass', shell.task('yarn typedef:sass --watch'));
-
-gulp.task(
-  'clear:cache',
-  shell.task('rimraf ./node_modules/.cache && rimraf .cache-loader')
-);
-
 gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
 gulp.task('build:themes', gulp.series('clean:dist', 'prepare:themes'));
@@ -72,5 +65,3 @@ gulp.task(
 gulp.task('e2e:watch', gulp.series('clean:dist', shell.task('yarn dev')));
 
 gulp.task('test:e2e:watch', gulp.series('e2e:watch', 'test:e2e:nodemon'));
-
-gulp.task('purge:translations', shell.task('rimraf ./translations/messages'));
