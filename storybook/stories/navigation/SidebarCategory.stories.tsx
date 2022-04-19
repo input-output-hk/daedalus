@@ -10,6 +10,7 @@ const category = {
   name: 'Wallets',
   icon: walletsIcon,
   route: 'WALLETS',
+  tooltipTextId: 'wallets',
 };
 storiesOf('Navigation|Sidebar', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
