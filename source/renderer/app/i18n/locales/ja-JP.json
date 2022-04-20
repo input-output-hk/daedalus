@@ -248,7 +248,7 @@
   "loading.screen.updatingCardanoMessage": "Cardanoノードを更新しています",
   "loading.screen.validatingChunk": "ディスクのブロックチェーンステータスの検証",
   "loading.screen.validatingChunkDescription": "ブロックチェーンのハッシュ計算の整合性を検証します",
-  "news.newsfeed.empty": "Newsfeed is empty",
+  "news.newsfeed.empty": "ニュースフィードは空です",
   "news.newsfeed.iconTooltip": "ニュースフィード",
   "news.newsfeed.noFetch": "ニュースフィードを読み込んでいます...",
   "news.newsfeed.title": "ニュースフィード",
