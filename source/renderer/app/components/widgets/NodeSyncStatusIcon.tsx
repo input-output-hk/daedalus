@@ -7,6 +7,7 @@ import { formattedNumber } from '../../utils/formatters';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
 import styles from './NodeSyncStatusIcon.scss';
+import { TOOLTIP_DELAY } from '../../config/timingConfig';
 
 const messages = defineMessages({
   blocksSynced: {
@@ -32,13 +33,15 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
-      isSynced ? null : styles.syncing,
-      hasTadaIcon ? styles.hasTadaIcon : null,
+      !isSynced && styles.syncing,
+      hasTadaIcon && styles.hasTadaIcon,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
     return (
       <div className={componentClasses}>
         <PopOver
+          delay={TOOLTIP_DELAY}
+          offset={[0, 10]}
           content={intl.formatMessage(messages.blocksSynced, {
             percentage: formattedNumber(percentage),
           })}
