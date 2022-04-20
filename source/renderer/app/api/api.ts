@@ -95,7 +95,10 @@ import {
 import { filterLogData } from '../../../common/utils/logging';
 import { derivationPathToAddressPath } from '../utils/hardwareWalletUtils';
 // Config constants
-import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import {
+  DECIMAL_PLACES_IN_ADA,
+  LOVELACES_PER_ADA,
+} from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
@@ -906,13 +909,17 @@ export default class AdaApi {
 
       const {
         requiresAdaToRemainToSupportNativeTokens,
-        adaToRemain,
+        adaToProceed,
       } = doesWalletRequireAdaToRemainToSupportTokens(
         error,
         hasAssetsRemainingAfterTransaction
       );
       if (requiresAdaToRemainToSupportNativeTokens) {
-        apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
+        apiError.set('cannotLeaveWalletEmpty', true, {
+          adaAmount: new BigNumber(adaToProceed).toFormat(
+            DECIMAL_PLACES_IN_ADA
+          ),
+        });
       }
 
       throw apiError.result();

@@ -114,7 +114,7 @@ export const messages = defineMessages({
   cannotLeaveWalletEmpty: {
     id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
     defaultMessage:
-      '!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.',
+      '!!!Insufficient funds to support tokens. You need at least an extra {adaAmount} ADA to make this transaction',
     description:
       '"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet',
   },
