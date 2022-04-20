@@ -56,6 +56,7 @@ import {
 import { logger } from '../utils/logging';
 import type { HardwareWalletTransportDeviceRequest } from '../../common/types/hardware-wallets.types';
 import { buildTrezorDeviceParams } from '../utils/buildTrezorDeviceParams';
+import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -264,6 +265,7 @@ export const handleHardwareWalletRequests = async (
         event.type === DEVICE.CONNECT ||
         event.type === DEVICE.DISCONNECT ||
         event.type === DEVICE.CHANGED;
+
       const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
       const deviceError = get(event, ['payload', 'error']);
 
@@ -308,9 +310,9 @@ export const handleHardwareWalletRequests = async (
           });
 
           logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
-          logger.info('[HW-DEBUG] Trezor connect success');
 
           if (deviceFeatures && deviceFeatures.success) {
+            logger.info('[HW-DEBUG] Trezor connect success');
             const {
               major_version: majorVersion,
               minor_version: minorVersion,
@@ -434,29 +436,7 @@ export const handleHardwareWalletRequests = async (
       email: 'email@developer.com',
       appUrl: 'http://your.application.com',
     });
-    TrezorConnect.init({
-      popup: false,
-      // render your own UI
-      webusb: false,
-      // webusb is not supported in electron
-      debug: true,
-      // see what's going on inside connect
-      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
-      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
-      // this is useful when you don't know if you are dealing with Trezor user
-      manifest: {
-        email: 'email@developer.com',
-        // @TODO
-        appUrl: 'http://your.application.com', // @TODO
-      },
-    })
-      .then(() => {
-        logger.info('[TREZOR-CONNECT] Called TrezorConnect.init()');
-      })
-      .catch((error) => {
-        logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.init()');
-        throw error;
-      });
+    await initTrezorConnect();
   });
   handleInitLedgerConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT LEDGER');
@@ -508,6 +488,7 @@ export const handleHardwareWalletRequests = async (
         logger.info(
           '[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()'
         );
+
         const result = await TrezorConnect.cardanoGetAddress({
           showOnTrezor: true,
           device: buildTrezorDeviceParams(devicePath),
@@ -727,7 +708,11 @@ export const handleHardwareWalletRequests = async (
 
     try {
       if (isTrezor) {
-        // Check if Trezor instantiated
+        // We re-initialize the Trezor Connect session to give the user the chance to provide
+        // a different passphrase, in case they want to switch to a different
+        // hidden wallet or just if they provided a wrong one.
+        await reinitTrezorConnect();
+
         logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
         const deviceFeatures = await TrezorConnect.getFeatures({
           device: buildTrezorDeviceParams(devicePath),
