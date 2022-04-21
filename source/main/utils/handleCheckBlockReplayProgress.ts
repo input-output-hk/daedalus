@@ -7,6 +7,7 @@ import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
+import { environment } from '../environment';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -52,7 +53,12 @@ export const handleCheckBlockReplayProgress = (
   const filePath = path.join(logFilePath, filename);
   if (!fs.existsSync(filePath)) return;
 
-  const tail = new Tail(filePath);
+  const tail = new Tail(filePath, {
+    // using fs.watchFile instead of fs.watch on Windows because of Node API inconsistency:
+    // https://nodejs.org/dist/latest-v14.x/docs/api/fs.html#fs_caveats
+    // https://github.com/lucagrulla/node-tail/issues/137
+    useWatchFile: environment.isWindows,
+  });
 
   tail.on('line', (line) => {
     if (
