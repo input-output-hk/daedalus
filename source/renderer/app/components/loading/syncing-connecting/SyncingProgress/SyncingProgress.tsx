@@ -58,16 +58,18 @@ const SyncingProgress: FC<Props> = (props, { intl }: Context) => (
           <span className={makeMainMessageStyles(props[type] === 100)}>
             {intl.formatMessage(getProgressNameByBlockSyncType(type))}
           </span>
-          <PopOver
-            content={intl.formatMessage(
-              getProgressDescriptionByBlockSyncType(type)
-            )}
-          >
-            <SVGInline
-              svg={questionMarkIcon}
-              className={questionMarkIconStyles}
-            />
-          </PopOver>
+          <span>
+            <PopOver
+              content={intl.formatMessage(
+                getProgressDescriptionByBlockSyncType(type)
+              )}
+            >
+              <SVGInline
+                svg={questionMarkIcon}
+                className={questionMarkIconStyles}
+              />
+            </PopOver>
+          </span>
         </div>
       ))}
     </div>

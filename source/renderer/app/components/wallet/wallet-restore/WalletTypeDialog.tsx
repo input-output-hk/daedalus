@@ -50,29 +50,25 @@ const messages = defineMessages({
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
   labelDaedalusWalletKind12WordByron: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
     defaultMessage: '!!!12 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind12WordByron" checkbox.',
   },
   labelDaedalusWalletKind15WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
     defaultMessage:
       '!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
   labelDaedalusWalletKind24WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
     defaultMessage: '!!!24 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind24WordShelley" checkbox.',
   },
   labelDaedalusWalletKind27WordPaper: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
+    id: 'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
     defaultMessage: '!!!27 words - paper wallet (Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind27WordPaper" checkbox.',
   },
@@ -82,14 +78,12 @@ const messages = defineMessages({
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
   labelYoroiWalletKind15WordByron: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
+    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
     defaultMessage: '!!!15 words <em>(Byron legacy wallet)</em>',
     description: 'Label for the "labelDaedalusWalletKind15WordByron" checkbox.',
   },
   labelYoroiWalletKind15WordShelley: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
+    id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
     defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
@@ -250,75 +244,67 @@ export default class WalletTypeDialog extends Component<Props, State> {
         ]}
         onClose={onClose}
       >
-        <div>
-          {this.getWalletKind(
-            WALLET_KINDS,
-            messages.labelWalletKind,
-            walletKind
+        {this.getWalletKind(WALLET_KINDS, messages.labelWalletKind, walletKind)}
+        {walletKind === WALLET_KINDS.DAEDALUS &&
+          this.getWalletKind(
+            WALLET_DAEDALUS_KINDS,
+            messages.labelDaedalusWalletKind,
+            walletKindDaedalus,
+            WALLET_KINDS.DAEDALUS
           )}
-        </div>
-        <div>
-          {walletKind === WALLET_KINDS.DAEDALUS &&
-            this.getWalletKind(
-              WALLET_DAEDALUS_KINDS,
-              messages.labelDaedalusWalletKind,
-              walletKindDaedalus,
-              WALLET_KINDS.DAEDALUS
-            )}
-          {walletKind === WALLET_KINDS.YOROI &&
-            this.getWalletKind(
-              WALLET_YOROI_KINDS,
-              messages.labelYoroiWalletKind,
-              walletKindYoroi,
-              WALLET_KINDS.YOROI
-            )}
-          {walletKind === WALLET_KINDS.HARDWARE && (
-            <Fragment>
-              {this.getWalletKind(
-                WALLET_HARDWARE_KINDS,
-                messages.labelHardwareWalletKind,
-                walletKindHardware,
-                WALLET_KINDS.HARDWARE
-              )}
-              <p className={styles.hardwareWalletAcceptance}>
-                {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
-              </p>
-              <p className={styles.hardwareWalletAcceptance}>
-                {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
-              </p>
-              <p className={styles.hardwareWalletAcceptance}>
-                <b>{intl.formatMessage(messages.hardwareWalletDisclaimer3)}</b>
-              </p>
-              <Checkbox
-                className="walletSecurityRisk"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox3)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance3')
-                }
-                checked={hardwareWalletAcceptance3}
-                skin={CheckboxSkin}
-              />
-              <Checkbox
-                className="restoreSecurityNote"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance1')
-                }
-                checked={hardwareWalletAcceptance1}
-                skin={CheckboxSkin}
-              />
-              <Checkbox
-                className="walletDeleteNote"
-                label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
-                onChange={() =>
-                  this.toggleAcceptance('hardwareWalletAcceptance2')
-                }
-                checked={hardwareWalletAcceptance2}
-                skin={CheckboxSkin}
-              />
-            </Fragment>
+        {walletKind === WALLET_KINDS.YOROI &&
+          this.getWalletKind(
+            WALLET_YOROI_KINDS,
+            messages.labelYoroiWalletKind,
+            walletKindYoroi,
+            WALLET_KINDS.YOROI
           )}
-        </div>
+        {walletKind === WALLET_KINDS.HARDWARE && (
+          <Fragment>
+            {this.getWalletKind(
+              WALLET_HARDWARE_KINDS,
+              messages.labelHardwareWalletKind,
+              walletKindHardware,
+              WALLET_KINDS.HARDWARE
+            )}
+            <p className={styles.hardwareWalletAcceptance}>
+              {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
+            </p>
+            <p className={styles.hardwareWalletAcceptance}>
+              {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
+            </p>
+            <p className={styles.hardwareWalletAcceptance}>
+              <b>{intl.formatMessage(messages.hardwareWalletDisclaimer3)}</b>
+            </p>
+            <Checkbox
+              className="walletSecurityRisk"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox3)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance3')
+              }
+              checked={hardwareWalletAcceptance3}
+              skin={CheckboxSkin}
+            />
+            <Checkbox
+              className="restoreSecurityNote"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance1')
+              }
+              checked={hardwareWalletAcceptance1}
+              skin={CheckboxSkin}
+            />
+            <Checkbox
+              className="walletDeleteNote"
+              label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
+              onChange={() =>
+                this.toggleAcceptance('hardwareWalletAcceptance2')
+              }
+              checked={hardwareWalletAcceptance2}
+              skin={CheckboxSkin}
+            />
+          </Fragment>
+        )}
       </WalletRestoreDialog>
     );
   }

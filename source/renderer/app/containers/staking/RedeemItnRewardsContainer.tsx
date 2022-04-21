@@ -27,14 +27,20 @@ class RedeemItnRewardsContainer extends Component<Props> {
     };
   }
 
+  componentDidMount() {
+    const { app } = this.props.stores;
+    const { closeNewsFeed } = this.props.actions.app;
+
+    if (app.newsFeedIsOpen) {
+      closeNewsFeed.trigger();
+    }
+  }
+
   render() {
     const { stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const {
-      redeemStep,
-      isSubmittingReedem,
-      isCalculatingReedemFees,
-    } = stores.staking;
+    const { redeemStep, isSubmittingReedem, isCalculatingReedemFees } =
+      stores.staking;
     const { isSynced } = stores.networkStatus;
     const { onRedeemStart, closeRedeemDialog } = actions.staking;
     if (!redeemStep) return null;

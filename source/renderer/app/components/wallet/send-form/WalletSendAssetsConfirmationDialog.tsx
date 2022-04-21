@@ -4,12 +4,12 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -138,12 +138,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { selectedAssets, assetsAmounts } = this.state;
-        const {
-          receiver,
-          amount,
-          amountToNaturalUnits,
-          isHardwareWallet,
-        } = this.props;
+        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } =
+          this.props;
         const { passphrase } = form.values();
         const hasAssetsRemainingAfterTransaction =
           this.props.selectedAssets.length <
@@ -172,13 +168,8 @@ class WalletSendAssetsConfirmationDialog extends Component<Props, State> {
   ): React.ReactElement<React.ComponentProps<any>, any> | null => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
-    const {
-      hwDeviceStatus,
-      isFlight,
-      onExternalLinkClick,
-      wallet,
-      isTrezor,
-    } = this.props;
+    const { hwDeviceStatus, isFlight, onExternalLinkClick, wallet, isTrezor } =
+      this.props;
     let returnJSX = null;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {

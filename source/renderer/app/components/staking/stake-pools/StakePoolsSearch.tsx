@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -53,19 +53,23 @@ function StakePoolsSearchComponent({
   isGridRewardsView,
   intl,
 }: Props) {
-  const searchInput = useRef<{ inputElement: { current: HTMLInputElement } }>(
-    null
-  );
+  const searchInput =
+    useRef<{ inputElement: { current: HTMLInputElement } }>(null);
 
-  const autoSelectOnFocus = () =>
+  const [isSearchInputFocused, setSearchInputFocused] = useState(false);
+
+  const autoSelectOnFocus = () => {
     searchInput?.current
-      ? searchInput?.current?.inputElement.current.select()
+      ? searchInput.current.inputElement?.current?.select()
       : false;
+
+    setSearchInputFocused(true);
+  };
 
   const handleClearSearch = () => {
     onClearSearch();
-
     searchInput?.current?.inputElement.current.focus();
+    setSearchInputFocused(true);
   };
 
   const hasSearchClearButton = () => {
@@ -96,7 +100,13 @@ function StakePoolsSearchComponent({
       {({ scrollElementRef }) => (
         <div className={styles.component}>
           <div className={styles.container}>
-            <SVGInline svg={searchIcon} className={styles.searchIcon} />
+            <SVGInline
+              svg={searchIcon}
+              className={classnames(
+                styles.searchIcon,
+                isSearchInputFocused && styles.searchIconFocus
+              )}
+            />
             <Input
               autoFocus
               label={label || null}
@@ -105,6 +115,8 @@ function StakePoolsSearchComponent({
               ref={(input) => {
                 searchInput.current = input;
               }}
+              onFocus={autoSelectOnFocus}
+              onBlur={() => setSearchInputFocused(false)}
               placeholder={
                 placeholder ||
                 intl.formatMessage(messages.searchInputPlaceholder)
@@ -112,7 +124,6 @@ function StakePoolsSearchComponent({
               skin={InputSkin}
               value={search}
               maxLength={150}
-              onFocus={autoSelectOnFocus}
             />
             {hasSearchClearButton && (
               <div className={clearSearchClasses}>

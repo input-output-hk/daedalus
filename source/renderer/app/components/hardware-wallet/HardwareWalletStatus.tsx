@@ -259,11 +259,19 @@ class HardwareWalletStatus extends Component<Props, State> {
     const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
     const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
     const isError = hwDeviceErrorStatuses.includes(hwDeviceStatus);
+    const hasInstructionsLink =
+      hwDeviceInstructionsLinkRelatedStatuses.includes(hwDeviceStatus);
+
     const passphraseLabelVisible =
       isTrezor && hwDevicePassphraseRelatedStatuses.includes(hwDeviceStatus);
-    const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
-      hwDeviceStatus
-    );
+    let secondaryMessage = null;
+    if (passphraseLabelVisible) {
+      secondaryMessage = messages.enterPassphrase;
+    } else if (
+      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED
+    ) {
+      secondaryMessage = messages.exportingPublicKeyError;
+    }
 
     const componentClasses = classnames(styles.component, {
       [styles.isReady]: isReady,
@@ -327,9 +335,9 @@ class HardwareWalletStatus extends Component<Props, State> {
                 label
               )}
             </div>
-            {passphraseLabelVisible && (
-              <div className={styles.passphraseLabel}>
-                {intl.formatMessage(messages.enterPassphrase)}
+            {secondaryMessage && (
+              <div className={styles.secondaryMessage}>
+                {intl.formatMessage(secondaryMessage)}
               </div>
             )}
           </div>
@@ -343,11 +351,6 @@ class HardwareWalletStatus extends Component<Props, State> {
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
         </div>
-        {hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED && (
-          <div className={styles.errorText}>
-            {intl.formatMessage(messages.exportingPublicKeyError)}
-          </div>
-        )}
       </>
     );
   }

@@ -4,12 +4,25 @@
 
 ### Features
 
+- Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
+- Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
+- Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
+- Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
 - Improved RTS flags splash screen message ([PR 2901](https://github.com/input-output-hk/daedalus/pull/2901))
 - Implemented error message when trying to leave wallet without enough ada to support tokens ([PR 2783](https://github.com/input-output-hk/daedalus/pull/2783))
 
 ### Fixes
 
 - Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
+- Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
+- Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
+- Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
+- Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
+- Fixed performance issue on stake pool list view ([PR 2924](https://github.com/input-output-hk/daedalus/pull/2924))
+- Fixed position of popup on syncing screen ([PR 2921](https://github.com/input-output-hk/daedalus/pull/2921))
+- Fixed issue with missing character when copying address from PDF ([PR 2925](https://github.com/input-output-hk/daedalus/pull/2925))
+- Fixed stake pool list view overlapping news feed ([PR 2917](https://github.com/input-output-hk/daedalus/pull/2917))
+- Restored opacity for search icon when focused ([PR 2909](https://github.com/input-output-hk/daedalus/pull/2909))
 - Fixed styling of the incentivized testnet rewards wallet dropdown ([PR 2907](https://github.com/input-output-hk/daedalus/pull/2907))
 - Fix warning sign displayed when recommend decimals is zero ([PR 2905](https://github.com/input-output-hk/daedalus/pull/2905))
 - Fixed discrete tooltip being clipped by loading overlay when stake pools are adjusted ([PR 2902](https://github.com/input-output-hk/daedalus/pull/2902))
@@ -17,9 +30,22 @@
 
 ### Chores
 
+- Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
+- Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))
 - Enabled debugging of the main process ([PR 2893](https://github.com/input-output-hk/daedalus/pull/2893))
+
+## 4.9.1
+
+### Fixes
+
+- Fixed catalyst fund name ([PR 2946](https://github.com/input-output-hk/daedalus/pull/2946))
+- Fixed macOS installer on Monterey 12.3 ([PR 2929](https://github.com/input-output-hk/daedalus/pull/2929))
+
+### Chores
+
+- Introduced new version of the `@cardano-foundation/ledgerjs-hw-app-cardano` package ([PR 2930](https://github.com/input-output-hk/daedalus/pull/2930))
 
 ## 4.9.0
 

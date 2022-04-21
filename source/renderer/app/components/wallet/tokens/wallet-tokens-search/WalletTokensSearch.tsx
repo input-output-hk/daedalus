@@ -25,19 +25,20 @@ type Props = {
 
 const WalletTokensSearch = (props: Props) => {
   const { searchValue, onSearch, intl } = props;
-  const [focus, setFocus] = useState(false);
+  const [isSearchInputFocused, setSearchInputFocused] = useState(false);
+
   return (
     <div className={styles.component}>
       <SVGInline
         svg={searchIcon}
         className={classNames(
           styles.searchIcon,
-          focus && styles.focusSearchIcon
+          isSearchInputFocused && styles.searchIconFocus
         )}
       />
       <Input
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onFocus={() => setSearchInputFocused(true)}
+        onBlur={() => setSearchInputFocused(false)}
         onChange={onSearch}
         value={searchValue}
         placeholder={intl.formatMessage(messages.placeholder)}

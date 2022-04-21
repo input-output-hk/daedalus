@@ -1,5 +1,5 @@
 import hash from 'hash.js';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import JSONBigInt from 'json-bigint';
 import moment from 'moment';
 import { get } from 'lodash';
@@ -200,7 +200,7 @@ export const generateTransaction = (
   metadata: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
-    id: faker.random.uuid(),
+    id: faker.datatype.uuid(),
     title: '',
     type,
     amount: amount.plus(fee),
@@ -252,11 +252,13 @@ export const generateAddress = (used = false): WalletAddress =>
     used,
     spendingPath: "1852'/1815'/0'/0/19",
   });
-export const promise = (returnValue: any): (() => Promise<any>) => () =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(returnValue);
-    }, 2000);
-  });
+export const promise =
+  (returnValue: any): (() => Promise<any>) =>
+  () =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(returnValue);
+      }, 2000);
+    });
 export const isShelleyTestnetTheme = (currentTheme: string) =>
   currentTheme === 'shelley-testnet';

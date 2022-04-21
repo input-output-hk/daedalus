@@ -109,9 +109,8 @@ export const windowOptions: WindowOptionsType = {
   },
   useContentSize: true,
 };
-export const launcherConfig: LauncherConfig = readLauncherConfig(
-  LAUNCHER_CONFIG
-);
+export const launcherConfig: LauncherConfig =
+  readLauncherConfig(LAUNCHER_CONFIG);
 export const {
   cluster,
   nodeImplementation,
@@ -171,8 +170,6 @@ export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
 export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks pace
-
-export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
 
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
