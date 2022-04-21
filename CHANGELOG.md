@@ -4,6 +4,7 @@
 
 ### Features
 
+- Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
 - Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
 - Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
 - Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
@@ -12,6 +13,7 @@
 
 ### Fixes
 
+- Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
 - Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
 - Fixed margin for dialogs content and token table header ([PR 2944](https://github.com/input-output-hk/daedalus/pull/2944))
@@ -27,6 +29,7 @@
 
 ### Chores
 
+- Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
 - Removed SASS ts-lint ignore comments ([PR 2870](https://github.com/input-output-hk/daedalus/pull/2870))

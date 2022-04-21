@@ -3806,6 +3806,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallets",
+        "description": "Text for the tooltip of wallets category",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.wallets",
+        "start": {
+          "column": 11,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Staking",
+        "description": "Text for the tooltip of staking category",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.staking",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Text for the tooltip of settings category",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.settings",
+        "start": {
+          "column": 12,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Voting",
+        "description": "Text for the tooltip of voting category",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.voting",
+        "start": {
+          "column": 10,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Mainnet vx",
         "description": "Label for mainnet network with version.",
         "end": {
@@ -17687,17 +17748,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Newsfeed",
+        "description": "Newsfeed",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/widgets/NewsFeedIcon.tsx",
+        "id": "news.newsfeed.iconTooltip",
+        "start": {
+          "column": 15,
+          "line": 20
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/NewsFeedIcon.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Blocks synced {percentage}%",
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.tsx",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       }
     ],
