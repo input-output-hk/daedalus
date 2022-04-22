@@ -5,15 +5,10 @@ import path from 'path';
 import { Tail } from 'tail';
 import debounce from 'lodash/debounce';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
-import type {
-  GetBlockSyncProgressMainResponse,
-  GetBlockSyncProgressRendererRequest,
-  GetBlockSyncProgressType,
-} from '../../common/ipc/api';
+import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 import { environment } from '../environment';
-import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -50,30 +45,8 @@ function getProgressType(line: string): GetBlockSyncProgressType | null {
 
 const applicationStartDate = moment.utc();
 
-const debouncedSyncProgress = debounce<
-  MainIpcChannel<
-    GetBlockSyncProgressRendererRequest,
-    GetBlockSyncProgressMainResponse
-  >['send']
->((...args) => getBlockSyncProgressChannel.send(...args), 1000);
-
-export const handleCheckBlockReplayProgress = (
-  mainWindow: BrowserWindow,
-  logsDirectoryPath: string
-) => {
-  const filename = 'node.log';
-  const logFilePath = `${logsDirectoryPath}/pub/`;
-  const filePath = path.join(logFilePath, filename);
-  if (!fs.existsSync(filePath)) return;
-
-  const tail = new Tail(filePath, {
-    // using fs.watchFile instead of fs.watch on Windows because of Node API inconsistency:
-    // https://nodejs.org/dist/latest-v14.x/docs/api/fs.html#fs_caveats
-    // https://github.com/lucagrulla/node-tail/issues/137
-    useWatchFile: true,
-  });
-
-  tail.on('line', (line) => {
+const createHandleNewLine = (mainWindow: BrowserWindow) =>
+  debounce((line: string) => {
     if (
       !isItFreshLog(applicationStartDate, line) ||
       !containProgressKeywords(line)
@@ -87,10 +60,30 @@ export const handleCheckBlockReplayProgress = (
       return;
     }
     const finalProgressPercentage = parseFloat(percentage);
-    // Send result to renderer process (NetworkStatusStore)
-    debouncedSyncProgress(
+
+    getBlockSyncProgressChannel.send(
       { progress: finalProgressPercentage, type: progressType },
       mainWindow.webContents
     );
+  }, 1000);
+
+export const handleCheckBlockReplayProgress = (
+  mainWindow: BrowserWindow,
+  logsDirectoryPath: string
+) => {
+  const filename = 'node.log';
+  const logFilePath = `${logsDirectoryPath}/pub/`;
+  const filePath = path.join(logFilePath, filename);
+  if (!fs.existsSync(filePath)) return;
+
+  const tail = new Tail(filePath, {
+    // using fs.watchFile instead of fs.watch on Windows because of Node API issues:
+    // https://github.com/nodejs/node/issues/36888
+    // https://github.com/lucagrulla/node-tail/issues/137
+    // https://nodejs.org/dist/latest-v14.x/docs/api/fs.html#fs_caveats
+    useWatchFile: environment.isWindows,
   });
+
+  const handleNewLine = createHandleNewLine(mainWindow);
+  tail.on('line', handleNewLine);
 };
