@@ -3,7 +3,6 @@ import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
 import { Tail } from 'tail';
-import debounce from 'lodash/debounce';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
 import type { GetBlockSyncProgressType } from '../../common/ipc/api';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
@@ -45,8 +44,14 @@ function getProgressType(line: string): GetBlockSyncProgressType | null {
 
 const applicationStartDate = moment.utc();
 
-const createHandleNewLine = (mainWindow: BrowserWindow) =>
-  debounce((line: string) => {
+const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
+  const lastReportedProgressByType: Record<BlockSyncType, number> = {
+    [BlockSyncType.pushingLedger]: 0,
+    [BlockSyncType.replayedBlock]: 0,
+    [BlockSyncType.validatingChunk]: 0,
+  };
+
+  return (line: string) => {
     if (
       !isItFreshLog(applicationStartDate, line) ||
       !containProgressKeywords(line)
@@ -54,18 +59,27 @@ const createHandleNewLine = (mainWindow: BrowserWindow) =>
       return;
     }
 
-    const percentage = line.match(/Progress:([\s\d.,]+)%/)?.[1];
-    const progressType = getProgressType(line);
-    if (!percentage || !progressType) {
+    const unparsedProgress = line.match(/Progress:([\s\d.,]+)%/)?.[1];
+    const type = getProgressType(line);
+    if (!unparsedProgress || !type) {
       return;
     }
-    const finalProgressPercentage = parseFloat(percentage);
 
-    getBlockSyncProgressChannel.send(
-      { progress: finalProgressPercentage, type: progressType },
-      mainWindow.webContents
-    );
-  }, 1000);
+    const progress = Math.floor(parseFloat(unparsedProgress));
+
+    if (lastReportedProgressByType[type] !== progress) {
+      console.log(
+        `Reporting more progress. Old: ${lastReportedProgressByType[type]}, new ${progress}`
+      );
+      lastReportedProgressByType[type] = progress;
+
+      getBlockSyncProgressChannel.send(
+        { progress, type },
+        mainWindow.webContents
+      );
+    }
+  };
+};
 
 export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
@@ -84,6 +98,6 @@ export const handleCheckBlockReplayProgress = (
     useWatchFile: environment.isWindows,
   });
 
-  const handleNewLine = createHandleNewLine(mainWindow);
-  tail.on('line', handleNewLine);
+  const handleNewLogLine = createHandleNewLogLine(mainWindow);
+  tail.on('line', handleNewLogLine);
 };
