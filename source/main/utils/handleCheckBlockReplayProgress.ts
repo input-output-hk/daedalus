@@ -3,11 +3,17 @@ import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
 import { Tail } from 'tail';
+import debounce from 'lodash/debounce';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
-import type { GetBlockSyncProgressType } from '../../common/ipc/api';
+import type {
+  GetBlockSyncProgressMainResponse,
+  GetBlockSyncProgressRendererRequest,
+  GetBlockSyncProgressType,
+} from '../../common/ipc/api';
 import { BlockSyncType } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 import { environment } from '../environment';
+import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -44,6 +50,13 @@ function getProgressType(line: string): GetBlockSyncProgressType | null {
 
 const applicationStartDate = moment.utc();
 
+const debouncedSyncProgress = debounce<
+  MainIpcChannel<
+    GetBlockSyncProgressRendererRequest,
+    GetBlockSyncProgressMainResponse
+  >['send']
+>((...args) => getBlockSyncProgressChannel.send(...args), 1000);
+
 export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string
@@ -57,7 +70,7 @@ export const handleCheckBlockReplayProgress = (
     // using fs.watchFile instead of fs.watch on Windows because of Node API inconsistency:
     // https://nodejs.org/dist/latest-v14.x/docs/api/fs.html#fs_caveats
     // https://github.com/lucagrulla/node-tail/issues/137
-    useWatchFile: environment.isWindows,
+    useWatchFile: true,
   });
 
   tail.on('line', (line) => {
@@ -75,7 +88,7 @@ export const handleCheckBlockReplayProgress = (
     }
     const finalProgressPercentage = parseFloat(percentage);
     // Send result to renderer process (NetworkStatusStore)
-    getBlockSyncProgressChannel.send(
+    debouncedSyncProgress(
       { progress: finalProgressPercentage, type: progressType },
       mainWindow.webContents
     );
