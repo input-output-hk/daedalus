@@ -46,12 +46,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Exporting the public key failed',
     description: '"Exporting public key failed" device state',
   },
-  incorrect_passphrase_provided: {
-    id: 'wallet.hardware.deviceStatus.incorrect_passphrase_provided',
+  unrecognized_wallet: {
+    id: 'wallet.hardware.deviceStatus.unrecognized_wallet',
     defaultMessage:
-      '!!!The passphrase you have entered does not match the current wallet',
-    description:
-      '"Message displayed when user connects different wallet than the current one',
+      '!!!We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing {walletName} and that you have entered the correct passphrase.',
+    description: '"Unrecognized wallet" device state',
   },
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
@@ -185,7 +184,6 @@ const hwDeviceReadyStatuses = [
 
 const hwDeviceErrorStatuses = [
   HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED,
-  HwDeviceStatuses.INCORRECT_PASSPHRASE_PROVIDED,
   HwDeviceStatuses.CONNECTING_FAILED,
   HwDeviceStatuses.TREZOR_BRIDGE_FAILURE,
   HwDeviceStatuses.WRONG_FIRMWARE,
@@ -194,6 +192,7 @@ const hwDeviceErrorStatuses = [
   HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED,
   HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
   HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED,
+  HwDeviceStatuses.UNRECOGNIZED_WALLET,
 ];
 
 const hwDevicePassphraseRelatedStatuses = [
@@ -259,8 +258,9 @@ class HardwareWalletStatus extends Component<Props, State> {
     const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
     const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
     const isError = hwDeviceErrorStatuses.includes(hwDeviceStatus);
-    const hasInstructionsLink =
-      hwDeviceInstructionsLinkRelatedStatuses.includes(hwDeviceStatus);
+    const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
+      hwDeviceStatus
+    );
 
     const passphraseLabelVisible =
       isTrezor && hwDevicePassphraseRelatedStatuses.includes(hwDeviceStatus);
@@ -301,6 +301,7 @@ class HardwareWalletStatus extends Component<Props, State> {
       (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+        hwDeviceStatus === HwDeviceStatuses.UNRECOGNIZED_WALLET ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION)
     ) {
       const message =

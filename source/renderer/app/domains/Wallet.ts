@@ -44,7 +44,6 @@ export type HwDeviceStatus =
   | 'launching_cardano_app'
   | 'exporting_public_key'
   | 'exporting_public_key_failed'
-  | 'incorrect_passphrase_provided'
   | 'ready'
   | 'verifying_transaction'
   | 'verifying_transaction_failed'
@@ -56,14 +55,15 @@ export type HwDeviceStatus =
   | 'verifying_address_confirmation'
   | 'verifying_address_failed'
   | 'verifying_address_aborted'
-  | 'verifying_address_succeeded';
+  | 'verifying_address_succeeded'
+  | 'unrecognized_wallet';
+
 export const HwDeviceStatuses: {
   CONNECTING: HwDeviceStatus;
   CONNECTING_FAILED: HwDeviceStatus;
   LAUNCHING_CARDANO_APP: HwDeviceStatus;
   EXPORTING_PUBLIC_KEY: HwDeviceStatus;
   EXPORTING_PUBLIC_KEY_FAILED: HwDeviceStatus;
-  INCORRECT_PASSPHRASE_PROVIDED: HwDeviceStatus;
   READY: HwDeviceStatus;
   VERIFYING_TRANSACTION: HwDeviceStatus;
   VERIFYING_TRANSACTION_FAILED: HwDeviceStatus;
@@ -77,6 +77,7 @@ export const HwDeviceStatuses: {
   VERIFYING_ADDRESS_FAILED: HwDeviceStatus;
   VERIFYING_ADDRESS_ABORTED: HwDeviceStatus;
   VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus;
+  UNRECOGNIZED_WALLET: HwDeviceStatus;
 } = {
   CONNECTING: 'connecting',
   CONNECTING_FAILED: 'connecting_failed',
@@ -84,7 +85,6 @@ export const HwDeviceStatuses: {
   LAUNCHING_CARDANO_APP: 'launching_cardano_app',
   EXPORTING_PUBLIC_KEY: 'exporting_public_key',
   EXPORTING_PUBLIC_KEY_FAILED: 'exporting_public_key_failed',
-  INCORRECT_PASSPHRASE_PROVIDED: 'incorrect_passphrase_provided',
   WRONG_FIRMWARE: 'wrong_firmware',
   WRONG_CARDANO_APP_VERSION: 'wrong_cardano_app_version',
   UNSUPPORTED_DEVICE: 'unsupported_device',
@@ -97,6 +97,7 @@ export const HwDeviceStatuses: {
   VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
   VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
   VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
+  UNRECOGNIZED_WALLET: 'unrecognized_wallet',
 };
 export const WalletUnits: {
   ADA: WalletUnit;

@@ -1646,9 +1646,9 @@ export default class HardwareWalletsStore extends Store {
       walletId
     );
     runInAction(
-      'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+      'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
       () => {
-        this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+        this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = walletId;
         this.isExportKeyAborted = false;
@@ -1694,7 +1694,7 @@ export default class HardwareWalletsStore extends Store {
       'HardwareWalletsStore:: set HW device CONNECTING FAILED',
       () => {
         this.isAddressVerificationInitiated = false;
-        this.hwDeviceStatus = HwDeviceStatuses.INCORRECT_PASSPHRASE_PROVIDED;
+        this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
         this.activeDevicePath = null;
         this.unfinishedWalletAddressVerification = address;
         this.isExportKeyAborted = false;
