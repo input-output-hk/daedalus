@@ -68,9 +68,6 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
     const progress = Math.floor(parseFloat(unparsedProgress));
 
     if (lastReportedProgressByType[type] !== progress) {
-      console.log(
-        `Reporting more progress. Old: ${lastReportedProgressByType[type]}, new ${progress}`
-      );
       lastReportedProgressByType[type] = progress;
 
       getBlockSyncProgressChannel.send(
