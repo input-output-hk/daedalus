@@ -12,13 +12,13 @@ import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import { StakePoolsTableHeaderCell } from './StakePoolsTableHeaderCell';
 import {
   useSortedStakePoolList,
   useCreateColumns,
   StakePoolsOrder,
   StakePoolSortableProps,
 } from './hooks';
+import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 
 export const defaultTableOrdering: Record<
   StakePoolSortableProps,
@@ -122,14 +122,19 @@ function StakePoolsTableComponent({
     showWithSelectButton,
   });
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data: sortedStakePoolList,
-      },
-      useFlexLayout
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data: sortedStakePoolList,
+    },
+    useFlexLayout
+  );
 
   const RenderRow = useCallback(
     ({ index, style }) => {
@@ -186,34 +191,14 @@ function StakePoolsTableComponent({
                 {sortedStakePoolList.length > 0 && (
                   <BorderedBox>
                     <div {...getTableProps()} className={styles.table}>
-                      <div
-                        className={styles.thead}
-                        onMouseEnter={onTableHeaderMouseEnter}
-                        onMouseLeave={onTableHeaderMouseLeave}
-                      >
-                        {headerGroups.map((headerGroup) => (
-                          /* eslint-disable-next-line react/jsx-key */
-                          <div
-                            {...headerGroup.getHeaderGroupProps()}
-                            className={styles.tr}
-                          >
-                            {headerGroup.headers.map((column) => (
-                              <StakePoolsTableHeaderCell
-                                {...column.getHeaderProps({
-                                  style: { width: undefined },
-                                })}
-                                stakePoolsSortBy={stakePoolsSortBy}
-                                stakePoolsOrder={stakePoolsOrder}
-                                onHandleSort={handleSort}
-                                name={column.id}
-                                key={column.id}
-                              >
-                                {column.render('Header')}
-                              </StakePoolsTableHeaderCell>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
+                      <StakePoolsTableHeader
+                        stakePoolsSortBy={stakePoolsSortBy}
+                        stakePoolsOrder={stakePoolsOrder}
+                        headerGroups={headerGroups}
+                        onHandleSort={handleSort}
+                        onTableHeaderMouseEnter={onTableHeaderMouseEnter}
+                        onTableHeaderMouseLeave={onTableHeaderMouseLeave}
+                      />
 
                       <AutoSizer disableHeight>
                         {({ width }) => (
