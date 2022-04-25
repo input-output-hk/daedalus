@@ -10,6 +10,7 @@ import {
   cleanup,
   within,
   waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import en from 'react-intl/locale-data/en';
@@ -453,14 +454,14 @@ describe('wallet/Wallet Send Form', () => {
   });
 
   test('should wait fees to be calculated before submitting', async () => {
-    expect.assertions(2);
+    expect.assertions(3);
 
     const mock = jest
       .fn()
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 10);
 
             return resolve({
               fee: new BigNumber(1),
@@ -471,7 +472,7 @@ describe('wallet/Wallet Send Form', () => {
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 10);
 
             return resolve({
               fee: new BigNumber(2),
@@ -487,7 +488,7 @@ describe('wallet/Wallet Send Form', () => {
     const adaField = await screen.findByLabelText('Ada');
     fireEvent.change(adaField, {
       target: {
-        value: 2,
+        value: 2.5,
       },
     });
 
@@ -498,6 +499,21 @@ describe('wallet/Wallet Send Form', () => {
         value: 1.5,
       },
     });
+
+    const transactionFeeSpinner = await screen.findByTestId(
+      'transaction-fee-spinner'
+    );
+
+    waitForElementToBeRemoved(transactionFeeSpinner);
+
+    const sendButton: HTMLButtonElement = screen.getByText('Send');
+
+    await waitFor(() => {
+      if (sendButton.disabled) throw new Error('button disabled');
+      return Promise.resolve(true);
+    });
+
+    expect(sendButton).toBeEnabled();
 
     fireEvent.keyPress(adaField, {
       key: 'Enter',

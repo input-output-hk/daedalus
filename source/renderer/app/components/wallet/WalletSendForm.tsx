@@ -208,14 +208,10 @@ class WalletSendForm extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
     if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
-      setTimeout(() => {
-        this.handleOnSubmit();
-      }, FORM_VALIDATION_DEBOUNCE_WAIT);
+      this.handleOnSubmit();
     }
   };
   handleOnSubmit = async () => {
-    await Promise.all(this.form.validator.promises);
-
     if (this.isDisabled()) {
       return;
     }
@@ -408,6 +404,10 @@ class WalletSendForm extends Component<Props, State> {
               ];
             },
           ],
+          hooks: {
+            onChange: () =>
+              this.setState({ isTransactionFeeCalculated: false }),
+          },
         },
         estimatedFee: {
           label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
@@ -443,6 +443,7 @@ class WalletSendForm extends Component<Props, State> {
     currentFeeCalculationRequestQue: number,
     prevFeeCalculationRequestQue: number
   ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
+
   validateEmptyAssets = () => {
     return this.selectedAssets
       .filter((_, index) => {
@@ -481,6 +482,7 @@ class WalletSendForm extends Component<Props, State> {
       selectedAssetUniqueIds,
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
     } = this.state;
+
     this.setState((prevState) => ({
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
       isTransactionFeeCalculated: false,
@@ -729,6 +731,9 @@ class WalletSendForm extends Component<Props, State> {
           this.props.currencyMaxFractionalDigits
         )}`
       );
+    this.form.$(newAsset).set('hooks', {
+      onChange: () => this.setState({ isTransactionFeeCalculated: false }),
+    });
     this.form.$(newAsset).set('validators', [
       async ({ field }) => {
         const { value } = field;
@@ -1102,7 +1107,10 @@ class WalletSendForm extends Component<Props, State> {
                   isSet
                 />
                 {this.state.isCalculatingTransactionFee && (
-                  <div className={styles.calculatingFeesContainer}>
+                  <div
+                    className={styles.calculatingFeesContainer}
+                    data-testid="transaction-fee-spinner"
+                  >
                     <PopOver
                       content={intl.formatMessage(
                         messages.calculatingFeesLabel
