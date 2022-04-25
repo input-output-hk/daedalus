@@ -1,10 +1,10 @@
 import prompts from 'prompts';
 
-import { run as runRemoveMultipleHardwareWallets } from './remove-multiple-hardware-wallets';
+import { run as runDisconnectMultipleHardwareWallets } from './disconnect-multiple-hardware-wallets';
 import { run as runCardanoAppAlreadyLaunched } from './cardano-app-already-launched';
-import { run as runCardanoAppNotStarted } from './cardano-app-not-started';
-import { run as runRemoveSingleHardwareWallet } from './remove-single-hardware-wallet';
-import { run as runMultipleHardwareWallets } from './multiple-hardware-wallets';
+import { run as runCardanoAppNotLaunched } from './cardano-app-not-started';
+import { run as runDisconnectSingleHardwareWallet } from './disconnect-single-hardware-wallet';
+import { run as runConnectMultipleHardwareWallets } from './connect-multiple-hardware-wallets';
 
 const CARDANO_APP_ALREADY_LAUNCHED = 'CARDANO_APP_ALREADY_LAUNCHED';
 const CARDANO_APP_NOT_STARTED = 'CARDANO_APP_NOT_STARTED';
@@ -49,19 +49,19 @@ const MULTIPLE_HARDWARE_WALLETS_REMOVED = 'MULTIPLE_HARDWARE_WALLETS_REMOVED';
       break;
 
     case CARDANO_APP_NOT_STARTED:
-      await runCardanoAppNotStarted();
+      await runCardanoAppNotLaunched();
       break;
 
     case SINGLE_LEDGER_DISCONNECTED:
-      await runRemoveSingleHardwareWallet();
+      await runDisconnectSingleHardwareWallet();
       break;
 
     case MULTIPLE_HARDWARE_WALLETS:
-      await runMultipleHardwareWallets();
+      await runConnectMultipleHardwareWallets();
       break;
 
     case MULTIPLE_HARDWARE_WALLETS_REMOVED:
-      await runRemoveMultipleHardwareWallets();
+      await runDisconnectMultipleHardwareWallets();
       break;
 
     default:

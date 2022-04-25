@@ -96,7 +96,7 @@ export const showAddressChannel: RendererIpcChannel<
   showAddressMainResponse,
   showAddressRendererRequest
 > = new RendererIpcChannel(SHOW_ADDRESS_CHANNEL);
-export const waitForLedgerDevicesChannel: RendererIpcChannel<
+export const waitForLedgerDevicesToConnectChannel: RendererIpcChannel<
   waitForLedgerDevicesResponse,
   waitForLedgerDevicesRequest
 > = new RendererIpcChannel(WAIT_FOR_LEDGER_DEVICES);

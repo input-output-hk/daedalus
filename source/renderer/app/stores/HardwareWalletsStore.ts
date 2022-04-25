@@ -35,7 +35,7 @@ import {
   resetTrezorActionChannel,
   deriveAddressChannel,
   showAddressChannel,
-  waitForLedgerDevicesChannel,
+  waitForLedgerDevicesToConnectChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -133,6 +133,12 @@ const DEFAULT_HW_NAME = 'Hardware Wallet';
 
 const { network, isDev } = global.environment;
 const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
+
+interface CardanoAdaAppPoller {
+  stop: () => void;
+  isRunning: () => boolean;
+}
+
 export default class HardwareWalletsStore extends Store {
   @observable
   selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
@@ -235,10 +241,7 @@ export default class HardwareWalletsStore extends Store {
   activeVotingWalletId: string | null | undefined = null;
   @observable
   votingData: VotingDataType | null | undefined = null;
-  cardanoAdaAppPollingInterval: {
-    stop: () => void;
-    isRunning: () => boolean;
-  } | null;
+  cardanoAdaAppPoller: CardanoAdaAppPoller | null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   checkTransactionTimeInterval: IntervalID | null | undefined = null;
   connectedHardwareWalletsDevices: Map<
@@ -313,8 +316,8 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  waitForLedgerDevices = async () => {
-    const device = await waitForLedgerDevicesChannel.request();
+  waitForLedgerDevicesToConnect = async () => {
+    const device = await waitForLedgerDevicesToConnectChannel.request();
     this.connectedHardwareWalletsDevices.set(device.path, device);
     return device;
   };
@@ -324,7 +327,7 @@ export default class HardwareWalletsStore extends Store {
     txWalletId: string | null | undefined,
     verificationAddress?: WalletAddress | null | undefined
   ) => {
-    this.cardanoAdaAppPollingInterval?.stop();
+    this.cardanoAdaAppPoller?.stop();
 
     const poller = () => {
       let canRun = true;
@@ -375,7 +378,7 @@ export default class HardwareWalletsStore extends Store {
       };
     };
 
-    this.cardanoAdaAppPollingInterval = poller();
+    this.cardanoAdaAppPoller = poller();
   };
 
   getAvailableDevices = async (params: { isTrezor: boolean }) => {
@@ -1240,7 +1243,7 @@ export default class HardwareWalletsStore extends Store {
           logger.info(
             '[HW-DEBUG] HW STORE::initiateAddressVerification:: wait for ledger devices'
           );
-          await this.waitForLedgerDevices();
+          await this.waitForLedgerDevicesToConnect();
           transportDevice = await this.establishHardwareWalletConnection();
         } else {
           transportDevice = await this.establishHardwareWalletConnection();
@@ -1263,7 +1266,7 @@ export default class HardwareWalletsStore extends Store {
         logger.debug('[HW-DEBUG] HWStore - Establishing connection failed');
       }
     } else if (deviceType === DeviceTypes.LEDGER) {
-      const connectedDevice = await this.waitForLedgerDevices();
+      const connectedDevice = await this.waitForLedgerDevicesToConnect();
       devicePath = connectedDevice.path;
 
       if (!transportDevice) {
@@ -1321,12 +1324,7 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
       this.stopCardanoAdaAppFetchPoller();
-      this.useCardanoAppInterval(
-        devicePath,
-        // @ts-ignore Argument of type 'WalletAddress' is not assignable to parameter of type 'string'.ts(2345)
-        walletId,
-        address
-      );
+      this.useCardanoAppInterval(devicePath, walletId, address);
     }
   };
   @action
@@ -1539,7 +1537,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   waitForLedgerTransportDevice = async () => {
-    const ledgerDevice = await this.waitForLedgerDevices();
+    const ledgerDevice = await this.waitForLedgerDevicesToConnect();
 
     logger.debug(
       '[HW-DEBUG] HWStore::getLedgerTransportDevice::Use ledger device as transport',
@@ -3207,9 +3205,9 @@ export default class HardwareWalletsStore extends Store {
   stopCardanoAdaAppFetchPoller = () => {
     logger.info('[HW-DEBUG] HWStore - STOP Ada App poller');
 
-    if (this.cardanoAdaAppPollingInterval) {
-      this.cardanoAdaAppPollingInterval.stop();
-      this.cardanoAdaAppPollingInterval = null;
+    if (this.cardanoAdaAppPoller) {
+      this.cardanoAdaAppPoller.stop();
+      this.cardanoAdaAppPoller = null;
     }
   };
 }

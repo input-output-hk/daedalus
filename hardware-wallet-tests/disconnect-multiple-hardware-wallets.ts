@@ -6,6 +6,7 @@ import {
   createSequentialResult,
   initLedgerChannel,
   createTestInstructions,
+  waitForZombieMessages,
 } from './utils';
 
 const getNextExpectedSequence = createSequentialResult([
@@ -41,7 +42,7 @@ export const run = () => {
     'Disconnect Nano X',
   ]);
 
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (params: { path: string; deviceModel: string }) => {
         const [expectedValue, isOver] = getNextExpectedSequence();
@@ -49,7 +50,8 @@ export const run = () => {
         expect(params).toEqual(expectedValue);
 
         if (isOver) {
-          return resolve(null);
+          await waitForZombieMessages();
+          return resolve();
         }
       }
     );

@@ -6,6 +6,7 @@ import {
   initLedgerChannel,
   createTestInstructions,
   createSequentialResult,
+  waitForZombieMessages,
 } from './utils';
 
 export const run = () => {
@@ -29,13 +30,16 @@ export const run = () => {
     },
   ]);
 
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
       async (params: { path: string }) => {
         const [expectedValue, isOver] = getNextExpectedSequence();
         expect(params).toEqual(expectedValue);
 
-        if (isOver) return resolve(null);
+        if (isOver) {
+          await waitForZombieMessages();
+          return resolve();
+        }
       }
     );
 

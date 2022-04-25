@@ -10,10 +10,23 @@ export type DeviceDetectionPayload = {
   type: 'add' | 'remove';
 } & TrackedDevice;
 
+const getDetector = () => {
+  if (TransportNodeHid.isSupported()) {
+    logger.info('[HW-DEBUG] Using usb-detection');
+
+    return useEventDrivenDetection;
+  }
+  logger.info('[HW-DEBUG] Using polling');
+
+  return usePollingDrivenDetection;
+};
+
 export const deviceDetection = (
-  onAdd: (arg0: DeviceDetectionPayload) => void,
-  onRemove: (arg0: DeviceDetectionPayload) => void
+  onAdd: (payload: DeviceDetectionPayload) => void,
+  onRemove: (payload: DeviceDetectionPayload) => void
 ) => {
+  // detect existing connected devices without blocking the subscription registration
+  // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-transport-node-hid-singleton/src/TransportNodeHid.ts#L56
   Promise.resolve(DeviceTracker.getDevices()).then((devices) => {
     // this needs to run asynchronously so the subscription is defined during this phase
     for (const device of devices) {
@@ -29,41 +42,21 @@ export const deviceDetection = (
   const handleOnRemove = (trackedDevice: TrackedDevice) =>
     onRemove({ type: 'remove', ...trackedDevice });
 
-  let detectDevices: Detector;
-
-  if (TransportNodeHid.isSupported()) {
-    logger.info('[HW-DEBUG] Using usb-detection');
-
-    detectDevices = useEventDrivenDetection;
-  } else {
-    logger.info('[HW-DEBUG] Using polling');
-
-    detectDevices = usePollingDrivenDetection;
-  }
+  const detectDevices = getDetector();
 
   detectDevices(handleOnAdd, handleOnRemove);
 };
 
 export const waitForDevice = () => {
-  return new Promise<TrackedDevice>(async (resolve) => {
-    const currentDevices = await DeviceTracker.getDevices();
+  return new Promise<TrackedDevice>((resolve) => {
+    const currentDevices = DeviceTracker.getDevices();
 
     for (const device of currentDevices) {
       return resolve(DeviceTracker.getTrackedDeviceByPath(device.path));
     }
 
-    let detectDevices: Detector;
+    const detectDevices = getDetector();
     let unsubscribe: DectorUnsubscriber = null;
-
-    if (TransportNodeHid.isSupported()) {
-      logger.info('[HW-DEBUG] Using usb-detection');
-
-      detectDevices = useEventDrivenDetection;
-    } else {
-      logger.info('[HW-DEBUG] Using polling');
-
-      detectDevices = usePollingDrivenDetection;
-    }
 
     const handleOnAdd = (trackedDevice: TrackedDevice) => {
       if (unsubscribe) {

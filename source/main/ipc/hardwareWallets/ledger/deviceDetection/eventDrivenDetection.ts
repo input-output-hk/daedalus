@@ -10,6 +10,8 @@ const deviceToLog = ({ productId, locationId, deviceAddress }) =>
 
 let isMonitoring = false;
 
+const USB_EVENT_BUFFER_DELAY = 1500;
+
 const monitorUSBDevices = () => {
   if (!isMonitoring) {
     isMonitoring = true;
@@ -55,7 +57,7 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
         }
 
         timeout = null;
-      }, 1500);
+      }, USB_EVENT_BUFFER_DELAY);
     }
   };
 

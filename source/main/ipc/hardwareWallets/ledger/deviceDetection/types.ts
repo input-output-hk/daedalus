@@ -32,6 +32,6 @@ export type TrackedDevice = {
 export type DectorUnsubscriber = () => void;
 
 export type Detector = (
-  onAdd: (arg0: TrackedDevice) => void,
-  onRemove: (arg0: TrackedDevice) => void
+  onAdd: (device: TrackedDevice) => void,
+  onRemove: (device: TrackedDevice) => void
 ) => DectorUnsubscriber;

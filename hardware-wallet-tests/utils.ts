@@ -17,9 +17,7 @@ import {
 import { createChannels } from '../source/main/ipc/createHardwareWalletIPCChannels';
 import { handleHardwareWalletRequests } from '../source/main/ipc/getHardwareWalletChannel';
 
-const { ipcMain, ipcRenderer } = createIPCMock();
-
-export { ipcMain, ipcRenderer };
+export const { ipcMain, ipcRenderer } = createIPCMock();
 
 export class MockIpcChannel<Incoming, Outgoing> extends IpcChannel<
   Incoming,
@@ -57,7 +55,7 @@ export class MockIpcChannel<Incoming, Outgoing> extends IpcChannel<
 }
 
 export const createAndRegisterHardwareWalletChannels = () =>
-  // @ts-ignore fix-me later
+  // @ts-expect-error Argument of type 'ipcRenderer' is not assignable to parameter of type 'BrowserWindow'.
   handleHardwareWalletRequests(ipcRenderer, createChannels(MockIpcChannel));
 
 export const initLedgerChannel = () => {
@@ -129,3 +127,6 @@ export const log = (message: string) =>
 export const createTestInstructions = (messages: string[]) => {
   messages.forEach((m, i) => log(`${i + 1} - ${m}`));
 };
+
+export const waitForZombieMessages = () =>
+  new Promise((resolve) => setTimeout(resolve, 1000));

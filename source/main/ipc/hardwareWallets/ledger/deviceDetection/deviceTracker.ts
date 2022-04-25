@@ -26,7 +26,7 @@ export class DeviceTracker {
     return { device, deviceModel, descriptor } as TrackedDevice;
   }
 
-  static getDevices() {
+  static getDevices(): (Device & { deviceName?: string })[] {
     return getDevices();
   }
 

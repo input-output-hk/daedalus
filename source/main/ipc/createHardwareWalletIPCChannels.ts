@@ -100,7 +100,7 @@ export interface HardwareWalletChannels {
     showAddressMainResponse
   >;
 
-  waitForLedgerDevicesChannel: IpcChannel<
+  waitForLedgerDevicesToConnectChannel: IpcChannel<
     waitForLedgerDevicesRequest,
     waitForLedgerDevicesResponse
   >;
@@ -130,6 +130,6 @@ export const createChannels = (
     deriveXpubChannel: new Channel(DERIVE_XPUB_CHANNEL),
     deriveAddressChannel: new Channel(DERIVE_ADDRESS_CHANNEL),
     showAddressChannel: new Channel(SHOW_ADDRESS_CHANNEL),
-    waitForLedgerDevicesChannel: new Channel(WAIT_FOR_LEDGER_DEVICES),
+    waitForLedgerDevicesToConnectChannel: new Channel(WAIT_FOR_LEDGER_DEVICES),
   };
 };

@@ -158,7 +158,7 @@ export const handleHardwareWalletRequests = async (
     deriveXpubChannel,
     deriveAddressChannel,
     showAddressChannel,
-    waitForLedgerDevicesChannel,
+    waitForLedgerDevicesToConnectChannel,
   }: HardwareWalletChannels
 ) => {
   let deviceConnection = null;
@@ -229,10 +229,10 @@ export const handleHardwareWalletRequests = async (
     });
   };
 
-  waitForLedgerDevicesChannel.onRequest(async () => {
-    logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::waiting');
+  waitForLedgerDevicesToConnectChannel.onRequest(async () => {
+    logger.info('[HW-DEBUG] waitForLedgerDevicesToConnectChannel::waiting');
     const { device, deviceModel } = await waitForDevice();
-    logger.info('[HW-DEBUG] waitForLedgerDevicesChannel::found');
+    logger.info('[HW-DEBUG] waitForLedgerDevicesToConnectChannel::found');
     return {
       disconnected: false,
       deviceType: 'ledger',
