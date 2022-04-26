@@ -78,16 +78,14 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
   };
 };
 
-export const handleCheckBlockReplayProgress = (
-  mainWindow: BrowserWindow,
-  logsDirectoryPath: string
-) => {
-  const filename = 'node.log';
-  const logFilePath = `${logsDirectoryPath}/pub/`;
-  const filePath = path.join(logFilePath, filename);
-  if (!fs.existsSync(filePath)) return;
-
-  const tail = new Tail(filePath, {
+const watchLogFile = ({
+  logFilePath,
+  mainWindow,
+}: {
+  logFilePath: string;
+  mainWindow: BrowserWindow;
+}) => {
+  const tail = new Tail(logFilePath, {
     // using fs.watchFile instead of fs.watch on Windows because of Node API issues:
     // https://github.com/nodejs/node/issues/36888
     // https://github.com/lucagrulla/node-tail/issues/137
@@ -97,4 +95,42 @@ export const handleCheckBlockReplayProgress = (
 
   const handleNewLogLine = createHandleNewLogLine(mainWindow);
   tail.on('line', handleNewLogLine);
+};
+
+const watchLogFileDir = ({
+  logFileName,
+  logFileDirPath,
+  mainWindow,
+}: {
+  logFileName: string;
+  logFileDirPath: string;
+  mainWindow: BrowserWindow;
+}) => {
+  const watcher = fs.watch(logFileDirPath, {}, (eventname, file) => {
+    if (eventname === 'rename' && logFileName === file) {
+      watchLogFile({
+        logFilePath: path.join(logFileDirPath, logFileName),
+        mainWindow,
+      });
+      watcher.close();
+    }
+  });
+};
+
+export const handleCheckBlockReplayProgress = (
+  mainWindow: BrowserWindow,
+  logsDirectoryPath: string
+) => {
+  const logFileName = 'node.log';
+  const logFileDirPath = `${logsDirectoryPath}/pub/`;
+  const logFilePath = path.join(logFileDirPath, logFileName);
+
+  if (!fs.existsSync(logFilePath)) {
+    watchLogFileDir({ logFileDirPath, logFileName, mainWindow });
+  } else {
+    watchLogFile({
+      logFilePath,
+      mainWindow,
+    });
+  }
 };
