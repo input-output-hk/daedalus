@@ -55,7 +55,7 @@ export class MockIpcChannel<Incoming, Outgoing> extends IpcChannel<
 }
 
 export const createAndRegisterHardwareWalletChannels = () =>
-  // @ts-expect-error Argument of type 'ipcRenderer' is not assignable to parameter of type 'BrowserWindow'.
+  // @ts-ignore Argument of type 'ipcRenderer' is not assignable to parameter of type 'BrowserWindow'.
   handleHardwareWalletRequests(ipcRenderer, createChannels(MockIpcChannel));
 
 export const initLedgerChannel = () => {
@@ -78,22 +78,24 @@ export const requestLaunchingCardanoAppOnLedger = (deviceId: string) =>
   new Promise((resolve, reject) => {
     const cardanoAppChannel = createCardanoAppChannel();
 
-    const interval = setInterval(async () => {
+    const run = async () => {
       try {
         const cardanoAppChannelResponse = await cardanoAppChannel.request(
           { path: deviceId },
           ipcRenderer,
           ipcRenderer
         );
-        clearInterval(interval);
         return resolve(cardanoAppChannelResponse);
       } catch (err) {
         if (err.code === DEVICE_NOT_CONNECTED) {
-          clearInterval(interval);
           return reject(err);
         }
+
+        setTimeout(run, 1000);
       }
-    }, 2000);
+    };
+
+    run();
   });
 
 interface Result {

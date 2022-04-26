@@ -39,20 +39,16 @@ export const run = () => {
           product: expect.any(String),
         });
 
-        try {
-          const cardanoAppChannelResponse = await requestLaunchingCardanoAppOnLedger(
-            params.path
-          );
+        const cardanoAppChannelResponse = await requestLaunchingCardanoAppOnLedger(
+          params.path
+        );
 
-          expect(cardanoAppChannelResponse).toEqual({
-            minor: expect.any(Number),
-            major: expect.any(Number),
-            patch: expect.any(Number),
-            deviceId: expect.any(String),
-          });
-        } catch (err) {
-          return null;
-        }
+        expect(cardanoAppChannelResponse).toEqual({
+          minor: expect.any(Number),
+          major: expect.any(Number),
+          patch: expect.any(Number),
+          deviceId: expect.any(String),
+        });
 
         const extendedPublicKey = await publicKeyChannel.request(
           {
