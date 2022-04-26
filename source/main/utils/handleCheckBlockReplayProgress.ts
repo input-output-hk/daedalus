@@ -4,10 +4,13 @@ import moment from 'moment';
 import path from 'path';
 import { Tail } from 'tail';
 import { getBlockSyncProgressChannel } from '../ipc/get-block-sync-progress';
-import type { GetBlockSyncProgressType } from '../../common/ipc/api';
-import { BlockSyncType } from '../../common/types/cardano-node.types';
+import {
+  BlockSyncProgress,
+  BlockSyncType,
+} from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 import { environment } from '../environment';
+import { logger } from './logging';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';
@@ -21,7 +24,7 @@ const progressKeywords = [
   ledgerKeyword,
 ];
 
-const keywordTypeMap: Record<string, GetBlockSyncProgressType> = {
+const keywordTypeMap: Record<string, BlockSyncType> = {
   [blockKeyword]: BlockSyncType.replayedBlock,
   [validatingChunkKeyword]: BlockSyncType.validatingChunk,
   [validatedChunkKeyword]: BlockSyncType.validatingChunk,
@@ -32,7 +35,7 @@ function containProgressKeywords(line: string) {
   return progressKeywords.some((keyword) => line.includes(keyword));
 }
 
-function getProgressType(line: string): GetBlockSyncProgressType | null {
+function getProgressType(line: string): BlockSyncType | null {
   const key = progressKeywords.find((k) => line.includes(k));
 
   if (!key) {
@@ -45,10 +48,10 @@ function getProgressType(line: string): GetBlockSyncProgressType | null {
 const applicationStartDate = moment.utc();
 
 const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
-  const lastReportedProgressByType: Record<BlockSyncType, number> = {
-    [BlockSyncType.pushingLedger]: 0,
-    [BlockSyncType.replayedBlock]: 0,
+  const progressReport: BlockSyncProgress = {
     [BlockSyncType.validatingChunk]: 0,
+    [BlockSyncType.replayedBlock]: 0,
+    [BlockSyncType.pushingLedger]: 0,
   };
 
   return (line: string) => {
@@ -65,15 +68,26 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
       return;
     }
 
+    // In rare cases cardano-node does not log 100%, therefore we need to manually mark the previous step as complete.
+    if (
+      type === BlockSyncType.replayedBlock &&
+      progressReport[BlockSyncType.validatingChunk] !== 100
+    ) {
+      progressReport[BlockSyncType.validatingChunk] = 100;
+    }
+
+    if (
+      type === BlockSyncType.pushingLedger &&
+      progressReport[BlockSyncType.replayedBlock] !== 100
+    ) {
+      progressReport[BlockSyncType.replayedBlock] = 100;
+    }
+
     const progress = Math.floor(parseFloat(unparsedProgress));
 
-    if (lastReportedProgressByType[type] !== progress) {
-      lastReportedProgressByType[type] = progress;
-
-      getBlockSyncProgressChannel.send(
-        { progress, type },
-        mainWindow.webContents
-      );
+    if (progressReport[type] !== progress) {
+      progressReport[type] = progress;
+      getBlockSyncProgressChannel.send(progressReport, mainWindow.webContents);
     }
   };
 };
@@ -97,7 +111,7 @@ const watchLogFile = ({
   tail.on('line', handleNewLogLine);
 };
 
-const watchLogFileDir = ({
+const waitForLogFileToBeCreatedAndWatchLogFile = ({
   logFileName,
   logFileDirPath,
   mainWindow,
@@ -106,8 +120,8 @@ const watchLogFileDir = ({
   logFileDirPath: string;
   mainWindow: BrowserWindow;
 }) => {
-  const watcher = fs.watch(logFileDirPath, {}, (eventname, file) => {
-    if (eventname === 'rename' && logFileName === file) {
+  const watcher = fs.watch(logFileDirPath, {}, (eventName, file) => {
+    if (eventName === 'rename' && logFileName === file) {
       watchLogFile({
         logFilePath: path.join(logFileDirPath, logFileName),
         mainWindow,
@@ -126,7 +140,11 @@ export const handleCheckBlockReplayProgress = (
   const logFilePath = path.join(logFileDirPath, logFileName);
 
   if (!fs.existsSync(logFilePath)) {
-    watchLogFileDir({ logFileDirPath, logFileName, mainWindow });
+    waitForLogFileToBeCreatedAndWatchLogFile({
+      logFileDirPath,
+      logFileName,
+      mainWindow,
+    });
   } else {
     watchLogFile({
       logFilePath,
