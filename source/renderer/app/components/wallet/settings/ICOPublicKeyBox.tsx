@@ -40,32 +40,30 @@ type Props = {
   intl: intlShape.isRequired;
 };
 
-const ICOPublicKeyBox = (props: Props) => {
+function ICOPublicKeyBox(props: Props) {
   const { publicKey, locale, onCopyICOPublicKey, openDialogAction, intl } =
     props;
   return (
-    <>
-      <BorderedBox className={styles.walletPublicKeyBox}>
-        <PublicKeyField
-          publicKey={publicKey || ''}
-          description={intl.formatMessage(messages.publicKeyDescription)}
-          locale={locale}
-          onCopyPublicKey={onCopyICOPublicKey}
-          onShowQRCode={() =>
-            openDialogAction({
-              dialog: PublicKeyQRCodeDialog,
-            })
-          }
-          onOpenWalletKeyDialog={() =>
-            openDialogAction({
-              dialog: ICOPublicKeyDialog,
-            })
-          }
-          messages={messages}
-        />
-      </BorderedBox>
-    </>
+    <BorderedBox className={styles.walletPublicKeyBox}>
+      <PublicKeyField
+        publicKey={publicKey || ''}
+        description={intl.formatMessage(messages.publicKeyDescription)}
+        locale={locale}
+        onCopyPublicKey={onCopyICOPublicKey}
+        onShowQRCode={() =>
+          openDialogAction({
+            dialog: PublicKeyQRCodeDialog,
+          })
+        }
+        onOpenWalletKeyDialog={() =>
+          openDialogAction({
+            dialog: ICOPublicKeyDialog,
+          })
+        }
+        messages={messages}
+      />
+    </BorderedBox>
   );
-};
+}
 
 export default injectIntl(ICOPublicKeyBox);

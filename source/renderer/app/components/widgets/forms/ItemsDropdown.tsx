@@ -47,9 +47,7 @@ export default class ItemsDropdown extends Component<ItemDropdownProps> {
     intl: intlShape.isRequired,
   };
   static defaultProps = {
-    optionRenderer: (optionProps: ItemDropdown) => (
-      <ItemDropdownOption {...optionProps} />
-    ),
+    optionRenderer: ItemDropdownOption,
     selectionRenderer: (optionProps: ItemDropdown) => (
       <ItemDropdownOption selected {...optionProps} />
     ),

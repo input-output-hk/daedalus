@@ -61,7 +61,7 @@ class App extends Component<{
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <MenuUpdater />
+          <MenuUpdater stores={stores} />
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}

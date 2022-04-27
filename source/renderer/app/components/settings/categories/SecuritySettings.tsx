@@ -13,13 +13,13 @@ type Props = {
   onOpenDiscreetModeToggle: () => void;
 };
 
-const SecuritySettings = ({
+function SecuritySettings({
   intl,
   discreetMode,
   openDiscreetMode,
   onDiscreetModeToggle,
   onOpenDiscreetModeToggle,
-}: Props) => {
+}: Props) {
   return (
     <div className={styles.root}>
       <div className={styles.setting}>
@@ -52,6 +52,6 @@ const SecuritySettings = ({
       </div>
     </div>
   );
-};
+}
 
 export default injectIntl(SecuritySettings);

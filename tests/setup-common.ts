@@ -7,6 +7,6 @@ global.environment = environment;
 Before(function () {
   this.context = {};
 });
-After(function () {
+After(() => {
   sinon.restore();
 });

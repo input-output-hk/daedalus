@@ -84,7 +84,14 @@
     "react/no-did-update-set-state": 1,
     "react/sort-comp": 0,
     "react/state-in-constructor": 0,
-    "react/static-property-placement": 0
+    "react/static-property-placement": 0,
+    "react/jsx-no-useless-fragment": 0,
+    "prefer-regex-literals": 0,
+    "no-unused-vars": "warn",
+    "react/no-unused-class-component-methods": "warn",
+    "react/no-unstable-nested-components": "warn",
+    "no-promise-executor-return": "warn",
+    "default-param-last": "warn"
   },
   "plugins": ["@typescript-eslint", "import", "promise", "react", "jest"],
   "globals": {

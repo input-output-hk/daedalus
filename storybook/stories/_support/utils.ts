@@ -109,8 +109,8 @@ export const generateWallet = (
     total: [],
   },
   reward: string | number = 0,
-  delegatedStakePool?: StakePool,
-  hasPassword?: boolean,
+  delegatedStakePool: StakePool = null,
+  hasPassword = false,
   status: SyncStateStatus = WalletSyncStateStatuses.READY,
   isHardwareWallet = false,
   id: string = generateHash()
@@ -171,7 +171,7 @@ export const generateAssetToken = (
   policyId: string,
   assetName = '',
   fingerprint = '',
-  quantity: number,
+  quantity = 0,
   metadata?: AssetMetadata | null,
   decimals?: number | null,
   recommendedDecimals?: number | null

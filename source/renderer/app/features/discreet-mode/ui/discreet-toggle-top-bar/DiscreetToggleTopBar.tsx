@@ -14,7 +14,7 @@ type Props = {
   hasTadaIcon?: boolean;
 };
 
-const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
+function DiscreetToggleTopBar({ intl, hasTadaIcon }: Props) {
   const { isDiscreetMode, toggleDiscreetMode } = useDiscreetModeFeature();
   const [visible, setVisible] = useState(false);
   return (
@@ -43,6 +43,6 @@ const DiscreetToggleTopBar = ({ intl, hasTadaIcon }: Props) => {
       </PopOver>
     </div>
   );
-};
+}
 
 export default injectIntl(observer(DiscreetToggleTopBar));
