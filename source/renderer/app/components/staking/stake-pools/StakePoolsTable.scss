@@ -94,19 +94,24 @@
 
   .table {
     border-style: hidden;
+    margin-bottom: -10px;
     user-select: text;
     width: 100%;
 
     .thead {
       background: var(--theme-bordered-box-background-color);
       border-radius: 4px 4px 0 0;
-      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: block;
-      margin: -20px -20px 0;
+      margin: -10px -20px 0;
       padding: 0 20px;
       position: sticky;
       top: 0;
+      transition: box-shadow 0.1s ease-in-out;
       z-index: $sticky-header-z-index;
+
+      &.stickyHeader {
+        box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+      }
 
       .tr {
         border: 0;
@@ -145,7 +150,7 @@
       }
     }
 
-    .tr {
+    .tr:not(:last-child) {
       border-bottom: 1px solid var(--theme-staking-table-border-color);
     }
 

@@ -14,6 +14,7 @@
 ### Fixes
 
 - Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+- Fixed stake pool list styling ([PR 2920](https://github.com/input-output-hk/daedalus/pull/2920))
 - Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
 - Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
