@@ -68,21 +68,6 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
       return;
     }
 
-    // In rare cases cardano-node does not log 100%, therefore we need to manually mark the previous step as complete.
-    if (
-      type === BlockSyncType.replayedBlock &&
-      progressReport[BlockSyncType.validatingChunk] !== 100
-    ) {
-      progressReport[BlockSyncType.validatingChunk] = 100;
-    }
-
-    if (
-      type === BlockSyncType.pushingLedger &&
-      progressReport[BlockSyncType.replayedBlock] !== 100
-    ) {
-      progressReport[BlockSyncType.replayedBlock] = 100;
-    }
-
     const progress = Math.floor(parseFloat(unparsedProgress));
 
     if (progressReport[type] !== progress) {
@@ -105,6 +90,7 @@ const watchLogFile = ({
     // https://github.com/lucagrulla/node-tail/issues/137
     // https://nodejs.org/dist/latest-v14.x/docs/api/fs.html#fs_caveats
     useWatchFile: environment.isWindows,
+    fromBeginning: true,
   });
 
   const handleNewLogLine = createHandleNewLogLine(mainWindow);
