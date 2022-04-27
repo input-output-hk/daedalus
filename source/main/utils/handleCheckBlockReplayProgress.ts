@@ -97,7 +97,7 @@ const watchLogFile = ({
   tail.on('line', handleNewLogLine);
 };
 
-const waitForLogFileToBeCreatedAndWatchLogFile = ({
+const waitForLogFileToBeCreatedAndWatchIt = ({
   logFileName,
   logFileDirPath,
   mainWindow,
@@ -126,7 +126,7 @@ export const handleCheckBlockReplayProgress = (
   const logFilePath = path.join(logFileDirPath, logFileName);
 
   if (!fs.existsSync(logFilePath)) {
-    waitForLogFileToBeCreatedAndWatchLogFile({
+    waitForLogFileToBeCreatedAndWatchIt({
       logFileDirPath,
       logFileName,
       mainWindow,
