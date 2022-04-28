@@ -1,0 +1,73 @@
+# visit https://sequencediagram.org/
+
+title Ledger Wallet Pairing
+
+participant NanoS
+participant Daedalus
+participant WalletAddPage
+participant HardwareWalletsStore
+participant changeHardwareWalletConnectionStatus
+participant initiateWalletPairing
+participant establishHardwareWalletConnection
+participant getCardanoAdaApp
+participant getExtendedPublicKey
+participant getHardwareWalletChannel
+participant deviceDetection
+participant localStorage
+
+Daedalus->HardwareWalletsStore:Setup HW store
+
+HardwareWalletsStore->changeHardwareWalletConnectionStatus:setup listeners
+
+changeHardwareWalletConnectionStatus->getHardwareWalletChannel:subscribe to\n GET_HARDWARE_WALLET_CONNECTION_CHANNEL
+activate changeHardwareWalletConnectionStatus
+activate getHardwareWalletChannel
+
+getHardwareWalletChannel->deviceDetection:listen for new devices
+activate getHardwareWalletChannel
+activate deviceDetection
+
+par Device not connected
+WalletAddPage->initiateWalletPairing: start pairing
+
+initiateWalletPairing->establishHardwareWalletConnection:Try to get device info
+
+note over initiateWalletPairing,establishHardwareWalletConnection:This method can:\n1- Return transport payload\n2- Start Ada App\n3- Mutate flag to wait for device
+
+
+HardwareWalletsStore<--establishHardwareWalletConnection:Wait for device\nisListeningForDevice=true
+
+
+
+end
+
+NanoS->deviceDetection:Enter Pin
+
+getHardwareWalletChannel<--deviceDetection:Device information
+deactivate getHardwareWalletChannel
+deactivate deviceDetection
+
+
+changeHardwareWalletConnectionStatus<--getHardwareWalletChannel:Reply to\n GET_HARDWARE_WALLET_CONNECTION_CHANNEL
+deactivate changeHardwareWalletConnectionStatus
+deactivate getHardwareWalletChannel
+
+changeHardwareWalletConnectionStatus->localStorage:Save temporary device info
+
+changeHardwareWalletConnectionStatus->establishHardwareWalletConnection:Re-start connection process
+
+activate establishHardwareWalletConnection
+establishHardwareWalletConnection->establishHardwareWalletConnection:start Ada App polling()
+
+
+NanoS->deviceDetection:Open Ada App
+getCardanoAdaApp<--deviceDetection:App opened
+
+deactivate establishHardwareWalletConnection
+
+getCardanoAdaApp->getExtendedPublicKey:Get public key
+getExtendedPublicKey->localStorage:Save device info
+
+getExtendedPublicKey<--localStorage:Device saved
+
+getExtendedPublicKey-->WalletAddPage:Redirect to wallet page
