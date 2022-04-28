@@ -1377,38 +1377,33 @@ export default class HardwareWalletsStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type '{}'.
       devicePath = activeDevice.path || path || newConnectionData.path || null;
 
-      try {
-        const extendedPublicKey = await this._requestExtendedPublicKey(
-          devicePath,
-          walletId,
-          address
-        );
-        const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-          { extendedPublicKey }
-        );
+      const extendedPublicKey = await this._requestExtendedPublicKey(
+        devicePath,
+        walletId,
+        address
+      );
+      const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
+        { extendedPublicKey }
+      );
 
-        if (associatedWallet) {
-          await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
-            {
-              address,
-              associatedWallet,
-              expectedWalletId: walletId,
-              extendedPublicKey,
-              path: devicePath,
-            }
-          );
-        } else {
-          logger.debug(
-            '[HW-DEBUG] HWStore - Software wallet not recognized - Setting error states'
-          );
-          this._discardConnectedDeviceAndReInitiateAddressVerification({
+      if (associatedWallet) {
+        await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+          {
             address,
-            walletId,
-          });
-        }
-      } catch (e) {
-        await this.resetWalletPairing();
-        throw e;
+            associatedWallet,
+            expectedWalletId: walletId,
+            extendedPublicKey,
+            path: devicePath,
+          }
+        );
+      } else {
+        logger.debug(
+          '[HW-DEBUG] HWStore - Software wallet not recognized - Setting error states'
+        );
+        this._discardConnectedDeviceAndReInitiateAddressVerification({
+          address,
+          walletId,
+        });
       }
     } else {
       logger.debug('[HW-DEBUG] Verify Address with Ledger: ', {
@@ -2771,40 +2766,35 @@ export default class HardwareWalletsStore extends Store {
           }
         );
 
-        try {
-          const extendedPublicKey = await this._requestExtendedPublicKey(
-            transportDevice.path,
-            walletId
+        const extendedPublicKey = await this._requestExtendedPublicKey(
+          transportDevice.path,
+          walletId
+        );
+        const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
+          { extendedPublicKey }
+        );
+
+        if (associatedWallet) {
+          await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+            {
+              associatedWallet,
+              expectedWalletId: walletId,
+              extendedPublicKey,
+              path: transportDevice.path,
+            }
           );
-          const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-            { extendedPublicKey }
+        } else {
+          const deviceId =
+            extendedPublicKey.deviceId || this.transportDevice.deviceId;
+          logger.debug(
+            '[HW-DEBUG] HWStore - I don not have recognized wallet - reject TX: ',
+            {
+              deviceId,
+            }
           );
 
-          if (associatedWallet) {
-            await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
-              {
-                associatedWallet,
-                expectedWalletId: walletId,
-                extendedPublicKey,
-                path: transportDevice.path,
-              }
-            );
-          } else {
-            const deviceId =
-              extendedPublicKey.deviceId || this.transportDevice.deviceId;
-            logger.debug(
-              '[HW-DEBUG] HWStore - I don not have recognized wallet - reject TX: ',
-              {
-                deviceId,
-              }
-            );
-
-            // Software Wallet not recognized and TX initiated. Show error
-            this._discardConnectedDeviceAndReInitiateTransaction({ walletId });
-          }
-        } catch (e) {
-          await this.resetWalletPairing();
-          throw e;
+          // Software Wallet not recognized and TX initiated. Show error
+          this._discardConnectedDeviceAndReInitiateTransaction({ walletId });
         }
       }
     } else {
