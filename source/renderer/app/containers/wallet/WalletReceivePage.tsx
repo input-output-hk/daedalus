@@ -138,7 +138,6 @@ class WalletReceivePage extends Component<Props, State> {
     const { address, filePath } = await this.getAddressAndFilepath();
     // if cancel button is clicked or path is empty
     if (!filePath || !address) return;
-    this.handleCloseShareAddress();
     this.props.actions.wallets.generateAddressPDF.trigger({
       note,
       address,
@@ -149,7 +148,6 @@ class WalletReceivePage extends Component<Props, State> {
     const { address, filePath } = await this.getAddressAndFilepath('png');
     // if cancel button is clicked or path is empty
     if (!filePath || !address) return;
-    this.handleCloseShareAddress();
     this.props.actions.wallets.saveQRCodeImage.trigger({
       address,
       filePath,
