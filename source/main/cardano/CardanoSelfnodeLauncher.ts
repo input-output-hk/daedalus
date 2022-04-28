@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import find from 'find-process';
 import path from 'path';
-import fs from 'fs';
+import fs, {WriteStream} from 'fs';
 import which from 'which';
 import tcpPortUsed from 'tcp-port-used';
 import type { ChildProcess } from 'child_process';
@@ -12,7 +12,9 @@ import { logger } from '../utils/logging';
 
 export type SelfnodeOptions = {
   selfnodeBin: string;
+  walletLogFile: WriteStream;
   mockTokenMetadataServerBin: string;
+  mockTokenMetadataServerLogFile: WriteStream;
   processName: CardanoNodeProcessNames;
   onStop: (...args: Array<any>) => any;
 };
@@ -44,7 +46,9 @@ export async function CardanoSelfnodeLauncher(
   return new Promise(async (resolve, reject) => {
     const {
       selfnodeBin,
+      walletLogFile,
       mockTokenMetadataServerBin,
+      mockTokenMetadataServerLogFile,
       processName,
       onStop,
     } = selfnodeOptions;
@@ -55,11 +59,11 @@ export async function CardanoSelfnodeLauncher(
         path.resolve(path.join(binDir, 'data', 'cardano-node-shelley')), // Windows installer
         path.resolve(path.join(binDir, '..', 'Resources', 'data', 'cardano-node-shelley')), // Darwin installer
         // Linux installer substitutes SHELLEY_TEST_DATA in the local-cluster Bash wrapper
-        '../../utils/cardano/selfnode' // nix-shell
+        '../../utils/cardano/selfnode' // nix-shell? but nix-shell has the substitute ↑ as well… Some other scenario?
       ])
     })();
 
-    setupMockTokenMetadataServer(mockTokenMetadataServerBin);
+    setupMockTokenMetadataServer(mockTokenMetadataServerBin, mockTokenMetadataServerLogFile);
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
     const processList: Array<Process> = await find('port', CARDANO_WALLET_PORT);
     const isSelfnodeRunning =
@@ -104,10 +108,18 @@ export async function CardanoSelfnodeLauncher(
         // for now – @michalrus
 
         // allows Daedalus to exit independently of selfnode (1/3)
-        stdio: 'ignore', // allows Daedalus to exit independently of selfnode (2/3)
+        stdio: environment.isDev ? 'ignore' : 'pipe', // 'ignore' allows Daedalus to exit independently of selfnode, 'pipe' kills it on exit (2/3)
       });
       if (environment.isDev) {
         nodeProcess.unref(); // allows Daedalus to exit independently of selfnode (3/3)
+      }
+      if (!environment.isDev && nodeProcess.stdout && nodeProcess.stderr && walletLogFile) {
+        nodeProcess.stdout.on('data', data => {
+          walletLogFile.write(data);
+        });
+        nodeProcess.stderr.on('data', data => {
+          walletLogFile.write(data);
+        });
       }
 
       const node: Selfnode = setupSelfnode({
@@ -175,7 +187,8 @@ const setupSelfnode = ({
   });
 
 const setupMockTokenMetadataServer = async (
-  mockTokenMetadataServerBin: string
+  mockTokenMetadataServerBin: string,
+  mockTokenMetadataServerLogFile: WriteStream
 ) => {
   const TOKEN_METADATA_REGISTRY = (() => {
     const binDir = path.dirname(which.sync(mockTokenMetadataServerBin));
@@ -220,11 +233,19 @@ const setupMockTokenMetadataServer = async (
       {
         env: { ...process.env },
         detached: environment.isDev,
-        stdio: 'ignore',
+        stdio: environment.isDev ? 'ignore' : 'pipe',
       }
     );
     if (environment.isDev) {
       mockTokenMetadataServerProcess.unref();
+    }
+    if (!environment.isDev && mockTokenMetadataServerProcess.stdout && mockTokenMetadataServerProcess.stderr && mockTokenMetadataServerLogFile) {
+      mockTokenMetadataServerProcess.stdout.on('data', data => {
+        mockTokenMetadataServerLogFile.write(data);
+      });
+      mockTokenMetadataServerProcess.stderr.on('data', data => {
+        mockTokenMetadataServerLogFile.write(data)
+      });
     }
     mockTokenMetadataServer = mockTokenMetadataServerProcess;
   }
