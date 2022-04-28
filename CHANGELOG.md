@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- Fixed no progress shown on loading screen on Windows ([PR 2967](https://github.com/input-output-hk/daedalus/pull/2967))
 - Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
 - Fixed stake pool list styling ([PR 2920](https://github.com/input-output-hk/daedalus/pull/2920))
 - Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
