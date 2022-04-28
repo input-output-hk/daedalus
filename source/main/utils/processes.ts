@@ -1,5 +1,6 @@
 import find from 'find-process';
 import { isObject } from 'lodash';
+import path from 'path';
 import { logger } from './logging';
 
 /* eslint-disable consistent-return */
@@ -39,8 +40,12 @@ export const getProcess = async (
     // Return first matching process if names match
     const previousProcess: Process = matchingProcesses[0];
 
-    if (isObject(previousProcess) && previousProcess.name === processName) {
-      return previousProcess;
+    if (isObject(previousProcess)) {
+      const binPathSegments = previousProcess.bin.split(path.sep);
+      const exeName = binPathSegments.length > 0 ? binPathSegments[binPathSegments.length - 1] : previousProcess.bin;
+      if (exeName === processName || previousProcess.name === processName) {
+        return previousProcess;
+      }
     }
   } catch (error) {
     logger.error('getProcess error', {
