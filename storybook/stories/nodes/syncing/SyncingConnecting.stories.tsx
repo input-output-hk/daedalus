@@ -13,7 +13,7 @@ const makeProgressValueKnob = ({ name, value }) =>
     range: true,
     min: 0,
     max: 100,
-    step: 0.01,
+    step: 1,
   });
 
 const makeBlockSyncProgress = () => ({
@@ -23,7 +23,7 @@ const makeBlockSyncProgress = () => ({
   }),
   [BlockSyncType.replayedBlock]: makeProgressValueKnob({
     name: 'Replaying ledger from on-disk blockchain',
-    value: 99.9,
+    value: 99,
   }),
   [BlockSyncType.pushingLedger]: makeProgressValueKnob({
     name: 'Syncing blockchain',

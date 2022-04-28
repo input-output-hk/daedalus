@@ -79,7 +79,7 @@ const SyncingProgress: FC<Props> = (props, { intl }: Context) => (
           key={type}
           className={makePercentageCellStyles(props[type] === 100)}
         >
-          {Math.floor(props[type])}%
+          {props[type]}%
         </div>
       ))}
     </div>
