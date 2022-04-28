@@ -39,19 +39,34 @@
     }
 
     &::-webkit-scrollbar-track {
-      margin-bottom: 12px;
+      margin-bottom: -8px;
       margin-top: 12px;
     }
 
     .content {
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  & > .contentWithActions {
+    .content {
       margin-bottom: 20px;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin-bottom: 12px;
     }
   }
 
   & > .actions {
     display: flex;
     flex-shrink: 0;
-    margin-top: 10px;
+
+    &:not(:empty) {
+      margin-top: 10px;
+    }
 
     &.columnDirection {
       align-items: center;
