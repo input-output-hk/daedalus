@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
 - Fixed stake pool list styling ([PR 2920](https://github.com/input-output-hk/daedalus/pull/2920))
 - Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))

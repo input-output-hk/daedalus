@@ -70,7 +70,13 @@ class WalletReceivePage extends Component<Props, State> {
     const dialog = WalletReceiveDialog;
 
     if (activeWallet && activeWallet.isHardwareWallet) {
-      hardwareWallets.initiateAddressVerification(addressToShare);
+      try {
+        hardwareWallets.initiateAddressVerification(addressToShare);
+      } catch (err) {
+        hardwareWallets.resetInitializedAddressVerification({
+          cancelDeviceAction: true,
+        });
+      }
     }
 
     dialogs.open.trigger({
