@@ -34,6 +34,7 @@
 ### Chores
 
 - Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
+- Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
