@@ -324,7 +324,7 @@ export class CardanoNode {
             path: this._config.logFilePath,
             maxFiles: 4,
           }
-        )
+        );
       };
 
       const nodeLogFile = mkLogFile('node.log');
@@ -334,7 +334,9 @@ export class CardanoNode {
 
       if (isSelfnode) {
         try {
-          const mockTokenMetadataServerLogFile = mkLogFile('mock-token-metadata-server.log');
+          const mockTokenMetadataServerLogFile = mkLogFile(
+            'mock-token-metadata-server.log'
+          );
           this._mockTokenMetadataServerLogFile = mockTokenMetadataServerLogFile;
 
           const { selfnodeBin, mockTokenMetadataServerBin } = launcherConfig;
@@ -859,7 +861,8 @@ export class CardanoNode {
   _reset = () => {
     if (this._cardanoNodeLogFile) this._cardanoNodeLogFile.end();
     if (this._cardanoWalletLogFile) this._cardanoWalletLogFile.end();
-    if (this._mockTokenMetadataServerLogFile) this._mockTokenMetadataServerLogFile.end();
+    if (this._mockTokenMetadataServerLogFile)
+      this._mockTokenMetadataServerLogFile.end();
     if (this._node) this._node = null;
     this._tlsConfig = null;
   };
