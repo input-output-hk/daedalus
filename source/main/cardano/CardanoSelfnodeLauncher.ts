@@ -1,5 +1,4 @@
 import { spawn } from 'child_process';
-import find from 'find-process';
 import path from 'path';
 import fs, { WriteStream } from 'fs';
 import which from 'which';
@@ -9,6 +8,7 @@ import type { Process } from '../utils/processes';
 import type { CardanoNodeProcessNames } from '../../common/types/cardano-node.types';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
+import { wrappedFind } from '../utils/processes';
 
 export type SelfnodeOptions = {
   selfnodeBin: string;
@@ -25,7 +25,6 @@ export type Selfnode = {
   connected: boolean;
 };
 let mockTokenMetadataServer = null;
-const platform = String(environment.platform);
 const CARDANO_WALLET_PORT = 8088;
 const CARDANO_WALLET_START_TIMEOUT = 60 * 1000; // 60 seconds | unit: milliseconds
 
@@ -69,7 +68,10 @@ export async function CardanoSelfnodeLauncher(
       mockTokenMetadataServerLogFile
     );
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
-    const processList: Array<Process> = await find('port', CARDANO_WALLET_PORT);
+    const processList: Array<Process> = await wrappedFind(
+      'port',
+      CARDANO_WALLET_PORT
+    );
     const isSelfnodeRunning =
       processList.length && processList[0].name === processName;
 
@@ -216,7 +218,7 @@ const setupMockTokenMetadataServer = async (
   })();
 
   // @ts-ignore ts-migrate(2322) FIXME: Type '{ pid: number; ppid?: number; uid?: number; ... Remove this comment to see the full error message
-  const processList: Array<Process> = await find(
+  const processList: Array<Process> = await wrappedFind(
     'port',
     TOKEN_METADATA_SERVER_PORT
   );

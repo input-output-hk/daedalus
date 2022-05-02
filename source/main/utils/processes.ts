@@ -77,7 +77,7 @@ export const getProcess = async (
  * Another solution would be to patch `find-process` to construct the `ps` invocation itself, not using `/bin/sh`
  * for that (i.e. `exec('ps', 'aux')` instead of `exec('ps aux')` which is really `exec('/bin/sh', '-c', 'ps aux')`.
  */
-const wrappedFind = async (
+export const wrappedFind = async (
   type: 'name' | 'pid' | 'port',
   value: string | number | RegExp,
   strict?: boolean
