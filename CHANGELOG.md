@@ -33,6 +33,7 @@
 
 ### Chores
 
+- Updated cardano-wallet to v2022-04-27 and cardano-node to 1.34.1 ([PR 2951](https://github.com/input-output-hk/daedalus/pull/2951))
 - Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
