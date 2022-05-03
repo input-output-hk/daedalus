@@ -44,5 +44,3 @@ export const WALLET_ASSETS_ENABLED = true;
 export const IS_BYRON_WALLET_MIGRATION_ENABLED = false;
 export const IS_WALLET_UNDELEGATION_ENABLED = false;
 export const TRANSACTION_MIN_ADA_VALUE = 1;
-// This should be disabled as long as we don't have DAPP transfer request done
-export const IS_DAPP_ENABLED = false;
