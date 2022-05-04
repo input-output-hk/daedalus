@@ -1,9 +1,6 @@
-{ target, cardanoWalletPkgs, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, darwin }:
+{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, darwin }:
 
-let
-  commonLib = import ../lib.nix {};
-  pkgsCross = import cardanoWalletPkgs.path { crossSystem = cardanoWalletPkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
-in runCommandCC "daedalus-cardano-bridge" {
+runCommandCC "daedalus-cardano-bridge" {
   passthru = {
     node-version = cardano-node.passthru.identifier.version;
     wallet-version = cardano-wallet.version;
@@ -14,7 +11,7 @@ in runCommandCC "daedalus-cardano-bridge" {
   echo ${cardano-wallet.version} > $out/version
   cp ${cardano-wallet}/bin/* .
   cp -f ${cardano-address}/bin/cardano-address* .
-  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
+  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) "cp -f ${local-cluster}/bin/local-cluster* ."}

@@ -31,10 +31,17 @@ let
     };
   };
   pkgs = import sources.nixpkgs { inherit system config; };
-  pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;
   haskellNix = import sources."haskell.nix" {};
   inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
+  flake-compat = import sources.flake-compat;
+  walletFlake = flake-compat  { src = sources.cardano-wallet; };
+  walletPackages = with walletFlake.defaultNix.hydraJobs; {
+    x86_64-windows = linux.windows;
+    x86_64-linux = linux.native;
+    x86_64-darwin = macos.intel;
+    aarch64-darwin = macos.silicon;
+  }.${target};
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
@@ -76,15 +83,11 @@ let
 
     sources = localLib.sources;
     bridgeTable = {
-      cardano = self.callPackage ./nix/cardano-bridge.nix {
-        cardano-wallet = self.cardano-wallet.cardano-wallet;
-        cardanoWalletPkgs = self.cardano-wallet.pkgs;
-      };
+      cardano = self.callPackage ./nix/cardano-bridge.nix {};
     };
-    cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
-    cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).cardano-address;
-    mock-token-metadata-server = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).mock-token-metadata-server;
+    inherit (walletPackages) cardano-wallet;
+    inherit (walletPackages) cardano-address;
+    inherit (walletPackages) mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     local-cluster = if cluster == "selfnode" then (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).local-cluster else null;
     cardano-node-cluster = let
@@ -102,10 +105,10 @@ let
     in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
-                   else self.cardano-wallet.cardano-node;
+                   else walletPackages.cardano-node;
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
-                   else self.cardano-wallet.cardano-cli;
+                   else walletPackages.cardano-cli;
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
@@ -126,7 +129,6 @@ let
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
-      runCommandNative = pkgsNative.runCommand;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
