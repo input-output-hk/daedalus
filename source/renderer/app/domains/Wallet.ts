@@ -95,13 +95,12 @@ export const HwDeviceStatuses: {
   VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
   VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
 };
-export const WalletUnits: {
-  ADA: WalletUnit;
-  LOVELACE: WalletUnit;
-} = {
-  ADA: 'ada',
-  LOVELACE: 'lovelace',
-};
+
+export enum WalletUnits {
+  ADA = 'ada',
+  LOVELACE = 'lovelace',
+}
+
 export type WalletProps = {
   id: string;
   addressPoolGap: number;
