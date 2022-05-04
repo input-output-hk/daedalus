@@ -210,9 +210,7 @@ class WalletSendForm extends Component<Props, State> {
   }
 
   prefillFormWithParams = () => {
-    const {
-      customProtocolParameters: { address, amount },
-    } = this.props;
+    const { customProtocolParameters: { address, amount } = {} } = this.props;
     if (address && amount) {
       const receiverField = this.form.$('receiver');
       receiverField.value = address;
