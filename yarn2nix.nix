@@ -181,7 +181,7 @@ yarn2nix.mkYarnPackage {
     done
 
     node_modules/.bin/electron-rebuild -w usb-detection --useCache -s
-    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
+    cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/build/detection.node
     for file in $out/share/daedalus/build/detection.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
