@@ -207,7 +207,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "signing.key"
                       file [] "delegation.cert"
                 file [] "cardano-launcher.exe"
-                file [] "libffi-7.dll"
                 file [] "libffi-8.dll"
                 file [] "libgmp-10.dll"
                 --file [] "cardano-x509-certificates.exe"
