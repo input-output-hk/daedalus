@@ -4,6 +4,12 @@
 
 ### Features
 
+- Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
+
+## 4.10.0
+
+### Features
+
 - Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
 - Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
 - Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
