@@ -27,15 +27,19 @@ export const deviceDetection = (
 ) => {
   // detect existing connected devices without blocking the subscription registration
   // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-transport-node-hid-singleton/src/TransportNodeHid.ts#L56
-  Promise.resolve(DeviceTracker.getDevices()).then((devices) => {
-    // this needs to run asynchronously so the subscription is defined during this phase
-    for (const device of devices) {
-      onAdd({
-        type: 'add',
-        ...DeviceTracker.getTrackedDeviceByPath(device.path),
-      });
-    }
-  });
+  Promise.resolve(DeviceTracker.getDevices())
+    .then((devices) => {
+      // this needs to run asynchronously so the subscription is defined during this phase
+      for (const device of devices) {
+        onAdd({
+          type: 'add',
+          ...DeviceTracker.getTrackedDeviceByPath(device.path),
+        });
+      }
+    })
+    .catch((e) => {
+      logger.error(`[HW-DEBUG] ERROR getting devices ${JSON.stringify(e)}`);
+    });
 
   const handleOnAdd = (trackedDevice: TrackedDevice) =>
     onAdd({ type: 'add', ...trackedDevice });
@@ -48,6 +52,7 @@ export const deviceDetection = (
 };
 
 export const waitForDevice = () => {
+  logger.debug('[HW-DEBUG] Wait for device ...');
   return new Promise<TrackedDevice>((resolve) => {
     const currentDevices = DeviceTracker.getDevices();
 
