@@ -864,7 +864,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
             assets,
           },
@@ -940,7 +940,7 @@ export default class AdaApi {
               address,
               amount: {
                 quantity: amount,
-                unit: WalletUnits.LOVELACE,
+                unit: WalletUnits.LOVELACE as const,
               },
             },
           ],
@@ -1013,7 +1013,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
             assets,
           },
@@ -1142,7 +1142,7 @@ export default class AdaApi {
               address: payments.address,
               amount: {
                 quantity: payments.amount,
-                unit: WalletUnits.LOVELACE,
+                unit: WalletUnits.LOVELACE as const,
               },
               assets: payments.assets,
             },
@@ -1222,13 +1222,14 @@ export default class AdaApi {
         derivationPath: withdrawal.derivation_path,
         amount: withdrawal.amount,
       }));
-      const depositsArray = map(response.deposits, (deposit) =>
+      const depositsArray = map(response.deposits_taken, (deposit) =>
         deposit.quantity.toString()
       );
       const deposits = depositsArray.length
         ? BigNumber.sum.apply(null, depositsArray)
         : new BigNumber(0);
-      // @TODO - Use api response when api is ready
+      // @TODO - Use API response
+      // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
       const depositsReclaimed =
         delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
@@ -2303,7 +2304,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
           },
         ],
@@ -2830,7 +2831,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
           },
         ],
@@ -3109,7 +3110,7 @@ const _createTransactionFromServerData = action(
       id,
       amount,
       fee,
-      deposit,
+      deposit_taken: deposit,
       inserted_at: insertedAt,
       pending_since: pendingSince,
       depth,
