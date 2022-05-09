@@ -36,6 +36,19 @@ export const osxMenu = (
       {
         type: 'separator',
       },
+      ...(environment.isMarlowePioneers ? [
+        {
+          label: translation('daedalus.openMarloweTerminal'),
+          accelerator: 'Command+Shift+M',
+
+          click() {
+            actions.openMarloweTerminal();
+          },
+
+          enabled: isNavigationEnabled,
+        },
+
+      ] : []),
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Command+T',

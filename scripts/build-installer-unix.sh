@@ -128,7 +128,7 @@ pushd installers
           cp -v cfg-files/* .
           chmod -R +w .
           echo 'Running make-installer in nix-shell'
-          $nix_shell ../shell.nix -A buildShell --run "${INSTALLER_CMD[*]}"
+          $nix_shell ../shell.nix -A buildShell --argstr cluster "${cluster}" --run "${INSTALLER_CMD[*]}"
 
           if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]

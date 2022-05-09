@@ -356,17 +356,26 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
   unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
   chmod executable (dir </> "Frontend")
   void $ writeLauncherFile dataDir darwinConfig
-  maybeDarwinLauncher <- which "darwin-launcher"
-  case maybeDarwinLauncher of
-    Just darwinLauncher -> do
-      let
-        dest = dir </> (fromString $ T.unpack $ dcAppName)
-      cp darwinLauncher dest
-      chmod writable dest
-      void $ chain (encodeString dir) [ tt dest ]
-    Nothing -> do
-      print "darwin-launcher was not found in $PATH"
-      exit $ ExitFailure 1
+
+  let copyViaWhich commandName doChain = do
+        maybeFullPath <- which commandName
+        case maybeFullPath of
+          Just fullPath -> do
+            let
+              dest = dir </> (fromString $ T.unpack $ dcAppName)
+            cp fullPath dest
+            chmod writable dest
+            when doChain $ do
+              void $ chain (encodeString dir) [ tt dest ]
+          Nothing -> do
+            print $ show commandName ++ " was not found in $PATH"
+            exit $ ExitFailure 1
+
+  copyViaWhich "darwin-launcher" True
+
+  when (oCluster == Marlowe_Pioneers) $ do
+    copyViaWhich "marlowe-cli" True
+    copyViaWhich "open-marlowe-term" False
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller Options{oOutputDir} DarwinConfig{dcPkgName} componentRoot pkg = do

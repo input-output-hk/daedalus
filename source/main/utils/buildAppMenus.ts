@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
+import { exec } from "child_process";
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
@@ -55,6 +56,10 @@ export const buildAppMenus = async (
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'BrowserWindow' is not assignable... Remove this comment to see the full error message
     if (mainWindow) showUiPartChannel.send(WALLET_SETTINGS, mainWindow);
   };
+
+  const openMarloweTerminal = () => {
+    exec('open-marlowe-term');
+  }
 
   const restartWithBlankScreenFix = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -123,6 +128,7 @@ export const buildAppMenus = async (
     openItnRewardsRedemptionDialog,
     openSettingsPage,
     openWalletSettingsPage,
+    openMarloweTerminal,
     toggleBlankScreenFix,
     openToggleRTSFlagsModeDialog,
   };

@@ -6,4 +6,5 @@ export type MenuActions = {
   openItnRewardsRedemptionDialog: (...args: Array<any>) => any;
   openSettingsPage: (...args: Array<any>) => any;
   openWalletSettingsPage: (...args: Array<any>) => any;
+  openMarloweTerminal: (...args: Array<any>) => any;
 };

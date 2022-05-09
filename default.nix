@@ -316,6 +316,14 @@ let
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
 
+    marlowe =
+      if cluster != "marlowe_pioneers" then null
+      else import ./nix/marlowe.nix {
+        inherit system pkgs sources;
+        crossSystem = crossSystem pkgs.lib;
+        inherit (self.launcherConfigs) launcherConfig;
+      };
+
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
     tests = {

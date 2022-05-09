@@ -9,6 +9,7 @@
 , gtk3
 , hicolor-icon-theme
 , xfce
+, marlowe
 }:
 
 let
@@ -38,6 +39,10 @@ let
     ${if sandboxed then ''
     '' else ''
       export PATH="${daedalus-frontend}/bin/:${daedalus-bridge}/bin:$PATH"
+    ''}
+
+    ${if marlowe == null then "" else ''
+      export PATH="${marlowe.open-marlowe-term.x86_64-linux}/bin:$PATH"
     ''}
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }

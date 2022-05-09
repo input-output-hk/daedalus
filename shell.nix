@@ -70,6 +70,9 @@ let
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
       debug.node
+    ]) ++ (pkgs.lib.optionals (daedalusPkgs.marlowe != null) [
+      daedalusPkgs.marlowe.open-marlowe-term.${pkgs.stdenv.hostPlatform.system}
+      daedalusPkgs.marlowe.marlowe-cli
     ]);
   buildShell = pkgs.stdenv.mkDerivation {
     name = "daedalus-build";

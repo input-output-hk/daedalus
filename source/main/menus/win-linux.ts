@@ -36,6 +36,19 @@ export const winLinuxMenu = (
       {
         type: 'separator',
       },
+      ...((environment.isMarlowePioneers && !environment.isWindows /* still no Windows build of marlowe-cli */) ? [
+        {
+          label: translation('daedalus.openMarloweTerminal'),
+          accelerator: 'Ctrl+Shift+M',
+
+          click() {
+            actions.openMarloweTerminal();
+          },
+
+          enabled: isNavigationEnabled,
+        },
+
+      ] : []),
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Ctrl+T',
