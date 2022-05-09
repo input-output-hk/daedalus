@@ -12,7 +12,7 @@ export class DeviceTracker {
   }
 
   static getDeviceByPath(path: string): Device {
-    return getDevices()?.find((d: Device) => d.path === path);
+    return getDevices().find((d: Device) => d.path === path);
   }
 
   static getTrackedDeviceByPath(path: string) {

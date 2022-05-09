@@ -103,11 +103,10 @@ class EventObserver {
                 this.mainWindow
               );
             } catch (e) {
-              logger.error(
-                `[HW-DEBUG] CONSTRUCTOR error, \nwalletData: ${JSON.stringify(
-                  walletData
-                )} \nerror: ${JSON.stringify(e)}`
-              );
+              logger.error('[HW-DEBUG] CONSTRUCTOR error', {
+                walletData,
+                error: e,
+              });
             }
           }
         } else {
