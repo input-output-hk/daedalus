@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { FC } from 'react';
+import React from 'react';
 import { intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
@@ -80,7 +80,7 @@ function SyncingProgress(props: Props, { intl }: Context) {
             key={type}
             className={makePercentageCellStyles(props[type] === 100)}
           >
-            {Math.floor(props[type])}%
+            {props[type]}%
           </div>
         ))}
       </div>

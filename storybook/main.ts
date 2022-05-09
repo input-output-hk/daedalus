@@ -1,6 +1,4 @@
-// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'mini-css-extract-plugin'.
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// @ts-ignore ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'webpack'.
 const webpack = require('webpack');
 
 module.exports = {

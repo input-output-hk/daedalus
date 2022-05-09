@@ -16,5 +16,5 @@ export default function WindowSizeManager(props: Props) {
   useEffect(() => {
     updateMinScreenHeight(props.minScreenHeight);
   }, [props.minScreenHeight]);
-  return props.children;
+  return null;
 }

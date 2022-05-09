@@ -13,6 +13,9 @@
 
 ### Fixes
 
+- Fixed dialogs being closed after receiving address shared ([PR 2965](https://github.com/input-output-hk/daedalus/pull/2965))
+- Fixed no progress shown on loading screen on Windows ([PR 2967](https://github.com/input-output-hk/daedalus/pull/2967))
+- Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
 - Fixed stake pool list styling ([PR 2920](https://github.com/input-output-hk/daedalus/pull/2920))
 - Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
@@ -30,6 +33,7 @@
 
 ### Chores
 
+- Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))

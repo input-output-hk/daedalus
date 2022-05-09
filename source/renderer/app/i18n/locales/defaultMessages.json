@@ -1152,6 +1152,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallets",
+        "description": "Text for the tooltip of wallets category",
+        "id": "sidebar.categoryTooltip.wallets"
+      },
+      {
+        "defaultMessage": "!!!Staking",
+        "description": "Text for the tooltip of staking category",
+        "id": "sidebar.categoryTooltip.staking"
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Text for the tooltip of settings category",
+        "id": "sidebar.categoryTooltip.settings"
+      },
+      {
+        "defaultMessage": "!!!Voting",
+        "description": "Text for the tooltip of voting category",
+        "id": "sidebar.categoryTooltip.voting"
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Mainnet vx",
         "description": "Label for mainnet network with version.",
         "id": "test.environment.mainnetLabel"
@@ -2098,6 +2123,16 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/BackToTopButton.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Newsfeed",
+        "description": "Newsfeed",
+        "id": "news.newsfeed.iconTooltip"
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/NewsFeedIcon.tsx"
   },
   {
     "descriptors": [

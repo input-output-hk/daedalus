@@ -133,7 +133,7 @@ const getAsset = (
 ): Asset | null | undefined => assetDetails[`${policyId}${assetName}`];
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Transactions', module)
+storiesOf('Wallets / Transactions', module)
   .addDecorator(withKnobs)
   .addDecorator((getStory, props) => {
     const transactionsOption = select(

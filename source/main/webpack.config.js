@@ -92,6 +92,7 @@ module.exports = {
       'node-hid': 'commonjs2 node-hid',
       'trezor-connect': 'commonjs2 trezor-connect',
       pdfkit: 'commonjs2 pdfkit',
+      'usb-detection': 'commonjs2 usb-detection',
     },
   ],
   plugins: [

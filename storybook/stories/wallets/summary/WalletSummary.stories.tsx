@@ -151,7 +151,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 });
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Summary', module)
+storiesOf('Wallets / Summary', module)
   .addDecorator(WalletsWrapper)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Wallet Summary', ({ locale }: { locale: string }) => {

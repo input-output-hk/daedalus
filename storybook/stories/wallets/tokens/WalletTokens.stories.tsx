@@ -136,7 +136,7 @@ const walletTokens = {
     },
   ],
 };
-storiesOf('Wallets|Tokens', module)
+storiesOf('Wallets / Tokens', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs) // ====== Stories ======
   .add(

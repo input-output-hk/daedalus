@@ -31,7 +31,7 @@ const allAssets = [
     }
   ),
 ];
-storiesOf('dApps|TransactionRequest', module)
+storiesOf('dApps / TransactionRequest', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>

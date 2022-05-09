@@ -804,14 +804,10 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onBlockSyncProgressUpdate = async ({
-    progress,
-    type,
-  }: GetBlockSyncProgressMainResponse) => {
-    this.blockSyncProgress = {
-      ...this.blockSyncProgress,
-      [type]: progress,
-    };
+  @action _onBlockSyncProgressUpdate = async (
+    blockSyncProgress: GetBlockSyncProgressMainResponse
+  ) => {
+    this.blockSyncProgress = blockSyncProgress;
   };
 
   @action

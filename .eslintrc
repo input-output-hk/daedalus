@@ -76,7 +76,7 @@
     "@typescript-eslint/no-empty-function": 1,
     "@typescript-eslint/ban-types": 1,
     "import/no-unresolved": 1,
-    "@typescript-eslint/no-var-requires": 1,
+    "@typescript-eslint/no-var-requires": 0,
     "camelcase": 1,
     "no-empty": 1,
     "@typescript-eslint/no-explicit-any": 1,
@@ -114,6 +114,12 @@
       "rules": {
           "no-useless-constructor": "off",
           "@typescript-eslint/no-useless-constructor": "error"
+      }
+    },
+     {
+      "files": "hardware-wallet-tests/**/*.ts",
+      "rules": {
+          "jest/no-standalone-expect": "off",
       }
     }
   ]
