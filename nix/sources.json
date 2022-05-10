@@ -85,6 +85,7 @@
     },
     "marlowe-cardano": {
         "branch": "sprint-56",
+        "builtin": false,
         "description": "Marlowe smart contract language Cardano implementation",
         "homepage": "https://marlowe-finance.io/",
         "owner": "hamishmack",
