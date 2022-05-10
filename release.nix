@@ -65,4 +65,11 @@ in {
     cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   };
   cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
-})
+}) // {
+  marlowe-cli = {
+    x86_64-darwin = (import ./. { target = "x86_64-darwin"; cluster = "marlowe_pioneers"; }).marlowe.marlowe-cli;
+    x86_64-linux  = (import ./. { target = "x86_64-linux";  cluster = "marlowe_pioneers"; }).marlowe.marlowe-cli;
+  };
+
+  recurseForDerivations = {};
+}
