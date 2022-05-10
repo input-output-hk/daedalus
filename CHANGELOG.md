@@ -30,7 +30,7 @@
 
 ### Fixes
 
-- Fixed incorrect amount of token sent ([PR 2961](https://github.com/input-output-hk/daedalus/pull/2961))
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
 - Fixed dialogs being closed after receiving address shared ([PR 2965](https://github.com/input-output-hk/daedalus/pull/2965))
 - Fixed no progress shown on loading screen on Windows ([PR 2967](https://github.com/input-output-hk/daedalus/pull/2967))
 - Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
