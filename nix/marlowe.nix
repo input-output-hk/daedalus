@@ -45,6 +45,8 @@ in {
       echo >>$setup_script ${pkgs.lib.escapeShellArg ''
         #! /bin/sh
         ${unixExports}
+        # clear the terminal for nicer UX:
+        reset
         echo
         echo ${pkgs.lib.escapeShellArg unixWelcomeMessage} | sed -r 's/^/  /'
       ''}

@@ -85,8 +85,8 @@
     },
     "marlowe-cardano": {
         "branch": "sprint-56",
-        "description": "nix scripts shared across projects",
-        "homepage": null,
+        "description": "Marlowe smart contract language Cardano implementation",
+        "homepage": "https://marlowe-finance.io/",
         "owner": "input-output-hk",
         "repo": "marlowe-cardano",
         "rev": "167b493a1db36f78bd05e211522d3a5a8ffa3329",
