@@ -24,7 +24,7 @@ import {
 } from './helpers';
 import styles from './styles.scss';
 
-const View = ({
+function View({
   intl,
   amount,
   areTermsAccepted,
@@ -47,7 +47,7 @@ const View = ({
   onSubmitCb,
   onTermsCheckboxClick,
   onCopyAssetParam,
-}: Props) => {
+}: Props) {
   const {
     passphraseField,
     flightCandidateCheckboxField,
@@ -171,7 +171,7 @@ const View = ({
       />
     </Dialog>
   );
-};
+}
 
 export const WalletSendConfirmationDialogView = compose(
   injectIntl,
