@@ -95,7 +95,6 @@ type State = {
   };
   minimumAda: BigNumber;
   adaAmountInputTrack: BigNumber;
-  feeCalculationRequestQue: number;
   transactionFee: BigNumber;
   transactionFeeError: (string | null | undefined) | (Node | null | undefined);
   selectedAssetUniqueIds: Array<string>;
@@ -107,6 +106,16 @@ type State = {
   adaInputState: AdaInputState;
 };
 
+interface FeeCalculationToken {
+  abort: () => void;
+  aborted: boolean;
+}
+
+interface FeeCalculationQueue {
+  request: Promise<void>;
+  token: FeeCalculationToken;
+}
+
 @observer
 class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
@@ -116,7 +125,6 @@ class WalletSendForm extends Component<Props, State> {
     formFields: {} as State['formFields'],
     minimumAda: new BigNumber(0),
     adaAmountInputTrack: new BigNumber(0),
-    feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
     selectedAssetUniqueIds: [],
@@ -134,6 +142,8 @@ class WalletSendForm extends Component<Props, State> {
   // We need to prevent auto focus of ada and token amount fields in case user pastes
   // or enters a receiver address which belongs to the same wallet he is sending from.
   _isAutoFocusEnabled = true;
+
+  feeCalculationQueue: Array<FeeCalculationQueue> = [];
 
   componentDidMount() {
     this._isMounted = true;
@@ -324,6 +334,7 @@ class WalletSendForm extends Component<Props, State> {
     !this.state.isTransactionFeeCalculated ||
     !this.form.isValid ||
     this.form.validating;
+
   form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
@@ -355,7 +366,7 @@ class WalletSendForm extends Component<Props, State> {
               const isAdaAmountValid = adaAmountField.isValid;
 
               if (isValid && isAdaAmountValid) {
-                await this.calculateTransactionFee();
+                await this.queueCalculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -393,7 +404,7 @@ class WalletSendForm extends Component<Props, State> {
               );
 
               if (isValid) {
-                await this.calculateTransactionFee();
+                await this.queueCalculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -405,8 +416,9 @@ class WalletSendForm extends Component<Props, State> {
             },
           ],
           hooks: {
-            onChange: () =>
-              this.setState({ isTransactionFeeCalculated: false }),
+            onChange: () => {
+              return this.setState({ isTransactionFeeCalculated: false });
+            },
           },
         },
         estimatedFee: {
@@ -439,11 +451,6 @@ class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  isLatestTransactionFeeRequest = (
-    currentFeeCalculationRequestQue: number,
-    prevFeeCalculationRequestQue: number
-  ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
-
   validateEmptyAssets = () => {
     return this.selectedAssets
       .filter((_, index) => {
@@ -456,7 +463,45 @@ class WalletSendForm extends Component<Props, State> {
         });
       });
   };
-  calculateTransactionFee = async (shouldUpdateMinimumAdaAmount = false) => {
+
+  queueCalculateTransactionFee = (shouldUpdateMinimumAdaAmount = false) => {
+    this.feeCalculationQueue.forEach((fee) => fee.token.abort());
+
+    return new Promise((resolve, reject) => {
+      const token = (() => {
+        let aborted = false;
+        return {
+          abort() {
+            aborted = true;
+          },
+          get aborted() {
+            return aborted;
+          },
+        };
+      })();
+
+      const request = this.calculateTransactionFee(
+        shouldUpdateMinimumAdaAmount,
+        token
+      );
+
+      this.feeCalculationQueue.push({ request, token });
+
+      request
+        .then(resolve)
+        .catch(reject)
+        .finally(() => {
+          this.feeCalculationQueue = this.feeCalculationQueue.filter(
+            (r) => r.request !== request
+          );
+        });
+    });
+  };
+
+  calculateTransactionFee = async (
+    shouldUpdateMinimumAdaAmount = false,
+    requestToken: FeeCalculationToken
+  ) => {
     if (!this.state.isReceiverAddressValid) {
       return;
     }
@@ -478,17 +523,13 @@ class WalletSendForm extends Component<Props, State> {
         };
       })
       .filter(({ quantity }: { quantity: BigNumber }) => quantity.gt(0));
-    const {
-      selectedAssetUniqueIds,
-      feeCalculationRequestQue: prevFeeCalculationRequestQue,
-    } = this.state;
+    const { selectedAssetUniqueIds } = this.state;
 
-    this.setState((prevState) => ({
-      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
+    this.setState({
       isTransactionFeeCalculated: false,
       transactionFeeError: null,
       isCalculatingTransactionFee: true,
-    }));
+    });
 
     try {
       const { fee, minimumAda } = await this.props.calculateTransactionFee(
@@ -497,15 +538,8 @@ class WalletSendForm extends Component<Props, State> {
         assets
       );
 
-      if (
-        this._isMounted &&
-        this.isLatestTransactionFeeRequest(
-          this.state.feeCalculationRequestQue,
-          prevFeeCalculationRequestQue
-        )
-      ) {
+      if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
-        const adaAmountValue = new BigNumber(adaAmountField.value || 0);
         const nextState = {
           isTransactionFeeCalculated: true,
           minimumAda: minimumAdaValue,
@@ -524,13 +558,7 @@ class WalletSendForm extends Component<Props, State> {
         this.setState(nextState);
       }
     } catch (error) {
-      if (
-        this._isMounted &&
-        this.isLatestTransactionFeeRequest(
-          this.state.feeCalculationRequestQue,
-          prevFeeCalculationRequestQue
-        )
-      ) {
+      if (this._isMounted && !requestToken.aborted) {
         const errorHasLink = !!get(error, ['values', 'linkLabel']);
         let transactionFeeError;
         let localizableError = error;
@@ -709,7 +737,7 @@ class WalletSendForm extends Component<Props, State> {
       },
       async () => {
         this.removeAssetFields(uniqueId);
-        await this.calculateTransactionFee(true);
+        await this.queueCalculateTransactionFee(true);
       }
     );
   };
@@ -765,7 +793,7 @@ class WalletSendForm extends Component<Props, State> {
         const isValid = isValidAmount && isValidRange;
 
         if (isValid) {
-          await this.calculateTransactionFee(true);
+          await this.queueCalculateTransactionFee(true);
         } else {
           this.resetTransactionFee();
         }

@@ -25,7 +25,7 @@ import WalletSendForm from './WalletSendForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 jest.mock(
-  '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer',
+  '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
   () => {
     const Dialog = ({
       amount,
@@ -46,7 +46,7 @@ jest.mock(
 
     return {
       __esModule: true,
-      default: Dialog,
+      WalletSendConfirmationDialogContainer: Dialog,
     };
   }
 );
@@ -220,6 +220,14 @@ describe('wallet/Wallet Send Form', () => {
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function waitForTransactionFee() {
+    const transactionFeeSpinner = await screen.findByTestId(
+      'transaction-fee-spinner'
+    );
+
+    return waitForElementToBeRemoved(transactionFeeSpinner);
   }
 
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
@@ -453,15 +461,16 @@ describe('wallet/Wallet Send Form', () => {
     assertMinimumAmountNoticeMessage(minimumAda);
   });
 
-  test('should wait fees to be calculated before submitting', async () => {
-    expect.assertions(3);
+  test('should not allow to submit before fees are calculated', async () => {
+    expect.assertions(4);
 
-    const mock = jest
+    const calculateTransactionFeeMock = jest
       .fn()
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 10);
+            const lastInputBuffer = 5;
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + lastInputBuffer);
 
             return resolve({
               fee: new BigNumber(1),
@@ -472,7 +481,7 @@ describe('wallet/Wallet Send Form', () => {
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 10);
+            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
 
             return resolve({
               fee: new BigNumber(2),
@@ -481,7 +490,9 @@ describe('wallet/Wallet Send Form', () => {
           })
       );
 
-    render(<SetupWallet calculateTransactionFee={mock} />);
+    render(
+      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
+    );
 
     enterReceiverAddress();
 
@@ -492,7 +503,7 @@ describe('wallet/Wallet Send Form', () => {
       },
     });
 
-    await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + 1);
+    await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
 
     fireEvent.change(adaField, {
       target: {
@@ -500,18 +511,11 @@ describe('wallet/Wallet Send Form', () => {
       },
     });
 
-    const transactionFeeSpinner = await screen.findByTestId(
-      'transaction-fee-spinner'
-    );
-
-    waitForElementToBeRemoved(transactionFeeSpinner);
-
     const sendButton: HTMLButtonElement = screen.getByText('Send');
 
-    await waitFor(() => {
-      if (sendButton.disabled) throw new Error('button disabled');
-      return Promise.resolve(true);
-    });
+    expect(sendButton).not.toBeEnabled();
+
+    await waitForTransactionFee();
 
     expect(sendButton).toBeEnabled();
 
