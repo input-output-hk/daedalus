@@ -1,5 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import { logger } from '../utils/logging';
+import { manifest } from './manifest';
 
 export const initTrezorConnect = async () => {
   try {
@@ -7,10 +8,7 @@ export const initTrezorConnect = async () => {
       popup: false, // render your own UI
       webusb: false, // webusb is not supported in electron
       debug: true,
-      manifest: {
-        email: 'support@iohk.io',
-        appUrl: 'https://daedaluswallet.io/',
-      },
+      manifest,
     });
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.init()');
   } catch (error) {
