@@ -104,7 +104,7 @@ let
     unset NIX_SSL_CERT_FILE
     export USER=daedalus
 
-    if [ -z "$@" ]; then
+    if [ $# = 0 ]; then
       exec bash
     else
       exec "$@"
