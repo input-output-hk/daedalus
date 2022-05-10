@@ -102,10 +102,10 @@ class EventObserver {
                 walletData,
                 this.mainWindow
               );
-            } catch (e) {
+            } catch (error) {
               logger.error('[HW-DEBUG] CONSTRUCTOR error', {
                 walletData,
-                error: e,
+                error,
               });
             }
           }
