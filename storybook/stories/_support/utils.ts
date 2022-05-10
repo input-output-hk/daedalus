@@ -238,7 +238,7 @@ export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
-    new BigNumber(faker.random.number(5))
+    new BigNumber(faker.datatype.number(5))
   );
 export const generateMultipleTransactions = (
   amount: number

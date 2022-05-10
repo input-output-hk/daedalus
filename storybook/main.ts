@@ -10,7 +10,7 @@ module.exports = {
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    './addons/DaedalusMenu/register',
+    require.resolve('./addons/DaedalusMenu/register.tsx'),
   ],
   // Make whatever fine-grained changes you need
   webpackFinal: async (config, { configType }) => {
