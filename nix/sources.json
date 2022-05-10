@@ -71,18 +71,6 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/64121775787f6e2fba95bda6983726afd93a56cf.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "marlowe-cardano": {
-        "branch": "master",
-        "description": "nix scripts shared across projects",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "marlowe-cardano",
-        "rev": "57748ffde393290051ec033e81d84095d6abd3a8",
-        "sha256": "0q7rpccfdbw7a7rn68l2fqlqzcfdgfqnqrcsawaiqd5h7izcin8h",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/marlowe-cardano/archive/57748ffde393290051ec033e81d84095d6abd3a8.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "js-chain-libs": {
         "branch": "master",
         "description": "chain-libs javascript SDK",
@@ -93,6 +81,18 @@
         "sha256": "14v7zm2h3v4vb7f15i4mk6f5jsdd6akqv2pzqmj52hprh076p0hd",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/js-chain-libs/archive/1f1bbc5557ed5356a5fac89a3224d3449ef98ba3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "marlowe-cardano": {
+        "branch": "sprint-56",
+        "description": "nix scripts shared across projects",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "marlowe-cardano",
+        "rev": "167b493a1db36f78bd05e211522d3a5a8ffa3329",
+        "sha256": "029y1h3caqz3x07zfixx2fd0j6xa6nrk6wy3s318czmjy0kcw33g",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/marlowe-cardano/archive/167b493a1db36f78bd05e211522d3a5a8ffa3329.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
