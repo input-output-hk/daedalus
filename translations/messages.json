@@ -5317,106 +5317,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Confirm transaction",
-        "description": "Title for the \"Confirm transaction\" dialog.",
-        "id": "wallet.send.confirmationDialog.title"
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.passphraseLabel"
-      },
-      {
-        "defaultMessage": "!!!To",
-        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.addressToLabel"
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.amountLabel"
-      },
-      {
-        "defaultMessage": "!!!Fees",
-        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.feesLabel"
-      },
-      {
-        "defaultMessage": "!!!Total",
-        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.totalLabel"
-      },
-      {
-        "defaultMessage": "!!!Type your spending password",
-        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder"
-      },
-      {
-        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
-        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.flightCandidateWarning"
-      },
-      {
-        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
-        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel"
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Label for the send button in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.submit"
-      },
-      {
-        "defaultMessage": "!!!Back",
-        "description": "Label for the back button in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.back"
-      },
-      {
-        "defaultMessage": "!!!Incorrect spending password.",
-        "description": "Label for password error in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.passwordError"
-      },
-      {
-        "defaultMessage": "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
-        "description": "Warning: This transaction will reduce your wallet's balance",
-        "id": "wallet.send.confirmationDialog.emptyingWarning"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token",
-        "id": "wallet.send.confirmationDialog.assetLabel"
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
-        "id": "wallet.send.confirmationDialog.receiver.label"
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "Label for \"unformatted amount\"",
-        "id": "wallet.send.confirmationDialog.unformattedAmountLabel"
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "Message for \"unformatted amount\"",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets"
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "Message for \"unformatted amount\"",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Title",
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "id": "wallet.send.form.title.label"
@@ -7513,6 +7413,96 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm transaction",
+        "description": "Title for the \"Confirm transaction\" dialog.",
+        "id": "wallet.send.confirmationDialog.title"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.passphraseLabel"
+      },
+      {
+        "defaultMessage": "!!!Type your spending password",
+        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
+        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.flightCandidateWarning"
+      },
+      {
+        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
+        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel"
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Label for the send button in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.submit"
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "Label for the back button in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.back"
+      },
+      {
+        "defaultMessage": "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
+        "description": "Warning: This transaction will reduce your wallet's balance",
+        "id": "wallet.send.confirmationDialog.emptyingWarning"
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.addressToLabel"
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.amountLabel"
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token",
+        "id": "wallet.send.confirmationDialog.assetLabel"
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.feesLabel"
+      },
+      {
+        "defaultMessage": "!!!Total",
+        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.totalLabel"
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
+        "id": "wallet.send.confirmationDialog.receiver.label"
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "Label for \"unformatted amount\"",
+        "id": "wallet.send.confirmationDialog.unformattedAmountLabel"
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "Message for \"unformatted amount\"",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets"
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "Message for \"unformatted amount\"",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets"
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts"
   },
   {
     "descriptors": [
