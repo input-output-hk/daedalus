@@ -40,7 +40,6 @@ in {
     x86_64-darwin = pkgs.writeScriptBin "open-marlowe-term" ''
       #! /bin/sh
 
-      inherited_path=$PATH
       setup_script=$(mktemp)
       chmod +x $setup_script
       echo >>$setup_script ${pkgs.lib.escapeShellArg ''
@@ -51,7 +50,7 @@ in {
       ''}
       echo >>$setup_script "
         rm $setup_script
-        export PATH=$inherited_path
+        export PATH=\"$PATH\"
       "
       echo >>$setup_script ${pkgs.lib.escapeShellArg ''
         exec $SHELL -i
