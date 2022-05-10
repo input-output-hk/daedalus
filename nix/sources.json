@@ -87,12 +87,12 @@
         "branch": "sprint-56",
         "description": "Marlowe smart contract language Cardano implementation",
         "homepage": "https://marlowe-finance.io/",
-        "owner": "input-output-hk",
+        "owner": "hamishmack",
         "repo": "marlowe-cardano",
-        "rev": "167b493a1db36f78bd05e211522d3a5a8ffa3329",
-        "sha256": "029y1h3caqz3x07zfixx2fd0j6xa6nrk6wy3s318czmjy0kcw33g",
+        "rev": "85aaf7c04c3a0316be805957c0a407a665cc1a82",
+        "sha256": "09j3wq5m6bi73s1rrls3vxw5yk4d2xkdbjzlg4xrlmkhnz32xsrm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/marlowe-cardano/archive/167b493a1db36f78bd05e211522d3a5a8ffa3329.tar.gz",
+        "url": "https://github.com/hamishmack/marlowe-cardano/archive/85aaf7c04c3a0316be805957c0a407a665cc1a82.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
