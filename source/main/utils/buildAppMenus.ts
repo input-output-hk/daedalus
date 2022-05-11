@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, globalShortcut, Menu } from 'electron';
-import { exec } from "child_process";
+import { exec } from 'child_process';
 import { WalletSettingsStateEnum } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
@@ -59,7 +59,7 @@ export const buildAppMenus = async (
 
   const openMarloweTerminal = () => {
     exec('open-marlowe-term');
-  }
+  };
 
   const restartWithBlankScreenFix = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.

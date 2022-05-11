@@ -36,19 +36,20 @@ export const osxMenu = (
       {
         type: 'separator',
       },
-      ...(environment.isMarlowePioneers ? [
-        {
-          label: translation('daedalus.openMarloweTerminal'),
-          accelerator: 'Command+Shift+M',
+      ...(environment.isMarlowePioneers
+        ? [
+            {
+              label: translation('daedalus.openMarloweTerminal'),
+              accelerator: 'Command+Shift+M',
 
-          click() {
-            actions.openMarloweTerminal();
-          },
+              click() {
+                actions.openMarloweTerminal();
+              },
 
-          enabled: isNavigationEnabled,
-        },
-
-      ] : []),
+              enabled: isNavigationEnabled,
+            },
+          ]
+        : []),
       {
         label: translation('daedalus.redeemItnRewards'),
         accelerator: 'Command+T',
