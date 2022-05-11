@@ -30,7 +30,7 @@ let
     buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
     shellHook = ''
       git diff > pre-yarn.diff
-      yarn
+      yarn --frozen-lockfile
       git diff > post-yarn.diff
       diff pre-yarn.diff post-yarn.diff > /dev/null
       if [ $? != 0 ]
@@ -119,6 +119,8 @@ let
       ln -svf $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
       ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
       ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
+      # XXX: right now we only build Release/detection.node (TODO: investigate why – @michalrus)
+      ln -svf $PWD/node_modules/usb-detection/build/Release/detection.node ${BUILDTYPE}/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
@@ -131,11 +133,13 @@ let
         npm cache clean --force
         ''
       }
-      yarn install
+      yarn install --frozen-lockfile
       yarn build:electron
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
+        # TODO: is this needed for `detection.node`?
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/detection.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}

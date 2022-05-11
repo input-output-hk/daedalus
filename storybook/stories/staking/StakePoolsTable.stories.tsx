@@ -14,69 +14,56 @@ const listTitle = {
 type Props = {
   currentTheme: string;
 };
-export const StakePoolsTableStory = (props: Props) => (
-  <React.Fragment>
-    <div
-      style={{
-        margin: '0 20px 20px',
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'column',
-      }}
-    >
-      <StakePoolsSearch
-        search={''}
-        onSearch={action('onOpenExternalLink')}
-        onClearSearch={action('onOpenExternalLink')}
-        onGridView={action('onOpenExternalLink')}
-        onListView={action('onOpenExternalLink')}
-        isListView
-        isGridView={false}
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        isClearTooltipOpeningDownward
-      />
-      <h2
+export const StakePoolsTableStory = (props: Props) => {
+  return (
+    <React.Fragment>
+      <div
         style={{
-          lineHeight: 1.38,
-          margin: '20px 0 10px',
-          opacity: 0.5,
-          paddingLeft: '20px',
-          fontFamily: '"NotoSans-Regular, NotoSansCJKjp-Regular", sans-serif',
+          margin: '0 20px 20px',
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column',
         }}
       >
-        <FormattedMessage
-          {...listTitle}
-          values={{
-            pools: STAKE_POOLS.slice(
-              0,
-              number('Pools', 300, {
-                range: true,
-                min: 37,
-                max: 300,
-                step: 1,
-              })
-            ).length,
-          }}
+        <StakePoolsSearch
+          search={''}
+          onSearch={action('onOpenExternalLink')}
+          onClearSearch={action('onOpenExternalLink')}
+          onGridView={action('onOpenExternalLink')}
+          onListView={action('onOpenExternalLink')}
+          isListView
+          isGridView={false}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+          isClearTooltipOpeningDownward
         />
-      </h2>
-      <StakePoolsTable
-        listName="selectedIndexList"
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        stakePoolsList={STAKE_POOLS.slice(
-          0,
-          number('Pools', 300, {
-            range: true,
-            min: 37,
-            max: 300,
-            step: 1,
-          })
-        )}
-        currentLocale="en-US"
-        currentTheme={props.currentTheme}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        containerClassName="StakingWithNavigation_page"
-        numberOfRankedStakePools={
-          STAKE_POOLS.slice(
+        <h2
+          style={{
+            lineHeight: 1.38,
+            margin: '20px 0 10px',
+            opacity: 0.5,
+            paddingLeft: '20px',
+            fontFamily: '"NotoSans-Regular, NotoSansCJKjp-Regular", sans-serif',
+          }}
+        >
+          <FormattedMessage
+            {...listTitle}
+            values={{
+              pools: STAKE_POOLS.slice(
+                0,
+                number('Pools', 300, {
+                  range: true,
+                  min: 37,
+                  max: 300,
+                  step: 1,
+                })
+              ).length,
+            }}
+          />
+        </h2>
+        <StakePoolsTable
+          listName="selectedIndexList"
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+          stakePoolsList={STAKE_POOLS.slice(
             0,
             number('Pools', 300, {
               range: true,
@@ -84,11 +71,26 @@ export const StakePoolsTableStory = (props: Props) => (
               max: 300,
               step: 1,
             })
-          ).length
-        }
-        onTableHeaderMouseEnter={() => {}}
-        onTableHeaderMouseLeave={() => {}}
-      />
-    </div>
-  </React.Fragment>
-);
+          )}
+          currentLocale="en-US"
+          currentTheme={props.currentTheme}
+          onOpenExternalLink={action('onOpenExternalLink')}
+          containerClassName="StakingWithNavigation_page"
+          numberOfRankedStakePools={
+            STAKE_POOLS.slice(
+              0,
+              number('Pools', 300, {
+                range: true,
+                min: 37,
+                max: 300,
+                step: 1,
+              })
+            ).length
+          }
+          onTableHeaderMouseEnter={() => {}}
+          onTableHeaderMouseLeave={() => {}}
+        />
+      </div>
+    </React.Fragment>
+  );
+};
