@@ -63,6 +63,11 @@ in {
       osascript -e "tell app \"Terminal\" to do script \"exec $setup_script\""
     '';
 
+    # TODO: perhaps instead of wrapping `marlowe-cli` to be run inside
+    # the nix-user-chroot, we should export `LD_LIBRARY_PATH` to point
+    # to various ~/.daedalus/nix/store/… directories, and run it in
+    # the host context…? – @michalrus
+
     x86_64-linux = let
       linuxExports = ''
         export XDG_DATA_HOME=''${XDG_DATA_HOME:-''${HOME}/.local/share}
