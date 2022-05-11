@@ -60,7 +60,27 @@ in {
         exec $SHELL -i
       ''}
 
-      osascript -e "tell app \"Terminal\" to do script \"exec $setup_script\""
+      # If the Terminal app is running, `activate` will not add a new window,
+      # but just move the app to the foreground instead. So we need to add
+      # a new window.
+      #
+      # If the app is not running, we activate it, which also brings it to the
+      # foreground, and creates a new window. So to prevent having 2 windows,
+      # we run the script in front window.
+
+      osascript <<END
+        if application "Terminal" is running then
+          tell application "Terminal"
+            activate
+            do script "exec $setup_script"
+          end tell
+        else
+          tell application "Terminal"
+            activate
+            do script "exec $setup_script" in front window
+          end tell
+        end if
+      END
     '';
 
     # TODO: perhaps instead of wrapping `marlowe-cli` to be run inside
