@@ -90,10 +90,10 @@
         "homepage": "https://marlowe-finance.io/",
         "owner": "hamishmack",
         "repo": "marlowe-cardano",
-        "rev": "031253a9b5ad8d2c9227dfb3c1f4f39effe51b92",
-        "sha256": "0n95s51w0psi2c2v4y0s2mihbi3x3dbkpx9hfahryh092y2pkms8",
+        "rev": "89f1eddc52b28bb06b7abbbda3292e9562175175",
+        "sha256": "0yx4kdqydnh4ny7jjp2vncsdxkijycla7hh562972dxcdlc97kay",
         "type": "tarball",
-        "url": "https://github.com/hamishmack/marlowe-cardano/archive/031253a9b5ad8d2c9227dfb3c1f4f39effe51b92.tar.gz",
+        "url": "https://github.com/hamishmack/marlowe-cardano/archive/89f1eddc52b28bb06b7abbbda3292e9562175175.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
