@@ -12,6 +12,7 @@ steps:
     command: 'scripts/build-installer-unix.sh--nix-2.5 --build-id $BUILDKITE_BUILD_NUMBER'
     env:
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+      UPLOAD_DIR_OVERRIDE: UNSAFE-internal-build
     agents:
       queue: daedalus
       system: aarch64-darwin
