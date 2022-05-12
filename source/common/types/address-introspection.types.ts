@@ -1,7 +1,9 @@
+import { Domain } from 'domain';
+
 export type IntrospectAddressRequest = {
   input: string;
 };
-export type AddressStyle = 'Byron' | 'Icarus' | 'Shelley';
+export type AddressStyle = 'Byron' | 'Icarus' | 'Shelley' | DomainAddress;
 export type AddressType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 14 | 15;
 export type ChainPointer = {
   slot_num: number;
@@ -18,6 +20,7 @@ export type ByronAddress = AddressBase & {
   address_root: string;
   derivation_path: string;
 };
+export type DomainAddress = 'ENS' | 'UNS';
 export type IcarusAddress = AddressBase & {
   address_root: string;
 };

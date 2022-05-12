@@ -85,6 +85,8 @@ module.exports = {
     new webpack.DefinePlugin(
       Object.assign(
         {
+          devContentSecurityPolicy:
+            "connect-src 'self' ws://localhost:3000/cpp 'unsafe-eval'",
           'process.env.API_VERSION': JSON.stringify(
             process.env.API_VERSION || 'dev'
           ),
