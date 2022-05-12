@@ -82,12 +82,12 @@ class EventObserver {
               deviceType: 'ledger',
               deviceId: null,
               // Available only when Cardano APP opened
-              deviceModel: deviceModel.id || '',
+              deviceModel: deviceModel.id,
               // e.g. nanoS
-              deviceName: deviceModel.productName || '',
+              deviceName: deviceModel.productName,
               // e.g. Test Name
-              path: device.path || '',
-              product: device.product || '',
+              path: device.path,
+              product: device.product,
             };
 
             try {
