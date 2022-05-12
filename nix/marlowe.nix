@@ -95,6 +95,13 @@ in {
       '';
       welcomeScript = pkgs.writeScript "welcomeScript" ''
         #! /bin/sh
+
+        # It is possible that the terminal emulator did not inherit the env of its
+        # invocation, but instead of the Window Manager (that would happen if $TERMINAL
+        # was `i3-msg exec …`). Let’s re-export here:
+
+        ${linuxExports}
+
         echo
         echo ${escapeShellArg unixWelcomeMessage} | sed -r 's/^/  /'
         exec $SHELL -i
