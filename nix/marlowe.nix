@@ -1,4 +1,4 @@
-{ system, crossSystem, sources, pkgs, launcherConfig }:
+{ system, crossSystem, sources, pkgs, launcherConfig, daedalus-bridge }:
 
 let
 
@@ -151,7 +151,12 @@ in {
 
         echo >/escape-hatch ${daedalusPrefix}${pkgs.writeScript "open-marlowe-term-escaped" ''
           #!/bin/sh
-          ${addNixChrootWrapper "marlowe-cli" "${marlowe-cli}/bin/marlowe-cli"}
+          ${addNixChrootWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
+          ${addNixChrootWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
+          ${addNixChrootWrapper "cardano-wallet"  "${daedalus-bridge}/bin/cardano-wallet"}
+          ${addNixChrootWrapper "cardano-address" "${daedalus-bridge}/bin/cardano-address"}
+          ${addNixChrootWrapper "jq"              "${pkgs.jq}/bin/jq"}
+          ${addNixChrootWrapper "basenc"          "${pkgs.coreutils}/bin/basenc"}
           ${linuxExports}
           cd $HOME
           ${runTerminalEmulator "$HOME/.daedalus${welcomeScript}"}
@@ -160,7 +165,7 @@ in {
         # We’re inside nix-shell or on NixOS. Let’s set environment here to be inherited,
         # in case an exotic $TERMINAL doesn’t run our welcome script.
 
-        export PATH=${marlowe-cli}/bin:$PATH
+        export PATH=${marlowe-cli}/bin:${pkgs.jq}/bin:$PATH
         ${linuxExports}
         cd $HOME
         ${runTerminalEmulator welcomeScript}

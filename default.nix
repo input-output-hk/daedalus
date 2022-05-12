@@ -324,6 +324,7 @@ let
         inherit system pkgs sources;
         crossSystem = crossSystem pkgs.lib;
         inherit (self.launcherConfigs) launcherConfig;
+        inherit (self) daedalus-bridge;
       };
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
