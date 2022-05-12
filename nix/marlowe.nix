@@ -93,13 +93,14 @@ in {
         export XDG_DATA_HOME=''${XDG_DATA_HOME:-''${HOME}/.local/share}
         ${unixExports}
       '';
-      welcomeScript = pkgs.writeScript "welcomeScript" ''
+      welcomeScript = { pathExports }: pkgs.writeScript "welcomeScript" ''
         #! /bin/sh
 
         # It is possible that the terminal emulator did not inherit the env of its
         # invocation, but instead of the Window Manager (that would happen if $TERMINAL
         # was `i3-msg exec …`). Let’s re-export here:
 
+        ${pathExports}
         ${linuxExports}
 
         echo
@@ -139,6 +140,22 @@ in {
       addNixChrootWrapper = wrapperName: storePath: ''
         export PATH="${daedalusPrefix}${mkNixChrootWrapper wrapperName storePath}/bin:$PATH"
       '';
+      pathExports = {
+        regular = ''
+          export PATH=${pkgs.lib.makeBinPath [
+            marlowe-cli daedalus-bridge pkgs.jq pkgs.gnused pkgs.coreutils
+          ]}:$PATH
+        '';
+        wrapped = ''
+          ${addNixChrootWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
+          ${addNixChrootWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
+          ${addNixChrootWrapper "cardano-wallet"  "${daedalus-bridge}/bin/cardano-wallet"}
+          ${addNixChrootWrapper "cardano-address" "${daedalus-bridge}/bin/cardano-address"}
+          ${addNixChrootWrapper "jq"              "${pkgs.jq}/bin/jq"}
+          ${addNixChrootWrapper "sed"             "${pkgs.gnused}/bin/sed"}
+          ${addNixChrootWrapper "basenc"          "${pkgs.coreutils}/bin/basenc"}
+        '';
+      };
     in pkgs.writeScriptBin "open-marlowe-term" ''
       #! ${pkgs.stdenv.shell}
 
@@ -151,24 +168,19 @@ in {
 
         echo >/escape-hatch ${daedalusPrefix}${pkgs.writeScript "open-marlowe-term-escaped" ''
           #!/bin/sh
-          ${addNixChrootWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
-          ${addNixChrootWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
-          ${addNixChrootWrapper "cardano-wallet"  "${daedalus-bridge}/bin/cardano-wallet"}
-          ${addNixChrootWrapper "cardano-address" "${daedalus-bridge}/bin/cardano-address"}
-          ${addNixChrootWrapper "jq"              "${pkgs.jq}/bin/jq"}
-          ${addNixChrootWrapper "basenc"          "${pkgs.coreutils}/bin/basenc"}
+          ${pathExports.wrapped}
           ${linuxExports}
           cd $HOME
-          ${runTerminalEmulator "$HOME/.daedalus${welcomeScript}"}
+          ${runTerminalEmulator "$HOME/.daedalus${welcomeScript { pathExports = pathExports.wrapped; }}"}
         ''}
       else
         # We’re inside nix-shell or on NixOS. Let’s set environment here to be inherited,
         # in case an exotic $TERMINAL doesn’t run our welcome script.
 
-        export PATH=${marlowe-cli}/bin:${pkgs.jq}/bin:$PATH
+        ${pathExports.regular}
         ${linuxExports}
         cd $HOME
-        ${runTerminalEmulator welcomeScript}
+        ${runTerminalEmulator (welcomeScript { pathExports = pathExports.regular; })}
       fi
     '';
 
