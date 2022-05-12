@@ -2,7 +2,9 @@
 
 let
 
-  inherit (pkgs.lib) escapeShellArg;
+  inherit (pkgs) lib;
+
+  inherit (lib) escapeShellArg;
 
   marlowe-cli = (import sources.marlowe-cardano {
     inherit system;
@@ -83,11 +85,6 @@ in {
       END
     '';
 
-    # TODO: perhaps instead of wrapping `marlowe-cli` to be run inside
-    # the nix-user-chroot, we should export `LD_LIBRARY_PATH` to point
-    # to various ~/.daedalus/nix/store/… directories, and run it in
-    # the host context…? – @michalrus
-
     x86_64-linux = let
       linuxExports = ''
         export XDG_DATA_HOME=''${XDG_DATA_HOME:-''${HOME}/.local/share}
@@ -121,39 +118,43 @@ in {
         echo >&2 'No terminal emulator found, set ‘$TERMINAL’!'
         exit 1
       '';
-      daedalusPrefix = "\${HOME}/.daedalus";
-      mkNixChrootWrapper = wrapperName: storePath: pkgs.writeScriptBin wrapperName ''
-        #!/bin/sh
-
-        export XDG_DATA_HOME=''${XDG_DATA_HOME:-''${HOME}/.local/share}
-        export NAMESPACE_HELPER_RUN_ARGV=1
-
-        # namespaceHelper outputs a bunch of debug messages, let’s hide them with file descriptor redirections
-        # also, passing $PWD is a bit awkward
-        exec 3>&1 4>&2 1>/dev/null 2>/dev/null ${launcherConfig.stateDir}/namespaceHelper ${pkgs.writeScript "${wrapperName}-wrapper" ''
-          #! ${pkgs.stdenv.shell}
-          cd "$1" ; shift
-          ${linuxExports}
-          exec 1>&3 2>&4 ${storePath} "$@"
-        ''} "$PWD" "$@"
-      '';
-      addNixChrootWrapper = wrapperName: storePath: ''
-        export PATH="${daedalusPrefix}${mkNixChrootWrapper wrapperName storePath}/bin:$PATH"
+      daedalusPrefix = "\"\${HOME}\"/.daedalus";
+      addLDWrapper = wrapperName: storePath: let
+        allDeps = lib.splitString "\n" (builtins.readFile (pkgs.writeReferencesToFile storePath));
+        properLibPath = lib.makeLibraryPath ([ pkgs.stdenv.cc.cc ] ++ allDeps);
+        prefixedLibPath = lib.concatMapStringsSep ":" (p: "${daedalusPrefix}${p}")
+          (lib.splitString ":" properLibPath);
+        properInterpreter = lib.removeSuffix "\n" (builtins.readFile
+          (pkgs.runCommand "${wrapperName}-interpreter" {} ''
+            ${pkgs.patchelf}/bin/patchelf --print-interpreter ${storePath} >$out
+          ''));
+        ldWrapper = pkgs.writeScriptBin wrapperName ''
+          #!/bin/sh
+          new_ldlp=${prefixedLibPath}
+          if [ -z "$LD_LIBRARY_PATH" ] ; then
+            export LD_LIBRARY_PATH="$new_ldlp"
+          else
+            export LD_LIBRARY_PATH="$new_ldlp:$LD_LIBRARY_PATH"
+          fi
+          exec ${daedalusPrefix}${properInterpreter} ${daedalusPrefix}${storePath} "$@"
+        '';
+      in ''
+        export PATH=${daedalusPrefix}${ldWrapper}/bin:$PATH
       '';
       pathExports = {
         regular = ''
-          export PATH=${pkgs.lib.makeBinPath [
+          export PATH=${lib.makeBinPath [
             marlowe-cli daedalus-bridge pkgs.jq pkgs.gnused pkgs.coreutils
           ]}:$PATH
         '';
         wrapped = ''
-          ${addNixChrootWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
-          ${addNixChrootWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
-          ${addNixChrootWrapper "cardano-wallet"  "${daedalus-bridge}/bin/cardano-wallet"}
-          ${addNixChrootWrapper "cardano-address" "${daedalus-bridge}/bin/cardano-address"}
-          ${addNixChrootWrapper "jq"              "${pkgs.jq}/bin/jq"}
-          ${addNixChrootWrapper "sed"             "${pkgs.gnused}/bin/sed"}
-          ${addNixChrootWrapper "basenc"          "${pkgs.coreutils}/bin/basenc"}
+          ${addLDWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
+          ${addLDWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
+          ${addLDWrapper "cardano-wallet"  "${daedalus-bridge}/bin/cardano-wallet"}
+          ${addLDWrapper "cardano-address" "${daedalus-bridge}/bin/cardano-address"}
+          ${addLDWrapper "jq"              "${pkgs.jq}/bin/jq"}
+          ${addLDWrapper "sed"             "${pkgs.gnused}/bin/sed"}
+          ${addLDWrapper "basenc"          "${pkgs.coreutils}/bin/basenc"}
         '';
       };
     in pkgs.writeScriptBin "open-marlowe-term" ''
