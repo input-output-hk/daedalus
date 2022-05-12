@@ -821,6 +821,7 @@
   "wallet.hardware.deviceStatus.trezor_bridge_failure": "Trezor Bridgeがインストールされていません。{instructionsLink}",
   "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label": "インストールガイド",
   "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url": "https://wallet.trezor.io/#/bridge",
+  "wallet.hardware.deviceStatus.unrecognized_wallet": "ご使用のデバイスでこのウォレットを認識できません。{walletName}のペアリングに選択したデバイスと同じものを使用していること、正しいパスフレーズを入力していることを確認してください。",
   "wallet.hardware.deviceStatus.unsupported_device": "このデバイスはサポートされていません",
   "wallet.hardware.deviceStatus.verifying_address": "「{walletName}」デバイスのアドレスを検証してください",
   "wallet.hardware.deviceStatus.verifying_address_aborted": "検証はユーザーにより中止されました",

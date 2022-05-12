@@ -1697,9 +1697,9 @@ export default class HardwareWalletsStore extends Store {
               walletId
             );
             runInAction(
-              'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+              'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
               () => {
-                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+                this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
                 this.activeDevicePath = null;
                 this.unfinishedWalletTxSigning = walletId;
                 this.isExportKeyAborted = false;
@@ -1757,7 +1757,7 @@ export default class HardwareWalletsStore extends Store {
               'HardwareWalletsStore:: set HW device CONNECTING FAILED',
               () => {
                 this.isAddressVerificationInitiated = false;
-                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+                this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
                 this.activeDevicePath = null;
                 this.unfinishedWalletAddressVerification = address;
                 this.isExportKeyAborted = false;
@@ -1807,9 +1807,9 @@ export default class HardwareWalletsStore extends Store {
         // Keep isTransactionInitiated active & Set new device listener by initiating transaction
         // Show message to reconnect proper software wallet device pair
         runInAction(
-          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
           () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
             this.activeDevicePath = null;
             this.unfinishedWalletTxSigning = walletId;
             this.isExportKeyAborted = false;
@@ -1930,6 +1930,13 @@ export default class HardwareWalletsStore extends Store {
             }
           );
         }
+      } else if (error.code === 'Device_InvalidState') {
+        runInAction(
+          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+          }
+        );
       } else {
         runInAction(
           'HardwareWalletsStore:: Cannot export extended public key',
@@ -2025,6 +2032,7 @@ export default class HardwareWalletsStore extends Store {
         walletId,
         certificate.rewardAccountPath
       );
+
       const shelleyTxCert = ShelleyTxCert({
         accountAddress,
         pool: certificate.pool,
