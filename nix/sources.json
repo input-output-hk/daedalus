@@ -100,12 +100,12 @@
         "builtin": false,
         "description": "Marlowe smart contract language Cardano implementation",
         "homepage": "https://marlowe-finance.io/",
-        "owner": "hamishmack",
+        "owner": "input-output-hk",
         "repo": "marlowe-cardano",
-        "rev": "cf7490e11f152e1d391754be33cdb4abe1e1644b",
-        "sha256": "17v9547lraznpdj0gq0q6ddzkh05q02xhxqnka2hg721mvra4x0q",
+        "rev": "d8af95d5db25ac954f894a2920f757870b50e4a4",
+        "sha256": "1n28krjcaidj6hhc03sby71dsgh6mxarmkk9xdjax6ni4dz30mlq",
         "type": "tarball",
-        "url": "https://github.com/hamishmack/marlowe-cardano/archive/cf7490e11f152e1d391754be33cdb4abe1e1644b.tar.gz",
+        "url": "https://github.com/input-output-hk/marlowe-cardano/archive/d8af95d5db25ac954f894a2920f757870b50e4a4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
