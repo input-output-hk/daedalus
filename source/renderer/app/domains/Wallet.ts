@@ -55,7 +55,8 @@ export type HwDeviceStatus =
   | 'verifying_address_confirmation'
   | 'verifying_address_failed'
   | 'verifying_address_aborted'
-  | 'verifying_address_succeeded';
+  | 'verifying_address_succeeded'
+  | 'unrecognized_wallet';
 export const HwDeviceStatuses: {
   CONNECTING: HwDeviceStatus;
   CONNECTING_FAILED: HwDeviceStatus;
@@ -75,6 +76,7 @@ export const HwDeviceStatuses: {
   VERIFYING_ADDRESS_FAILED: HwDeviceStatus;
   VERIFYING_ADDRESS_ABORTED: HwDeviceStatus;
   VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus;
+  UNRECOGNIZED_WALLET: HwDeviceStatus;
 } = {
   CONNECTING: 'connecting',
   CONNECTING_FAILED: 'connecting_failed',
@@ -94,6 +96,7 @@ export const HwDeviceStatuses: {
   VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
   VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
   VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
+  UNRECOGNIZED_WALLET: 'unrecognized_wallet',
 };
 
 export enum WalletUnits {
