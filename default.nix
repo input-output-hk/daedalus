@@ -353,9 +353,7 @@ let
         exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 "$@"
       }
 
-      if [ -n "$NAMESPACE_HELPER_RUN_ARGV" ] ; then
-        run-in-chroot "$@"
-      elif [ -n "$DEBUG_SHELL" ]; then
+      if [ -n "$DEBUG_SHELL" ]; then
         run-in-chroot bash
       else
         run-in-chroot daedalus
@@ -413,7 +411,7 @@ let
       inherit (self) postInstall preInstall linuxClusterBinName rawapp;
       inherit pkgs;
       installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
+      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ] ++ (if self.marlowe == null then [] else [ self.marlowe.open-marlowe-term.x86_64-linux ]);
       nix-bundle = self.nix-bundle;
     }).installerBundle;
     wrappedBundle = let

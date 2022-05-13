@@ -95,7 +95,7 @@ in {
 
         # It is possible that the terminal emulator did not inherit the env of its
         # invocation, but instead of the Window Manager (that would happen if $TERMINAL
-        # was `i3-msg exec …`). Let’s re-export here:
+        # was `i3-msg exec …` or Xfce4). Let’s re-export here:
 
         ${pathExports}
         ${linuxExports}
@@ -136,7 +136,7 @@ in {
           else
             export LD_LIBRARY_PATH="$new_ldlp:$LD_LIBRARY_PATH"
           fi
-          exec ${daedalusPrefix}${properInterpreter} ${daedalusPrefix}${storePath} "$@"
+          exec ${daedalusPrefix}${properInterpreter} --argv0 ${wrapperName} ${daedalusPrefix}${storePath} "$@"
         '';
       in ''
         export PATH=${daedalusPrefix}${ldWrapper}/bin:$PATH
@@ -162,10 +162,11 @@ in {
 
       if [ -e /escape-hatch ] ; then
         # We’re inside the installed nix-user-chroot. There are no
-        # terminal emulators in here, so we have to escape. The commands
-        # will be accessible from the terminal emulator running *outside*
-        # of our nix-user-chroot – but each will be a thin wrapper that will
-        # enter the chroot just for this particular invocation.
+        # graphical terminal emulators in here, so we have to escape.
+        # The commands will be accessed from the terminal emulator running
+        # *outside* of our nix-user-chroot – so we need to properly set
+        # `LD_LIBRARY_PATH`, and use a correct interpreter – all within
+        # the `~/.daedalus/nix/store`:
 
         echo >/escape-hatch ${daedalusPrefix}${pkgs.writeScript "open-marlowe-term-escaped" ''
           #!/bin/sh
