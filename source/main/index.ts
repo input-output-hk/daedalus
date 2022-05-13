@@ -248,7 +248,7 @@ const onAppReady = async () => {
   };
 
   mainErrorHandler(onMainError);
-  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+  handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
 
   if (isWatchMode) {

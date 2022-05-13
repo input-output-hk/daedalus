@@ -114,8 +114,7 @@
 
       .stakePoolTicker {
         @extend %accentText;
-        font-size: 14px;
-        letter-spacing: -0.5px;
+        @extend %stakePoolTicker;
         line-height: 1.57;
       }
 
@@ -142,6 +141,7 @@
         .stakePoolTicker {
           padding-left: 0;
           position: relative;
+          text-transform: uppercase;
           top: 0;
           transition: top 200ms ease-in-out;
         }

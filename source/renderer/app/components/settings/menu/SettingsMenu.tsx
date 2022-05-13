@@ -2,7 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './SettingsMenu.scss' or its co... Remove this comment to see the full error message
 import styles from './SettingsMenu.scss';
 import { ROUTES } from '../../../routes-config';
 import messages from './SettingsMenu.messages';

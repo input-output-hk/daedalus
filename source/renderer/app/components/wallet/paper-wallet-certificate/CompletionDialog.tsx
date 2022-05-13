@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
-import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
@@ -9,7 +8,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CompletionDialog.scss' or it... Remove this comment to see the full error message
 import styles from './CompletionDialog.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
@@ -118,7 +116,6 @@ class CompletionDialog extends Component<Props, State> {
       network,
     } = this.props;
     const { showCopyNotification } = this.state;
-    const dialogClasses = classnames([styles.component, 'completionDialog']);
     const actions = [
       {
         className: 'finishButton',
@@ -143,14 +140,12 @@ class CompletionDialog extends Component<Props, State> {
       : '#000';
     return (
       <Dialog
-        className={dialogClasses}
+        className="completionDialog"
         title={intl.formatMessage(messages.headline)}
         actions={actions}
       >
         <div className={styles.completionContentWrapper}>
-          <p className={styles.subtitle}>
-            {intl.formatMessage(messages.subtitle)}
-          </p>
+          <p>{intl.formatMessage(messages.subtitle)}</p>
 
           <div className={styles.linkInstructionsWrapper}>
             <p>{intl.formatMessage(messages.linkInstructions)}</p>

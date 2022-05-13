@@ -30,8 +30,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
-import WalletSendAssetsConfirmationDialog from './send-form/WalletSendAssetsConfirmationDialog';
-import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
+import { WalletSendConfirmationDialogContainer } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container';
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
@@ -512,10 +512,7 @@ class WalletSendForm extends Component<Props, State> {
         };
 
         if (shouldUpdateMinimumAdaAmount) {
-          const adaInputState = await this.checkAdaInputState(
-            adaAmountValue,
-            minimumAdaValue
-          );
+          const adaInputState = await this.checkAdaInputState(minimumAdaValue);
           nextState.adaInputState = adaInputState;
           this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
         }
@@ -553,9 +550,7 @@ class WalletSendForm extends Component<Props, State> {
 
             if (shouldUpdateMinimumAdaAmount) {
               const minimumAdaValue = new BigNumber(minimumAda);
-              const adaAmountValue = new BigNumber(adaAmountField.value || 0);
               const adaInputState = await this.checkAdaInputState(
-                adaAmountValue,
                 minimumAdaValue
               );
               this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
@@ -590,7 +585,6 @@ class WalletSendForm extends Component<Props, State> {
     }
   };
   checkAdaInputState = async (
-    adaAmount: BigNumber,
     minimumAda: BigNumber
   ): Promise<AdaInputState> => {
     const {
@@ -600,16 +594,13 @@ class WalletSendForm extends Component<Props, State> {
     } = this.state;
 
     if (
-      adaAmountInputTrack.gt(minimumAda) &&
+      adaAmountInputTrack.gte(minimumAda) &&
       adaInputState === AdaInputStateType.Updated
     ) {
       return AdaInputStateType.Restored;
     }
 
-    if (
-      adaAmountInputTrack.lt(minimumAda) &&
-      !isEmpty(selectedAssetUniqueIds)
-    ) {
+    if (adaAmountInputTrack.lt(minimumAda)) {
       const isValid = await this.props.validateAmount(
         formattedAmountToNaturalUnits(minimumAda.toString())
       );
@@ -619,10 +610,6 @@ class WalletSendForm extends Component<Props, State> {
       }
 
       return AdaInputStateType.Updated;
-    }
-
-    if (isEmpty(selectedAssetUniqueIds)) {
-      return AdaInputStateType.Reset;
     }
 
     return AdaInputStateType.None;
@@ -1151,13 +1138,12 @@ class WalletSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
 
-        {isDialogOpen(WalletSendAssetsConfirmationDialog) ? (
+        {isDialogOpen(WalletSendConfirmationDialogView) ? (
           <WalletSendConfirmationDialogContainer
             receiver={receiver}
             selectedAssets={this.selectedAssets}
             assetsAmounts={this.selectedAssetsAmounts}
             amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
-            amountToNaturalUnits={formattedAmountToNaturalUnits}
             totalAmount={total}
             transactionFee={fees}
             hwDeviceStatus={hwDeviceStatus}

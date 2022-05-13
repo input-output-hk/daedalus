@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import StakingRewards from '../../components/staking/rewards/StakingRewards';
+import { StakingRewards } from '../../components/staking/rewards/StakingRewards';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { ellipsis } from '../../utils/strings';
 import { getNetworkExplorerUrl } from '../../utils/network';

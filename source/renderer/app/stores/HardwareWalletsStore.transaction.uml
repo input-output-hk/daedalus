@@ -1,0 +1,48 @@
+title Ledger Initiate Transaction
+
+participant NanoS
+participant Daedalus
+participant WalletReceivePage
+participant initiateTransaction
+participant getCardanoAdaApp
+participant getExtendedPublicKey
+participant signTransactionLedger
+participant getHardwareWalletChannel
+participant deviceDetection
+
+
+autoactivation on
+WalletReceivePage->initiateTransaction:Start a new transaction
+
+group Wait for device
+
+
+initiateTransaction->getHardwareWalletChannel:Subscribe to WAIT_FOR_LEDGER_DEVICES channel
+
+
+getHardwareWalletChannel->deviceDetection:check for new devices
+
+NanoS->deviceDetection:Enter Pin
+
+getHardwareWalletChannel<--deviceDetection:Device info
+
+initiateTransaction<--getHardwareWalletChannel:Reply WAIT_FOR_LEDGER_DEVICES channel\nwith device info
+
+end
+deactivateafter initiateTransaction
+autoactivation off
+
+
+activate initiateTransaction
+initiateTransaction->initiateTransaction:start Ada App polling
+
+
+NanoS->deviceDetection:Open Ada App
+getCardanoAdaApp<--deviceDetection:App opened
+
+deactivate initiateTransaction
+
+getCardanoAdaApp->getExtendedPublicKey:Get public key
+getExtendedPublicKey->signTransactionLedger:Verify transaction
+
+WalletReceivePage<--signTransactionLedger:transaction completed

@@ -8,14 +8,13 @@ import {
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSelectImportDialog.scs... Remove this comment to see the full error message
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import styles from './WalletSelectImportDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
@@ -43,10 +42,10 @@ const messages = defineMessages({
     description:
       'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
   },
-  unamedWalletsTitle: {
-    id: 'wallet.select.import.dialog.unamedWalletsTitle',
+  unnamedWalletsTitle: {
+    id: 'wallet.select.import.dialog.unnamedWalletsTitle',
     defaultMessage: '!!!Unnamed wallets',
-    description: 'unamedWalletsTitle',
+    description: 'unnamedWalletsTitle',
   },
   passwordProtected: {
     id: 'wallet.select.import.dialog.passwordProtected',
@@ -393,11 +392,11 @@ class WalletSelectImportDialog extends Component<Props> {
               })}
 
               {!!walletsWithoutNames.length && (
-                <div className={styles.unamedWalletsTitle}>
+                <div className={styles.unnamedWalletsTitle}>
                   {!!walletsWithNames.length && (
                     <hr className={styles.separatorMiddle} />
                   )}
-                  <p>{intl.formatMessage(messages.unamedWalletsTitle)}</p>
+                  <p>{intl.formatMessage(messages.unnamedWalletsTitle)}</p>
                 </div>
               )}
 

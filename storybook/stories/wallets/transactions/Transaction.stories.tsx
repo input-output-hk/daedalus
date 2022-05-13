@@ -16,7 +16,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import StoryProvider from '../../_support/StoryProvider';
 import {
   generateHash,
-  generatePolicyIdHash, // generat eAsset,
+  generatePolicyIdHash, // generate eAsset,
 } from '../../_support/utils';
 import {
   WalletTransaction,

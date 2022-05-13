@@ -5,7 +5,6 @@ import ItemsDropdown from './ItemsDropdown';
 import type { AssetToken } from '../../../api/assets/types';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetsDropdown.scss' or its ... Remove this comment to see the full error message
 import styles from './AssetsDropdown.scss';
 
 /**

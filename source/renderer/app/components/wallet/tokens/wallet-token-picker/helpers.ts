@@ -100,7 +100,7 @@ export const filterAssets = ({
       : true;
   });
 };
-export const getToogleAllLabel = (isClearAllMode: boolean) =>
+export const getToggleAllLabel = (isClearAllMode: boolean) =>
   isClearAllMode ? 'clearAll' : 'checkAllLabel';
 export const getTokenCounterText = ({
   assets,

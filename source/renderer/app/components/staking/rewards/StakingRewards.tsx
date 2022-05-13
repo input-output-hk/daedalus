@@ -9,6 +9,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   bigNumberComparator,
   stringComparator,
@@ -20,7 +21,6 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/downloa... Remove this comment to see the full error message
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { Reward } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingRewards.scss' or its ... Remove this comment to see the full error message
 import styles from './StakingRewards.scss';
 import globalMessages from '../../../i18n/global-messages';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/clipboa... Remove this comment to see the full error message
@@ -122,7 +122,7 @@ type State = {
 };
 
 @observer
-class StakingRewards extends Component<Props, State> {
+export class StakingRewards extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -146,18 +146,14 @@ class StakingRewards extends Component<Props, State> {
   ) => {
     const { onExportCsv } = this.props;
     const { intl } = this.context;
-    const exportedHeader = [
-      ...availableTableHeaders.map((header) => header.title),
-      intl.formatMessage(messages.tableHeaderDate),
-    ];
-    const date = new Date().toISOString();
+    const exportedHeader = availableTableHeaders.map((header) => header.title);
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
       const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL).toFormat(
+      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL)?.toFixed(
         DECIMAL_PLACES_IN_ADA
       );
-      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT).toFormat(
+      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT)?.toFixed(
         DECIMAL_PLACES_IN_ADA
       );
       const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
@@ -166,7 +162,6 @@ class StakingRewards extends Component<Props, State> {
         rewardsAddress,
         isRestoring ? '-' : rewardTotal,
         isRestoring ? '-' : rewardUnspent,
-        date,
       ];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
@@ -451,7 +446,7 @@ class StakingRewards extends Component<Props, State> {
             )}
           </BorderedBox>
           <div className={styles.note}>
-            <div className={styles.noteContent}>
+            <div>
               <FormattedHTMLMessage {...messages.note} />
             </div>
           </div>
@@ -478,5 +473,3 @@ class StakingRewards extends Component<Props, State> {
     });
   };
 }
-
-export default StakingRewards;

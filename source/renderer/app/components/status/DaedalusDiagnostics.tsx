@@ -13,21 +13,18 @@ import SVGInline from 'react-svg-inline';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/close-cros... Remove this comment to see the full error message
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/clipboard-... Remove this comment to see the full error message
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/sand-clock... Remove this comment to see the full error message
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DaedalusDiagnostics.scss' or... Remove this comment to see the full error message
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 import type { TipInfo } from '../../api/network/types';
+import { ErrorType } from '../../domains/ApiError';
 
 const messages = defineMessages({
   systemInfo: {
@@ -556,7 +553,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
-    const { message, code } = connectionError;
+    const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = intl.formatMessage(
       messages.unknownDiskSpaceSupportUrl
     );

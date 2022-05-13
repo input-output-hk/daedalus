@@ -13,7 +13,7 @@ EXIT_STATUS=0
 cd ${src'}
 while IFS= read -r -d ''' i
 do
-  if shellcheck -x -e 1008 -e 2148 "$i"
+  if shellcheck -x -e 1008 -e 2148 --source-path=SCRIPTDIR "$i"
   then
     echo "$i [ PASSED ]"
   else

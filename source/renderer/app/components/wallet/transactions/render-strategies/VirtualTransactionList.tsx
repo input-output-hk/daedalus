@@ -10,7 +10,6 @@ import type { ScrollContextType } from '../WalletTransactionsList';
 import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VirtualTransactionList.scss'... Remove this comment to see the full error message
 import styles from './VirtualTransactionList.scss';
 
 type Props = {
@@ -231,7 +230,7 @@ class VirtualTransactionList extends Component<Props> {
   };
   updateVisibleExpandedTxRowHeights = () => {
     const expandedTxMap = this.props.getExpandedTransactions();
-    // This is needed because a spreaded Map results in an array of [key, value]
+    // This is needed because a spread Map results in an array of [key, value]
     const expandedTxArray = [...expandedTxMap].map((mapValue) => mapValue[1]);
     const visibleExpandedTx = expandedTxArray.filter((tx) => {
       const index = this.findIndexForTx(tx);

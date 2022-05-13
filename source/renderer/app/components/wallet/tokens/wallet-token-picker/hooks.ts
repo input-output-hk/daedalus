@@ -91,7 +91,7 @@ export const useCheckboxes = ({
     ToggleModeEnum.SELECT_ALL_DISABLED,
     ToggleModeEnum.CLEAR_ALL_DISABLED,
   ].includes(toggleAllMode);
-  const toogleAllFn = isClearAllMode ? clearAll : checkMax;
+  const toggleAllFn = isClearAllMode ? clearAll : checkMax;
   const toggleCheckbox = useCallback(
     (assetId: string) => {
       const newValue = !checkboxes[assetId];
@@ -109,7 +109,7 @@ export const useCheckboxes = ({
     isMaxTotalCount,
     isToggleAllDisabled,
     previouslyCheckedIdsSet,
-    toogleAllFn,
+    toggleAllFn,
     toggleCheckbox,
     isClearAllMode,
   };

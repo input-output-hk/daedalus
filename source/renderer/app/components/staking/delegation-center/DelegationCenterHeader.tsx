@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationCenterHeader.scss'... Remove this comment to see the full error message
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';

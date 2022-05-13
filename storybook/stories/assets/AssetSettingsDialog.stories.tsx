@@ -14,7 +14,7 @@ const asset = {
     '6e8dc8b1f3591e8febcc47c51e9f2667c413a497aebd54cf389790866861707079636f696e',
   fingerprint: 'asset18v86ulgre52g4l7lvl5shl8h5cm4u3dmrjg2e8',
   quantity: new BigNumber(number('quantity', 1)),
-  decimals: 0,
+  decimals: undefined,
   recommendedDecimals: null,
   metadata: null,
 };
@@ -38,12 +38,24 @@ storiesOf('Assets|AssetSettingsDialog', module)
     <AssetSettingsDialog
       asset={{
         ...asset,
-        recommendedDecimals: number('recommendedDecimals', 2),
+        recommendedDecimals: number('recommendedDecimals', 0),
       }}
       // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { recommendedDecimals: number; poli... Remove this comment to see the full error message
       assetAmount={new BigNumber(number('assetAmount', 500))}
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
-      recommendedDecimalPrecision={2}
+    />
+  ))
+  .add('With recommended decimal precision (non-zero)', () => (
+    <AssetSettingsDialog
+      asset={{
+        ...asset,
+        decimals: 2,
+        recommendedDecimals: number('recommendedDecimals', 1),
+      }}
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { recommendedDecimals: number; poli... Remove this comment to see the full error message
+      assetAmount={new BigNumber(number('assetAmount', 500))}
+      onSubmit={action('onSubmit')}
+      onCancel={action('onCancel')}
     />
   ));
