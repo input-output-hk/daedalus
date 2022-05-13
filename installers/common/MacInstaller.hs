@@ -154,8 +154,12 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/build/Release/binding.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/bin/darwin-x64-"*"/blake2.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
