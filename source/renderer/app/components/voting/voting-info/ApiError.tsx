@@ -12,9 +12,7 @@ function ApiError({ intl }: Props) {
   return (
     <section className={styles.root}>
       <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
-      <span className={styles.description1}>
-        {intl.formatMessage(messages.description1)}
-      </span>
+      <span>{intl.formatMessage(messages.description1)}</span>
       <span className={styles.description2}>
         {intl.formatMessage(messages.description2)}
       </span>

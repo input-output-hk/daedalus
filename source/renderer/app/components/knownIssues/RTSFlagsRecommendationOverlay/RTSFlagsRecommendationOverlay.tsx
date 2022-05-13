@@ -7,7 +7,6 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './RTSFlagsRecommendationOverla... Remove this comment to see the full error message
 import styles from './RTSFlagsRecommendationOverlay.scss';
 
 type Props = {
@@ -23,7 +22,7 @@ const messages = defineMessages({
   content: {
     id: 'knownIssues.rtsRecommendationOverlay.content',
     defaultMessage:
-      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements.<br />You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.',
+      '!!!<p>Your system specifications do not meet Daedalus’ recommended hardware requirements.</p><p>You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.</p><p>You can enable it now by clicking the ‘Enable and quit’ button. Note that you will have to restart Daedalus for this change to take effect. To enable or disable it at any time, go to the Help menu.</p>',
     description: 'Content of the RTS flags recommendation overlay',
   },
   enableAndQuitButtonLabel: {

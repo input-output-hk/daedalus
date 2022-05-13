@@ -6,18 +6,13 @@ import { get } from 'lodash';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import AmountInputSkin from '../skins/AmountInputSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
-import closeIcon from '../../../assets/images/close-cross.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/remove.... Remove this comment to see the full error message
 import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import { Divider } from '../widgets/Divider';
 import { ClearButton } from '../widgets/ClearButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './AssetInput.scss' or its corr... Remove this comment to see the full error message
 import styles from './AssetInput.scss';
 import messages from './messages';
 
@@ -115,14 +110,7 @@ class AssetInput extends Component<Props> {
                 : '0'
             }
             className={styles.assetItem}
-            label={
-              <Asset
-                asset={asset}
-                className={styles.assetToken}
-                hidePopOver
-                small
-              />
-            }
+            label={<Asset asset={asset} hidePopOver small />}
             data-testid={`assetInput:${uniqueId}`}
             bigNumberFormat={decimals ? currentNumberFormat : null}
             decimalPlaces={decimals}
@@ -160,7 +148,6 @@ class AssetInput extends Component<Props> {
                   label={intl.formatMessage(messages.clearLabel)}
                   onClick={() => clearAssetFieldValue(assetField)}
                 />
-                <div className={styles.separator} />
               </div>
             )}
             {ticker ? (

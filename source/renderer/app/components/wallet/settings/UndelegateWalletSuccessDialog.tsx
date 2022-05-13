@@ -4,7 +4,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './UndelegateWalletSuccessDialo... Remove this comment to see the full error message
 import styles from './UndelegateWalletSuccessDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/untada.... Remove this comment to see the full error message

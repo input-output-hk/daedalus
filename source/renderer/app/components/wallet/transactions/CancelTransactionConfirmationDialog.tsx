@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './CancelTransactionConfirmatio... Remove this comment to see the full error message
 import styles from './CancelTransactionConfirmationDialog.scss';
 
 const messages = defineMessages({
@@ -16,7 +15,7 @@ const messages = defineMessages({
   content1: {
     id: 'cancel.transaction.confirmation.dialog.content1',
     defaultMessage:
-      '!!!This transaction was submitted to the Cardano network some time ago, but hasn’t been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.',
+      '!!!This transaction was submitted to the Cardano network some time ago, but has not been finalized yet. You can try to cancel the transaction now to release the pending funds, but there is a chance that the transaction will be finalized regardless. In this case, the transaction will reappear in your wallet as a completed transaction.',
     description:
       'Content for the pending transaction cancellation confirmation dialog.',
   },
@@ -59,7 +58,6 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
     const confirmButtonClasses = classnames([
       'confirmButton',
       'attention',
-      styles.confirmButton,
       isSubmitting ? styles.isSubmitting : null,
     ]);
     const actions = [

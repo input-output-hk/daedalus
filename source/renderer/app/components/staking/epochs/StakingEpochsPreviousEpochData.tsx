@@ -11,7 +11,6 @@ import {
   sortData,
 } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
 import globalMessages from '../../../i18n/global-messages';
 

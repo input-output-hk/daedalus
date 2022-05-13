@@ -4,7 +4,6 @@ import { intlShape } from 'react-intl';
 import { PasswordInput as RPPasswordInput } from 'react-polymorph/lib/components/PasswordInput';
 import type { PasswordInputProps } from 'react-polymorph/lib/components/PasswordInput';
 import globalMessages from '../../../i18n/global-messages';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './PasswordInput.scss' or its c... Remove this comment to see the full error message
 import styles from './PasswordInput.scss';
 
 export type Props = PasswordInputProps;

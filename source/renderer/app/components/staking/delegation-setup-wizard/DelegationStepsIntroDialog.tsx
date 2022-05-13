@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 // import SVGInline from 'react-svg-inline';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsIntroDialog.s... Remove this comment to see the full error message
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -102,9 +100,7 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
         closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <div className={contentClassName}>
-          <p className={styles.description}>
-            {intl.formatMessage(messages.description)}
-          </p>
+          <p>{intl.formatMessage(messages.description)}</p>
           {/*
            <button className={styles.link} onClick={onLearnMoreClick}>
              {intl.formatMessage(messages.learnMoreButtonLabel)}

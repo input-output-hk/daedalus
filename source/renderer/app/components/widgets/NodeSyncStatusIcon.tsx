@@ -4,12 +4,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import { formattedNumber } from '../../utils/formatters';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/top-bar/no... Remove this comment to see the full error message
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/top-bar/no... Remove this comment to see the full error message
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './NodeSyncStatusIcon.scss' or ... Remove this comment to see the full error message
 import styles from './NodeSyncStatusIcon.scss';
+import { TOOLTIP_DELAY } from '../../config/timingConfig';
 
 const messages = defineMessages({
   blocksSynced: {
@@ -35,18 +33,20 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
-      isSynced ? styles.synced : styles.syncing,
-      hasTadaIcon ? styles.hasTadaIcon : null,
+      !isSynced && styles.syncing,
+      hasTadaIcon && styles.hasTadaIcon,
     ]);
     const percentage = syncPercentage.toFixed(syncPercentage === 100 ? 0 : 2);
     return (
       <div className={componentClasses}>
         <PopOver
+          delay={TOOLTIP_DELAY}
+          offset={[0, 10]}
           content={intl.formatMessage(messages.blocksSynced, {
             percentage: formattedNumber(percentage),
           })}
         >
-          <div className={styles.questionMark}>
+          <div>
             <SVGInline className={styles.icon} svg={statusIcon} />
           </div>
         </PopOver>

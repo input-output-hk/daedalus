@@ -30,7 +30,7 @@ export default class Action<Params> {
     this.listeners.push(listener);
   }
 
-  trigger(params: Params) {
+  trigger(params?: Params) {
     this.listeners.forEach((listener) => listener(params));
   }
 

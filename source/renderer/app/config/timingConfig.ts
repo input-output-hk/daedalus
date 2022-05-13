@@ -41,3 +41,5 @@ export const ASSET_TOKEN_DISPLAY_DELAY = 250; // .25 second | unit: milliseconds
 export const DECENTRALIZATION_LEVEL_POLLING_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds
 
 export const TOGGLE_TOKEN_FAVORITE_TIMEOUT = 300; // .3 second | unit: milliseconds
+
+export const TOOLTIP_DELAY = [300, 0]; // [enter, leave] .3 second | unit: milliseconds

@@ -9,7 +9,6 @@ import StakingEpochsCurrentEpochData from './StakingEpochsCurrentEpochData';
 import StakingEpochsPreviousEpochData from './StakingEpochsPreviousEpochData';
 import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers';
 import type { EpochData } from '../../../api/staking/types';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './StakingEpochs.scss' or its c... Remove this comment to see the full error message
 import styles from './StakingEpochs.scss';
 
 const messages = defineMessages({

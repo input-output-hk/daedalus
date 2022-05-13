@@ -4,7 +4,6 @@ import { FormattedHTMLMessage, injectIntl, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DeleteWalletConfirmationDial... Remove this comment to see the full error message
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
@@ -68,10 +67,6 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       !isWalletNameConfirmationCorrect);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   const handleSubmit = React.useCallback(() => !isDisabled && onContinue());
-  const buttonClasses = classnames([
-    'attention',
-    isSubmitting ? styles.isSubmitting : null,
-  ]);
   const buttonLabel = !isSubmitting ? (
     `${intl.formatMessage(messages.confirmButtonLabel)} ${countdownDisplay}`
   ) : (
@@ -83,7 +78,7 @@ const WalletSettingsRemoveConfirmationDialog = observer((props: Props) => {
       onClick: onCancel,
     },
     {
-      className: buttonClasses,
+      className: 'attention',
       label: buttonLabel,
       onClick: onContinue,
       disabled: isDisabled,
