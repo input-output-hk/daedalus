@@ -95,10 +95,7 @@ import {
 import { filterLogData } from '../../../common/utils/logging';
 import { derivationPathToAddressPath } from '../utils/hardwareWalletUtils';
 // Config constants
-import {
-  DECIMAL_PLACES_IN_ADA,
-  LOVELACES_PER_ADA,
-} from '../config/numbersConfig';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
@@ -916,9 +913,7 @@ export default class AdaApi {
       );
       if (requiresAdaToRemainToSupportNativeTokens) {
         apiError.set('cannotLeaveWalletEmpty', true, {
-          adaAmount: new BigNumber(adaToProceed).toFormat(
-            DECIMAL_PLACES_IN_ADA
-          ),
+          adaAmount: adaToProceed,
         });
       }
 

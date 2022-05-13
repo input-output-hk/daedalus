@@ -58,7 +58,7 @@ describe('throw error if not enough Ada to support tokens', () => {
 
     expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual({
       requiresAdaToRemainToSupportNativeTokens: true,
-      adaToProceed: '2.629344',
+      adaToProceed: 3,
     });
   });
 });

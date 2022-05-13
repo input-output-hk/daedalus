@@ -27,7 +27,7 @@ export const doesWalletRequireAdaToRemainToSupportTokens = (
   hasAssetsRemainingAfterTransaction?: boolean
 ): {
   requiresAdaToRemainToSupportNativeTokens: boolean;
-  adaToProceed?: string;
+  adaToProceed?: number;
 } => {
   const adaToProceedRegex = new RegExp(
     /I need approximately\s+([\d.,]+)\s+ada to proceed/
@@ -42,7 +42,7 @@ export const doesWalletRequireAdaToRemainToSupportTokens = (
   ) {
     return {
       requiresAdaToRemainToSupportNativeTokens: true,
-      adaToProceed,
+      adaToProceed: Math.ceil(Number(adaToProceed)),
     };
   }
   return { requiresAdaToRemainToSupportNativeTokens: false };
