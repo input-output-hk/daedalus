@@ -29,9 +29,16 @@ let
     ))).protocolConsts.protocolMagic}
   '';
 
-in {
-
-  inherit marlowe-cli;
+  # These are also more/less the packages available in the “Daedalus | Run a Marlowe terminal”.
+  # Remember to add new ones in `MacInstaller.hs`, and in `addLDWrapper` below.
+  devShellPackages = let
+    base = [ marlowe-cli daedalus-bridge ] ++ (with pkgs; [ jq gnused coreutils ]);
+  in rec {
+    x86_64-windows = abort "Windows not available yet.";
+    x86_64-darwin  = base;
+    aarch64-darwin = base;
+    x86_64-linux   = base;
+  };
 
   # It’s monstrous, I’m sorry…
   open-marlowe-term = rec {
@@ -143,10 +150,9 @@ in {
       '';
       pathExports = {
         regular = ''
-          export PATH=${lib.makeBinPath [
-            marlowe-cli daedalus-bridge pkgs.jq pkgs.gnused pkgs.coreutils
-          ]}:$PATH
+          export PATH=${lib.makeBinPath devShellPackages.x86_64-linux}:$PATH
         '';
+        # TODO: ↓ should be generated based on `devShellPackages`, but we hide e.g. `cardano-node`:
         wrapped = ''
           ${addLDWrapper "marlowe-cli"     "${marlowe-cli}/bin/marlowe-cli"}
           ${addLDWrapper "cardano-cli"     "${daedalus-bridge}/bin/cardano-cli"}
@@ -187,5 +193,9 @@ in {
     '';
 
   };
+
+in {
+
+  inherit marlowe-cli devShellPackages open-marlowe-term;
 
 }

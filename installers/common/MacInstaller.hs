@@ -387,6 +387,9 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
   when (oCluster == Marlowe_Pioneers) $ do
     copyViaWhich "marlowe-cli" "marlowe-cli" True
     copyViaWhich "open-marlowe-term" "open-marlowe-term" False
+    copyViaWhich "sed" "sed" True
+    copyViaWhich "jq" "jq" True
+    copyViaWhich "basenc" "basenc" True
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller Options{oOutputDir} DarwinConfig{dcPkgName} componentRoot pkg = do
