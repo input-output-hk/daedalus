@@ -937,6 +937,11 @@
         "id": "wallet.hardware.deviceStatus.exporting_public_key_failed"
       },
       {
+        "defaultMessage": "!!!We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing {walletName} and that you have entered the correct passphrase.",
+        "description": "\"Unrecognized wallet\" device state",
+        "id": "wallet.hardware.deviceStatus.unrecognized_wallet"
+      },
+      {
         "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError"
