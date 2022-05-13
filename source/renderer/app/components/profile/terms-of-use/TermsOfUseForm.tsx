@@ -8,7 +8,6 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './TermsOfUseForm.scss' or its ... Remove this comment to see the full error message
 import styles from './TermsOfUseForm.scss';
 
 const messages = defineMessages({

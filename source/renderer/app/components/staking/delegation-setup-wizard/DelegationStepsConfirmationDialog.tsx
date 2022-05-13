@@ -8,9 +8,7 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationSteps.scss' or its... Remove this comment to see the full error message
 import commonStyles from './DelegationSteps.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './DelegationStepsConfirmationD... Remove this comment to see the full error message
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -279,7 +277,6 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
             </div>
           ) : (
             <Input
-              className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
               error={spendingPasswordField.error}

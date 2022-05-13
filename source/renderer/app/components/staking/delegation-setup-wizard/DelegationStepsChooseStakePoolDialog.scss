@@ -1,3 +1,5 @@
+@import '../stakingConfig';
+
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
     .StakePoolThumbnail_content {
@@ -18,6 +20,10 @@
 
     .Dialog_contentWrapper::-webkit-scrollbar-track {
       margin-top: -8px;
+    }
+
+    .ticker {
+      text-transform: uppercase;
     }
   }
 
@@ -85,11 +91,10 @@
             --theme-delegation-steps-choose-stake-pool-selected-ticker-color
           );
           font-family: var(--font-semibold);
-          font-size: 14px;
-          letter-spacing: -0.5px;
           line-height: 1.57;
           margin-top: 8px;
           text-align: center;
+          @extend %stakePoolTicker;
         }
 
         .icon {

@@ -6,8 +6,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -20,11 +20,9 @@ import {
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletCreateDialog.scss' or ... Remove this comment to see the full error message
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../assets/images/info-icon.... Remove this comment to see the full error message
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 

@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import type { Reward } from '../../../api/staking/types';
 import globalMessages from '../../../i18n/global-messages';
 import BorderedBox from '../../widgets/BorderedBox';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './WalletSummaryHeader.scss' or... Remove this comment to see the full error message
 import styles from './WalletSummaryHeader.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';

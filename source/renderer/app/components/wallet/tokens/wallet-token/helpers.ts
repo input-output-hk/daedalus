@@ -2,8 +2,14 @@ type IsRecommendedDecimal = {
   decimals: number | null | undefined;
   recommendedDecimals: number | null | undefined;
 };
+
 export const isRecommendedDecimal = ({
   recommendedDecimals,
   decimals,
-}: IsRecommendedDecimal) =>
-  typeof recommendedDecimals === 'number' && decimals !== recommendedDecimals;
+}: IsRecommendedDecimal) => {
+  return (
+    typeof recommendedDecimals === 'number' &&
+    typeof decimals === 'number' &&
+    decimals !== recommendedDecimals
+  );
+};

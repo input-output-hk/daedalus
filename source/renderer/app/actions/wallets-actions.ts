@@ -60,6 +60,7 @@ export default class WalletsActions {
     passphrase: string;
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
+    hasAssetsRemainingAfterTransaction?: boolean;
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices;

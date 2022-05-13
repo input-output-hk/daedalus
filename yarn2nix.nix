@@ -122,7 +122,7 @@ yarn2nix.mkYarnPackage {
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
 
     mkdir -pv $out/resources/app/node_modules
-    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/resources/app/node_modules
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection} $out/resources/app/node_modules
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
@@ -155,6 +155,7 @@ yarn2nix.mkYarnPackage {
     dup blake-hash
     dup blake2
     dup tiny-secp256k1
+    dup usb-detection
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
@@ -168,13 +169,20 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
     cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
     cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
+      $STRIP $file
+      patchelf --shrink-rpath $file
+    done
+
+    node_modules/.bin/electron-rebuild -w usb-detection --useCache -s
+    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
+    for file in $out/share/daedalus/build/detection.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
     done
@@ -203,13 +211,6 @@ yarn2nix.mkYarnPackage {
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
   pkgConfig = {
-    node-sass = {
-      buildInputs = [ python2 ];
-      postInstall = ''
-        yarn --offline run build
-        rm build/config.gypi
-      '';
-    };
     electron-rebuild = {
       postInstall = ''
         if [ -d node_modules ]; then

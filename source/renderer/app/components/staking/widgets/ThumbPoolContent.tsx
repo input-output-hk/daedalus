@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/no-data... Remove this comment to see the full error message
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ThumbPoolContent.scss' or it... Remove this comment to see the full error message
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';

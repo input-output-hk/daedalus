@@ -32,7 +32,7 @@ module.exports = async ({ config }) => {
             'bs58',
             'classnames',
             'es6-error',
-            'faker',
+            '@faker-js/faker',
             'humanize-duration',
             'lodash',
             'mobx',
