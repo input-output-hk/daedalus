@@ -789,7 +789,7 @@
   "wallet.connect.dialog.connectingIssueSupportLabel": "ハードウェアウォレットデバイスのペアリングで問題が生じた場合は、{supportLink}してください。",
   "wallet.connect.dialog.connectingIssueSupportLink": "ガイドを参照",
   "wallet.connect.dialog.connectingIssueSupportLinkUrl": "https://iohk.zendesk.com/hc/ja/articles/900004722083-How-to-use-Ledger-and-Trezor-HW-with-Daedalus",
-  "wallet.connect.dialog.instructions": "<p>DaedalusはLedger Nano S、Ledger Nano X、Trezor Model Tハードウェアウォレットデバイスをサポートしています。</p><p><b>デバイスを初めてDaedalusにペアリングする場合</b>は、以下の指示に従ってください。</p><p><b>Daedalusとペアリング済みであるデバイスの場合</b>には、この手順を繰り返す必要はありません。トランザクションを確認する必要があるときに、デバイスを接続してください。</p>",
+  "wallet.connect.dialog.instructions": "<p>DaedalusはLedger Nano S、Ledger Nano S Plus、Ledger Nano X、Trezor Model Tハードウェアウォレットデバイスをサポートしています。</p><p><b>デバイスを初めてDaedalusにペアリングする場合</b>は、以下の指示に従ってください。</p><p><b>Daedalusとペアリング済みであるデバイスの場合</b>には、この手順を繰り返す必要はありません。トランザクションを確認する必要があるときに、デバイスを接続してください。</p>",
   "wallet.connect.dialog.instructionsTrezorOnly": "<p><b>Daedalusが現在サポートするハードウェアウォレットデバイスはTrezor Model Tのみです。</b></p><p><b>デバイスを初めてDaedalusにペアリングする場合</b>は、以下の指示に従ってください。</p><p><b>Daedalusとペアリング済みであるデバイスの場合</b>には、この手順を繰り返す必要はありません。トランザクションを確認する必要があるときに、デバイスを接続してください。</p>",
   "wallet.connect.dialog.title": "ハードウェアウォレットを接続する",
   "wallet.create.dialog.configStep": "!!!Config",

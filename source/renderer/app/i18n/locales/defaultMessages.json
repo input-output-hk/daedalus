@@ -16470,13 +16470,13 @@
         "description": "Title \"Connect a hardware wallet device\" in the connect wallet dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.title",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -16484,13 +16484,13 @@
         "description": "Label for the \"Cancel\" button in the connect wallet dialog",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.button.cancel",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -16498,13 +16498,13 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.instructions",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -16512,13 +16512,13 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.instructionsTrezorOnly",
         "start": {
           "column": 26,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -16526,13 +16526,13 @@
         "description": "Connecting issue support description",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLabel",
         "start": {
           "column": 31,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -16540,13 +16540,13 @@
         "description": "Connecting issue support link",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLink",
         "start": {
           "column": 30,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -16554,13 +16554,13 @@
         "description": "Link to support article",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLinkUrl",
         "start": {
           "column": 33,
-          "line": 71
+          "line": 72
         }
       }
     ],

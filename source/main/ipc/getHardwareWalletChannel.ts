@@ -21,6 +21,7 @@ import { IpcSender } from '../../common/ipc/lib/IpcChannel';
 import { logger } from '../utils/logging';
 import {
   HardwareWalletTransportDeviceRequest,
+  LedgerDevicePayload,
   TransportDevice,
 } from '../../common/types/hardware-wallets.types';
 
@@ -79,6 +80,19 @@ class EventObserver {
           if (!devicesMemo[device.path]) {
             logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
 
+            const walletData: LedgerDevicePayload = {
+              disconnected: false,
+              deviceType: 'ledger',
+              deviceId: null,
+              // Available only when Cardano APP opened
+              deviceModel: deviceModel.id,
+              // e.g. nanoS
+              deviceName: deviceModel.productName,
+              // e.g. Test Name
+              path: device.path,
+              product: device.product,
+            };
+
             try {
               const transport = await TransportNodeHid.open(device.path);
               const AdaConnection = new AppAda(transport);
@@ -88,22 +102,14 @@ class EventObserver {
                 AdaConnection,
               };
               this.getHardwareWalletConnectionChannel.send(
-                {
-                  disconnected: false,
-                  deviceType: 'ledger',
-                  deviceId: null,
-                  // Available only when Cardano APP opened
-                  deviceModel: deviceModel.id,
-                  // e.g. nanoS
-                  deviceName: deviceModel.productName,
-                  // e.g. Test Name
-                  path: device.path,
-                  product: device.product,
-                },
+                walletData,
                 this.mainWindow
               );
-            } catch (e) {
-              logger.info('[HW-DEBUG] CONSTRUCTOR error');
+            } catch (error) {
+              logger.error('[HW-DEBUG] CONSTRUCTOR error', {
+                walletData,
+                error,
+              });
             }
           }
         } else {

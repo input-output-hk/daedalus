@@ -878,6 +878,7 @@ export default class HardwareWalletsStore extends Store {
           (deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) ||
           (deviceType === DeviceTypes.LEDGER &&
             !DeviceModels.LEDGER_NANO_S &&
+            !DeviceModels.LEDGER_NANO_S_PLUS &&
             !DeviceModels.LEDGER_NANO_X)
         ) {
           runInAction(
@@ -3074,6 +3075,10 @@ export default class HardwareWalletsStore extends Store {
 
     switch (deviceModel) {
       case DeviceModels.LEDGER_NANO_S:
+        type = DeviceTypes.LEDGER;
+        break;
+
+      case DeviceModels.LEDGER_NANO_S_PLUS:
         type = DeviceTypes.LEDGER;
         break;
 
