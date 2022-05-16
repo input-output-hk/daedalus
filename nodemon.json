@@ -1,6 +1,7 @@
 {
   "watch": [
-    "dist",
+    "source/main",
+    "!source/main/ipc/hardwareWallets",
     "features"
   ],
   "ext": "js json css html feature ts tsx"

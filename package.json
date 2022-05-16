@@ -247,6 +247,7 @@
     "mobx-react": "6.3.1",
     "mobx-react-form": "2.0.8",
     "mobx-react-router": "4.1.0",
+    "modulik": "0.5.0-alpha.0",
     "moment": "2.29.0",
     "nanoid": "3.2.0",
     "node-downloader-helper": "1.0.18",

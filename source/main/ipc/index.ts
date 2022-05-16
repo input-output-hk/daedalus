@@ -8,7 +8,7 @@ import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { downloadManagerChannel } from './downloadManagerChannel';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
-import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
+import { handleHardwareWalletRequests } from './getHWChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';

@@ -6,7 +6,10 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, launcherConfig } from '../config';
-import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
+import {
+  closeLedgerListener,
+  isLedgerListenerActive,
+} from '../ipc/getHWChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 
 const rendererErrorHandler = new RendererErrorHandler();
@@ -156,10 +159,10 @@ export const createMainWindow = (
       window.setBounds(savedWindowBounds);
     }
   });
-  window.on('closed', (event) => {
+  window.on('closed', async (event) => {
     event.preventDefault();
-    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
-      ledgerStatus.Listener.unsubscribe();
+    if (await isLedgerListenerActive()) {
+      closeLedgerListener();
       setTimeout(() => app.quit(), 5000);
     } else {
       app.quit();
