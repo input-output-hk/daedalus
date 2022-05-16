@@ -821,6 +821,7 @@
   "wallet.hardware.deviceStatus.trezor_bridge_failure": "Trezor Bridge is not installed! {instructionsLink}",
   "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label": "Installation instructions",
   "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url": "https://wallet.trezor.io/#/bridge",
+  "wallet.hardware.deviceStatus.unrecognized_wallet": "We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing \"{walletName}\" and that you have entered the correct passphrase.",
   "wallet.hardware.deviceStatus.unsupported_device": "The device is not supported!",
   "wallet.hardware.deviceStatus.verifying_address": "Verify address on your \"{walletName}\" device",
   "wallet.hardware.deviceStatus.verifying_address_aborted": "Verification was aborted by the user",

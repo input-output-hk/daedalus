@@ -1073,17 +1073,31 @@
         }
       },
       {
+        "defaultMessage": "!!!We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing {walletName} and that you have entered the correct passphrase.",
+        "description": "\"Unrecognized wallet\" device state",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
+        "id": "wallet.hardware.deviceStatus.unrecognized_wallet",
+        "start": {
+          "column": 23,
+          "line": 49
+        }
+      },
+      {
         "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 61
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
           "column": 27,
-          "line": 49
+          "line": 55
         }
       },
       {
@@ -1091,13 +1105,13 @@
         "description": "\"Enter passphrase if needed\" device sub-state",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 66
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.enterPassphrase",
         "start": {
           "column": 19,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -1105,13 +1119,13 @@
         "description": "\"Device ready\" device state",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 71
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.ready",
         "start": {
           "column": 9,
-          "line": 61
+          "line": 67
         }
       },
       {
@@ -1119,13 +1133,13 @@
         "description": "\"Confirm the transaction using the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 78
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
-          "line": 66
+          "line": 72
         }
       },
       {
@@ -1133,13 +1147,13 @@
         "description": "\"Transaction verification and signing failed\" device state",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 83
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
-          "line": 73
+          "line": 79
         }
       },
       {
@@ -1147,13 +1161,13 @@
         "description": "\"Transaction verified and signed\" device state",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 88
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
-          "line": 78
+          "line": 84
         }
       },
       {
@@ -1161,13 +1175,13 @@
         "description": "\"Trezor Bridge not installed! {instructionsLink}\" device state",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 94
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure",
         "start": {
           "column": 25,
-          "line": 83
+          "line": 89
         }
       },
       {
@@ -1175,13 +1189,13 @@
         "description": "Trezor Bridge installation instructions link label",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 99
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label",
         "start": {
           "column": 36,
-          "line": 89
+          "line": 95
         }
       },
       {
@@ -1189,13 +1203,13 @@
         "description": "URL for the \"Trezor Bridge\" update",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 105
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url",
         "start": {
           "column": 34,
-          "line": 94
+          "line": 100
         }
       },
       {
@@ -1203,13 +1217,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 110
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware",
         "start": {
           "column": 18,
-          "line": 100
+          "line": 106
         }
       },
       {
@@ -1217,13 +1231,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 115
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label",
         "start": {
           "column": 29,
-          "line": 105
+          "line": 111
         }
       },
       {
@@ -1231,13 +1245,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 121
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url",
         "start": {
           "column": 27,
-          "line": 110
+          "line": 116
         }
       },
       {
@@ -1245,13 +1259,13 @@
         "description": "\"The device is not supported!\" device state",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 126
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.unsupported_device",
         "start": {
           "column": 22,
-          "line": 116
+          "line": 122
         }
       },
       {
@@ -1259,13 +1273,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 131
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version",
         "start": {
           "column": 29,
-          "line": 121
+          "line": 127
         }
       },
       {
@@ -1273,13 +1287,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 136
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.label",
         "start": {
           "column": 40,
-          "line": 126
+          "line": 132
         }
       },
       {
@@ -1287,13 +1301,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 142
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.url",
         "start": {
           "column": 38,
-          "line": 131
+          "line": 137
         }
       },
       {
@@ -1301,13 +1315,13 @@
         "description": "\"Verify receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 147
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address",
         "start": {
           "column": 21,
-          "line": 137
+          "line": 143
         }
       },
       {
@@ -1315,13 +1329,13 @@
         "description": "\"Confirm receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 152
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
         "start": {
           "column": 34,
-          "line": 142
+          "line": 148
         }
       },
       {
@@ -1329,13 +1343,13 @@
         "description": "\"Address verification failed\" device state",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 157
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_failed",
         "start": {
           "column": 28,
-          "line": 147
+          "line": 153
         }
       },
       {
@@ -1343,13 +1357,13 @@
         "description": "\"Address verification aborted\" device state",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 162
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
         "start": {
           "column": 29,
-          "line": 152
+          "line": 158
         }
       },
       {
@@ -1357,13 +1371,13 @@
         "description": "\"Address verified\" device state",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 167
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
         "start": {
           "column": 31,
-          "line": 157
+          "line": 163
         }
       }
     ],
