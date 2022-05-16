@@ -103,6 +103,7 @@ type State = {
   isReceiverAddressValidOnce: boolean;
   isTransactionFeeCalculated: boolean;
   isCalculatingTransactionFee: boolean;
+  pendingCalculationFeeRequest: number;
   adaInputState: AdaInputState;
 };
 
@@ -134,6 +135,7 @@ class WalletSendForm extends Component<Props, State> {
     isTransactionFeeCalculated: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
+    pendingCalculationFeeRequest: 0,
   };
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -333,7 +335,8 @@ class WalletSendForm extends Component<Props, State> {
     this.state.isCalculatingTransactionFee ||
     !this.state.isTransactionFeeCalculated ||
     !this.form.isValid ||
-    this.form.validating;
+    this.form.validating ||
+    this.state.pendingCalculationFeeRequest > 0;
 
   form = new ReactToolboxMobxForm<FormFields>(
     {
@@ -487,6 +490,10 @@ class WalletSendForm extends Component<Props, State> {
 
       this.feeCalculationQueue.push({ request, token });
 
+      this.setState({
+        pendingCalculationFeeRequest: this.feeCalculationQueue.length,
+      });
+
       request
         .then(resolve)
         .catch(reject)
@@ -494,6 +501,10 @@ class WalletSendForm extends Component<Props, State> {
           this.feeCalculationQueue = this.feeCalculationQueue.filter(
             (r) => r.request !== request
           );
+
+          this.setState({
+            pendingCalculationFeeRequest: this.feeCalculationQueue.length,
+          });
         });
     });
   };
