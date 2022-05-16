@@ -22,7 +22,7 @@ import {
 } from './features';
 // run MobX in strict mode
 configure({
-  enforceActions: 'always',
+  // enforceActions: 'always',
 });
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
