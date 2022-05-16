@@ -19,9 +19,9 @@ export class DeviceTracker {
     const device = DeviceTracker.getDeviceByPath(path);
 
     const descriptor: string = device.path;
-    const deviceModel = identifyUSBProductId(
+    const deviceModel = (identifyUSBProductId(
       device.productId
-    ) as unknown as DeviceModel;
+    ) as unknown) as DeviceModel;
 
     return { device, deviceModel, descriptor } as TrackedDevice;
   }

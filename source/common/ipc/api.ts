@@ -320,8 +320,7 @@ export type ExportWalletsMainResponse = {
  */
 export const GENERATE_WALLET_MIGRATION_REPORT_CHANNEL =
   'GENERATE_WALLET_MIGRATION_REPORT_CHANNEL';
-export type GenerateWalletMigrationReportRendererRequest =
-  WalletMigrationReportData;
+export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReportData;
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
@@ -370,8 +369,7 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
  */
 export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
 export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
-export type DeleteDownloadedFileMainResponse =
-  DeleteDownloadedFileResponse | void;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
 
 /**
  * Channel for initiating the download manager
@@ -384,16 +382,14 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
-export type DownloadsLocalDataRendererRequest =
-  DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
  * Channel for initiating the download manager
  */
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
-export type ClearDownloadLocalDataRendererRequest =
-  ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
@@ -471,16 +467,12 @@ export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
 
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest =
-  HardwareWalletTransportDeviceRequest;
-export type getHardwareWalletTransportMainResponse =
-  HardwareWalletTransportDeviceResponse;
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest =
-  HardwareWalletExtendedPublicKeyRequest;
-export type getExtendedPublicKeyMainResponse =
-  HardwareWalletExtendedPublicKeyResponse;
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
@@ -489,8 +481,7 @@ export type getCardanoAdaAppRendererRequest = {
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectionMainRequest =
-  HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectionRendererResponse =
   | LedgerDevicePayload
   | TrezorDevicePayload

@@ -19,8 +19,7 @@ export const run = () => {
 
   createAndRegisterHardwareWalletChannels();
 
-  const hardwareWalletConnectionChannel =
-    createHardwareWalletConnectionChannel();
+  const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
 
   const getNextExpectedSequence = createSequentialResult([
     {

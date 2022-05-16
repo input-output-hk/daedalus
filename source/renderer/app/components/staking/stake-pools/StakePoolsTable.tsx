@@ -122,14 +122,19 @@ function StakePoolsTableComponent({
     showWithSelectButton,
   });
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data: sortedStakePoolList,
-      },
-      useFlexLayout
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data: sortedStakePoolList,
+    },
+    useFlexLayout
+  );
 
   const RenderRow = useCallback(
     ({ index, style }) => {

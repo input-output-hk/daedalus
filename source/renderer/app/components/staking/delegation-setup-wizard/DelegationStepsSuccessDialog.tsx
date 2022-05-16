@@ -95,8 +95,12 @@ class DelegationStepsSuccessDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { delegatedWallet, delegatedStakePool, currentLocale, onClose } =
-      this.props;
+    const {
+      delegatedWallet,
+      delegatedStakePool,
+      currentLocale,
+      onClose,
+    } = this.props;
     const actions = [
       {
         className: 'closeButton',

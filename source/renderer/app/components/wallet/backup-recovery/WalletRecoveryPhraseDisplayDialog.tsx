@@ -20,7 +20,8 @@ const messages = defineMessages({
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelIHaveWrittenItDown: {
-    id: 'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
+    id:
+      'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
     defaultMessage: '!!!Yes, I have written down my wallet recovery phrase.',
     description:
       'Label for button "Yes, I have written down my wallet recovery phrase." on wallet backup dialog',
@@ -77,8 +78,7 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount:
-                  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }

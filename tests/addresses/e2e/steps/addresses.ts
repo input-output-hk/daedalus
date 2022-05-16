@@ -23,27 +23,26 @@ Given('I create {int} addresses', async function (numberOfAddresses) {
     await this.waitAndClick(SELECTORS.GENERATE_ADDRESS_BTN);
   }
 });
-Given(
-  'I have {int} generated wallet addresses',
-  async function (numberOfAddresses) {
-    for (let i = 0; i < numberOfAddresses; i++) {
-      await this.client.executeAsync((done) => {
-        const { active } = daedalus.stores.wallets;
+Given('I have {int} generated wallet addresses', async function (
+  numberOfAddresses
+) {
+  for (let i = 0; i < numberOfAddresses; i++) {
+    await this.client.executeAsync((done) => {
+      const { active } = daedalus.stores.wallets;
 
-        if (!active) {
-          return done();
-        }
+      if (!active) {
+        return done();
+      }
 
-        return daedalus.stores.addresses
-          ._createByronWalletAddress({
-            walletId: active.id,
-            passphrase: 'Secret1234',
-          })
-          .then(done);
-      });
-    }
+      return daedalus.stores.addresses
+        ._createByronWalletAddress({
+          walletId: active.id,
+          passphrase: 'Secret1234',
+        })
+        .then(done);
+    });
   }
-);
+});
 When('I click the ShowUsed switch', async function () {
   await this.waitAndClick(SELECTORS.SHOW_USED_SWITCH);
 });
@@ -74,8 +73,8 @@ Then(
       const scrollableList = window.document.getElementsByClassName(
         'VirtualAddressesList_list'
       );
-      const listHeight =
-        scrollableListContainer[0].getBoundingClientRect().height;
+      const listHeight = scrollableListContainer[0].getBoundingClientRect()
+        .height;
       // Scroll to bottom
       scrollableList[0].scroll(0, listHeight);
     });
@@ -102,8 +101,8 @@ Then(
       const scrollableList = window.document.getElementsByClassName(
         'VirtualAddressesList_list'
       );
-      const listHeight =
-        scrollableListContainer[0].getBoundingClientRect().height;
+      const listHeight = scrollableListContainer[0].getBoundingClientRect()
+        .height;
       // Scroll to bottom
       scrollableList[0].scroll(0, listHeight);
     });
@@ -160,33 +159,30 @@ Then(
     }
   }
 );
-Then(
-  /^The active address belongs to "([^"]*)" wallet$/,
-  async function (walletName) {
-    const { id: walletId, isLegacy } = await getWalletByName.call(
-      this,
-      walletName
-    );
-    const walletAddresses = await this.client.executeAsync(
-      (walletId, isLegacy, done) => {
-        daedalus.api.ada
-          .getAddresses({
-            walletId,
-            isLegacy,
-          })
-          .then((response) => done(response))
-          .catch((error) => done(error));
-      },
-      walletId,
-      isLegacy
-    );
-    const activeAddress = await this.client.getText(
-      '.WalletReceiveRandom_hash'
-    );
-    const walletAddress = find(
-      walletAddresses.value,
-      (address) => address.id === activeAddress
-    );
-    expect(walletAddress.id).to.equal(activeAddress);
-  }
-);
+Then(/^The active address belongs to "([^"]*)" wallet$/, async function (
+  walletName
+) {
+  const { id: walletId, isLegacy } = await getWalletByName.call(
+    this,
+    walletName
+  );
+  const walletAddresses = await this.client.executeAsync(
+    (walletId, isLegacy, done) => {
+      daedalus.api.ada
+        .getAddresses({
+          walletId,
+          isLegacy,
+        })
+        .then((response) => done(response))
+        .catch((error) => done(error));
+    },
+    walletId,
+    isLegacy
+  );
+  const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
+  const walletAddress = find(
+    walletAddresses.value,
+    (address) => address.id === activeAddress
+  );
+  expect(walletAddress.id).to.equal(activeAddress);
+});

@@ -323,8 +323,9 @@ const createWalletsAsync = async function (table, isLegacy?: boolean) {
       const mnemonicsLength = isLegacyWallet ? 12 : 24;
       window.Promise.all(
         wallets.map((wallet) => {
-          const mnemonic =
-            daedalus.utils.crypto.generateMnemonic(mnemonicsLength);
+          const mnemonic = daedalus.utils.crypto.generateMnemonic(
+            mnemonicsLength
+          );
           const recoveryPhrase = !isLegacyWallet
             ? mnemonic
             : mnemonic.split(' ');

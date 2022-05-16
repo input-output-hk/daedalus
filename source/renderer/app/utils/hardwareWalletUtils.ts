@@ -37,7 +37,15 @@ export const KEY_PREFIXES = {
 };
 // Helpers
 const receiverAddressTypes: Set<AddressType> = new Set([
-  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
 ]);
 export const isReceiverAddressType = (addressType: AddressType) =>
   receiverAddressTypes.has(addressType);

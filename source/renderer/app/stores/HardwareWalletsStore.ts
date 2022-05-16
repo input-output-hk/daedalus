@@ -155,13 +155,13 @@ export default class HardwareWalletsStore extends Store {
     this.api.ada.constructAddress
   );
   @observable
-  hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
-    this.api.localStorage.getHardwareWalletsLocalData
-  );
+  hardwareWalletsLocalDataRequest: Request<
+    HardwareWalletsLocalData
+  > = new Request(this.api.localStorage.getHardwareWalletsLocalData);
   @observable
-  setHardwareWalletLocalDataRequest: Request<HardwareWalletLocalData> = new Request(
-    this.api.localStorage.setHardwareWalletLocalData
-  );
+  setHardwareWalletLocalDataRequest: Request<
+    HardwareWalletLocalData
+  > = new Request(this.api.localStorage.setHardwareWalletLocalData);
   @observable
   unsetHardwareWalletLocalDataRequest: Request<void> = new Request(
     this.api.localStorage.unsetHardwareWalletLocalData
@@ -171,25 +171,25 @@ export default class HardwareWalletsStore extends Store {
     this.api.localStorage.getHardwareWalletDevices
   );
   @observable
-  setHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
-    this.api.localStorage.setHardwareWalletDevice
-  );
+  setHardwareWalletDeviceRequest: Request<
+    HardwareWalletLocalData
+  > = new Request(this.api.localStorage.setHardwareWalletDevice);
   @observable
-  overrideHardwareWalletDevicesRequest: Request<HardwareWalletDevicesType> = new Request(
-    this.api.localStorage.overrideHardwareWalletDevices
-  );
+  overrideHardwareWalletDevicesRequest: Request<
+    HardwareWalletDevicesType
+  > = new Request(this.api.localStorage.overrideHardwareWalletDevices);
   @observable
-  unsetHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
-    this.api.localStorage.unsetHardwareWalletDevice
-  );
+  unsetHardwareWalletDeviceRequest: Request<
+    HardwareWalletLocalData
+  > = new Request(this.api.localStorage.unsetHardwareWalletDevice);
   @observable
   unsetHardwareWalletDevicesAllRequest: Request<void> = new Request(
     this.api.localStorage.unsetHardwareWalletDevicesAll
   );
   @observable
-  unsetHardwareWalletLocalDataAllRequest: Request<HardwareWalletLocalData> = new Request(
-    this.api.localStorage.unsetHardwareWalletLocalDataAll
-  );
+  unsetHardwareWalletLocalDataAllRequest: Request<
+    HardwareWalletLocalData
+  > = new Request(this.api.localStorage.unsetHardwareWalletLocalDataAll);
   @observable
   hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
   @observable
@@ -333,8 +333,9 @@ export default class HardwareWalletsStore extends Store {
       let canRun = true;
       let isRunning = false;
 
-      const connectedDevice =
-        this.connectedHardwareWalletsDevices.get(devicePath);
+      const connectedDevice = this.connectedHardwareWalletsDevices.get(
+        devicePath
+      );
 
       const product =
         connectedDevice?.deviceType === 'ledger'
@@ -494,11 +495,15 @@ export default class HardwareWalletsStore extends Store {
     walletId: string;
     isVotingRegistrationTransaction: boolean;
   }) => {
-    const { transactionId, walletId, isVotingRegistrationTransaction } =
-      request;
+    const {
+      transactionId,
+      walletId,
+      isVotingRegistrationTransaction,
+    } = request;
 
-    const recentTransactionsResponse =
-      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -2008,10 +2013,11 @@ export default class HardwareWalletsStore extends Store {
     const outputsData = [];
 
     for (const output of outputs) {
-      const { address_style: addressStyle } =
-        await this.stores.addresses._inspectAddress({
-          addressId: output.address,
-        });
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareTrezorOutput(output);
@@ -2330,10 +2336,11 @@ export default class HardwareWalletsStore extends Store {
     const outputsData = [];
 
     for (const output of outputs) {
-      const { address_style: addressStyle } =
-        await this.stores.addresses._inspectAddress({
-          addressId: output.address,
-        });
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareLedgerOutput(output, addressStyle);

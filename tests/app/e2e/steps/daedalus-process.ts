@@ -39,28 +39,26 @@ Then(
     await waitForDaedalusToExit(this.client);
   }
 );
-Then(
-  /^I should see the loading screen with "([^"]*)"$/,
-  async function (message) {
-    await waitUntilTextInSelector(this.client, {
-      selector: CONNECTING_TITLE,
-      text: message,
-    });
-  }
-);
+Then(/^I should see the loading screen with "([^"]*)"$/, async function (
+  message
+) {
+  await waitUntilTextInSelector(this.client, {
+    selector: CONNECTING_TITLE,
+    text: message,
+  });
+});
 Then(/^I should see the main UI/, function () {
   return this.client.waitForVisible('.SidebarLayout_component');
 });
-Given(
-  'I set the syncing progress to {int} percent',
-  async function (percentage) {
-    this.client.executeAsync((percentage, done) => {
-      daedalus.api.ada.setSyncProgress(percentage);
+Given('I set the syncing progress to {int} percent', async function (
+  percentage
+) {
+  this.client.executeAsync((percentage, done) => {
+    daedalus.api.ada.setSyncProgress(percentage);
 
-      daedalus.stores.networkStatus._updateNetworkStatus().then(done);
-    }, percentage);
-  }
-);
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
+  }, percentage);
+});
 When('I reset the syncing progress', async function () {
   this.client.executeAsync((done) => {
     daedalus.api.ada.setSyncProgress(null);

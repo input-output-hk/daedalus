@@ -20,10 +20,10 @@ export const useForm = ({
   isHardwareWallet,
   onSubmitCb,
 }: UseForm) => {
-  const form = useMemo(
-    () => createForm({ intl, isHardwareWallet }),
-    [intl, isHardwareWallet]
-  );
+  const form = useMemo(() => createForm({ intl, isHardwareWallet }), [
+    intl,
+    isHardwareWallet,
+  ]);
   const passphraseField = form.$('passphrase');
   const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
   const onSubmit = useCallback(

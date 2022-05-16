@@ -167,7 +167,9 @@ export default class StakingStore extends Store {
     this.api.ada.getStakePools
   );
   @observable
-  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
+  calculateDelegationFeeRequest: Request<
+    DelegationCalculateFeeResponse
+  > = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.calculateDelegationFee
   );
@@ -286,8 +288,7 @@ export default class StakingStore extends Store {
   @action
   _getStakingInfoWasOpen = async () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    const stakingInfoWasOpen =
-      await this.api.localStorage.getStakingInfoWasOpen();
+    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
@@ -300,8 +301,7 @@ export default class StakingStore extends Store {
   };
   @action
   _getStakePoolsListViewTooltip = async () => {
-    const tooltipShown =
-      await this.api.localStorage.getStakePoolsListViewTooltip();
+    const tooltipShown = await this.api.localStorage.getStakePoolsListViewTooltip();
     runInAction(() => {
       this.stakePoolsListViewTooltipVisible = tooltipShown;
     });
@@ -438,8 +438,9 @@ export default class StakingStore extends Store {
     const { transactionId, walletId } = request;
 
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-    const recentTransactionsResponse =
-      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -527,10 +528,11 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: DelegationCalculateFeeResponse =
-        await this.calculateDelegationFeeRequest.execute({
+      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
+        {
           ...delegationFeeRequest,
-        }).promise;
+        }
+      ).promise;
 
       if (this._delegationFeeCalculationWalletId !== walletId) {
         return null;

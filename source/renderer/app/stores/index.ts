@@ -82,43 +82,47 @@ function executeOnEveryStore(fn: (store: Store) => void) {
   });
 } // Set up and return the stores for this app -> also used to reset all stores to defaults
 
-export default action((api, actions, router): StoresMap => {
-  function createStoreInstanceOf<T extends Store>(StoreSubClass: Class<T>): T {
-    return new StoreSubClass(api, actions);
-  }
+export default action(
+  (api, actions, router): StoresMap => {
+    function createStoreInstanceOf<T extends Store>(
+      StoreSubClass: Class<T>
+    ): T {
+      return new StoreSubClass(api, actions);
+    }
 
-  // Teardown existing stores
-  if (stores) executeOnEveryStore((store) => store.teardown());
-  // Create fresh instances of all stores
-  // @ts-ignore ts-migrate(2322) FIXME: Type '{ addresses: Store; app: Store; assets: Stor... Remove this comment to see the full error message
-  stores = observable({
-    addresses: createStoreInstanceOf(AddressesStore),
-    app: createStoreInstanceOf(AppStore),
-    assets: createStoreInstanceOf(AssetsStore),
-    currency: createStoreInstanceOf(CurrencyStore),
-    appUpdate: createStoreInstanceOf(AppUpdateStore),
-    hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
-    networkStatus: createStoreInstanceOf(NetworkStatusStore),
-    newsFeed: createStoreInstanceOf(NewsFeedStore),
-    profile: createStoreInstanceOf(ProfileStore),
-    router,
-    sidebar: createStoreInstanceOf(SidebarStore),
-    staking: createStoreInstanceOf(StakingStore),
-    transactions: createStoreInstanceOf(TransactionsStore),
-    uiDialogs: createStoreInstanceOf(UiDialogsStore),
-    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
-    voting: createStoreInstanceOf(VotingStore),
-    wallets: createStoreInstanceOf(WalletsStore),
-    walletsLocal: createStoreInstanceOf(WalletsLocalStore),
-    walletBackup: createStoreInstanceOf(WalletBackupStore),
-    walletMigration: createStoreInstanceOf(WalletMigrationStore),
-    walletSettings: createStoreInstanceOf(WalletSettingsStore),
-    window: createStoreInstanceOf(WindowStore),
-  });
-  // Configure and initialize all stores
-  executeOnEveryStore((store) => {
-    if (stores) store.configure(stores);
-  });
-  executeOnEveryStore((store) => store.initialize());
-  return stores;
-});
+    // Teardown existing stores
+    if (stores) executeOnEveryStore((store) => store.teardown());
+    // Create fresh instances of all stores
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ addresses: Store; app: Store; assets: Stor... Remove this comment to see the full error message
+    stores = observable({
+      addresses: createStoreInstanceOf(AddressesStore),
+      app: createStoreInstanceOf(AppStore),
+      assets: createStoreInstanceOf(AssetsStore),
+      currency: createStoreInstanceOf(CurrencyStore),
+      appUpdate: createStoreInstanceOf(AppUpdateStore),
+      hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
+      networkStatus: createStoreInstanceOf(NetworkStatusStore),
+      newsFeed: createStoreInstanceOf(NewsFeedStore),
+      profile: createStoreInstanceOf(ProfileStore),
+      router,
+      sidebar: createStoreInstanceOf(SidebarStore),
+      staking: createStoreInstanceOf(StakingStore),
+      transactions: createStoreInstanceOf(TransactionsStore),
+      uiDialogs: createStoreInstanceOf(UiDialogsStore),
+      uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+      voting: createStoreInstanceOf(VotingStore),
+      wallets: createStoreInstanceOf(WalletsStore),
+      walletsLocal: createStoreInstanceOf(WalletsLocalStore),
+      walletBackup: createStoreInstanceOf(WalletBackupStore),
+      walletMigration: createStoreInstanceOf(WalletMigrationStore),
+      walletSettings: createStoreInstanceOf(WalletSettingsStore),
+      window: createStoreInstanceOf(WindowStore),
+    });
+    // Configure and initialize all stores
+    executeOnEveryStore((store) => {
+      if (stores) store.configure(stores);
+    });
+    executeOnEveryStore((store) => store.initialize());
+    return stores;
+  }
+);

@@ -6,15 +6,14 @@ Given(/^I see delete wallet dialog$/, function () {
 When(/^I click on delete wallet button$/, async function () {
   return this.waitAndClick('.WalletSettings_deleteWalletBox button');
 });
-When(
-  /^I enter "([^"]*)" as name of the wallet to confirm$/,
-  async function (walletName) {
-    return this.client.setValue(
-      '.DeleteWalletConfirmationDialog_confirmationInput input',
-      walletName
-    );
-  }
-);
+When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function (
+  walletName
+) {
+  return this.client.setValue(
+    '.DeleteWalletConfirmationDialog_confirmationInput input',
+    walletName
+  );
+});
 When(
   /^I click on the "Make sure you have access to backup before continuing" checkbox$/,
   function () {

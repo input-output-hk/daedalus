@@ -41,35 +41,30 @@ When(
     }
   }
 );
-When(
-  /^I enter recovery phrase in restore wallet dialog:$/,
-  async function (table) {
-    const fields = table.hashes()[0];
-    const recoveryPhrase = fields.recoveryPhrase.split(' ');
+When(/^I enter recovery phrase in restore wallet dialog:$/, async function (
+  table
+) {
+  const fields = table.hashes()[0];
+  const recoveryPhrase = fields.recoveryPhrase.split(' ');
 
-    for (let i = 0; i < recoveryPhrase.length; i++) {
-      const word = recoveryPhrase[i];
-      await this.client.setValue(
-        '.AutocompleteOverrides_autocompleteWrapper input',
-        word
-      );
-      await this.client.waitForVisible(`//li[text()="${word}"]`);
-      await this.waitAndClick(`//li[text()="${word}"]`);
-      await this.client.waitForVisible(`//span[text()="${word}"]`);
-    }
-  }
-);
-When(
-  /^I enter wallet password in restore wallet dialog:$/,
-  async function (table) {
-    const fields = table.hashes()[0];
-    await this.client.setValue('.spendingPassword input', fields.password);
+  for (let i = 0; i < recoveryPhrase.length; i++) {
+    const word = recoveryPhrase[i];
     await this.client.setValue(
-      '.repeatPassword input',
-      fields.repeatedPassword
+      '.AutocompleteOverrides_autocompleteWrapper input',
+      word
     );
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
-);
+});
+When(/^I enter wallet password in restore wallet dialog:$/, async function (
+  table
+) {
+  const fields = table.hashes()[0];
+  await this.client.setValue('.spendingPassword input', fields.password);
+  await this.client.setValue('.repeatPassword input', fields.repeatedPassword);
+});
 When(/^I submit the restore wallet dialog$/, function () {
   return this.client.click('.WalletRestoreDialog .primary');
 });
@@ -119,13 +114,13 @@ Then(/^I confirm "([^"]*)"$/, async function (text) {
   await scrollIntoView(this.client, targetSelector);
   await this.client.click(targetSelector);
 });
-Then(
-  /^"([^"]*)" wallet should have "([^"]*)" as id$/,
-  async function (walletName, walletId) {
-    const wallet = await getWalletByName.call(this, walletName);
-    expect(wallet.id).to.equal(walletId);
-  }
-);
+Then(/^"([^"]*)" wallet should have "([^"]*)" as id$/, async function (
+  walletName,
+  walletId
+) {
+  const wallet = await getWalletByName.call(this, walletName);
+  expect(wallet.id).to.equal(walletId);
+});
 Given(/^I go back to the previous step$/, function () {
   return this.waitAndClick('.DialogBackButton_component');
 });

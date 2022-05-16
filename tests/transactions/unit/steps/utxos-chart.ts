@@ -61,8 +61,9 @@ Then(
       },
       0
     );
-    const { walletUtxosAmount: calculatedAggregatedUtxosAmount } =
-      utxoChartData.find(({ walletRawAmount }) => walletRawAmount === 100000);
+    const {
+      walletUtxosAmount: calculatedAggregatedUtxosAmount,
+    } = utxoChartData.find(({ walletRawAmount }) => walletRawAmount === 100000);
     expect(expectedAggregatedUtxosAmount).to.equal(
       calculatedAggregatedUtxosAmount
     );
@@ -89,17 +90,16 @@ Then('the response should have type {string}', function (type) {
 
   return expect(typeof response).to.equal(type);
 });
-Then(
-  'wallet amounts less than {int} should not be modified',
-  function (amount) {
-    const { walletAmount, walletRawAmount } = this.context;
+Then('wallet amounts less than {int} should not be modified', function (
+  amount
+) {
+  const { walletAmount, walletRawAmount } = this.context;
 
-    if (walletRawAmount < amount) {
-      expect(walletAmount).to.equal(String(walletRawAmount));
-      expect(/[a-zA-Z]/.test(walletAmount)).to.be.false;
-    }
+  if (walletRawAmount < amount) {
+    expect(walletAmount).to.equal(String(walletRawAmount));
+    expect(/[a-zA-Z]/.test(walletAmount)).to.be.false;
   }
-);
+});
 Then(
   'wallet amounts equal or greater than {int} should be formatted into human-readable text',
   function (amount) {

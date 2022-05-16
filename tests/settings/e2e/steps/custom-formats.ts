@@ -7,36 +7,37 @@ import {
   doesMatchExpectedValue,
 } from './helpers';
 
-Given(
-  /^I choose the following custom formats:$/,
-  async function (formatsTable) {
-    const chosenFormats = formatsTable.hashes();
-    const [{ value: numberValue }, { value: dateValue }, { value: timeValue }] =
-      chosenFormats;
-    await chooseCustomOptionsByValue.call(
-      this,
-      numberValue,
-      dateValue,
-      timeValue
-    );
-  }
-);
-Given(
-  /^I have changed the following custom formats:$/,
-  async function (formatsTable) {
-    const chosenFormats = formatsTable.hashes();
-    await this.client.executeAsync((chosenFormats, done) => {
-      Promise.all(
-        chosenFormats.map(({ param, value }) =>
-          daedalus.stores.profile._updateUserLocalSetting({
-            param: `${param}Format`,
-            value,
-          })
-        )
-      ).then(done);
-    }, chosenFormats);
-  }
-);
+Given(/^I choose the following custom formats:$/, async function (
+  formatsTable
+) {
+  const chosenFormats = formatsTable.hashes();
+  const [
+    { value: numberValue },
+    { value: dateValue },
+    { value: timeValue },
+  ] = chosenFormats;
+  await chooseCustomOptionsByValue.call(
+    this,
+    numberValue,
+    dateValue,
+    timeValue
+  );
+});
+Given(/^I have changed the following custom formats:$/, async function (
+  formatsTable
+) {
+  const chosenFormats = formatsTable.hashes();
+  await this.client.executeAsync((chosenFormats, done) => {
+    Promise.all(
+      chosenFormats.map(({ param, value }) =>
+        daedalus.stores.profile._updateUserLocalSetting({
+          param: `${param}Format`,
+          value,
+        })
+      )
+    ).then(done);
+  }, chosenFormats);
+});
 When(
   /^the "([^"]*)" wallet has received the transaction amount$/,
   async function (walletName) {
@@ -50,31 +51,36 @@ When(
     });
   }
 );
-Then(
-  /^I should see the following chosen options:$/,
-  async function (expectedTable) {
-    const expectedValues = expectedTable.hashes();
-    const [
-      { value: expectedNumber },
-      { value: expectedDate },
-      { value: expectedTime },
-    ] = expectedValues;
-    await this.client.waitUntil(async () => {
-      const { selectedNumber, selectedDate, selectedTime } =
-        await getSelectedCustomOptions.call(this);
-      return (
-        selectedNumber === expectedNumber &&
-        selectedDate === expectedDate &&
-        selectedTime === expectedTime
-      );
-    });
-    const { selectedNumber, selectedDate, selectedTime } =
-      await getSelectedCustomOptions.call(this);
-    expect(selectedNumber).to.equal(expectedNumber);
-    expect(selectedDate).to.equal(expectedDate);
-    expect(selectedTime).to.equal(expectedTime);
-  }
-);
+Then(/^I should see the following chosen options:$/, async function (
+  expectedTable
+) {
+  const expectedValues = expectedTable.hashes();
+  const [
+    { value: expectedNumber },
+    { value: expectedDate },
+    { value: expectedTime },
+  ] = expectedValues;
+  await this.client.waitUntil(async () => {
+    const {
+      selectedNumber,
+      selectedDate,
+      selectedTime,
+    } = await getSelectedCustomOptions.call(this);
+    return (
+      selectedNumber === expectedNumber &&
+      selectedDate === expectedDate &&
+      selectedTime === expectedTime
+    );
+  });
+  const {
+    selectedNumber,
+    selectedDate,
+    selectedTime,
+  } = await getSelectedCustomOptions.call(this);
+  expect(selectedNumber).to.equal(expectedNumber);
+  expect(selectedDate).to.equal(expectedDate);
+  expect(selectedTime).to.equal(expectedTime);
+});
 Then(
   /^the "([^"]*)" should display the following custom formats:$/,
   async function (screenElement, expectedTable) {

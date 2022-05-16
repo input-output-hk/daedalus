@@ -258,8 +258,9 @@ class HardwareWalletStatus extends Component<Props, State> {
     const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
     const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
     const isError = hwDeviceErrorStatuses.includes(hwDeviceStatus);
-    const hasInstructionsLink =
-      hwDeviceInstructionsLinkRelatedStatuses.includes(hwDeviceStatus);
+    const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
+      hwDeviceStatus
+    );
 
     const passphraseLabelVisible =
       isTrezor && hwDevicePassphraseRelatedStatuses.includes(hwDeviceStatus);
