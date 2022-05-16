@@ -9,17 +9,35 @@ import type {
   GeneratePaperWalletRendererRequest,
 } from '../../common/ipc/api';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletFontPath from '../../common/assets/pdf/paper-wallet-certificate-font.ttf';
+const paperWalletFontPath = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-font.ttf'
+);
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletPage1Path from '../../common/assets/pdf/paper-wallet-certificate-page-1.png';
+const paperWalletPage1Path = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-page-1.png'
+);
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletPage1PathTestnet from '../../common/assets/pdf/paper-wallet-certificate-page-1-testnet.png';
+const paperWalletPage1PathTestnet = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-page-1-testnet.png'
+);
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletPage2Path from '../../common/assets/pdf/paper-wallet-certificate-page-2.png';
+const paperWalletPage2Path = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-page-2.png'
+);
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletPage2PathTestnet from '../../common/assets/pdf/paper-wallet-certificate-page-2-testnet.png';
+const paperWalletPage2PathTestnet = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-page-2-testnet.png'
+);
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../common/assets/pdf/paper-... Remove this comment to see the full error message
-import paperWalletCertificateBgPath from '../../common/assets/pdf/paper-wallet-certificate-background.png';
+const paperWalletCertificateBgPath = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/paper-wallet-certificate-background.png'
+);
 
 export const generatePaperWalletChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<

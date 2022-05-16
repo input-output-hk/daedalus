@@ -44,7 +44,6 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
   entry: {
-    index: './source/main/index.ts',
     preload: './source/main/preload.ts',
   },
   output: {
@@ -114,6 +113,5 @@ module.exports = {
       IS_WATCH_MODE: 'false',
       KEEP_LOCAL_CLUSTER_RUNNING: 'false',
     }),
-    new ManageElectronProcessPlugin(),
   ].filter(Boolean),
 };

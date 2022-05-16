@@ -9,10 +9,23 @@ import type {
   GenerateAddressPDFRendererRequest,
   GenerateAddressPDFMainResponse,
 } from '../../common/ipc/api';
-import fontRegularEn from '../../common/assets/pdf/NotoSans-Regular.ttf';
-import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
-import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
-import fontMono from '../../common/assets/pdf/RobotoMono-Regular.ttf';
+
+const fontRegularEn = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/NotoSans-Regular.ttf'
+);
+const fontMediumEn = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/NotoSans-Medium.ttf'
+);
+const fontUnicode = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/arial-unicode.ttf'
+);
+const fontMono = path.resolve(
+  __dirname,
+  '../../common/assets/pdf/RobotoMono-Regular.ttf'
+);
 
 export const generateAddressPDFChannel: MainIpcChannel<
   GenerateAddressPDFRendererRequest,

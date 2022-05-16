@@ -54,7 +54,7 @@ export const createMainWindow = (
       contextIsolation: false,
       // TODO: change to ipc
       enableRemoteModule: isTest,
-      preload: path.join(__dirname, './preload.js'),
+      preload: path.join(__dirname, '../../../dist/main/preload.js'),
       additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
     },
   };
