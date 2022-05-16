@@ -33,7 +33,7 @@ export class DeviceTracker {
   constructor() {
     this.knownDevices = new Map();
 
-    getDevices().forEach((d) => this.knownDevices.set(d.path, d));
+    getDevices()?.forEach((d) => this.knownDevices.set(d.path, d));
   }
 
   findNewDevice() {

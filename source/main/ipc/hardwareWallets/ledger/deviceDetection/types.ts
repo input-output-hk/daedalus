@@ -13,6 +13,7 @@ export type Device = {
   usage: number;
 };
 
+// TODO: Use native types instead of creating new ones https://github.com/LedgerHQ/ledgerjs/blob/23ba9fa883db9f49f81de236c9232df2c5ca1020/packages/devices/src/index.ts#L197
 export type DeviceModel = {
   id: string;
   productName: string;
