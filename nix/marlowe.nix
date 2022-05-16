@@ -128,7 +128,7 @@ let
       daedalusPrefix = "\"\${HOME}\"/.daedalus";
       addLDWrapper = wrapperName: storePath: let
         allDeps = lib.splitString "\n" (builtins.readFile (pkgs.writeReferencesToFile storePath));
-        properLibPath = lib.makeLibraryPath ([ pkgs.stdenv.cc.cc ] ++ allDeps);
+        properLibPath = lib.makeLibraryPath allDeps;
         prefixedLibPath = lib.concatMapStringsSep ":" (p: "${daedalusPrefix}${p}")
           (lib.splitString ":" properLibPath);
         properInterpreter = lib.removeSuffix "\n" (builtins.readFile
