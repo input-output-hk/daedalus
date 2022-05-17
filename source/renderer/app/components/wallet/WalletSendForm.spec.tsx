@@ -515,7 +515,8 @@ describe('wallet/Wallet Send Form', () => {
 
     expect(sendButton).not.toBeEnabled();
 
-    await waitForTransactionFee();
+    await waitForTransactionFee(); // 2.5 ADA
+    await waitForTransactionFee(); // 1.5 ADA
 
     expect(sendButton).toBeEnabled();
 
