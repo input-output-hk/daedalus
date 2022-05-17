@@ -12,12 +12,14 @@ export class DiscreetMode extends Feature {
   constructor(api: DiscreetModeApi) {
     super();
     this.api = api;
-    this.getDiscreetModeSettingsRequest = new Request(
-      this.api.getDiscreetModeSettings
-    );
-    this.setDiscreetModeSettingsRequest = new Request(
-      this.api.setDiscreetModeSettings
-    );
+    runInAction(() => {
+      this.getDiscreetModeSettingsRequest = new Request(
+        this.api.getDiscreetModeSettings
+      );
+      this.setDiscreetModeSettingsRequest = new Request(
+        this.api.setDiscreetModeSettings
+      );
+    });
   }
 
   @observable

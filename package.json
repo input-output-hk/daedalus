@@ -96,7 +96,7 @@
     "@storybook/manager-webpack5": "6.4.22",
     "@storybook/react": "6.4.22",
     "@swc-node/register": "1.4.2",
-    "@swc/core": "1.2.181",
+    "@swc/core": "1.2.164",
     "@swc/jest": "0.2.21",
     "@testing-library/jest-dom": "5.15.1",
     "@testing-library/react": "12.1.2",
