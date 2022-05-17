@@ -6,7 +6,7 @@
   "api.errors.IncorrectPasswordError": "Incorrect wallet password.",
   "api.errors.NotEnoughFundsForTransactionError": "Not enough ada. Try sending a smaller amount.",
   "api.errors.NotEnoughFundsForTransactionFeesError": "Not enough ada for fees. Try sending a smaller amount.",
-  "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens": "Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.",
+  "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens": "Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
   "api.errors.NotEnoughMoneyToSendError": "Not enough money to make this transaction.",
   "api.errors.TooBigTransactionError": "Transaction too big due to too many inputs.",
   "api.errors.TooBigTransactionErrorLinkLabel": "Learn more.",

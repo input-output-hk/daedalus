@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+
 ## 4.10.0
 
 ### Features
