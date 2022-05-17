@@ -29,9 +29,7 @@ export const doesWalletRequireAdaToRemainToSupportTokens = (
   requiresAdaToRemainToSupportNativeTokens: boolean;
   adaToProceed?: number;
 } => {
-  const adaToProceedRegex = new RegExp(
-    /I need approximately\s+([\d.,]+)\s+ada to proceed/
-  );
+  const adaToProceedRegex = /I need approximately\s+([\d.,]+)\s+ada to proceed/;
 
   const [, adaToProceed] = adaToProceedRegex.exec(error.message) ?? [];
 
