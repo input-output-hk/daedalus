@@ -177,7 +177,9 @@ gulp.task(
     'clean:dist',
     'server:create:dev',
     'build:renderer:html',
-    'build:main:watch',
+    process.argv.includes('--disable-electron-reload')
+      ? 'build:main'
+      : 'build:main:watch',
     'build:renderer:watch'
   )
 );

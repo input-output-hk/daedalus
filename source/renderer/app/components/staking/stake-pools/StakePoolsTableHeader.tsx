@@ -1,54 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
-import { map } from 'lodash';
 import classNames from 'classnames';
-import SVGInline from 'react-svg-inline';
+import { HeaderGroup } from 'react-table';
+import { StakePoolsTableHeaderCell } from './StakePoolsTableHeaderCell';
+import StakePool from '../../../domains/StakePool';
+import {
+  useInViewPort,
+  StakePoolsOrder,
+  StakePoolSortableProps,
+} from './hooks';
 import styles from './StakePoolsTable.scss';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/ascendi... Remove this comment to see the full error message
-import sortIcon from '../../../assets/images/ascending.inline.svg';
-import { defaultTableOrdering } from './StakePoolsTable';
 
-type TableHeaderProps = {
-  availableTableHeaders: Array<{
-    name: string;
-    title: any;
-  }>;
-  stakePoolsSortBy: string;
-  stakePoolsOrder: string;
-  onHandleSort: (...args: Array<any>) => any;
+type Props = {
+  headerGroups: HeaderGroup<StakePool>[];
+  stakePoolsOrder: StakePoolsOrder;
+  stakePoolsSortBy: StakePoolSortableProps;
+  onHandleSort: (name: string) => void;
+  onTableHeaderMouseEnter: () => void;
+  onTableHeaderMouseLeave: () => void;
 };
 
-@observer
-class StakePoolsTableHeader extends Component<TableHeaderProps> {
-  render() {
-    const {
-      availableTableHeaders,
-      stakePoolsSortBy,
-      stakePoolsOrder,
-      onHandleSort,
-    } = this.props;
-    return map(availableTableHeaders, (tableHeader) => {
-      const isSorted =
-        tableHeader.name === stakePoolsSortBy ||
-        (tableHeader.name === 'ticker' && stakePoolsSortBy === 'ticker');
-      const defaultOrdering = defaultTableOrdering[tableHeader.name];
-      const sortIconClasses = classNames([
-        styles.sortIcon,
-        isSorted ? styles.sorted : null,
-        isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
-        styles[`${defaultOrdering}DefaultOrdering`],
-      ]);
-      return (
-        <th
-          key={tableHeader.name}
-          onClick={() => onHandleSort(tableHeader.name)}
-        >
-          {tableHeader.title}
-          <SVGInline svg={sortIcon} className={sortIconClasses} />
-        </th>
-      );
-    });
-  }
-}
+export const Component = ({
+  stakePoolsSortBy,
+  stakePoolsOrder,
+  headerGroups,
+  onHandleSort,
+  onTableHeaderMouseEnter,
+  onTableHeaderMouseLeave,
+}: Props) => {
+  const { setTargetRef, isInViewport } = useInViewPort();
 
-export { StakePoolsTableHeader };
+  return (
+    <>
+      <div ref={setTargetRef} />
+      <div
+        className={classNames(
+          styles.thead,
+          !isInViewport && styles.stickyHeader
+        )}
+        onMouseEnter={onTableHeaderMouseEnter}
+        onMouseLeave={onTableHeaderMouseLeave}
+      >
+        {headerGroups.map((headerGroup) => (
+          /* eslint-disable-next-line react/jsx-key */
+          <div {...headerGroup.getHeaderGroupProps()} className={styles.tr}>
+            {headerGroup.headers.map((column) => (
+              <StakePoolsTableHeaderCell
+                {...column.getHeaderProps({
+                  style: { width: undefined },
+                })}
+                stakePoolsSortBy={stakePoolsSortBy}
+                stakePoolsOrder={stakePoolsOrder}
+                onHandleSort={onHandleSort}
+                name={column.id}
+                key={column.id}
+              >
+                {column.render('Header')}
+              </StakePoolsTableHeaderCell>
+            ))}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+export const StakePoolsTableHeader = observer(Component);

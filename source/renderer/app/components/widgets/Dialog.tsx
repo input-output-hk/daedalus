@@ -102,7 +102,10 @@ export default class Dialog extends Component<Props> {
 
           {children && (
             <div
-              className={styles.contentWrapper}
+              className={classnames(
+                styles.contentWrapper,
+                items.length && styles.contentWithActions
+              )}
               ref={(ref) => {
                 // @ts-ignore ts-migrate(2339) FIXME: Property 'current' does not exist on type 'unknown... Remove this comment to see the full error message
                 if (scrollWrapperRef) scrollWrapperRef.current = ref;

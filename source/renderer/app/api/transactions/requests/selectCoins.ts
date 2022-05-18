@@ -14,6 +14,7 @@ export type PaymentsType = {
   withdrawal?: TransactionWithdrawalType;
   metadata?: VotingMetadataType;
 };
+
 export type DelegationType = {
   delegation_action: {
     pool: string;
@@ -53,9 +54,12 @@ export type SelectCoinsResponseType = {
     certificate_type: DelegationAction;
     reward_account_path: Array<string>;
   }>;
-  deposits?: Array<{
+  deposits_taken?: Array<{
     quantity: number;
-    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
+    unit: WalletUnits.LOVELACE;
+  }>;
+  deposits_returned?: Array<{
+    quantity: number;
     unit: WalletUnits.LOVELACE;
   }>;
   metadata?: string;

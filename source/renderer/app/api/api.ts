@@ -863,7 +863,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
             assets,
           },
@@ -906,13 +906,15 @@ export default class AdaApi {
 
       const {
         requiresAdaToRemainToSupportNativeTokens,
-        adaToRemain,
+        adaToProceed,
       } = doesWalletRequireAdaToRemainToSupportTokens(
         error,
         hasAssetsRemainingAfterTransaction
       );
       if (requiresAdaToRemainToSupportNativeTokens) {
-        apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
+        apiError.set('cannotLeaveWalletEmpty', true, {
+          adaAmount: adaToProceed,
+        });
       }
 
       throw apiError.result();
@@ -941,7 +943,7 @@ export default class AdaApi {
               address,
               amount: {
                 quantity: amount,
-                unit: WalletUnits.LOVELACE,
+                unit: WalletUnits.LOVELACE as const,
               },
             },
           ],
@@ -1014,7 +1016,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
             assets,
           },
@@ -1143,7 +1145,7 @@ export default class AdaApi {
               address: payments.address,
               amount: {
                 quantity: payments.amount,
-                unit: WalletUnits.LOVELACE,
+                unit: WalletUnits.LOVELACE as const,
               },
               assets: payments.assets,
             },
@@ -1223,13 +1225,14 @@ export default class AdaApi {
         derivationPath: withdrawal.derivation_path,
         amount: withdrawal.amount,
       }));
-      const depositsArray = map(response.deposits, (deposit) =>
+      const depositsArray = map(response.deposits_taken, (deposit) =>
         deposit.quantity.toString()
       );
       const deposits = depositsArray.length
         ? BigNumber.sum.apply(null, depositsArray)
         : new BigNumber(0);
-      // @TODO - Use api response when api is ready
+      // @TODO - Use API response
+      // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
       const depositsReclaimed =
         delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
           ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
@@ -2311,7 +2314,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
           },
         ],
@@ -2841,7 +2844,7 @@ export default class AdaApi {
             address,
             amount: {
               quantity: amount,
-              unit: WalletUnits.LOVELACE,
+              unit: WalletUnits.LOVELACE as const,
             },
           },
         ],
@@ -2952,9 +2955,13 @@ export default class AdaApi {
         catalystFund,
       });
 
+      const fundNumber =
+        Number(catalystFund.fund_name?.match(/\d+/)?.[0]) ||
+        catalystFund.id + 1;
+
       return {
         current: {
-          number: catalystFund.id + 1,
+          number: fundNumber,
           startTime: new Date(catalystFund.fund_start_time),
           endTime: new Date(catalystFund.fund_end_time),
           resultsTime: new Date(
@@ -2965,7 +2972,7 @@ export default class AdaApi {
           ),
         },
         next: {
-          number: catalystFund.id + 2,
+          number: fundNumber + 1,
           startTime: new Date(catalystFund.next_fund_start_time),
           registrationSnapshotTime: new Date(
             catalystFund.next_registration_snapshot_time
@@ -3116,7 +3123,7 @@ const _createTransactionFromServerData = action(
       id,
       amount,
       fee,
-      deposit,
+      deposit_taken: deposit,
       inserted_at: insertedAt,
       pending_since: pendingSince,
       depth,
