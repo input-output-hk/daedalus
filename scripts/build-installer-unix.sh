@@ -135,7 +135,7 @@ pushd installers
                   then
                           echo "Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-                          if [ -n "$UPLOAD_DIR_OVERRIDE" ] ; then
+                          if [ -n "${UPLOAD_DIR_OVERRIDE:-}" ] ; then
                             upload_dir="$UPLOAD_DIR_OVERRIDE"
                             mv "$APP_NAME" "$upload_dir"
                           else
