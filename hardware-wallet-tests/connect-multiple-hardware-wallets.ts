@@ -19,6 +19,7 @@ export const run = () => {
   createTestInstructions([
     'Start test runner',
     'Plug Ledger Nano S to your computer',
+    'Plug Ledger Nano S Plus to your computer',
     'Plug Ledger Nano X to your computer',
   ]);
 
@@ -26,6 +27,10 @@ export const run = () => {
     {
       disconnected: false,
       deviceModel: 'nanoS',
+    },
+    {
+      disconnected: false,
+      deviceModel: 'nanoSP',
     },
     {
       disconnected: false,

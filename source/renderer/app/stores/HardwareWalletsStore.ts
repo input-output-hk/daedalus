@@ -932,6 +932,7 @@ export default class HardwareWalletsStore extends Store {
           (deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) ||
           (deviceType === DeviceTypes.LEDGER &&
             !DeviceModels.LEDGER_NANO_S &&
+            !DeviceModels.LEDGER_NANO_S_PLUS &&
             !DeviceModels.LEDGER_NANO_X)
         ) {
           runInAction(
@@ -1844,7 +1845,7 @@ export default class HardwareWalletsStore extends Store {
       walletId,
     });
     runInAction(
-      'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+      'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
       () => {
         this.isAddressVerificationInitiated = false;
         this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
@@ -2204,6 +2205,7 @@ export default class HardwareWalletsStore extends Store {
         walletId,
         certificate.rewardAccountPath
       );
+
       const shelleyTxCert = ShelleyTxCert({
         accountAddress,
         pool: certificate.pool,
@@ -2395,6 +2397,13 @@ export default class HardwareWalletsStore extends Store {
 
       if (error.code === 'Device_CallInProgress') {
         throw new Error('Device is busy - reconnect device and try again');
+      } else if (error.code === 'Device_InvalidState') {
+        runInAction(
+          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+          }
+        );
       }
 
       throw error;
@@ -3271,6 +3280,10 @@ export default class HardwareWalletsStore extends Store {
 
     switch (deviceModel) {
       case DeviceModels.LEDGER_NANO_S:
+        type = DeviceTypes.LEDGER;
+        break;
+
+      case DeviceModels.LEDGER_NANO_S_PLUS:
         type = DeviceTypes.LEDGER;
         break;
 

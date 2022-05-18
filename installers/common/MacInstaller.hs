@@ -154,8 +154,12 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-"*
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/build/Release/binding.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/bin/darwin-x64-"*"/blake2.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
@@ -326,12 +330,19 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Executables (from daedalus-bridge)
       forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
+      when (oCluster /= Selfnode) $ do
+        forM_ ["genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json" ] $ \f ->
+          cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
         cp "signing.key" (dataDir </> "signing.key")
         cp "delegation.cert" (dataDir </> "delegation.cert")
+        cp (bridge </> "bin" </> "mock-token-metadata-server") (dir </> "mock-token-metadata-server")
+        cp (bridge </> "bin" </> "token-metadata.json") (dataDir </> "token-metadata.json")
+        cp (bridge </> "bin" </> "local-cluster--unwrapped") (dir </> "local-cluster")
+        cptreeL (bridge </> "bin" </> "test" </> "data") (dataDir </> "data")
 
       procs "chmod" ["-R", "+w", tt dir] empty
 
@@ -357,6 +368,9 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
           symlink ("../../../MacOS" </> filename) (appRoot </> "Contents/Resources/app/build" </> filename)
       mapM_ sortaMove [ "HID.node" ]
       void $ chain (encodeString dir) [ tt $ dir </> "HID.node" ]
+
+      when (oCluster == Selfnode) $ do
+        void $ chain (encodeString dir) $ fmap tt [ dir </> "mock-token-metadata-server", dir </> "local-cluster" ]
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
