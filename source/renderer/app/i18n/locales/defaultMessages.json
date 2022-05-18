@@ -1082,13 +1082,13 @@
         "description": "\"title\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 30
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.title",
         "start": {
           "column": 9,
-          "line": 23
+          "line": 26
         }
       },
       {
@@ -1096,13 +1096,13 @@
         "description": "\"subtitle\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 35
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.subtitle",
         "start": {
           "column": 12,
-          "line": 28
+          "line": 31
         }
       },
       {
@@ -1110,13 +1110,13 @@
         "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.fromWalletLabel",
         "start": {
           "column": 19,
-          "line": 33
+          "line": 36
         }
       },
       {
@@ -1124,13 +1124,13 @@
         "description": "\"receiver\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.receiver.label",
         "start": {
           "column": 17,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -1138,13 +1138,13 @@
         "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.walletsDropdown.placeholder",
         "start": {
           "column": 30,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -1152,13 +1152,13 @@
         "description": "\"addWalletLabel\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 56
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.walletsDropdown.addWalletLabel",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 52
         }
       },
       {
@@ -1166,13 +1166,13 @@
         "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 61
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.transactionFee.label",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 57
         }
       },
       {
@@ -1180,13 +1180,13 @@
         "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 66
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.additionalData.label",
         "start": {
           "column": 23,
-          "line": 59
+          "line": 62
         }
       },
       {
@@ -1194,13 +1194,13 @@
         "description": "\"metaDataLabel\" in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 71
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.metaData.label",
         "start": {
           "column": 17,
-          "line": 64
+          "line": 67
         }
       },
       {
@@ -1208,13 +1208,13 @@
         "description": "\"Not enough ada\" error in the dApp transaction request dialog",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 78
         },
         "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
         "id": "dapp.transaction.request.error.notEnoughAda",
         "start": {
           "column": 35,
-          "line": 69
+          "line": 72
         }
       }
     ],
@@ -2884,32 +2884,13 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Confirm",
-        "description": "Analytics data collection confirmation button text",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsDialog.tsx",
-        "id": "analytics.dialog.confirmButton",
-        "start": {
-          "column": 17,
-          "line": 10
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/profile/analytics/AnalyticsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Anonymous data collection",
         "description": "Analytics form title",
         "end": {
           "column": 3,
           "line": 8
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.title",
         "start": {
           "column": 9,
@@ -2917,13 +2898,13 @@
         }
       },
       {
-        "defaultMessage": "!!!All data is anonymous and is only used for product development purposes.",
+        "defaultMessage": "!!!Analytic data is used for product development purposes only.",
         "description": "Analytics data collection description",
         "end": {
           "column": 3,
           "line": 14
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.description",
         "start": {
           "column": 15,
@@ -2931,45 +2912,17 @@
         }
       },
       {
-        "defaultMessage": "!!!All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.",
-        "description": "Analytics data collection description, including TOC link",
+        "defaultMessage": "!!!We collect data on (1) User click behavior and (2) Device information.",
+        "description": "TOC details title",
         "end": {
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
-        "id": "analytics.form.descriptionWithTOCLink",
-        "start": {
-          "column": 26,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Terms and Conditions",
-        "description": "Terms and Conditions link text",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
-        "id": "analytics.form.tocLink",
-        "start": {
-          "column": 11,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!What ToC says about this?",
-        "description": "TOC details title",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.tocDetailsTitle",
         "start": {
           "column": 19,
-          "line": 26
+          "line": 15
         }
       },
       {
@@ -2977,55 +2930,13 @@
         "description": "TOC details",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 26
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.tocDetails",
         "start": {
           "column": 14,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!What data do we collect?",
-        "description": "Data collection details title",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
-        "id": "analytics.form.dataCollectionDetailsTitle",
-        "start": {
-          "column": 30,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!User behavior (where the user clicks)",
-        "description": "Description for the user behaviour data collection",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
-        "id": "analytics.form.dataCollectionDetailsUserBehaviour",
-        "start": {
-          "column": 38,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Device information (OS, RAM, disk space, etc)",
-        "description": "Description for the device info data collection",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
-        "id": "analytics.form.dataCollectionDetailsDeviceInfo",
-        "start": {
-          "column": 35,
-          "line": 47
+          "line": 21
         }
       },
       {
@@ -3033,17 +2944,176 @@
         "description": "Data collection agreement switch button label",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 31
         },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.ts",
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.dataCollectionSwitchText",
         "start": {
           "column": 30,
-          "line": 52
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Allow",
+        "description": "Analytics data collection allow button text",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
+        "id": "analytics.form.allowButton",
+        "start": {
+          "column": 15,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Skip",
+        "description": "Analytics data collection skip button text",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
+        "id": "analytics.dialog.skipButton",
+        "start": {
+          "column": 14,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Privacy Policy",
+        "description": "Daedalus Privacy Policy link text",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
+        "id": "analytics.form.privacyPolicyLink",
+        "start": {
+          "column": 21,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Read more about our privacy practices in the {privacyPolicyLink}.",
+        "description": "Analytics data collection description, under collapsible details",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
+        "id": "analytics.form.analyticsSectionPrivacyPolicy",
+        "start": {
+          "column": 33,
+          "line": 47
         }
       }
     ],
-    "path": "source/renderer/app/components/profile/analytics/AnalyticsForm.messages.json"
+    "path": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!We collect data on (1) User click behavior and (2) Device information.",
+        "description": "Data collection details title",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.form.dataCollectionDetailsTitle",
+        "start": {
+          "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!User click behavior",
+        "description": "Title for the user behaviour data collection",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.form.dataCollectionDetailsUserBehaviourTitle",
+        "start": {
+          "column": 21,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Clicks, page visits, page scrolling, number of wallets, number of native assets, session duration, type of wallets (soft vs hardware wallets), geolocation (country of location), and page performance.",
+        "description": "Description for the user behaviour data collection",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.form.dataCollectionDetailsuserBehaviorText",
+        "start": {
+          "column": 20,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Device info",
+        "description": "Title for the device info data collection",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.form.dataCollectionDetailsDeviceInfoTitle",
+        "start": {
+          "column": 19,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Operating system, RAM, and disk space.",
+        "description": "Description for the device info data collection",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.form.dataCollectionDetailsDeviceInfoText",
+        "start": {
+          "column": 18,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Expand details",
+        "description": "Expand details button",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.dialog.expandButton",
+        "start": {
+          "column": 16,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Collapse details",
+        "description": "Collapse details button",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
+        "id": "analytics.dialog.collapseButton",
+        "start": {
+          "column": 18,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.json"
   },
   {
     "descriptors": [
@@ -3771,6 +3841,62 @@
           "column": 26,
           "line": 58
         }
+      },
+      {
+        "defaultMessage": "!!!Analytics data collection",
+        "description": "Analytics form title",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
+        "id": "analytics.form.title",
+        "start": {
+          "column": 25,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Allow analytics data collection. Analytic data is used for product development purposes only.",
+        "description": "Analytics data collection description, above collapsible details",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
+        "id": "analytics.form.analyticsSectionDescription",
+        "start": {
+          "column": 31,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Read more about our privacy practices in the {privacyPolicyLink}.",
+        "description": "Analytics data collection description, under collapsible details",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
+        "id": "analytics.form.analyticsSectionPrivacyPolicy",
+        "start": {
+          "column": 33,
+          "line": 76
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Privacy Policy",
+        "description": "Daedalus Privacy Policy link text",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
+        "id": "analytics.form.privacyPolicyLink",
+        "start": {
+          "column": 21,
+          "line": 83
+        }
       }
     ],
     "path": "source/renderer/app/components/settings/categories/SupportSettings.messages.json"
@@ -3782,13 +3908,13 @@
         "description": "titleLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.tsx",
         "id": "settings.wallets.currency.titleLabel",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -3796,13 +3922,13 @@
         "description": "currencyDescription for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.tsx",
         "id": "settings.wallets.currency.description",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3810,13 +3936,13 @@
         "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.tsx",
         "id": "settings.wallets.currency.selectLabel",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3824,13 +3950,13 @@
         "description": "currencyDisclaimer for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.tsx",
         "id": "settings.wallets.currency.disclaimer",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -3838,13 +3964,13 @@
         "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.tsx",
         "id": "settings.wallets.currency.poweredBy.label",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 41
         }
       }
     ],

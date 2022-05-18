@@ -27,7 +27,7 @@ const AnalyticsConsentPage: FC = () => {
     <TopBarLayout topbar={topbar}>
       <AnalyticsConsentForm
         loading={setAnalyticsAcceptanceRequest.isExecuting}
-        onConfirm={handleSubmit}
+        onSubmit={handleSubmit}
       />
     </TopBarLayout>
   );

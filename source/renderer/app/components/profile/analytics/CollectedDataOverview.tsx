@@ -1,39 +1,28 @@
 import React, { FC } from 'react';
-import { defineMessages, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
 import styles from './CollectedDataOverview.scss';
-import { Separator } from '../../widgets/separator/Separator';
+import { messages } from './CollectedDataOverview.messages';
 
-const messages = defineMessages({
-  title: {
-    id: 'analytics.form.dataCollectionDetailsTitle',
-    defaultMessage: '!!!What data do we collect?',
-    description: 'Data collection details title',
-  },
-  userBehaviour: {
-    id: 'analytics.form.dataCollectionDetailsUserBehaviour',
-    defaultMessage: '!!!User behavior (where the user clicks)',
-    description: 'Description for the user behaviour data collection',
-  },
-  deviceInfo: {
-    id: 'analytics.form.dataCollectionDetailsDeviceInfo',
-    defaultMessage: '!!!Device information (OS, RAM, disk space, etc)',
-    description: 'Description for the device info data collection',
-  },
-});
-
-interface CollectedDataOverviewProps {
-  displaySeparatorUnderneath?: boolean;
-}
-
-export const CollectedDataOverview: FC<CollectedDataOverviewProps> = injectIntl(
-  ({ intl, displaySeparatorUnderneath }) => (
-    <CollapsibleSection header={intl.formatMessage(messages.title)}>
+export const CollectedDataOverview: FC = injectIntl(({ intl }) => {
+  return (
+    <CollapsibleSection
+      header={intl.formatMessage(messages.title)}
+      expandMessage={messages.expandButton}
+      collapseMessage={messages.collapseButton}
+      expandButtonStyle="link"
+      headerFontStyle="light"
+    >
       <ol className={styles.dataCollectionList}>
-        <li>{intl.formatMessage(messages.userBehaviour)}</li>
-        <li>{intl.formatMessage(messages.deviceInfo)}</li>
+        <li>
+          <h3>{intl.formatMessage(messages.userBehaviorTitle)}</h3>
+          <p>{intl.formatMessage(messages.userBehaviorText)}</p>
+        </li>
+        <li>
+          <h3>{intl.formatMessage(messages.deviceInfoTitle)}</h3>
+          <p>{intl.formatMessage(messages.deviceInfoText)}</p>
+        </li>
       </ol>
-      {displaySeparatorUnderneath && <Separator />}
     </CollapsibleSection>
-  )
-);
+  );
+});

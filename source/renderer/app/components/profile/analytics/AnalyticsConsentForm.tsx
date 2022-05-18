@@ -1,31 +1,42 @@
-import React, { FC, useCallback, useState } from 'react';
-import { injectIntl } from 'react-intl';
+import React, { FC, useCallback } from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+
+import { Link } from 'react-polymorph/lib/components/Link';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
+import classnames from 'classnames';
 import styles from './AnalyticsConsentForm.scss';
 import { Intl } from '../../../types/i18nTypes';
-import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
-import { MonospaceTextBlock } from '../../widgets/monospace-text-block/MonospaceTextBlock';
-import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import { messages } from './AnalyticsConsentForm.messages';
 import { CollectedDataOverview } from './CollectedDataOverview';
 
 interface AnalyticsConsentFormProps {
   intl: Intl;
   loading: boolean;
-  onConfirm: (analyticsAccepted: boolean) => void;
+  onSubmit: (analyticsAccepted: boolean) => void;
 }
 
 const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
   intl,
   loading,
-  onConfirm,
+  onSubmit,
 }: AnalyticsConsentFormProps) => {
-  const [accepted, setAccepted] = useState(true);
+  const handleAllow = useCallback(() => {
+    onSubmit(true);
+  }, []);
+  const handleSkip = useCallback(() => {
+    onSubmit(false);
+  }, []);
 
-  const handleConfirm = useCallback(() => {
-    onConfirm(accepted);
-  }, [onConfirm, accepted]);
+  const privacyPolicyLink = (
+    <Link
+      className={styles.privacyPolicyLink}
+      // TODO
+      onClick={() => null}
+      label={intl.formatMessage(messages.privacyPolicyLink)}
+      hasIconAfter={false}
+    />
+  );
 
   return (
     <div className={styles.component}>
@@ -34,27 +45,30 @@ const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
         <p className={styles.description}>
           {intl.formatMessage(messages.description)}
         </p>
-        <CollapsibleSection
-          header={intl.formatMessage(messages.tocDetailsTitle)}
-        >
-          <MonospaceTextBlock>
-            {intl.formatMessage(messages.tocDetails)}
-          </MonospaceTextBlock>
-        </CollapsibleSection>
-        <CollectedDataOverview displaySeparatorUnderneath />
-        <NormalSwitch
-          onChange={setAccepted}
-          checked={accepted}
-          label={intl.formatMessage(messages.dataCollectionSwitchButton)}
-          className={styles.switchButton}
-        />
-        <Button
-          className={styles.submitButton}
-          label={intl.formatMessage(messages.confirmButton)}
-          skin={ButtonSpinnerSkin}
-          loading={loading}
-          onClick={handleConfirm}
-        />
+        <CollectedDataOverview />
+        <p className={styles.privacyPolicyDescription}>
+          <FormattedMessage
+            {...messages.analyticsSectionPrivacyPolicy}
+            values={{
+              privacyPolicyLink,
+            }}
+          />
+        </p>
+        <div className={styles.actions}>
+          <Button
+            className={classnames(styles.skipButton, 'flat')}
+            label={intl.formatMessage(messages.skipButton)}
+            skin={ButtonSpinnerSkin}
+            loading={loading}
+            onClick={handleSkip}
+          />
+          <Button
+            label={intl.formatMessage(messages.allowButton)}
+            skin={ButtonSpinnerSkin}
+            loading={loading}
+            onClick={handleAllow}
+          />
+        </div>
       </div>
     </div>
   );

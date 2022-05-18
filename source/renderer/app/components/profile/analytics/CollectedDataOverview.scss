@@ -12,4 +12,14 @@
       font-weight: bold;
     }
   }
+
+  h3 {
+    font: 16px var(--font-medium);
+    margin-bottom: 6px;
+  }
+
+  p {
+    line-height: 1.43;
+    margin-bottom: 6px;
+  }
 }

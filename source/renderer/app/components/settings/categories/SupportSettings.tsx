@@ -122,11 +122,11 @@ class SupportSettings extends Component<
       />
     );
 
-    const termsAndConditionsLink = (
+    const privacyPolicyLink = (
       <Link
-        className={styles.termsOfServiceLink}
+        className={styles.privacyPolicyLink}
         onClick={this.handleTermsOfUseNavigation}
-        label={intl.formatMessage(messages.tocLink)}
+        label={intl.formatMessage(messages.privacyPolicyLink)}
         hasIconAfter={false}
       />
     );
@@ -184,12 +184,7 @@ class SupportSettings extends Component<
         </h2>
         <div className={styles.analyticsSectionDescriptionContainer}>
           <p className={styles.analyticsSectionDescription}>
-            <FormattedMessage
-              {...messages.analyticsSectionDescription}
-              values={{
-                termsAndConditionsLink,
-              }}
-            />
+            {intl.formatMessage(messages.analyticsSectionDescription)}
           </p>
           <NormalSwitch
             onChange={this.onAnalyticsAcceptanceChange}
@@ -198,6 +193,14 @@ class SupportSettings extends Component<
           />
         </div>
         <CollectedDataOverview />
+        <p className={styles.privacyPolicyDescription}>
+          <FormattedMessage
+            {...messages.analyticsSectionPrivacyPolicy}
+            values={{
+              privacyPolicyLink,
+            }}
+          />
+        </p>
       </>
     );
   }

@@ -74,18 +74,26 @@
 }
 
 .analyticsSectionDescription {
-  color: var(--theme-main-body-messages-color);
   flex: 1;
+}
+
+.privacyPolicyDescription,
+.analyticsSectionDescription {
+  color: var(--theme-main-body-messages-color);
   font-family: var(--font-light);
   font-size: 16px;
   line-height: 1.43;
+}
+
+.privacyPolicyDescription {
+  margin-top: 20px;
 }
 
 .switchButton {
   margin: 0 0 0 20px !important;
 }
 
-.termsOfServiceLink {
+.privacyPolicyLink {
   font-family: var(--font-regular);
   // unfortunately, global overrides for link component set it to 14px with higher specificity
   font-size: 16px !important;

@@ -63,18 +63,26 @@ export const messages = defineMessages({
   },
   analyticsSectionTitle: {
     id: 'analytics.form.title',
-    defaultMessage: '!!!Anonymous data collection',
+    defaultMessage: '!!!Analytics data collection',
     description: 'Analytics form title',
   },
   analyticsSectionDescription: {
-    id: 'analytics.form.descriptionWithTOCLink',
+    id: 'analytics.form.analyticsSectionDescription',
     defaultMessage:
-      '!!!Allow anonymous data collection. All data is anonymous and is only used for product development purposes. Read more in the {termsAndConditionsLink}.',
-    description: 'Analytics data collection description, including TOC link',
+      '!!!Allow analytics data collection. Analytic data is used for product development purposes only.',
+    description:
+      'Analytics data collection description, above collapsible details',
   },
-  tocLink: {
-    id: 'analytics.form.tocLink',
-    defaultMessage: '!!!Terms and Conditions',
-    description: 'Terms and Conditions link text',
+  analyticsSectionPrivacyPolicy: {
+    id: 'analytics.form.analyticsSectionPrivacyPolicy',
+    defaultMessage:
+      '!!!Read more about our privacy practices in the {privacyPolicyLink}.',
+    description:
+      'Analytics data collection description, under collapsible details',
+  },
+  privacyPolicyLink: {
+    id: 'analytics.form.privacyPolicyLink',
+    defaultMessage: '!!!Daedalus Privacy Policy',
+    description: 'Daedalus Privacy Policy link text',
   },
 });

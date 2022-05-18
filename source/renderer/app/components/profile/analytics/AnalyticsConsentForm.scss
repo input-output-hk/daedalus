@@ -16,22 +16,6 @@
   width: 620px;
 }
 
-.submitButton {
-  display: block;
-  margin: 0 auto;
-}
-
-// TODO improve react-polymorph inputs to handle `labelPlacement` property e.g. left | right
-.switchButton {
-  flex-direction: row-reverse !important;
-  margin: 0 0 30px !important;
-
-  & label {
-    font-family: var(--font-light);
-    margin: 0 !important;
-  }
-}
-
 .title,
 .dataCollectionTitle {
   font-family: var(--font-medium);
@@ -51,4 +35,28 @@
 
 .descriptionLink {
   color: var(--theme-link-main-color);
+}
+
+.actions {
+  display: flex;
+  margin-top: 24px;
+}
+
+.skipButton {
+  margin-right: 12px;
+}
+
+.privacyPolicyLink {
+  font-family: var(--font-regular);
+  // unfortunately, global overrides for link component set it to 14px with higher specificity
+  font-size: 16px !important;
+  word-break: break-word;
+}
+
+.privacyPolicyDescription {
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.43;
+  margin-top: 20px;
 }

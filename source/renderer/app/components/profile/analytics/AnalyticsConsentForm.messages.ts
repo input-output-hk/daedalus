@@ -9,12 +9,13 @@ export const messages = defineMessages({
   description: {
     id: 'analytics.form.description',
     defaultMessage:
-      '!!!All data is anonymous and is only used for product development purposes.',
+      '!!!Analytic data is used for product development purposes only.',
     description: 'Analytics data collection description',
   },
   tocDetailsTitle: {
     id: 'analytics.form.tocDetailsTitle',
-    defaultMessage: '!!!What ToC says about this?',
+    defaultMessage:
+      '!!!We collect data on (1) User click behavior and (2) Device information.',
     description: 'TOC details title',
   },
   tocDetails: {
@@ -28,9 +29,26 @@ export const messages = defineMessages({
     defaultMessage: '!!!Allow anonymous data collection',
     description: 'Data collection agreement switch button label',
   },
-  confirmButton: {
-    id: 'analytics.dialog.confirmButton',
-    defaultMessage: '!!!Confirm',
-    description: 'Analytics data collection confirmation button text',
+  allowButton: {
+    id: 'analytics.form.allowButton',
+    defaultMessage: '!!!Allow',
+    description: 'Analytics data collection allow button text',
+  },
+  skipButton: {
+    id: 'analytics.dialog.skipButton',
+    defaultMessage: '!!!Skip',
+    description: 'Analytics data collection skip button text',
+  },
+  privacyPolicyLink: {
+    id: 'analytics.form.privacyPolicyLink',
+    defaultMessage: '!!!Daedalus Privacy Policy',
+    description: 'Daedalus Privacy Policy link text',
+  },
+  analyticsSectionPrivacyPolicy: {
+    id: 'analytics.form.analyticsSectionPrivacyPolicy',
+    defaultMessage:
+      '!!!Read more about our privacy practices in the {privacyPolicyLink}.',
+    description:
+      'Analytics data collection description, under collapsible details',
   },
 });
