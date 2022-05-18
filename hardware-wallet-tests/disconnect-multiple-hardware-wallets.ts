@@ -16,11 +16,19 @@ const getNextExpectedSequence = createSequentialResult([
   },
   {
     disconnected: false,
+    deviceModel: 'nanoSP',
+  },
+  {
+    disconnected: false,
     deviceModel: 'nanoX',
   },
   {
     disconnected: true,
     deviceModel: 'nanoS',
+  },
+  {
+    disconnected: true,
+    deviceModel: 'nanoSP',
   },
   {
     disconnected: true,
@@ -37,8 +45,10 @@ export const run = () => {
 
   createTestInstructions([
     'Connect Nano S',
+    'Connect Nano S Plus',
     'Connect Nano X',
     'Disconnect Nano S',
+    'Disconnect Nano S Plus',
     'Disconnect Nano X',
   ]);
 

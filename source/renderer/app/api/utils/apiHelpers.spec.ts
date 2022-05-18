@@ -48,20 +48,8 @@ describe('throw error if not enough Ada to support tokens', () => {
       requiresAdaToRemainToSupportNativeTokens: false,
     });
   });
-  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee" and round to 2 minimum ada', () => {
-    const error: ErrorType = {
-      message:
-        'I am unable to finalize the transaction, as there is not enough ada available to pay for the fee and also pay for the minimum ada quantities of all change outputs. I need approximately 0.629344 ada to proceed. Try increasing your wallet balance or sending a smaller amount.',
-      code: 'cannot_cover_fee',
-    };
 
-    expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual({
-      requiresAdaToRemainToSupportNativeTokens: true,
-      adaToRemain: 2,
-    });
-  });
-
-  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee" and round to 2 nearest whole value provided by error', () => {
+  it('should throw if there are tokens remaining in wallet after transaction and error is "cannot_cover_fee"', () => {
     const error: ErrorType = {
       message:
         'I am unable to finalize the transaction, as there is not enough ada available to pay for the fee and also pay for the minimum ada quantities of all change outputs. I need approximately 2.629344 ada to proceed. Try increasing your wallet balance or sending a smaller amount.',
@@ -70,7 +58,7 @@ describe('throw error if not enough Ada to support tokens', () => {
 
     expect(doesWalletRequireAdaToRemainToSupportTokens(error, true)).toEqual({
       requiresAdaToRemainToSupportNativeTokens: true,
-      adaToRemain: 3,
+      adaToProceed: 3,
     });
   });
 });

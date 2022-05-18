@@ -1,7 +1,7 @@
 import { BridgeInfo, Device as TrezorDevice, UdevInfo } from 'trezor-connect';
 
 export type BIP32Path = Array<number>;
-export type LedgerModel = 'nanoS' | 'nanoX';
+export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';
 export type TrezorModel = '1' | 'T';
 export type DeviceType = 'ledger' | 'trezor';
 export type DeviceEvent =
@@ -24,11 +24,13 @@ export type DeviceEvent =
   | 'unreadable-device';
 export const DeviceModels: {
   LEDGER_NANO_S: LedgerModel;
+  LEDGER_NANO_S_PLUS: LedgerModel;
   LEDGER_NANO_X: LedgerModel;
   TREZOR_ONE: TrezorModel;
   TREZOR_T: TrezorModel;
 } = {
   LEDGER_NANO_S: 'nanoS',
+  LEDGER_NANO_S_PLUS: 'nanoSP',
   LEDGER_NANO_X: 'nanoX',
   TREZOR_ONE: '1',
   TREZOR_T: 'T',
