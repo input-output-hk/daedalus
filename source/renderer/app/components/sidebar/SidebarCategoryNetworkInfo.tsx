@@ -54,7 +54,6 @@ export default class SidebarCategoryNetworkInfo extends Component<Props> {
   };
 
   render() {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     const { network } = this.props;
     const { intl } = this.context;

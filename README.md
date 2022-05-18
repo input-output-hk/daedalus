@@ -105,21 +105,6 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-##### Staging
-
-1. Run `yarn nix:staging` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Shelley QA
-
-1. Run `yarn nix:shelley_qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Alonzo Purple
-
-1. Run `yarn nix:alonzo_purple` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
 ##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
@@ -160,13 +145,11 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 - Windows 10/11
 - Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
 - NodeJS 16
-- Python2 *
-- `yarn global add windows-build-tools` * (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
-- Microsoft Build Tools 2015 *
-- Microsoft Visual Studio 2017 (Include Desktop development with C++) *
+- Python2
+- `yarn global add windows-build-tools` (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
+- Microsoft Build Tools 2015
+- Microsoft Visual Studio 2017 (Include Desktop development with C++)
 - `yarn config set msvsversion 2015 --global`
-
-*needed for compiling node-sass@4.14.1 on Windows
 
 #### Steps
 - `yarn install`

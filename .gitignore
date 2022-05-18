@@ -41,6 +41,11 @@ installers/tls/client
 installers/tls/server
 installers/DLLs
 installers/libressl
+installers/cfg-files
+installers/config.yaml
+installers/icons/electron.icns
+installers/installer-config.json
+installers/topology.yaml
 
 # temporary certs for daedalus dev
 tls/client
