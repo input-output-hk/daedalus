@@ -2,6 +2,20 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+
+### Features
+
+- Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
+
+### Chores
+
+- Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
+
+## 4.10.0
+
 ### Features
 
 - Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
@@ -33,7 +47,8 @@
 
 ### Chores
 
-- Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
+- Updated cardano-wallet to v2022-04-27 and cardano-node to 1.34.1 ([PR 2951](https://github.com/input-output-hk/daedalus/pull/2951))
+- Refactor to remove duplicated code ([PR 2956](https://github.com/input-output-hk/daedalus/pull/2956))
 - Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
@@ -84,6 +99,7 @@
 
 ### Fixes
 
+- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860)) 
 - Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
