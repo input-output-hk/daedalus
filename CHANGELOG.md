@@ -2,6 +2,21 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+
+### Features
+
+- Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
+- Support of Apple AArch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
+
+### Chores
+
+- Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
+
+## 4.10.0
+
 ### Features
 
 - Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
@@ -85,6 +100,7 @@
 
 ### Fixes
 
+- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860)) 
 - Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
@@ -146,10 +162,6 @@
 - Updated `trezor-connect` dependency to version `8.2.4` ([PR 2726](https://github.com/input-output-hk/daedalus/pull/2726))
 - Updated vulnerable dependencies ([PR 2769](https://github.com/input-output-hk/daedalus/pull/2769))
 - Updated CWB and Cardano Node ([PR 2799](https://github.com/input-output-hk/daedalus/pull/2799))
-
-### Features
-
-- Support of apple aarch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
 
 ## 4.6.0
 
