@@ -6,11 +6,13 @@
 
 - Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
 
-## 4.10.0
-
 ### Features
 
 - Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
+
+### Chores
+
+- Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
 
 ## 4.10.0
 
