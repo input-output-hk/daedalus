@@ -86,7 +86,7 @@ let
     inherit (walletPackages) cardano-address;
     inherit (walletPackages) mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    local-cluster = if cluster == "selfnode" then (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).local-cluster else null;
+    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
