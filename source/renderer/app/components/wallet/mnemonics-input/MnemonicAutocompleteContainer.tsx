@@ -39,6 +39,7 @@ const MnemonicsAutocompleteContainer = ({
   const suggestionsRef = useRef();
 
   const toggleOpen = useCallback(() => {
+    if (disabled) return;
     setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
   }, []);
 
@@ -51,6 +52,8 @@ const MnemonicsAutocompleteContainer = ({
 
   const handleInputChange = useCallback(
     (inputValue) => {
+      if (disabled) return;
+
       let selectedOption = '';
 
       if (options.includes(inputValue)) {
@@ -71,6 +74,8 @@ const MnemonicsAutocompleteContainer = ({
   );
 
   const handleInputSelect = useCallback((inputValue) => {
+    if (disabled) return;
+
     setState((prevState) => ({
       ...prevState,
       isOpen: false,
@@ -82,6 +87,8 @@ const MnemonicsAutocompleteContainer = ({
 
   const [blurred, setBlurred] = useState(false);
   const handleBlur = useCallback(() => {
+    if (disabled) return;
+
     setBlurred(true);
   }, [setBlurred]);
 

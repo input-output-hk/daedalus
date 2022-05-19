@@ -83,6 +83,7 @@ const MnemonicAutocompleteLayout = ({
               value={value}
               onChange={handleInputChange}
               onBlur={onBlur}
+              disabled={disabled}
             />
           </div>
         )}
