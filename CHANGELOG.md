@@ -12,6 +12,7 @@
 
 ### Chores
 
+- Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
 - Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
 
 ## 4.10.0
@@ -99,12 +100,12 @@
 
 ### Fixes
 
-- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860)) 
+- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860))
 - Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
-  
+
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))

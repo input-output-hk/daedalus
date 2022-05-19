@@ -207,6 +207,26 @@ You can debug the main process by following one of these approaches:
 
 The inspector runs on port 9229
 
+### Linking with UI Libraries (e.g. React Polymorph)
+
+You can link libraries with Daedalus using one of the following steps:
+
+#### 1) Using `yalc`
+
+1) Install `yalc` globally using `yarn global add yalc`.
+2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
+3) Switch to Daedalus and run `yalc add <package-name>` or preferably `yalc link <package-name>`.
+4) You should be able to start Daedalus and see the changes you are making locally in the library.
+5) To make sure your changes are reflected as you update code in the library, use `yalc push`.
+
+#### 2) Using `yarn link`
+
+1) From the Daedalus root directory, go to `node_modules/react` and `yarn link`.
+2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
+3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
+4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
+5) Finally, run `yarn build:watch` from the library's root directory.
+
 ## Testing
 
 You can find more details regarding tests setup within
