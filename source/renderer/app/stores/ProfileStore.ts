@@ -58,32 +58,26 @@ export default class ProfileStore extends Store {
   systemTimeFormat: string = TIME_OPTIONS[0].value;
   @observable
   getProfileLocaleRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserLocale
   );
   @observable
   setProfileLocaleRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserLocale
   );
   @observable
   getProfileNumberFormatRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserNumberFormat
   );
   @observable
   setProfileNumberFormatRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserNumberFormat
   );
   @observable
   getProfileDateFormatEnglishRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserDateFormatEnglish
   );
   @observable
   setProfileDateFormatEnglishRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserDateFormatEnglish
   );
   @observable
@@ -98,54 +92,42 @@ export default class ProfileStore extends Store {
   );
   @observable
   getProfileTimeFormatRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserTimeFormat
   );
   @observable
   setProfileTimeFormatRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserTimeFormat
   );
   @observable
-  getTermsOfUseAcceptanceRequest: Request<boolean> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
+  getTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getTermsOfUseAcceptance
   );
   @observable
   setTermsOfUseAcceptanceRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
   getAnalyticsAcceptanceRequest: Request<
     AnalyticsAcceptanceStatus
-  > = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
-    this.api.localStorage.getAnalyticsAcceptance
-  );
+  > = new Request(this.api.localStorage.getAnalyticsAcceptance);
   @observable
   setAnalyticsAcceptanceRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setAnalyticsAcceptance
   );
   @observable
   getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getDataLayerMigrationAcceptance
   );
   @observable
   setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setDataLayerMigrationAcceptance
   );
   @observable
   getThemeRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.getUserTheme
   );
   @observable
   setThemeRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setUserTheme
   );
   @observable
@@ -186,9 +168,7 @@ export default class ProfileStore extends Store {
     profileActions.acknowledgeRTSModeRecommendation.listen(
       this._acknowledgeRTSFlagsModeRecommendation
     );
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
     this.actions.app.initAppEnvironment.listen(() => {});
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'registerReactions' does not exist on typ... Remove this comment to see the full error message
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
@@ -321,6 +301,7 @@ export default class ProfileStore extends Store {
 
   @computed
   get areTermsOfUseAccepted(): boolean {
+    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
@@ -347,14 +328,12 @@ export default class ProfileStore extends Store {
 
   @computed
   get isProfilePage(): boolean {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.PROFILE, currentRoute);
   }
 
   @computed
   get isSettingsPage(): boolean {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.SETTINGS, currentRoute);
   }
@@ -393,35 +372,31 @@ export default class ProfileStore extends Store {
     }
   };
   _updateTheme = async ({ theme }: { theme: string }) => {
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setThemeRequest.execute(theme);
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getThemeRequest.execute();
   };
   _acceptTermsOfUse = async () => {
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setTermsOfUseAcceptanceRequest.execute();
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
   };
-  _getTermsOfUseAcceptance = async () => {
-    // @ts-ignore
-    await this.getTermsOfUseAcceptanceRequest.execute();
+  _getTermsOfUseAcceptance = () => {
+    this.getTermsOfUseAcceptanceRequest.execute();
   };
-  _setAnalyticsAcceptanceStatus = async (status: AnalyticsAcceptanceStatus) => {
-    // @ts-ignore
-    await this.setAnalyticsAcceptanceRequest.execute(status);
-    // @ts-ignore
-    await this.getAnalyticsAcceptanceRequest.execute();
+  _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+    this.setAnalyticsAcceptanceRequest.execute(status);
+    this.getAnalyticsAcceptanceRequest.execute();
   };
-  _getAnalyticsAcceptance = async () => {
-    // @ts-ignore
-    await this.getAnalyticsAcceptanceRequest.execute();
+  _getAnalyticsAcceptance = () => {
+    this.getAnalyticsAcceptanceRequest.execute();
   };
   _acceptDataLayerMigration = async () => {
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDataLayerMigrationAcceptanceRequest.execute();
-    // @ts-ignore
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDataLayerMigrationAcceptanceRequest.execute();
   };
   @action
@@ -542,7 +517,6 @@ export default class ProfileStore extends Store {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
   _redirectToRoot = () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
     this.actions.router.goToRoute.trigger({
       route: ROUTES.ROOT,
     });
@@ -578,7 +552,7 @@ export default class ProfileStore extends Store {
         const { isDownloading, destination } = this.compressedLogsStatus;
 
         if (isDownloading) {
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ destination: any; fileName: an... Remove this comment to see the full error message
+          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ destination: string; fileName:... Remove this comment to see the full error message
           this._downloadLogs({
             destination,
             fileName,
