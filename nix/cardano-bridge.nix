@@ -1,4 +1,4 @@
-{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, darwin, mock-token-metadata-server }:
+{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
 
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
