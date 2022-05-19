@@ -29,29 +29,25 @@ export default class AppStore extends Store {
   newsFeedIsOpen = false;
 
   setup() {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
 
     this._getGpuStatus();
 
     // About dialog actions
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.closeAboutDialog.listen(() => {
       this._closeActiveDialog();
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.openAboutDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.ABOUT);
     });
     // Daedalus Diagnostics dialog actions
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.closeDaedalusDiagnosticsDialog.listen(() => {
       this._closeActiveDialog();
     });
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.openDaedalusDiagnosticsDialog.listen(() => {
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
     this.actions.app.closeToggleRTSFlagsModeDialog.listen(() => {
@@ -62,11 +58,8 @@ export default class AppStore extends Store {
       this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
     });
     this.actions.app.downloadLogs.listen(this._downloadLogs);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.setIsDownloadingLogs.listen(this._setIsDownloadingLogs);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
@@ -74,7 +67,6 @@ export default class AppStore extends Store {
 
   @computed
   get currentRoute(): string {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AppStore... Remove this comment to see the full error message
     const { location } = this.stores.router;
     return location ? location.pathname : '';
   }
@@ -116,16 +108,17 @@ export default class AppStore extends Store {
    * Shows the screen specified by the constant string identifier.
    */
   showUiPart = (uiPart: string) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AppStore... Remove this comment to see the full error message
     const { wallets } = this.stores;
 
     switch (uiPart) {
       case DIALOGS.ABOUT:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.ABOUT);
 
         break;
 
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
 
         break;
@@ -137,7 +130,7 @@ export default class AppStore extends Store {
         break;
 
       case DIALOGS.ITN_REWARDS_REDEMPTION:
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.staking.onRedeemStart.trigger();
         break;
 
@@ -147,17 +140,15 @@ export default class AppStore extends Store {
         break;
 
       case PAGES.SETTINGS:
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
         this.actions.router.goToRoute.trigger({
           route: ROUTES.SETTINGS.ROOT,
         });
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.dialogs.closeActiveDialog.trigger();
         break;
 
       case PAGES.WALLET_SETTINGS:
         if (wallets.active && wallets.active.id) {
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
           this.actions.router.goToRoute.trigger({
             route: ROUTES.WALLETS.PAGE,
             params: {
@@ -165,7 +156,7 @@ export default class AppStore extends Store {
               page: 'settings',
             },
           });
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
+          // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
           this.actions.dialogs.closeActiveDialog.trigger();
         }
 
@@ -181,8 +172,7 @@ export default class AppStore extends Store {
   get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.INITIAL_SETTINGS ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
-      this.currentRoute === ROUTES.PROFILE.ANALYTICS
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
 
@@ -201,7 +191,6 @@ export default class AppStore extends Store {
     const newRoutePath = buildRoute(options.route, options.params);
 
     if (this.currentRoute !== newRoutePath) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AppStore... Remove this comment to see the full error message
       this.stores.router.push(newRoutePath);
     }
   };
@@ -223,7 +212,6 @@ export default class AppStore extends Store {
     }
 
     const fileName = generateFileNameWithTimestamp();
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AppStore... Remove this comment to see the full error message
     const { desktopDirectoryPath } = this.stores.profile;
     const defaultPath = path.join(desktopDirectoryPath, fileName);
     const params = {
@@ -232,16 +220,13 @@ export default class AppStore extends Store {
     const { filePath } = await showSaveDialogChannel.send(params);
 
     if (filePath) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
       this.actions.app.setIsDownloadingLogs.trigger(true);
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
       this.actions.profile.downloadLogs.trigger({
         fileName,
         destination: filePath,
         fresh: true,
       });
     } else {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AppStor... Remove this comment to see the full error message
       this.actions.app.setIsDownloadingLogs.trigger(false);
     }
   };
