@@ -9,6 +9,7 @@ interface MnemonicInputSkinProps {
   onClick: () => void;
   onChange: (value: string) => void;
   onSelect: (value: string) => void;
+  onBlur: () => void;
   toggleMouseLocation: () => void;
   toggleOpen: () => void;
 
@@ -32,6 +33,7 @@ const MnemonicAutocompleteLayout = ({
   onClick,
   onChange,
   onSelect,
+  onBlur,
   toggleMouseLocation,
   toggleOpen,
 
@@ -80,6 +82,7 @@ const MnemonicAutocompleteLayout = ({
               ref={setFormFieldRef}
               value={value}
               onChange={handleInputChange}
+              onBlur={onBlur}
             />
           </div>
         )}

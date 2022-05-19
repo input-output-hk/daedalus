@@ -21,6 +21,7 @@ interface MnemonicsInputProps {
   value: string[];
   disabled?: boolean;
   error: boolean;
+  reset: boolean;
   availableWords: string[];
   wordsCount: number;
 }
@@ -34,6 +35,7 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
     availableWords,
     wordsCount,
     error,
+    reset,
   }) => {
     useEffect(() => {
       if (selectedWords.length < 1) {
@@ -68,6 +70,7 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
                 <div key={idx} className={styles.inputWrapper}>
                   <MnemonicsAutocompleteContainer
                     ordinalNumber={idx + 1}
+                    reset={reset}
                     options={availableWords}
                     value={value}
                     onChange={createHandleWordChange(idx)}

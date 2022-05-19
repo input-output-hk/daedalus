@@ -1,12 +1,12 @@
 $columns: 3;
 
 .root {
+  background-color: var(--theme-mnemonic-background-color);
+  color: var(--theme-dialog-text-color);
   display: flex;
+  font-family: var(--font-medium);
   justify-content: space-between;
   padding: 20px;
-  background-color: var(--theme-backup-mnemonic-background-color);
-  color: var(--theme-dialog-text-color);
-  font-family: var(--font-medium);
 }
 
 .inputList {

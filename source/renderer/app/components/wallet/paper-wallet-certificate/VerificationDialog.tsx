@@ -1,11 +1,9 @@
-import React, { Component, useCallback } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -48,13 +46,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Paper wallet recovery phrase',
     description:
       '"Paper wallet create certificate verification dialog" recovery phrase label.',
-  },
-  recoveryPhraseHint: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint',
-    defaultMessage: '!!!Enter recovery phrase',
-    description:
-      '"Paper wallet create certificate verification dialog" recovery phrase hint.',
   },
   clearButtonLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.button.clearLabel',
@@ -123,9 +114,6 @@ class VerificationDialog extends Component<Props, State> {
       fields: {
         recoveryPhrase: {
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          placeholder: this.context.intl.formatMessage(
-            messages.recoveryPhraseHint
-          ),
           value: [],
           validators: [
             ({ field }) => {
@@ -178,6 +166,7 @@ class VerificationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
+        validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -226,7 +215,6 @@ class VerificationDialog extends Component<Props, State> {
       storingConfirmed,
       recoveringConfirmed,
       isRecoveryPhraseValid,
-      error,
     } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
@@ -248,7 +236,7 @@ class VerificationDialog extends Component<Props, State> {
         className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: error,
+        disabled: form.hasError,
         onClick: this.submit.bind(this),
       },
     ];
@@ -282,6 +270,7 @@ class VerificationDialog extends Component<Props, State> {
               availableWords={suggestedMnemonics.sort()}
               wordsCount={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
               error={!!recoveryPhraseField.error}
+              reset={form.resetting}
             />
             <Checkbox
               className={storingUnderstandanceCheckboxClasses}

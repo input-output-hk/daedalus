@@ -11,11 +11,13 @@ interface MnemonicsAutocompleteContainerProps {
   maxVisibleOptions: number;
   disabled: boolean;
   error: boolean;
+  reset: boolean;
   noResultsMessage: string;
 }
 
 const MnemonicsAutocompleteContainer = ({
   onChange,
+  reset,
   ordinalNumber,
   value,
   options,
@@ -78,9 +80,20 @@ const MnemonicsAutocompleteContainer = ({
     }));
   }, []);
 
+  const [blurred, setBlurred] = useState(false);
+  const handleBlur = useCallback(() => {
+    setBlurred(true);
+  }, [setBlurred]);
+
   useEffect(() => {
     onChange(state.selectedOption);
   }, [state.selectedOption]);
+
+  useEffect(() => {
+    if (reset) {
+      setBlurred(false);
+    }
+  }, [reset]);
 
   useEffect(() => {
     if (value !== state.inputValue) {
@@ -110,12 +123,13 @@ const MnemonicsAutocompleteContainer = ({
           onChange={handleInputChange}
           onSelect={handleInputSelect}
           onClick={toggleOpen}
+          onBlur={handleBlur}
           suggestionsRef={suggestionsRef}
           toggleMouseLocation={toggleMouseIsOverOptions}
           toggleOpen={toggleOpen}
           optionHeight={optionHeight}
           disabled={disabled}
-          error={error}
+          error={blurred && error}
         />
       )}
     </GlobalListeners>

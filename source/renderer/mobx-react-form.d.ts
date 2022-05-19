@@ -49,6 +49,8 @@ declare module 'mobx-react-form' {
 
     isValid: boolean;
     validating: boolean;
+    resetting: boolean;
+    hasError: boolean;
 
     reset: () => void;
     showErrors: (showMessage: boolean) => void;
