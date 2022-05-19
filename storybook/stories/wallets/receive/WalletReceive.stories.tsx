@@ -104,8 +104,8 @@ storiesOf('Wallets|Receive', module)
             )}
             isHardwareWallet
             walletName="Ledger Nano S"
-            isAddressDerived={false}
-            isAddressChecked={false}
+            isAddressDerived={boolean('isAddressDerived', false)}
+            isAddressChecked={boolean('isAddressChecked', false)}
             onChangeVerificationStatus={action('onChangeVerificationStatus')}
             onSupportRequestClick={action('onSupportRequestClick')}
             isTrezor={boolean('isTrezor', false)}

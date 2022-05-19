@@ -115,6 +115,8 @@
     }
 
     .radioButtons {
+      margin-bottom: 20px;
+
       :global {
         .RadioSet_label {
           color: var(--theme-wallet-import-stateFolder-label-color);

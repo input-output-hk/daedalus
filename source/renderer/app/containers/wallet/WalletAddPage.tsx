@@ -29,6 +29,10 @@ class WalletAddPage extends Component<Props> {
   onClose = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
+  onCloseWalletPairing = () => {
+    this.props.stores.hardwareWallets.resetWalletPairing();
+    this.onClose();
+  };
 
   render() {
     const { actions, stores } = this.props;
@@ -62,7 +66,7 @@ class WalletAddPage extends Component<Props> {
       actions.dialogs.open.trigger({
         dialog: WalletConnectDialog,
       });
-      stores.hardwareWallets.establishHardwareWalletConnection();
+      stores.hardwareWallets.initiateWalletPairing();
     };
 
     let activeDialog = null;
@@ -84,7 +88,9 @@ class WalletAddPage extends Component<Props> {
       // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       activeDialog = <WalletImportDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletConnectDialog)) {
-      activeDialog = <WalletConnectDialogContainer onClose={this.onClose} />;
+      activeDialog = (
+        <WalletConnectDialogContainer onClose={this.onCloseWalletPairing} />
+      );
     }
 
     return (

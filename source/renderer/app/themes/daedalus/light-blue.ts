@@ -892,7 +892,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-font-color-light': 'rgba(94, 96, 102, 0.7)',
     '--theme-staking-font-color-lighter': 'rgba(94, 96, 102, 0.5)',
     '--theme-staking-table-head-background-color': '#f1f3f5',
-    '--theme-staking-table-border-color': '#c6cdd6',
+    '--theme-staking-table-border-color': 'rgba(94, 96, 102, 0.15)',
     '--theme-staking-link-color': 'rgba(41, 111, 208, 1)',
     '--theme-staking-link-color-light': 'rgba(41, 111, 208, 0.7)',
     '--theme-staking-progress-bar-background-color': 'rgba(52, 70, 94, 0.1)',

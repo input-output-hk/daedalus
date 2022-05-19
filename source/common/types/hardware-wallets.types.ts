@@ -1,5 +1,7 @@
+import { BridgeInfo, Device as TrezorDevice, UdevInfo } from 'trezor-connect';
+
 export type BIP32Path = Array<number>;
-export type LedgerModel = 'nanoS' | 'nanoX';
+export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';
 export type TrezorModel = '1' | 'T';
 export type DeviceType = 'ledger' | 'trezor';
 export type DeviceEvent =
@@ -22,22 +24,21 @@ export type DeviceEvent =
   | 'unreadable-device';
 export const DeviceModels: {
   LEDGER_NANO_S: LedgerModel;
+  LEDGER_NANO_S_PLUS: LedgerModel;
   LEDGER_NANO_X: LedgerModel;
   TREZOR_ONE: TrezorModel;
   TREZOR_T: TrezorModel;
 } = {
   LEDGER_NANO_S: 'nanoS',
+  LEDGER_NANO_S_PLUS: 'nanoSP',
   LEDGER_NANO_X: 'nanoX',
   TREZOR_ONE: '1',
   TREZOR_T: 'T',
 };
-export const DeviceTypes: {
-  LEDGER: DeviceType;
-  TREZOR: DeviceType;
-} = {
-  LEDGER: 'ledger',
-  TREZOR: 'trezor',
-};
+export enum DeviceTypes {
+  LEDGER = 'ledger',
+  TREZOR = 'trezor',
+}
 export const DeviceEvents: {
   CONNECT: DeviceEvent;
   CONNECT_UNACQUIRED: DeviceEvent;
@@ -99,15 +100,28 @@ export const CertificateTypes: {
   STAKE_DEREGISTRATION: 1,
   STAKE_DELEGATION: 2,
 };
-export type TransportDevice = {
+
+export type LedgerTransportDevice = {
   deviceId: string | null | undefined;
   // @TODO - mark as mandatory parameter once Ledger improver
-  deviceType: DeviceType;
+  deviceType: 'ledger';
+  deviceModel: string;
+  deviceName: string;
+  path: string | null | undefined;
+};
+
+export type TrezorTransportDevice = {
+  deviceId: string | null | undefined;
+  // @TODO - mark as mandatory parameter once Ledger improver
+  deviceType: 'trezor';
   deviceModel: string;
   deviceName: string;
   path: string | null | undefined;
   firmwareVersion: string | null | undefined;
 };
+
+export type TransportDevice = LedgerTransportDevice | TrezorTransportDevice;
+
 export type Certificate = {
   address: string;
   type: string;
@@ -283,6 +297,42 @@ export type TrezorSignTransactionResponse = {
   success: boolean;
   payload: TrezorSerializedTxPayload | TrezorRawTxPayload;
 };
+
+export type LedgerDevicePayload = {
+  disconnected: boolean;
+  deviceType: 'ledger';
+  deviceId: string | null;
+  deviceModel: string;
+  deviceName: string;
+  path: string;
+  product: string;
+};
+
+export type TrezorDevicePayload = {
+  disconnected: boolean;
+  deviceId: string;
+  deviceType: 'trezor';
+  deviceModel: TrezorDevice;
+  // e.g. "1" or "T"
+  deviceName: string;
+  path: string;
+  eventType: string;
+};
+
+export type TrezorDeviceErrorPayload = {
+  deviceType: 'trezor';
+  error?: {
+    payload: {
+      error: string;
+      bridge?: BridgeInfo;
+      udev?: UdevInfo;
+      code?: string;
+    };
+  };
+};
+
+// FIXME: This should be LedgerDevicePayload | TrezorDevicePayload | TrezorDeviceErrorPayload
+// Changing so will result in a huge refactoring on HardwareWalletsStore._changeHardwareWalletConnectionStatus
 export type HardwareWalletConnectionRequest = {
   disconnected: boolean;
   deviceType: DeviceType;
@@ -290,6 +340,7 @@ export type HardwareWalletConnectionRequest = {
   deviceModel: string;
   deviceName: string;
   path: string | null | undefined;
+  product: string | null;
   error?: {
     payload: {
       code: string;
