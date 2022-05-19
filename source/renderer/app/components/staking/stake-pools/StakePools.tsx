@@ -19,11 +19,10 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/smash-s... Remove this comment to see the full error message
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
+import { AnalyticsClient } from '../../../analytics';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -70,6 +69,7 @@ const messages = defineMessages({
 });
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
 type Props = {
+  analyticsClient: AnalyticsClient;
   currentLocale: string;
   currentTheme: string;
   getStakePoolById: (...args: Array<any>) => any;
@@ -119,22 +119,35 @@ class StakePools extends Component<Props, State> {
     this.setState({
       search,
     });
+
   handleClearSearch = () =>
     this.setState({
       search: '',
     });
-  handleGridView = () =>
+
+  handleGridView = () => {
     this.setState({
       isGridView: true,
       isGridRewardsView: false,
       isListView: false,
     });
+
+    this.props.analyticsClient.sendEvent(
+      'Stake Pools',
+      'Changed view to grid view'
+    );
+  };
   handleGridRewardsView = () => {
     this.setState({
       isGridView: false,
       isGridRewardsView: true,
       isListView: false,
     });
+
+    this.props.analyticsClient.sendEvent(
+      'Stake Pools',
+      'Changed view to grid rewards view'
+    );
   };
   handleListView = () => {
     this.setState({
@@ -142,6 +155,11 @@ class StakePools extends Component<Props, State> {
       isGridRewardsView: false,
       isListView: true,
     });
+
+    this.props.analyticsClient.sendEvent(
+      'Stake Pools',
+      'Changed view to list view'
+    );
   };
   handleSetListActive = (selectedList: string) =>
     this.setState({

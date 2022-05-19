@@ -55,6 +55,7 @@ class StakePoolsListPage extends Component<Props> {
       networkStatus,
       profile,
       wallets,
+      analytics,
     } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
@@ -77,6 +78,7 @@ class StakePoolsListPage extends Component<Props> {
     return (
       <Fragment>
         <StakePools
+          analyticsClient={this.props.stores.analytics.analyticsClient}
           wallets={all}
           currentLocale={currentLocale}
           stakePoolsList={stakePools}
