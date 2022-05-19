@@ -23,7 +23,7 @@ runCommandCC "daedalus-cardano-bridge" {
     '' else if target == "x86_64-linux" then ''
       cp -f ${local-cluster}/bin/local-cluster .
 
-    '' else if target == "x86_64-darwin" then ''
+    '' else if target == "x86_64-darwin" || target == "aarch64-darwin" then ''
       # For nix-shell:
       cp -f ${local-cluster}/bin/local-cluster .
 
