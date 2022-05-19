@@ -105,21 +105,6 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-##### Staging
-
-1. Run `yarn nix:staging` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Shelley QA
-
-1. Run `yarn nix:shelley_qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Alonzo Purple
-
-1. Run `yarn nix:alonzo_purple` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
 ##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
@@ -160,13 +145,11 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 - Windows 10/11
 - Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
 - NodeJS 16
-- Python2 *
-- `yarn global add windows-build-tools` * (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
-- Microsoft Build Tools 2015 *
-- Microsoft Visual Studio 2017 (Include Desktop development with C++) *
+- Python2
+- `yarn global add windows-build-tools` (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
+- Microsoft Build Tools 2015
+- Microsoft Visual Studio 2017 (Include Desktop development with C++)
 - `yarn config set msvsversion 2015 --global`
-
-*needed for compiling node-sass@4.14.1 on Windows
 
 #### Steps
 - `yarn install`
@@ -223,6 +206,26 @@ You can debug the main process by following one of these approaches:
 - [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
 
 The inspector runs on port 9229
+
+### Linking with UI Libraries (e.g. React Polymorph)
+
+You can link libraries with Daedalus using one of the following steps:
+
+#### 1) Using `yalc`
+
+1) Install `yalc` globally using `yarn global add yalc`.
+2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
+3) Switch to Daedalus and run `yalc add <package-name>` or preferably `yalc link <package-name>`.
+4) You should be able to start Daedalus and see the changes you are making locally in the library.
+5) To make sure your changes are reflected as you update code in the library, use `yalc push`.
+
+#### 2) Using `yarn link`
+
+1) From the Daedalus root directory, go to `node_modules/react` and `yarn link`.
+2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
+3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
+4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
+5) Finally, run `yarn build:watch` from the library's root directory.
 
 ## Testing
 

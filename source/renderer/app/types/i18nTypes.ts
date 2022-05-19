@@ -9,4 +9,5 @@ export type Intl = {
     message: ReactIntlMessage,
     values?: Record<string, MessageFormatPrimitiveValue>
   ) => string;
+  locale: string;
 };
