@@ -9,8 +9,6 @@ nixUnstable=$(nix-build "$myDir"/../default.nix -A pkgs.nixUnstable)
 PATH="$nixUnstable/bin:$PATH"
 
 export NIX_CONFIG='
-  substituters = https://hydra.iohk.io https://cache.nixos.org/
-  trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
   experimental-features = nix-command flakes
 '
 
