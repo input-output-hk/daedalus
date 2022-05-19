@@ -444,10 +444,8 @@ export default class ProfileStore extends Store {
     }
   };
   _isOnAnalyticsPage = () =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.ANALYTICS;
   _isOnTermsOfUsePage = () =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
   _redirectToAnalyticsScreenIfNotConfirmed = () => {
     if (
@@ -456,7 +454,6 @@ export default class ProfileStore extends Store {
       this.areTermsOfUseAccepted &&
       !this.hasConfirmedAnalyticsAcceptanceStatus
     ) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.ANALYTICS,
       });
