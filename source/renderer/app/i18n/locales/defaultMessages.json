@@ -989,243 +989,6 @@
   {
     "descriptors": [
       {
-<<<<<<< HEAD
-        "defaultMessage": "!!!Token #{assetNumber}",
-        "description": "\"assetLabel\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.assetLabel",
-        "start": {
-          "column": 14,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "\"unformattedAmountLabel\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountLabel",
-        "start": {
-          "column": 26,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "\"unformattedAmountMessageForHardwareWallets\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets",
-        "start": {
-          "column": 46,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "\"unformattedAmountMessageForSoftwareWallets\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets",
-        "start": {
-          "column": 46,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!There is no such token in this wallet",
-        "description": "\"missingToken\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.missingToken",
-        "start": {
-          "column": 16,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Insufficient funds. The balance of the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})",
-        "description": "\"insufficientBalance\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.insufficientBalance",
-        "start": {
-          "column": 23,
-          "line": 52
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/assets/AssetTransactionConfirmation.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Transaction request",
-        "description": "\"title\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.title",
-        "start": {
-          "column": 9,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!triggered from {triggeredFrom}",
-        "description": "\"subtitle\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.subtitle",
-        "start": {
-          "column": 12,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!From wallet",
-        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.fromWalletLabel",
-        "start": {
-          "column": 19,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "\"receiver\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.receiver.label",
-        "start": {
-          "column": 17,
-          "line": 41
-        }
-      },
-      {
-        "defaultMessage": "!!!Select a wallet",
-        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.walletsDropdown.placeholder",
-        "start": {
-          "column": 30,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Add a wallet",
-        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel",
-        "start": {
-          "column": 18,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.transactionFee.label",
-        "start": {
-          "column": 23,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Additional data",
-        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.additionalData.label",
-        "start": {
-          "column": 23,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Meta data",
-        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.metaData.label",
-        "start": {
-          "column": 17,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
-        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.error.notEnoughAda",
-        "start": {
-          "column": 35,
-          "line": 72
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/dapp/DappTransactionRequest.json"
-  },
-  {
-    "descriptors": [
-      {
-=======
->>>>>>> feature/ddw-809-implement-analytics
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
@@ -6731,13 +6494,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -6745,13 +6508,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -6759,13 +6522,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -6773,13 +6536,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -6787,13 +6550,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -6801,13 +6564,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -6815,13 +6578,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -6829,13 +6592,13 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 64
+          "line": 65
         }
       }
     ],

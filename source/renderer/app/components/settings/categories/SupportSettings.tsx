@@ -58,7 +58,6 @@ class SupportSettings extends Component<
         ? AnalyticsAcceptanceStatus.ACCEPTED
         : AnalyticsAcceptanceStatus.REJECTED
     );
-    await this.props.stores.analytics.resetAnalyticsClient();
 
     let { pageViewEventSent } = this.state;
 

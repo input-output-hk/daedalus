@@ -27,7 +27,6 @@ export type StorageKey =
   | 'WALLET-MIGRATION-STATUS'
   | 'WALLETS'
   | 'ANALYTICS-ACCEPTANCE'
-  | 'ANALYTICS-MACHINE-SPEC-SENT'
   | 'USER-ID'
   | 'WINDOW-BOUNDS';
 export type StoreMessage = {
