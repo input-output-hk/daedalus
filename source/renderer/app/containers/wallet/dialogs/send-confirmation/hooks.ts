@@ -39,6 +39,7 @@ export const useForm = ({
             hasAssetsRemainingAfterTransaction: hasAssetsAfterTransaction({
               assetTokens,
               selectedAssets,
+              assetsAmounts,
             }),
             ...(selectedAssets.length
               ? { assets: selectedAssets, assetsAmounts }

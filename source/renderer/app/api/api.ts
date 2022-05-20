@@ -906,13 +906,15 @@ export default class AdaApi {
 
       const {
         requiresAdaToRemainToSupportNativeTokens,
-        adaToRemain,
+        adaToProceed,
       } = doesWalletRequireAdaToRemainToSupportTokens(
         error,
         hasAssetsRemainingAfterTransaction
       );
       if (requiresAdaToRemainToSupportNativeTokens) {
-        apiError.set('cannotLeaveWalletEmpty', true, { adaToRemain });
+        apiError.set('cannotLeaveWalletEmpty', true, {
+          adaAmount: adaToProceed,
+        });
       }
 
       throw apiError.result();

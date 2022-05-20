@@ -94,5 +94,10 @@ export type CreateForm = Pick<ViewProps, 'intl' | 'isHardwareWallet'>;
 
 export type HasAssetsAfterTransaction = Pick<
   ViewProps,
-  'assetTokens' | 'selectedAssets'
+  'assetTokens' | 'selectedAssets' | 'assetsAmounts'
+>;
+
+export type IsSendingAllFromSelected = Pick<
+  ViewProps,
+  'selectedAssets' | 'assetsAmounts'
 >;

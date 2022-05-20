@@ -57,6 +57,7 @@ export type HwDeviceStatus =
   | 'verifying_address_aborted'
   | 'verifying_address_succeeded'
   | 'unrecognized_wallet';
+
 export const HwDeviceStatuses: {
   CONNECTING: HwDeviceStatus;
   CONNECTING_FAILED: HwDeviceStatus;
