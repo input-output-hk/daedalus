@@ -1,4 +1,6 @@
-{ mkDerivation, base, directory, fetchFromGitHub, process, lib, transformers, uniplate }:
+{ mkDerivation, base, directory, fetchFromGitHub, process, stdenv, lib
+, transformers, uniplate
+}:
 mkDerivation {
   pname = "nsis";
   version = "0.3.2";

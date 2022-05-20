@@ -1,8 +1,8 @@
 { mkDerivation, aeson, aeson-pretty, ansi-terminal, base
 , bytestring, containers, dhall, exceptions, filepath, libyaml
 , optparse-applicative, prettyprinter, prettyprinter-ansi-terminal
-, scientific, stdenv, tasty, tasty-hunit, text
-, unordered-containers, vector, yaml, lib
+, scientific, stdenv, tasty, tasty-hunit, text, lib
+, unordered-containers, vector, yaml
 }:
 mkDerivation {
   pname = "dhall-json";

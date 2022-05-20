@@ -10,7 +10,7 @@
 , spoon, stdenv, tasty, tasty-expected-failure, tasty-hunit
 , tasty-quickcheck, template-haskell, text, th-lift-instances
 , transformers, transformers-compat, turtle, unordered-containers
-, uri-encode, vector, lib
+, uri-encode, vector
 }:
 mkDerivation {
   pname = "dhall";

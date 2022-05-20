@@ -1,9 +1,9 @@
 { mkDerivation, aeson, base, bytestring, containers, directory
 , filepath, foldl, github, Glob, hspec, lens-aeson, managed
 , megaparsec, microlens, network-uri, nsis, optional-args
-, optparse-applicative, optparse-generic, split, stdenv
+, optparse-applicative, optparse-generic, split, lib
 , system-filepath, temporary, text, turtle, universum, raw-strings-qq
-, unordered-containers, wreq, yaml, zip-archive, lib
+, unordered-containers, wreq, yaml, zip-archive
 }:
 mkDerivation {
   pname = "daedalus-installer";

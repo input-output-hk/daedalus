@@ -6,7 +6,7 @@
 , memory, mtl, optparse-generic, parsers, prettyprinter
 , prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty, lib
 , tasty-hunit, text, text-format, transformers, trifecta, unordered-containers
-, vector, lib
+, vector
 }:
 mkDerivation {
   pname = "dhall";

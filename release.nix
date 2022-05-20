@@ -60,11 +60,17 @@ in {
     inherit (sources) iohk-nix cardano-wallet cardano-shell;
   };
 } // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
-// (mapOverArches {
-  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
-  yaml2json = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
+// (mapOverArches (let
+    allArchesNoWindows = [
+      "x86_64-linux" "x86_64-darwin"
+      # "aarch64-darwin"    # TODO: re-enable when we have `aarch64-darwin` in Hydra
+    ];
+    allArches = allArchesNoWindows ++ [ "x86_64-windows" ];
+  in {
+  daedalus-installer = allArchesNoWindows;
+  yaml2json = allArchesNoWindows;
   bridgeTable = {
-    cardano = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
+    cardano = allArches;
   };
-  cardano-node = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "x86_64-windows" ];
-})
+  cardano-node = allArches;
+}))

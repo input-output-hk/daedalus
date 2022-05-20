@@ -1,6 +1,6 @@
 { mkDerivation, aeson, aeson-pretty, base, bytestring, dhall
-, fetchgit, optparse-generic, stdenv, text, trifecta
-, unordered-containers, yaml, lib
+, fetchgit, optparse-generic, stdenv, text, trifecta, lib
+, unordered-containers, yaml
 }:
 mkDerivation {
   pname = "dhall-json";
