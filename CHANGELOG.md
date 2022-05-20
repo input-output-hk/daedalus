@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
 - Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
 
 ### Features
@@ -28,7 +29,6 @@
 
 ### Fixes
 
-- Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
 - Fixed dialogs being closed after receiving address shared ([PR 2965](https://github.com/input-output-hk/daedalus/pull/2965))
 - Fixed no progress shown on loading screen on Windows ([PR 2967](https://github.com/input-output-hk/daedalus/pull/2967))
 - Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
