@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { startsWith } from 'lodash/fp';
 import { GlobalListeners } from 'react-polymorph/lib/components/HOC/GlobalListeners';
 import { MnemonicAutocompleteLayout } from './MnemonicAutocompleteLayout';
@@ -26,13 +32,18 @@ const MnemonicsAutocompleteContainer = ({
   error,
   noResultsMessage,
 }: MnemonicsAutocompleteContainerProps) => {
-  const [state, setState] = useState({
-    inputValue: value,
-    selectedOption: '',
-    filteredOptions: options.slice(0, maxVisibleOptions - 1),
-    isOpen: false,
-    mouseIsOverOptions: false,
-  });
+  const initialState = useMemo(
+    () => ({
+      inputValue: value,
+      selectedOption: '',
+      filteredOptions: options.slice(0, maxVisibleOptions - 1),
+      isOpen: false,
+      mouseIsOverOptions: false,
+      blurred: false,
+    }),
+    []
+  );
+  const [state, setState] = useState(initialState);
   const rootRef = useRef();
   const inputRef = useRef();
   const optionsRef = useRef();
@@ -41,7 +52,7 @@ const MnemonicsAutocompleteContainer = ({
   const toggleOpen = useCallback(() => {
     if (disabled) return;
     setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
-  }, []);
+  }, [disabled]);
 
   const toggleMouseIsOverOptions = useCallback(() => {
     setState((prevState) => ({
@@ -53,7 +64,6 @@ const MnemonicsAutocompleteContainer = ({
   const handleInputChange = useCallback(
     (inputValue) => {
       if (disabled) return;
-
       let selectedOption = '';
 
       if (options.includes(inputValue)) {
@@ -70,27 +80,27 @@ const MnemonicsAutocompleteContainer = ({
         selectedOption,
       }));
     },
-    [options]
+    [options, disabled]
   );
 
-  const handleInputSelect = useCallback((inputValue) => {
-    if (disabled) return;
+  const handleInputSelect = useCallback(
+    (inputValue) => {
+      if (disabled) return;
+      setState((prevState) => ({
+        ...prevState,
+        isOpen: false,
+        filteredOptions: [inputValue],
+        selectedOption: inputValue,
+        inputValue,
+      }));
+    },
+    [disabled]
+  );
 
-    setState((prevState) => ({
-      ...prevState,
-      isOpen: false,
-      filteredOptions: [inputValue],
-      selectedOption: inputValue,
-      inputValue,
-    }));
-  }, []);
-
-  const [blurred, setBlurred] = useState(false);
   const handleBlur = useCallback(() => {
     if (disabled) return;
-
-    setBlurred(true);
-  }, [setBlurred]);
+    setState((prevState) => ({ ...prevState, blurred: true }));
+  }, [disabled]);
 
   useEffect(() => {
     onChange(state.selectedOption);
@@ -98,15 +108,9 @@ const MnemonicsAutocompleteContainer = ({
 
   useEffect(() => {
     if (reset) {
-      setBlurred(false);
+      setState(initialState);
     }
   }, [reset]);
-
-  useEffect(() => {
-    if (value !== state.inputValue) {
-      setState((prevState) => ({ ...prevState, inputValue: value }));
-    }
-  }, [value]);
 
   return (
     <GlobalListeners
@@ -136,7 +140,7 @@ const MnemonicsAutocompleteContainer = ({
           toggleOpen={toggleOpen}
           optionHeight={optionHeight}
           disabled={disabled}
-          error={blurred && error}
+          error={state.blurred && error}
         />
       )}
     </GlobalListeners>
