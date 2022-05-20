@@ -42,6 +42,7 @@ Daedalus - Cryptocurrency Wallet
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
+   experimental-features = nix-command flakes
 
    # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
    # system = x86_64-darwin
