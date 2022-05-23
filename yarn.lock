@@ -3360,7 +3360,7 @@
   dependencies:
     "@types/jest" "*"
 
-"@types/trezor-connect@^8.1.18":
+"@types/trezor-connect@8.1.18":
   version "8.1.18"
   resolved "https://registry.yarnpkg.com/@types/trezor-connect/-/trezor-connect-8.1.18.tgz#f9758bc38c6867e1be2775de67503b5191f97823"
   dependencies:

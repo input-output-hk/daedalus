@@ -882,11 +882,10 @@ export const handleHardwareWalletRequests = async (
       ttl,
       networkId,
       certificates,
-      devicePath,
-      validityIntervalStartStr,
       withdrawals,
       auxiliaryData,
       signingMode,
+      device,
     } = params;
 
     if (!TrezorConnect) {
@@ -903,7 +902,6 @@ export const handleHardwareWalletRequests = async (
         networkId,
         certificates,
         withdrawals,
-        validityIntervalStartStr,
         auxiliaryData,
         signingMode,
       };
@@ -911,13 +909,8 @@ export const handleHardwareWalletRequests = async (
       logger.info(
         '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
       );
-
-      const signedTransaction:
-        | Unsuccessful
-        | Success<
-            CardanoSignedTxData
-          > = await TrezorConnect.cardanoSignTransaction({
-        device: buildTrezorDeviceParams(devicePath),
+      const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+        device: buildTrezorDeviceParams(device.path),
         ...dataToSign,
       });
 
