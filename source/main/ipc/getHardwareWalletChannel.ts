@@ -910,7 +910,7 @@ export const handleHardwareWalletRequests = async (
         '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
       );
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-        device: buildTrezorDeviceParams(device.path),
+        device: buildTrezorDeviceParams(device?.path),
         ...dataToSign,
       });
 
