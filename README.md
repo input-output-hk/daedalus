@@ -44,8 +44,11 @@ Daedalus - Cryptocurrency Wallet
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
    experimental-features = nix-command flakes
 
-   # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
-   # system = x86_64-darwin
+   # If you are running on a Mac with Intel chip 
+   system = x86_64-darwin
+   
+   # If you are running on a Mac with M1 chip
+   system = aarch64-darwin
    ```
 
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
