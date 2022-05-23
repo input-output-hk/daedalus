@@ -4,12 +4,18 @@ import TransportNodeHid, {
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import TrezorConnect, {
+  Features,
+  CardanoAddress,
+  CardanoPublicKey,
+  CardanoSignedTxData,
+  Success,
+  Unsuccessful,
   DEVICE,
   DEVICE_EVENT,
   TRANSPORT,
   TRANSPORT_EVENT,
   UI,
-  UI_EVENT, // @ts-ignore
+  UI_EVENT,
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -185,7 +191,6 @@ export const handleHardwareWalletRequests = async (
         if (event.payload && event.payload.device) {
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
-            // @ts-ignore ts-migrate(2322) FIXME: Type '{ value: string; passphraseOnDevice: true; }... Remove this comment to see the full error message
             payload: {
               value: '',
               passphraseOnDevice: true,
@@ -212,7 +217,7 @@ export const handleHardwareWalletRequests = async (
             error: {
               payload: event.payload,
             },
-          }, // @ts-ignore
+          },
           mainWindow
         );
       }
@@ -244,7 +249,7 @@ export const handleHardwareWalletRequests = async (
             // e.g. Test Name
             path: event.payload.path,
             eventType: event.type,
-          }, // @ts-ignore
+          },
           mainWindow
         );
       }
@@ -276,7 +281,7 @@ export const handleHardwareWalletRequests = async (
         devicePath,
       });
       // Connected Trezor device info
-      let deviceFeatures;
+      let deviceFeatures: Unsuccessful | Success<Features>;
 
       if (isTrezor) {
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel::TREZOR ');
@@ -353,7 +358,6 @@ export const handleHardwareWalletRequests = async (
           };
         };
 
-        // @ts-ignore
         if (transportList && !transportList.length) {
           // Establish connection with last device
           try {
@@ -368,7 +372,6 @@ export const handleHardwareWalletRequests = async (
           }
         } else if (!devicePath || !devicesMemo[devicePath]) {
           // Use first like native usb nodeHID
-          // @ts-ignore
           lastConnectedPath = transportList[0]; // eslint-disable-line
           logger.info('[HW-DEBUG] USE First transport', { lastConnectedPath });
 
@@ -386,7 +389,6 @@ export const handleHardwareWalletRequests = async (
           deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
         }
 
-        // @ts-ignore
         const { deviceModel } = hw;
 
         if (deviceModel) {
@@ -487,7 +489,9 @@ export const handleHardwareWalletRequests = async (
           '[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()'
         );
 
-        const result = await TrezorConnect.cardanoGetAddress({
+        const result:
+          | Unsuccessful
+          | Success<CardanoAddress> = await TrezorConnect.cardanoGetAddress({
           showOnTrezor: true,
           device: buildTrezorDeviceParams(devicePath),
           addressParameters: {
@@ -498,7 +502,6 @@ export const handleHardwareWalletRequests = async (
           protocolMagic,
           networkId,
         });
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'address' does not exist on type '{ error... Remove this comment to see the full error message
         return result.payload.address;
       }
 
@@ -675,7 +678,6 @@ export const handleHardwareWalletRequests = async (
       });
 
       if (path && !isDeviceDisconnected && isDisconnectError) {
-        // @ts-ignore
         const oldPath = path;
         const deviceMemo = devicesMemo[oldPath];
         const devicePaths = await TransportNodeHid.list();
@@ -707,7 +709,6 @@ export const handleHardwareWalletRequests = async (
         }
 
         const { device: oldDevice } = deviceMemo;
-        // @ts-ignore
         const newTransport = await TransportNodeHid.open(newPath);
         const newDeviceConnection = new AppAda(newTransport);
         const deviceList = getDevices();
@@ -729,7 +730,6 @@ export const handleHardwareWalletRequests = async (
           }
         );
         // Update devicesMemo
-        // @ts-ignore ts-migrate(2538) FIXME: Type 'unknown' cannot be used as an index type.
         devicesMemo[newPath] = {
           device: newDevice,
           transport: newTransport,
@@ -771,15 +771,20 @@ export const handleHardwareWalletRequests = async (
           logger.info(
             '[TREZOR-CONNECT] Calling TrezorConnect.cardanoGetPublicKey()'
           );
-          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
-            {
-              path: `m/${path}`,
-              showOnTrezor: true,
-            }
-          );
+          const extendedPublicKeyResponse:
+            | void
+            | Unsuccessful
+            | Success<
+                CardanoPublicKey
+              > = await TrezorConnect.cardanoGetPublicKey({
+            path: `m/${path}`,
+            showOnTrezor: true,
+          }).catch((err) => logger.error(err));
 
-          if (!extendedPublicKeyResponse.success) {
-            throw extendedPublicKeyResponse.payload;
+          if (extendedPublicKeyResponse) {
+            if (!extendedPublicKeyResponse.success) {
+              throw extendedPublicKeyResponse.payload;
+            }
           }
 
           const extendedPublicKey = get(extendedPublicKeyResponse, [
@@ -868,7 +873,6 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(params: TrezorSignTransactionRe... Remove this comment to see the full error message
   signTransactionTrezorChannel.onRequest(async (params) => {
     const {
       inputs,
@@ -908,8 +912,11 @@ export const handleHardwareWalletRequests = async (
         '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
       );
 
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ inputs: TrezorSignTransactionI... Remove this comment to see the full error message
-      const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+      const signedTransaction:
+        | Unsuccessful
+        | Success<
+            CardanoSignedTxData
+          > = await TrezorConnect.cardanoSignTransaction({
         device: buildTrezorDeviceParams(devicePath),
         ...dataToSign,
       });
