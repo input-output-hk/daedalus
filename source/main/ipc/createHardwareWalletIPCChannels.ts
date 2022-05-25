@@ -1,5 +1,4 @@
 import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
-import { CommonParams, CardanoSignTransaction } from 'trezor-connect';
 import {
   deriveAddressMainResponse,
   deriveAddressRendererRequest,
