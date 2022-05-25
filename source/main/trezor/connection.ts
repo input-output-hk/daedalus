@@ -2,23 +2,14 @@ import TrezorConnect from 'trezor-connect';
 import { logger } from '../utils/logging';
 import { manifest } from './manifest';
 
-let alreadyInited = false;
-
 export const initTrezorConnect = async () => {
   try {
-    // TODO - we need to find another way to reinitialize Trezor
-    // previously it was possible to re-init Trezor by calling TrezorConnect.init() multiple times and therefore reset the passphrase cached on device
-    if (alreadyInited) {
-      return;
-    }
-
     await TrezorConnect.init({
       popup: false, // render your own UI
       webusb: false, // webusb is not supported in electron
-      debug: true,
+      debug: process.env.DEBUG_TREZOR === 'true',
       manifest,
     });
-    alreadyInited = true;
 
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.init()');
   } catch (error) {
@@ -27,4 +18,14 @@ export const initTrezorConnect = async () => {
   }
 };
 
-export const reinitTrezorConnect = initTrezorConnect;
+export const reinitTrezorConnect = () => {
+  try {
+    logger.info('[TREZOR-CONNECT] Called TrezorConnect.dispose()');
+    TrezorConnect.dispose();
+  } catch (error) {
+    // ignore any TrezorConnect instance disposal errors
+    logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.dispose()');
+  }
+
+  return initTrezorConnect();
+};
