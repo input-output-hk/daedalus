@@ -4,18 +4,16 @@ import TransportNodeHid, {
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import TrezorConnect, {
-  Features,
-  CardanoAddress,
   CardanoPublicKey,
-  CardanoSignedTxData,
-  Success,
-  Unsuccessful,
   DEVICE,
   DEVICE_EVENT,
+  Features,
+  Success,
   TRANSPORT,
   TRANSPORT_EVENT,
   UI,
   UI_EVENT,
+  Unsuccessful,
 } from 'trezor-connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
@@ -192,6 +190,7 @@ export const handleHardwareWalletRequests = async (
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
             payload: {
+              save: false,
               value: '',
               passphraseOnDevice: true,
             },
@@ -218,6 +217,7 @@ export const handleHardwareWalletRequests = async (
               payload: event.payload,
             },
           },
+          // @ts-ignore
           mainWindow
         );
       }
@@ -250,6 +250,7 @@ export const handleHardwareWalletRequests = async (
             path: event.payload.path,
             eventType: event.type,
           },
+          // @ts-ignore
           mainWindow
         );
       }
@@ -479,57 +480,59 @@ export const handleHardwareWalletRequests = async (
       ? utils.str_to_path(stakingPathStr)
       : null;
 
-    try {
-      deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+    deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
 
-      logger.info('[HW-DEBUG] DERIVE ADDRESS');
+    logger.info('[HW-DEBUG] DERIVE ADDRESS');
 
-      if (isTrezor) {
-        logger.info(
-          '[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()'
+    if (isTrezor) {
+      logger.info('[TREZOR-CONNECT] Called TrezorConnect.cardanoGetAddress()');
+
+      const result = await TrezorConnect.cardanoGetAddress({
+        showOnTrezor: true,
+        device: buildTrezorDeviceParams(devicePath),
+        addressParameters: {
+          addressType,
+          path: `m/${spendingPathStr}`,
+          stakingPath: stakingPathStr ? `m/${stakingPathStr}` : null,
+        },
+        protocolMagic,
+        networkId,
+      });
+
+      if (result.success === false) {
+        logger.error(
+          '[TREZOR-CONNECT] TrezorConnect.cardanoGetAddress() failed',
+          result.payload
         );
 
-        const result:
-          | Unsuccessful
-          | Success<CardanoAddress> = await TrezorConnect.cardanoGetAddress({
-          showOnTrezor: true,
-          device: buildTrezorDeviceParams(devicePath),
-          addressParameters: {
-            addressType,
-            path: `m/${spendingPathStr}`,
-            stakingPath: stakingPathStr ? `m/${stakingPathStr}` : null,
-          },
-          protocolMagic,
-          networkId,
-        });
-        return result.payload.address;
+        throw new Error('TrezorConnect.cardanoGetAddress() failed');
       }
 
-      // Check if Ledger instantiated
-      if (!deviceConnection) {
-        throw new Error('Ledger device not connected');
-      }
-
-      const { addressHex } = await deviceConnection.deriveAddress({
-        network: {
-          networkId,
-          protocolMagic,
-        },
-        address: {
-          type: addressType,
-          params: {
-            spendingPath,
-            stakingPath,
-          },
-        },
-      });
-      const encodedAddress = utils.bech32_encodeAddress(
-        utils.hex_to_buf(addressHex)
-      );
-      return encodedAddress;
-    } catch (e) {
-      throw e;
+      return result.payload.address;
     }
+
+    // Check if Ledger instantiated
+    if (!deviceConnection) {
+      throw new Error('Ledger device not connected');
+    }
+
+    const { addressHex } = await deviceConnection.deriveAddress({
+      network: {
+        networkId,
+        protocolMagic,
+      },
+      address: {
+        type: addressType,
+        params: {
+          spendingPath,
+          stakingPath,
+        },
+      },
+    });
+    const encodedAddress = utils.bech32_encodeAddress(
+      utils.hex_to_buf(addressHex)
+    );
+    return encodedAddress;
   });
   showAddressChannel.onRequest(async (params) => {
     const {
@@ -680,7 +683,7 @@ export const handleHardwareWalletRequests = async (
       if (path && !isDeviceDisconnected && isDisconnectError) {
         const oldPath = path;
         const deviceMemo = devicesMemo[oldPath];
-        const devicePaths = await TransportNodeHid.list();
+        const devicePaths: string[] = await TransportNodeHid.list();
         const hasPathChanged = !includes(devicePaths, oldPath);
         const newPath = hasPathChanged ? last(devicePaths) : oldPath;
 

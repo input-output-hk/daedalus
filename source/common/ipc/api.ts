@@ -1,4 +1,10 @@
-import { CardanoSignTransaction, CommonParams } from 'trezor-connect';
+import {
+  CardanoSignedTxData,
+  CardanoSignTransaction,
+  CommonParams,
+  Success,
+  Unsuccessful,
+} from 'trezor-connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -64,7 +70,6 @@ import type {
   LedgerSignTransactionResponse,
   TrezorDeviceErrorPayload,
   TrezorDevicePayload,
-  TrezorSignTransactionResponse,
 } from '../types/hardware-wallets.types';
 
 /**
@@ -494,7 +499,9 @@ export const SIGN_TRANSACTION_TREZOR_CHANNEL =
   'SIGN_TRANSACTION_TREZOR_CHANNEL';
 export type signTransactionTrezorRendererRequest = CommonParams &
   CardanoSignTransaction;
-export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
+export type signTransactionTrezorMainResponse =
+  | Success<CardanoSignedTxData>
+  | Unsuccessful;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
