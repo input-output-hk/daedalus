@@ -302,7 +302,6 @@
   },
   "resolutions": {
     "@types/react": "16.9.56",
-    "**/**/minimatch": "3.0.4",
     "**/**/handlebars": "4.7.7",
     "**/**/elliptic": "6.5.4",
     "**/**/bl": "4.1.0",
