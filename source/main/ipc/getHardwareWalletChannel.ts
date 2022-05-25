@@ -423,9 +423,8 @@ export const handleHardwareWalletRequests = async (
 
   handleInitTrezorConnectChannel.onRequest(async () => {
     logger.info('[HW-DEBUG] INIT TREZOR');
-    resetTrezorListeners();
-    TrezorConnect.manifest(manifest);
     await initTrezorConnect();
+    resetTrezorListeners();
   });
 
   handleInitLedgerConnectChannel.onRequest(async () => {
@@ -764,6 +763,7 @@ export const handleHardwareWalletRequests = async (
         // a different passphrase, in case they want to switch to a different
         // hidden wallet or just if they provided a wrong one.
         await reinitTrezorConnect();
+        resetTrezorListeners();
 
         logger.info('[TREZOR-CONNECT] Calling TrezorConnect.getFeatures()');
         const deviceFeatures = await TrezorConnect.getFeatures({
