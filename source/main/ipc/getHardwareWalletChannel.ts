@@ -33,8 +33,6 @@ import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
-import { manifest } from '../trezor/manifest';
-import { buildTrezorDeviceParams } from '../utils/buildTrezorDeviceParams';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -190,7 +188,7 @@ export const handleHardwareWalletRequests = async (
           TrezorConnect.uiResponse({
             type: UI.RECEIVE_PASSPHRASE,
             payload: {
-              save: false,
+              save: true,
               value: '',
               passphraseOnDevice: true,
             },
@@ -321,7 +319,10 @@ export const handleHardwareWalletRequests = async (
 
           throw deviceFeatures.payload; // Error is in payload
         } catch (e) {
-          logger.info('[HW-DEBUG] Trezor connect error');
+          logger.info(
+            '[HW-DEBUG] Trezor connect error: ',
+            e.message || 'no message'
+          );
           throw e;
         }
       }
@@ -488,7 +489,6 @@ export const handleHardwareWalletRequests = async (
 
       const result = await TrezorConnect.cardanoGetAddress({
         showOnTrezor: true,
-        device: buildTrezorDeviceParams(devicePath),
         addressParameters: {
           addressType,
           path: `m/${spendingPathStr}`,
@@ -766,9 +766,7 @@ export const handleHardwareWalletRequests = async (
         resetTrezorListeners();
 
         logger.info('[TREZOR-CONNECT] Calling TrezorConnect.getFeatures()');
-        const deviceFeatures = await TrezorConnect.getFeatures({
-          device: buildTrezorDeviceParams(devicePath),
-        });
+        const deviceFeatures = await TrezorConnect.getFeatures();
 
         if (deviceFeatures.success) {
           logger.info(
@@ -913,7 +911,6 @@ export const handleHardwareWalletRequests = async (
         '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
       );
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-        device: buildTrezorDeviceParams(device?.path),
         ...dataToSign,
       });
 
