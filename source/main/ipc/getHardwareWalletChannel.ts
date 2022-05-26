@@ -874,50 +874,13 @@ export const handleHardwareWalletRequests = async (
       throw e;
     }
   });
-  signTransactionTrezorChannel.onRequest(async (params) => {
-    const {
-      inputs,
-      outputs,
-      protocolMagic,
-      fee,
-      ttl,
-      networkId,
-      certificates,
-      withdrawals,
-      auxiliaryData,
-      signingMode,
-      device,
-    } = params;
 
-    if (!TrezorConnect) {
-      throw new Error('Device not connected!');
-    }
+  signTransactionTrezorChannel.onRequest((dataToSign) => {
+    logger.info(
+      '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
+    );
 
-    try {
-      const dataToSign = {
-        inputs,
-        outputs,
-        fee,
-        ttl,
-        protocolMagic,
-        networkId,
-        certificates,
-        withdrawals,
-        auxiliaryData,
-        signingMode,
-      };
-
-      logger.info(
-        '[TREZOR-CONNECT] Calling TrezorConnect.cardanoSignTransaction()'
-      );
-      const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-        ...dataToSign,
-      });
-
-      return Promise.resolve(signedTransaction);
-    } catch (e) {
-      throw e;
-    }
+    return TrezorConnect.cardanoSignTransaction(dataToSign);
   });
 
   resetTrezorActionChannel.onRequest(async () => {
