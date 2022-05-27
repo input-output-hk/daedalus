@@ -772,20 +772,15 @@ export const handleHardwareWalletRequests = async (
           logger.info(
             '[TREZOR-CONNECT] Calling TrezorConnect.cardanoGetPublicKey()'
           );
-          const extendedPublicKeyResponse:
-            | void
-            | Unsuccessful
-            | Success<
-                CardanoPublicKey
-              > = await TrezorConnect.cardanoGetPublicKey({
-            path: `m/${path}`,
-            showOnTrezor: true,
-          }).catch((err) => logger.error(err));
-
-          if (extendedPublicKeyResponse) {
-            if (!extendedPublicKeyResponse.success) {
-              throw extendedPublicKeyResponse.payload;
+          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
+            {
+              path: `m/${path}`,
+              showOnTrezor: true,
             }
+          );
+
+          if (!extendedPublicKeyResponse.success) {
+            throw extendedPublicKeyResponse.payload;
           }
 
           const extendedPublicKey = get(extendedPublicKeyResponse, [
