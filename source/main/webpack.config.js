@@ -58,6 +58,7 @@ module.exports = {
     minimize: false,
   },
   resolve: {
+    symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {

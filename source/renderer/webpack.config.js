@@ -100,7 +100,11 @@ module.exports = {
     ],
   },
   resolve: {
+    symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {
+      react: require.resolve('react'),
+    },
     fallback: {
       process: require.resolve('process/browser'),
       path: require.resolve('path-browserify'),

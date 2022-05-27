@@ -47,6 +47,9 @@ installers/config.yaml
 installers/icons/electron.icns
 installers/installer-config.json
 installers/topology.yaml
+installers/csl-daedalus/
+installers/delegation.cert
+installers/signing.key
 
 # temporary certs for daedalus dev
 tls/client

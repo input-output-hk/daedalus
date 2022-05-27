@@ -213,6 +213,7 @@
     "cardano-js": "0.4.8",
     "cardano-launcher": "0.20220119.0",
     "cbor": "5.0.2",
+    "cbor-web": "7.0.6",
     "check-disk-space": "3.2.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
@@ -261,7 +262,7 @@
     "react-custom-scrollbars": "4.2.1",
     "react-datetime": "3.0.4",
     "react-dom": "16.14.0",
-    "react-intl": "2.7.2",
+    "react-intl": "2.9.0",
     "react-lottie": "1.2.3",
     "react-markdown": "5.0.3",
     "react-polymorph": "1.0.4",
@@ -301,7 +302,6 @@
     }
   },
   "resolutions": {
-    "@types/react": "16.9.56",
     "**/**/handlebars": "4.7.7",
     "**/**/elliptic": "6.5.4",
     "**/**/bl": "4.1.0",
