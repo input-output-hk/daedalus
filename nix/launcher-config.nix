@@ -5,8 +5,6 @@
 , runCommand
 , lib
 , devShell ? false
-, cardano-wallet-native
-, runCommandNative
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null

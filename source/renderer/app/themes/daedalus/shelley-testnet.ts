@@ -883,7 +883,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-font-color-light': '#ffffffb3',
     '--theme-staking-font-color-lighter': 'rgba(255, 255, 255, 0.5)',
     '--theme-staking-table-head-background-color': 'rgba(255, 255, 255, 0.07)',
-    '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.15)',
     '--theme-staking-link-color': '#898ee6',
     '--theme-staking-link-color-light': 'rgba(137, 142, 230, 0.7)',
     '--theme-staking-progress-bar-background-color':
