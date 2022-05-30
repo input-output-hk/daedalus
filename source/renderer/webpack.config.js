@@ -103,7 +103,7 @@ module.exports = {
     symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      react: require.resolve('react'),
+      react: require.resolve('react'), // else, it’s added a few times to index.js 🙄
     },
     fallback: {
       process: require.resolve('process/browser'),
