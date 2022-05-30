@@ -46,5 +46,5 @@ genSignedInstaller os options'= do
     export "NETWORK" (clusterNetwork $ oCluster options')
     case os of
         Linux64 -> putStrLn ("Use default.nix, please." :: String)
-        Macos64 ->     MacInstaller.main options'
+        Macos64 -> MacInstaller.main options'
         Win64   -> WindowsInstaller.main options'

@@ -32,6 +32,8 @@ let
   };
   pkgs = import sources.nixpkgs { inherit system config; };
   sources = localLib.sources;
+  haskellNix = import sources."haskell.nix" {};
+  inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
   flake-compat = import sources.flake-compat;
   walletFlake = flake-compat  { src = sources.cardano-wallet; };
   walletPackages = with walletFlake.defaultNix.hydraJobs; {
@@ -56,13 +58,14 @@ let
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
+  ostable.aarch64-darwin = "macos64-arm";
+
   packages = self: {
     inherit cluster pkgs version target nodeImplementation;
-    inherit (pkgs) hello cabal2nix;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgs.nodejs-14_x;
+    nodejs = pkgs.nodejs-16_x;
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
@@ -86,7 +89,7 @@ let
     inherit (walletPackages) cardano-address;
     inherit (walletPackages) mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    local-cluster = if cluster == "selfnode" then (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).local-cluster else null;
+    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -266,7 +269,7 @@ let
       pushd dlls
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
-      cp -v ${self.unpackedCardano}/bin/* .
+      cp -vr ${self.unpackedCardano}/bin/* .
       cp -v ${self.nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
@@ -316,7 +319,11 @@ let
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
-    yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
+    inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
+      packages: .
+      package yaml
+        flags: -no-exe
+    ''; }).components.exes) yaml2json;
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 
