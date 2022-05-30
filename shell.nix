@@ -57,12 +57,14 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      chromedriver
+      (if system == "aarch64-darwin"
+        then (localLib.iohkNix.getPkgs { system = "x86_64-darwin"; inherit config; }).chromedriver
+        else chromedriver)
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
       darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
     ] else [
       daedalusPkgs.electron
@@ -113,11 +115,16 @@ let
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
       mkdir -p ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
-      # XXX: right now we only build Release/detection.node (TODO: investigate why – @michalrus)
-      ln -svf $PWD/node_modules/usb-detection/build/Release/detection.node ${BUILDTYPE}/
+      ${let
+        # XXX: right now we don’t build Debug/ versions on Linux (TODO: investigate why – @michalrus)
+        sourceBUILDTYPE = if system == "x86_64-linux" then "Release" else BUILDTYPE;
+      in ''
+        ln -svf $PWD/node_modules/usb/build/${sourceBUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/usb-detection/build/${sourceBUILDTYPE}/detection.node ${BUILDTYPE}/
+      ''}
+
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}

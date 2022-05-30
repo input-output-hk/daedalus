@@ -125,7 +125,7 @@
     "electron-devtools-installer": "3.2.0",
     "electron-mock-ipc": "0.3.12",
     "electron-packager": "15.4.0",
-    "electron-rebuild": "2.0.1",
+    "electron-rebuild": "3.2.7",
     "eslint": "7.10.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.12.0",

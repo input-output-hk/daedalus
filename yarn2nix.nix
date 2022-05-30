@@ -72,15 +72,6 @@ let
     pkgconfig
     libusb
   ];
-  hack = writeShellScriptBin "node-gyp" ''
-    echo ===== gyp wrapper
-    export PATH=${python3}/bin:$PATH
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
-  '';
-  hack2 = writeShellScriptBin "node-gyp" ''
-    echo ______ gyp wrapper
-    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
-  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -212,11 +203,15 @@ yarn2nix.mkYarnPackage {
   '';
   pkgConfig = {
     electron-rebuild = {
+      # TODO: That is rather awful… Can it be done better? – @michalrus
       postInstall = ''
-        if [ -d node_modules ]; then
-          mv -vi node_modules/.bin/node-gyp node_modules/.bin/node-gyp-old
-          ln -sv ${hack}/bin/node-gyp node_modules/.bin/node-gyp
+        nodeGypJs=lib/src/module-type/node-gyp.js
+        if [ ! -e $nodeGypJs ] ; then
+          echo >&2 'shouldn’t happen unless electron-rebuild changes'
+          exit 1
         fi
+
+        sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-gyp}", "--nodedir", process.env["HOME"] + "/.node-gyp/${windowsElectronVersion}");|' -i $nodeGypJs
       '';
     };
   };
