@@ -103,10 +103,18 @@ yarn2nix.mkYarnPackage {
     export HOME=$(realpath home)
     ln -sv ${electron-cache} $HOME/.cache/electron
 
+    # What is this broken symlink used for‽ `electron-packager` fails when there are broken symlinks…
+    rm deps/daedalus/daedalus
+
+    cd deps/daedalus/
+
     cp ${newPackagePath} package.json
     mkdir -p installers/icons/${cluster}/${cluster}
     cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
-    yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
+
+    export DEBUG=electron-packager
+    yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
+
     ls -ltrh release/win32-x64/Daedalus*-win32-x64/
     cp -r release/win32-x64/Daedalus*-win32-x64 $out
     pushd $out/resources/app/dist
