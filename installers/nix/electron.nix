@@ -12,7 +12,7 @@ let
     homepage = https://github.com/electron/electron;
     license = licenses.mit;
     maintainers = with maintainers; [ travisbhartwell manveru ];
-    platforms = [ "x86_64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
+    platforms = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
   };
 
   linux = {

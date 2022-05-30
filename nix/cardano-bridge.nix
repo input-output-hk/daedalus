@@ -1,4 +1,4 @@
-{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server }:
+{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
 
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
@@ -23,7 +23,7 @@ runCommandCC "daedalus-cardano-bridge" {
     '' else if target == "x86_64-linux" then ''
       cp -f ${local-cluster}/bin/local-cluster .
 
-    '' else if target == "x86_64-darwin" then ''
+    '' else if target == "x86_64-darwin" || target == "aarch64-darwin" then ''
       # For nix-shell:
       cp -f ${local-cluster}/bin/local-cluster .
 
@@ -43,6 +43,12 @@ runCommandCC "daedalus-cardano-bridge" {
     for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
       $STRIP $x
       patchelf --shrink-rpath $x
+    done
+  ''}
+  ${lib.optionalString (target == "aarch64-darwin") ''
+    chmod +w -R .
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
+      ${darwin.sigtool}/bin/codesign --force -s - $x
     done
   ''}
 ''
