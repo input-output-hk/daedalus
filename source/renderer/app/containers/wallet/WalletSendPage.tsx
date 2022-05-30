@@ -12,15 +12,22 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
+import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps;
+type State = {
+  coinSelection: CoinSelectionsResponse;
+};
 
 @inject('stores', 'actions')
 @observer
-class WalletSendPage extends Component<Props> {
+class WalletSendPage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
     stores: null,
+  };
+  state = {
+    coinSelection: null,
   };
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -40,7 +47,7 @@ class WalletSendPage extends Component<Props> {
     let minimumAda;
 
     if (isHardwareWallet) {
-      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
+      const coinSelection: CoinSelectionsResponse = await this.props.stores.hardwareWallets.selectCoins(
         {
           walletId,
           address,
@@ -48,7 +55,10 @@ class WalletSendPage extends Component<Props> {
           assets: selectedAssets,
         }
       );
-      fee = coinsSelection.fee;
+      fee = coinSelection.fee;
+      this.setState({
+        coinSelection,
+      });
     } else {
       ({
         fee,
@@ -69,6 +79,11 @@ class WalletSendPage extends Component<Props> {
 
   submit = (isHardwareWallet: boolean, walletId: string) => {
     const { isFlight } = global;
+
+    this.props.stores.hardwareWallets.updateTxSignRequest(
+      this.state.coinSelection
+    );
+
     this.props.actions.dialogs.open.trigger({
       dialog: WalletSendConfirmationDialogView,
     });
