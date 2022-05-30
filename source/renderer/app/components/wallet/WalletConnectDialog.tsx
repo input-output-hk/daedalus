@@ -13,6 +13,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
+import ledgerSpIcon from '../../assets/images/hardware-wallet/ledgerSP-cropped.inline.svg';
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
 import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
@@ -181,6 +182,9 @@ class WalletConnectDialog extends Component<Props> {
               )}
               {deviceModel === DeviceModels.LEDGER_NANO_S && (
                 <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+              )}
+              {deviceModel === DeviceModels.LEDGER_NANO_S_PLUS && (
+                <SVGInline svg={ledgerSpIcon} className={styles.ledgerSpIcon} />
               )}
             </div>
           )}

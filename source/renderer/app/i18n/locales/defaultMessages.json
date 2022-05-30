@@ -287,7 +287,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Insufficient funds to support tokens. A minimum of {adaToRemain} ADA must remain in the wallet after this transaction.",
+        "defaultMessage": "!!!Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "end": {
           "column": 3,
@@ -989,240 +989,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Token #{assetNumber}",
-        "description": "\"assetLabel\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.assetLabel",
-        "start": {
-          "column": 14,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "\"unformattedAmountLabel\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountLabel",
-        "start": {
-          "column": 26,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "\"unformattedAmountMessageForHardwareWallets\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets",
-        "start": {
-          "column": 46,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "\"unformattedAmountMessageForSoftwareWallets\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets",
-        "start": {
-          "column": 46,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!There is no such token in this wallet",
-        "description": "\"missingToken\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.missingToken",
-        "start": {
-          "column": 16,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Insufficient funds. The balance of the token in this wallet is  {formattedBalance} (Unformatted: {unformattedBalance})",
-        "description": "\"insufficientBalance\" item on AssetTransactionConfirmation.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx",
-        "id": "asset.transactionConfirmation.insufficientBalance",
-        "start": {
-          "column": 23,
-          "line": 52
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/assets/AssetTransactionConfirmation.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Transaction request",
-        "description": "\"title\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.title",
-        "start": {
-          "column": 9,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!triggered from {triggeredFrom}",
-        "description": "\"subtitle\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.subtitle",
-        "start": {
-          "column": 12,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!From wallet",
-        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.fromWalletLabel",
-        "start": {
-          "column": 19,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "\"receiver\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.receiver.label",
-        "start": {
-          "column": 17,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Select a wallet",
-        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.walletsDropdown.placeholder",
-        "start": {
-          "column": 30,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Add a wallet",
-        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel",
-        "start": {
-          "column": 18,
-          "line": 49
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 58
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.transactionFee.label",
-        "start": {
-          "column": 23,
-          "line": 54
-        }
-      },
-      {
-        "defaultMessage": "!!!Additional data",
-        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.additionalData.label",
-        "start": {
-          "column": 23,
-          "line": 59
-        }
-      },
-      {
-        "defaultMessage": "!!!Meta data",
-        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.metaData.label",
-        "start": {
-          "column": 17,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
-        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
-        "end": {
-          "column": 3,
-          "line": 75
-        },
-        "file": "source/renderer/app/components/dapp/DappTransactionRequest.tsx",
-        "id": "dapp.transaction.request.error.notEnoughAda",
-        "start": {
-          "column": 35,
-          "line": 69
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/dapp/DappTransactionRequest.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
@@ -1307,17 +1073,31 @@
         }
       },
       {
+        "defaultMessage": "!!!We do not recognize this wallet on your device. Please ensure that you are using the same device that you selected for pairing {walletName} and that you have entered the correct passphrase.",
+        "description": "\"Unrecognized wallet\" device state",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
+        "id": "wallet.hardware.deviceStatus.unrecognized_wallet",
+        "start": {
+          "column": 23,
+          "line": 49
+        }
+      },
+      {
         "defaultMessage": "!!!Disconnect and reconnect your device to restart the process.",
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 61
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
           "column": 27,
-          "line": 49
+          "line": 55
         }
       },
       {
@@ -1325,13 +1105,13 @@
         "description": "\"Enter passphrase if needed\" device sub-state",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 66
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.enterPassphrase",
         "start": {
           "column": 19,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -1339,13 +1119,13 @@
         "description": "\"Device ready\" device state",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 71
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.ready",
         "start": {
           "column": 9,
-          "line": 61
+          "line": 67
         }
       },
       {
@@ -1353,13 +1133,13 @@
         "description": "\"Confirm the transaction using the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 78
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
-          "line": 66
+          "line": 72
         }
       },
       {
@@ -1367,13 +1147,13 @@
         "description": "\"Transaction verification and signing failed\" device state",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 83
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
-          "line": 73
+          "line": 79
         }
       },
       {
@@ -1381,13 +1161,13 @@
         "description": "\"Transaction verified and signed\" device state",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 88
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
-          "line": 78
+          "line": 84
         }
       },
       {
@@ -1395,13 +1175,13 @@
         "description": "\"Trezor Bridge not installed! {instructionsLink}\" device state",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 94
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure",
         "start": {
           "column": 25,
-          "line": 83
+          "line": 89
         }
       },
       {
@@ -1409,13 +1189,13 @@
         "description": "Trezor Bridge installation instructions link label",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 99
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label",
         "start": {
           "column": 36,
-          "line": 89
+          "line": 95
         }
       },
       {
@@ -1423,13 +1203,13 @@
         "description": "URL for the \"Trezor Bridge\" update",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 105
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url",
         "start": {
           "column": 34,
-          "line": 94
+          "line": 100
         }
       },
       {
@@ -1437,13 +1217,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 110
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware",
         "start": {
           "column": 18,
-          "line": 100
+          "line": 106
         }
       },
       {
@@ -1451,13 +1231,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 115
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label",
         "start": {
           "column": 29,
-          "line": 105
+          "line": 111
         }
       },
       {
@@ -1465,13 +1245,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 121
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url",
         "start": {
           "column": 27,
-          "line": 110
+          "line": 116
         }
       },
       {
@@ -1479,13 +1259,13 @@
         "description": "\"The device is not supported!\" device state",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 126
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.unsupported_device",
         "start": {
           "column": 22,
-          "line": 116
+          "line": 122
         }
       },
       {
@@ -1493,13 +1273,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 131
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version",
         "start": {
           "column": 29,
-          "line": 121
+          "line": 127
         }
       },
       {
@@ -1507,13 +1287,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 136
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.label",
         "start": {
           "column": 40,
-          "line": 126
+          "line": 132
         }
       },
       {
@@ -1521,13 +1301,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 142
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.url",
         "start": {
           "column": 38,
-          "line": 131
+          "line": 137
         }
       },
       {
@@ -1535,13 +1315,13 @@
         "description": "\"Verify receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 147
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address",
         "start": {
           "column": 21,
-          "line": 137
+          "line": 143
         }
       },
       {
@@ -1549,13 +1329,13 @@
         "description": "\"Confirm receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 152
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
         "start": {
           "column": 34,
-          "line": 142
+          "line": 148
         }
       },
       {
@@ -1563,13 +1343,13 @@
         "description": "\"Address verification failed\" device state",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 157
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_failed",
         "start": {
           "column": 28,
-          "line": 147
+          "line": 153
         }
       },
       {
@@ -1577,13 +1357,13 @@
         "description": "\"Address verification aborted\" device state",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 162
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
         "start": {
           "column": 29,
-          "line": 152
+          "line": 158
         }
       },
       {
@@ -1591,13 +1371,13 @@
         "description": "\"Address verified\" device state",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 167
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.tsx",
         "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
         "start": {
           "column": 31,
-          "line": 157
+          "line": 163
         }
       }
     ],
@@ -3788,6 +3568,67 @@
       }
     ],
     "path": "source/renderer/app/components/settings/menu/SettingsMenu.messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallets",
+        "description": "Text for the tooltip of wallets category",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.wallets",
+        "start": {
+          "column": 11,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Staking",
+        "description": "Text for the tooltip of staking category",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.staking",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Settings",
+        "description": "Text for the tooltip of settings category",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.settings",
+        "start": {
+          "column": 12,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Voting",
+        "description": "Text for the tooltip of voting category",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/sidebar/SidebarCategory.messages.ts",
+        "id": "sidebar.categoryTooltip.voting",
+        "start": {
+          "column": 10,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/sidebar/SidebarCategory.messages.json"
   },
   {
     "descriptors": [
@@ -11646,263 +11487,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Confirm transaction",
-        "description": "Title for the \"Confirm transaction\" dialog.",
-        "end": {
-          "column": 5,
-          "line": 11
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.title",
-        "start": {
-          "column": 17,
-          "line": 7
-        }
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.passphraseLabel",
-        "start": {
-          "column": 21,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!To",
-        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.addressToLabel",
-        "start": {
-          "column": 20,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.amountLabel",
-        "start": {
-          "column": 17,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token",
-        "end": {
-          "column": 5,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.assetLabel",
-        "start": {
-          "column": 16,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.feesLabel",
-        "start": {
-          "column": 15,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Total",
-        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.totalLabel",
-        "start": {
-          "column": 16,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!Receiver",
-        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.receiver.label",
-        "start": {
-          "column": 19,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Type your spending password",
-        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
-        "start": {
-          "column": 32,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
-        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.flightCandidateWarning",
-        "start": {
-          "column": 28,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
-        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
-        "start": {
-          "column": 34,
-          "line": 65
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Label for the send button in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 77
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.submit",
-        "start": {
-          "column": 21,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!Back",
-        "description": "Label for the back button in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 83
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.back",
-        "start": {
-          "column": 21,
-          "line": 78
-        }
-      },
-      {
-        "defaultMessage": "!!!Incorrect spending password.",
-        "description": "Label for password error in the wallet send confirmation dialog.",
-        "end": {
-          "column": 5,
-          "line": 89
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.passwordError",
-        "start": {
-          "column": 26,
-          "line": 84
-        }
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "Label for \"unformatted amount\"",
-        "end": {
-          "column": 5,
-          "line": 94
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
-        "start": {
-          "column": 28,
-          "line": 90
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "Message for \"unformatted amount\"",
-        "end": {
-          "column": 5,
-          "line": 101
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
-        "start": {
-          "column": 48,
-          "line": 95
-        }
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "Message for \"unformatted amount\"",
-        "end": {
-          "column": 5,
-          "line": 108
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
-        "start": {
-          "column": 48,
-          "line": 102
-        }
-      },
-      {
-        "defaultMessage": "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
-        "description": "Warning: This transaction will reduce your wallet's balance",
-        "end": {
-          "column": 5,
-          "line": 115
-        },
-        "file": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.ts",
-        "id": "wallet.send.confirmationDialog.emptyingWarning",
-        "start": {
-          "column": 21,
-          "line": 109
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog.messages.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Set a password for {walletName} wallet",
         "description": "Title for the \"Change wallet password\" dialog when there is no password set.",
         "end": {
@@ -16886,13 +16470,13 @@
         "description": "Title \"Connect a hardware wallet device\" in the connect wallet dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.title",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -16900,13 +16484,13 @@
         "description": "Label for the \"Cancel\" button in the connect wallet dialog",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.button.cancel",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -16914,13 +16498,13 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.instructions",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -16928,13 +16512,13 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.instructionsTrezorOnly",
         "start": {
           "column": 26,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -16942,13 +16526,13 @@
         "description": "Connecting issue support description",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLabel",
         "start": {
           "column": 31,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -16956,13 +16540,13 @@
         "description": "Connecting issue support link",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLink",
         "start": {
           "column": 30,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -16970,13 +16554,13 @@
         "description": "Link to support article",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.tsx",
         "id": "wallet.connect.dialog.connectingIssueSupportLinkUrl",
         "start": {
           "column": 33,
-          "line": 71
+          "line": 72
         }
       }
     ],
@@ -17673,17 +17257,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Newsfeed",
+        "description": "Newsfeed",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/widgets/NewsFeedIcon.tsx",
+        "id": "news.newsfeed.iconTooltip",
+        "start": {
+          "column": 15,
+          "line": 20
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/NewsFeedIcon.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Blocks synced {percentage}%",
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.tsx",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       }
     ],
@@ -18190,6 +17793,249 @@
       }
     ],
     "path": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm transaction",
+        "description": "Title for the \"Confirm transaction\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.title",
+        "start": {
+          "column": 15,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.passphraseLabel",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Type your spending password",
+        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
+        "start": {
+          "column": 30,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
+        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.flightCandidateWarning",
+        "start": {
+          "column": 26,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
+        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
+        "start": {
+          "column": 32,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Label for the send button in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.submit",
+        "start": {
+          "column": 19,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "Label for the back button in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.back",
+        "start": {
+          "column": 19,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
+        "description": "Warning: This transaction will reduce your wallet's balance",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.emptyingWarning",
+        "start": {
+          "column": 19,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.addressToLabel",
+        "start": {
+          "column": 18,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.amountLabel",
+        "start": {
+          "column": 15,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.assetLabel",
+        "start": {
+          "column": 14,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Total",
+        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.totalLabel",
+        "start": {
+          "column": 14,
+          "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "Label for the \"Receiver\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.receiver.label",
+        "start": {
+          "column": 17,
+          "line": 81
+        }
+      },
+      {
+        "defaultMessage": "!!!unformatted amount",
+        "description": "Label for \"unformatted amount\"",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.unformattedAmountLabel",
+        "start": {
+          "column": 26,
+          "line": 87
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
+        "description": "Message for \"unformatted amount\"",
+        "end": {
+          "column": 3,
+          "line": 98
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForSoftwareWallets",
+        "start": {
+          "column": 46,
+          "line": 92
+        }
+      },
+      {
+        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
+        "description": "Message for \"unformatted amount\"",
+        "end": {
+          "column": 3,
+          "line": 105
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.ts",
+        "id": "wallet.send.confirmationDialog.unformattedAmountMessageForHardwareWallets",
+        "start": {
+          "column": 46,
+          "line": 99
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/dialogs/send-confirmation/messages.json"
   },
   {
     "descriptors": [

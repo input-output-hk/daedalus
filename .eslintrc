@@ -109,6 +109,12 @@
           "no-useless-constructor": "off",
           "@typescript-eslint/no-useless-constructor": "error"
       }
+    },
+     {
+      "files": "hardware-wallet-tests/**/*.ts",
+      "rules": {
+          "jest/no-standalone-expect": "off"
+      }
     }
   ]
 }

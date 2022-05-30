@@ -72,15 +72,6 @@ let
     pkgconfig
     libusb
   ];
-  hack = writeShellScriptBin "node-gyp" ''
-    echo ===== gyp wrapper
-    export PATH=${python3}/bin:$PATH
-    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/${windowsElectronVersion}/
-  '';
-  hack2 = writeShellScriptBin "node-gyp" ''
-    echo ______ gyp wrapper
-    ${nodePackages.node-gyp}/bin/node-gyp "$@" --tarball ${electron-gyp} --nodedir $HOME/.node-gyp/${nodejs.version}
-  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -122,7 +113,7 @@ yarn2nix.mkYarnPackage {
     rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
 
     mkdir -pv $out/resources/app/node_modules
-    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/resources/app/node_modules
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection} $out/resources/app/node_modules
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
@@ -155,6 +146,7 @@ yarn2nix.mkYarnPackage {
     dup blake-hash
     dup blake2
     dup tiny-secp256k1
+    dup usb-detection
 
     # We ship debug version because the release one has issues with ledger nano s
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
@@ -168,13 +160,20 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs} $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,runtypes,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,keccak,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,tiny-worker,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,trezor-connect,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,cbor-web,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
     cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
     cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
     for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
+      $STRIP $file
+      patchelf --shrink-rpath $file
+    done
+
+    node_modules/.bin/electron-rebuild -w usb-detection --useCache -s
+    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/build/detection.node
+    for file in $out/share/daedalus/build/detection.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
     done
@@ -204,11 +203,15 @@ yarn2nix.mkYarnPackage {
   '';
   pkgConfig = {
     electron-rebuild = {
+      # TODO: That is rather awful… Can it be done better? – @michalrus
       postInstall = ''
-        if [ -d node_modules ]; then
-          mv -vi node_modules/.bin/node-gyp node_modules/.bin/node-gyp-old
-          ln -sv ${hack}/bin/node-gyp node_modules/.bin/node-gyp
+        nodeGypJs=lib/src/module-type/node-gyp.js
+        if [ ! -e $nodeGypJs ] ; then
+          echo >&2 'shouldn’t happen unless electron-rebuild changes'
+          exit 1
         fi
+
+        sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-gyp}", "--nodedir", process.env["HOME"] + "/.node-gyp/${windowsElectronVersion}");|' -i $nodeGypJs
       '';
     };
   };

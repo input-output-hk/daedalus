@@ -47,6 +47,7 @@
   }
 
   .clearIcon {
+    flex-shrink: 0;
     height: 14px;
     margin-right: 6px;
     object-fit: contain;
