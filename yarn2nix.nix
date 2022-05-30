@@ -127,6 +127,11 @@ yarn2nix.mkYarnPackage {
 
     cd $out/resources/app/
     unzip ${./nix/windows-usb-libs.zip}
+
+    # Investigate why this is needed:
+    chmod -R +w $out
+    mkdir -p $out/resources/app/node_modules/usb-detection/build
+    cp $out/resources/app/build/Debug/detection.node $out/resources/app/node_modules/usb-detection/build
   '' else ''
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
