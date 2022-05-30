@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, VFC } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, VFC } from 'react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { chunk, constant, times } from 'lodash';
 import { MnemonicsAutocompleteContainer } from './MnemonicAutocompleteContainer';
@@ -43,6 +43,12 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
       }
     }, [selectedWords]);
 
+    const wordsPerColumn = Math.ceil(wordsCount / COLUMNS_COUNT);
+    const inputIndicesByColumnIndex = useMemo(
+      () => chunk(times(wordsCount), wordsPerColumn),
+      [wordsCount]
+    );
+    const inputRefs = times(wordsCount, () => useRef<HTMLInputElement>());
     const createHandleWordChange = useCallback(
       (idx: number) => (newValue) => {
         if (newValue === selectedWords[idx]) return;
@@ -54,10 +60,12 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
       },
       [selectedWords, onChange]
     );
-    const wordsPerColumn = Math.ceil(wordsCount / COLUMNS_COUNT);
-    const inputIndicesByColumnIndex = useMemo(
-      () => chunk(times(wordsCount), wordsPerColumn),
-      [wordsCount]
+
+    const createHandleConfirmSelection = useCallback(
+      (idx: number) => () => {
+        inputRefs[idx + 1]?.current.focus();
+      },
+      [inputRefs]
     );
 
     return (
@@ -74,6 +82,8 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
                     options={availableWords}
                     value={value}
                     onChange={createHandleWordChange(idx)}
+                    inputRef={inputRefs[idx]}
+                    onConfirmSelection={createHandleConfirmSelection(idx)}
                     disabled={disabled}
                     error={error && !value}
                     maxVisibleOptions={5}

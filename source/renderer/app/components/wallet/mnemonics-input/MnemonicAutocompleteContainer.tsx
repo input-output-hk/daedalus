@@ -1,4 +1,5 @@
 import React, {
+  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -11,6 +12,7 @@ import { MnemonicAutocompleteLayout } from './MnemonicAutocompleteLayout';
 
 interface MnemonicsAutocompleteContainerProps {
   onChange: (value: string) => void;
+  onConfirmSelection: () => void;
   ordinalNumber: number;
   value: string;
   options: string[];
@@ -19,10 +21,12 @@ interface MnemonicsAutocompleteContainerProps {
   error: boolean;
   reset: boolean;
   noResultsMessage: string;
+  inputRef: RefObject<HTMLInputElement>;
 }
 
 const MnemonicsAutocompleteContainer = ({
   onChange,
+  onConfirmSelection,
   reset,
   ordinalNumber,
   value,
@@ -31,6 +35,7 @@ const MnemonicsAutocompleteContainer = ({
   disabled,
   error,
   noResultsMessage,
+  inputRef,
 }: MnemonicsAutocompleteContainerProps) => {
   const initialState = useMemo(
     () => ({
@@ -45,7 +50,6 @@ const MnemonicsAutocompleteContainer = ({
   );
   const [state, setState] = useState(initialState);
   const rootRef = useRef();
-  const inputRef = useRef();
   const optionsRef = useRef();
   const suggestionsRef = useRef();
 
@@ -65,16 +69,18 @@ const MnemonicsAutocompleteContainer = ({
     (inputValue) => {
       if (disabled) return;
       let selectedOption = '';
+      let isOpen = true;
 
       if (options.includes(inputValue)) {
+        isOpen = false;
         selectedOption = inputValue;
       }
 
       setState((prevState) => ({
         ...prevState,
-        isOpen: true,
+        isOpen,
         filteredOptions: options
-          .filter(startsWith(inputValue))
+          .filter(startsWith(inputValue.trim()))
           .slice(0, maxVisibleOptions - 1),
         inputValue,
         selectedOption,
@@ -104,6 +110,9 @@ const MnemonicsAutocompleteContainer = ({
 
   useEffect(() => {
     onChange(state.selectedOption);
+    if (state.selectedOption) {
+      onConfirmSelection();
+    }
   }, [state.selectedOption]);
 
   useEffect(() => {
