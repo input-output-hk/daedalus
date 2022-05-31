@@ -132,6 +132,10 @@ yarn2nix.mkYarnPackage {
     chmod -R +w $out
     mkdir -p $out/resources/app/node_modules/usb-detection/build
     cp $out/resources/app/build/Debug/detection.node $out/resources/app/node_modules/usb-detection/build
+    mkdir -p $out/resources/app/node_modules/node-hid/build
+    cp $out/resources/app/build/Debug/HID.node $out/resources/app/node_modules/node-hid/build
+    mkdir -p $out/resources/app/node_modules/usb/build
+    cp $out/resources/app/build/Debug/usb_bindings.node $out/resources/app/node_modules/usb/build
   '' else ''
     mkdir -pv home/.cache/
     export HOME=$(realpath home)
@@ -166,18 +170,17 @@ yarn2nix.mkYarnPackage {
 
     chmod -R +w $out
 
-    mkdir -pv $out/share/daedalus/build
-    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
-    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/build/HID_hidraw.node
-    for file in $out/share/daedalus/build/usb_bindings.node $out/share/daedalus/build/HID_hidraw.node; do
-      $STRIP $file
-      patchelf --shrink-rpath $file
-    done
+    mkdir -p $out/share/daedalus/node_modules/usb/build
+    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
+
+    mkdir -p $out/share/daedalus/node_modules/node-hid/build
+    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
 
     node_modules/.bin/electron-rebuild -w usb-detection --useCache -s
-    mkdir -p $out/share/daedalus/node_modules/usb-detection/build/
-    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/node_modules/usb-detection/build/detection.node
-    for file in $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
+    mkdir -p $out/share/daedalus/node_modules/usb-detection/build
+    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/node_modules/usb-detection/build
+
+    for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
       $STRIP $file
       patchelf --shrink-rpath $file
     done
