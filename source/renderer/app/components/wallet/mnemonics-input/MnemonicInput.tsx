@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, VFC } from 'react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { chunk, constant, times } from 'lodash';
-import { MnemonicsAutocompleteContainer } from './MnemonicAutocompleteContainer';
+import { MnemonicAutocompleteContainer } from './MnemonicAutocompleteContainer';
 import * as styles from './MnemonicInput.scss';
 import { COLUMNS_COUNT } from './constants';
 
@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
 });
 
-interface MnemonicsInputProps {
+interface MnemonicInputProps {
   onChange?: (values: string[]) => void;
 
   value: string[];
@@ -26,7 +26,7 @@ interface MnemonicsInputProps {
   wordsCount: number;
 }
 
-const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
+const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
   ({
     intl,
     onChange,
@@ -76,7 +76,7 @@ const MnemonicInput: VFC<MnemonicsInputProps> = injectIntl(
               const value = selectedWords[idx] || '';
               return (
                 <div key={idx} className={styles.inputWrapper}>
-                  <MnemonicsAutocompleteContainer
+                  <MnemonicAutocompleteContainer
                     ordinalNumber={idx + 1}
                     reset={reset}
                     options={availableWords}

@@ -10,7 +10,7 @@ import { startsWith } from 'lodash/fp';
 import { GlobalListeners } from 'react-polymorph/lib/components/HOC/GlobalListeners';
 import { MnemonicAutocompleteLayout } from './MnemonicAutocompleteLayout';
 
-interface MnemonicsAutocompleteContainerProps {
+interface MnemonicAutocompleteContainerProps {
   onChange: (value: string) => void;
   onConfirmSelection: () => void;
   ordinalNumber: number;
@@ -24,7 +24,7 @@ interface MnemonicsAutocompleteContainerProps {
   inputRef: RefObject<HTMLInputElement>;
 }
 
-const MnemonicsAutocompleteContainer = ({
+const MnemonicAutocompleteContainer = ({
   onChange,
   onConfirmSelection,
   reset,
@@ -36,7 +36,7 @@ const MnemonicsAutocompleteContainer = ({
   error,
   noResultsMessage,
   inputRef,
-}: MnemonicsAutocompleteContainerProps) => {
+}: MnemonicAutocompleteContainerProps) => {
   const initialState = useMemo(
     () => ({
       inputValue: value,
@@ -156,4 +156,4 @@ const MnemonicsAutocompleteContainer = ({
   );
 };
 
-export { MnemonicsAutocompleteContainer };
+export { MnemonicAutocompleteContainer };
