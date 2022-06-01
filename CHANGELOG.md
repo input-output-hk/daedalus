@@ -9,6 +9,7 @@
 
 ### Features
 
+- Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
 - Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
 - Support of Apple AArch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
 
