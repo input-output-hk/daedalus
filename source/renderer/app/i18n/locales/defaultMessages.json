@@ -9718,17 +9718,31 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 23
         },
-        "file": "source/renderer/app/components/wallet/mnemonics-input/MnemonicInput.tsx",
+        "file": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
         "start": {
           "column": 27,
-          "line": 9
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!{providedWordCount} of {requiredWordCount} words entered",
+        "description": "Mnemonic input word counter",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx",
+        "id": "paper.wallet.create.certificate.verification.dialog.mnemonicCounter",
+        "start": {
+          "column": 19,
+          "line": 24
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/mnemonics-input/MnemonicInput.json"
+    "path": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.json"
   },
   {
     "descriptors": [
@@ -10496,31 +10510,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint",
-        "start": {
-          "column": 22,
-          "line": 50
-        }
-      },
-      {
         "defaultMessage": "!!!Clear",
         "description": "\"Paper wallet create certificate verification dialog\" button clear label.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.button.clearLabel",
         "start": {
           "column": 20,
-          "line": 57
+          "line": 50
         }
       },
       {
@@ -10528,13 +10528,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" storing understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel",
         "start": {
           "column": 30,
-          "line": 63
+          "line": 56
         }
       },
       {
@@ -10542,13 +10542,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel",
         "start": {
           "column": 33,
-          "line": 71
+          "line": 64
         }
       }
     ],

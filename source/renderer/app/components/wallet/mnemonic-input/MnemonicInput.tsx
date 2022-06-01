@@ -21,6 +21,12 @@ const messages = defineMessages({
     description:
       '"Paper wallet create certificate verification dialog" recovery phrase no results label.',
   },
+  mnemonicCounter: {
+    id: 'paper.wallet.create.certificate.verification.dialog.mnemonicCounter',
+    defaultMessage:
+      '!!!{providedWordCount} of {requiredWordCount} words entered',
+    description: 'Mnemonic input word counter',
+  },
 });
 
 interface MnemonicInputProps {
@@ -112,7 +118,10 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
             )}
           >
             {error ||
-              `${selectedWordsCount} of ${selectedWords.length} words entered`}
+              intl.formatMessage(messages.mnemonicCounter, {
+                providedWordCount: selectedWordsCount,
+                requiredWordCount: selectedWords.length,
+              })}
           </div>
         </div>
         <div className={styles.content}>
