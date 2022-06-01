@@ -17,7 +17,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
 } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { MnemonicInput } from '../mnemonics-input';
+import { MnemonicInput } from '../mnemonic-input';
 
 const messages = defineMessages({
   headline: {
