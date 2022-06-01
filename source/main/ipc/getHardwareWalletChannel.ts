@@ -4,7 +4,6 @@ import TransportNodeHid, {
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import TrezorConnect, {
-  CardanoPublicKey,
   DEVICE,
   DEVICE_EVENT,
   Features,
@@ -33,6 +32,7 @@ import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
+import { getTrezorDeviceFeatures } from './hardwareWallets/trezor/getTrezorDeviceFeatures';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -153,6 +153,9 @@ class EventObserver {
     logger.info('[HW-DEBUG] Ledger NEXT complete');
   }
 }
+
+const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export const handleHardwareWalletRequests = async (
   mainWindow: BrowserWindow,
@@ -285,13 +288,9 @@ export const handleHardwareWalletRequests = async (
       if (isTrezor) {
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel::TREZOR ');
 
-        try {
-          deviceFeatures = await TrezorConnect.getFeatures({
-            device: {
-              path: devicePath,
-            },
-          });
+        deviceFeatures = await getTrezorDeviceFeatures();
 
+        try {
           logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
 
           if (deviceFeatures && deviceFeatures.success) {
@@ -466,6 +465,9 @@ export const handleHardwareWalletRequests = async (
     }
   });
   deriveAddressChannel.onRequest(async (params) => {
+    await reinitTrezorConnect();
+    resetTrezorListeners();
+
     const {
       addressType,
       spendingPathStr,
@@ -766,7 +768,8 @@ export const handleHardwareWalletRequests = async (
         resetTrezorListeners();
 
         logger.info('[TREZOR-CONNECT] Calling TrezorConnect.getFeatures()');
-        const deviceFeatures = await TrezorConnect.getFeatures();
+
+        const deviceFeatures = await getTrezorDeviceFeatures();
 
         if (deviceFeatures.success) {
           logger.info(
@@ -880,6 +883,13 @@ export const handleHardwareWalletRequests = async (
 
   resetTrezorActionChannel.onRequest(async () => {
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.cancel()');
-    TrezorConnect.cancel('Method_Cancel');
+
+    try {
+      TrezorConnect.cancel();
+    } catch (error) {
+      logger.warn(
+        '[TREZOR-CONNECT] Failed to cancel the operation:' + error.error
+      );
+    }
   });
 };
