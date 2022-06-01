@@ -241,6 +241,9 @@ class VerificationDialog extends Component<Props, State> {
       },
     ];
     const mnemonicInputProps = recoveryPhraseField.bind();
+    const showMnemonicInputError = (mnemonicInputProps.value as string[]).every(
+      (val) => val
+    );
 
     return (
       <Dialog
@@ -269,7 +272,8 @@ class VerificationDialog extends Component<Props, State> {
               onChange={this.handleMnemonicInputChange}
               availableWords={suggestedMnemonics.sort()}
               wordsCount={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-              error={!!recoveryPhraseField.error}
+              valid={!recoveryPhraseField.error}
+              error={showMnemonicInputError && recoveryPhraseField.error}
               reset={form.resetting}
             />
             <Checkbox

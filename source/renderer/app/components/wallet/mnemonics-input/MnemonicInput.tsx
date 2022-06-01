@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, VFC } from 'react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { chunk, constant, times } from 'lodash';
+import cx from 'classnames';
 import { MnemonicAutocompleteContainer } from './MnemonicAutocompleteContainer';
 import * as styles from './MnemonicInput.scss';
 import { COLUMNS_COUNT } from './constants';
@@ -20,10 +21,12 @@ interface MnemonicInputProps {
 
   value: string[];
   disabled?: boolean;
-  error: boolean;
+  error?: string;
+  valid?: boolean;
   reset: boolean;
   availableWords: string[];
   wordsCount: number;
+  label?: string;
 }
 
 const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
@@ -35,7 +38,9 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     availableWords,
     wordsCount,
     error,
+    valid,
     reset,
+    label,
   }) => {
     useEffect(() => {
       if (selectedWords.length < 1) {
@@ -43,6 +48,8 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
       }
     }, [selectedWords]);
 
+    const selectedWordsCount = selectedWords.filter((word) => word.length)
+      .length;
     const wordsPerColumn = Math.ceil(wordsCount / COLUMNS_COUNT);
     const inputIndicesByColumnIndex = useMemo(
       () => chunk(times(wordsCount), wordsPerColumn),
@@ -70,32 +77,51 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
 
     return (
       <div className={styles.root}>
-        {inputIndicesByColumnIndex.map((inputIndices) => (
-          <div key={inputIndices.join('')} className={styles.inputList}>
-            {inputIndices.map((idx) => {
-              const value = selectedWords[idx] || '';
-              return (
-                <div key={idx} className={styles.inputWrapper}>
-                  <MnemonicAutocompleteContainer
-                    ordinalNumber={idx + 1}
-                    reset={reset}
-                    options={availableWords}
-                    value={value}
-                    onChange={createHandleWordChange(idx)}
-                    inputRef={inputRefs[idx]}
-                    onConfirmSelection={createHandleConfirmSelection(idx)}
-                    disabled={disabled}
-                    error={error && !value}
-                    maxVisibleOptions={5}
-                    noResultsMessage={intl.formatMessage(
-                      messages.recoveryPhraseNoResults
-                    )}
-                  />
-                </div>
-              );
-            })}
+        <div className={styles.header}>
+          {label && (
+            <div className={cx(styles.headerSlot, styles.headerLeftSlot)}>
+              {label}
+            </div>
+          )}
+          <div
+            className={cx(
+              styles.headerSlot,
+              styles.headerRightSlot,
+              error && styles.headerError
+            )}
+          >
+            {error ||
+              `${selectedWordsCount} of ${selectedWords.length} words entered`}
           </div>
-        ))}
+        </div>
+        <div className={styles.content}>
+          {inputIndicesByColumnIndex.map((inputIndices) => (
+            <div key={inputIndices.join('')} className={styles.inputList}>
+              {inputIndices.map((idx) => {
+                const value = selectedWords[idx] || '';
+                return (
+                  <div key={idx} className={styles.inputWrapper}>
+                    <MnemonicAutocompleteContainer
+                      ordinalNumber={idx + 1}
+                      reset={reset}
+                      options={availableWords}
+                      value={value}
+                      onChange={createHandleWordChange(idx)}
+                      inputRef={inputRefs[idx]}
+                      onConfirmSelection={createHandleConfirmSelection(idx)}
+                      disabled={disabled}
+                      error={!valid && !value}
+                      maxVisibleOptions={5}
+                      noResultsMessage={intl.formatMessage(
+                        messages.recoveryPhraseNoResults
+                      )}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
