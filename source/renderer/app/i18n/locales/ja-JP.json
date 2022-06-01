@@ -288,7 +288,7 @@
   "paper.wallet.create.certificate.verification.dialog.button.clearLabel": "取り消す",
   "paper.wallet.create.certificate.verification.dialog.headline": "証明書を検証する",
   "paper.wallet.create.certificate.verification.dialog.instructions": "{fullPhraseWordCount}語のペーパーウォレット復元フレーズをすべて入力してください。まず証明書に印刷されている{printedWordCount}語、次に自分で書き留めた{writtenWordCount}語を入力します。",
-  "paper.wallet.create.certificate.verification.dialog.mnemonicCounter": "{providedWordCount} of {requiredWordCount} words entered",
+  "paper.wallet.create.certificate.verification.dialog.mnemonicCounter": "{providedWordCount}/{requiredWordCount}語入力済み",
   "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel": "ウォレットを復元する唯一の方法がペーパーウォレット証明書を利用することであることを理解しました。",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label": "ペーパーウォレット復元フレーズ",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults": "該当するフレーズは見つかりませんでした",

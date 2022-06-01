@@ -9732,7 +9732,7 @@
         "description": "Mnemonic input word counter",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.mnemonicCounter",
