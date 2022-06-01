@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback } from 'react';
+import React, { ClipboardEventHandler, RefObject, useCallback } from 'react';
 import cx from 'classnames';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import { Options } from 'react-polymorph/lib/components/Options';
@@ -10,6 +10,7 @@ interface MnemonicInputSkinProps {
   onChange: (value: string) => void;
   onSelect: (value: string) => void;
   onBlur: () => void;
+  onPaste: ClipboardEventHandler<HTMLInputElement>;
   toggleMouseLocation: () => void;
   toggleOpen: () => void;
 
@@ -34,6 +35,7 @@ const MnemonicAutocompleteLayout = ({
   onChange,
   onSelect,
   onBlur,
+  onPaste,
   toggleMouseLocation,
   toggleOpen,
 
@@ -83,6 +85,7 @@ const MnemonicAutocompleteLayout = ({
               value={value}
               onChange={handleInputChange}
               onBlur={onBlur}
+              onPaste={onPaste}
               disabled={disabled}
             />
           </div>

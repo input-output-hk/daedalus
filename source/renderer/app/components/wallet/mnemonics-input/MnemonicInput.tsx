@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef, VFC } from 'react';
+import React, {
+  ClipboardEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  VFC,
+} from 'react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { chunk, constant, times } from 'lodash';
 import cx from 'classnames';
@@ -48,7 +55,7 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
       }
     }, [selectedWords]);
 
-    const selectedWordsCount = selectedWords.filter((word) => word.length)
+    const selectedWordsCount = selectedWords.filter((word) => word?.length)
       .length;
     const wordsPerColumn = Math.ceil(wordsCount / COLUMNS_COUNT);
     const inputIndicesByColumnIndex = useMemo(
@@ -67,6 +74,20 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
       },
       [selectedWords, onChange]
     );
+    const handleInputPaste = useCallback<
+      ClipboardEventHandler<HTMLInputElement>
+    >((event) => {
+      const pastedWords = event.clipboardData.getData('Text').trim().split(' ');
+      const filteredWords = pastedWords.filter((word) =>
+        availableWords.includes(word)
+      );
+      // This is intentional, it should only be used for testing/development purposes.
+      // If for whatever reason we decide to make it possible to paste the mnemonic
+      // fragments, then this functionality is not implemented.
+      if (filteredWords.length === wordsCount) {
+        onChange(filteredWords);
+      }
+    }, []);
 
     const createHandleConfirmSelection = useCallback(
       (idx: number) => () => {
@@ -107,8 +128,9 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
                       options={availableWords}
                       value={value}
                       onChange={createHandleWordChange(idx)}
-                      inputRef={inputRefs[idx]}
                       onConfirmSelection={createHandleConfirmSelection(idx)}
+                      onPaste={handleInputPaste}
+                      inputRef={inputRefs[idx]}
                       disabled={disabled}
                       error={!valid && !value}
                       maxVisibleOptions={5}

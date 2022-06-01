@@ -1,4 +1,5 @@
 import React, {
+  ClipboardEventHandler,
   RefObject,
   useCallback,
   useEffect,
@@ -13,6 +14,7 @@ import { MnemonicAutocompleteLayout } from './MnemonicAutocompleteLayout';
 interface MnemonicAutocompleteContainerProps {
   onChange: (value: string) => void;
   onConfirmSelection: () => void;
+  onPaste: ClipboardEventHandler<HTMLInputElement>;
   ordinalNumber: number;
   value: string;
   options: string[];
@@ -27,6 +29,7 @@ interface MnemonicAutocompleteContainerProps {
 const MnemonicAutocompleteContainer = ({
   onChange,
   onConfirmSelection,
+  onPaste,
   reset,
   ordinalNumber,
   value,
@@ -116,6 +119,12 @@ const MnemonicAutocompleteContainer = ({
   }, [state.selectedOption]);
 
   useEffect(() => {
+    if (value) {
+      setState((prevState) => ({ ...prevState, inputValue: value }));
+    }
+  }, [value]);
+
+  useEffect(() => {
     if (reset) {
       setState(initialState);
     }
@@ -144,6 +153,7 @@ const MnemonicAutocompleteContainer = ({
           onSelect={handleInputSelect}
           onClick={toggleOpen}
           onBlur={handleBlur}
+          onPaste={onPaste}
           suggestionsRef={suggestionsRef}
           toggleMouseLocation={toggleMouseIsOverOptions}
           toggleOpen={toggleOpen}
