@@ -234,7 +234,8 @@ class WalletSendForm extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
     if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
-      this.handleOnSubmit();
+      // validation buffer
+      setTimeout(this.handleOnSubmit);
     }
   };
   handleOnSubmit = async () => {
