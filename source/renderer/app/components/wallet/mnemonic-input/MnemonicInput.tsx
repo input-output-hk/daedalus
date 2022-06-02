@@ -36,7 +36,7 @@ interface MnemonicInputProps {
   disabled?: boolean;
   error?: string;
   valid?: boolean;
-  reset: boolean;
+  reset?: boolean;
   availableWords: string[];
   wordsCount: number;
   label?: string;
@@ -52,7 +52,7 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     wordsCount,
     error,
     valid,
-    reset,
+    reset = false,
     label,
   }) => {
     useEffect(() => {
