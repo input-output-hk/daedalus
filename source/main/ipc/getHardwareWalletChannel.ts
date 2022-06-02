@@ -154,6 +154,9 @@ class EventObserver {
   }
 }
 
+const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 export const handleHardwareWalletRequests = async (
   mainWindow: BrowserWindow,
   {
@@ -279,11 +282,13 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] getHardwareWalletTransportChannel', {
         devicePath,
       });
+      // Connected Trezor device info
+      let deviceFeatures: Unsuccessful | Success<Features>;
 
       if (isTrezor) {
         logger.info('[HW-DEBUG] getHardwareWalletTransportChannel::TREZOR ');
 
-        const deviceFeatures = await getTrezorDeviceFeatures();
+        deviceFeatures = await getTrezorDeviceFeatures();
 
         try {
           logger.info('[TREZOR-CONNECT] Called TrezorConnect.getFeatures()');
@@ -878,6 +883,13 @@ export const handleHardwareWalletRequests = async (
 
   resetTrezorActionChannel.onRequest(async () => {
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.cancel()');
-    TrezorConnect.cancel();
+
+    try {
+      TrezorConnect.cancel();
+    } catch (error) {
+      logger.warn(
+        '[TREZOR-CONNECT] Failed to cancel the operation:' + error.error
+      );
+    }
   });
 };
