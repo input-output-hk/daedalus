@@ -15,19 +15,13 @@ import { getNonZeroAssetTokens } from '../../utils/assets';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps;
-type State = {
-  coinSelection: CoinSelectionsResponse;
-};
 
 @inject('stores', 'actions')
 @observer
-class WalletSendPage extends Component<Props, State> {
+class WalletSendPage extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
-  };
-  state = {
-    coinSelection: null,
   };
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -43,8 +37,6 @@ class WalletSendPage extends Component<Props, State> {
       isHardwareWallet,
       selectedAssets,
     } = params;
-    let fee;
-    let minimumAda;
 
     if (isHardwareWallet) {
       const coinSelection: CoinSelectionsResponse = await this.props.stores.hardwareWallets.selectCoins(
@@ -55,21 +47,21 @@ class WalletSendPage extends Component<Props, State> {
           assets: selectedAssets,
         }
       );
-      fee = coinSelection.fee;
-      this.setState({
+      return {
+        fee: coinSelection.fee,
         coinSelection,
-      });
-    } else {
-      ({
-        fee,
-        minimumAda,
-      } = await this.props.stores.transactions.calculateTransactionFee({
-        walletId,
-        address,
-        amount,
-        assets: selectedAssets,
-      }));
+      };
     }
+
+    const {
+      fee,
+      minimumAda,
+    } = await this.props.stores.transactions.calculateTransactionFee({
+      walletId,
+      address,
+      amount,
+      assets: selectedAssets,
+    });
 
     return {
       fee,
@@ -77,12 +69,16 @@ class WalletSendPage extends Component<Props, State> {
     };
   };
 
-  submit = (isHardwareWallet: boolean, walletId: string) => {
+  submit = (
+    isHardwareWallet: boolean,
+    walletId: string,
+    coinSelection: CoinSelectionsResponse
+  ) => {
     const { isFlight } = global;
 
-    this.props.stores.hardwareWallets.updateTxSignRequest(
-      this.state.coinSelection
-    );
+    if (isHardwareWallet) {
+      this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+    }
 
     this.props.actions.dialogs.open.trigger({
       dialog: WalletSendConfirmationDialogView,
@@ -146,11 +142,7 @@ class WalletSendPage extends Component<Props, State> {
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         currentNumberFormat={profile.currentNumberFormat}
-        calculateTransactionFee={(
-          address: string,
-          amount: number,
-          selectedAssets: ApiTokens
-        ) =>
+        calculateTransactionFee={(address, amount, selectedAssets) =>
           this.calculateTransactionFee({
             walletId: wallet.id,
             address,
@@ -171,7 +163,9 @@ class WalletSendPage extends Component<Props, State> {
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
-        onSubmit={() => this.submit(isHardwareWallet, wallet.id)}
+        onSubmit={(coinSelection) =>
+          this.submit(isHardwareWallet, wallet.id, coinSelection)
+        }
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
         isAddressFromSameWallet={isAddressFromSameWallet}

@@ -41,6 +41,7 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
 import { Divider } from './widgets/Divider';
+import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -51,11 +52,22 @@ const AdaInputStateType: EnumMap<string, AdaInputState> = {
   None: 'none',
   Reset: 'reset',
 };
+
+type CalculateTransactionFeeArgs = (
+  address: string,
+  amount: number,
+  selectedAssets: ApiTokens
+) => Promise<{
+  fee: BigNumber;
+  coinSelection?: CoinSelectionsResponse;
+  minimumAda?: BigNumber;
+}>;
+
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
   currentNumberFormat: string;
-  calculateTransactionFee: (...args: Array<any>) => any;
+  calculateTransactionFee: CalculateTransactionFeeArgs;
   walletAmount: BigNumber;
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
   validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>;
@@ -68,7 +80,7 @@ type Props = {
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
-  onSubmit: (...args: Array<any>) => any;
+  onSubmit: (coinSelection: CoinSelectionsResponse) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
@@ -105,6 +117,7 @@ type State = {
   isCalculatingTransactionFee: boolean;
   pendingCalculationFeeRequest: number;
   adaInputState: AdaInputState;
+  coinSelection?: CoinSelectionsResponse;
 };
 
 interface FeeCalculationToken {
@@ -136,6 +149,7 @@ class WalletSendForm extends Component<Props, State> {
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
     pendingCalculationFeeRequest: 0,
+    coinSelection: null,
   };
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -227,7 +241,7 @@ class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-    this.props.onSubmit();
+    this.props.onSubmit(this.state.coinSelection);
   };
   handleOnReset = () => {
     // Cancel all debounced field validations
@@ -543,11 +557,11 @@ class WalletSendForm extends Component<Props, State> {
     });
 
     try {
-      const { fee, minimumAda } = await this.props.calculateTransactionFee(
-        receiver,
-        adaAmount,
-        assets
-      );
+      const {
+        fee,
+        minimumAda,
+        coinSelection,
+      } = await this.props.calculateTransactionFee(receiver, adaAmount, assets);
 
       if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
@@ -558,6 +572,7 @@ class WalletSendForm extends Component<Props, State> {
           transactionFeeError: null,
           isCalculatingTransactionFee: false,
           adaInputState: this.state.adaInputState,
+          coinSelection,
         };
 
         if (shouldUpdateMinimumAdaAmount) {
