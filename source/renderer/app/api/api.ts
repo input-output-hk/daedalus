@@ -229,6 +229,8 @@ import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 
+console.log('AdaApi:: imported');
+
 export default class AdaApi {
   config: RequestConfig;
   // We need to preserve all asset metadata during single runtime in order
@@ -2159,7 +2161,7 @@ export default class AdaApi {
     }
   };
   getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
-    logger.debug('AdaApi::getSmashSettings called');
+    console.log('AdaApi::getSmashSettings called', this.config);
 
     try {
       const {
@@ -2168,8 +2170,11 @@ export default class AdaApi {
       logger.debug('AdaApi::getSmashSettings success', {
         poolMetadataSource,
       });
+      console.log('AdaApi::getSmashSettings', poolMetadataSource);
+
       return poolMetadataSource;
     } catch (error) {
+      console.error('AdaApi::getSmashSettings', error);
       logger.error('AdaApi::getSmashSettings error', {
         error,
       });
@@ -2177,7 +2182,7 @@ export default class AdaApi {
     }
   };
   checkSmashServerIsValid = async (url: string): Promise<boolean> => {
-    logger.debug('AdaApi::checkSmashServerIsValid called', {
+    console.log('AdaApi::checkSmashServerIsValid called', {
       parameters: {
         url,
       },
@@ -2195,7 +2200,7 @@ export default class AdaApi {
         url
       );
       const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
-      logger.debug('AdaApi::checkSmashServerIsValid success', {
+      console.log('AdaApi::checkSmashServerIsValid success', {
         isValid,
       });
       return isValid;
@@ -2209,7 +2214,7 @@ export default class AdaApi {
   updateSmashSettings = async (
     poolMetadataSource: PoolMetadataSource
   ): Promise<void> => {
-    logger.debug('AdaApi::updateSmashSettings called', {
+    console.log('AdaApi::updateSmashSettings called', {
       parameters: {
         poolMetadataSource,
       },
@@ -2228,7 +2233,7 @@ export default class AdaApi {
       }
 
       await updateSmashSettings(this.config, poolMetadataSource);
-      logger.debug('AdaApi::updateSmashSettings success', {
+      console.log('AdaApi::updateSmashSettings success', {
         poolMetadataSource,
       });
     } catch (error) {
