@@ -116,8 +116,8 @@ let
       ln -svf $(type -P cardano-cli)
       mkdir -p ${BUILDTYPE}/
       ${let
-        # XXX: right now we don’t build Debug/ versions on Linux (TODO: investigate why – @michalrus)
-        sourceBUILDTYPE = if system == "x86_64-linux" then "Release" else BUILDTYPE;
+        # (TODO: investigate why – @michalrus)
+        sourceBUILDTYPE = "Release";
       in ''
         ln -svf $PWD/node_modules/usb/build/${sourceBUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
         ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID.node ${BUILDTYPE}/
