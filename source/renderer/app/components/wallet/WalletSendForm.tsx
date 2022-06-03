@@ -234,16 +234,20 @@ class WalletSendForm extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
     if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
-      // validation buffer
-      setTimeout(this.handleOnSubmit);
+      this.handleOnSubmit();
     }
   };
   handleOnSubmit = async () => {
+    await this.waitForInFlightValidations();
     if (this.isDisabled()) {
       return;
     }
     this.props.onSubmit(this.state.coinSelection);
   };
+  waitForInFlightValidations = () =>
+    new Promise((resolve) =>
+      setTimeout(resolve, FORM_VALIDATION_DEBOUNCE_WAIT)
+    );
   handleOnReset = () => {
     // Cancel all debounced field validations
     this.form.each((field) => {
@@ -346,12 +350,16 @@ class WalletSendForm extends Component<Props, State> {
       receiverField.isValid
     );
   };
-  isDisabled = () =>
-    this.state.isCalculatingTransactionFee ||
-    !this.state.isTransactionFeeCalculated ||
-    !this.form.isValid ||
-    this.form.validating ||
-    this.state.pendingCalculationFeeRequest > 0;
+  isDisabled = () => {
+    return (
+      this.state.isCalculatingTransactionFee ||
+      !this.state.isTransactionFeeCalculated ||
+      !this.form.isValid ||
+      this.form.validating ||
+      this.state.pendingCalculationFeeRequest > 0 ||
+      this.feeCalculationQueue.length > 0
+    );
+  };
 
   form = new ReactToolboxMobxForm<FormFields>(
     {
