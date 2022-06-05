@@ -168,6 +168,7 @@
     "react-intl-translations-manager": "5.0.3",
     "react-syntax-highlighter": "13.5.3",
     "regenerator-runtime": "0.13.7",
+    "resolve-tree": "^0.1.14",
     "sass": "1.32.13",
     "sass-loader": "10.1.1",
     "seedrandom": "3.0.5",
