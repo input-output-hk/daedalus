@@ -10,7 +10,9 @@ let
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
-    darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
+
+    # TODO: re-enable when we have `aarch64-darwin` in Hydra:
+    # darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
