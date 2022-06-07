@@ -65,7 +65,23 @@ let
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgs.nodejs-16_x;
+    nodejs = let
+      njPath = pkgs.path + "/pkgs/development/web/nodejs";
+      buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) { python = pkgs.python3; };
+    in
+      buildNodeJs {
+        enableNpm = true;
+        version = "14.16.0";
+        sha256 = "19nz2mhmn6ikahxqyna1dn25pb5v3z9vsz9zb2flb6zp2yk4hxjf";
+        patches = [
+          # this is needed because of newer ICU in our Nixpkgs, cf.
+          # • <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
+          # • <https://lists.buildroot.org/pipermail/buildroot/2021-July/617113.html>
+          # • download raw with: `curl --silent 'https://chromium.googlesource.com/v8/v8/+/035c305ce7761f51328b45f1bd83e26aef267c9d%5E%21/?format=TEXT' | base64 --decode`
+          ./nix/chromium-2477751.patch
+        ] ++ (pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff"));
+      };
+
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";

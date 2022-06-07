@@ -69,8 +69,11 @@ in {
   in {
   daedalus-installer = allArchesNoWindows;
   yaml2json = allArchesNoWindows;
+  nodejs = allArchesNoWindows;
   bridgeTable = {
     cardano = allArches;
   };
   cardano-node = allArches;
-}))
+})) // {
+  recurseForDerivations = {};
+}
