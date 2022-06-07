@@ -1,3 +1,10 @@
+import {
+  CardanoSignedTxData,
+  CardanoSignTransaction,
+  CommonParams,
+  Success,
+  Unsuccessful,
+} from 'trezor-connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -32,19 +39,19 @@ import type {
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
 import type {
-  DownloadLocalDataRequest,
-  DownloadLocalDataResponse,
-  DownloadsLocalDataRequest,
-  DownloadsLocalDataResponse,
-  DownloadRequest,
-  DownloadResponse,
-  ResumeDownloadRequest,
-  ResumeDownloadResponse,
+  CheckFileExistsRequest,
   ClearDownloadLocalDataRequest,
   ClearDownloadLocalDataResponse,
   DeleteDownloadedFileRequest,
   DeleteDownloadedFileResponse,
-  CheckFileExistsRequest,
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
+  DownloadRequest,
+  DownloadResponse,
+  DownloadsLocalDataRequest,
+  DownloadsLocalDataResponse,
+  ResumeDownloadRequest,
+  ResumeDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 import type {
@@ -52,19 +59,17 @@ import type {
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 import type {
-  HardwareWalletTransportDeviceRequest,
-  HardwareWalletTransportDeviceResponse,
+  HardwareWalletCardanoAdaAppResponse,
+  HardwareWalletConnectionRequest,
   HardwareWalletExtendedPublicKeyRequest,
   HardwareWalletExtendedPublicKeyResponse,
-  HardwareWalletCardanoAdaAppResponse,
+  HardwareWalletTransportDeviceRequest,
+  HardwareWalletTransportDeviceResponse,
+  LedgerDevicePayload,
   LedgerSignTransactionRequest,
   LedgerSignTransactionResponse,
-  TrezorSignTransactionRequest,
-  TrezorSignTransactionResponse,
-  HardwareWalletConnectionRequest,
-  LedgerDevicePayload,
-  TrezorDevicePayload,
   TrezorDeviceErrorPayload,
+  TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
 
 /**
@@ -492,8 +497,11 @@ export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
 export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
 export const SIGN_TRANSACTION_TREZOR_CHANNEL =
   'SIGN_TRANSACTION_TREZOR_CHANNEL';
-export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
-export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
+export type signTransactionTrezorRendererRequest = CommonParams &
+  CardanoSignTransaction;
+export type signTransactionTrezorMainResponse =
+  | Success<CardanoSignedTxData>
+  | Unsuccessful;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;

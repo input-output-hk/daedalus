@@ -2293,26 +2293,18 @@ export default class HardwareWalletsStore extends Store {
     }
 
     const fee = formattedAmountToLovelace(flatFee.toString());
-
     const ttl = this._getTtl();
-
-    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ path: string; prev_hash: string; prev_inde... Remove this comment to see the full error message
         inputs: inputsData,
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
-        // @ts-ignore ts-migrate(2322) FIXME: Type '({ type: number; path: string; pool: string;... Remove this comment to see the full error message
         certificates: certificatesData,
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ path: string; amount: string; }[]' is not ... Remove this comment to see the full error message
         withdrawals: withdrawalsData,
-        devicePath: recognizedDevicePath,
         signingMode: TrezorTransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
       });
