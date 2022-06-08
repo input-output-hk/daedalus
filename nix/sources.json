@@ -12,27 +12,27 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "update-haskell-nix-etc",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "5257fc818ef7df60986834310432e197aac90711",
-        "sha256": "1si7jb084m2z9h773b1v4mgdkcjbbfpsyys3d6iz6gn0pzkijvc8",
+        "rev": "0d1d5f036c73d18e641412d2c58d4acda592d493",
+        "sha256": "05cqxzrcvsqrmv22clf9l5agwzrcrcjw33mpmc4fnim8np5ym6w3",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/5257fc818ef7df60986834310432e197aac90711.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/0d1d5f036c73d18e641412d2c58d4acda592d493.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "v2022-04-27",
+        "branch": "hkm/enable-aarch64-darwin",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "3ee8ca721f3704b34e29194ae25c6cbcb50ff506",
-        "sha256": "19xz4ngck1xbvq0577yrjhbvlp8ssfx2q71l8zr10132fx9li9jd",
+        "rev": "a0f5096828105085e57c11bb208ae058e1060795",
+        "sha256": "0143drwghi2k29imfh554j6k59l5dqy2w70sv5m0q5w640dbk7d9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/3ee8ca721f3704b34e29194ae25c6cbcb50ff506.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a0f5096828105085e57c11bb208ae058e1060795.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "flake-compat": {
@@ -65,10 +65,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "6260dcb06b7d2855cbcd0a0f36483453c311248e",
-        "sha256": "1q9bqgf41ch3dpghsvh74xqnj98h3khj4gxk9n2kq9qai12720yv",
+        "rev": "4b6ee9767daaf5fc1d5419e07733ab006b95ec93",
+        "sha256": "03hkqrdjbab0m16y3bpmcg4nvrnpajkbaa595v67r77hhqja3nqj",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/6260dcb06b7d2855cbcd0a0f36483453c311248e.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/4b6ee9767daaf5fc1d5419e07733ab006b95ec93.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
