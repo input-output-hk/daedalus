@@ -67,19 +67,16 @@ let
 
     nodejs = let
       njPath = pkgs.path + "/pkgs/development/web/nodejs";
-      buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) { python = pkgs.python3; };
+      buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) {
+        python = pkgs.python3;
+        icu = pkgs.icu68; # can’t build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
+      };
     in
       buildNodeJs {
         enableNpm = true;
-        version = "14.16.0";
-        sha256 = "19nz2mhmn6ikahxqyna1dn25pb5v3z9vsz9zb2flb6zp2yk4hxjf";
-        patches = [
-          # this is needed because of newer ICU in our Nixpkgs, cf.
-          # • <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
-          # • <https://lists.buildroot.org/pipermail/buildroot/2021-July/617113.html>
-          # • download raw with: `curl --silent 'https://chromium.googlesource.com/v8/v8/+/035c305ce7761f51328b45f1bd83e26aef267c9d%5E%21/?format=TEXT' | base64 --decode`
-          ./nix/chromium-2477751.patch
-        ] ++ (pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff"));
+        version = "14.17.0";
+        sha256 = "1vf989canwcx0wdpngvkbz2x232yccp7fzs1vcbr60rijgzmpq2n";
+        patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
       };
 
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
