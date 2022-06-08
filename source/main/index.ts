@@ -84,7 +84,8 @@ if (isBlankScreenFixActive) {
 // (1/2) this line increases the limit for the main process
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
-app.allowRendererProcessReuse = true;
+// No longer in Electron ≥14.0, but behavior stays as if `true`:
+// app.allowRendererProcessReuse = true;
 
 const safeExit = async () => {
   pauseActiveDownloads();
