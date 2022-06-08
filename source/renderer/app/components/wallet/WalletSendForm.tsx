@@ -63,6 +63,16 @@ type CalculateTransactionFeeArgs = (
   minimumAda?: BigNumber;
 }>;
 
+export interface FormData {
+  coinSelection: CoinSelectionsResponse;
+  receiver: string;
+  selectedAssets: AssetToken[];
+  assetsAmounts: string[];
+  amount: BigNumber;
+  totalAmount: BigNumber;
+  transactionFee: BigNumber;
+}
+
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
@@ -80,7 +90,7 @@ type Props = {
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
-  onSubmit: (coinSelection: CoinSelectionsResponse) => any;
+  onSubmit: (data: FormData) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   isAddressFromSameWallet: boolean;
@@ -88,6 +98,7 @@ type Props = {
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
+  confirmationDialogData?: Omit<FormData, 'coinSelection'>;
 };
 
 interface FormFields {
@@ -242,7 +253,19 @@ class WalletSendForm extends Component<Props, State> {
     if (this.isDisabled()) {
       return;
     }
-    this.props.onSubmit(this.state.coinSelection);
+
+    const adaAmountField = this.form.$('adaAmount');
+    const adaAmount = new BigNumber(adaAmountField.value || 0);
+
+    this.props.onSubmit({
+      coinSelection: this.state.coinSelection,
+      receiver: this.form.$('receiver').value,
+      amount: adaAmount,
+      assetsAmounts: this.selectedAssetsAmounts,
+      selectedAssets: this.selectedAssets,
+      totalAmount: adaAmount.plus(this.state.transactionFee),
+      transactionFee: this.state.transactionFee,
+    });
   };
   waitForInFlightValidations = () =>
     new Promise((resolve) =>
@@ -1118,17 +1141,13 @@ class WalletSendForm extends Component<Props, State> {
       tokenFavorites,
       walletName,
       onTokenPickerDialogClose,
+      confirmationDialogData,
     } = this.props;
-    const receiverField = form.$('receiver');
-    const receiver = receiverField.value;
     const adaAmountField = form.$('adaAmount');
-    const adaAmount = new BigNumber(adaAmountField.value || 0);
     let fees = '0';
-    let total: BigNumber = adaAmount;
 
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount.plus(transactionFee);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -1211,18 +1230,25 @@ class WalletSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
 
-        {isDialogOpen(WalletSendConfirmationDialogView) ? (
+        {isDialogOpen(WalletSendConfirmationDialogView) &&
+        confirmationDialogData ? (
           <WalletSendConfirmationDialogContainer
-            receiver={receiver}
-            selectedAssets={this.selectedAssets}
-            assetsAmounts={this.selectedAssetsAmounts}
-            amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
-            totalAmount={total}
-            transactionFee={fees}
+            receiver={confirmationDialogData.receiver}
+            selectedAssets={confirmationDialogData.selectedAssets}
+            assetsAmounts={confirmationDialogData.assetsAmounts}
+            amount={confirmationDialogData.amount.toFormat(
+              currencyMaxFractionalDigits
+            )}
+            totalAmount={confirmationDialogData.totalAmount}
+            transactionFee={confirmationDialogData.transactionFee.toFormat(
+              currencyMaxFractionalDigits
+            )}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
-            formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
+            formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
+              currencyMaxFractionalDigits
+            )}
           />
         ) : null}
 

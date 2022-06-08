@@ -5,7 +5,9 @@ import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
-import WalletSendForm from '../../components/wallet/WalletSendForm';
+import WalletSendForm, {
+  FormData,
+} from '../../components/wallet/WalletSendForm';
 import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
@@ -15,14 +17,22 @@ import { getNonZeroAssetTokens } from '../../utils/assets';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps;
+type State = {
+  formData: Omit<FormData, 'coinSelection'>;
+};
 
 @inject('stores', 'actions')
 @observer
-class WalletSendPage extends Component<Props> {
+class WalletSendPage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
     stores: null,
   };
+
+  state = {
+    formData: null,
+  };
+
   calculateTransactionFee = async (params: {
     walletId: string;
     address: string;
@@ -72,7 +82,7 @@ class WalletSendPage extends Component<Props> {
   submit = (
     isHardwareWallet: boolean,
     walletId: string,
-    coinSelection: CoinSelectionsResponse
+    { coinSelection, ...data }: FormData
   ) => {
     const { isFlight } = global;
 
@@ -89,6 +99,8 @@ class WalletSendPage extends Component<Props> {
         walletId,
       });
     }
+
+    this.setState({ formData: data });
   };
 
   openTokenPickerDialog = () => {
@@ -163,8 +175,8 @@ class WalletSendPage extends Component<Props> {
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
-        onSubmit={(coinSelection) =>
-          this.submit(isHardwareWallet, wallet.id, coinSelection)
+        onSubmit={(data: FormData) =>
+          this.submit(isHardwareWallet, wallet.id, data)
         }
         onUnsetActiveAsset={unsetActiveAsset.trigger}
         onExternalLinkClick={app.openExternalLink}
@@ -173,6 +185,7 @@ class WalletSendPage extends Component<Props> {
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
+        confirmationDialogData={this.state.formData}
       />
     );
   }

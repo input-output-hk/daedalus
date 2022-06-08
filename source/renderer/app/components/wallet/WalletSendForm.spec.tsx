@@ -21,7 +21,7 @@ import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
-import WalletSendForm from './WalletSendForm';
+import WalletSendForm, { FormData } from './WalletSendForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 jest.mock(
@@ -84,9 +84,10 @@ describe('wallet/Wallet Send Form', () => {
     currentNumberFormat?: string;
   }) {
     const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<
-      boolean
-    >(false);
+    const [state, setState] = useState<{
+      isDialogOpen: boolean;
+      formData: FormData;
+    }>({ isDialogOpen: false, formData: null });
 
     return (
       <TestDecorator>
@@ -103,10 +104,12 @@ describe('wallet/Wallet Send Form', () => {
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onSubmit={() => setConfirmationDialogOpen(true)}
+                onSubmit={(formData) =>
+                  setState({ isDialogOpen: true, formData })
+                }
                 isDialogOpen={(dialog) =>
                   (dialog === WalletTokenPicker && tokenPickerOpen) ||
-                  confirmationDialogOpen
+                  state.isDialogOpen
                 }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
@@ -121,6 +124,7 @@ describe('wallet/Wallet Send Form', () => {
                 walletName={faker.name.firstName()}
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
+                confirmationDialogData={state.formData}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
