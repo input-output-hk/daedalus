@@ -415,7 +415,7 @@ class WalletSendForm extends Component<Props, State> {
               const isAdaAmountValid = adaAmountField.isValid;
 
               if (isValid && isAdaAmountValid) {
-                await this.queueCalculateTransactionFee();
+                this.queueCalculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -453,7 +453,7 @@ class WalletSendForm extends Component<Props, State> {
               );
 
               if (isValid) {
-                await this.queueCalculateTransactionFee();
+                this.queueCalculateTransactionFee();
               } else {
                 this.resetTransactionFee();
               }
@@ -793,9 +793,9 @@ class WalletSendForm extends Component<Props, State> {
           receiver: { ...receiver, assetFields, assetsDropdown },
         },
       },
-      async () => {
+      () => {
         this.removeAssetFields(uniqueId);
-        await this.queueCalculateTransactionFee(true);
+        this.queueCalculateTransactionFee(true);
       }
     );
   };
@@ -851,7 +851,7 @@ class WalletSendForm extends Component<Props, State> {
         const isValid = isValidAmount && isValidRange;
 
         if (isValid) {
-          await this.queueCalculateTransactionFee(true);
+          this.queueCalculateTransactionFee(true);
         } else {
           this.resetTransactionFee();
         }
