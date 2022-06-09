@@ -18,6 +18,7 @@ type CommonProps = {
   totalAmount: BigNumber;
   transactionFee: string | null | undefined;
   onExternalLinkClick: (...args: Array<any>) => any;
+  adaAmount?: number;
 };
 
 export type ContainerProps = CommonProps & {

@@ -47,6 +47,7 @@ const View = ({
   onSubmitCb,
   onTermsCheckboxClick,
   onCopyAssetParam,
+  adaAmount,
 }: Props) => {
   const {
     passphraseField,
@@ -104,6 +105,7 @@ const View = ({
       className={styles.root}
       closeButton={<DialogCloseButton />}
     >
+      <b>ada amount: {adaAmount} </b>
       {shouldShowEmptyWalletWarning(
         totalAmount,
         wallet,

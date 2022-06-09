@@ -71,6 +71,7 @@ export interface FormData {
   amount: BigNumber;
   totalAmount: BigNumber;
   transactionFee: BigNumber;
+  adaAmount: number;
 }
 
 type Props = {
@@ -129,6 +130,7 @@ type State = {
   pendingCalculationFeeRequest: number;
   adaInputState: AdaInputState;
   coinSelection?: CoinSelectionsResponse;
+  adaAmount: number;
 };
 
 interface FeeCalculationToken {
@@ -161,6 +163,7 @@ class WalletSendForm extends Component<Props, State> {
     adaInputState: AdaInputStateType.None,
     pendingCalculationFeeRequest: 0,
     coinSelection: null,
+    adaAmount: 0,
   };
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -265,6 +268,7 @@ class WalletSendForm extends Component<Props, State> {
       selectedAssets: this.selectedAssets,
       totalAmount: adaAmount.plus(this.state.transactionFee),
       transactionFee: this.state.transactionFee,
+      adaAmount: this.state.adaAmount,
     });
   };
   waitForInFlightValidations = () =>
@@ -605,6 +609,7 @@ class WalletSendForm extends Component<Props, State> {
           isCalculatingTransactionFee: false,
           adaInputState: this.state.adaInputState,
           coinSelection,
+          adaAmount,
         };
 
         if (shouldUpdateMinimumAdaAmount) {
@@ -1249,6 +1254,7 @@ class WalletSendForm extends Component<Props, State> {
             formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
               currencyMaxFractionalDigits
             )}
+            adaAmount={confirmationDialogData.adaAmount}
           />
         ) : null}
 

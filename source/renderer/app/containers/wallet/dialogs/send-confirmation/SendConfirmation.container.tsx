@@ -18,6 +18,7 @@ export const Containter = ({
   hwDeviceStatus,
   isHardwareWallet,
   formattedTotalAmount,
+  adaAmount,
 }: Props) => {
   const { isFlight } = global;
   const {
@@ -111,6 +112,7 @@ export const Containter = ({
       onSubmitCb={onSubmitCb}
       onTermsCheckboxClick={onTermsCheckboxClick}
       onExternalLinkClick={onExternalLinkClick}
+      adaAmount={adaAmount}
     />
   );
 };
