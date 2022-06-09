@@ -1,1 +1,1 @@
-export { AnalyticsAcceptanceStatus } from './types';
+export { AnalyticsAcceptanceStatus, AnalyticsClient } from './types';
