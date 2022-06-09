@@ -10,7 +10,7 @@ import { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from './SupportSettings.messages';
 import { Separator } from '../../widgets/separator/Separator';
 
-interface SupportSettingsProps extends InjectedProps {
+interface SupportSettingsProps {
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
   onSupportRequestClick: (...args: Array<any>) => any;
@@ -20,14 +20,8 @@ interface SupportSettingsProps extends InjectedProps {
   analyticsAccepted: boolean;
 }
 
-@inject('stores', 'actions')
 @observer
 class SupportSettings extends Component<SupportSettingsProps> {
-  static defaultProps = {
-    actions: null,
-    stores: null,
-  };
-
   render() {
     const {
       onExternalLinkClick,
