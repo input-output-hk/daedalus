@@ -12,18 +12,6 @@ export const messages = defineMessages({
       '!!!Analytic data is used for product development purposes only.',
     description: 'Analytics data collection description',
   },
-  tocDetailsTitle: {
-    id: 'analytics.form.tocDetailsTitle',
-    defaultMessage:
-      '!!!We collect data on (1) User click behavior and (2) Device information.',
-    description: 'TOC details title',
-  },
-  tocDetails: {
-    id: 'analytics.form.tocDetails',
-    defaultMessage:
-      '!!!1.6 Privacy. No one will use your data. Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto sunt explicabo. ',
-    description: 'TOC details',
-  },
   dataCollectionSwitchButton: {
     id: 'analytics.form.dataCollectionSwitchText',
     defaultMessage: '!!!Allow anonymous data collection',

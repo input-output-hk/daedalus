@@ -2692,45 +2692,17 @@
         }
       },
       {
-        "defaultMessage": "!!!We collect data on (1) User click behavior and (2) Device information.",
-        "description": "TOC details title",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
-        "id": "analytics.form.tocDetailsTitle",
-        "start": {
-          "column": 19,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!1.6 Privacy. No one will use your data. Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto sunt explicabo.",
-        "description": "TOC details",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
-        "id": "analytics.form.tocDetails",
-        "start": {
-          "column": 14,
-          "line": 21
-        }
-      },
-      {
         "defaultMessage": "!!!Allow anonymous data collection",
         "description": "Data collection agreement switch button label",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 19
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.dataCollectionSwitchText",
         "start": {
           "column": 30,
-          "line": 27
+          "line": 15
         }
       },
       {
@@ -2738,13 +2710,13 @@
         "description": "Analytics data collection allow button text",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 24
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.allowButton",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 20
         }
       },
       {
@@ -2752,13 +2724,13 @@
         "description": "Analytics data collection skip button text",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 29
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.dialog.skipButton",
         "start": {
           "column": 14,
-          "line": 37
+          "line": 25
         }
       },
       {
@@ -2766,13 +2738,13 @@
         "description": "Daedalus Privacy Policy link text",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 34
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.privacyPolicyLink",
         "start": {
           "column": 21,
-          "line": 42
+          "line": 30
         }
       },
       {
@@ -2780,13 +2752,13 @@
         "description": "Analytics data collection description, under collapsible details",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 41
         },
         "file": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts",
         "id": "analytics.form.analyticsSectionPrivacyPolicy",
         "start": {
           "column": 33,
-          "line": 47
+          "line": 35
         }
       }
     ],
@@ -2830,7 +2802,7 @@
           "line": 20
         },
         "file": "source/renderer/app/components/profile/analytics/CollectedDataOverview.messages.ts",
-        "id": "analytics.form.dataCollectionDetailsuserBehaviorText",
+        "id": "analytics.form.dataCollectionDetailsUserBehaviorText",
         "start": {
           "column": 20,
           "line": 15
@@ -3637,45 +3609,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Allow analytics data collection. Analytic data is used for product development purposes only.",
-        "description": "Analytics data collection description, above collapsible details",
+        "defaultMessage": "!!!You have opted in to analytics data collection. You can {changeAnalyticsSettingsLink}.",
+        "description": "Analytics data collection description when user opted in",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 74
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
-        "id": "analytics.form.analyticsSectionDescription",
+        "id": "analytics.form.analyticsAcceptedDescription",
         "start": {
-          "column": 31,
+          "column": 32,
           "line": 69
         }
       },
       {
-        "defaultMessage": "!!!Read more about our privacy practices in the {privacyPolicyLink}.",
-        "description": "Analytics data collection description, under collapsible details",
+        "defaultMessage": "!!!You have opted out of analytics data collection. You can {changeAnalyticsSettingsLink}.",
+        "description": "Analytics data collection description when user opted out",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 80
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
-        "id": "analytics.form.analyticsSectionPrivacyPolicy",
+        "id": "analytics.form.analyticsDeclinedDescription",
         "start": {
-          "column": 33,
-          "line": 76
+          "column": 32,
+          "line": 75
         }
       },
       {
-        "defaultMessage": "!!!Daedalus Privacy Policy",
-        "description": "Daedalus Privacy Policy link text",
+        "defaultMessage": "!!!change this setting here",
+        "description": "Change analytics settings link text",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 85
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts",
-        "id": "analytics.form.privacyPolicyLink",
+        "id": "analytics.form.changeAnalyticsSettingsLink",
         "start": {
-          "column": 21,
-          "line": 83
+          "column": 31,
+          "line": 81
         }
       }
     ],
@@ -17865,13 +17837,13 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.tsx",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 9
+          "line": 10
         }
       }
     ],

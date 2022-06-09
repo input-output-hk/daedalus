@@ -8,7 +8,7 @@ import { useStores } from '../../hooks/useStores';
 
 const AnalyticsConsentPage: FC = () => {
   const actions = useActions();
-  const { networkStatus, profile } = useStores();
+  const { networkStatus, profile, app } = useStores();
 
   const handleSubmit = useCallback(async (analyticsAccepted: boolean) => {
     await actions.profile.acceptAnalytics.trigger(
@@ -27,6 +27,7 @@ const AnalyticsConsentPage: FC = () => {
       <AnalyticsConsentForm
         loading={setAnalyticsAcceptanceRequest.isExecuting}
         onSubmit={handleSubmit}
+        onExternalLinkClick={app.openExternalLink}
       />
     </TopBarLayout>
   );

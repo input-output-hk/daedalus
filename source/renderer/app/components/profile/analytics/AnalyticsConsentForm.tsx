@@ -1,7 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-
 import { Link } from 'react-polymorph/lib/components/Link';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import classnames from 'classnames';
@@ -14,12 +13,14 @@ interface AnalyticsConsentFormProps {
   intl: Intl;
   loading: boolean;
   onSubmit: (analyticsAccepted: boolean) => void;
+  onExternalLinkClick: (url: string) => void;
 }
 
 const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
   intl,
   loading,
   onSubmit,
+  onExternalLinkClick,
 }: AnalyticsConsentFormProps) => {
   const handleAllow = useCallback(() => {
     onSubmit(true);
@@ -31,8 +32,11 @@ const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
   const privacyPolicyLink = (
     <Link
       className={styles.privacyPolicyLink}
-      // TODO
-      onClick={() => null}
+      onClick={() =>
+        onExternalLinkClick(
+          'https://static.iohk.io/terms/iog-privacy-policy.pdf'
+        )
+      }
       label={intl.formatMessage(messages.privacyPolicyLink)}
       hasIconAfter={false}
     />

@@ -306,7 +306,15 @@ export default class ProfileStore extends Store {
   }
 
   @computed
-  get hasConfirmedAnalyticsAcceptanceStatus(): boolean {
+  get areAnalyticsAccepted(): boolean {
+    return (
+      this.getAnalyticsAcceptanceRequest.result ===
+      AnalyticsAcceptanceStatus.ACCEPTED
+    );
+  }
+
+  @computed
+  get wasAnalyticsConsentScreenDisplayed(): boolean {
     return (
       this.getAnalyticsAcceptanceRequest.result !==
       AnalyticsAcceptanceStatus.PENDING
@@ -452,7 +460,7 @@ export default class ProfileStore extends Store {
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      !this.hasConfirmedAnalyticsAcceptanceStatus
+      !this.wasAnalyticsConsentScreenDisplayed
     ) {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.ANALYTICS,
@@ -470,7 +478,7 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.hasConfirmedAnalyticsAcceptanceStatus &&
+      this.wasAnalyticsConsentScreenDisplayed &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
@@ -495,10 +503,7 @@ export default class ProfileStore extends Store {
     }
   };
   _redirectToMainUiAfterAnalyticsAreConfirmed = () => {
-    if (
-      this.hasConfirmedAnalyticsAcceptanceStatus &&
-      this._isOnAnalyticsPage()
-    ) {
+    if (this.wasAnalyticsConsentScreenDisplayed && this._isOnAnalyticsPage()) {
       this._redirectToRoot();
     }
   };

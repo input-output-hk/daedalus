@@ -66,23 +66,21 @@ export const messages = defineMessages({
     defaultMessage: '!!!Analytics data collection',
     description: 'Analytics form title',
   },
-  analyticsSectionDescription: {
-    id: 'analytics.form.analyticsSectionDescription',
+  analyticsAcceptedDescription: {
+    id: 'analytics.form.analyticsAcceptedDescription',
     defaultMessage:
-      '!!!Allow analytics data collection. Analytic data is used for product development purposes only.',
-    description:
-      'Analytics data collection description, above collapsible details',
+      '!!!You have opted in to analytics data collection. You can {changeAnalyticsSettingsLink}.',
+    description: 'Analytics data collection description when user opted in',
   },
-  analyticsSectionPrivacyPolicy: {
-    id: 'analytics.form.analyticsSectionPrivacyPolicy',
+  analyticsDeclinedDescription: {
+    id: 'analytics.form.analyticsDeclinedDescription',
     defaultMessage:
-      '!!!Read more about our privacy practices in the {privacyPolicyLink}.',
-    description:
-      'Analytics data collection description, under collapsible details',
+      '!!!You have opted out of analytics data collection. You can {changeAnalyticsSettingsLink}.',
+    description: 'Analytics data collection description when user opted out ',
   },
-  privacyPolicyLink: {
-    id: 'analytics.form.privacyPolicyLink',
-    defaultMessage: '!!!Daedalus Privacy Policy',
-    description: 'Daedalus Privacy Policy link text',
+  changeAnalyticsSettingsLink: {
+    id: 'analytics.form.changeAnalyticsSettingsLink',
+    defaultMessage: '!!!change this setting here',
+    description: 'Change analytics settings link text',
   },
 });

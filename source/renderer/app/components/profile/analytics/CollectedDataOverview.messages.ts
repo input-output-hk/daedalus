@@ -13,7 +13,7 @@ export const messages = defineMessages({
     description: 'Title for the user behaviour data collection',
   },
   userBehaviorText: {
-    id: 'analytics.form.dataCollectionDetailsuserBehaviorText',
+    id: 'analytics.form.dataCollectionDetailsUserBehaviorText',
     defaultMessage:
       '!!!Clicks, page visits, page scrolling, number of wallets, number of native assets, session duration, type of wallets (soft vs hardware wallets), geolocation (country of location), and page performance.',
     description: 'Description for the user behaviour data collection',

@@ -6,78 +6,26 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
-import { AnalyticsAcceptanceStatus } from '../../../analytics/types';
 import { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from './SupportSettings.messages';
 import { Separator } from '../../widgets/separator/Separator';
-import { CollectedDataOverview } from '../../profile/analytics/CollectedDataOverview';
-import NormalSwitch from '../../widgets/forms/NormalSwitch';
-import { ROUTES } from '../../../routes-config';
 
 interface SupportSettingsProps extends InjectedProps {
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
   onSupportRequestClick: (...args: Array<any>) => any;
+  onChangeAnalyticsSettings: () => void;
   onDownloadLogs: (...args: Array<any>) => any;
   disableDownloadLogs: boolean;
-}
-
-interface SupportSettingsState {
   analyticsAccepted: boolean;
-  pageViewEventSent: boolean;
 }
 
 @inject('stores', 'actions')
 @observer
-class SupportSettings extends Component<
-  SupportSettingsProps,
-  SupportSettingsState
-> {
+class SupportSettings extends Component<SupportSettingsProps> {
   static defaultProps = {
     actions: null,
     stores: null,
-  };
-
-  state = {
-    analyticsAccepted: false,
-    pageViewEventSent: false,
-  };
-
-  async componentDidMount() {
-    const analyticsAcceptanceStatus = await this.props.stores.analytics.api.localStorage.getAnalyticsAcceptance();
-
-    this.setState({
-      analyticsAccepted:
-        analyticsAcceptanceStatus === AnalyticsAcceptanceStatus.ACCEPTED,
-    });
-  }
-
-  onAnalyticsAcceptanceChange = async (analyticsAccepted: boolean) => {
-    await this.props.actions.profile.acceptAnalytics.trigger(
-      analyticsAccepted
-        ? AnalyticsAcceptanceStatus.ACCEPTED
-        : AnalyticsAcceptanceStatus.REJECTED
-    );
-
-    let { pageViewEventSent } = this.state;
-
-    if (!pageViewEventSent && analyticsAccepted) {
-      this.props.stores.analytics.analyticsClient.sendPageNavigationEvent(
-        'Support Settings'
-      );
-      pageViewEventSent = true;
-    }
-
-    this.setState({
-      analyticsAccepted,
-      pageViewEventSent,
-    });
-  };
-
-  handleTermsOfUseNavigation = () => {
-    this.props.actions.router.goToRoute.trigger({
-      route: ROUTES.SETTINGS.TERMS_OF_USE,
-    });
   };
 
   render() {
@@ -121,11 +69,11 @@ class SupportSettings extends Component<
       />
     );
 
-    const privacyPolicyLink = (
+    const changeAnalyticsSettingsLink = (
       <Link
-        className={styles.privacyPolicyLink}
-        onClick={this.handleTermsOfUseNavigation}
-        label={intl.formatMessage(messages.privacyPolicyLink)}
+        className={styles.changeAnalyticsSettingsLink}
+        onClick={this.props.onChangeAnalyticsSettings}
+        label={intl.formatMessage(messages.changeAnalyticsSettingsLink)}
         hasIconAfter={false}
       />
     );
@@ -181,22 +129,13 @@ class SupportSettings extends Component<
         <h2 className={styles.analyticsSectionTitle}>
           {intl.formatMessage(messages.analyticsSectionTitle)}
         </h2>
-        <div className={styles.analyticsSectionDescriptionContainer}>
-          <p className={styles.analyticsSectionDescription}>
-            {intl.formatMessage(messages.analyticsSectionDescription)}
-          </p>
-          <NormalSwitch
-            onChange={this.onAnalyticsAcceptanceChange}
-            checked={this.state.analyticsAccepted}
-            className={styles.switchButton}
-          />
-        </div>
-        <CollectedDataOverview />
-        <p className={styles.privacyPolicyDescription}>
+        <p className={styles.analyticsSectionDescription}>
           <FormattedMessage
-            {...messages.analyticsSectionPrivacyPolicy}
+            {...(this.props.analyticsAccepted
+              ? messages.analyticsAcceptedDescription
+              : messages.analyticsDeclinedDescription)}
             values={{
-              privacyPolicyLink,
+              changeAnalyticsSettingsLink,
             }}
           />
         </p>
