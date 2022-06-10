@@ -7,7 +7,7 @@ let
 
   # XXX: There should be a better way to get this info, but I haven’t found one:
   bundledNodeVersion = builtins.readFile (runCommand "electron-node-version" {} ''
-    ${unzip}/bin/unzip ${linux.src} electron
+    ${unzip}/bin/unzip ${allPlatforms.x86_64-linux} electron
     ${binutils-unwrapped}/bin/strings electron | grep -Po 'node-v\K.*?(?=-headers\.tar\.gz)' | tr -d '\n' >$out
   '');
 
@@ -21,27 +21,37 @@ let
     platforms = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
   };
 
+  allPlatforms = {
+    i686-linux = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-ia32.zip";
+      sha256 = "0hlggn4ffs0fjgygc5akq23qy16dca29py594xck18qqwri2yp9f";
+    };
+    x86_64-linux = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
+      sha256 = "1x5xb78lw3a9y19wgbb89vwghda36z45d0rw648a2ymq5s5lccy9";
+    };
+    armv7l-linux = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
+      sha256 = "1v0z3mfiwxk6pz9hqrpv25rd7qx82y0k8y3q34zk5wvgmy207j2k";
+    };
+    aarch64-linux = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-arm64.zip";
+      sha256 = "0nayflxpmd9wjnqrj74k8lid92445bywq4v1qy7bdbj4rh8jlb0c";
+    };
+    x86_64-darwin = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
+      sha256 = "15gk17wfrw2fwvdiidcbh8cxby4ain5y9i1ciygf8qjpk01wasvm";
+    };
+    aarch64-darwin = fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
+      sha256 = "0vw77az374cgmncki46pff18w0izp5i00q8z667i6rbh4nj1sqcs";
+    };
+  };
+
   linux = {
     inherit name version meta bundledNodeVersion;
 
-    src = {
-      i686-linux = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-ia32.zip";
-        sha256 = "0hlggn4ffs0fjgygc5akq23qy16dca29py594xck18qqwri2yp9f";
-      };
-      x86_64-linux = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-        sha256 = "1x5xb78lw3a9y19wgbb89vwghda36z45d0rw648a2ymq5s5lccy9";
-      };
-      armv7l-linux = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
-        sha256 = "1v0z3mfiwxk6pz9hqrpv25rd7qx82y0k8y3q34zk5wvgmy207j2k";
-      };
-      aarch64-linux = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-arm64.zip";
-        sha256 = "0nayflxpmd9wjnqrj74k8lid92445bywq4v1qy7bdbj4rh8jlb0c";
-      };
-    }.${stdenv.hostPlatform.system} or throwSystem;
+    src = allPlatforms.${stdenv.hostPlatform.system} or throwSystem;
 
     buildInputs = [ unzip makeWrapper ];
 
@@ -62,16 +72,7 @@ let
   darwin = {
     inherit name version meta bundledNodeVersion;
 
-    src = {
-      x86_64-darwin = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
-        sha256 = "15gk17wfrw2fwvdiidcbh8cxby4ain5y9i1ciygf8qjpk01wasvm";
-      };
-      aarch64-darwin = fetchurl {
-        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
-        sha256 = "0vw77az374cgmncki46pff18w0izp5i00q8z667i6rbh4nj1sqcs";
-      };
-    }.${stdenv.hostPlatform.system} or throwSystem;
+    src = allPlatforms.${stdenv.hostPlatform.system} or throwSystem;
 
     buildInputs = [ unzip ];
 

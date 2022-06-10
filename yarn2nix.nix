@@ -10,7 +10,7 @@
 , lz4
 , pkgconfig
 , systemd
-, writeShellScriptBin
+, writeShellScript
 , xz
 , nodePackages
 , zlib
@@ -91,15 +91,21 @@ let
   # why…
   #
   # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
-  patchElectronRebuild = ''
+  patchElectronRebuild = writeShellScript "patch-electron-rebuild" ''
+    echo 'Patching electron-rebuild to force our Node.js headers…'
+
     nodeGypJs=lib/src/module-type/node-gyp.js
     if [ ! -e $nodeGypJs ] ; then
-      echo >&2 'shouldn’t happen unless electron-rebuild changes'
+      # makes it work both here, and in shell.nix:
+      nodeGypJs="node_modules/electron-rebuild/$nodeGypJs"
+    fi
+    if [ ! -e $nodeGypJs ] ; then
+      echo >&2 'fatal: shouldn’t happen unless electron-rebuild changes'
       exit 1
     fi
 
     # Patch idempotently (matters in repetitive shell.nix):
-    if ! grep -F ${electron-node-headers} $nodeGypJs ; then
+    if ! grep -qF ${electron-node-headers} $nodeGypJs ; then
       sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-node-headers}", "--nodedir", "${electron-node-headers-unpacked}");|' -i $nodeGypJs
     fi
   '';
@@ -232,7 +238,9 @@ yarn2nix.mkYarnPackage {
 
   pkgConfig = {
     electron-rebuild = {
-      postInstall = patchElectronRebuild;
+      postInstall = ''
+        ${patchElectronRebuild}
+      '';
     };
   };
 

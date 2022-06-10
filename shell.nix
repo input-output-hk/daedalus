@@ -130,10 +130,6 @@ let
       yarn install --frozen-lockfile
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
-      (
-        cd node_modules/electron-rebuild/
-        ${daedalusPkgs.rawapp.patchElectronRebuild}
-      )
       find Debug/ Release/ -name '*.node' | xargs rm -v || true
       yarn build:electron
 
@@ -166,9 +162,11 @@ let
         '';
       in ''
         ${tryLink "usb"           "usb_bindings.node"}
-        ${tryLink "node-hid"      "HID.node"}
-        ${tryLink "node-hid"      "HID_hidraw.node"}
         ${tryLink "usb-detection" "detection.node"}
+        ${tryLink "node-hid"      "HID.node"}
+        ${localLib.optionalString pkgs.stdenv.isLinux ''
+          ${tryLink "node-hid"      "HID_hidraw.node"}
+        ''}
       ''}
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
