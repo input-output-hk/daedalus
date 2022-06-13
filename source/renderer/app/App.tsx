@@ -22,6 +22,7 @@ import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 import { MenuUpdater } from './containers/MenuUpdater';
+import { AnalyticsProvider } from './components/analytics';
 
 @observer
 class App extends Component<{
@@ -61,45 +62,47 @@ class App extends Component<{
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <MenuUpdater stores={stores} />
-          <ThemeProvider
-            theme={daedalusTheme}
-            skins={SimpleSkins}
-            variables={SimpleDefaults}
-            themeOverrides={themeOverrides}
-          >
-            <IntlProvider
-              {...{
-                locale,
-                key: locale,
-                messages: translations[locale],
-              }}
+          <AnalyticsProvider>
+            <MenuUpdater stores={stores} />
+            <ThemeProvider
+              theme={daedalusTheme}
+              skins={SimpleSkins}
+              variables={SimpleDefaults}
+              themeOverrides={themeOverrides}
             >
-              <Fragment>
-                <Router history={history}>
-                  <Routes />
-                </Router>
-                {[
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                  ),
-                  // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
-                  isActiveDialog(TOGGLE_RTS_FLAGS_MODE) && (
-                    <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
-                  ),
-                ]}
-                <RTSFlagsRecommendationOverlayContainer />
-                <NotificationsContainer />
-                {canShowNews && [
-                  <NewsFeedContainer key="newsFeedList" />,
-                  <NewsOverlayContainer key="newsFeedOverlay" />,
-                ]}
-              </Fragment>
-            </IntlProvider>
-          </ThemeProvider>
+              <IntlProvider
+                {...{
+                  locale,
+                  key: locale,
+                  messages: translations[locale],
+                }}
+              >
+                <Fragment>
+                  <Router history={history}>
+                    <Routes />
+                  </Router>
+                  {[
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                    ),
+                    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
+                    isActiveDialog(TOGGLE_RTS_FLAGS_MODE) && (
+                      <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
+                    ),
+                  ]}
+                  <RTSFlagsRecommendationOverlayContainer />
+                  <NotificationsContainer />
+                  {canShowNews && [
+                    <NewsFeedContainer key="newsFeedList" />,
+                    <NewsOverlayContainer key="newsFeedOverlay" />,
+                  ]}
+                </Fragment>
+              </IntlProvider>
+            </ThemeProvider>
+          </AnalyticsProvider>
         </Provider>
       </Fragment>
     );
