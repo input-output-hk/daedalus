@@ -37,7 +37,7 @@ let
   electronPath = "https://github.com/electron/electron/releases/download/v${electronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${electronVersion}-win32-x64.zip";
-    sha256 = "0gcshwmx0cy8146pcr0mavwl3rv86ma59ar6v4rgl5pl6pgmfifc";
+    sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
@@ -49,7 +49,7 @@ let
   '';
   electron-node-headers = fetchurl {
     url = "https://www.electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-    sha256 = "1qkzqv0k7hxc0kzbri69caabhwzwccl415kg41iksryawsbmciiq";
+    sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
   };
   electron-node-headers-unpacked = runCommand "electron-node-headers-${electronVersion}-unpacked" {} ''
     tar -xf ${electron-node-headers}

@@ -146,8 +146,8 @@ let
           )
 
           if [ -z "$symlinkTarget" ] ; then
-            echo >&2 "fatal: symlink target not found: ‘${fileName}’ in ‘${dependency}’"
-            exit 1
+            echo >&2 "error: symlink target not found: ‘${fileName}’ in ‘${dependency}’"
+            # ~exit 1~ — do not exit, let the person fix from inside `nix-shell`
           fi
 
           ${localLib.optionalString pkgs.stdenv.isLinux ''
@@ -172,10 +172,6 @@ let
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
-      ''}
-
-      ${localLib.optionalString (daedalusPkgs.nodejs.version != daedalusPkgs.electron.bundledNodeVersion) ''
-        echo 'Warning: Electron’s bundled Node.js version (${daedalusPkgs.electron.bundledNodeVersion}) differs from ours (${daedalusPkgs.nodejs.version}).'
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'

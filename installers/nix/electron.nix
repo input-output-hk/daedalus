@@ -5,12 +5,6 @@ let
   version = (builtins.fromJSON (builtins.readFile ../../package.json)).dependencies.electron;
   name = "electron-${version}";
 
-  # XXX: There should be a better way to get this info, but I haven’t found one:
-  bundledNodeVersion = builtins.readFile (runCommand "electron-node-version" {} ''
-    ${unzip}/bin/unzip ${allPlatforms.x86_64-linux} electron
-    ${binutils-unwrapped}/bin/strings electron | grep -Po 'node-v\K.*?(?=-headers\.tar\.gz)' | tr -d '\n' >$out
-  '');
-
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
 
   meta = with lib; {
@@ -21,37 +15,27 @@ let
     platforms = [ "x86_64-darwin" "aarch64-darwin" "x86_64-linux" "i686-linux" "armv7l-linux" "aarch64-linux" ];
   };
 
-  allPlatforms = {
-    i686-linux = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-ia32.zip";
-      sha256 = "0hlggn4ffs0fjgygc5akq23qy16dca29py594xck18qqwri2yp9f";
-    };
-    x86_64-linux = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-      sha256 = "1x5xb78lw3a9y19wgbb89vwghda36z45d0rw648a2ymq5s5lccy9";
-    };
-    armv7l-linux = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
-      sha256 = "1v0z3mfiwxk6pz9hqrpv25rd7qx82y0k8y3q34zk5wvgmy207j2k";
-    };
-    aarch64-linux = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-arm64.zip";
-      sha256 = "0nayflxpmd9wjnqrj74k8lid92445bywq4v1qy7bdbj4rh8jlb0c";
-    };
-    x86_64-darwin = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
-      sha256 = "15gk17wfrw2fwvdiidcbh8cxby4ain5y9i1ciygf8qjpk01wasvm";
-    };
-    aarch64-darwin = fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
-      sha256 = "0vw77az374cgmncki46pff18w0izp5i00q8z667i6rbh4nj1sqcs";
-    };
-  };
-
   linux = {
-    inherit name version meta bundledNodeVersion;
+    inherit name version meta;
 
-    src = allPlatforms.${stdenv.hostPlatform.system} or throwSystem;
+    src = {
+      i686-linux = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-ia32.zip";
+        sha256 = "db9261c05ed57af2fcd4a84b89d299c76948b9d57ce0dba38e3240eb43935257";
+      };
+      x86_64-linux = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
+        sha256 = "7607422a4ba80cda4bd7fefb2fbe2f4e0b9a73db92e1e82dc01012a85b5d0d2b";
+      };
+      armv7l-linux = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-armv7l.zip";
+        sha256 = "a293a9684e16a427a9f68d101814575a4b1dd232dc3fca47552f906019a6cadc";
+      };
+      aarch64-linux = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-arm64.zip";
+        sha256 = "1599d259832c806b98751a68fb93112711963d259024f0e36f12f064995b3251";
+      };
+    }.${stdenv.hostPlatform.system} or throwSystem;
 
     buildInputs = [ unzip makeWrapper ];
 
@@ -70,9 +54,18 @@ let
   };
 
   darwin = {
-    inherit name version meta bundledNodeVersion;
+    inherit name version meta;
 
-    src = allPlatforms.${stdenv.hostPlatform.system} or throwSystem;
+    src = {
+      x86_64-darwin = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-x64.zip";
+        sha256 = "6bf09794d6f020bbaaf806a7758da125137b3c96646f4503eb81b9541e50e02f";
+      };
+      aarch64-darwin = fetchurl {
+        url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-darwin-arm64.zip";
+        sha256 = "374ddf0581794b31eee900828172f9218193c032c0e46bffcfac6aec95c22f1a";
+      };
+    }.${stdenv.hostPlatform.system} or throwSystem;
 
     buildInputs = [ unzip ];
 
