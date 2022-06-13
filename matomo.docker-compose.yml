@@ -1,33 +1,32 @@
 version: "3"
-
 services:
-  matomo_db:
-    image: mariadb
-    command: --max-allowed-packet=64MB
-    restart: always
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.6
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_matomo
+      - MARIADB_DATABASE=bitnami_matomo
+      - MARIADB_EXTRA_FLAGS=--max_allowed_packet=64MB
     volumes:
-      - db:/var/lib/mysql
-    environment: &env
-      - MYSQL_ROOT_PASSWORD=matomo
-      - MATOMO_DATABASE_HOST=db
-      - MYSQL_PASSWORD=matomo
-      - MYSQL_DATABASE=matomo
-      - MYSQL_USER=matomo
-      - MATOMO_DATABASE_ADAPTER=mysql
-      - MATOMO_DATABASE_TABLES_PREFIX=matomo_
-      - MATOMO_DATABASE_USERNAME=matomo
-      - MATOMO_DATABASE_PASSWORD=matomo
-      - MATOMO_DATABASE_DBNAME=matomo
-
+      - "matomo_db_data:/bitnami/mariadb"
   matomo:
-    image: matomo
-    restart: always
-    volumes:
-      - matomo:/var/www/html
-    environment: *env
+    image: docker.io/bitnami/matomo:4
     ports:
-      - 9003:80
-
+      - "8080:8080"
+    environment:
+      - MATOMO_DATABASE_HOST=mariadb
+      - MATOMO_DATABASE_PORT_NUMBER=3306
+      - MATOMO_DATABASE_USER=bn_matomo
+      - MATOMO_DATABASE_NAME=bitnami_matomo
+      - MATOMO_USERNAME=user
+      - MATOMO_PASSWORD=password
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - "matomo_data:/bitnami/matomo"
+    depends_on:
+      - mariadb
 volumes:
-  db:
-  matomo:
+  matomo_db_data:
+    driver: local
+  matomo_data:
+    driver: local
