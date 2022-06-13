@@ -44,7 +44,7 @@ const MnemonicAutocompleteContainer = ({
     () => ({
       inputValue: value,
       selectedOption: '',
-      filteredOptions: options.slice(0, maxVisibleOptions - 1),
+      filteredOptions: options.slice(0, maxVisibleOptions),
       isOpen: false,
       mouseIsOverOptions: false,
       blurred: false,
@@ -84,7 +84,7 @@ const MnemonicAutocompleteContainer = ({
         isOpen,
         filteredOptions: options
           .filter(startsWith(inputValue.trim()))
-          .slice(0, maxVisibleOptions - 1),
+          .slice(0, maxVisibleOptions),
         inputValue,
         selectedOption,
       }));
