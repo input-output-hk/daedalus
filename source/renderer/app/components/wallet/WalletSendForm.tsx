@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
-import { filter, get, indexOf, omit, map, without, isEmpty } from 'lodash';
+import { filter, get, indexOf, omit, map, without, last } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -53,15 +53,16 @@ const AdaInputStateType: EnumMap<string, AdaInputState> = {
   Reset: 'reset',
 };
 
-type CalculateTransactionFeeArgs = (
-  address: string,
-  amount: number,
-  selectedAssets: ApiTokens
-) => Promise<{
-  fee: BigNumber;
-  coinSelection?: CoinSelectionsResponse;
-  minimumAda?: BigNumber;
-}>;
+interface TransactionFeePayload {
+  receiver: string;
+  adaAmount: number;
+  assets: ApiTokens;
+}
+
+type CalculateTransactionFeeArgs = {
+  requestToken: RequestToken;
+  shouldUpdateMinimumAdaAmount?: boolean;
+} & TransactionFeePayload;
 
 export interface FormData {
   coinSelection: CoinSelectionsResponse;
@@ -78,7 +79,15 @@ type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
   currentNumberFormat: string;
-  calculateTransactionFee: CalculateTransactionFeeArgs;
+  calculateTransactionFee: (
+    address: string,
+    amount: number,
+    selectedAssets: ApiTokens
+  ) => Promise<{
+    fee: BigNumber;
+    coinSelection?: CoinSelectionsResponse;
+    minimumAda?: BigNumber;
+  }>;
   walletAmount: BigNumber;
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
   validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>;
@@ -127,20 +136,16 @@ type State = {
   isReceiverAddressValidOnce: boolean;
   isTransactionFeeCalculated: boolean;
   isCalculatingTransactionFee: boolean;
-  pendingCalculationFeeRequest: number;
+  hasPendingRequestTokens: boolean;
   adaInputState: AdaInputState;
   coinSelection?: CoinSelectionsResponse;
   adaAmount: number;
 };
 
-interface FeeCalculationToken {
+interface RequestToken {
   abort: () => void;
   aborted: boolean;
-}
-
-interface FeeCalculationQueue {
-  request: Promise<void>;
-  token: FeeCalculationToken;
+  release: () => void;
 }
 
 @observer
@@ -161,7 +166,7 @@ class WalletSendForm extends Component<Props, State> {
     isTransactionFeeCalculated: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
-    pendingCalculationFeeRequest: 0,
+    hasPendingRequestTokens: false,
     coinSelection: null,
     adaAmount: 0,
   };
@@ -173,7 +178,7 @@ class WalletSendForm extends Component<Props, State> {
   // or enters a receiver address which belongs to the same wallet he is sending from.
   _isAutoFocusEnabled = true;
 
-  feeCalculationQueue: Array<FeeCalculationQueue> = [];
+  requestTokens: RequestToken[] = [];
 
   componentDidMount() {
     this._isMounted = true;
@@ -383,8 +388,7 @@ class WalletSendForm extends Component<Props, State> {
       !this.state.isTransactionFeeCalculated ||
       !this.form.isValid ||
       this.form.validating ||
-      this.state.pendingCalculationFeeRequest > 0 ||
-      this.feeCalculationQueue.length > 0
+      this.state.hasPendingRequestTokens
     );
   };
 
@@ -408,7 +412,18 @@ class WalletSendForm extends Component<Props, State> {
                 ];
               }
 
+              const requestToken = this.createRequestToken();
+              const payload = {
+                ...this.getTransactionFeePayload(),
+                requestToken,
+              };
+
               const isValid = await this.props.addressValidator(value);
+
+              if (requestToken.aborted) {
+                requestToken.release();
+                return [];
+              }
 
               if (isValid && this.isAddressFromSameWallet()) {
                 this._isAutoFocusEnabled = false;
@@ -419,10 +434,14 @@ class WalletSendForm extends Component<Props, State> {
               const isAdaAmountValid = adaAmountField.isValid;
 
               if (isValid && isAdaAmountValid) {
-                this.queueCalculateTransactionFee();
+                this.calculateTransactionFee(payload).finally(
+                  requestToken.release
+                );
               } else {
-                this.resetTransactionFee();
+                this.resetTransactionFee(requestToken);
               }
+
+              requestToken.release();
 
               return [
                 isValid,
@@ -452,15 +471,31 @@ class WalletSendForm extends Component<Props, State> {
               }
 
               const amountValue = value.toString();
+
+              const requestToken = this.createRequestToken();
+              const payload = {
+                ...this.getTransactionFeePayload(),
+                requestToken,
+              };
+
               const isValid = await this.props.validateAmount(
                 formattedAmountToNaturalUnits(amountValue)
               );
 
-              if (isValid) {
-                this.queueCalculateTransactionFee();
-              } else {
-                this.resetTransactionFee();
+              if (requestToken.aborted) {
+                requestToken.release();
+                return [];
               }
+
+              if (isValid) {
+                this.calculateTransactionFee(payload).finally(
+                  requestToken.release
+                );
+              } else {
+                this.resetTransactionFee(requestToken);
+              }
+
+              requestToken.release();
 
               return [
                 isValid,
@@ -517,62 +552,45 @@ class WalletSendForm extends Component<Props, State> {
       });
   };
 
-  queueCalculateTransactionFee = (shouldUpdateMinimumAdaAmount = false) => {
-    this.feeCalculationQueue.forEach((fee) => fee.token.abort());
+  createRequestToken = () => {
+    this.requestTokens.forEach((requestToken) => requestToken.abort());
 
-    return new Promise((resolve, reject) => {
-      const token = (() => {
-        let aborted = false;
-        return {
-          abort() {
-            aborted = true;
-          },
-          get aborted() {
-            return aborted;
-          },
-        };
-      })();
-
-      const request = this.calculateTransactionFee(
-        shouldUpdateMinimumAdaAmount,
-        token
-      );
-
-      this.feeCalculationQueue.push({ request, token });
-
+    const updatePendingRequestTokens = () =>
       this.setState({
-        pendingCalculationFeeRequest: this.feeCalculationQueue.length,
+        hasPendingRequestTokens: this.requestTokens.length > 0,
       });
 
-      request
-        .then(resolve)
-        .catch(reject)
-        .finally(() => {
-          this.feeCalculationQueue = this.feeCalculationQueue.filter(
-            (r) => r.request !== request
+    const requestToken = (() => {
+      let aborted = false;
+      return {
+        abort() {
+          aborted = true;
+        },
+        get aborted() {
+          return aborted;
+        },
+        release: () => {
+          this.requestTokens = this.requestTokens.filter(
+            (r) => r !== requestToken
           );
 
-          this.setState({
-            pendingCalculationFeeRequest: this.feeCalculationQueue.length,
-          });
-        });
-    });
+          updatePendingRequestTokens();
+        },
+      };
+    })();
+
+    this.requestTokens.push(requestToken);
+
+    updatePendingRequestTokens();
+
+    return requestToken;
   };
 
-  calculateTransactionFee = async (
-    shouldUpdateMinimumAdaAmount = false,
-    requestToken: FeeCalculationToken
-  ) => {
-    if (!this.state.isReceiverAddressValid) {
-      return;
-    }
-
-    this.validateEmptyAssets();
+  getTransactionFeePayload = (): TransactionFeePayload => {
     const { form } = this;
-    const receiverField = form.$('receiver');
-    const receiver = receiverField.value;
-    const adaAmountField = form.$('adaAmount');
-    const adaAmount = formattedAmountToLovelace(adaAmountField.value);
+    const receiver = form.$('receiver').value;
+    const adaAmount = formattedAmountToLovelace(form.$('adaAmount').value);
+
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ policy_id: string; asset_name: string; qua... Remove this comment to see the full error message
     const assets: ApiTokens = this.selectedAssets
       .map(({ policyId, assetName }, index) => {
@@ -584,13 +602,40 @@ class WalletSendForm extends Component<Props, State> {
         };
       })
       .filter(({ quantity }: { quantity: BigNumber }) => quantity.gt(0));
+
+    return {
+      receiver,
+      adaAmount,
+      assets,
+    };
+  };
+
+  calculateTransactionFee = async ({
+    shouldUpdateMinimumAdaAmount = false,
+    requestToken,
+    adaAmount,
+    receiver,
+    assets,
+  }: CalculateTransactionFeeArgs) => {
+    if (
+      !this.state.isReceiverAddressValid ||
+      last(this.requestTokens) !== requestToken ||
+      requestToken.aborted
+    ) {
+      return;
+    }
+
+    this.validateEmptyAssets();
+
     const { selectedAssetUniqueIds } = this.state;
 
-    this.setState({
-      isTransactionFeeCalculated: false,
-      transactionFeeError: null,
-      isCalculatingTransactionFee: true,
-    });
+    if (this.requestTokens.length <= 1) {
+      this.setState({
+        isTransactionFeeCalculated: false,
+        transactionFeeError: null,
+        isCalculatingTransactionFee: true,
+      });
+    }
 
     try {
       const {
@@ -763,7 +808,11 @@ class WalletSendForm extends Component<Props, State> {
     return adaAmount.lt(this.state.minimumAda);
   };
 
-  resetTransactionFee() {
+  resetTransactionFee(requestToken?: RequestToken) {
+    if (requestToken && requestToken.aborted) {
+      return;
+    }
+
     if (this._isMounted) {
       this.setState({
         isTransactionFeeCalculated: false,
@@ -798,9 +847,17 @@ class WalletSendForm extends Component<Props, State> {
           receiver: { ...receiver, assetFields, assetsDropdown },
         },
       },
-      () => {
+      async () => {
         this.removeAssetFields(uniqueId);
-        this.queueCalculateTransactionFee(true);
+
+        const requestToken = this.createRequestToken();
+        const payload = {
+          ...this.getTransactionFeePayload(),
+          requestToken,
+          shouldUpdateMinimumAdaAmount: true,
+        };
+
+        this.calculateTransactionFee(payload).finally(requestToken.release);
       }
     );
   };
@@ -837,10 +894,23 @@ class WalletSendForm extends Component<Props, State> {
           ];
         }
 
+        const requestToken = this.createRequestToken();
+        const payload = {
+          ...this.getTransactionFeePayload(),
+          requestToken,
+          shouldUpdateMinimumAdaAmount: true,
+        };
+
         const amountValue = value.toString();
         const isValidAmount = await this.props.validateAssetAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
+
+        if (requestToken.aborted) {
+          requestToken.release();
+          return [];
+        }
+
         const asset = this.getAssetByUniqueId(uniqueId);
 
         if (!asset) {
@@ -856,10 +926,12 @@ class WalletSendForm extends Component<Props, State> {
         const isValid = isValidAmount && isValidRange;
 
         if (isValid) {
-          this.queueCalculateTransactionFee(true);
+          this.calculateTransactionFee(payload).finally(requestToken.release);
         } else {
-          this.resetTransactionFee();
+          this.resetTransactionFee(requestToken);
         }
+
+        requestToken.release();
 
         return [
           isValid,
@@ -1193,7 +1265,8 @@ class WalletSendForm extends Component<Props, State> {
                   }
                   isSet
                 />
-                {this.state.isCalculatingTransactionFee && (
+                {(this.state.isCalculatingTransactionFee ||
+                  this.state.hasPendingRequestTokens) && (
                   <div
                     className={styles.calculatingFeesContainer}
                     data-testid="transaction-fee-spinner"
