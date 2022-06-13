@@ -17,7 +17,7 @@ type Props = {
   length?: number;
   disabled: boolean;
   value: Array<string>;
-  error: string | null;
+  error?: string;
 };
 export default class PinCode extends Component<Props> {
   static defaultProps = {
