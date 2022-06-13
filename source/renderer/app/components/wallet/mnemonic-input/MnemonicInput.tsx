@@ -6,12 +6,13 @@ import React, {
   useRef,
   VFC,
 } from 'react';
-import { injectIntl, defineMessages } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
 import { chunk, constant, times } from 'lodash';
 import cx from 'classnames';
+import { INCOMPLETE_MNEMONIC_MARKER } from '../../../utils/validations';
 import { MnemonicAutocompleteContainer } from './MnemonicAutocompleteContainer';
-import * as styles from './MnemonicInput.scss';
 import { COLUMNS_COUNT } from './constants';
+import * as styles from './MnemonicInput.scss';
 
 const messages = defineMessages({
   recoveryPhraseNoResults: {
@@ -35,10 +36,9 @@ interface MnemonicInputProps {
   value: string[];
   disabled?: boolean;
   error?: string;
-  valid?: boolean;
   reset?: boolean;
   availableWords: string[];
-  wordsCount: number;
+  wordCount: number;
   label?: string;
 }
 
@@ -49,26 +49,30 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     value: selectedWords,
     disabled,
     availableWords,
-    wordsCount,
+    wordCount,
     error,
-    valid,
     reset = false,
     label,
   }) => {
     useEffect(() => {
       if (selectedWords.length < 1) {
-        onChange(times(wordsCount, constant('')));
+        onChange(times(wordCount, constant('')));
       }
     }, [selectedWords]);
 
-    const selectedWordsCount = selectedWords.filter((word) => word?.length)
+    const providedWordCount = selectedWords.filter((word) => word?.length)
       .length;
-    const wordsPerColumn = Math.ceil(wordsCount / COLUMNS_COUNT);
+    const requiredWordCount = selectedWords.length;
+    const showError =
+      providedWordCount === requiredWordCount &&
+      error &&
+      error !== INCOMPLETE_MNEMONIC_MARKER;
+    const wordsPerColumn = Math.ceil(wordCount / COLUMNS_COUNT);
     const inputIndicesByColumnIndex = useMemo(
-      () => chunk(times(wordsCount), wordsPerColumn),
-      [wordsCount]
+      () => chunk(times(wordCount), wordsPerColumn),
+      [wordCount]
     );
-    const inputRefs = times(wordsCount, () => useRef<HTMLInputElement>());
+    const inputRefs = times(wordCount, () => useRef<HTMLInputElement>());
     const createHandleWordChange = useCallback(
       (idx: number) => (newValue) => {
         if (newValue === selectedWords[idx]) return;
@@ -90,7 +94,7 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
       // This is intentional, it should only be used for testing/development purposes.
       // If for whatever reason we decide to make it possible to paste the mnemonic
       // fragments, then this functionality is not implemented.
-      if (filteredWords.length === wordsCount) {
+      if (filteredWords.length === wordCount) {
         onChange(filteredWords);
       }
     }, []);
@@ -114,14 +118,15 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
             className={cx(
               styles.headerSlot,
               styles.headerRightSlot,
-              error && styles.headerError
+              showError && styles.headerError
             )}
           >
-            {error ||
-              intl.formatMessage(messages.mnemonicCounter, {
-                providedWordCount: selectedWordsCount,
-                requiredWordCount: selectedWords.length,
-              })}
+            {showError
+              ? error
+              : intl.formatMessage(messages.mnemonicCounter, {
+                  providedWordCount,
+                  requiredWordCount,
+                })}
           </div>
         </div>
         <div className={styles.content}>
@@ -141,7 +146,7 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
                       onPaste={handleInputPaste}
                       inputRef={inputRefs[idx]}
                       disabled={disabled}
-                      error={!valid && !value}
+                      error={error && !value}
                       maxVisibleOptions={5}
                       noResultsMessage={intl.formatMessage(
                         messages.recoveryPhraseNoResults

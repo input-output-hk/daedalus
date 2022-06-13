@@ -2,19 +2,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import {
-  errorOrIncompleteMarker,
-  validateMnemonics,
-} from '../../../utils/validations';
+import { validateMnemonics } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import globalMessages from '../../../i18n/global-messages';
+import { MnemonicInput } from '../mnemonic-input';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -39,12 +34,6 @@ export const messages = defineMessages({
     id: 'wallet.settings.recoveryPhraseStep2Button',
     defaultMessage: '!!!Verify',
     description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
-  },
-  recoveryPhraseInputPlaceholder: {
-    id: 'wallet.settings.recoveryPhraseInputPlaceholder',
-    defaultMessage: '!!!Enter word #{wordNumber}',
-    description:
-      'Placeholder "Enter word #{wordNumber}" for the recovery phrase input on the verification dialog.',
   },
   recoveryPhraseNoResults: {
     id: 'wallet.settings.recoveryPhraseInputNoResults',
@@ -123,7 +112,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
       (Array.isArray(expectedWordCount)
         ? expectedWordCount.includes(enteredWordCount)
         : enteredWordCount === expectedWordCount);
-    const recoveryPhrase = recoveryPhraseField.value;
+    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
@@ -134,7 +123,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
             isVerifying: true,
           });
           onContinue({
-            recoveryPhrase,
+            recoveryPhrase: recoveryPhraseField.value,
           });
         },
         disabled: !canSubmit,
@@ -156,39 +145,13 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         <div className={styles.subtitle}>
           <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
-        <Autocomplete
-          {...recoveryPhraseField.bind()}
+        <MnemonicInput
+          {...mnemonicInputProps}
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
-          placeholder={intl.formatMessage(
-            messages.recoveryPhraseInputPlaceholder,
-            {
-              wordNumber: enteredWordCount + 1,
-            }
-          )}
-          options={suggestedMnemonics}
-          requiredSelections={
-            Array.isArray(expectedWordCount)
-              ? expectedWordCount
-              : [expectedWordCount]
-          }
-          requiredSelectionsInfo={(required, actual) =>
-            Array.isArray(expectedWordCount)
-              ? intl.formatMessage(globalMessages.unknownMnemonicWordCount, {
-                  actual,
-                })
-              : intl.formatMessage(globalMessages.knownMnemonicWordCount, {
-                  actual,
-                  required,
-                })
-          }
-          maxSelections={maxSelections}
-          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
-          maxVisibleOptions={5}
-          noResultsMessage={intl.formatMessage(
-            messages.recoveryPhraseNoResults
-          )}
-          skin={AutocompleteSkin}
-          optionHeight={50}
+          availableWords={suggestedMnemonics}
+          wordCount={maxSelections}
+          error={recoveryPhraseField.error}
+          reset={form.resetting}
         />
       </Dialog>
     );

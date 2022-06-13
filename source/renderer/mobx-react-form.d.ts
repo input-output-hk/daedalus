@@ -28,7 +28,7 @@ declare module 'mobx-react-form' {
     isValid: boolean;
     value: any;
     checked: boolean;
-    error: string;
+    error?: string;
     name: string;
     type: string;
     id: string;

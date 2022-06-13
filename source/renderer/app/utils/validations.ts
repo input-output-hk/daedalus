@@ -113,9 +113,6 @@ export function validateMnemonics(params: ValidateMnemonicsParams) {
 
   return params.validator(providedWords);
 }
-export function errorOrIncompleteMarker(error: string) {
-  return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
-}
 
 /**
  * Voting PIN code validation

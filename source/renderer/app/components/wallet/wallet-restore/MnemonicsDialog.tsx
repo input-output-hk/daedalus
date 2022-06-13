@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import {
-  errorOrIncompleteMarker,
-  validateMnemonics,
-} from '../../../utils/validations';
+import { validateMnemonics } from '../../../utils/validations';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -107,19 +104,10 @@ class MnemonicsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onClose,
-      onBack,
-      onSetWalletMnemonics,
-      maxWordCount,
-      expectedWordCount,
-    } = this.props;
+    const { onClose, onBack, onSetWalletMnemonics, maxWordCount } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
     const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
     const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
-    const showMnemonicInputError = (mnemonicInputProps.value as string[]).every(
-      (val) => val
-    );
 
     return (
       <WalletRestoreDialog
@@ -143,12 +131,9 @@ class MnemonicsDialog extends Component<Props> {
             onSetWalletMnemonics(enteredMnemonics);
           }}
           availableWords={validWords}
-          wordsCount={maxWordCount}
-          valid={!recoveryPhraseField.error}
-          error={
-            showMnemonicInputError &&
-            errorOrIncompleteMarker(recoveryPhraseField.error)
-          }
+          wordCount={maxWordCount}
+          error={recoveryPhraseField.error}
+          reset={this.form.resetting}
         />
       </WalletRestoreDialog>
     );
