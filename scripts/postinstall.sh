@@ -6,5 +6,5 @@ if [[ "$CI" != "true" ]]; then
   # Let’s patch electron-rebuild to force correct Node.js headers to
   # build native modules against even in `nix-shell`, otherwise, it
   # doesn’t work reliably.
-  $(nix-build -A rawapp.patchElectronRebuild)
+  eval "$(nix-build -A rawapp.patchElectronRebuild)"
 fi
