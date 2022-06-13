@@ -6263,13 +6263,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 29
+          "line": 28
         }
       },
       {
@@ -6277,13 +6277,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 34
+          "line": 33
         }
       },
       {
@@ -6291,13 +6291,13 @@
         "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleLoading",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 38
         }
       },
       {
@@ -6305,13 +6305,13 @@
         "description": "\"listTitleSearch\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleSearch",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 43
         }
       },
       {
@@ -6319,13 +6319,13 @@
         "description": "\"listTitleStakePools\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 49
+          "line": 48
         }
       },
       {
@@ -6333,13 +6333,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 54
+          "line": 53
         }
       },
       {
@@ -6347,13 +6347,13 @@
         "description": "moderatedBy message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.moderatedBy",
         "start": {
           "column": 15,
-          "line": 60
+          "line": 59
         }
       },
       {
@@ -6361,13 +6361,13 @@
         "description": "unmoderated message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.tsx",
         "id": "staking.stakePools.unmoderated",
         "start": {
           "column": 15,
-          "line": 65
+          "line": 64
         }
       }
     ],
