@@ -87,6 +87,8 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     const handleInputPaste = useCallback<
       ClipboardEventHandler<HTMLInputElement>
     >((event) => {
+      // prevent input 'onChange' event
+      event.preventDefault();
       const pastedWords = event.clipboardData.getData('Text').trim().split(' ');
       const filteredWords = pastedWords.filter((word) =>
         availableWords.includes(word)

@@ -73,19 +73,20 @@ const MnemonicAutocompleteContainer = ({
       if (disabled) return;
       let selectedOption = '';
       let isOpen = true;
+      const trimmedInputValue = inputValue.trim();
 
-      if (options.includes(inputValue)) {
+      if (options.includes(trimmedInputValue)) {
         isOpen = false;
-        selectedOption = inputValue;
+        selectedOption = trimmedInputValue;
       }
 
       setState((prevState) => ({
         ...prevState,
         isOpen,
         filteredOptions: options
-          .filter(startsWith(inputValue.trim()))
+          .filter(startsWith(trimmedInputValue))
           .slice(0, maxVisibleOptions),
-        inputValue,
+        inputValue: trimmedInputValue,
         selectedOption,
       }));
     },
@@ -120,7 +121,7 @@ const MnemonicAutocompleteContainer = ({
 
   useEffect(() => {
     if (value) {
-      setState((prevState) => ({ ...prevState, inputValue: value }));
+      handleInputSelect(value);
     }
   }, [value]);
 
