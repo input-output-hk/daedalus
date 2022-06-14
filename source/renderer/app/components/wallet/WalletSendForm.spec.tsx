@@ -10,7 +10,6 @@ import {
   cleanup,
   within,
   waitForElementToBeRemoved,
-  waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import en from 'react-intl/locale-data/en';
@@ -22,7 +21,6 @@ import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm, { FormData } from './WalletSendForm';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 jest.mock(
   '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
@@ -79,9 +77,11 @@ describe('wallet/Wallet Send Form', () => {
   function SetupWallet({
     calculateTransactionFee,
     currentNumberFormat = NUMBER_OPTIONS[0].value,
+    validationDebounceWait,
   }: {
     calculateTransactionFee: (...args: Array<any>) => any;
     currentNumberFormat?: string;
+    validationDebounceWait?: number;
   }) {
     const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
     const [state, setState] = useState<{
@@ -125,6 +125,7 @@ describe('wallet/Wallet Send Form', () => {
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
                 confirmationDialogData={state.formData}
+                validationDebounceWait={validationDebounceWait}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
@@ -227,9 +228,7 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   async function waitForTransactionFee() {
-    const transactionFeeSpinner = await screen.findByTestId(
-      'transaction-fee-spinner'
-    );
+    const transactionFeeSpinner = screen.getByTestId('transaction-fee-spinner');
 
     return waitForElementToBeRemoved(transactionFeeSpinner);
   }
@@ -468,13 +467,14 @@ describe('wallet/Wallet Send Form', () => {
   test('should not allow to submit before fees are calculated', async () => {
     expect.assertions(4);
 
+    const validationDebounceWait = 0;
+
     const calculateTransactionFeeMock = jest
       .fn()
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            const lastInputBuffer = 5;
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT + lastInputBuffer);
+            await sleep(5);
 
             return resolve({
               fee: new BigNumber(1),
@@ -485,7 +485,7 @@ describe('wallet/Wallet Send Form', () => {
       .mockImplementationOnce(
         () =>
           new Promise(async (resolve) => {
-            await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+            await sleep(5);
 
             return resolve({
               fee: new BigNumber(2),
@@ -495,7 +495,10 @@ describe('wallet/Wallet Send Form', () => {
       );
 
     render(
-      <SetupWallet calculateTransactionFee={calculateTransactionFeeMock} />
+      <SetupWallet
+        calculateTransactionFee={calculateTransactionFeeMock}
+        validationDebounceWait={validationDebounceWait}
+      />
     );
 
     enterReceiverAddress();
@@ -507,7 +510,7 @@ describe('wallet/Wallet Send Form', () => {
       },
     });
 
-    await sleep(FORM_VALIDATION_DEBOUNCE_WAIT);
+    await sleep(validationDebounceWait);
 
     fireEvent.change(adaField, {
       target: {
@@ -519,8 +522,7 @@ describe('wallet/Wallet Send Form', () => {
 
     expect(sendButton).not.toBeEnabled();
 
-    await waitForTransactionFee(); // 2.5 ADA
-    await waitForTransactionFee(); // 1.5 ADA
+    await waitForTransactionFee();
 
     expect(sendButton).toBeEnabled();
 
