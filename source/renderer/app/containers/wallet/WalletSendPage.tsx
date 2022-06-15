@@ -18,7 +18,7 @@ import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps;
 type State = {
-  formData: Omit<FormData, 'coinSelection'>;
+  formData: FormData;
 };
 
 @inject('stores', 'actions')
@@ -100,7 +100,7 @@ class WalletSendPage extends Component<Props, State> {
       });
     }
 
-    this.setState({ formData: data });
+    this.setState({ formData: { ...data, coinSelection } });
   };
 
   openTokenPickerDialog = () => {

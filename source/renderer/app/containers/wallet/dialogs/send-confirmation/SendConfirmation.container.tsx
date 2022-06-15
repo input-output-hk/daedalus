@@ -19,6 +19,7 @@ export const Containter = ({
   isHardwareWallet,
   formattedTotalAmount,
   adaAmount,
+  coinSelection,
 }: Props) => {
   const { isFlight } = global;
   const {
@@ -113,6 +114,7 @@ export const Containter = ({
       onTermsCheckboxClick={onTermsCheckboxClick}
       onExternalLinkClick={onExternalLinkClick}
       adaAmount={adaAmount}
+      coinSelection={coinSelection}
     />
   );
 };

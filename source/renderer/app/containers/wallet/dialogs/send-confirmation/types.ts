@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Field } from 'mobx-react-form';
+import { CoinSelectionsResponse } from 'source/renderer/app/api/transactions/types';
 import { Intl } from '../../../../types/i18nTypes';
 import { StoresMap } from '../../../../stores/index';
 import { ActionsMap } from '../../../../actions/index';
@@ -19,6 +20,7 @@ type CommonProps = {
   transactionFee: string | null | undefined;
   onExternalLinkClick: (...args: Array<any>) => any;
   adaAmount?: number;
+  coinSelection?: CoinSelectionsResponse;
 };
 
 export type ContainerProps = CommonProps & {

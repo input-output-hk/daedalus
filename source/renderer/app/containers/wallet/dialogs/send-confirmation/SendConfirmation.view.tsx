@@ -48,6 +48,7 @@ const View = ({
   onTermsCheckboxClick,
   onCopyAssetParam,
   adaAmount,
+  coinSelection,
 }: Props) => {
   const {
     passphraseField,
@@ -106,6 +107,27 @@ const View = ({
       closeButton={<DialogCloseButton />}
     >
       <b>ada amount: {adaAmount} </b>
+      <br />
+      <b>inputs:</b>
+      <p
+        style={{
+          whiteSpace: 'break-spaces',
+          lineHeight: '20px',
+          fontSize: '14px',
+        }}
+      >
+        {JSON.stringify(coinSelection.inputs, null, 2)}
+      </p>
+      <b>outputs:</b>{' '}
+      <p
+        style={{
+          whiteSpace: 'break-spaces',
+          lineHeight: '20px',
+          fontSize: '14px',
+        }}
+      >
+        {JSON.stringify(coinSelection.outputs, null, 2)}
+      </p>
       {shouldShowEmptyWalletWarning(
         totalAmount,
         wallet,

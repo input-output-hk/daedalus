@@ -108,7 +108,7 @@ type Props = {
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
-  confirmationDialogData?: Omit<FormData, 'coinSelection'>;
+  confirmationDialogData?: FormData;
   validationDebounceWait?: number;
 };
 
@@ -1351,6 +1351,7 @@ class WalletSendForm extends Component<Props, State> {
               currencyMaxFractionalDigits
             )}
             adaAmount={confirmationDialogData.adaAmount}
+            coinSelection={confirmationDialogData.coinSelection}
           />
         ) : null}
 
