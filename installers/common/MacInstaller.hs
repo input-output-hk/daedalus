@@ -421,6 +421,13 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       when (oCluster == Selfnode) $ do
         void $ chain (encodeString dir) $ fmap tt [ dir </> "mock-token-metadata-server", dir </> "local-cluster" ]
 
+      -- copy some libraries to new expected locations, as a temporary fix,
+      -- so those locations have proper dylib links -- FIXME:
+      forM_ [ "Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node" ] $ \file -> do
+        let targetPath = appRoot </> file
+        let withoutDir = filename targetPath
+        cp (appRoot </> "Contents/MacOS" </> withoutDir) targetPath
+
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
   unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
