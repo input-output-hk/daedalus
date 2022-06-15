@@ -532,11 +532,6 @@ export default class HardwareWalletsStore extends Store {
         );
       } else {
         this.setTransactionPendingState(false);
-        this.stores.analytics.analyticsClient.sendEvent(
-          'Stake pools',
-          'Wallet delegated',
-          'Hardware wallet'
-        );
       }
 
       this.stores.wallets.refreshWalletsData();

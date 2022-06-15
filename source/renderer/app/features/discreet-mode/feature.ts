@@ -7,11 +7,8 @@ import { defaultReplacer } from './replacers/defaultReplacer';
 import type { ReplacerFn } from './types';
 
 export class DiscreetMode extends Feature {
-  api: DiscreetModeApi;
-
-  constructor(api: DiscreetModeApi) {
+  constructor(private api: DiscreetModeApi) {
     super();
-    this.api = api;
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
         this.api.getDiscreetModeSettings
@@ -50,6 +47,13 @@ export class DiscreetMode extends Feature {
   @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
+    // TODO: what is the best way to inject the analytics client?
+    global.daedalus.stores.analytics.analyticsClient.sendEvent(
+      'Settings',
+      this.isDiscreetMode
+        ? 'Turned on discreet mode'
+        : 'Turned off discreet mode'
+    );
   };
   @action
   toggleOpenInDiscreetMode = async () => {
@@ -59,6 +63,13 @@ export class DiscreetMode extends Feature {
     runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
+    // TODO: what is the best way to inject the analytics client?
+    global.daedalus.stores.analytics.analyticsClient.sendEvent(
+      'Settings',
+      this.isDiscreetMode
+        ? 'Turned on discreet mode by default'
+        : 'Turned off discreet mode by default'
+    );
   };
 
   discreetValue({

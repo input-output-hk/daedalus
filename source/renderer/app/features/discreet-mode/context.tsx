@@ -9,6 +9,7 @@ import {
 import { useLocalStorageFeature } from '../local-storage';
 import { DiscreetMode } from './feature';
 import { DiscreetModeApi } from './api';
+import { getAnalyticsClient } from '../../analytics';
 
 export const discreetModeContext = React.createContext<DiscreetMode | null>(
   null

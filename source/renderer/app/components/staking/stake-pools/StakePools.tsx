@@ -3,6 +3,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import { debounce } from 'lodash';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
@@ -23,7 +24,6 @@ import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.s
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
 import { AnalyticsClient } from '../../../analytics';
-import { debounce } from 'lodash';
 
 const messages = defineMessages({
   delegatingListTitle: {
