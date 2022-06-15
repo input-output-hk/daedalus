@@ -9690,13 +9690,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
         "start": {
           "column": 27,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -9704,13 +9704,13 @@
         "description": "Mnemonic input word counter",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx",
         "id": "paper.wallet.create.certificate.verification.dialog.mnemonicCounter",
         "start": {
           "column": 19,
-          "line": 25
+          "line": 26
         }
       }
     ],
