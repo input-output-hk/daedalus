@@ -41,12 +41,17 @@ export class MatomoClient implements AnalyticsClient {
     });
   };
 
-  sendEvent = async (category: string, action: string): Promise<void> => {
+  sendEvent = async (
+    category: string,
+    action: string,
+    name?: string
+  ): Promise<void> => {
     this.matomoTracker.track({
       _id: this.userId,
       ca: 1,
       e_c: category,
       e_a: action,
+      e_n: name,
       url: this.getAnalyticsURL(),
     });
   };

@@ -107,6 +107,11 @@ export default class AssetsStore extends Store {
     await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Wallets',
+      'Changed native token settings'
+    );
   };
   @action
   _onEditedAssetUnset = () => {
@@ -193,6 +198,13 @@ export default class AssetsStore extends Store {
     );
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.favoritesRequest.execute();
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Wallets',
+      !isFavorite
+        ? 'Added token from favorites'
+        : 'Removed token from favorites'
+    );
   };
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
     this.assetsRequests[walletId] || this._createWalletTokensRequest(walletId);

@@ -367,6 +367,11 @@ export default class TransactionsStore extends Store {
       ...currentFilterOptions,
       ...filterOptions,
     };
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Wallets',
+      'Set transaction filters'
+    );
     return true;
   };
   @action
@@ -376,6 +381,7 @@ export default class TransactionsStore extends Store {
     this._filterOptionsForWallets[wallet.id] = {
       ...emptyTransactionFilterOptions,
     };
+
     return true;
   };
   @action
@@ -402,8 +408,13 @@ export default class TransactionsStore extends Store {
       getAsset,
       isInternalAddress,
     });
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    if (success) actions.transactions.requestCSVFileSuccess.trigger();
+    if (success) {
+      actions.transactions.requestCSVFileSuccess.trigger();
+      this.stores.analytics.analyticsClient.sendEvent(
+        'Wallets',
+        'Exported transactions as CSV'
+      );
+    }
   };
   @action
   _createExternalTransaction = async (signedTransactionBlob: Buffer) => {

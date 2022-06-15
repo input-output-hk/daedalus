@@ -406,6 +406,10 @@ export default class VotingStore extends Store {
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
 
     this._nextRegistrationStep();
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Voting',
+      'Registered for voting'
+    );
   };
   _saveAsPDF = async () => {
     const { qrCode, selectedWalletId } = this;

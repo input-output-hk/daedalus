@@ -127,10 +127,23 @@ export default class CurrencyStore extends Store {
       this.getCurrencyRate();
       await this.api.localStorage.setCurrencySelected(selected.code);
     }
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Settings',
+      'Changed currency',
+      code
+    );
   };
   @action
   _toggleCurrencyIsActive = () => {
     this.isActive = !this.isActive;
     this.api.localStorage.setCurrencyIsActive(this.isActive);
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Settings',
+      `Turned ${
+        this.isActive ? 'on' : 'off'
+      } displaying ada balances in other currency`
+    );
   };
 }

@@ -162,6 +162,7 @@ class WalletSummaryPage extends Component<Props> {
           hasAssetsEnabled={hasAssetsEnabled}
           getAsset={getAsset}
           onCopyAssetParam={onCopyAssetParam.trigger}
+          analyticsClient={this.props.stores.analytics.analyticsClient}
         />
       );
     } else if (!hasAny) {

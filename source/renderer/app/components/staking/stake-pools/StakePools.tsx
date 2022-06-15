@@ -23,6 +23,7 @@ import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.s
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
 import { AnalyticsClient } from '../../../analytics';
+import { debounce } from 'lodash';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -115,10 +116,23 @@ class StakePools extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
   state = { ...initialState };
-  handleSearch = (search: string) =>
+
+  sendSearchAnalyticsEvent = debounce(
+    () =>
+      this.props.analyticsClient.sendEvent(
+        'Stake Pools',
+        'Used stake pools search'
+      ),
+    5000
+  );
+
+  handleSearch = (search: string) => {
     this.setState({
       search,
     });
+
+    this.sendSearchAnalyticsEvent();
+  };
 
   handleClearSearch = () =>
     this.setState({

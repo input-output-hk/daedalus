@@ -1,7 +1,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get } from 'lodash';
+import { orderBy, find, map, get, debounce } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -227,10 +227,20 @@ export default class StakingStore extends Store {
   _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
   };
+
+  _sendStakePoolsSliderUsedAnalyticsEvent = debounce(() => {
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Stake Pools',
+      'Used stake pools amount slider'
+    );
+  }, 5000);
+
   @action
   _setStake = (stake: number) => {
     this.stake = stake;
+    this._sendStakePoolsSliderUsedAnalyticsEvent();
   };
+
   @action
   _rankStakePools = () => {
     this.isRanking = true;
@@ -266,6 +276,10 @@ export default class StakingStore extends Store {
         // Update
         // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
         await this.api.localStorage.setSmashServer(smashServerUrl);
+        this.stores.analytics.analyticsClient.sendEvent(
+          'Settings',
+          'Changed SMASH server'
+        );
       } catch (error) {
         runInAction(() => {
           this.smashServerUrlError = error;
@@ -383,6 +397,13 @@ export default class StakingStore extends Store {
       setTimeout(() => {
         this.resetStakePoolTransactionChecker();
       }, STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT);
+
+      const wallet = this.stores.wallets.getWalletById(walletId);
+
+      this.stores.analytics.analyticsClient.sendEvent(
+        'Stake pools',
+        wallet.isDelegating ? 'Redelegated a wallet' : 'Delegated a wallet'
+      );
     } catch (error) {
       this.resetStakePoolTransactionChecker();
       throw error;
@@ -507,6 +528,10 @@ export default class StakingStore extends Store {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     this.actions.staking.requestCSVFileSuccess.trigger();
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Stake Pools',
+      'Exported rewards as CSV'
+    );
   };
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest

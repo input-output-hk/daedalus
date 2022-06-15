@@ -311,6 +311,11 @@ export default class WalletMigrationStore extends Store {
     runInAction('update isRestorationRunning', () => {
       this.isRestorationRunning = false;
     });
+
+    this.stores.analytics.analyticsClient.sendEvent(
+      'Wallets',
+      'Restored legacy wallet(s)'
+    );
   };
   @action
   _restoreWallet = async (exportedWallet: ExportedByronWallet) => {

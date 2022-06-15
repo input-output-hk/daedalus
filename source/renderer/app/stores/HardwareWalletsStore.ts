@@ -524,8 +524,19 @@ export default class HardwareWalletsStore extends Store {
             isVotingRegistrationTransaction,
           }
         );
+
+        this.stores.analytics.analyticsClient.sendEvent(
+          'Wallets',
+          'Transaction made',
+          'Hardware wallet'
+        );
       } else {
         this.setTransactionPendingState(false);
+        this.stores.analytics.analyticsClient.sendEvent(
+          'Stake pools',
+          'Wallet delegated',
+          'Hardware wallet'
+        );
       }
 
       this.stores.wallets.refreshWalletsData();
@@ -1266,6 +1277,7 @@ export default class HardwareWalletsStore extends Store {
       this.unfinishedWalletAddressVerification = address;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
+
     const walletId = get(this.stores.wallets, ['active', 'id']);
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -1463,6 +1475,12 @@ export default class HardwareWalletsStore extends Store {
           );
           this.showAddress(params);
         }
+
+        this.stores.analytics.analyticsClient.sendEvent(
+          'Wallets',
+          'Verified wallet address with hardware wallet',
+          'Software wallet'
+        );
       } else {
         runInAction(
           'HardwareWalletsStore:: Address Verified but not correct',

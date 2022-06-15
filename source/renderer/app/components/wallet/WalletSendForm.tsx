@@ -41,6 +41,7 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
 import { Divider } from './widgets/Divider';
+import { AnalyticsClient } from '../../analytics';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -76,6 +77,7 @@ type Props = {
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
+  analyticsClient?: AnalyticsClient;
 };
 
 interface FormFields {
@@ -706,6 +708,10 @@ class WalletSendForm extends Component<Props, State> {
       async () => {
         this.removeAssetFields(uniqueId);
         await this.calculateTransactionFee(true);
+        this.props.analyticsClient?.sendEvent(
+          'Wallets',
+          'Removed token from transaction'
+        );
       }
     );
   };
@@ -1163,6 +1169,10 @@ class WalletSendForm extends Component<Props, State> {
             onAdd={(checked) => {
               onTokenPickerDialogClose();
               checked.forEach(this.addAssetRow);
+              this.props.analyticsClient.sendEvent(
+                'Wallets',
+                'Added token to transaction'
+              );
             }}
           />
         )}

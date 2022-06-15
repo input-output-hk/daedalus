@@ -164,6 +164,7 @@ class WalletSendPage extends Component<Props> {
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
+        analyticsClient={this.props.stores.analytics.analyticsClient}
       />
     );
   }
