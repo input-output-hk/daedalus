@@ -86,20 +86,28 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     );
     const handleInputPaste = useCallback<
       ClipboardEventHandler<HTMLInputElement>
-    >((event) => {
-      // prevent input 'onChange' event
-      event.preventDefault();
-      const pastedWords = event.clipboardData.getData('Text').trim().split(' ');
-      const filteredWords = pastedWords.filter((word) =>
-        availableWords.includes(word)
-      );
-      // This is intentional, it should only be used for testing/development purposes.
-      // If for whatever reason we decide to make it possible to paste the mnemonic
-      // fragments, then this functionality is not implemented.
-      if (filteredWords.length === wordCount) {
-        onChange(filteredWords);
-      }
-    }, []);
+    >(
+      (event) => {
+        const pastedWords = event.clipboardData
+          .getData('Text')
+          .trim()
+          .split(' ');
+        const filteredWords = pastedWords.filter((word) =>
+          availableWords.includes(word)
+        );
+
+        // single word paste will be handled by `onChange` event
+        // multiple word paste will be handled by `onPaste` event itself, and prevents `onChange` invocation
+        if (filteredWords.length > 1) {
+          event.preventDefault();
+        }
+
+        if (filteredWords.length === wordCount) {
+          onChange(filteredWords);
+        }
+      },
+      [availableWords, onChange]
+    );
 
     const createHandleConfirmSelection = useCallback(
       (idx: number) => () => {

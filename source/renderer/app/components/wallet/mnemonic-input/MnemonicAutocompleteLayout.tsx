@@ -1,4 +1,9 @@
-import React, { ClipboardEventHandler, RefObject, useCallback } from 'react';
+import React, {
+  ClipboardEventHandler,
+  MouseEventHandler,
+  RefObject,
+  useCallback,
+} from 'react';
 import cx from 'classnames';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import { Options } from 'react-polymorph/lib/components/Options';
@@ -6,7 +11,7 @@ import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
 import * as styles from './MnemonicAutocompleteLayout.scss';
 
 interface MnemonicInputSkinProps {
-  onClick: () => void;
+  onClick: MouseEventHandler<HTMLInputElement>;
   onChange: (value: string) => void;
   onSelect: (value: string) => void;
   onBlur: () => void;
@@ -64,13 +69,7 @@ const MnemonicAutocompleteLayout = ({
   );
 
   return (
-    <div
-      aria-hidden
-      className={styles.root}
-      onClick={onClick}
-      ref={rootRef}
-      role="presentation"
-    >
+    <div aria-hidden className={styles.root} ref={rootRef} role="presentation">
       <div className={styles.inputLabel}>{ordinalNumber}.</div>
       <FormField
         error={error}
@@ -83,8 +82,9 @@ const MnemonicAutocompleteLayout = ({
               className={cx(styles.input, error && styles.inputError)}
               ref={setFormFieldRef}
               value={value}
-              onChange={handleInputChange}
               onBlur={onBlur}
+              onChange={handleInputChange}
+              onClick={onClick}
               onPaste={onPaste}
               disabled={disabled}
             />

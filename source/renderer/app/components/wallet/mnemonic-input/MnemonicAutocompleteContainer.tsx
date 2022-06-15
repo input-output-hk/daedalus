@@ -1,5 +1,6 @@
 import React, {
   ClipboardEventHandler,
+  MouseEventHandler,
   RefObject,
   useCallback,
   useEffect,
@@ -67,6 +68,12 @@ const MnemonicAutocompleteContainer = ({
       mouseIsOverOptions: !prevState.mouseIsOverOptions,
     }));
   }, []);
+
+  const handleInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
+    if (disabled) return;
+    toggleOpen();
+    event.currentTarget.setSelectionRange(0, event.currentTarget.value.length);
+  };
 
   const handleInputChange = useCallback(
     (inputValue) => {
@@ -152,7 +159,7 @@ const MnemonicAutocompleteContainer = ({
           optionsRef={optionsRef}
           onChange={handleInputChange}
           onSelect={handleInputSelect}
-          onClick={toggleOpen}
+          onClick={handleInputClick}
           onBlur={handleBlur}
           onPaste={onPaste}
           suggestionsRef={suggestionsRef}
@@ -160,7 +167,7 @@ const MnemonicAutocompleteContainer = ({
           toggleOpen={toggleOpen}
           optionHeight={optionHeight}
           disabled={disabled}
-          error={state.blurred && error}
+          error={state.blurred && state.inputValue && error}
         />
       )}
     </GlobalListeners>
