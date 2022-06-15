@@ -13,6 +13,7 @@ import { INCOMPLETE_MNEMONIC_MARKER } from '../../../utils/validations';
 import { MnemonicAutocompleteContainer } from './MnemonicAutocompleteContainer';
 import { COLUMNS_COUNT } from './constants';
 import * as styles from './MnemonicInput.scss';
+import { Intl } from '../../../types/i18nTypes';
 
 const messages = defineMessages({
   recoveryPhraseNoResults: {
@@ -30,11 +31,10 @@ const messages = defineMessages({
   },
 });
 
-interface MnemonicInputProps {
-  onChange?: (values: string[]) => void;
+interface InteractiveMnemonicInputProps {
+  onChange: (values: string[]) => void;
 
   value: string[];
-  disabled?: boolean;
   error?: string;
   reset?: boolean;
   availableWords: string[];
@@ -42,18 +42,27 @@ interface MnemonicInputProps {
   label?: string;
 }
 
-const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
+interface DisabledMnemonicInputProps {
+  value: string[];
+  wordCount: number;
+  disabled: true;
+}
+
+const MnemonicInput: VFC<
+  InteractiveMnemonicInputProps | DisabledMnemonicInputProps
+> = injectIntl(
   ({
     intl,
     onChange,
     value: selectedWords,
     disabled,
-    availableWords,
+    availableWords = [],
     wordCount,
     error,
     reset = false,
     label,
-  }) => {
+  }: InteractiveMnemonicInputProps &
+    DisabledMnemonicInputProps & { intl: Intl }) => {
     useEffect(() => {
       if (selectedWords.length < 1) {
         onChange(times(wordCount, constant('')));
@@ -75,7 +84,7 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
     const inputRefs = times(wordCount, () => useRef<HTMLInputElement>());
     const createHandleWordChange = useCallback(
       (idx: number) => (newValue) => {
-        if (newValue === selectedWords[idx]) return;
+        if (!onChange || newValue === selectedWords[idx]) return;
 
         const newSelectedWords = [...selectedWords];
         newSelectedWords[idx] = newValue;
@@ -118,27 +127,29 @@ const MnemonicInput: VFC<MnemonicInputProps> = injectIntl(
 
     return (
       <div className={styles.root}>
-        <div className={styles.header}>
-          {label && (
-            <div className={cx(styles.headerSlot, styles.headerLeftSlot)}>
-              {label}
-            </div>
-          )}
-          <div
-            className={cx(
-              styles.headerSlot,
-              styles.headerRightSlot,
-              showError && styles.headerError
+        {!disabled && (
+          <div className={styles.header}>
+            {label && (
+              <div className={cx(styles.headerSlot, styles.headerLeftSlot)}>
+                {label}
+              </div>
             )}
-          >
-            {showError
-              ? error
-              : intl.formatMessage(messages.mnemonicCounter, {
-                  providedWordCount,
-                  requiredWordCount,
-                })}
+            <div
+              className={cx(
+                styles.headerSlot,
+                styles.headerRightSlot,
+                showError && styles.headerError
+              )}
+            >
+              {showError
+                ? error
+                : intl.formatMessage(messages.mnemonicCounter, {
+                    providedWordCount,
+                    requiredWordCount,
+                  })}
+            </div>
           </div>
-        </div>
+        )}
         <div className={styles.content}>
           {inputIndicesByColumnIndex.map((inputIndices) => (
             <div key={inputIndices.join('')} className={styles.inputList}>

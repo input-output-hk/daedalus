@@ -198,7 +198,11 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
         {isValid && (
           <>
-            <WalletRecoveryPhraseMnemonic phrase={enteredPhraseString} />
+            <MnemonicInput
+              disabled
+              value={enteredPhrase}
+              wordCount={enteredPhrase.length}
+            />
             <div>
               <div className={styles.checkbox}>
                 <Checkbox

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
@@ -10,6 +9,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { MnemonicInput } from '../mnemonic-input';
 
 const messages = defineMessages({
   backupInstructions: {
@@ -64,6 +64,7 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
         primary: true,
       },
     ];
+    const mnemonicValues = recoveryPhrase.split(' ');
     return (
       <Dialog
         className={dialogClasses}
@@ -83,7 +84,11 @@ class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
             />
           }
         />
-        <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />
+        <MnemonicInput
+          disabled
+          value={mnemonicValues}
+          wordCount={mnemonicValues.length}
+        />
       </Dialog>
     );
   }
