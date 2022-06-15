@@ -275,6 +275,8 @@ class WalletSendForm extends Component<Props, State> {
       return;
     }
 
+    await this.waitForInFlightValidations();
+
     const adaAmountField = this.form.$('adaAmount');
     const adaAmount = new BigNumber(adaAmountField.value || 0);
 
@@ -289,6 +291,11 @@ class WalletSendForm extends Component<Props, State> {
       adaAmount: this.state.adaAmount,
     });
   };
+
+  waitForInFlightValidations = () =>
+    new Promise((resolve) =>
+      setTimeout(resolve, this.props.validationDebounceWait)
+    );
 
   handleOnReset = () => {
     // Cancel all debounced field validations

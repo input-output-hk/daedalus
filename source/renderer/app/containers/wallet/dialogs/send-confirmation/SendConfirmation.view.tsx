@@ -23,6 +23,7 @@ import {
   isPasswordValid,
 } from './helpers';
 import styles from './styles.scss';
+import { toFixedUserFormat } from '../../../../utils/formatters';
 
 const View = ({
   intl,
@@ -106,7 +107,7 @@ const View = ({
       className={styles.root}
       closeButton={<DialogCloseButton />}
     >
-      <b>ada amount: {adaAmount} </b>
+      <b>ada amount: {toFixedUserFormat(adaAmount, 0)} </b>
       <br />
       <b>inputs:</b>
       <p
