@@ -6187,46 +6187,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!No results matching your query",
-        "description": "No results on the WalletTokensList",
-        "id": "wallet.tokens.list.search.noResults"
-      },
-      {
-        "defaultMessage": "!!!Search Results",
-        "description": "Search Results on the WalletTokensList",
-        "id": "wallet.tokens.list.search.searchResults"
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Amount header on the WalletTokensList",
-        "id": "wallet.tokens.list.column.amount"
-      },
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token header on the WalletTokensList",
-        "id": "wallet.tokens.list.column.token"
-      },
-      {
-        "defaultMessage": "!!!View all tokens",
-        "description": "View all button label on the WalletTokensList",
-        "id": "wallet.tokens.list.viewAllButton.label"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search tokens",
-        "description": "Search placeholder for the Wallet Tokens search",
-        "id": "wallet.tokens.search.placeholder"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Cancel pending transaction",
         "description": "Label for the cancel pending transaction button",
         "id": "wallet.transaction.pending.cancelTransactionButton"
@@ -7343,6 +7303,46 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No results matching your query",
+        "description": "No results on the WalletTokensList",
+        "id": "wallet.tokens.list.search.noResults"
+      },
+      {
+        "defaultMessage": "!!!Search Results",
+        "description": "Search Results on the WalletTokensList",
+        "id": "wallet.tokens.list.search.searchResults"
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount header on the WalletTokensList",
+        "id": "wallet.tokens.list.column.amount"
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token header on the WalletTokensList",
+        "id": "wallet.tokens.list.column.token"
+      },
+      {
+        "defaultMessage": "!!!View all tokens",
+        "description": "View all button label on the WalletTokensList",
+        "id": "wallet.tokens.list.viewAllButton.label"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Search tokens",
+        "description": "Search placeholder for the Wallet Tokens search",
+        "id": "wallet.tokens.search.placeholder"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/tokens/wallet-tokens-search/WalletTokensSearch.tsx"
   },
   {
     "descriptors": [
