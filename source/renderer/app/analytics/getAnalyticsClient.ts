@@ -9,7 +9,7 @@ let client: AnalyticsClient;
 const getAnalyticsClient = async (
   localStorage: LocalStorageApi,
   environment: Environment
-): Promise<AnalyticsClient> => {
+) => {
   const analyticsAccepted =
     (await localStorage.getAnalyticsAcceptance()) ===
     AnalyticsAcceptanceStatus.ACCEPTED;

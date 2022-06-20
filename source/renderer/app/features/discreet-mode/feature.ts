@@ -48,7 +48,8 @@ export class DiscreetMode extends Feature {
   @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
-    this.analyticsClient.sendEvent(
+    // TODO: what is the best way to inject the analytics client?
+    global.daedalus.stores.analytics.analyticsClient.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode'
@@ -63,7 +64,8 @@ export class DiscreetMode extends Feature {
     runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
-    this.analyticsClient.sendEvent(
+    // TODO: what is the best way to inject the analytics client?
+    global.daedalus.stores.analytics.analyticsClient.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode by default'
