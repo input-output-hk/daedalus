@@ -1,4 +1,4 @@
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { MenuUpdaterProps } from './types';
 import useMenuUpdater from './useMenuUpdater';
