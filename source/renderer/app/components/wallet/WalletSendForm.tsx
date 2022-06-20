@@ -103,6 +103,7 @@ type Props = {
   onSubmit: (data: FormData) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
+  onTransactionFeeChange?: (fee: BigNumber) => void;
   isAddressFromSameWallet: boolean;
   tokenFavorites: Record<string, boolean>;
   walletName: string;
@@ -135,7 +136,6 @@ type State = {
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
   isReceiverAddressValidOnce: boolean;
-  isTransactionFeeCalculated: boolean;
   isCalculatingTransactionFee: boolean;
   hasPendingRequestTokens: boolean;
   adaInputState: AdaInputState;
@@ -169,7 +169,6 @@ class WalletSendForm extends Component<Props, State> {
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isReceiverAddressValidOnce: false,
-    isTransactionFeeCalculated: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
     hasPendingRequestTokens: false,
@@ -402,10 +401,11 @@ class WalletSendForm extends Component<Props, State> {
   isDisabled = () => {
     return (
       this.state.isCalculatingTransactionFee ||
-      !this.state.isTransactionFeeCalculated ||
+      this.state.transactionFee.lte(0) ||
       !this.form.isValid ||
       this.form.validating ||
-      this.state.hasPendingRequestTokens
+      this.state.hasPendingRequestTokens ||
+      this.requestTokens.length > 0
     );
   };
 
@@ -451,7 +451,7 @@ class WalletSendForm extends Component<Props, State> {
                 const adaAmountField = form.$('adaAmount');
                 const isAdaAmountValid = adaAmountField.isValid;
 
-                this.calculateOrResetTransactionFee({
+                await this.calculateOrResetTransactionFee({
                   isValid: isValid && isAdaAmountValid,
                   requestToken,
                   payload,
@@ -501,7 +501,7 @@ class WalletSendForm extends Component<Props, State> {
                   return [];
                 }
 
-                this.calculateOrResetTransactionFee({
+                await this.calculateOrResetTransactionFee({
                   isValid,
                   requestToken,
                   payload,
@@ -515,7 +515,7 @@ class WalletSendForm extends Component<Props, State> {
             ],
             hooks: {
               onChange: () => {
-                return this.setState({ isTransactionFeeCalculated: false });
+                return this.setState({ transactionFee: new BigNumber(0) });
               },
             },
           },
@@ -641,7 +641,6 @@ class WalletSendForm extends Component<Props, State> {
 
     if (this.requestTokens.length <= 1) {
       this.setState({
-        isTransactionFeeCalculated: false,
         transactionFeeError: null,
         isCalculatingTransactionFee: true,
       });
@@ -657,7 +656,6 @@ class WalletSendForm extends Component<Props, State> {
       if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
         const nextState = {
-          isTransactionFeeCalculated: true,
           minimumAda: minimumAdaValue,
           transactionFee: fee,
           transactionFeeError: null,
@@ -674,6 +672,8 @@ class WalletSendForm extends Component<Props, State> {
         }
 
         this.setState(nextState);
+
+        this.props.onTransactionFeeChange?.(fee);
       }
     } catch (error) {
       if (this._isMounted && !requestToken.aborted) {
@@ -683,7 +683,6 @@ class WalletSendForm extends Component<Props, State> {
         let values;
         let nextState = {
           isCalculatingTransactionFee: false,
-          isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
         };
 
@@ -825,7 +824,6 @@ class WalletSendForm extends Component<Props, State> {
 
     if (this._isMounted) {
       this.setState({
-        isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
         isCalculatingTransactionFee: false,
@@ -889,9 +887,11 @@ class WalletSendForm extends Component<Props, State> {
           this.props.currencyMaxFractionalDigits
         )}`
       );
+
     this.form.$(newAsset).set('hooks', {
-      onChange: () => this.setState({ isTransactionFeeCalculated: false }),
+      onChange: () => this.setState({ transactionFee: new BigNumber(0) }),
     });
+
     this.form.$(newAsset).set('validators', [
       async ({ field }) => {
         const { value } = field;
@@ -942,7 +942,11 @@ class WalletSendForm extends Component<Props, State> {
           return [];
         }
 
-        this.calculateOrResetTransactionFee({ isValid, requestToken, payload });
+        await this.calculateOrResetTransactionFee({
+          isValid,
+          requestToken,
+          payload,
+        });
 
         return [
           isValid,
@@ -1234,7 +1238,6 @@ class WalletSendForm extends Component<Props, State> {
       transactionFee,
       transactionFeeError,
       isResetButtonDisabled,
-      isTransactionFeeCalculated,
       selectedAssetUniqueIds,
     } = this.state;
     const {
@@ -1253,7 +1256,7 @@ class WalletSendForm extends Component<Props, State> {
     const adaAmountField = form.$('adaAmount');
     let fees = '0';
 
-    if (isTransactionFeeCalculated) {
+    if (transactionFee.gt(0)) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
     }
 
