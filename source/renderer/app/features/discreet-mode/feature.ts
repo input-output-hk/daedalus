@@ -5,9 +5,10 @@ import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
 import type { ReplacerFn } from './types';
+import { AnalyticsClient } from '../../analytics';
 
 export class DiscreetMode extends Feature {
-  constructor(private api: DiscreetModeApi) {
+  constructor(private api: DiscreetModeApi, private analyticsClient: AnalyticsClient) {
     super();
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
@@ -47,8 +48,7 @@ export class DiscreetMode extends Feature {
   @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
-    // TODO: what is the best way to inject the analytics client?
-    global.daedalus.stores.analytics.analyticsClient.sendEvent(
+    this.analyticsClient.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode'
@@ -63,8 +63,7 @@ export class DiscreetMode extends Feature {
     runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
-    // TODO: what is the best way to inject the analytics client?
-    global.daedalus.stores.analytics.analyticsClient.sendEvent(
+    this.analyticsClient.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode by default'

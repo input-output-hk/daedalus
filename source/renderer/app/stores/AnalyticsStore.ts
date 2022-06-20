@@ -6,8 +6,8 @@ export default class AnalyticsStore extends Store {
   @observable
   analyticsClient: AnalyticsClient;
 
-  setup() {
-    this.resetAnalyticsClient();
+  async setup() {
+    return this.resetAnalyticsClient();
   }
 
   resetAnalyticsClient = async (): Promise<void> => {

@@ -704,6 +704,7 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+
   @action
   establishHardwareWalletConnection = async () => {
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
@@ -1473,7 +1474,7 @@ export default class HardwareWalletsStore extends Store {
 
         this.stores.analytics.analyticsClient.sendEvent(
           'Wallets',
-          'Verified wallet address with hardware wallet',
+          'Verified wallet address with hardware wallet'
         );
       } else {
         runInAction(

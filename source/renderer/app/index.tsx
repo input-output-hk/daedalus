@@ -30,11 +30,11 @@ addLocaleData([...en, ...ja]);
 const { environment } = global;
 const { isTest } = environment;
 
-const initializeDaedalus = () => {
+const initializeDaedalus = async () => {
   const api = setupApi(isTest);
   const hashHistory = createHashHistory();
   const routingStore = new RouterStore();
-  const stores = setupStores(api, actions, routingStore);
+  const stores = await setupStores(api, actions, routingStore);
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
   window.daedalus = {
@@ -53,7 +53,9 @@ const initializeDaedalus = () => {
   if (!rootElement) throw new Error('No #root element found.');
   render(
     <LocalStorageFeatureProvider localStorage={LocalStorageApi}>
-      <DiscreetModeFeatureProvider>
+      <DiscreetModeFeatureProvider
+        analyticsClient={stores.analytics.analyticsClient}
+      >
         <App stores={stores} actions={actions} history={history} />
       </DiscreetModeFeatureProvider>
     </LocalStorageFeatureProvider>,
