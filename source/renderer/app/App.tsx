@@ -113,7 +113,6 @@ class App extends Component<{
                 </ThemeProvider>
               </DiscreetModeFeatureProvider>
             </LocalStorageFeatureProvider>
-            ,
           </AnalyticsProvider>
         </Provider>
       </Fragment>
