@@ -401,7 +401,7 @@ export default class StakingStore extends Store {
       const wallet = this.stores.wallets.getWalletById(walletId);
 
       this.stores.analytics.analyticsClient.sendEvent(
-        'Stake pools',
+        'Stake Pools',
         wallet.isDelegating ? 'Redelegated a wallet' : 'Delegated a wallet'
       );
     } catch (error) {

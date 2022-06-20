@@ -57,7 +57,6 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
-import { getEventNameByWallet } from '../analytics/getEventNameByWallet';
 /* eslint-disable consistent-return */
 
 /**
@@ -707,7 +706,7 @@ export default class WalletsStore extends Store {
     this.stores.analytics.analyticsClient.sendEvent(
       'Wallets',
       'Wallet deleted',
-      getEventNameByWallet(walletToDelete)
+      walletToDelete.isHardwareWallet ? 'Hardware wallet' : 'Software wallet'
     );
 
     this.actions.dialogs.closeActiveDialog.trigger();

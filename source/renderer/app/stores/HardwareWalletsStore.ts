@@ -1474,7 +1474,6 @@ export default class HardwareWalletsStore extends Store {
         this.stores.analytics.analyticsClient.sendEvent(
           'Wallets',
           'Verified wallet address with hardware wallet',
-          'Software wallet'
         );
       } else {
         runInAction(

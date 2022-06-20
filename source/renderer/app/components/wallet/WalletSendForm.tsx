@@ -1169,7 +1169,7 @@ class WalletSendForm extends Component<Props, State> {
             onAdd={(checked) => {
               onTokenPickerDialogClose();
               checked.forEach(this.addAssetRow);
-              this.props.analyticsClient.sendEvent(
+              this.props.analyticsClient?.sendEvent(
                 'Wallets',
                 'Added token to transaction'
               );

@@ -157,7 +157,7 @@ export default class WalletSettingsStore extends Store {
     this.updateSpendingPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
     this.stores.analytics.analyticsClient.sendEvent(
-      'Wallet settings',
+      'Wallet Settings',
       'Changed wallet settings',
       'password'
     );
