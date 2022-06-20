@@ -23,6 +23,8 @@ class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
   };
   shouldRender = () => {
     if (
+      // Relax hardware requirements for selfnode/local-cluster (possibly running in VM):
+      this.props.stores.networkStatus.environment.isSelfnode ||
       this.props.stores.networkStatus.environment.hasMetHardwareRequirements ||
       !this.props.stores.profile.areTermsOfUseAccepted ||
       this.props.stores.networkStatus.isRTSFlagsModeEnabled

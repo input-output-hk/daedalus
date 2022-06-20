@@ -42,9 +42,13 @@ Daedalus - Cryptocurrency Wallet
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
+   experimental-features = nix-command flakes
 
-   # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
-   # system = x86_64-darwin
+   # If you are running on a Mac with Intel chip 
+   system = x86_64-darwin
+   
+   # If you are running on a Mac with M1 chip
+   system = aarch64-darwin
    ```
 
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
@@ -103,21 +107,6 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 ##### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Staging
-
-1. Run `yarn nix:staging` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Shelley QA
-
-1. Run `yarn nix:shelley_qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-##### Alonzo Purple
-
-1. Run `yarn nix:alonzo_purple` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
 ##### Native token metadata server
@@ -221,6 +210,26 @@ You can debug the main process by following one of these approaches:
 - [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
 
 The inspector runs on port 9229
+
+### Linking with UI Libraries (e.g. React Polymorph)
+
+You can link libraries with Daedalus using one of the following steps:
+
+#### 1) Using `yalc`
+
+1) Install `yalc` globally using `yarn global add yalc`.
+2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
+3) Switch to Daedalus and run `yalc add <package-name>` or preferably `yalc link <package-name>`.
+4) You should be able to start Daedalus and see the changes you are making locally in the library.
+5) To make sure your changes are reflected as you update code in the library, use `yalc push`.
+
+#### 2) Using `yarn link`
+
+1) From the Daedalus root directory, go to `node_modules/react` and `yarn link`.
+2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
+3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
+4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
+5) Finally, run `yarn build:watch` from the library's root directory.
 
 ## Testing
 
