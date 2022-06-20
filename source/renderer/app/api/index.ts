@@ -6,6 +6,7 @@ export type Api = {
   localStorage: LocalStorageApi;
   setFaultyNodeSettingsApi?: boolean;
 };
+
 export const setupApi = (isTest: boolean): Api => ({
   ada: new AdaApi(isTest, {
     hostname: 'localhost',

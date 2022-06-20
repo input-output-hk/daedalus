@@ -4,6 +4,8 @@ import type { ActionsMap } from '../actions/index';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 import SidebarStore from './SidebarStore';
+import { analyticsStoreMock } from '../../../../tests/mocks/analyticsStoreMock';
+import { StoresMap } from './index';
 
 describe('Sidebar Store', () => {
   const api: Api = {
@@ -36,6 +38,7 @@ describe('Sidebar Store', () => {
       networkStatus: {
         isConnected: true,
       },
+      analytics: analyticsStoreMock,
     } as any;
     return sidebarStore;
   }
