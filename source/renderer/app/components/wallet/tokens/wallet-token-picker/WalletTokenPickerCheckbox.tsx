@@ -6,7 +6,7 @@ import { messages } from './WalletTokenPicker.messages';
 import { MAX_TOKENS } from './const';
 import type { ItemProps as Props } from './types';
 
-const WalletTokenPickerCheckbox = ({
+function WalletTokenPickerCheckbox({
   intl,
   className,
   isChecked,
@@ -14,7 +14,7 @@ const WalletTokenPickerCheckbox = ({
   isPreviouslyChecked,
   uniqueId,
   toggleCheckbox,
-}: Props) => {
+}: Props) {
   const checked = isChecked || isPreviouslyChecked;
   const toolTipDisabled = !isMaxCount || checked;
   const onChange = useCallback(() => toggleCheckbox(uniqueId), [
@@ -38,6 +38,6 @@ const WalletTokenPickerCheckbox = ({
       </PopOver>
     </div>
   );
-};
+}
 
 export default injectIntl(WalletTokenPickerCheckbox);

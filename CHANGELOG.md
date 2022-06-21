@@ -1,11 +1,12 @@
 # Changelog
 
-## vNext
+## 4.11.0
 
 ### Fixes
 
 - Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
 - Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860))
 
 ### Features
 
@@ -14,6 +15,8 @@
 
 ### Chores
 
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+- Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
 - Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
 - Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
@@ -103,7 +106,6 @@
 
 ### Fixes
 
-- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860))
 - Fixed rewards CSV export issues ([PR 2885](https://github.com/input-output-hk/daedalus/pull/2885))
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))

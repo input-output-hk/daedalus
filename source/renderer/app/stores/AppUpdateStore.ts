@@ -177,8 +177,9 @@ export default class AppUpdateStore extends Store {
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
   _checkNewAppUpdate = async (update: News) => {
     const { version, url } = this.getUpdateInfo(update);
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
+    const appUpdateCompleted =
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+      await this.getAppUpdateCompletedRequest.execute();
 
     /*
      * The update was already installed and the installer was already deleted.
@@ -207,8 +208,9 @@ export default class AppUpdateStore extends Store {
     // Cancels if the update download is already in progress
     if (this.isUpdateDownloading) return false;
     // Is there an 'Automatic Update Failed' flag?
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    const isAutomaticUpdateFailed =
+      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+      await this.getAppAutomaticUpdateFailedRequest.execute();
 
     if (isAutomaticUpdateFailed) {
       runInAction(() => {

@@ -33,30 +33,28 @@ type Props = {
   openDialogAction: (...args: Array<any>) => any;
 };
 
-const WalletPublicKeyBox = (props: Props) => {
+function WalletPublicKeyBox(props: Props) {
   const { publicKey, locale, onCopyWalletPublicKey, openDialogAction } = props;
   return (
-    <>
-      <BorderedBox className={styles.walletPublicKeyBox}>
-        <PublicKeyField
-          publicKey={publicKey || ''}
-          locale={locale}
-          onCopyPublicKey={onCopyWalletPublicKey}
-          onShowQRCode={() =>
-            openDialogAction({
-              dialog: WalletPublicKeyQRCodeDialog,
-            })
-          }
-          onOpenWalletKeyDialog={() =>
-            openDialogAction({
-              dialog: PublicKeyDialog,
-            })
-          }
-          messages={messages}
-        />
-      </BorderedBox>
-    </>
+    <BorderedBox className={styles.walletPublicKeyBox}>
+      <PublicKeyField
+        publicKey={publicKey || ''}
+        locale={locale}
+        onCopyPublicKey={onCopyWalletPublicKey}
+        onShowQRCode={() =>
+          openDialogAction({
+            dialog: WalletPublicKeyQRCodeDialog,
+          })
+        }
+        onOpenWalletKeyDialog={() =>
+          openDialogAction({
+            dialog: PublicKeyDialog,
+          })
+        }
+        messages={messages}
+      />
+    </BorderedBox>
   );
-};
+}
 
 export default injectIntl(WalletPublicKeyBox);

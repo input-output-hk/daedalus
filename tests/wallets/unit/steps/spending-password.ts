@@ -1,6 +1,6 @@
-import { Given, Then } from "cucumber";
-import { expect } from "chai";
-import { isValidSpendingPassword } from "../../../../source/renderer/app/utils/validations";
+import { Given, Then } from 'cucumber';
+import { expect } from 'chai';
+import { isValidSpendingPassword } from '../../../../source/renderer/app/utils/validations';
 
 /* eslint-disable no-unused-expressions */
 Given('I use the spending password {string}', function (password) {
