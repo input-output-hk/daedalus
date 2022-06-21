@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .component {
   align-items: center;
   display: flex;
@@ -22,7 +24,7 @@ $cardanoLogoWidth: 86px;
 
 $adaLogoWidth: 43px;
 .adaLogo > svg {
-  margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
+  margin: 3px math.div(($cardanoLogoWidth - $adaLogoWidth), 2) 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
   width: $adaLogoWidth;
 }
 

@@ -94,8 +94,6 @@ class Asset extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
-  copyNotificationTimeout: TimeoutID;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'TimeoutID'.
   displayDelayTimeout: TimeoutID;
   state = {
     isPillPopOverVisible: false,

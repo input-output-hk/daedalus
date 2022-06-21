@@ -57,9 +57,6 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      (if system == "aarch64-darwin"
-        then (localLib.iohkNix.getPkgs { system = "x86_64-darwin"; inherit config; }).chromedriver
-        else chromedriver)
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
@@ -171,7 +168,6 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
-        ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'

@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { FC } from 'react';
+import React from 'react';
 import { intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
@@ -40,51 +40,53 @@ const makePercentageCellStyles = (loaded: boolean) =>
     [styles.faded]: loaded,
   });
 
-const SyncingProgress: FC<Props> = (props, { intl }: Context) => (
-  <div className={styles.root}>
-    <div className={iconsColumnStyles}>
-      {blockSyncTypesOrdered.map((type) => (
-        <div key={type} className={styles.cell}>
-          <SVGInline
-            svg={props[type] < 100 ? spinnerIcon : checkMarkIcon}
-            className={makeLeftColumnIconStyles(props[type] < 100)}
-          />
-        </div>
-      ))}
+function SyncingProgress(props: Props, { intl }: Context) {
+  return (
+    <div className={styles.root}>
+      <div className={iconsColumnStyles}>
+        {blockSyncTypesOrdered.map((type) => (
+          <div key={type} className={styles.cell}>
+            <SVGInline
+              svg={props[type] < 100 ? spinnerIcon : checkMarkIcon}
+              className={makeLeftColumnIconStyles(props[type] < 100)}
+            />
+          </div>
+        ))}
+      </div>
+      <div className={messagesColumnStyles}>
+        {blockSyncTypesOrdered.map((type) => (
+          <div key={type} className={styles.cell}>
+            <span className={makeMainMessageStyles(props[type] === 100)}>
+              {intl.formatMessage(getProgressNameByBlockSyncType(type))}
+            </span>
+            <span>
+              <PopOver
+                content={intl.formatMessage(
+                  getProgressDescriptionByBlockSyncType(type)
+                )}
+              >
+                <SVGInline
+                  svg={questionMarkIcon}
+                  className={questionMarkIconStyles}
+                />
+              </PopOver>
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className={styles.column}>
+        {blockSyncTypesOrdered.map((type) => (
+          <div
+            key={type}
+            className={makePercentageCellStyles(props[type] === 100)}
+          >
+            {props[type]}%
+          </div>
+        ))}
+      </div>
     </div>
-    <div className={messagesColumnStyles}>
-      {blockSyncTypesOrdered.map((type) => (
-        <div key={type} className={styles.cell}>
-          <span className={makeMainMessageStyles(props[type] === 100)}>
-            {intl.formatMessage(getProgressNameByBlockSyncType(type))}
-          </span>
-          <span>
-            <PopOver
-              content={intl.formatMessage(
-                getProgressDescriptionByBlockSyncType(type)
-              )}
-            >
-              <SVGInline
-                svg={questionMarkIcon}
-                className={questionMarkIconStyles}
-              />
-            </PopOver>
-          </span>
-        </div>
-      ))}
-    </div>
-    <div className={styles.column}>
-      {blockSyncTypesOrdered.map((type) => (
-        <div
-          key={type}
-          className={makePercentageCellStyles(props[type] === 100)}
-        >
-          {props[type]}%
-        </div>
-      ))}
-    </div>
-  </div>
-);
+  );
+}
 
 SyncingProgress.contextTypes = {
   intl: intlShape.isRequired,

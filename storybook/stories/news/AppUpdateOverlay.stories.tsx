@@ -7,7 +7,7 @@ import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/
 import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
 
-storiesOf('News|Overlays', module)
+storiesOf('News / Overlays', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message

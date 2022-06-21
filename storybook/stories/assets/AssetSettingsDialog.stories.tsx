@@ -18,7 +18,7 @@ const asset = {
   recommendedDecimals: null,
   metadata: null,
 };
-storiesOf('Assets|AssetSettingsDialog', module)
+storiesOf('Assets / AssetSettingsDialog', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>

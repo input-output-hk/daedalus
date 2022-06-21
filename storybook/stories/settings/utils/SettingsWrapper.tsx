@@ -16,7 +16,10 @@ const pageNames = {
 };
 /* eslint-disable react/display-name  */
 
-export default (story: Record<string, any>, context: Record<string, any>) => {
+export default function (
+  story: Record<string, any>,
+  context: Record<string, any>
+) {
   const storyWithKnobs = withKnobs(story, context);
   const menu = (
     <SettingsMenu
@@ -46,4 +49,4 @@ export default (story: Record<string, any>, context: Record<string, any>) => {
       </StoryProvider>
     </StoryDecorator>
   );
-};
+}

@@ -6,6 +6,6 @@ const options = {
   output: 'tests-report/report.html',
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
-  launchReport: true
+  launchReport: true,
 };
 reporter.generate(options);

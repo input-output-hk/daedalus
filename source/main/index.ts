@@ -2,7 +2,6 @@ import os from 'os';
 import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
-import { client } from 'electron-connect';
 import EventEmitter from 'events';
 import { WalletSettingsStateEnum } from '../common/ipc/api';
 import { requestElectronStore } from './ipc/electronStoreConversation';
@@ -63,7 +62,6 @@ let cardanoNode: CardanoNode;
 const {
   isDev,
   isTest,
-  isWatchMode,
   isBlankScreenFixActive,
   isSelfnode,
   network,
@@ -134,7 +132,7 @@ const handleWindowClose = async (event: Event | null | undefined) => {
 
 const onAppReady = async () => {
   setupLogging();
-  logUsedVersion(
+  await logUsedVersion(
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
   );
@@ -186,7 +184,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
     userLocale,
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Electron.Screen' is not assignab... Remove this comment to see the full error message
-    restoreSavedWindowBounds(screen, requestElectronStore)
+    () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
@@ -250,11 +248,6 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
   await handleCheckDiskSpace();
-
-  if (isWatchMode) {
-    // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(mainWindow);
-  }
 
   mainWindow.on('close', handleWindowClose);
   // Security feature: Prevent creation of new browser windows
