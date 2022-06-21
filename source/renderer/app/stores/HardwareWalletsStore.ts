@@ -632,6 +632,18 @@ export default class HardwareWalletsStore extends Store {
     const { amount: totalAmount, availableAmount, reward } = wallet;
 
     try {
+      logger.debug('AdaApi::selectCoins::HW Store', {
+        walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
+        payments: {
+          address,
+          amount,
+          assets,
+        },
+        metadata,
+      });
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const coinSelection: CoinSelectionsResponse = await this.selectCoinsRequest.execute(
         {
