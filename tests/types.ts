@@ -1,12 +1,12 @@
-import { defineParameterType } from "cucumber";
-import type { Api } from "../source/renderer/app/api";
-import type { ActionsMap } from "../source/renderer/app/actions";
-import type { StoresMap } from "../source/renderer/app/stores";
+import { defineParameterType } from 'cucumber';
+import type { Api } from '../source/renderer/app/api';
+import type { ActionsMap } from '../source/renderer/app/actions';
+import type { StoresMap } from '../source/renderer/app/stores';
 // Add {bool} parameter type
 defineParameterType({
   name: 'bool',
   regexp: /true|false/,
-  transformer: b => b === 'true'
+  transformer: (b) => b === 'true',
 });
 export type Daedalus = {
   actions: ActionsMap;
@@ -27,12 +27,29 @@ export type WebdriverExecuteResult<T> = {
 export type WebdriverClient = {
   click: (selector: string) => Promise<any>;
   elements: (selector: string) => Promise<Record<string, any>>;
-  execute: (script: (...args: Array<any>) => any, ...scriptArgs: Array<any>) => WebdriverExecuteResult<any>;
-  executeAsync: (script: (...args: Array<any>) => any, ...scriptArgs: Array<any>) => Promise<WebdriverExecuteResult<any>>;
+  execute: (
+    script: (...args: Array<any>) => any,
+    ...scriptArgs: Array<any>
+  ) => WebdriverExecuteResult<any>;
+  executeAsync: (
+    script: (...args: Array<any>) => any,
+    ...scriptArgs: Array<any>
+  ) => Promise<WebdriverExecuteResult<any>>;
   getText: (selector: string) => Promise<any>;
   url: (url: string) => Promise<any>;
-  waitForEnabled: (selector: string, ms?: number | null, reverse?: boolean) => Promise<any>;
+  waitForEnabled: (
+    selector: string,
+    ms?: number | null,
+    reverse?: boolean
+  ) => Promise<any>;
   waitForText: (selector: string) => Promise<any>;
-  waitForVisible: (target: string, ms?: number | null, reverse?: boolean) => Promise<any>;
-  waitUntil: (script: (...args: Array<any>) => any, timeout?: number) => Promise<any>;
+  waitForVisible: (
+    target: string,
+    ms?: number | null,
+    reverse?: boolean
+  ) => Promise<any>;
+  waitUntil: (
+    script: (...args: Array<any>) => any,
+    timeout?: number
+  ) => Promise<any>;
 };

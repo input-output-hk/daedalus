@@ -1,12 +1,11 @@
-import { Given, When, Then } from "cucumber";
+import { Given, When, Then } from 'cucumber';
 
 const SELECTORS = {
   COMPONENT: '.DataLayerMigrationForm_component',
-  SUBMIT_BTN: '.DataLayerMigrationForm_submitButton'
+  SUBMIT_BTN: '.DataLayerMigrationForm_submitButton',
 };
 Given(/^I haven't accepted the data layer migration$/, async function () {
   await this.client.execute(() => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
     daedalus.api.localStorage.unsetDataLayerMigrationAcceptance();
   });
 });

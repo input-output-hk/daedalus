@@ -25,7 +25,7 @@ type Props = {
   centerText?: boolean;
 };
 
-const OversaturationTextComponent = (props: Props) => {
+function OversaturationTextComponent(props: Props) {
   const { oversaturationPercentage, centerText } = props;
   const oversaturationClasses = classnames([
     styles.component,
@@ -41,6 +41,6 @@ const OversaturationTextComponent = (props: Props) => {
       />
     </p>
   );
-};
+}
 
 export const OversaturationText = injectIntl(OversaturationTextComponent);

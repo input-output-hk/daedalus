@@ -12,10 +12,7 @@ interface Props {
   children: Node;
   localStorage: LocalStorageApi;
 }
-export const LocalStorageFeatureProvider = ({
-  children,
-  localStorage,
-}: Props) => {
+export function LocalStorageFeatureProvider({ children, localStorage }: Props) {
   const [localStorageFeature] = useState<LocalStorageApi>(() => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
     window.daedalus = merge(window.daedalus, {
@@ -30,7 +27,7 @@ export const LocalStorageFeatureProvider = ({
       {children}
     </localStorageContext.Provider>
   );
-};
+}
 export function useLocalStorageFeature(): LocalStorageApi {
   return getFeatureFromContext(localStorageContext);
 }

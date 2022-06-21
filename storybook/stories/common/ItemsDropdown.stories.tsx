@@ -79,7 +79,7 @@ const stakePoolsOptions = stakePoolsList.reduce((obj, pool) => {
   obj[`[${ticker}] ${name} - (${ranking})`] = pool;
   return obj;
 }, {});
-storiesOf('Common|ItemsDropdown', module)
+storiesOf('Common / ItemsDropdown', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();

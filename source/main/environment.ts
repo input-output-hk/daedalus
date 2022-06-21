@@ -1,6 +1,6 @@
 import os from 'os';
 import { get, includes, uniq } from 'lodash';
-import { version } from '../../package.json';
+import packageJson from '../../package.json';
 import type { Environment } from '../common/types/environment.types';
 import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
@@ -19,6 +19,8 @@ import {
   checkIsWindows,
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
+
+const { version } = packageJson;
 // Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
 // actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
 //
@@ -42,7 +44,6 @@ const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
-const isWatchMode = process.env.IS_WATCH_MODE;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const NODE_VERSION = '1.34.1'; // TODO: pick up this value from process.env
@@ -59,7 +60,6 @@ const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
@@ -74,7 +74,6 @@ export const environment: Environment = Object.assign(
     network: NETWORK,
     apiVersion: API_VERSION,
     nodeVersion: NODE_VERSION,
-    mobxDevTools: MOBX_DEV_TOOLS,
     current: CURRENT_NODE_ENV,
     isDev,
     isTest,
@@ -86,7 +85,6 @@ export const environment: Environment = Object.assign(
     isShelleyQA,
     isSelfnode,
     isDevelopment,
-    isWatchMode,
     build: BUILD,
     buildNumber: BUILD_NUMBER,
     platform: PLATFORM,
