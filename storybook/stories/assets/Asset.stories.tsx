@@ -6,7 +6,7 @@ import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import Asset from '../../../source/renderer/app/components/assets/Asset';
 
-storiesOf('Assets|Asset pill', module)
+storiesOf('Assets / Asset pill', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs) // ====== Stories ======
   .add('Default', () => {

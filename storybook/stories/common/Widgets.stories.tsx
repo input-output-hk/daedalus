@@ -79,7 +79,7 @@ const messages = defineMessages({
     description: 'Save description.',
   },
 });
-storiesOf('Common|Widgets', module)
+storiesOf('Common / Widgets', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();

@@ -23,7 +23,7 @@ type Props = {
   searchValue: string;
 };
 
-const WalletTokensSearch = (props: Props) => {
+function WalletTokensSearch(props: Props) {
   const { searchValue, onSearch, intl } = props;
   const [isSearchInputFocused, setSearchInputFocused] = useState(false);
 
@@ -53,6 +53,6 @@ const WalletTokensSearch = (props: Props) => {
       )}
     </div>
   );
-};
+}
 
 export default injectIntl(observer(WalletTokensSearch));

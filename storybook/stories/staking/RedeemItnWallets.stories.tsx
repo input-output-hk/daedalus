@@ -74,7 +74,7 @@ const WALLETS = [
 // undefined,
 // true,
 // WalletSyncStateStatuses.SYNCING
-export const Step1ConfigurationDialogStory = () => {
+export function Step1ConfigurationDialogStory() {
   const redeemWallet = select(
     'Redeem Wallet',
     WALLETS.reduce((obj, wallet) => {
@@ -104,8 +104,8 @@ export const Step1ConfigurationDialogStory = () => {
       suggestedMnemonics={validWords}
     />
   );
-};
-export const Step2ConfirmationDialogStory = () => {
+}
+export function Step2ConfirmationDialogStory() {
   const redeemWallet = select(
     'Redeem Wallet',
     WALLETS.reduce((obj, wallet) => {
@@ -128,8 +128,8 @@ export const Step2ConfirmationDialogStory = () => {
       isSubmitting={boolean('isSubmitting', false)}
     />
   );
-};
-export const Step3SuccessDialogStory = () => {
+}
+export function Step3SuccessDialogStory() {
   const redeemWallet = select(
     'Redeem Wallet',
     WALLETS.reduce((obj, wallet) => {
@@ -150,21 +150,21 @@ export const Step3SuccessDialogStory = () => {
       onClose={action('onClose')}
     />
   );
-};
-export const Step3FailureDialogStory = () => {
+}
+export function Step3FailureDialogStory() {
   return (
     <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
   );
-};
-export const NoWalletsDialogDialogStory = () => {
+}
+export function NoWalletsDialogDialogStory() {
   return (
     <NoWalletsDialog
       onClose={action('onClose')}
       onAddWallet={action('onAddWallet')}
     />
   );
-};
-export const RedemptionUnavailableDialogDialogStory = () => {
+}
+export function RedemptionUnavailableDialogDialogStory() {
   return (
     <RedemptionUnavailableDialog
       onClose={action('onClose')}
@@ -176,4 +176,4 @@ export const RedemptionUnavailableDialogDialogStory = () => {
       })}
     />
   );
-};
+}

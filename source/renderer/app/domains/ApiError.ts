@@ -107,7 +107,7 @@ export default class ApiError {
   set(
     predefinedError: string,
     // @ts-ignore ts-migrate(1015) FIXME: Parameter cannot have question mark and initialize... Remove this comment to see the full error message
-    force? = false,
+    force = false,
     values?: Record<string, any>
   ) {
     if (

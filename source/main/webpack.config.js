@@ -1,42 +1,65 @@
 const webpack = require('webpack');
+const path = require('path');
+const { spawn } = require('child_process');
 
-const isCi = process.env.CI && process.env.CI !== '';
+class ManageElectronProcessPlugin {
+  isRunning = false;
+  _process = null;
+  _shouldRestart = false;
+  start() {
+    this._process = spawn('yarn', ['electron', '.'], {
+      stdio: 'inherit',
+      shell: true,
+    });
+    this.isRunning = true;
+    // Handle next electron shutdown
+    this._process.once('close', () => this.onProcessClose());
+  }
+  restart() {
+    this._shouldRestart = true;
+    this._process.kill();
+  }
+  onProcessClose() {
+    this._process = null;
+    this.isRunning = false;
+    if (this._shouldRestart) {
+      this.start();
+      this._shouldRestart = false;
+    }
+  }
+  apply(compiler) {
+    if (compiler.options.watch) {
+      compiler.hooks.done.tap('RestartElectronPlugin', () => {
+        if (this.isRunning) {
+          this.restart();
+        } else {
+          this.start();
+        }
+      });
+    }
+  }
+}
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
-  mode: 'development',
-  devtool: 'cheap-module-source-map',
   entry: {
     index: './source/main/index.ts',
     preload: './source/main/preload.ts',
   },
-  optimization: {
-    // https://github.com/webpack/webpack/issues/7470
-    nodeEnv: false,
-  },
   output: {
-    filename: '[name].js',
+    path: path.join(process.cwd(), 'dist/main'),
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
-  /**
-   * Set target to Electron specific node.js env.
-   * https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
-   */
+  mode: isDevelopment ? 'development' : 'production',
   target: 'electron-main',
-  cache: true,
-  /**
-   * Disables webpack processing of __dirname and __filename.
-   * If you run the bundle in node.js it falls back to these values of node.js.
-   * https://github.com/webpack/webpack/issues/2010
-   */
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
-  externals: {
-    'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
-    'trezor-connect': 'commonjs2 trezor-connect',
+  devtool: isDevelopment ? 'eval-source-map' : 'source-map',
+  optimization: {
+    minimize: false,
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json'],
+    symlinks: true, // for native libraries
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {
     rules: [
@@ -44,63 +67,39 @@ module.exports = {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
-        use: (isCi ? [] : ['cache-loader']).concat([
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react',
-                '@babel/preset-typescript',
-              ],
+        loader: 'swc-loader',
+        options: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
             },
+            target: 'es2019',
+            loose: false,
           },
-        ]),
-      },
-      {
-        test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
-        use: {
-          loader: 'transform-loader?brfs',
         },
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name]-[hash].[ext]',
-            outputPath: 'assets/',
-          },
-        },
-      },
-      {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: 'javascript/auto',
+        type: 'asset/resource',
       },
     ],
   },
+  externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.
+  externals: [
+    {
+      'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
+      usb: 'commonjs2 usb',
+      'node-hid': 'commonjs2 node-hid',
+      'trezor-connect': 'commonjs2 trezor-connect',
+      pdfkit: 'commonjs2 pdfkit',
+      'usb-detection': 'commonjs2 usb-detection',
+    },
+  ],
   plugins: [
     new webpack.DefinePlugin(
       Object.assign(
-        {
-          'process.env.API_VERSION': JSON.stringify(
-            process.env.API_VERSION || 'dev'
-          ),
-          'process.env.NETWORK': JSON.stringify(
-            process.env.NETWORK || 'development'
-          ),
-          'process.env.MOCK_TOKEN_METADATA_SERVER_PORT':
-            process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0,
-          'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
-          'process.env.BUILD_NUMBER': JSON.stringify(
-            process.env.BUILD_NUMBER || 'dev'
-          ),
-          'process.env.IS_WATCH_MODE': process.env.IS_WATCH_MODE === 'true',
-          'process.env.KEEP_LOCAL_CLUSTER_RUNNING':
-            process.env.KEEP_LOCAL_CLUSTER_RUNNING === 'true',
-        },
+        {},
         process.env.NODE_ENV === 'production'
           ? {
               // Only bake in NODE_ENV value for production builds.
@@ -109,5 +108,13 @@ module.exports = {
           : {}
       )
     ),
+    new webpack.EnvironmentPlugin({
+      API_VERSION: 'dev',
+      NETWORK: 'development',
+      BUILD_NUMBER: 'dev',
+      IS_WATCH_MODE: 'false',
+      KEEP_LOCAL_CLUSTER_RUNNING: 'false',
+    }),
+    new ManageElectronProcessPlugin(),
   ].filter(Boolean),
 };

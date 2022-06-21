@@ -15,7 +15,6 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletTokens from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens';
 
 const assets = [
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -25,22 +24,16 @@ const assets = [
       name: 'MakerDAO',
       ticker: 'DAI',
       description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '546f6b656e2077697468206c61726765206e616d65',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     400
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897e291f9c136cd3513136945c',
     '',
@@ -50,15 +43,10 @@ const assets = [
       name: 'Nope',
       ticker: 'NOPE',
       description: 'The one with zero balance',
-      unit: {
-        name: 'NOPE',
-        decimals: 0,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -68,15 +56,10 @@ const assets = [
       name: 'Tether',
       ticker: 'USDT',
       description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -86,10 +69,6 @@ const assets = [
       name: 'USD Coin',
       ticker: 'USDC',
       description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
@@ -157,7 +136,7 @@ const walletTokens = {
     },
   ],
 };
-storiesOf('Wallets|Tokens', module)
+storiesOf('Wallets / Tokens', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs) // ====== Stories ======
   .add(

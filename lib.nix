@@ -3,6 +3,7 @@
 let
   sources = import ./nix/sources.nix;
   iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
+  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; };
   # TODO: can we use the filter in iohk-nix instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
@@ -25,7 +26,7 @@ let
       (type == "symlink" && lib.hasPrefix "result" baseName)
     );
   isDaedalus = name: false;
-  pkgs = iohkNix.pkgs;
+  pkgs = nixpkgs.pkgs;
   lib = pkgs.lib;
 in
 lib // {

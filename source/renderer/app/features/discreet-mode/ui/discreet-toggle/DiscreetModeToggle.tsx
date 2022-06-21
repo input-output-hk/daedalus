@@ -10,7 +10,7 @@ import hideIcon from '../../../../assets/images/hide-key.inline.svg';
 import { useDiscreetModeFeature } from '../../context';
 import styles from './DiscreetModeToggle.scss';
 
-export const DiscreetModeToggleComponent = ({
+export function DiscreetModeToggleComponent({
   className,
   isDiscreetMode,
   onToggle,
@@ -18,7 +18,7 @@ export const DiscreetModeToggleComponent = ({
   className?: string;
   isDiscreetMode: boolean;
   onToggle: () => void;
-}) => {
+}) {
   return (
     <button
       className={classNames(styles.root, className)}
@@ -31,12 +31,12 @@ export const DiscreetModeToggleComponent = ({
       />
     </button>
   );
-};
+}
 type Props = {
   className: string;
 };
 
-const DiscreetModeToggleContainer = ({ className }: Props) => {
+function DiscreetModeToggleContainer({ className }: Props) {
   const { isDiscreetMode, toggleDiscreetMode } = useDiscreetModeFeature();
   return (
     <DiscreetModeToggleComponent
@@ -45,7 +45,7 @@ const DiscreetModeToggleContainer = ({ className }: Props) => {
       onToggle={toggleDiscreetMode}
     />
   );
-};
+}
 
 export const DiscreetModeToggle = injectIntl(
   observer(DiscreetModeToggleContainer)

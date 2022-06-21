@@ -36,7 +36,7 @@ export default class WalletRestoreSteps extends Component<Props> {
   }
 
   get stepsList() {
-    return (this as any).filteredSteps.map((stepId) =>
+    return this.filteredSteps.map((stepId) =>
       this.context.intl.formatMessage(messages[`${stepId}Step`])
     );
   }

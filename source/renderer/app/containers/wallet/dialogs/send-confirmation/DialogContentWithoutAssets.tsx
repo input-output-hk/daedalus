@@ -7,13 +7,13 @@ import { messages } from './messages';
 import { DialogContentWithoutAssets as Props } from './types';
 import styles from './DialogContentWithoutAssets.scss';
 
-const Component = ({
+function Component({
   intl,
   amount,
   receiver,
   transactionFee,
   formattedTotalAmount,
-}: Props) => {
+}: Props) {
   return (
     <div className={styles.root}>
       <div className={styles.addressToLabelWrapper}>
@@ -54,7 +54,7 @@ const Component = ({
       </div>
     </div>
   );
-};
+}
 
 export const DialogContentWithoutAssets = compose(
   injectIntl,
