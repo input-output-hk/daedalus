@@ -29,7 +29,7 @@ type Props = {
   description?: string;
 };
 
-const PublicKeyField = (props: Props) => {
+function PublicKeyField(props: Props) {
   const {
     publicKey,
     onOpenWalletKeyDialog,
@@ -127,6 +127,6 @@ const PublicKeyField = (props: Props) => {
       </div>
     </div>
   );
-};
+}
 
 export default injectIntl(PublicKeyField);

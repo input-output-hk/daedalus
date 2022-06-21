@@ -19,7 +19,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import WalletRecoveryPhraseVerificationWidget from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget';
 
-storiesOf('Wallets|Settings', module)
+storiesOf('Wallets / Settings', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======

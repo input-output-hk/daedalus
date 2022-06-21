@@ -15,6 +15,8 @@
 
 ### Chores
 
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+- Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
 - Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
 - Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))

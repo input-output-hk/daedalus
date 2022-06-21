@@ -62,6 +62,9 @@ class WalletTransactions extends Component<Props, State> {
     this.setState({
       isScrolling,
     });
+  walletTransactionsListScrollContextValue = {
+    setIsScrolling: this.setIsScrolling,
+  };
   onFilter = (filterOptions: TransactionFilterOptionsType) => {
     this.props.onFilter(filterOptions);
   };
@@ -137,12 +140,9 @@ class WalletTransactions extends Component<Props, State> {
         />
       );
     }
-
     return (
       <WalletTransactionsListScrollContext.Provider
-        value={{
-          setIsScrolling: this.setIsScrolling,
-        }}
+        value={this.walletTransactionsListScrollContextValue}
       >
         <div className={styles.component}>
           <WalletTransactionsHeader

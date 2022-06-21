@@ -9,7 +9,7 @@ import {
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
 
-storiesOf('Settings|Language', module)
+storiesOf('Settings / Language', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Select Language - initial', ({ locale }: { locale: string }) => (

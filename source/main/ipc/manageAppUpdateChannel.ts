@@ -32,7 +32,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     success: boolean | null | undefined,
     functionPrefix: string,
     messageText = '',
-    _data?: Record<string, any>
+    _data: Record<string, unknown> = {}
   ): Response => {
     let status = statuses.PROGRESS;
     if (success === true) status = statuses.SUCCESS;

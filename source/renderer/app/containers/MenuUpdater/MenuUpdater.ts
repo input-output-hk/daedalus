@@ -1,12 +1,11 @@
-import { inject, observer } from 'mobx-react';
-import { FC } from 'react';
+import { observer } from 'mobx-react';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { MenuUpdaterProps } from './types';
 import useMenuUpdater from './useMenuUpdater';
 
-const MenuUpdaterComponent: FC<MenuUpdaterProps> = ({
+function MenuUpdaterComponent({
   stores: { app, profile, router, staking, uiDialogs },
-}) => {
+}: MenuUpdaterProps) {
   useMenuUpdater({
     stores: {
       app,
@@ -18,8 +17,6 @@ const MenuUpdaterComponent: FC<MenuUpdaterProps> = ({
     rebuildApplicationMenu,
   });
   return null;
-};
+}
 
-const MenuUpdater: FC = inject('stores')(observer(MenuUpdaterComponent));
-
-export default MenuUpdater;
+export default observer(MenuUpdaterComponent);

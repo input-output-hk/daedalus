@@ -14,7 +14,7 @@ type Props = {
   onItemClick: (...args: Array<any>) => any;
 };
 
-const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
+function SettingsMenu({ intl, onItemClick, isActiveItem, isFlight }: Props) {
   return (
     <div>
       <div className={styles.component}>
@@ -65,6 +65,6 @@ const SettingsMenu = ({ intl, onItemClick, isActiveItem, isFlight }: Props) => {
       </div>
     </div>
   );
-};
+}
 
 export default injectIntl(observer(SettingsMenu));
