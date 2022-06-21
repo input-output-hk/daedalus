@@ -644,6 +644,7 @@ export default class HardwareWalletsStore extends Store {
         },
         metadata,
       });
+      this.selectCoinsRequest.reset();
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const coinSelection: CoinSelectionsResponse = await this.selectCoinsRequest.execute(
         {

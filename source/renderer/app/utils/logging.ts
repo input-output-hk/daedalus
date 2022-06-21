@@ -27,10 +27,6 @@ const logToLevel = (level: LoggingLevel) => (
   message: string,
   data: Record<string, any> | null | undefined
 ) => {
-  if (!message.includes('selectCoins')) {
-    return;
-  }
-
   const args = [
     formatContext({ ...messageContext, level }),
     {
@@ -43,7 +39,7 @@ const logToLevel = (level: LoggingLevel) => (
 };
 
 export const logger: Logger = {
-  debug: logToLevel('info'),
+  debug: logToLevel('debug'),
   info: logToLevel('info'),
   error: logToLevel('error'),
   warn: logToLevel('warn'),

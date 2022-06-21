@@ -7,6 +7,7 @@ import {
 } from '../../config/numbersConfig';
 import WalletSendForm, {
   FormData,
+  ConfirmationDialogData,
 } from '../../components/wallet/WalletSendForm';
 import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
@@ -18,7 +19,7 @@ import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps;
 type State = {
-  formData: FormData;
+  confirmationDialogData: ConfirmationDialogData;
 };
 
 @inject('stores', 'actions')
@@ -29,8 +30,8 @@ class WalletSendPage extends Component<Props, State> {
     stores: null,
   };
 
-  state = {
-    formData: null,
+  state: State = {
+    confirmationDialogData: null,
   };
 
   calculateTransactionFee = async (params: {
@@ -100,7 +101,7 @@ class WalletSendPage extends Component<Props, State> {
       });
     }
 
-    this.setState({ formData: { ...data, coinSelection } });
+    this.setState({ confirmationDialogData: { ...data } });
   };
 
   openTokenPickerDialog = () => {
@@ -185,7 +186,7 @@ class WalletSendPage extends Component<Props, State> {
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
-        confirmationDialogData={this.state.formData}
+        confirmationDialogData={this.state.confirmationDialogData}
       />
     );
   }

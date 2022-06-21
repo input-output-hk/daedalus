@@ -23,7 +23,6 @@ import {
   isPasswordValid,
 } from './helpers';
 import styles from './styles.scss';
-import { toFixedUserFormat } from '../../../../utils/formatters';
 
 const View = ({
   intl,
@@ -48,8 +47,6 @@ const View = ({
   onSubmitCb,
   onTermsCheckboxClick,
   onCopyAssetParam,
-  adaAmount,
-  coinSelection,
 }: Props) => {
   const {
     passphraseField,
@@ -107,28 +104,6 @@ const View = ({
       className={styles.root}
       closeButton={<DialogCloseButton />}
     >
-      <b>ada amount: {toFixedUserFormat(adaAmount, 0)} </b>
-      <br />
-      <b>inputs:</b>
-      <p
-        style={{
-          whiteSpace: 'break-spaces',
-          lineHeight: '20px',
-          fontSize: '14px',
-        }}
-      >
-        {JSON.stringify(coinSelection.inputs, null, 2)}
-      </p>
-      <b>outputs:</b>{' '}
-      <p
-        style={{
-          whiteSpace: 'break-spaces',
-          lineHeight: '20px',
-          fontSize: '14px',
-        }}
-      >
-        {JSON.stringify(coinSelection.outputs, null, 2)}
-      </p>
       {shouldShowEmptyWalletWarning(
         totalAmount,
         wallet,
