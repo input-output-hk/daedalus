@@ -140,6 +140,10 @@ type State = {
   hasPendingRequestTokens: boolean;
   adaInputState: AdaInputState;
   coinSelection?: CoinSelectionsResponse;
+  coinSelections?: Array<{
+    adaAmount: number;
+    coinSelection: CoinSelectionsResponse;
+  }>;
   adaAmount: number;
 };
 
@@ -159,7 +163,7 @@ class WalletSendForm extends Component<Props, State> {
     validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
   };
 
-  state = {
+  state: State = {
     formFields: {} as State['formFields'],
     minimumAda: new BigNumber(0),
     adaAmountInputTrack: new BigNumber(0),
@@ -174,6 +178,7 @@ class WalletSendForm extends Component<Props, State> {
     hasPendingRequestTokens: false,
     coinSelection: null,
     adaAmount: 0,
+    coinSelections: [],
   };
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -663,6 +668,10 @@ class WalletSendForm extends Component<Props, State> {
           adaInputState: this.state.adaInputState,
           coinSelection,
           adaAmount,
+          coinSelections: [
+            ...this.state.coinSelections,
+            { adaAmount, coinSelection },
+          ],
         };
 
         if (shouldUpdateMinimumAdaAmount) {
@@ -1340,6 +1349,38 @@ class WalletSendForm extends Component<Props, State> {
             </div>
           </BorderedBox>
         )}
+        {this.state.coinSelections.map((c, idx) => (
+          <div
+            style={{
+              margin: '20px',
+              border: '1px dashed #333',
+            }}
+            key={idx}
+          >
+            <b>ada amount: {c.adaAmount}</b>
+            <br />
+            <b>inputs:</b>
+            <p
+              style={{
+                whiteSpace: 'break-spaces',
+                lineHeight: '20px',
+                fontSize: '14px',
+              }}
+            >
+              {JSON.stringify(c.coinSelection.inputs, null, 2)}
+            </p>
+            <b>outputs:</b>
+            <p
+              style={{
+                whiteSpace: 'break-spaces',
+                lineHeight: '20px',
+                fontSize: '14px',
+              }}
+            >
+              {JSON.stringify(c.coinSelection.outputs, null, 2)}
+            </p>
+          </div>
+        ))}
 
         {isDialogOpen(WalletSendConfirmationDialogView) &&
         confirmationDialogData ? (
@@ -1364,7 +1405,6 @@ class WalletSendForm extends Component<Props, State> {
             coinSelection={confirmationDialogData.coinSelection}
           />
         ) : null}
-
         {isDialogOpen(WalletTokenPicker) && (
           <WalletTokenPicker
             assets={assets}
