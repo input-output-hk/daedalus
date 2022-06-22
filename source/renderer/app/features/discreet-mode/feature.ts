@@ -8,7 +8,10 @@ import type { ReplacerFn } from './types';
 import { AnalyticsClient } from '../../analytics';
 
 export class DiscreetMode extends Feature {
-  constructor(private api: DiscreetModeApi, private analyticsClient: AnalyticsClient) {
+  constructor(
+    private api: DiscreetModeApi,
+    private analyticsClient: AnalyticsClient
+  ) {
     super();
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
