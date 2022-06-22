@@ -86,7 +86,7 @@ const WidgetPresentationBox: React.FC = ({ children }) => (
   <div style={{ padding: 20 }}>{children}</div>
 );
 
-storiesOf('Common|Widgets', module)
+storiesOf('Common / Widgets', module)
   .addDecorator((story: any, context: any) => {
     if (context.name === 'CountdownWidget') {
       return story();

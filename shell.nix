@@ -57,9 +57,6 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      (if system == "aarch64-darwin"
-        then (localLib.iohkNix.getPkgs { system = "x86_64-darwin"; inherit config; }).chromedriver
-        else chromedriver)
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
@@ -145,7 +142,6 @@ let
         # TODO: is this needed for `detection.node`?
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/detection.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
-        ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'
       echo debug the node by running debug-node

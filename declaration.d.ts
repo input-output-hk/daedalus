@@ -1,3 +1,6 @@
+import { IpcRenderer } from 'electron';
+import type { request as httpRequest } from 'http';
+import type { request as httpsRequest, globalAgent } from 'https';
 import { Environment } from './source/common/types/environment.types';
 
 declare module '*.svg' {
@@ -24,6 +27,15 @@ type Daedalus = {
   };
 };
 
+interface Http {
+  request: httpRequest;
+}
+
+interface Https {
+  request: httpsRequest;
+  Agent: globalAgent;
+}
+
 export type $ElementType<
   T extends { [P in K & any]: any },
   K extends keyof T | number
@@ -41,10 +53,18 @@ declare global {
       WALLET_COUNT: number;
     }
   }
-
-  var environment: Environment;
-
+  /* eslint-disable no-var, vars-on-top */
   var daedalus: Daedalus;
+  var environment: Environment;
+  var http: Http;
+  var https: Https;
+  var legacyStateDir: string;
+  var isFlight: boolean;
+  var ipcRenderer: Pick<
+    IpcRenderer,
+    'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'
+  >;
+  /* eslint-enable no-var, vars-on-top */
 }
 
 export {};

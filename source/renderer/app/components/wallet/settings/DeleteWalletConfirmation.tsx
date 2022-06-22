@@ -16,7 +16,7 @@ type Props = {
   checkboxLabel: string;
 };
 
-const DeleteWalletConfirmation = ({
+function DeleteWalletConfirmation({
   isBackupNoticeAccepted,
   confirmationValue,
   onAcceptBackupNotice,
@@ -24,27 +24,29 @@ const DeleteWalletConfirmation = ({
   handleSubmit,
   checkboxLabel,
   inputLabel,
-}: Props) => (
-  <>
-    <Checkbox
-      label={checkboxLabel}
-      onChange={onAcceptBackupNotice}
-      checked={isBackupNoticeAccepted}
-      skin={CheckboxSkin}
-    />
-    {isBackupNoticeAccepted && (
-      <Input
-        className={styles.confirmationInput}
-        label={inputLabel}
-        value={confirmationValue}
-        onKeyPress={(event: KeyboardEvent) =>
-          submitOnEnter(handleSubmit, event)
-        }
-        onChange={onConfirmationValueChange}
-        skin={InputSkin}
+}: Props) {
+  return (
+    <>
+      <Checkbox
+        label={checkboxLabel}
+        onChange={onAcceptBackupNotice}
+        checked={isBackupNoticeAccepted}
+        skin={CheckboxSkin}
       />
-    )}
-  </>
-);
+      {isBackupNoticeAccepted && (
+        <Input
+          className={styles.confirmationInput}
+          label={inputLabel}
+          value={confirmationValue}
+          onKeyPress={(event: KeyboardEvent) =>
+            submitOnEnter(handleSubmit, event)
+          }
+          onChange={onConfirmationValueChange}
+          skin={InputSkin}
+        />
+      )}
+    </>
+  );
+}
 
 export default DeleteWalletConfirmation;

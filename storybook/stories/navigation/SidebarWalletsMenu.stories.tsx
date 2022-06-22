@@ -65,7 +65,7 @@ const wallets = [
     hasNotification: false,
   },
 ];
-storiesOf('Navigation|Wallets Menu', module)
+storiesOf('Navigation / Wallets Menu', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => (
     <StoryDecorator>

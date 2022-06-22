@@ -104,7 +104,7 @@ const votingInfo = {
   onExternalLinkClick: action('onExternalLinkClick'),
 };
 
-storiesOf('Voting|Voting Registration Wizard', module)
+storiesOf('Voting / Voting Registration Wizard', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>
@@ -187,7 +187,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       nextFundNumber={8}
     />
   ));
-storiesOf('Voting|Voting Info', module)
+storiesOf('Voting / Voting Info', module)
   .addDecorator((story) => (
     <StoryDecorator>
       <VerticalFlexContainer>
