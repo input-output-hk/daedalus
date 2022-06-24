@@ -7,7 +7,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Components
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 
-storiesOf('Wallets|Settings', module)
+storiesOf('Wallets / Settings', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs)
   .add('Public Key - Spending Password', () => (

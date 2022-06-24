@@ -16,7 +16,6 @@ import type { WalletTokens } from '../../../../source/renderer/app/api/assets/ty
 import WalletTokensList from '../../../../source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList';
 
 const assets = [
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -26,22 +25,16 @@ const assets = [
       name: 'MakerDAO',
       ticker: 'DAI',
       description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
     400
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -51,15 +44,10 @@ const assets = [
       name: 'Tether',
       ticker: 'USDT',
       description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -69,15 +57,10 @@ const assets = [
       name: 'USD Coin',
       ticker: 'USDC',
       description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 6.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7s97d281f9c136cd3513136945b',
     '',
@@ -161,7 +144,7 @@ const walletTokens: WalletTokens = {
     },
   ],
 };
-storiesOf('Wallets|Tokens', module)
+storiesOf('Wallets / Tokens', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>

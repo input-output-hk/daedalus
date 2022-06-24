@@ -14,7 +14,7 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import '!style-loader!css-loader!sass-loader!./themes/index.global.scss'; // eslint-disable-line
 
-import { setupApi } from './api/index';
+import { setupApi } from './api';
 import LocalStorageApi from './api/utils/localStorage';
 import {
   DiscreetModeFeatureProvider,

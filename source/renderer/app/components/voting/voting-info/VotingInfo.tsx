@@ -20,7 +20,7 @@ const phaseToComponentMap: { [key in FundPhase]: React.FC<PhaseProps> } = {
   [FundPhase.RESULTS]: ResultsPhase,
 };
 
-const VotingInfo = ({
+function VotingInfo({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
@@ -28,7 +28,7 @@ const VotingInfo = ({
   fundInfo,
   onRegisterToVoteClick,
   onExternalLinkClick,
-}: Props) => {
+}: Props) {
   const PhaseComponent = phaseToComponentMap[fundPhase];
   return (
     <div className={styles.component}>
@@ -69,6 +69,6 @@ const VotingInfo = ({
       </BorderedBox>
     </div>
   );
-};
+}
 
 export default observer(VotingInfo);
