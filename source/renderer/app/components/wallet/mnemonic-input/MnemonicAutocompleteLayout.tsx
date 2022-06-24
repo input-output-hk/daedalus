@@ -77,6 +77,7 @@ const MnemonicAutocompleteLayout = ({
             onClick={onClick}
             onPaste={onPaste}
             disabled={disabled}
+            spellCheck="false"
           />
         </div>
       )}
