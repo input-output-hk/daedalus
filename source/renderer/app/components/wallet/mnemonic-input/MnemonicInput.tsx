@@ -12,7 +12,7 @@ import cx from 'classnames';
 import { INCOMPLETE_MNEMONIC_MARKER } from '../../../utils/validations';
 import { MnemonicAutocompleteContainer } from './MnemonicAutocompleteContainer';
 import { COLUMNS_COUNT } from './constants';
-import * as styles from './MnemonicInput.scss';
+import styles from './MnemonicInput.scss';
 import { Intl } from '../../../types/i18nTypes';
 
 const messages = defineMessages({

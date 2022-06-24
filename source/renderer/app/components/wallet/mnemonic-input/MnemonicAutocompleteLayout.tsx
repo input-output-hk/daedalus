@@ -8,7 +8,7 @@ import cx from 'classnames';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import { Options } from 'react-polymorph/lib/components/Options';
 import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
-import * as styles from './MnemonicAutocompleteLayout.scss';
+import styles from './MnemonicAutocompleteLayout.scss';
 
 interface MnemonicInputSkinProps {
   onClick: MouseEventHandler<HTMLInputElement>;
