@@ -1,4 +1,5 @@
 import React, {
+  ChangeEventHandler,
   ClipboardEventHandler,
   MouseEventHandler,
   RefObject,
@@ -33,7 +34,7 @@ const MnemonicAutocompleteContainer = ({
   onPaste,
   reset,
   ordinalNumber,
-  value,
+  value = '',
   options,
   maxVisibleOptions,
   disabled,
@@ -44,7 +45,6 @@ const MnemonicAutocompleteContainer = ({
   const initialState = useMemo(
     () => ({
       inputValue: value,
-      selectedOption: '',
       filteredOptions: options.slice(0, maxVisibleOptions),
       isOpen: false,
       mouseIsOverOptions: false,
@@ -75,29 +75,36 @@ const MnemonicAutocompleteContainer = ({
     event.currentTarget.setSelectionRange(0, event.currentTarget.value.length);
   };
 
-  const handleInputChange = useCallback(
-    (inputValue) => {
+  const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
       if (disabled) return;
+      const { value: inputValue } = event.currentTarget;
       let selectedOption = '';
-      let isOpen = true;
       const trimmedInputValue = inputValue.trim();
+      const filteredOptions = options
+        .filter(startsWith(trimmedInputValue))
+        .slice(0, maxVisibleOptions);
+      const isOpen =
+        filteredOptions.length > 1 || filteredOptions[0] !== trimmedInputValue;
 
-      if (options.includes(trimmedInputValue)) {
-        isOpen = false;
+      if (filteredOptions.includes(trimmedInputValue)) {
         selectedOption = trimmedInputValue;
       }
 
       setState((prevState) => ({
         ...prevState,
         isOpen,
-        filteredOptions: options
-          .filter(startsWith(trimmedInputValue))
-          .slice(0, maxVisibleOptions),
+        filteredOptions,
         inputValue: trimmedInputValue,
-        selectedOption,
       }));
+
+      onChange(selectedOption);
+
+      if (selectedOption && filteredOptions.length === 1) {
+        onConfirmSelection();
+      }
     },
-    [options, disabled]
+    [disabled, options, onChange, onConfirmSelection, maxVisibleOptions]
   );
 
   const handleInputSelect = useCallback(
@@ -107,11 +114,13 @@ const MnemonicAutocompleteContainer = ({
         ...prevState,
         isOpen: false,
         filteredOptions: [inputValue],
-        selectedOption: inputValue,
         inputValue,
       }));
+
+      onChange(inputValue);
+      onConfirmSelection();
     },
-    [disabled]
+    [disabled, onChange, onConfirmSelection]
   );
 
   const handleBlur = useCallback(() => {
@@ -119,15 +128,20 @@ const MnemonicAutocompleteContainer = ({
     setState((prevState) => ({ ...prevState, blurred: true }));
   }, [disabled]);
 
+  // this useEffect handles input paste event
   useEffect(() => {
-    onChange(state.selectedOption);
-    if (state.selectedOption) {
-      onConfirmSelection();
-    }
-  }, [state.selectedOption]);
+    if (!value) return;
 
-  useEffect(() => {
-    if (value) {
+    const filteredOptions = options
+      .filter(startsWith(value))
+      .slice(0, maxVisibleOptions);
+
+    if (filteredOptions.length > 1) {
+      setState((prevState) => ({
+        ...prevState,
+        inputValue: value,
+      }));
+    } else {
       handleInputSelect(value);
     }
   }, [value]);

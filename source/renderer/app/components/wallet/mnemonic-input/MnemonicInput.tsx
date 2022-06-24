@@ -71,9 +71,8 @@ const MnemonicInput: VFC<
 
     const providedWordCount = selectedWords.filter((word) => word?.length)
       .length;
-    const requiredWordCount = selectedWords.length;
     const showError =
-      providedWordCount === requiredWordCount &&
+      providedWordCount === wordCount &&
       error &&
       error !== INCOMPLETE_MNEMONIC_MARKER;
     const wordsPerColumn = Math.ceil(wordCount / COLUMNS_COUNT);
@@ -145,7 +144,7 @@ const MnemonicInput: VFC<
                 ? error
                 : intl.formatMessage(messages.mnemonicCounter, {
                     providedWordCount,
-                    requiredWordCount,
+                    requiredWordCount: wordCount,
                   })}
             </div>
           </div>
@@ -154,7 +153,7 @@ const MnemonicInput: VFC<
           {inputIndicesByColumnIndex.map((inputIndices) => (
             <div key={inputIndices.join('')} className={styles.inputList}>
               {inputIndices.map((idx) => {
-                const value = selectedWords[idx] || '';
+                const value = selectedWords[idx];
                 return (
                   <div key={idx} className={styles.inputWrapper}>
                     <MnemonicAutocompleteContainer
