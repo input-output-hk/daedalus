@@ -7,14 +7,19 @@ import ja from 'react-intl/locale-data/ja';
 import { createHashHistory } from 'history';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import App from './App';
-import setupStores from './stores';
+import { setUpStores } from './stores';
 import actions from './actions';
 import utils from './utils';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import '!style-loader!css-loader!sass-loader!./themes/index.global.scss'; // eslint-disable-line
 import { setupApi } from './api';
-
+import LocalStorageApi from './api/utils/localStorage';
+import {
+  DiscreetModeFeatureProvider,
+  LocalStorageFeatureProvider,
+} from './features';
+import { AnalyticsTracker } from './analytics';
 // run MobX in strict mode
 configure({
   enforceActions: 'always',
@@ -29,7 +34,8 @@ const initializeDaedalus = () => {
   const api = setupApi(isTest);
   const hashHistory = createHashHistory();
   const routingStore = new RouterStore();
-  const stores = setupStores(api, actions, routingStore);
+  const analyticsTracker = new AnalyticsTracker(environment, api.localStorage);
+  const stores = setUpStores(api, actions, routingStore, analyticsTracker);
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
   window.daedalus = {
@@ -41,13 +47,22 @@ const initializeDaedalus = () => {
     translations,
     reset: action(() => {
       Action.resetAllActions();
-      setupStores(api, actions, routingStore);
+      setUpStores(api, actions, routingStore, analyticsTracker);
     }),
   };
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
   render(
-    <App stores={stores} actions={actions} history={history} />,
+    <LocalStorageFeatureProvider localStorage={LocalStorageApi}>
+      <DiscreetModeFeatureProvider>
+        <App
+          stores={stores}
+          actions={actions}
+          history={history}
+          analyticsTracker={analyticsTracker}
+        />
+      </DiscreetModeFeatureProvider>
+    </LocalStorageFeatureProvider>,
     rootElement
   );
 };

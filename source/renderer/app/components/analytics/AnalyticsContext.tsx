@@ -1,6 +1,4 @@
 import React from 'react';
-import { AnalyticsClient, NoopAnalyticsClient } from '../../analytics';
+import { AnalyticsTracker } from '../../analytics';
 
-export const AnalyticsContext = React.createContext<AnalyticsClient>(
-  NoopAnalyticsClient
-);
+export const AnalyticsContext = React.createContext<AnalyticsTracker>(null);

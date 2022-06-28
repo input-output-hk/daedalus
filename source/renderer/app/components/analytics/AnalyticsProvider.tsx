@@ -1,23 +1,18 @@
 import React, { FC } from 'react';
-import { inject, observer } from 'mobx-react';
 import { AnalyticsContext } from './AnalyticsContext';
-import { InjectedProps } from '../../types/injectedPropsType';
+import { AnalyticsTracker } from '../../analytics';
 
-interface AnalyticsProviderProps extends InjectedProps {
+interface AnalyticsProviderProps {
   children: React.ReactNode;
+  tracker: AnalyticsTracker;
 }
 
-const AnalyticsProvider: FC = inject(
-  'stores',
-  'actions'
-)(
-  observer((props: AnalyticsProviderProps) => {
-    return (
-      <AnalyticsContext.Provider value={props.stores.analytics.analyticsClient}>
-        {props.children}
-      </AnalyticsContext.Provider>
-    );
-  })
-);
+function AnalyticsProvider({ children, tracker }: AnalyticsProviderProps) {
+  return (
+    <AnalyticsContext.Provider value={tracker}>
+      {children}
+    </AnalyticsContext.Provider>
+  );
+}
 
 export { AnalyticsProvider };

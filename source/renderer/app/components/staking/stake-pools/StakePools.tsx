@@ -23,7 +23,7 @@ import {
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
-import { AnalyticsClient } from '../../../analytics';
+import { AnalyticsTracker } from '../../../analytics';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -70,7 +70,7 @@ const messages = defineMessages({
 });
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
 type Props = {
-  analyticsClient?: AnalyticsClient;
+  analyticsTracker: AnalyticsTracker;
   currentLocale: string;
   currentTheme: string;
   getStakePoolById: (...args: Array<any>) => any;
@@ -119,7 +119,7 @@ class StakePools extends Component<Props, State> {
 
   sendSearchAnalyticsEvent = debounce(
     () =>
-      this.props.analyticsClient?.sendEvent(
+      this.props.analyticsTracker.sendEvent(
         'Stake Pools',
         'Used stake pools search'
       ),
@@ -146,7 +146,7 @@ class StakePools extends Component<Props, State> {
       isListView: false,
     });
 
-    this.props.analyticsClient?.sendEvent(
+    this.props.analyticsTracker.sendEvent(
       'Stake Pools',
       'Changed view to grid view'
     );
@@ -158,7 +158,7 @@ class StakePools extends Component<Props, State> {
       isListView: false,
     });
 
-    this.props.analyticsClient?.sendEvent(
+    this.props.analyticsTracker.sendEvent(
       'Stake Pools',
       'Changed view to grid rewards view'
     );
@@ -170,7 +170,7 @@ class StakePools extends Component<Props, State> {
       isListView: true,
     });
 
-    this.props.analyticsClient?.sendEvent(
+    this.props.analyticsTracker.sendEvent(
       'Stake Pools',
       'Changed view to list view'
     );
