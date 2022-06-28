@@ -7,6 +7,7 @@ import {
   DEV_MODE_SITE_MAP_ID,
   NETWORK_TO_ANALYTICS_SITE_ID_MAP,
 } from '../config/analyticsConfig';
+import { formattedBytesToSize } from '../utils/formatters';
 
 const CPU_DIMENSION_KEY = 'dimension2';
 const RAM_DIMENSION_KEY = 'dimension3';
@@ -33,9 +34,7 @@ export class MatomoClient implements AnalyticsClient {
       action_name: pageTitle,
       url: this.getAnalyticsURL(),
       [CPU_DIMENSION_KEY]: formatCpuInfo(this.environment.cpu),
-      [RAM_DIMENSION_KEY]: Math.round(
-        this.environment.ram / 1024 / 1024 / 1024
-      ).toString(),
+      [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram),
       [OS_DIMENSION_KEY]: this.environment.os,
       [VERSION_DIMENSION_KEY]: this.environment.version,
     });

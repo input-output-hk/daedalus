@@ -6,33 +6,33 @@ import { MatomoClient } from './MatomoClient';
 import { NoopAnalyticsClient } from './noopAnalyticsClient';
 
 export class AnalyticsTracker {
-  analyticsClient: AnalyticsClient;
+  #analyticsClient: AnalyticsClient;
 
   constructor(
     private environment: Environment,
     private localStorage: LocalStorageApi
   ) {
-    this.analyticsClient = NoopAnalyticsClient;
+    this.#analyticsClient = NoopAnalyticsClient;
     this.#enableTrackingIfAccepted();
   }
 
   async enableTracking() {
-    this.analyticsClient = new MatomoClient(
+    this.#analyticsClient = new MatomoClient(
       this.environment,
-      await localStorage.getUserID()
+      await this.localStorage.getUserID()
     );
   }
 
   disableTracking() {
-    this.analyticsClient = NoopAnalyticsClient;
+    this.#analyticsClient = NoopAnalyticsClient;
   }
 
   sendPageNavigationEvent(pageTitle: string) {
-    return this.analyticsClient.sendPageNavigationEvent(pageTitle);
+    return this.#analyticsClient.sendPageNavigationEvent(pageTitle);
   }
 
   sendEvent(category: string, name: string) {
-    return this.analyticsClient.sendEvent(category, name);
+    return this.#analyticsClient.sendEvent(category, name);
   }
 
   async #enableTrackingIfAccepted() {
