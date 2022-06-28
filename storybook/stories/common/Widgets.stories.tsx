@@ -82,9 +82,9 @@ const messages = defineMessages({
   },
 });
 
-const WidgetPresentationBox: React.FC = ({ children }) => (
-  <div style={{ padding: 20 }}>{children}</div>
-);
+function WidgetPresentationBox({ children }) {
+  return <div style={{ padding: 20 }}>{children}</div>;
+}
 
 storiesOf('Common / Widgets', module)
   .addDecorator((story: any, context: any) => {

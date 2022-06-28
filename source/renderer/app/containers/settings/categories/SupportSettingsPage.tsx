@@ -69,7 +69,10 @@ class SupportSettingsPage extends Component<InjectedProps> {
         disableDownloadLogs={
           this.props.stores.app.isDownloadNotificationVisible
         }
-        analyticsAccepted={this.props.stores.profile.areAnalyticsAccepted}
+        analyticsAccepted={
+          this.props.stores.profile.analyticsAcceptanceStatus ===
+          AnalyticsAcceptanceStatus.ACCEPTED
+        }
       />
     );
   }

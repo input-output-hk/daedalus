@@ -1,4 +1,6 @@
 {
+  "ImageUploadWidget.clickToUploadLabel": "!!!or click to upload",
+  "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "analytics.dialog.collapseButton": "詳細を隠す",
   "analytics.dialog.expandButton": "詳細を表示する",
   "analytics.dialog.skipButton": "スキップする",
@@ -16,8 +18,6 @@
   "analytics.form.description": "分析データは、製品開発の目的でのみ使用されます。",
   "analytics.form.privacyPolicyLink": "Daedalusプライバシーポリシー",
   "analytics.form.title": "分析データの収集",
-  "ImageUploadWidget.clickToUploadLabel": "!!!or click to upload",
-  "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "api.errors.ApiMethodNotYetImplementedError": "このAPIはまだ実装されていません。",
   "api.errors.CanNotCalculateTransactionFeesError": "処理中のトランザクションがあるため、手数料を計算できません。",
   "api.errors.ForbiddenMnemonicError": "ウォレットの復元フレーズが無効です。送信された復元フレーズは参照用復元フレーズ例の1つです。資金を保有しているウォレットには使用できません。",

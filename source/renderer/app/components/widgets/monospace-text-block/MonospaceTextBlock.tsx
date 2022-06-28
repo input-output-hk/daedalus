@@ -1,8 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
 import styles from './MonospaceTextBlock.scss';
 
-export const MonospaceTextBlock: FC<{ className?: string }> = ({
+export function MonospaceTextBlock({
   children,
   className,
-}) => <pre className={classNames(styles.pre, className)}>{children}</pre>;
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <pre className={classNames(styles.pre, className)}>{children}</pre>;
+}

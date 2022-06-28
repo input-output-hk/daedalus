@@ -1,4 +1,6 @@
 {
+  "ImageUploadWidget.clickToUploadLabel": "!!!or click to upload",
+  "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "analytics.dialog.collapseButton": "Collapse details",
   "analytics.dialog.expandButton": "Expand details",
   "analytics.dialog.skipButton": "Skip",
@@ -16,8 +18,6 @@
   "analytics.form.description": "All data is anonymous and is used only for product development purposes.",
   "analytics.form.privacyPolicyLink": "Daedalus Privacy Policy",
   "analytics.form.title": "Analytics data collection",
-  "ImageUploadWidget.clickToUploadLabel": "!!!or click to upload",
-  "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
   "api.errors.CanNotCalculateTransactionFeesError": "Cannot calculate fees while there are pending transactions.",
   "api.errors.ForbiddenMnemonicError": "Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
