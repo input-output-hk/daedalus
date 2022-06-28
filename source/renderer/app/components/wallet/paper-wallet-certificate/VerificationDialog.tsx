@@ -116,7 +116,9 @@ class VerificationDialog extends Component<Props, State> {
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           value: [],
           validators: [
-            ({ field }) => {
+            ({ field, form }) => {
+              if (!form.submitted) return true;
+
               const { intl } = this.context;
               const {
                 walletCertificateRecoveryPhrase,
@@ -166,8 +168,7 @@ class VerificationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        showErrorsOnChange: false,
-        validateOnChangeAfterSubmit: true,
+        validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -237,7 +238,7 @@ class VerificationDialog extends Component<Props, State> {
         className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: !!recoveryPhraseField.error,
+        disabled: form.hasError,
         onClick: this.submit.bind(this),
       },
     ];

@@ -167,18 +167,23 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         recoveryPhrase: {
           value: [...(this.props.recoveryPhrase || [])],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          validators: ({ field }) =>
-            validateMnemonics({
-              requiredWords: ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-              providedWords: field.value,
-              validator: (providedWords) => [
-                this.props.mnemonicValidator(
-                  providedWords.join(' '),
-                  providedWords.length
-                ),
-                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-              ],
-            }),
+          validators: ({ field, form }) => {
+            return form.submitted
+              ? validateMnemonics({
+                  requiredWords: ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  providedWords: field.value,
+                  validator: (providedWords) => [
+                    this.props.mnemonicValidator(
+                      providedWords.join(' '),
+                      providedWords.length
+                    ),
+                    this.context.intl.formatMessage(
+                      messages.invalidRecoveryPhrase
+                    ),
+                  ],
+                })
+              : true;
+          },
           hooks: {
             onChange: (field) => {
               if (
@@ -209,8 +214,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        showErrorsOnChange: false,
-        validateOnChangeAfterSubmit: true,
+        validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }

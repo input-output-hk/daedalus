@@ -226,23 +226,27 @@ class WalletRestoreDialog extends Component<Props, State> {
         },
         recoveryPhrase: {
           value: [],
-          validators: ({ field }) => {
+          validators: ({ field, form }) => {
             const expectedWordCount =
               RECOVERY_PHRASE_WORD_COUNT_OPTIONS[this.state.walletType];
-            return validateMnemonics({
-              requiredWords: expectedWordCount,
-              providedWords: field.value,
-              validator: (providedWords) => [
-                // TODO: we should also validate paper wallets mnemonics here!
-                !this.isCertificate()
-                  ? this.props.mnemonicValidator(
-                      providedWords,
-                      expectedWordCount
-                    )
-                  : true,
-                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-              ],
-            });
+            return form.submitted
+              ? validateMnemonics({
+                  requiredWords: expectedWordCount,
+                  providedWords: field.value,
+                  validator: (providedWords) => [
+                    // TODO: we should also validate paper wallets mnemonics here!
+                    !this.isCertificate()
+                      ? this.props.mnemonicValidator(
+                          providedWords,
+                          expectedWordCount
+                        )
+                      : true,
+                    this.context.intl.formatMessage(
+                      messages.invalidRecoveryPhrase
+                    ),
+                  ],
+                })
+              : true;
           },
         },
         spendingPassword: {
@@ -300,8 +304,7 @@ class WalletRestoreDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        showErrorsOnChange: false,
-        validateOnChangeAfterSubmit: true,
+        validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }

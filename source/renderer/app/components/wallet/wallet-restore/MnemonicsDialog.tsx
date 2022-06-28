@@ -74,15 +74,20 @@ class MnemonicsDialog extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [...this.props.mnemonics],
-          validators: ({ field }) =>
-            validateMnemonics({
-              requiredWords: this.props.expectedWordCount,
-              providedWords: field.value,
-              validator: (enteredWords) => [
-                this.props.onValidateMnemonics(enteredWords),
-                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-              ],
-            }),
+          validators: ({ field, form }) => {
+            return form.submitted
+              ? validateMnemonics({
+                  requiredWords: this.props.expectedWordCount,
+                  providedWords: field.value,
+                  validator: (enteredWords) => [
+                    this.props.onValidateMnemonics(enteredWords),
+                    this.context.intl.formatMessage(
+                      messages.invalidRecoveryPhrase
+                    ),
+                  ],
+                })
+              : true;
+          },
         },
       },
     },
@@ -91,8 +96,7 @@ class MnemonicsDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
-        showErrorsOnChange: false,
-        validateOnChangeAfterSubmit: true,
+        validateOnChange: true,
       },
     }
   );
@@ -107,9 +111,7 @@ class MnemonicsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, onSetWalletMnemonics, maxWordCount } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const canSubmit =
-      !recoveryPhraseField.error &&
-      recoveryPhraseField.value.length === maxWordCount;
+    const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
     const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
