@@ -209,7 +209,8 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        validateOnChange: true,
+        showErrorsOnChange: false,
+        validateOnChangeAfterSubmit: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }

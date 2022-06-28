@@ -120,7 +120,8 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
-        validateOnChange: true,
+        showErrorsOnChange: false,
+        validateOnChangeAfterSubmit: true,
       },
     }
   );
@@ -147,7 +148,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       'WalletRecoveryPhraseEntryDialog',
     ]);
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-    const enteredPhraseString = enteredPhrase.join(' ');
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelConfirm)
     ) : (

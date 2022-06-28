@@ -166,7 +166,8 @@ class VerificationDialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        validateOnChange: true,
+        showErrorsOnChange: false,
+        validateOnChangeAfterSubmit: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -236,7 +237,7 @@ class VerificationDialog extends Component<Props, State> {
         className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: form.hasError,
+        disabled: !!recoveryPhraseField.error,
         onClick: this.submit.bind(this),
       },
     ];

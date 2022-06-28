@@ -94,7 +94,8 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
-        validateOnChange: true,
+        showErrorsOnChange: false,
+        validateOnChangeAfterSubmit: true,
       },
     }
   );
