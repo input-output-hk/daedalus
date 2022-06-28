@@ -4,6 +4,7 @@ import type { ActionsMap } from '../actions/index';
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 import SidebarStore from './SidebarStore';
+import { noopAnalyticsTracker } from '../analytics';
 
 describe('Sidebar Store', () => {
   const api: Api = {
@@ -11,7 +12,6 @@ describe('Sidebar Store', () => {
     localStorage: jest.fn(),
   } as any;
   const actions: ActionsMap = jest.fn() as any;
-  const analyticsTrackerMock = jest.fn() as any;
 
   function setupStore({
     wallets,
@@ -23,7 +23,7 @@ describe('Sidebar Store', () => {
       isLegacy?: boolean;
     }>;
   }) {
-    const sidebarStore = new SidebarStore(api, actions, analyticsTrackerMock);
+    const sidebarStore = new SidebarStore(api, actions, noopAnalyticsTracker);
     sidebarStore.stores = {
       wallets: {
         all: wallets,

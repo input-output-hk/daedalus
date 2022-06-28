@@ -2,6 +2,7 @@ import type { Api } from '../api/index';
 import type { ActionsMap } from '../actions/index';
 import VotingStore, { FundPhase } from './VotingStore';
 import type { CatalystFund } from '../api/voting/types';
+import { noopAnalyticsTracker } from '../analytics';
 
 const mockFundInfo = {
   current: {
@@ -17,7 +18,6 @@ describe('VotingStore', () => {
     ada: jest.fn(),
   } as any;
   const actions: ActionsMap = jest.fn() as any;
-  const analyticsTrackerMock = jest.fn() as any;
 
   const cases = [
     [undefined, null],
@@ -42,7 +42,7 @@ describe('VotingStore', () => {
     ],
     [mockFundInfo.current.resultsTime, FundPhase.RESULTS],
   ];
-  const votingStore = new VotingStore(api, actions, analyticsTrackerMock);
+  const votingStore = new VotingStore(api, actions, noopAnalyticsTracker);
 
   beforeAll(() => {
     votingStore.catalystFund = mockFundInfo as CatalystFund;
