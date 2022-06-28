@@ -17,6 +17,8 @@ describe('VotingStore', () => {
     ada: jest.fn(),
   } as any;
   const actions: ActionsMap = jest.fn() as any;
+  const analyticsTrackerMock = jest.fn() as any;
+
   const cases = [
     [undefined, null],
     [
@@ -40,7 +42,7 @@ describe('VotingStore', () => {
     ],
     [mockFundInfo.current.resultsTime, FundPhase.RESULTS],
   ];
-  const votingStore = new VotingStore(api, actions);
+  const votingStore = new VotingStore(api, actions, analyticsTrackerMock);
 
   beforeAll(() => {
     votingStore.catalystFund = mockFundInfo as CatalystFund;

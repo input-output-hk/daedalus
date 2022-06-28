@@ -1,4 +1,4 @@
 import React from 'react';
-import { AnalyticsClient } from '../../analytics';
+import { AnalyticsTracker } from '../../analytics';
 
-export const AnalyticsContext = React.createContext<AnalyticsClient>(null);
+export const AnalyticsContext = React.createContext<AnalyticsTracker>(null);

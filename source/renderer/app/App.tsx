@@ -23,12 +23,14 @@ import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFla
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 import { MenuUpdater } from './containers/MenuUpdater';
 import { AnalyticsProvider } from './components/analytics';
+import { AnalyticsTracker } from './analytics';
 
 @observer
 class App extends Component<{
   stores: StoresMap;
   actions: ActionsMap;
   history: History;
+  analyticsTracker: AnalyticsTracker;
 }> {
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
@@ -37,7 +39,7 @@ class App extends Component<{
   }
 
   render() {
-    const { stores, actions, history } = this.props;
+    const { stores, actions, history, analyticsTracker } = this.props;
     const { app, networkStatus } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
@@ -62,7 +64,7 @@ class App extends Component<{
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <AnalyticsProvider>
+          <AnalyticsProvider tracker={analyticsTracker}>
             <MenuUpdater stores={stores} />
             <ThemeProvider
               theme={daedalusTheme}

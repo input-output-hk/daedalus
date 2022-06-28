@@ -24,10 +24,11 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
-import AnalyticsStore from './AnalyticsStore';
+import { AnalyticsTracker } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export const storeClasses = {
-  analytics: AnalyticsStore,
   addresses: AddressesStore,
   app: AppStore,
   appUpdate: AppUpdateStore,
@@ -51,7 +52,6 @@ export const storeClasses = {
   window: WindowStore,
 };
 export type StoresMap = {
-  analytics: AnalyticsStore;
   addresses: AddressesStore;
   app: AppStore;
   appUpdate: AppUpdateStore;
@@ -85,12 +85,17 @@ function executeOnEveryStore(fn: (store: Store) => void) {
   });
 } // Set up and return the stores for this app -> also used to reset all stores to defaults
 
-export default action(
-  (api, actions, router): StoresMap => {
+export const setUpStores = action(
+  (
+    api: Api,
+    actions: ActionsMap,
+    router: RouterStore,
+    analyticsTracker: AnalyticsTracker
+  ): StoresMap => {
     function createStoreInstanceOf<T extends Store>(
       StoreSubClass: Class<T>
     ): T {
-      return new StoreSubClass(api, actions);
+      return new StoreSubClass(api, actions, analyticsTracker);
     }
 
     // Teardown existing stores
@@ -98,7 +103,6 @@ export default action(
     // Create fresh instances of all stores
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ addresses: Store; app: Store; assets: Stor... Remove this comment to see the full error message
     stores = observable({
-      analytics: createStoreInstanceOf(AnalyticsStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       assets: createStoreInstanceOf(AssetsStore),

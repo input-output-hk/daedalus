@@ -11,6 +11,7 @@ describe('Sidebar Store', () => {
     localStorage: jest.fn(),
   } as any;
   const actions: ActionsMap = jest.fn() as any;
+  const analyticsTrackerMock = jest.fn() as any;
 
   function setupStore({
     wallets,
@@ -22,7 +23,7 @@ describe('Sidebar Store', () => {
       isLegacy?: boolean;
     }>;
   }) {
-    const sidebarStore = new SidebarStore(api, actions);
+    const sidebarStore = new SidebarStore(api, actions, analyticsTrackerMock);
     sidebarStore.stores = {
       wallets: {
         all: wallets,
