@@ -108,10 +108,7 @@ export default class AssetsStore extends Store {
       decimals,
     });
 
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Wallets',
-      'Changed native token settings'
-    );
+    this.analytics.sendEvent('Wallets', 'Changed native token settings');
   };
   @action
   _onEditedAssetUnset = () => {
@@ -199,7 +196,7 @@ export default class AssetsStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.favoritesRequest.execute();
 
-    this.stores.analytics.analyticsClient.sendEvent(
+    this.analytics.sendEvent(
       'Wallets',
       !isFavorite
         ? 'Added token from favorites'

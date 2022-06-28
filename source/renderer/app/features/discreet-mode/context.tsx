@@ -20,12 +20,12 @@ interface Props {
 
 export function DiscreetModeFeatureProvider({ children }: Props) {
   const localStorageFeature = useLocalStorageFeature();
-  const analyticsClient = useAnalytics();
+  const analyticsTracker = useAnalytics();
 
   const [discreetModeFeature] = useState<DiscreetMode>(() => {
     const feature = new DiscreetMode(
       new DiscreetModeApi(localStorageFeature),
-      analyticsClient
+      analyticsTracker
     );
 
     window.daedalus = merge(window.daedalus, {
@@ -36,12 +36,6 @@ export function DiscreetModeFeatureProvider({ children }: Props) {
 
     return feature;
   });
-
-  useEffect(() => {
-    if (analyticsClient) {
-      discreetModeFeature.setAnalyticsClient(analyticsClient);
-    }
-  }, [analyticsClient]);
 
   useFeature(discreetModeFeature);
 

@@ -525,7 +525,7 @@ export default class HardwareWalletsStore extends Store {
           }
         );
 
-        this.stores.analytics.analyticsClient.sendEvent(
+        this.analytics.sendEvent(
           'Wallets',
           'Transaction made',
           'Hardware wallet'
@@ -1471,7 +1471,7 @@ export default class HardwareWalletsStore extends Store {
           this.showAddress(params);
         }
 
-        this.stores.analytics.analyticsClient.sendEvent(
+        this.analytics.sendEvent(
           'Wallets',
           'Verified wallet address with hardware wallet'
         );

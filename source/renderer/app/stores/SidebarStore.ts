@@ -206,7 +206,7 @@ export default class SidebarStore extends Store {
     }
   };
   _sendAnalyticsEvent = (action: string) => {
-    this.stores.analytics.analyticsClient.sendEvent('Layout', action);
+    this.analytics.sendEvent('Layout', action);
   };
   _sendSearchAnalyticsEvent = debounce(() => {
     this._sendAnalyticsEvent('Used wallet search');

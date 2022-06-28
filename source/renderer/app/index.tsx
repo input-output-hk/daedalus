@@ -1,5 +1,5 @@
 import React from 'react';
-import { configure, action } from 'mobx';
+import { action, configure } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -19,7 +19,7 @@ import {
   DiscreetModeFeatureProvider,
   LocalStorageFeatureProvider,
 } from './features';
-import { AnalyticsTracker } from './analytics';
+import { MatomoAnalyticsTracker } from './analytics/MatomoAnalyticsTracker';
 // run MobX in strict mode
 configure({
   enforceActions: 'always',
@@ -34,7 +34,10 @@ const initializeDaedalus = () => {
   const api = setupApi(isTest);
   const hashHistory = createHashHistory();
   const routingStore = new RouterStore();
-  const analyticsTracker = new AnalyticsTracker(environment, api.localStorage);
+  const analyticsTracker = new MatomoAnalyticsTracker(
+    environment,
+    api.localStorage
+  );
   const stores = setUpStores(api, actions, routingStore, analyticsTracker);
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message

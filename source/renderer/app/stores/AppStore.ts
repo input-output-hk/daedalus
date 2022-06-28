@@ -249,6 +249,6 @@ export default class AppStore extends Store {
   };
 
   _sendAnalyticsEvent = (category: string, actionName: string) => {
-    this.stores.analytics.analyticsClient.sendEvent(category, actionName);
+    this.analytics.sendEvent(category, actionName);
   };
 }

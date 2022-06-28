@@ -431,7 +431,7 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE ACTIONS
   @action _toggleRTSFlagsMode = async () => {
-    this.stores.analytics.analyticsClient.sendEvent(
+    this.analytics.sendEvent(
       'Settings',
       `RTS flags ${this.isRTSFlagsModeEnabled ? 'disabled' : 'enabled'}`
     );

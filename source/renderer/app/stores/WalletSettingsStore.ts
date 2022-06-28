@@ -156,7 +156,7 @@ export default class WalletSettingsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateSpendingPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
-    this.stores.analytics.analyticsClient.sendEvent(
+    this.analytics.sendEvent(
       'Wallet Settings',
       'Changed wallet settings',
       'password'
@@ -194,7 +194,7 @@ export default class WalletSettingsStore extends Store {
     });
     this.updateWalletRequest.reset();
     this.stores.wallets.refreshWalletsData();
-    this.stores.analytics.analyticsClient.sendEvent(
+    this.analytics.sendEvent(
       'Wallet Settings',
       'Changed wallet settings',
       field
@@ -289,10 +289,7 @@ export default class WalletSettingsStore extends Store {
     const isCorrect = walletId === activeWalletId;
     const nextStep = isCorrect ? 3 : 4;
 
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Wallets',
-      'Verified recovery phrase'
-    );
+    this.analytics.sendEvent('Wallets', 'Verified recovery phrase');
 
     if (isCorrect) {
       const recoveryPhraseVerificationDate = new Date();

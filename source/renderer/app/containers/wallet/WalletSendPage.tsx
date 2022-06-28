@@ -12,8 +12,12 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
+import {
+  withAnalytics,
+  WithAnalyticsTrackerProps,
+} from '../../components/analytics/withAnalytics';
 
-type Props = InjectedProps;
+type Props = InjectedProps & WithAnalyticsTrackerProps;
 
 @inject('stores', 'actions')
 @observer
@@ -164,10 +168,10 @@ class WalletSendPage extends Component<Props> {
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
-        analyticsClient={this.props.stores.analytics.analyticsClient}
+        analyticsTracker={this.props.analyticsTracker}
       />
     );
   }
 }
 
-export default WalletSendPage;
+export default withAnalytics(WalletSendPage);

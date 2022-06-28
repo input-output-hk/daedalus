@@ -88,6 +88,7 @@ describe('wallet/Wallet Send Form', () => {
                 walletName={faker.name.firstName()}
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
+                analyticsTracker={jest.fn() as any}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>

@@ -229,10 +229,7 @@ export default class StakingStore extends Store {
   };
 
   _sendStakePoolsSliderUsedAnalyticsEvent = debounce(() => {
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Stake Pools',
-      'Used stake pools amount slider'
-    );
+    this.analytics.sendEvent('Stake Pools', 'Used stake pools amount slider');
   }, 5000);
 
   @action
@@ -276,10 +273,7 @@ export default class StakingStore extends Store {
         // Update
         // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
         await this.api.localStorage.setSmashServer(smashServerUrl);
-        this.stores.analytics.analyticsClient.sendEvent(
-          'Settings',
-          'Changed SMASH server'
-        );
+        this.analytics.sendEvent('Settings', 'Changed SMASH server');
       } catch (error) {
         runInAction(() => {
           this.smashServerUrlError = error;
@@ -400,7 +394,7 @@ export default class StakingStore extends Store {
 
       const wallet = this.stores.wallets.getWalletById(walletId);
 
-      this.stores.analytics.analyticsClient.sendEvent(
+      this.analytics.sendEvent(
         'Stake Pools',
         wallet.isDelegating ? 'Redelegated a wallet' : 'Delegated a wallet'
       );
@@ -528,10 +522,7 @@ export default class StakingStore extends Store {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     this.actions.staking.requestCSVFileSuccess.trigger();
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Stake Pools',
-      'Exported rewards as CSV'
-    );
+    this.analytics.sendEvent('Stake Pools', 'Exported rewards as CSV');
   };
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest

@@ -368,10 +368,7 @@ export default class TransactionsStore extends Store {
       ...filterOptions,
     };
 
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Wallets',
-      'Set transaction filters'
-    );
+    this.analytics.sendEvent('Wallets', 'Set transaction filters');
     return true;
   };
   @action
@@ -410,10 +407,7 @@ export default class TransactionsStore extends Store {
     });
     if (success) {
       actions.transactions.requestCSVFileSuccess.trigger();
-      this.stores.analytics.analyticsClient.sendEvent(
-        'Wallets',
-        'Exported transactions as CSV'
-      );
+      this.analytics.sendEvent('Wallets', 'Exported transactions as CSV');
     }
   };
   @action

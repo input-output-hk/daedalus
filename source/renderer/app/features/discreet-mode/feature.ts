@@ -5,12 +5,12 @@ import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
 import type { ReplacerFn } from './types';
-import { AnalyticsClient } from '../../analytics';
+import { AnalyticsTracker } from '../../analytics';
 
 export class DiscreetMode extends Feature {
   constructor(
     private api: DiscreetModeApi,
-    private analyticsClient: AnalyticsClient
+    private analyticsTracker: AnalyticsTracker
   ) {
     super();
     runInAction(() => {
@@ -32,10 +32,6 @@ export class DiscreetMode extends Feature {
   @observable
   setDiscreetModeSettingsRequest: Request<Promise<boolean>>;
 
-  setAnalyticsClient(analyticsClient: AnalyticsClient) {
-    this.analyticsClient = analyticsClient;
-  }
-
   async start() {
     super.start();
     await this._setupDiscreetMode();
@@ -55,7 +51,7 @@ export class DiscreetMode extends Feature {
   @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
-    this.analyticsClient.sendEvent(
+    this.analyticsTracker.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode'
@@ -70,7 +66,7 @@ export class DiscreetMode extends Feature {
     runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
-    this.analyticsClient.sendEvent(
+    this.analyticsTracker.sendEvent(
       'Settings',
       this.isDiscreetMode
         ? 'Turned on discreet mode by default'

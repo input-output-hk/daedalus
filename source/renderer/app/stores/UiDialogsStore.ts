@@ -61,21 +61,18 @@ export default class UiDialogsStore extends Store {
   _handleAnalytics = (dialog: object) => {
     switch (dialog) {
       case WalletReceiveDialog:
-        this.stores.analytics.analyticsClient.sendEvent(
+        this.analytics.sendEvent(
           'Wallets',
           'Opened share wallet address modal'
         );
         break;
 
       case AssetSettingsDialog:
-        this.stores.analytics.analyticsClient.sendEvent(
-          'Wallets',
-          'Opened native token settings'
-        );
+        this.analytics.sendEvent('Wallets', 'Opened native token settings');
         break;
 
       case DelegationSetupWizardDialog:
-        this.stores.analytics.analyticsClient.sendEvent(
+        this.analytics.sendEvent(
           'Stake Pools',
           'Opened delegate wallet dialog'
         );

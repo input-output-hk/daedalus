@@ -372,11 +372,7 @@ export default class ProfileStore extends Store {
       this.stores.wallets.refreshWalletsData();
     }
 
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Settings',
-      'Changed user settings',
-      param
-    );
+    this.analytics.sendEvent('Settings', 'Changed user settings', param);
   };
   _updateTheme = async ({ theme }: { theme: string }) => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -384,11 +380,7 @@ export default class ProfileStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getThemeRequest.execute();
 
-    this.stores.analytics.analyticsClient.sendEvent(
-      'Settings',
-      'Changed theme',
-      theme
-    );
+    this.analytics.sendEvent('Settings', 'Changed theme', theme);
   };
   _acceptTermsOfUse = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
