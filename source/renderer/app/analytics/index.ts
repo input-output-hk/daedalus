@@ -1,3 +1,3 @@
 export { AnalyticsAcceptanceStatus } from './types';
-export { AnalyticsTracker } from './AnalyticsTracker';
-export { NoopAnalyticsTracker } from './NoopAnalyticsTracker';
+export type { AnalyticsClient, AnalyticsTracker } from './types';
+export { noopAnalyticsTracker } from './NoopAnalyticsTracker';

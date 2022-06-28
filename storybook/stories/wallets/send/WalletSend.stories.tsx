@@ -19,9 +19,7 @@ import Wallet, {
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
-import { NoopAnalyticsTracker } from '../../../../source/renderer/app/analytics';
-
-const analyticsTracker = NoopAnalyticsTracker;
+import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
 
 const allAssets = [
   generateAssetToken(

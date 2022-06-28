@@ -1,7 +1,7 @@
 import { Network } from '../../../common/types/environment.types';
 
 export const ANALYTICS_API_ENDPOINT =
-  'http://daedalusqa.matomo.cloud/matomo.php';
+  'https://daedalusqa.matomo.cloud/matomo.php';
 export const PRIVACY_POLICY_LINK =
   'https://static.iohk.io/terms/iog-privacy-policy.pdf';
 export const DEV_MODE_SITE_MAP_ID = 1;
