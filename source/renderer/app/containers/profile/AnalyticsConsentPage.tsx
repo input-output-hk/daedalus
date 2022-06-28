@@ -6,7 +6,7 @@ import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 import { useActions } from '../../hooks/useActions';
 import { useStores } from '../../hooks/useStores';
 
-const AnalyticsConsentPage: FC = () => {
+export function AnalyticsConsentPage() {
   const actions = useActions();
   const { networkStatus, profile, app } = useStores();
 
@@ -31,6 +31,6 @@ const AnalyticsConsentPage: FC = () => {
       />
     </TopBarLayout>
   );
-};
+}
 
 export default AnalyticsConsentPage;

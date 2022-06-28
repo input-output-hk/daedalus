@@ -16,12 +16,12 @@ interface AnalyticsConsentFormProps {
   onExternalLinkClick: (url: string) => void;
 }
 
-const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
+function AnalyticsConsentForm({
   intl,
   loading,
   onSubmit,
   onExternalLinkClick,
-}: AnalyticsConsentFormProps) => {
+}: AnalyticsConsentFormProps) {
   const handleAllow = useCallback(() => {
     onSubmit(true);
   }, []);
@@ -76,6 +76,6 @@ const AnalyticsConsentForm: FC<AnalyticsConsentFormProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default injectIntl(AnalyticsConsentForm);

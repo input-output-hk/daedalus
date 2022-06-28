@@ -9,7 +9,7 @@ export const messages = defineMessages({
   description: {
     id: 'analytics.form.description',
     defaultMessage:
-      '!!!Analytic data is used for product development purposes only.',
+      '!!!All data is anonymous and is used only for product development purposes.',
     description: 'Analytics data collection description',
   },
   dataCollectionSwitchButton: {
