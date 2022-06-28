@@ -2692,7 +2692,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Analytics data is used for product development purposes only.",
+        "defaultMessage": "!!!All data is anonymous and is used only for product development purposes.",
         "description": "Analytics data collection description",
         "id": "analytics.form.description"
       },

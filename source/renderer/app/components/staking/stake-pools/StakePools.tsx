@@ -22,7 +22,7 @@ import {
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
-import { AnalyticsTracker } from 'source/renderer/app/analytics';
+import { AnalyticsTracker } from '../../../analytics';
 
 const messages = defineMessages({
   delegatingListTitle: {

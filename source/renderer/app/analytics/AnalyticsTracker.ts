@@ -1,4 +1,5 @@
-import { AnalyticsClient, AnalyticsAcceptanceStatus } from '.';
+import { AnalyticsAcceptanceStatus } from '.';
+import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
 import LocalStorageApi from '../api/utils/localStorage';
 import { MatomoClient } from './MatomoClient';
