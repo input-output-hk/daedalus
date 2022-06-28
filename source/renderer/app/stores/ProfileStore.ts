@@ -1,8 +1,6 @@
-import { action, observable, computed, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { includes, camelCase } from 'lodash';
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
+import { camelCase, includes } from 'lodash';
 import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -15,32 +13,32 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
+import type { Locale } from '../../../common/types/locales.types';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
   downloadLogsChannel,
   getLogsChannel,
 } from '../ipc/logs.ipc';
-import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
+import type { CompressedLogStatus, LogFiles } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
-import type { Locale } from '../../../common/types/locales.types';
 import {
   DEFAULT_NUMBER_FORMAT,
   NUMBER_FORMATS,
 } from '../../../common/types/number.types';
 import {
+  getRequestKeys,
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
   requestGetterLocale,
-  getRequestKeys,
 } from '../utils/storesUtils';
 import {
-  NUMBER_OPTIONS,
   DATE_ENGLISH_OPTIONS,
   DATE_JAPANESE_OPTIONS,
-  TIME_OPTIONS,
+  NUMBER_OPTIONS,
   PROFILE_SETTINGS,
+  TIME_OPTIONS,
 } from '../config/profileConfig';
 import { buildSystemInfo } from '../utils/buildSystemInfo';
 import { AnalyticsAcceptanceStatus } from '../analytics/types';
@@ -394,6 +392,12 @@ export default class ProfileStore extends Store {
   _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
     this.setAnalyticsAcceptanceRequest.execute(status);
     this.getAnalyticsAcceptanceRequest.execute();
+
+    if (status === AnalyticsAcceptanceStatus.ACCEPTED) {
+      this.analytics.enableTracking();
+    } else if (status === AnalyticsAcceptanceStatus.REJECTED) {
+      this.analytics.disableTracking();
+    }
   };
   _getAnalyticsAcceptance = () => {
     this.getAnalyticsAcceptanceRequest.execute();
