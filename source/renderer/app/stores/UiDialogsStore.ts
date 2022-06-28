@@ -4,6 +4,7 @@ import Store from './lib/Store';
 import WalletReceiveDialog from '../components/wallet/receive/WalletReceiveDialog';
 import AssetSettingsDialog from '../components/assets/AssetSettingsDialog';
 import DelegationSetupWizardDialog from '../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { EventCategories } from '../analytics';
 
 export default class UiDialogsStore extends Store {
   @observable
@@ -62,18 +63,21 @@ export default class UiDialogsStore extends Store {
     switch (dialog) {
       case WalletReceiveDialog:
         this.analytics.sendEvent(
-          'Wallets',
+          EventCategories.WALLETS,
           'Opened share wallet address modal'
         );
         break;
 
       case AssetSettingsDialog:
-        this.analytics.sendEvent('Wallets', 'Opened native token settings');
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Opened native token settings'
+        );
         break;
 
       case DelegationSetupWizardDialog:
         this.analytics.sendEvent(
-          'Stake Pools',
+          EventCategories.STAKE_POOLS,
           'Opened delegate wallet dialog'
         );
         break;

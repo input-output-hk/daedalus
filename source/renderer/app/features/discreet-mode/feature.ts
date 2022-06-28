@@ -5,7 +5,7 @@ import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
 import type { ReplacerFn } from './types';
-import { AnalyticsTracker } from '../../analytics';
+import { AnalyticsTracker, EventCategories } from '../../analytics';
 
 export class DiscreetMode extends Feature {
   constructor(
@@ -52,7 +52,7 @@ export class DiscreetMode extends Feature {
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
     this.analyticsTracker.sendEvent(
-      'Settings',
+      EventCategories.SETTINGS,
       this.isDiscreetMode
         ? 'Turned on discreet mode'
         : 'Turned off discreet mode'
@@ -67,7 +67,7 @@ export class DiscreetMode extends Feature {
       this.openInDiscreetMode = nextSetting;
     });
     this.analyticsTracker.sendEvent(
-      'Settings',
+      EventCategories.SETTINGS,
       this.isDiscreetMode
         ? 'Turned on discreet mode by default'
         : 'Turned off discreet mode by default'

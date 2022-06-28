@@ -16,7 +16,7 @@ import { SimpleTransactionList } from './render-strategies/SimpleTransactionList
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
-import { AnalyticsTracker } from '../../../analytics';
+import { AnalyticsTracker, EventCategories } from '../../../analytics';
 
 const messages = defineMessages({
   today: {
@@ -206,7 +206,7 @@ class WalletTransactionsList extends Component<Props, State> {
     if (this.props.onShowMoreTransactions) {
       this.props.onShowMoreTransactions(walletId);
       this.props.analyticsTracker.sendEvent(
-        'Wallet Details',
+        EventCategories.WALLETS,
         'Clicked Show More Transactions button'
       );
     }

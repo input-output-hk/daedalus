@@ -6,6 +6,7 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
+import { EventCategories } from '../analytics';
 
 type WalletId = string;
 export default class AssetsStore extends Store {
@@ -108,7 +109,10 @@ export default class AssetsStore extends Store {
       decimals,
     });
 
-    this.analytics.sendEvent('Wallets', 'Changed native token settings');
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Changed native token settings'
+    );
   };
   @action
   _onEditedAssetUnset = () => {
@@ -197,7 +201,7 @@ export default class AssetsStore extends Store {
     await this.favoritesRequest.execute();
 
     this.analytics.sendEvent(
-      'Wallets',
+      EventCategories.WALLETS,
       !isFavorite
         ? 'Added token from favorites'
         : 'Removed token from favorites'

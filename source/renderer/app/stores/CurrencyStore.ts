@@ -7,6 +7,7 @@ import {
   getCurrencyFromCode,
 } from '../config/currencyConfig';
 import type { Currency, LocalizedCurrency } from '../types/currencyTypes';
+import { EventCategories } from '../analytics';
 
 export default class CurrencyStore extends Store {
   @observable
@@ -128,7 +129,11 @@ export default class CurrencyStore extends Store {
       await this.api.localStorage.setCurrencySelected(selected.code);
     }
 
-    this.analytics.sendEvent('Settings', 'Changed currency', code);
+    this.analytics.sendEvent(
+      EventCategories.SETTINGS,
+      'Changed currency',
+      code
+    );
   };
   @action
   _toggleCurrencyIsActive = () => {
@@ -136,7 +141,7 @@ export default class CurrencyStore extends Store {
     this.api.localStorage.setCurrencyIsActive(this.isActive);
 
     this.analytics.sendEvent(
-      'Settings',
+      EventCategories.SETTINGS,
       `Turned ${
         this.isActive ? 'on' : 'off'
       } displaying ada balances in other currency`

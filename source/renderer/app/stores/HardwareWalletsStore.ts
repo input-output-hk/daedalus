@@ -101,6 +101,7 @@ import type {
   TrezorWitness,
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
+import { EventCategories } from '../analytics';
 
 export type TxSignRequestTypes = {
   coinSelection: CoinSelectionsResponse;
@@ -526,7 +527,7 @@ export default class HardwareWalletsStore extends Store {
         );
 
         this.analytics.sendEvent(
-          'Wallets',
+          EventCategories.WALLETS,
           'Transaction made',
           'Hardware wallet'
         );
@@ -1472,7 +1473,7 @@ export default class HardwareWalletsStore extends Store {
         }
 
         this.analytics.sendEvent(
-          'Wallets',
+          EventCategories.WALLETS,
           'Verified wallet address with hardware wallet'
         );
       } else {

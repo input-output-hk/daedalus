@@ -23,7 +23,7 @@ import {
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
-import { AnalyticsTracker } from '../../../analytics';
+import { AnalyticsTracker, EventCategories } from '../../../analytics';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -120,7 +120,7 @@ class StakePools extends Component<Props, State> {
   sendSearchAnalyticsEvent = debounce(
     () =>
       this.props.analyticsTracker.sendEvent(
-        'Stake Pools',
+        EventCategories.STAKE_POOLS,
         'Used stake pools search'
       ),
     5000
@@ -147,7 +147,7 @@ class StakePools extends Component<Props, State> {
     });
 
     this.props.analyticsTracker.sendEvent(
-      'Stake Pools',
+      EventCategories.STAKE_POOLS,
       'Changed view to grid view'
     );
   };
@@ -159,7 +159,7 @@ class StakePools extends Component<Props, State> {
     });
 
     this.props.analyticsTracker.sendEvent(
-      'Stake Pools',
+      EventCategories.STAKE_POOLS,
       'Changed view to grid rewards view'
     );
   };
@@ -171,7 +171,7 @@ class StakePools extends Component<Props, State> {
     });
 
     this.props.analyticsTracker.sendEvent(
-      'Stake Pools',
+      EventCategories.STAKE_POOLS,
       'Changed view to list view'
     );
   };

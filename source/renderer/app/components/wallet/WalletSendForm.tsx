@@ -41,7 +41,7 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
 import { Divider } from './widgets/Divider';
-import { AnalyticsTracker } from '../../analytics';
+import { AnalyticsTracker, EventCategories } from '../../analytics';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -709,7 +709,7 @@ class WalletSendForm extends Component<Props, State> {
         this.removeAssetFields(uniqueId);
         await this.calculateTransactionFee(true);
         this.props.analyticsTracker.sendEvent(
-          'Wallets',
+          EventCategories.WALLETS,
           'Removed token from transaction'
         );
       }
@@ -1170,7 +1170,7 @@ class WalletSendForm extends Component<Props, State> {
               onTokenPickerDialogClose();
               checked.forEach(this.addAssetRow);
               this.props.analyticsTracker.sendEvent(
-                'Wallets',
+                EventCategories.WALLETS,
                 'Added token to transaction'
               );
             }}

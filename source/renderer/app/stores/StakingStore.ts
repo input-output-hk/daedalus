@@ -36,6 +36,7 @@ import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import { EventCategories } from '../analytics';
 
 export default class StakingStore extends Store {
   @observable
@@ -229,7 +230,10 @@ export default class StakingStore extends Store {
   };
 
   _sendStakePoolsSliderUsedAnalyticsEvent = debounce(() => {
-    this.analytics.sendEvent('Stake Pools', 'Used stake pools amount slider');
+    this.analytics.sendEvent(
+      EventCategories.STAKE_POOLS,
+      'Used stake pools amount slider'
+    );
   }, 5000);
 
   @action
@@ -273,7 +277,10 @@ export default class StakingStore extends Store {
         // Update
         // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
         await this.api.localStorage.setSmashServer(smashServerUrl);
-        this.analytics.sendEvent('Settings', 'Changed SMASH server');
+        this.analytics.sendEvent(
+          EventCategories.SETTINGS,
+          'Changed SMASH server'
+        );
       } catch (error) {
         runInAction(() => {
           this.smashServerUrlError = error;
@@ -395,7 +402,7 @@ export default class StakingStore extends Store {
       const wallet = this.stores.wallets.getWalletById(walletId);
 
       this.analytics.sendEvent(
-        'Stake Pools',
+        EventCategories.STAKE_POOLS,
         wallet.isDelegating ? 'Redelegated a wallet' : 'Delegated a wallet'
       );
     } catch (error) {
@@ -522,7 +529,10 @@ export default class StakingStore extends Store {
     });
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     this.actions.staking.requestCSVFileSuccess.trigger();
-    this.analytics.sendEvent('Stake Pools', 'Exported rewards as CSV');
+    this.analytics.sendEvent(
+      EventCategories.STAKE_POOLS,
+      'Exported rewards as CSV'
+    );
   };
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest

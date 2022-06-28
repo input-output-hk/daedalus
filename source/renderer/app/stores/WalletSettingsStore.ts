@@ -11,6 +11,7 @@ import type { WalletExportToFileParams } from '../actions/wallet-settings-action
 import type { WalletUtxos } from '../api/wallets/types';
 import type { WalletLocalData } from '../api/utils/localStorage';
 import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
+import { EventCategories } from '../analytics';
 
 export default class WalletSettingsStore extends Store {
   @observable
@@ -157,7 +158,7 @@ export default class WalletSettingsStore extends Store {
     this.updateSpendingPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
     this.analytics.sendEvent(
-      'Wallet Settings',
+      EventCategories.WALLETS,
       'Changed wallet settings',
       'password'
     );
@@ -195,7 +196,7 @@ export default class WalletSettingsStore extends Store {
     this.updateWalletRequest.reset();
     this.stores.wallets.refreshWalletsData();
     this.analytics.sendEvent(
-      'Wallet Settings',
+      EventCategories.WALLETS,
       'Changed wallet settings',
       field
     );
@@ -289,7 +290,10 @@ export default class WalletSettingsStore extends Store {
     const isCorrect = walletId === activeWalletId;
     const nextStep = isCorrect ? 3 : 4;
 
-    this.analytics.sendEvent('Wallets', 'Verified recovery phrase');
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Verified recovery phrase'
+    );
 
     if (isCorrect) {
       const recoveryPhraseVerificationDate = new Date();

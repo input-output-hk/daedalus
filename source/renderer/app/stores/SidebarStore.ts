@@ -10,6 +10,7 @@ import type {
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import { changeWalletSorting, sortWallets } from '../utils/walletSorting';
 import Store from './lib/Store';
+import { EventCategories } from '../analytics';
 
 export default class SidebarStore extends Store {
   @observable
@@ -98,7 +99,10 @@ export default class SidebarStore extends Store {
       currentSortBy: this.walletSortConfig.sortBy,
     });
 
-    this._sendAnalyticsEvent('Changed wallet sorting settings');
+    this.analytics.sendEvent(
+      EventCategories.LAYOUT,
+      'Changed wallet sorting settings'
+    );
   };
   @action
   onSearchValueUpdated = (searchValue: string) => {
@@ -178,17 +182,17 @@ export default class SidebarStore extends Store {
   @action
   _showSubMenus = () => {
     this.isShowingSubMenus = true;
-    this._sendAnalyticsEvent('Toggled submenu');
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   @action
   _hideSubMenus = () => {
     this.isShowingSubMenus = false;
-    this._sendAnalyticsEvent('Toggled submenu');
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   @action
   _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
-    this._sendAnalyticsEvent('Toggled submenu');
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
@@ -205,10 +209,7 @@ export default class SidebarStore extends Store {
       this._configureCategories();
     }
   };
-  _sendAnalyticsEvent = (action: string) => {
-    this.analytics.sendEvent('Layout', action);
-  };
   _sendSearchAnalyticsEvent = debounce(() => {
-    this._sendAnalyticsEvent('Used wallet search');
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Used wallet search');
   }, 5000);
 }

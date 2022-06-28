@@ -15,6 +15,7 @@ import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
+import { EventCategories } from '../analytics';
 
 export default class AppStore extends Store {
   @observable
@@ -89,7 +90,7 @@ export default class AppStore extends Store {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;
 
     if (this.newsFeedIsOpen) {
-      this._sendAnalyticsEvent('Topbar', 'Opened newsfeed');
+      this.analytics.sendEvent(EventCategories.LAYOUT, 'Opened newsfeed');
     }
   };
   @action
@@ -118,21 +119,27 @@ export default class AppStore extends Store {
       case DIALOGS.ABOUT:
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.ABOUT);
-        this._sendAnalyticsEvent('System menu', 'Showed about dialog');
+        this.analytics.sendEvent(
+          EventCategories.SYSTEM_MENU,
+          'Showed about dialog'
+        );
         break;
 
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
-        this._sendAnalyticsEvent('System menu', 'Showed diagnostics dialog');
+        this.analytics.sendEvent(
+          EventCategories.SYSTEM_MENU,
+          'Showed diagnostics dialog'
+        );
 
         break;
 
       case DIALOGS.TOGGLE_RTS_FLAGS_MODE:
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         this._updateActiveDialog(DIALOGS.TOGGLE_RTS_FLAGS_MODE);
-        this._sendAnalyticsEvent(
-          'System menu',
+        this.analytics.sendEvent(
+          EventCategories.SYSTEM_MENU,
           'Showed toggle RTS flags dialog'
         );
         break;
@@ -140,15 +147,18 @@ export default class AppStore extends Store {
       case DIALOGS.ITN_REWARDS_REDEMPTION:
         // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
         this.actions.staking.onRedeemStart.trigger();
-        this._sendAnalyticsEvent(
-          'System menu',
+        this.analytics.sendEvent(
+          EventCategories.SYSTEM_MENU,
           'Showed ITN rewards redemption dialog'
         );
         break;
 
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
-        this._sendAnalyticsEvent('System menu', 'Downloaded logs');
+        this.analytics.sendEvent(
+          EventCategories.SYSTEM_MENU,
+          'Downloaded logs'
+        );
         break;
 
       case PAGES.SETTINGS:
@@ -246,9 +256,5 @@ export default class AppStore extends Store {
   @action
   _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
-  };
-
-  _sendAnalyticsEvent = (category: string, actionName: string) => {
-    this.analytics.sendEvent(category, actionName);
   };
 }

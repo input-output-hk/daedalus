@@ -57,6 +57,7 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
+import { EventCategories } from '../analytics';
 /* eslint-disable consistent-return */
 
 /**
@@ -365,7 +366,10 @@ export default class WalletsStore extends Store {
       runInAction('update account public key', () => {
         this.activePublicKey = accountPublicKey;
       });
-      this.analytics.sendEvent('Wallets', 'Reveal wallet public key');
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Reveal wallet public key'
+      );
     } catch (error) {
       throw error;
     }
@@ -398,7 +402,10 @@ export default class WalletsStore extends Store {
       runInAction('update ICO public key', () => {
         this.icoPublicKey = icoPublicKey;
       });
-      this.analytics.sendEvent('Wallets', 'Reveal wallet public key');
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Reveal wallet public key'
+      );
     } catch (error) {
       throw error;
     }
@@ -467,7 +474,7 @@ export default class WalletsStore extends Store {
       this.refreshWalletsData();
 
       this.analytics.sendEvent(
-        'Wallets',
+        EventCategories.WALLETS,
         'Restored a software wallet',
         this.walletKind
       );
@@ -626,7 +633,10 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
         this.actions.dialogs.closeActiveDialog.trigger();
-        this.analytics.sendEvent('Wallets', 'Created a new hardware wallet');
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Created a new hardware wallet'
+        );
       }
     } catch (error) {
       throw error;
@@ -647,7 +657,10 @@ export default class WalletsStore extends Store {
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
       this.refreshWalletsData();
-      this.analytics.sendEvent('Wallets', 'Created a new software wallet');
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Created a new software wallet'
+      );
     }
   };
   _deleteWallet = async (params: { walletId: string; isLegacy: boolean }) => {
@@ -692,7 +705,7 @@ export default class WalletsStore extends Store {
     });
 
     this.analytics.sendEvent(
-      'Wallets',
+      EventCategories.WALLETS,
       'Wallet deleted',
       walletToDelete.isHardwareWallet ? 'Hardware wallet' : 'Software wallet'
     );
@@ -833,7 +846,11 @@ export default class WalletsStore extends Store {
       assets: formattedAssets,
       hasAssetsRemainingAfterTransaction,
     });
-    this.analytics.sendEvent('Wallets', 'Transaction made', 'Software wallet');
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Transaction made',
+      'Software wallet'
+    );
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
@@ -1526,7 +1543,7 @@ export default class WalletsStore extends Store {
         walletAddress,
       });
       this.analytics.sendEvent(
-        'Wallets',
+        EventCategories.WALLETS,
         'Saved wallet address as PDF',
         'Software wallet'
       );
@@ -1551,7 +1568,7 @@ export default class WalletsStore extends Store {
         walletAddress,
       });
       this.analytics.sendEvent(
-        'Wallets',
+        EventCategories.WALLETS,
         'Saved wallet address as QR code',
         'Software wallet'
       );

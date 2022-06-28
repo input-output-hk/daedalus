@@ -28,6 +28,7 @@ import {
   isTransactionInFilterRange,
 } from '../utils/transaction';
 import type { ApiTokens } from '../api/assets/types';
+import { EventCategories } from '../analytics';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
@@ -368,7 +369,10 @@ export default class TransactionsStore extends Store {
       ...filterOptions,
     };
 
-    this.analytics.sendEvent('Wallets', 'Set transaction filters');
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Set transaction filters'
+    );
     return true;
   };
   @action
@@ -407,7 +411,10 @@ export default class TransactionsStore extends Store {
     });
     if (success) {
       actions.transactions.requestCSVFileSuccess.trigger();
-      this.analytics.sendEvent('Wallets', 'Exported transactions as CSV');
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Exported transactions as CSV'
+      );
     }
   };
   @action
