@@ -28,7 +28,7 @@ interface MnemonicAutocompleteContainerProps {
   inputRef: RefObject<HTMLInputElement>;
 }
 
-const MnemonicAutocompleteContainer = ({
+function MnemonicAutocompleteContainer({
   onChange,
   onConfirmSelection,
   onPaste,
@@ -41,7 +41,7 @@ const MnemonicAutocompleteContainer = ({
   error,
   noResultsMessage,
   inputRef,
-}: MnemonicAutocompleteContainerProps) => {
+}: MnemonicAutocompleteContainerProps) {
   const initialState = useMemo(
     () => ({
       inputValue: value,
@@ -186,6 +186,6 @@ const MnemonicAutocompleteContainer = ({
       )}
     </GlobalListeners>
   );
-};
+}
 
 export { MnemonicAutocompleteContainer };

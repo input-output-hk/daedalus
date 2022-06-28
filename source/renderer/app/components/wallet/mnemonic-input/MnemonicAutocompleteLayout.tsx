@@ -35,7 +35,7 @@ interface MnemonicInputSkinProps {
   suggestionsRef: RefObject<HTMLDivElement>;
 }
 
-const MnemonicAutocompleteLayout = ({
+function MnemonicAutocompleteLayout({
   onClick,
   onChange,
   onSelect,
@@ -58,47 +58,49 @@ const MnemonicAutocompleteLayout = ({
   rootRef,
   inputRef,
   suggestionsRef,
-}: MnemonicInputSkinProps) => (
-  <div aria-hidden className={styles.root} ref={rootRef} role="presentation">
-    <div className={styles.inputLabel}>{ordinalNumber}.</div>
-    <FormField
-      error={error}
-      disabled={disabled}
-      formFieldRef={inputRef}
-      isErrorHidden={isOpen}
-      render={(setFormFieldRef) => (
-        <div ref={suggestionsRef} className={styles.inputWrapper}>
-          <input
-            className={cx(styles.input, error && styles.inputError)}
-            ref={setFormFieldRef}
-            value={value}
-            onBlur={onBlur}
-            onChange={onChange}
-            onClick={onClick}
-            onPaste={onPaste}
-            disabled={disabled}
-            spellCheck="false"
-          />
-        </div>
-      )}
-    />
-    <Options
-      isOpen={isOpen}
-      noResults={!options.length}
-      onChange={onSelect}
-      options={options}
-      persistSearchValue
-      optionsRef={optionsRef}
-      optionsMaxHeight={optionsMaxHeight}
-      resetOnClose
-      skin={OptionsSkin}
-      targetRef={suggestionsRef}
-      toggleMouseLocation={toggleMouseLocation}
-      toggleOpen={toggleOpen}
-      optionHeight={optionHeight}
-      noResultsMessage={noResultsMessage}
-    />
-  </div>
-);
+}: MnemonicInputSkinProps) {
+  return (
+    <div aria-hidden className={styles.root} ref={rootRef} role="presentation">
+      <div className={styles.inputLabel}>{ordinalNumber}.</div>
+      <FormField
+        error={error}
+        disabled={disabled}
+        formFieldRef={inputRef}
+        isErrorHidden={isOpen}
+        render={(setFormFieldRef) => (
+          <div ref={suggestionsRef} className={styles.inputWrapper}>
+            <input
+              className={cx(styles.input, error && styles.inputError)}
+              ref={setFormFieldRef}
+              value={value}
+              onBlur={onBlur}
+              onChange={onChange}
+              onClick={onClick}
+              onPaste={onPaste}
+              disabled={disabled}
+              spellCheck="false"
+            />
+          </div>
+        )}
+      />
+      <Options
+        isOpen={isOpen}
+        noResults={!options.length}
+        onChange={onSelect}
+        options={options}
+        persistSearchValue
+        optionsRef={optionsRef}
+        optionsMaxHeight={optionsMaxHeight}
+        resetOnClose
+        skin={OptionsSkin}
+        targetRef={suggestionsRef}
+        toggleMouseLocation={toggleMouseLocation}
+        toggleOpen={toggleOpen}
+        optionHeight={optionHeight}
+        noResultsMessage={noResultsMessage}
+      />
+    </div>
+  );
+}
 
 export { MnemonicAutocompleteLayout };
