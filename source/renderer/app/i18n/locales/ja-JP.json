@@ -310,7 +310,7 @@
   "paper.wallet.create.certificate.verification.dialog.mnemonicCounter": "{providedWordCount}/{requiredWordCount}語入力済み",
   "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel": "ウォレットを復元する唯一の方法がペーパーウォレット証明書を利用することであることを理解しました。",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label": "ペーパーウォレット復元フレーズ",
-  "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults": "該当するフレーズは見つかりませんでした",
+  "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults": "該当なし",
   "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel": "作成したペーパーウォレットがDaedalusウォレットに保管されないことを理解しました。",
   "paper.wallet.create.certificate.verification.dialog.subtitle": "ペーパーウォレット証明書の有効性を検証するためにペーパーウォレット復元フレーズを入力してください。",
   "paper.wallet.pdf.info.author": "Daedalusウォレット",
