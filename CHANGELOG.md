@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Features
+
+- Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
+
 ## 4.11.0
 
 ### Fixes
