@@ -3,6 +3,7 @@ import { matchPath } from 'react-router-dom';
 import { WalletSettingsStateEnum } from '../../../../common/ipc/api';
 import { ROUTES } from '../../routes-config';
 import type { UseMenuUpdaterArgs } from './types';
+import { AnalyticsAcceptanceStatus } from '../../analytics';
 
 const walletRoutes = Object.values(ROUTES.WALLETS);
 
@@ -32,7 +33,9 @@ const useMenuUpdater = ({
     }
 
     rebuildApplicationMenu.send({
-      isNavigationEnabled: profile.areTermsOfUseAccepted,
+      isNavigationEnabled:
+        profile.areTermsOfUseAccepted &&
+        profile.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING,
       walletSettingsState,
     });
   }, [
