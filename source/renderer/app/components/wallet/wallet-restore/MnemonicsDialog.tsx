@@ -111,7 +111,9 @@ class MnemonicsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack, onSetWalletMnemonics, maxWordCount } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
+    const canSubmit =
+      !recoveryPhraseField.error &&
+      recoveryPhraseField.value.length === maxWordCount;
     const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
