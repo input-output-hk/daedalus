@@ -18,12 +18,12 @@ import { IS_TADA_ICON_AVAILABLE } from '../config/topBarConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../components/layout/TopBar.sc... Remove this comment to see the full error message
 import topBarStyles from '../components/layout/TopBar.scss';
 
-const TopBarContainer = (
+function TopBarContainer(
   { actions, stores }: InjectedProps = {
     actions: null,
     stores: null,
   }
-) => {
+) {
   const {
     sidebar,
     app,
@@ -121,6 +121,6 @@ const TopBarContainer = (
       />
     </TopBar>
   );
-};
+}
 
 export default inject('stores', 'actions')(observer(TopBarContainer));

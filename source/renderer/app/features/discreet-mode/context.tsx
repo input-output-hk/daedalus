@@ -16,7 +16,7 @@ export const discreetModeContext = React.createContext<DiscreetMode | null>(
 interface Props {
   children: Node;
 }
-export const DiscreetModeFeatureProvider = ({ children }: Props) => {
+export function DiscreetModeFeatureProvider({ children }: Props) {
   const localStorageFeature = useLocalStorageFeature();
   const [discreetModeFeature] = useState<DiscreetMode>(() => {
     const feature = new DiscreetMode(new DiscreetModeApi(localStorageFeature));
@@ -34,7 +34,7 @@ export const DiscreetModeFeatureProvider = ({ children }: Props) => {
       {children}
     </discreetModeContext.Provider>
   );
-};
+}
 export function useDiscreetModeFeature(): DiscreetMode {
   return getFeatureFromContext(discreetModeContext);
 }

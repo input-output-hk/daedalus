@@ -6,7 +6,7 @@ import WalletCreateDialog from '../../../../source/renderer/app/components/walle
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
-storiesOf('Wallets|Add Wallet', module)
+storiesOf('Wallets / Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Create - New process', () => <CreateWalletScreens />)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message

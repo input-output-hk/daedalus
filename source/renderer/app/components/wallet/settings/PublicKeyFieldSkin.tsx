@@ -20,7 +20,7 @@ type Props = InputProps & {
   valueVisible: boolean;
   onCopyValue: (...args: Array<any>) => any;
 };
-export default (props: Props) => {
+export default function (props: Props) {
   const renderInput = () => (
     <input
       ref={props.inputRef}
@@ -90,4 +90,4 @@ export default (props: Props) => {
       render={render}
     />
   );
-};
+}

@@ -77,29 +77,6 @@ export const DeviceEvents: {
   UNREADABLE: 'unreadable-device',
 };
 export type AddressTypeNibble = 0 | 4 | 6 | 8 | 14;
-export const AddressTypeNibbles: {
-  BASE: AddressTypeNibble;
-  POINTER: AddressTypeNibble;
-  ENTERPRISE: AddressTypeNibble;
-  BYRON: AddressTypeNibble;
-  REWARD: AddressTypeNibble;
-} = {
-  BASE: 0b0000,
-  POINTER: 0b0100,
-  ENTERPRISE: 0b0110,
-  BYRON: 0b1000,
-  REWARD: 0b1110,
-};
-export type CertificateType = 0 | 1 | 2;
-export const CertificateTypes: {
-  STAKE_REGISTRATION: CertificateType;
-  STAKE_DEREGISTRATION: CertificateType;
-  STAKE_DELEGATION: CertificateType;
-} = {
-  STAKE_REGISTRATION: 0,
-  STAKE_DEREGISTRATION: 1,
-  STAKE_DELEGATION: 2,
-};
 
 export type LedgerTransportDevice = {
   deviceId: string | null | undefined;
@@ -175,40 +152,6 @@ export type LedgerAuxiliaryDataType = {
     nonce: string;
   };
 };
-export type TrezorAuxiliaryDataType = {
-  catalystRegistrationParameters: {
-    votingPublicKey: string;
-    stakingPath: string | Array<number>;
-    rewardAddressParameters: {
-      addressType: number;
-      path: string;
-    };
-    nonce: string;
-  };
-};
-export type TrezorSignTransactionInputType = {
-  path: string;
-  prev_hash: number;
-  prev_index: number;
-};
-export type TrezorOutputTypeAddress = {
-  address: string;
-  amount: string;
-};
-export type TrezorOutputTypeChange = {
-  amount: string;
-  addressParameters: {
-    addressType: number;
-    path: string;
-    stakingPath: string;
-  };
-};
-export type TrezorSignTransactionInputsType = Array<
-  TrezorSignTransactionInputType
->;
-export type TrezorSignTransactionOutputsType = Array<
-  TrezorOutputTypeAddress | TrezorOutputTypeChange
->;
 export type Witness = {
   path: BIP32Path;
   witnessSignatureHex: string;
@@ -252,21 +195,6 @@ export type LedgerSignTransactionRequest = {
   auxiliaryData: LedgerAuxiliaryDataType | null | undefined;
   additionalWitnessPaths: Array<BIP32Path | null | undefined>;
 };
-export type TrezorSignTransactionRequest = {
-  inputs: TrezorSignTransactionInputsType;
-  outputs: TrezorSignTransactionOutputsType;
-  fee?: string;
-  ttl: string;
-  networkId: number;
-  protocolMagic: number;
-  certificates: Array<Certificate | null | undefined>;
-  withdrawals: Array<Withdrawal | null | undefined>;
-  reset?: boolean;
-  devicePath: string;
-  validityIntervalStartStr?: string;
-  signingMode: number;
-  auxiliaryData: TrezorAuxiliaryDataType | null | undefined;
-};
 export type LedgerSignTransactionResponse = {
   txHashHex: string;
   witnesses: Array<Witness>;
@@ -281,21 +209,6 @@ export type TrezorWitness = {
   pubKey: string;
   signature: string;
   chainCode: string | null | undefined;
-};
-export type TrezorSerializedTxPayload = {
-  serializedTx: string;
-};
-export type TrezorRawTxPayload = {
-  witnesses: Array<TrezorWitness>;
-  auxiliaryDataSupplement?: {
-    type: number;
-    auxiliaryDataHash: string;
-    catalystSignature: string;
-  };
-};
-export type TrezorSignTransactionResponse = {
-  success: boolean;
-  payload: TrezorSerializedTxPayload | TrezorRawTxPayload;
 };
 
 export type LedgerDevicePayload = {

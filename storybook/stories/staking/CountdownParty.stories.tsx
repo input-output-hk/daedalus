@@ -9,7 +9,7 @@ import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import TadaButton from '../../../source/renderer/app/components/widgets/TadaButton';
 
-storiesOf('Decentralization | Countdown', module)
+storiesOf('Decentralization / Countdown', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Countdown party', () => {

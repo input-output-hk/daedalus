@@ -136,7 +136,7 @@ class ExportWalletToFileDialog extends Component<Props, State> {
       },
     });
   };
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
+  // handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
     // const { form } = this;

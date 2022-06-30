@@ -5,7 +5,7 @@ import { getNonZeroAssetTokens } from '../../../../utils/assets';
 import { ContainerProps as Props, SubmitPayload } from './types';
 import { WalletSendConfirmationDialogView } from './SendConfirmation.view';
 
-export const Containter = ({
+export function Containter({
   actions,
   stores,
   amount,
@@ -18,7 +18,7 @@ export const Containter = ({
   hwDeviceStatus,
   isHardwareWallet,
   formattedTotalAmount,
-}: Props) => {
+}: Props) {
   const { isFlight } = global;
   const {
     assets: { getAsset },
@@ -113,7 +113,7 @@ export const Containter = ({
       onExternalLinkClick={onExternalLinkClick}
     />
   );
-};
+}
 
 export const WalletSendConfirmationDialogContainer = compose(
   inject('actions', 'stores'),
