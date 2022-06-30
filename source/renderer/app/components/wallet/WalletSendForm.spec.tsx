@@ -25,13 +25,13 @@ import WalletSendForm, { FormData } from './WalletSendForm';
 jest.mock(
   '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
   () => {
-    const Dialog = ({
+    function Dialog({
       amount,
       formattedTotalAmount,
     }: {
       amount: number;
       formattedTotalAmount: number;
-    }) => {
+    }) {
       return (
         <div>
           <span data-testid="confirmation-dialog-ada-amount">{amount}</span>
@@ -40,7 +40,7 @@ jest.mock(
           </span>
         </div>
       );
-    };
+    }
 
     return {
       __esModule: true,
@@ -229,7 +229,9 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
   }
 
   async function waitForTransactionFee() {
@@ -541,7 +543,7 @@ describe('wallet/Wallet Send Form', () => {
             () =>
               new Promise(async (resolve) => {
                 await sleep(delay);
-                return resolve({
+                resolve({
                   fee: new BigNumber(value),
                   minimumAda: new BigNumber(1),
                 });
