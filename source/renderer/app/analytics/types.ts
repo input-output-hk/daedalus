@@ -4,7 +4,8 @@ export interface AnalyticsClient {
 }
 
 export enum AnalyticsAcceptanceStatus {
-  PENDING = 'PENDING',
+  INITIAL_DECISION_REQUIRED = 'INITIAL_DECISION_REQUIRED',
+  DECISION_CHANGE_REQUESTED = 'DECISION_CHANGE_REQUESTED',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
 }

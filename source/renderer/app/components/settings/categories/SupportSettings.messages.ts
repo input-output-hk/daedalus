@@ -69,14 +69,19 @@ export const messages = defineMessages({
   analyticsAcceptedDescription: {
     id: 'analytics.form.analyticsAcceptedDescription',
     defaultMessage:
-      '!!!You have opted in to analytics data collection. You can {changeAnalyticsSettingsLink}.',
+      '!!!You have <strong>opted in</strong> to analytics data collection. You can {changeAnalyticsSettingsLink}.',
     description: 'Analytics data collection description when user opted in',
   },
   analyticsDeclinedDescription: {
     id: 'analytics.form.analyticsDeclinedDescription',
     defaultMessage:
-      '!!!You have opted out of analytics data collection. You can {changeAnalyticsSettingsLink}.',
+      '!!!You have <strong>opted out</strong> of analytics data collection. You can {changeAnalyticsSettingsLink}.',
     description: 'Analytics data collection description when user opted out ',
+  },
+  changeAnalyticsSettings: {
+    id: 'analytics.form.changeAnalyticsSettings',
+    defaultMessage: '!!!You can {changeAnalyticsSettingsLink}.',
+    description: 'Change analytics settings link',
   },
   changeAnalyticsSettingsLink: {
     id: 'analytics.form.changeAnalyticsSettingsLink',

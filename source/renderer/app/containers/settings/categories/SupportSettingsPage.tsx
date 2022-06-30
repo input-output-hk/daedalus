@@ -29,7 +29,7 @@ class SupportSettingsPage extends Component<InjectedProps> {
 
   handleChangeAnalyticsSettings = () => {
     this.props.actions.profile.acceptAnalytics.trigger(
-      AnalyticsAcceptanceStatus.PENDING
+      AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED
     );
   };
 

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -57,8 +57,8 @@ function AnalyticsConsentForm({
         </p>
         <div className={styles.actions}>
           <Button
-            className={classnames(styles.skipButton, 'flat')}
-            label={intl.formatMessage(messages.skipButton)}
+            className={classnames(styles.disallowButton, 'flat')}
+            label={intl.formatMessage(messages.disallowButton)}
             skin={ButtonSpinnerSkin}
             loading={loading}
             onClick={handleSkip}

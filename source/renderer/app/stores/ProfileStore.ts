@@ -171,8 +171,7 @@ export default class ProfileStore extends Store {
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToAnalyticsScreenIfNotConfirmed,
-      this._redirectToTermsOfUseScreenIfTermsNotAccepted, // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
-      this._redirectToMainUiAfterAnalyticsAreConfirmed,
+      this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
@@ -306,10 +305,7 @@ export default class ProfileStore extends Store {
 
   @computed
   get analyticsAcceptanceStatus(): AnalyticsAcceptanceStatus {
-    return (
-      this.getAnalyticsAcceptanceRequest.result ||
-      AnalyticsAcceptanceStatus.PENDING
-    );
+    return this.getAnalyticsAcceptanceRequest.result;
   }
 
   @computed
@@ -394,6 +390,8 @@ export default class ProfileStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
   _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+    const previousStatus = this.analyticsAcceptanceStatus;
+
     this.setAnalyticsAcceptanceRequest.execute(status);
     this.getAnalyticsAcceptanceRequest.execute();
 
@@ -401,6 +399,18 @@ export default class ProfileStore extends Store {
       this.analytics.enableTracking();
     } else if (status === AnalyticsAcceptanceStatus.REJECTED) {
       this.analytics.disableTracking();
+    }
+
+    if (
+      previousStatus === AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED
+    ) {
+      this._redirectToRoot();
+    } else if (
+      previousStatus === AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED
+    ) {
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.SETTINGS.SUPPORT,
+      });
     }
   };
   _getAnalyticsAcceptance = () => {
@@ -465,7 +475,10 @@ export default class ProfileStore extends Store {
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.analyticsAcceptanceStatus === AnalyticsAcceptanceStatus.PENDING
+      (this.analyticsAcceptanceStatus ===
+        AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED ||
+        this.analyticsAcceptanceStatus ===
+          AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED)
     ) {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.ANALYTICS,
@@ -483,7 +496,8 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
+      this.analyticsAcceptanceStatus !==
+        AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
@@ -504,14 +518,6 @@ export default class ProfileStore extends Store {
   };
   _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
-      this._redirectToRoot();
-    }
-  };
-  _redirectToMainUiAfterAnalyticsAreConfirmed = () => {
-    if (
-      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
-      this._isOnAnalyticsPage()
-    ) {
       this._redirectToRoot();
     }
   };
