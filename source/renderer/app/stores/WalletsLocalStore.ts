@@ -2,7 +2,7 @@ import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { asyncForEach } from '../utils/asyncForEach';
-import type { WalletsLocalData } from '../api/utils/localStorage';
+import { WalletsLocalData } from '../types/localDataTypes';
 
 export default class WalletsLocalStore extends Store {
   @observable
