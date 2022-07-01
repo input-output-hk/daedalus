@@ -67,6 +67,9 @@ declare module 'mobx-react-form' {
       get: (fieldName: keyof T) => Field;
       toJSON(): T;
     };
+    validator: {
+      promises: Array<Promises<void>>;
+    };
   }
 
   export default MobxReactForm;

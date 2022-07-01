@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
+
+### Fixes
+
 ## 4.11.0
 
 ### Fixes
