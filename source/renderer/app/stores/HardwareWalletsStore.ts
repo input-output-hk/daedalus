@@ -632,24 +632,23 @@ export default class HardwareWalletsStore extends Store {
     const { amount: totalAmount, availableAmount, reward } = wallet;
 
     try {
+      this.selectCoinsRequest.reset();
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const coinSelection = await this.selectCoinsRequest.execute({
-        walletId,
-        walletBalance: totalAmount,
-        availableBalance: availableAmount.plus(reward),
-        rewardsBalance: reward,
-        payments: {
-          address,
-          amount,
-          assets,
-        },
-        metadata,
-      });
-      runInAction('HardwareWalletsStore:: set coin selections', () => {
-        this.txSignRequest = {
-          coinSelection,
-        };
-      });
+      const coinSelection: CoinSelectionsResponse = await this.selectCoinsRequest.execute(
+        {
+          walletId,
+          walletBalance: totalAmount,
+          availableBalance: availableAmount.plus(reward),
+          rewardsBalance: reward,
+          payments: {
+            address,
+            amount,
+            assets,
+          },
+          metadata,
+        }
+      );
+
       return coinSelection;
     } catch (e) {
       runInAction(
@@ -661,6 +660,15 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+
+  updateTxSignRequest = (coinSelection: CoinSelectionsResponse) => {
+    runInAction('HardwareWalletsStore:: set coin selections', () => {
+      this.txSignRequest = {
+        coinSelection,
+      };
+    });
+  };
+
   selectDelegationCoins = async (
     params: CoinSelectionsDelegationRequestType
   ) => {
