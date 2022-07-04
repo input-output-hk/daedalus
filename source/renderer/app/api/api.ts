@@ -663,14 +663,14 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
+      const assetsLocalData = await global.daedalus.api.localStorage.getAssetsLocalData();
       logger.debug('AdaApi::getAssetsLocalData success', {
-        assetsLocaldata,
+        assetsLocalData,
       });
       const assets = response.map((asset) =>
         _createAssetFromServerData(
           asset,
-          assetsLocaldata[asset.policy_id + asset.asset_name] ||
+          assetsLocalData[asset.policy_id + asset.asset_name] ||
             defaultAssetLocalData,
           this.storedAssetMetadata
         )
