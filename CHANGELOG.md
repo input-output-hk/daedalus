@@ -6,6 +6,16 @@
 
 - Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
 
+### Fixes
+
+- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
+
+### Chores
+
+- Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+
 ## 4.11.0
 
 ### Fixes
@@ -16,7 +26,6 @@
 
 ### Features
 
-- Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
 - Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
 - Support of Apple AArch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
 
