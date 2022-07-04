@@ -96,9 +96,7 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [],
-          validators: ({ field, form }) => {
-            if (!form.submitted) return true;
-
+          validators: ({ field }) => {
             const enteredWords = field.value;
             this.props.onUpdateVerificationPhrase({
               verificationPhrase: enteredWords,
@@ -149,7 +147,6 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       'WalletRecoveryPhraseEntryDialog',
     ]);
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-    const enteredPhraseString = enteredPhrase.join(' ');
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelConfirm)
     ) : (
