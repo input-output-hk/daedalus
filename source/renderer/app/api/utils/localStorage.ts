@@ -1,23 +1,23 @@
 /* eslint-disable consistent-return */
-import { get, includes, without } from 'lodash';
+import { includes, without, get } from 'lodash';
 import { toJS } from '../../../../common/utils/helper';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
-  STORAGE_KEYS as keys,
   STORAGE_TYPES as types,
+  STORAGE_KEYS as keys,
 } from '../../../../common/config/electron-store.config';
 import type { NewsTimestamp } from '../news/types';
 import type {
-  HardwareWalletExtendedPublicKeyResponse,
   TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 import type { Currency, DeprecatedCurrency } from '../../types/currencyTypes';
 import {
-  CURRENCY_DEFAULT_SELECTED,
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
+  CURRENCY_DEFAULT_SELECTED,
 } from '../../config/currencyConfig';
 import {
   AssetLocalData,
