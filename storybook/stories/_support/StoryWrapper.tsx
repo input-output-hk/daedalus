@@ -25,16 +25,24 @@ type State = {
   osName: string;
 };
 export default class StoryWrapper extends Component<Props, State> {
+  unregisterReceiveParam: () => void = () => {};
   constructor(props: Props) {
     super(props);
-    onReceiveParam(this.handleReceiveParam);
     const { themeName, localeName, osName } = getInitialState();
     this.state = {
       themeName,
       localeName,
       osName,
     };
+  }
+
+  componentDidMount() {
+    this.unregisterReceiveParam = onReceiveParam(this.handleReceiveParam);
     setInitialState(this.state);
+  }
+
+  componentWillUnmount() {
+    this.unregisterReceiveParam();
   }
 
   handleReceiveParam = ({

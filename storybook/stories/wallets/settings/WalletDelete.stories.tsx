@@ -39,7 +39,7 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Instruction for recovery word on delete wallet dialog',
   },
 });
-storiesOf('Wallets|Settings', module)
+storiesOf('Wallets / Settings', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Delete - Countdown', () => (
     <div>

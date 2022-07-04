@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { useDiscreetModeFeature } from '../../../features/discreet-mode';
 import SecuritySettings from '../../../components/settings/categories/SecuritySettings';
 
-const SecuritySettingsPage = () => {
+function SecuritySettingsPage() {
   const discreetModeFeature = useDiscreetModeFeature();
   return (
     <SecuritySettings
@@ -13,6 +13,6 @@ const SecuritySettingsPage = () => {
       onOpenDiscreetModeToggle={discreetModeFeature.toggleOpenInDiscreetMode}
     />
   );
-};
+}
 
 export default observer(SecuritySettingsPage);

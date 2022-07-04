@@ -66,42 +66,46 @@ const hardwareWallet = generateWallet(
   'ready',
   true
 );
-export const StakingUndelegateConfirmationStory = (props: {
+export function StakingUndelegateConfirmationStory(props: {
   unknownStakePool?: boolean;
   isHardwareWallet?: boolean;
-}) => (
-  <UndelegateWalletConfirmationDialog
-    selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
-    stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
-    stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
-    onConfirm={linkTo(
-      'Decentralization | Staking',
-      'Undelegate Confirmation Result'
-    )}
-    onCancel={() => null}
-    onExternalLinkClick={() => null}
-    isSubmitting={false}
-    error={null}
-    fees={{
-      fee: new BigNumber(number('fee', 3)),
-      deposits: new BigNumber(0),
-      depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
-    }}
-    hwDeviceStatus="ready"
-    isTrezor={boolean('isTrezor', false)}
-  />
-);
-export const StakingUndelegateConfirmationResultStory = ({
+}) {
+  return (
+    <UndelegateWalletConfirmationDialog
+      selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
+      stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
+      stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
+      onConfirm={linkTo(
+        'Decentralization | Staking',
+        'Undelegate Confirmation Result'
+      )}
+      onCancel={() => null}
+      onExternalLinkClick={() => null}
+      isSubmitting={false}
+      error={null}
+      fees={{
+        fee: new BigNumber(number('fee', 3)),
+        deposits: new BigNumber(0),
+        depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
+      }}
+      hwDeviceStatus="ready"
+      isTrezor={boolean('isTrezor', false)}
+    />
+  );
+}
+export function StakingUndelegateConfirmationResultStory({
   locale,
 }: {
   locale: string;
-}) => (
-  <UndelegateWalletSuccessDialog
-    walletName="Darko's ADA"
-    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-    slotLength={null}
-    onClose={() => null}
-    currentLocale={locale}
-    futureEpochStartTime={moment().add(35, 'hour').toString()}
-  />
-);
+}) {
+  return (
+    <UndelegateWalletSuccessDialog
+      walletName="Darko's ADA"
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      slotLength={null}
+      onClose={() => null}
+      currentLocale={locale}
+      futureEpochStartTime={moment().add(35, 'hour').toString()}
+    />
+  );
+}

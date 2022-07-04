@@ -7,9 +7,10 @@ export const initTrezorConnect = async () => {
     await TrezorConnect.init({
       popup: false, // render your own UI
       webusb: false, // webusb is not supported in electron
-      debug: true,
+      debug: process.env.DEBUG_TREZOR === 'true',
       manifest,
     });
+
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.init()');
   } catch (error) {
     logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.init()');
@@ -17,4 +18,14 @@ export const initTrezorConnect = async () => {
   }
 };
 
-export const reinitTrezorConnect = initTrezorConnect;
+export const reinitTrezorConnect = () => {
+  try {
+    logger.info('[TREZOR-CONNECT] Called TrezorConnect.dispose()');
+    TrezorConnect.dispose();
+  } catch (error) {
+    // ignore any TrezorConnect instance disposal errors
+    logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.dispose()');
+  }
+
+  return initTrezorConnect();
+};

@@ -56,8 +56,9 @@ export const waitForDevice = () => {
   return new Promise<TrackedDevice>((resolve) => {
     const currentDevices = DeviceTracker.getDevices();
 
-    for (const device of currentDevices) {
-      return resolve(DeviceTracker.getTrackedDeviceByPath(device.path));
+    if (currentDevices.length > 0) {
+      resolve(DeviceTracker.getTrackedDeviceByPath(currentDevices[0].path));
+      return;
     }
 
     const detectDevices = getDetector();

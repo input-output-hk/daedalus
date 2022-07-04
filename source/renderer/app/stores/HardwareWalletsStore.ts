@@ -632,24 +632,23 @@ export default class HardwareWalletsStore extends Store {
     const { amount: totalAmount, availableAmount, reward } = wallet;
 
     try {
+      this.selectCoinsRequest.reset();
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const coinSelection = await this.selectCoinsRequest.execute({
-        walletId,
-        walletBalance: totalAmount,
-        availableBalance: availableAmount.plus(reward),
-        rewardsBalance: reward,
-        payments: {
-          address,
-          amount,
-          assets,
-        },
-        metadata,
-      });
-      runInAction('HardwareWalletsStore:: set coin selections', () => {
-        this.txSignRequest = {
-          coinSelection,
-        };
-      });
+      const coinSelection: CoinSelectionsResponse = await this.selectCoinsRequest.execute(
+        {
+          walletId,
+          walletBalance: totalAmount,
+          availableBalance: availableAmount.plus(reward),
+          rewardsBalance: reward,
+          payments: {
+            address,
+            amount,
+            assets,
+          },
+          metadata,
+        }
+      );
+
       return coinSelection;
     } catch (e) {
       runInAction(
@@ -661,6 +660,15 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+
+  updateTxSignRequest = (coinSelection: CoinSelectionsResponse) => {
+    runInAction('HardwareWalletsStore:: set coin selections', () => {
+      this.txSignRequest = {
+        coinSelection,
+      };
+    });
+  };
+
   selectDelegationCoins = async (
     params: CoinSelectionsDelegationRequestType
   ) => {
@@ -2293,26 +2301,18 @@ export default class HardwareWalletsStore extends Store {
     }
 
     const fee = formattedAmountToLovelace(flatFee.toString());
-
     const ttl = this._getTtl();
-
-    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ path: string; prev_hash: string; prev_inde... Remove this comment to see the full error message
         inputs: inputsData,
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
-        // @ts-ignore ts-migrate(2322) FIXME: Type '({ type: number; path: string; pool: string;... Remove this comment to see the full error message
         certificates: certificatesData,
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ path: string; amount: string; }[]' is not ... Remove this comment to see the full error message
         withdrawals: withdrawalsData,
-        devicePath: recognizedDevicePath,
         signingMode: TrezorTransactionSigningMode.ORDINARY_TRANSACTION,
         auxiliaryData,
       });
