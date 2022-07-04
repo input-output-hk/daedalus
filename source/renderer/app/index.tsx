@@ -20,6 +20,7 @@ import {
   LocalStorageFeatureProvider,
 } from './features';
 import { MatomoAnalyticsTracker } from './analytics/MatomoAnalyticsTracker';
+import { AnalyticsProvider } from './components/analytics';
 // run MobX in strict mode
 configure({
   enforceActions: 'always',
@@ -57,14 +58,11 @@ const initializeDaedalus = () => {
   if (!rootElement) throw new Error('No #root element found.');
   render(
     <LocalStorageFeatureProvider localStorage={LocalStorageApi}>
-      <DiscreetModeFeatureProvider>
-        <App
-          stores={stores}
-          actions={actions}
-          history={history}
-          analyticsTracker={analyticsTracker}
-        />
-      </DiscreetModeFeatureProvider>
+      <AnalyticsProvider tracker={analyticsTracker}>
+        <DiscreetModeFeatureProvider>
+          <App stores={stores} actions={actions} history={history} />
+        </DiscreetModeFeatureProvider>
+      </AnalyticsProvider>
     </LocalStorageFeatureProvider>,
     rootElement
   );

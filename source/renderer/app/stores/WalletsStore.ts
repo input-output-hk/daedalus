@@ -58,6 +58,7 @@ import type {
 } from '../../../common/types/hardware-wallets.types';
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import { EventCategories } from '../analytics';
+import { getEventNameFromWallet } from '../analytics/utils/getEventNameFromWallet';
 /* eslint-disable consistent-return */
 
 /**
@@ -707,7 +708,7 @@ export default class WalletsStore extends Store {
     this.analytics.sendEvent(
       EventCategories.WALLETS,
       'Wallet deleted',
-      walletToDelete.isHardwareWallet ? 'Hardware wallet' : 'Software wallet'
+      getEventNameFromWallet(walletToDelete)
     );
 
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -1513,10 +1514,12 @@ export default class WalletsStore extends Store {
     note,
     address,
     filePath,
+    wallet,
   }: {
     note: string;
     address: string;
     filePath: string;
+    wallet: Wallet;
   }) => {
     const {
       currentLocale,
@@ -1545,7 +1548,7 @@ export default class WalletsStore extends Store {
       this.analytics.sendEvent(
         EventCategories.WALLETS,
         'Saved wallet address as PDF',
-        'Software wallet'
+        getEventNameFromWallet(wallet)
       );
     } catch (error) {
       throw new Error(error);
@@ -1554,9 +1557,11 @@ export default class WalletsStore extends Store {
   _saveQRCodeImage = async ({
     address,
     filePath,
+    wallet,
   }: {
     address: string;
     filePath: string;
+    wallet: Wallet;
   }) => {
     try {
       await saveQRCodeImageChannel.send({
@@ -1570,7 +1575,7 @@ export default class WalletsStore extends Store {
       this.analytics.sendEvent(
         EventCategories.WALLETS,
         'Saved wallet address as QR code',
-        'Software wallet'
+        getEventNameFromWallet(wallet)
       );
     } catch (error) {
       throw new Error(error);

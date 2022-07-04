@@ -68,7 +68,7 @@ export class DiscreetMode extends Feature {
     });
     this.analyticsTracker.sendEvent(
       EventCategories.SETTINGS,
-      this.isDiscreetMode
+      nextSetting
         ? 'Turned on discreet mode by default'
         : 'Turned off discreet mode by default'
     );
