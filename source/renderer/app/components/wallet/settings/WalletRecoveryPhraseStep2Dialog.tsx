@@ -75,23 +75,17 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
       fields: {
         recoveryPhrase: {
           value: [],
-          validators: ({ field, form }) => {
-            return form.submitted
-              ? validateMnemonics({
-                  requiredWords: this.props.expectedWordCount,
-                  providedWords: field.value,
-                  validator: (enteredWords) => [
-                    isValidMnemonic(
-                      enteredWords.join(' '),
-                      enteredWords.length
-                    ),
-                    this.context.intl.formatMessage(
-                      messages.recoveryPhraseStep2InvalidMnemonics
-                    ),
-                  ],
-                })
-              : true;
-          },
+          validators: ({ field }) =>
+            validateMnemonics({
+              requiredWords: this.props.expectedWordCount,
+              providedWords: field.value,
+              validator: (enteredWords) => [
+                isValidMnemonic(enteredWords.join(' '), enteredWords.length),
+                this.context.intl.formatMessage(
+                  messages.recoveryPhraseStep2InvalidMnemonics
+                ),
+              ],
+            }),
         },
       },
     },
@@ -100,6 +94,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }

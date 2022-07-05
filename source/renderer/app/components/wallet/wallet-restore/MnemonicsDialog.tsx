@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -74,20 +75,15 @@ class MnemonicsDialog extends Component<Props> {
       fields: {
         recoveryPhrase: {
           value: [...this.props.mnemonics],
-          validators: ({ field, form }) => {
-            return form.submitted
-              ? validateMnemonics({
-                  requiredWords: this.props.expectedWordCount,
-                  providedWords: field.value,
-                  validator: (enteredWords) => [
-                    this.props.onValidateMnemonics(enteredWords),
-                    this.context.intl.formatMessage(
-                      messages.invalidRecoveryPhrase
-                    ),
-                  ],
-                })
-              : true;
-          },
+          validators: ({ field }) =>
+            validateMnemonics({
+              requiredWords: this.props.expectedWordCount,
+              providedWords: field.value,
+              validator: (enteredWords) => [
+                this.props.onValidateMnemonics(enteredWords),
+                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              ],
+            }),
         },
       },
     },
@@ -96,6 +92,7 @@ class MnemonicsDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }

@@ -116,9 +116,7 @@ class VerificationDialog extends Component<Props, State> {
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           value: [],
           validators: [
-            ({ field, form }) => {
-              if (!form.submitted) return true;
-
+            ({ field }) => {
               const { intl } = this.context;
               const {
                 walletCertificateRecoveryPhrase,
@@ -169,6 +167,7 @@ class VerificationDialog extends Component<Props, State> {
       },
       options: {
         validateOnChange: true,
+        showErrorsOnChange: false,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
