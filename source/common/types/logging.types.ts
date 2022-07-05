@@ -14,8 +14,8 @@ import type {
 } from '../../renderer/app/api/wallets/types';
 import type { Address } from '../../renderer/app/api/addresses/types';
 import type { GetTransactionsRequest } from '../../renderer/app/api/transactions/types';
-import type { HardwareWalletLocalData } from '../../renderer/app/api/utils/localStorage';
 import type { AdaApiStakePool } from '../../renderer/app/api/staking/types';
+import { HardwareWalletLocalData } from '../../renderer/app/types/localDataTypes';
 
 export type LoggingLevel = 'debug' | 'info' | 'error' | 'warn';
 export type Logger = {

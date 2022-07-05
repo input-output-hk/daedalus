@@ -9,8 +9,8 @@ import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificati
 import { getRawWalletId } from '../api/utils';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
-import type { WalletLocalData } from '../api/utils/localStorage';
 import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
+import { WalletLocalData } from '../types/localDataTypes';
 
 export default class WalletSettingsStore extends Store {
   @observable
