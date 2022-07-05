@@ -227,7 +227,7 @@ import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
-import { AssetLocalData, defaultAssetLocalData } from '../types/localDataTypes';
+import { AssetLocalData } from '../types/localDataTypes';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -670,8 +670,7 @@ export default class AdaApi {
       const assets = response.map((asset) =>
         _createAssetFromServerData(
           asset,
-          assetsLocalData[asset.policy_id + asset.asset_name] ||
-            defaultAssetLocalData,
+          assetsLocalData[asset.policy_id + asset.asset_name] || {},
           this.storedAssetMetadata
         )
       );

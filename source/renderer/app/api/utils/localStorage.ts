@@ -26,7 +26,6 @@ import {
   HardwareWalletsLocalData,
   UnpairedHardwareWalletData,
   WalletLocalData,
-  defaultAssetLocalData,
 } from '../../types/localDataTypes';
 
 export type SetHardwareWalletLocalDataRequestType = {
@@ -278,11 +277,7 @@ export default class LocalStorageApi {
     policyId: string,
     assetName: string
   ): Promise<AssetLocalData> =>
-    LocalStorageApi.get(
-      keys.ASSET_DATA,
-      defaultAssetLocalData,
-      `${policyId}${assetName}`
-    );
+    LocalStorageApi.get(keys.ASSET_DATA, {}, `${policyId}${assetName}`);
   setAssetLocalData = (
     policyId: string,
     assetName: string,

@@ -35,9 +35,5 @@ export type HardwareWalletsLocalData = Record<string, HardwareWalletLocalData>;
 export type HardwareWalletDevicesType = Record<string, TransportDevice>;
 
 export type AssetLocalData = {
-  decimals: number;
-};
-
-export const defaultAssetLocalData: AssetLocalData = {
-  decimals: 0,
+  decimals?: number;
 };

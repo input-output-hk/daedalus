@@ -1,15 +1,24 @@
-type IsRecommendedDecimal = {
+type IsNonRecommendedDecimalSettingUsedArgs = {
   decimals: number | null | undefined;
   recommendedDecimals: number | null | undefined;
 };
 
-export const isRecommendedDecimal = ({
+export const isNonRecommendedDecimalSettingUsed = ({
   recommendedDecimals,
   decimals,
-}: IsRecommendedDecimal) => {
-  return (
-    typeof recommendedDecimals === 'number' &&
-    typeof decimals === 'number' &&
-    decimals !== recommendedDecimals
-  );
+}: IsNonRecommendedDecimalSettingUsedArgs) => {
+  const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
+  const hasConfiguredDecimals = typeof decimals === 'number';
+
+  if (!hasRecommendedDecimals) {
+    return false;
+  }
+  if (hasConfiguredDecimals) {
+    return decimals !== recommendedDecimals;
+  }
+  if (!hasConfiguredDecimals && recommendedDecimals === 0) {
+    return false;
+  }
+
+  return true;
 };
