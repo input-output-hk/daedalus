@@ -88,11 +88,11 @@ class AssetSettingsDialog extends Component<Props, State> {
     super(props);
     const { asset } = props;
     const { decimals: savedDecimals, recommendedDecimals } = asset;
-    const hasRecommendedDecimals = typeof recommendedDecimals === 'number';
+    const hasSavedDecimals = typeof savedDecimals === 'number';
     this.state = {
-      decimals: hasRecommendedDecimals
-        ? recommendedDecimals
-        : savedDecimals || DEFAULT_DECIMAL_PRECISION,
+      decimals: hasSavedDecimals
+        ? savedDecimals
+        : recommendedDecimals || DEFAULT_DECIMAL_PRECISION,
     };
   }
 
