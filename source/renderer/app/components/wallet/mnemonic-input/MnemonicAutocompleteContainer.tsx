@@ -57,27 +57,22 @@ function MnemonicAutocompleteContainer({
   const optionsRef = useRef();
   const suggestionsRef = useRef();
 
-  const toggleOpen = useCallback(() => {
-    if (disabled) return;
+  const toggleOpen = () =>
     setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
-  }, [disabled]);
 
-  const toggleMouseIsOverOptions = useCallback(() => {
+  const toggleMouseIsOverOptions = () =>
     setState((prevState) => ({
       ...prevState,
       mouseIsOverOptions: !prevState.mouseIsOverOptions,
     }));
-  }, []);
 
   const handleInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
-    if (disabled) return;
     toggleOpen();
     event.currentTarget.setSelectionRange(0, event.currentTarget.value.length);
   };
 
   const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
-      if (disabled) return;
       const { value: inputValue } = event.currentTarget;
       let selectedOption = '';
       const trimmedInputValue = inputValue.trim();
@@ -104,12 +99,11 @@ function MnemonicAutocompleteContainer({
         onConfirmSelection();
       }
     },
-    [disabled, options, onChange, onConfirmSelection, maxVisibleOptions]
+    [options, onChange, onConfirmSelection, maxVisibleOptions]
   );
 
   const handleInputSelect = useCallback(
     (inputValue) => {
-      if (disabled) return;
       setState((prevState) => ({
         ...prevState,
         isOpen: false,
@@ -120,13 +114,11 @@ function MnemonicAutocompleteContainer({
       onChange(inputValue);
       onConfirmSelection();
     },
-    [disabled, onChange, onConfirmSelection]
+    [onChange, onConfirmSelection]
   );
 
-  const handleBlur = useCallback(() => {
-    if (disabled) return;
+  const handleBlur = () =>
     setState((prevState) => ({ ...prevState, blurred: true }));
-  }, [disabled]);
 
   // this useEffect handles input paste event
   useEffect(() => {
