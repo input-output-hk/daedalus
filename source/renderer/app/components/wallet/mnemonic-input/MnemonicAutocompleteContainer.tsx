@@ -22,7 +22,6 @@ interface MnemonicAutocompleteContainerProps {
   options: string[];
   maxVisibleOptions: number;
   disabled: boolean;
-  error: boolean;
   reset: boolean;
   noResultsMessage: string;
   inputRef: RefObject<HTMLInputElement>;
@@ -38,7 +37,6 @@ function MnemonicAutocompleteContainer({
   options,
   maxVisibleOptions,
   disabled,
-  error,
   noResultsMessage,
   inputRef,
 }: MnemonicAutocompleteContainerProps) {
@@ -173,7 +171,7 @@ function MnemonicAutocompleteContainer({
           toggleOpen={toggleOpen}
           optionHeight={optionHeight}
           disabled={disabled}
-          error={state.blurred && state.inputValue && error}
+          error={state.blurred && state.inputValue && !value}
         />
       )}
     </GlobalListeners>

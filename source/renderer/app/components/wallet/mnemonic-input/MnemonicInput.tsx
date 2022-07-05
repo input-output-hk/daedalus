@@ -166,7 +166,6 @@ const MnemonicInput: VFC<
                       onPaste={handleInputPaste}
                       inputRef={inputRefs[idx]}
                       disabled={disabled}
-                      error={error && !value}
                       maxVisibleOptions={5}
                       noResultsMessage={intl.formatMessage(
                         messages.recoveryPhraseNoResults
