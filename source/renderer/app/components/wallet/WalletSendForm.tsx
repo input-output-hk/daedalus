@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
 import { intlShape, FormattedHTMLMessage } from 'react-intl';
-import { filter, get, indexOf, omit, map, without, isEmpty } from 'lodash';
+import { filter, get, indexOf, omit, map, without, last } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -41,6 +41,7 @@ import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
 import { Divider } from './widgets/Divider';
+import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type AdaInputState = 'restored' | 'updated' | 'reset' | 'none';
@@ -51,11 +52,44 @@ const AdaInputStateType: EnumMap<string, AdaInputState> = {
   None: 'none',
   Reset: 'reset',
 };
+
+interface TransactionFeePayload {
+  receiver: string;
+  adaAmount: number;
+  assets: ApiTokens;
+}
+
+type CalculateTransactionFeeArgs = {
+  requestToken: RequestToken;
+  shouldUpdateMinimumAdaAmount?: boolean;
+} & TransactionFeePayload;
+
+export interface FormData {
+  coinSelection: CoinSelectionsResponse;
+  receiver: string;
+  selectedAssets: AssetToken[];
+  assetsAmounts: string[];
+  amount: BigNumber;
+  totalAmount: BigNumber;
+  transactionFee: BigNumber;
+  adaAmount: number;
+}
+
+export type ConfirmationDialogData = Omit<FormData, 'coinSelection'>;
+
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
   currentNumberFormat: string;
-  calculateTransactionFee: (...args: Array<any>) => any;
+  calculateTransactionFee: (
+    address: string,
+    amount: number,
+    selectedAssets: ApiTokens
+  ) => Promise<{
+    fee: BigNumber;
+    coinSelection?: CoinSelectionsResponse;
+    minimumAda?: BigNumber;
+  }>;
   walletAmount: BigNumber;
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
   validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>;
@@ -68,14 +102,17 @@ type Props = {
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
   hwDeviceStatus: HwDeviceStatus;
-  onSubmit: (...args: Array<any>) => any;
+  onSubmit: (data: FormData) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
+  onTransactionFeeChange?: (fee: BigNumber) => void;
   isAddressFromSameWallet: boolean;
   tokenFavorites: Record<string, boolean>;
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
+  confirmationDialogData?: ConfirmationDialogData;
+  validationDebounceWait?: number;
 };
 
 interface FormFields {
@@ -95,37 +132,50 @@ type State = {
   };
   minimumAda: BigNumber;
   adaAmountInputTrack: BigNumber;
-  feeCalculationRequestQue: number;
   transactionFee: BigNumber;
   transactionFeeError: (string | null | undefined) | (Node | null | undefined);
   selectedAssetUniqueIds: Array<string>;
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
   isReceiverAddressValidOnce: boolean;
-  isTransactionFeeCalculated: boolean;
   isCalculatingTransactionFee: boolean;
+  hasPendingRequestTokens: boolean;
   adaInputState: AdaInputState;
+  coinSelection?: CoinSelectionsResponse;
+  adaAmount: number;
 };
+
+interface RequestToken {
+  abort: () => void;
+  aborted: boolean;
+  release: () => void;
+}
 
 @observer
 class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-  state = {
+
+  static defaultProps = {
+    validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+  };
+
+  state: State = {
     formFields: {} as State['formFields'],
     minimumAda: new BigNumber(0),
     adaAmountInputTrack: new BigNumber(0),
-    feeCalculationRequestQue: 0,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
     selectedAssetUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isReceiverAddressValidOnce: false,
-    isTransactionFeeCalculated: false,
     isCalculatingTransactionFee: false,
     adaInputState: AdaInputStateType.None,
+    hasPendingRequestTokens: false,
+    coinSelection: null,
+    adaAmount: 0,
   };
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -134,6 +184,16 @@ class WalletSendForm extends Component<Props, State> {
   // We need to prevent auto focus of ada and token amount fields in case user pastes
   // or enters a receiver address which belongs to the same wallet he is sending from.
   _isAutoFocusEnabled = true;
+
+  requestTokens: RequestToken[] = [];
+
+  form: ReactToolboxMobxForm<FormFields>;
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.form = this.setupMobxForm();
+  }
 
   componentDidMount() {
     this._isMounted = true;
@@ -208,17 +268,36 @@ class WalletSendForm extends Component<Props, State> {
   };
   handleSubmitOnEnter = (event: KeyboardEvent): void => {
     if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
-      setTimeout(() => {
-        this.handleOnSubmit();
-      }, FORM_VALIDATION_DEBOUNCE_WAIT);
+      this.handleOnSubmit();
     }
   };
-  handleOnSubmit = () => {
+  handleOnSubmit = async () => {
     if (this.isDisabled()) {
       return;
     }
-    this.props.onSubmit();
+
+    await this.waitForInFlightValidations();
+
+    const adaAmountField = this.form.$('adaAmount');
+    const adaAmount = new BigNumber(adaAmountField.value || 0);
+
+    this.props.onSubmit({
+      coinSelection: this.state.coinSelection,
+      receiver: this.form.$('receiver').value,
+      amount: adaAmount,
+      assetsAmounts: this.selectedAssetsAmounts,
+      selectedAssets: this.selectedAssets,
+      totalAmount: adaAmount.plus(this.state.transactionFee),
+      transactionFee: this.state.transactionFee,
+      adaAmount: this.state.adaAmount,
+    });
   };
+
+  waitForInFlightValidations = () =>
+    new Promise((resolve) =>
+      setTimeout(resolve, this.props.validationDebounceWait)
+    );
+
   handleOnReset = () => {
     // Cancel all debounced field validations
     this.form.each((field) => {
@@ -321,112 +400,147 @@ class WalletSendForm extends Component<Props, State> {
       receiverField.isValid
     );
   };
-  isDisabled = () =>
-    this.state.isCalculatingTransactionFee ||
-    !this.state.isTransactionFeeCalculated ||
-    !this.form.isValid ||
-    this.form.validating;
-  form = new ReactToolboxMobxForm<FormFields>(
-    {
-      fields: {
-        receiver: {
-          label: this.context.intl.formatMessage(messages.receiverLabel),
-          placeholder: this.context.intl.formatMessage(messages.receiverHint),
-          value: '',
-          validators: [
-            async ({ field, form }) => {
-              const { value } = field;
+  isDisabled = () => {
+    return (
+      this.state.isCalculatingTransactionFee ||
+      this.state.transactionFee.lte(0) ||
+      !this.form.isValid ||
+      this.form.validating ||
+      this.state.hasPendingRequestTokens ||
+      this.requestTokens.length > 0
+    );
+  };
 
-              if (value === null || value === '') {
-                this.resetTransactionFee();
-                this.setReceiverValidity(false);
+  setupMobxForm = () =>
+    new ReactToolboxMobxForm<FormFields>(
+      {
+        fields: {
+          receiver: {
+            label: this.context.intl.formatMessage(messages.receiverLabel),
+            placeholder: this.context.intl.formatMessage(messages.receiverHint),
+            value: '',
+            validators: [
+              async ({ field, form }) => {
+                const { value } = field;
+
+                if (value === null || value === '') {
+                  this.resetTransactionFee(this.requestTokens.length);
+                  this.setReceiverValidity(false);
+                  return [
+                    false,
+                    this.context.intl.formatMessage(messages.fieldIsRequired),
+                  ];
+                }
+
+                const requestToken = this.createRequestToken();
+                const payload = {
+                  ...this.getTransactionFeePayload(),
+                  requestToken,
+                };
+
+                const isValid = await this.props.addressValidator(value);
+
+                if (requestToken.aborted) {
+                  requestToken.release();
+                  return [];
+                }
+
+                if (isValid && this.isAddressFromSameWallet()) {
+                  this._isAutoFocusEnabled = false;
+                }
+
+                this.setReceiverValidity(isValid);
+                const adaAmountField = form.$('adaAmount');
+                const isAdaAmountValid = adaAmountField.isValid;
+
+                await this.calculateOrResetTransactionFee({
+                  isValid: isValid && isAdaAmountValid,
+                  requestToken,
+                  payload,
+                });
+
                 return [
-                  false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                  isValid,
+                  this.context.intl.formatMessage(
+                    apiErrorMessages.invalidAddress
+                  ),
                 ];
-              }
+              },
+            ],
+          },
+          adaAmount: {
+            label: this.context.intl.formatMessage(messages.adaAmountLabel),
+            placeholder: `0${
+              this.getCurrentNumberFormat().decimalSeparator
+            }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+            value: '',
+            validators: [
+              async ({ field }) => {
+                const { value } = field;
 
-              const isValid = await this.props.addressValidator(value);
+                if (value === null || value === '') {
+                  this.resetTransactionFee();
+                  return [
+                    false,
+                    this.context.intl.formatMessage(messages.fieldIsRequired),
+                  ];
+                }
 
-              if (isValid && this.isAddressFromSameWallet()) {
-                this._isAutoFocusEnabled = false;
-              }
+                const amountValue = value.toString();
 
-              this.setReceiverValidity(isValid);
-              const adaAmountField = form.$('adaAmount');
-              const isAdaAmountValid = adaAmountField.isValid;
+                const requestToken = this.createRequestToken();
+                const payload = {
+                  ...this.getTransactionFeePayload(),
+                  requestToken,
+                };
 
-              if (isValid && isAdaAmountValid) {
-                await this.calculateTransactionFee();
-              } else {
-                this.resetTransactionFee();
-              }
+                const isValid = await this.props.validateAmount(
+                  formattedAmountToNaturalUnits(amountValue)
+                );
 
-              return [
-                isValid,
-                this.context.intl.formatMessage(
-                  apiErrorMessages.invalidAddress
-                ),
-              ];
-            },
-          ],
-        },
-        adaAmount: {
-          label: this.context.intl.formatMessage(messages.adaAmountLabel),
-          placeholder: `0${
-            this.getCurrentNumberFormat().decimalSeparator
-          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: '',
-          validators: [
-            async ({ field }) => {
-              const { value } = field;
+                if (requestToken.aborted) {
+                  requestToken.release();
+                  return [];
+                }
 
-              if (value === null || value === '') {
-                this.resetTransactionFee();
+                await this.calculateOrResetTransactionFee({
+                  isValid,
+                  requestToken,
+                  payload,
+                });
+
                 return [
-                  false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                  isValid,
+                  this.context.intl.formatMessage(messages.invalidAmount),
                 ];
-              }
-
-              const amountValue = value.toString();
-              const isValid = await this.props.validateAmount(
-                formattedAmountToNaturalUnits(amountValue)
-              );
-
-              if (isValid) {
-                await this.calculateTransactionFee();
-              } else {
-                this.resetTransactionFee();
-              }
-
-              return [
-                isValid,
-                this.context.intl.formatMessage(messages.invalidAmount),
-              ];
+              },
+            ],
+            hooks: {
+              onChange: () => {
+                return this.setState({ transactionFee: new BigNumber(0) });
+              },
             },
-          ],
+          },
+          estimatedFee: {
+            label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
+            placeholder: `0${
+              this.getCurrentNumberFormat().decimalSeparator
+            }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+            value: null,
+          },
         },
-        estimatedFee: {
-          label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
-          placeholder: `0${
-            this.getCurrentNumberFormat().decimalSeparator
-          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: null,
+      },
+      {
+        plugins: {
+          vjf: vjf(),
         },
-      },
-    },
-    {
-      plugins: {
-        vjf: vjf(),
-      },
-      options: {
-        validateOnBlur: false,
-        validateOnChange: true,
-        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-      },
-    }
-  );
+        options: {
+          validateOnBlur: false,
+          validateOnChange: true,
+          validationDebounceWait: this.props.validationDebounceWait,
+        },
+      }
+    );
 
   setReceiverValidity(isValid: boolean) {
     if (this._isMounted) {
@@ -437,10 +551,6 @@ class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  isLatestTransactionFeeRequest = (
-    currentFeeCalculationRequestQue: number,
-    prevFeeCalculationRequestQue: number
-  ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
   validateEmptyAssets = () => {
     return this.selectedAssets
       .filter((_, index) => {
@@ -453,17 +563,46 @@ class WalletSendForm extends Component<Props, State> {
         });
       });
   };
-  calculateTransactionFee = async (shouldUpdateMinimumAdaAmount = false) => {
-    if (!this.state.isReceiverAddressValid) {
-      return;
-    }
 
-    this.validateEmptyAssets();
+  createRequestToken = () => {
+    this.requestTokens.forEach((requestToken) => requestToken.abort());
+
+    const updatePendingRequestTokens = () =>
+      this.setState({
+        hasPendingRequestTokens: this.requestTokens.length > 0,
+      });
+
+    const requestToken = (() => {
+      let aborted = false;
+      return {
+        abort() {
+          aborted = true;
+        },
+        get aborted() {
+          return aborted;
+        },
+        release: () => {
+          this.requestTokens = this.requestTokens.filter(
+            (r) => r !== requestToken
+          );
+
+          updatePendingRequestTokens();
+        },
+      };
+    })();
+
+    this.requestTokens.push(requestToken);
+
+    updatePendingRequestTokens();
+
+    return requestToken;
+  };
+
+  getTransactionFeePayload = (): TransactionFeePayload => {
     const { form } = this;
-    const receiverField = form.$('receiver');
-    const receiver = receiverField.value;
-    const adaAmountField = form.$('adaAmount');
-    const adaAmount = formattedAmountToLovelace(adaAmountField.value);
+    const receiver = form.$('receiver').value;
+    const adaAmount = formattedAmountToLovelace(form.$('adaAmount').value);
+
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ policy_id: string; asset_name: string; qua... Remove this comment to see the full error message
     const assets: ApiTokens = this.selectedAssets
       .map(({ policyId, assetName }, index) => {
@@ -475,40 +614,57 @@ class WalletSendForm extends Component<Props, State> {
         };
       })
       .filter(({ quantity }: { quantity: BigNumber }) => quantity.gt(0));
-    const {
-      selectedAssetUniqueIds,
-      feeCalculationRequestQue: prevFeeCalculationRequestQue,
-    } = this.state;
-    this.setState((prevState) => ({
-      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
-      isTransactionFeeCalculated: false,
-      transactionFeeError: null,
-      isCalculatingTransactionFee: true,
-    }));
+
+    return {
+      receiver,
+      adaAmount,
+      assets,
+    };
+  };
+
+  calculateTransactionFee = async ({
+    shouldUpdateMinimumAdaAmount = false,
+    requestToken,
+    adaAmount,
+    receiver,
+    assets,
+  }: CalculateTransactionFeeArgs) => {
+    if (
+      !this.state.isReceiverAddressValid ||
+      last(this.requestTokens) !== requestToken ||
+      requestToken.aborted
+    ) {
+      return;
+    }
+
+    this.validateEmptyAssets();
+
+    const { selectedAssetUniqueIds } = this.state;
+
+    if (this.requestTokens.length <= 1) {
+      this.setState({
+        transactionFeeError: null,
+        isCalculatingTransactionFee: true,
+      });
+    }
 
     try {
-      const { fee, minimumAda } = await this.props.calculateTransactionFee(
-        receiver,
-        adaAmount,
-        assets
-      );
+      const {
+        fee,
+        minimumAda,
+        coinSelection,
+      } = await this.props.calculateTransactionFee(receiver, adaAmount, assets);
 
-      if (
-        this._isMounted &&
-        this.isLatestTransactionFeeRequest(
-          this.state.feeCalculationRequestQue,
-          prevFeeCalculationRequestQue
-        )
-      ) {
+      if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
-        const adaAmountValue = new BigNumber(adaAmountField.value || 0);
         const nextState = {
-          isTransactionFeeCalculated: true,
           minimumAda: minimumAdaValue,
           transactionFee: fee,
           transactionFeeError: null,
           isCalculatingTransactionFee: false,
           adaInputState: this.state.adaInputState,
+          coinSelection,
+          adaAmount,
         };
 
         if (shouldUpdateMinimumAdaAmount) {
@@ -518,22 +674,17 @@ class WalletSendForm extends Component<Props, State> {
         }
 
         this.setState(nextState);
+
+        this.props.onTransactionFeeChange?.(fee);
       }
     } catch (error) {
-      if (
-        this._isMounted &&
-        this.isLatestTransactionFeeRequest(
-          this.state.feeCalculationRequestQue,
-          prevFeeCalculationRequestQue
-        )
-      ) {
+      if (this._isMounted && !requestToken.aborted) {
         const errorHasLink = !!get(error, ['values', 'linkLabel']);
         let transactionFeeError;
         let localizableError = error;
         let values;
         let nextState = {
           isCalculatingTransactionFee: false,
-          isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
         };
 
@@ -668,10 +819,13 @@ class WalletSendForm extends Component<Props, State> {
     return adaAmount.lt(this.state.minimumAda);
   };
 
-  resetTransactionFee() {
+  resetTransactionFee(pendingRequestTokens = 0) {
+    if (pendingRequestTokens > 0) {
+      return;
+    }
+
     if (this._isMounted) {
       this.setState({
-        isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
         isCalculatingTransactionFee: false,
@@ -705,7 +859,15 @@ class WalletSendForm extends Component<Props, State> {
       },
       async () => {
         this.removeAssetFields(uniqueId);
-        await this.calculateTransactionFee(true);
+
+        const requestToken = this.createRequestToken();
+        const payload = {
+          ...this.getTransactionFeePayload(),
+          requestToken,
+          shouldUpdateMinimumAdaAmount: true,
+        };
+
+        this.calculateTransactionFee(payload).finally(requestToken.release);
       }
     );
   };
@@ -727,22 +889,23 @@ class WalletSendForm extends Component<Props, State> {
           this.props.currencyMaxFractionalDigits
         )}`
       );
+
+    this.form.$(newAsset).set('hooks', {
+      onChange: () => this.setState({ transactionFee: new BigNumber(0) }),
+    });
+
     this.form.$(newAsset).set('validators', [
       async ({ field }) => {
         const { value } = field;
 
         if (value === null || value === '') {
-          this.resetTransactionFee();
+          this.resetTransactionFee(this.requestTokens.length);
           return [
             false,
             this.context.intl.formatMessage(messages.fieldIsRequired),
           ];
         }
 
-        const amountValue = value.toString();
-        const isValidAmount = await this.props.validateAssetAmount(
-          formattedAmountToNaturalUnits(amountValue)
-        );
         const asset = this.getAssetByUniqueId(uniqueId);
 
         if (!asset) {
@@ -752,16 +915,40 @@ class WalletSendForm extends Component<Props, State> {
         const assetValue = new BigNumber(
           formattedAmountToNaturalUnits(field.value)
         );
+
         const isValidRange =
           assetValue.isGreaterThan(0) &&
           assetValue.isLessThanOrEqualTo(asset.quantity);
-        const isValid = isValidAmount && isValidRange;
 
-        if (isValid) {
-          await this.calculateTransactionFee(true);
-        } else {
-          this.resetTransactionFee();
+        if (!isValidRange) {
+          return [
+            false,
+            this.context.intl.formatMessage(messages.invalidAmount),
+          ];
         }
+
+        const requestToken = this.createRequestToken();
+        const payload = {
+          ...this.getTransactionFeePayload(),
+          requestToken,
+          shouldUpdateMinimumAdaAmount: true,
+        };
+
+        const amountValue = value.toString();
+        const isValid = await this.props.validateAssetAmount(
+          formattedAmountToNaturalUnits(amountValue)
+        );
+
+        if (requestToken.aborted) {
+          requestToken.release();
+          return [];
+        }
+
+        await this.calculateOrResetTransactionFee({
+          isValid,
+          requestToken,
+          payload,
+        });
 
         return [
           isValid,
@@ -777,6 +964,25 @@ class WalletSendForm extends Component<Props, State> {
     });
     this.form.$(assetsDropdown).set('type', 'select');
   };
+
+  calculateOrResetTransactionFee = ({
+    isValid,
+    payload,
+    requestToken,
+  }: {
+    isValid: boolean;
+    payload: CalculateTransactionFeeArgs;
+    requestToken: RequestToken;
+  }) => {
+    if (isValid) {
+      return this.calculateTransactionFee(payload).finally(
+        requestToken.release
+      );
+    }
+    requestToken.release();
+    this.resetTransactionFee(this.requestTokens.length);
+  };
+
   removeAssetFields = (uniqueId: string) => {
     const assetFieldToDelete = `asset_${uniqueId}`;
     this.form.del(assetFieldToDelete);
@@ -1034,7 +1240,6 @@ class WalletSendForm extends Component<Props, State> {
       transactionFee,
       transactionFeeError,
       isResetButtonDisabled,
-      isTransactionFeeCalculated,
       selectedAssetUniqueIds,
     } = this.state;
     const {
@@ -1048,17 +1253,13 @@ class WalletSendForm extends Component<Props, State> {
       tokenFavorites,
       walletName,
       onTokenPickerDialogClose,
+      confirmationDialogData,
     } = this.props;
-    const receiverField = form.$('receiver');
-    const receiver = receiverField.value;
     const adaAmountField = form.$('adaAmount');
-    const adaAmount = new BigNumber(adaAmountField.value || 0);
     let fees = '0';
-    let total: BigNumber = adaAmount;
 
-    if (isTransactionFeeCalculated) {
+    if (transactionFee.gt(0)) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = adaAmount.plus(transactionFee);
     }
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -1099,8 +1300,12 @@ class WalletSendForm extends Component<Props, State> {
                   }
                   isSet
                 />
-                {this.state.isCalculatingTransactionFee && (
-                  <div className={styles.calculatingFeesContainer}>
+                {(this.state.isCalculatingTransactionFee ||
+                  this.state.hasPendingRequestTokens) && (
+                  <div
+                    className={styles.calculatingFeesContainer}
+                    data-testid="transaction-fee-spinner"
+                  >
                     <PopOver
                       content={intl.formatMessage(
                         messages.calculatingFeesLabel
@@ -1137,22 +1342,27 @@ class WalletSendForm extends Component<Props, State> {
             </div>
           </BorderedBox>
         )}
-
-        {isDialogOpen(WalletSendConfirmationDialogView) ? (
+        {isDialogOpen(WalletSendConfirmationDialogView) &&
+        confirmationDialogData ? (
           <WalletSendConfirmationDialogContainer
-            receiver={receiver}
-            selectedAssets={this.selectedAssets}
-            assetsAmounts={this.selectedAssetsAmounts}
-            amount={adaAmount.toFormat(currencyMaxFractionalDigits)}
-            totalAmount={total}
-            transactionFee={fees}
+            receiver={confirmationDialogData.receiver}
+            selectedAssets={confirmationDialogData.selectedAssets}
+            assetsAmounts={confirmationDialogData.assetsAmounts}
+            amount={confirmationDialogData.amount.toFormat(
+              currencyMaxFractionalDigits
+            )}
+            totalAmount={confirmationDialogData.totalAmount}
+            transactionFee={confirmationDialogData.transactionFee.toFormat(
+              currencyMaxFractionalDigits
+            )}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
             onExternalLinkClick={onExternalLinkClick}
-            formattedTotalAmount={total.toFormat(currencyMaxFractionalDigits)}
+            formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
+              currencyMaxFractionalDigits
+            )}
           />
         ) : null}
-
         {isDialogOpen(WalletTokenPicker) && (
           <WalletTokenPicker
             assets={assets}
