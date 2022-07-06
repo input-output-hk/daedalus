@@ -369,7 +369,7 @@ export default class WalletsStore extends Store {
       });
       this.analytics.sendEvent(
         EventCategories.WALLETS,
-        'Reveal wallet public key'
+        'Revealed wallet public key'
       );
     } catch (error) {
       throw error;
@@ -405,7 +405,7 @@ export default class WalletsStore extends Store {
       });
       this.analytics.sendEvent(
         EventCategories.WALLETS,
-        'Reveal wallet public key'
+        'Revealed wallet multi-signature public key'
       );
     } catch (error) {
       throw error;
