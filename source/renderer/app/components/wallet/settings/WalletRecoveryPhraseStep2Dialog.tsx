@@ -100,10 +100,21 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
     }
   );
 
+  handleSubmit = () => {
+    this.form.submit({
+      onSuccess: (form) => {
+        const { recoveryPhrase } = form.values();
+
+        this.setState({ isVerifying: true });
+        this.props.onContinue({ recoveryPhrase });
+      },
+    });
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onContinue, expectedWordCount, walletName } = this.props;
+    const { onClose, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
@@ -119,14 +130,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         className: isVerifying ? styles.isVerifying : null,
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
-        onClick: () => {
-          this.setState({
-            isVerifying: true,
-          });
-          onContinue({
-            recoveryPhrase: recoveryPhraseField.value,
-          });
-        },
+        onClick: this.handleSubmit,
         disabled: !canSubmit,
       },
     ];
