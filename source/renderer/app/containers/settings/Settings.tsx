@@ -29,7 +29,6 @@ class Settings extends Component<InjectedContainerProps> {
   };
 
   render() {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
     const { isFlight } = global;
     const { actions, stores, children } = this.props;
     const { networkStatus, app, router } = stores;

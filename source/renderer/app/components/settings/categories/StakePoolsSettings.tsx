@@ -270,7 +270,7 @@ class StakePoolsSettings extends Component<Props, State> {
         options={smashSelectOptions}
         onChange={this.handleOnSelectSmashServerType}
         optionHeight={50}
-        selectionRenderer={({ label }) => (
+        selectionRenderer={({ label }: { label: string }) => (
           <div className={styles.selectionRenderer}>{label}</div>
         )}
       />

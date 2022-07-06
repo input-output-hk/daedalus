@@ -277,27 +277,23 @@ class WalletReceiveRandom extends Component<Props> {
             </div>
 
             {walletAddresses.length ? (
-              <>
-                <div className={styles.generatedAddresses}>
-                  <h2>
-                    {intl.formatMessage(
-                      messages.generatedAddressesSectionTitle
-                    )}
-                    <div className={styles.hideUsed}>
-                      <TinySwitch
-                        label={intl.formatMessage(messages.showUsedLabel)}
-                        onChange={this.toggleUsedAddresses}
-                        checked={showUsed}
-                      />
-                    </div>
-                  </h2>
+              <div className={styles.generatedAddresses}>
+                <h2>
+                  {intl.formatMessage(messages.generatedAddressesSectionTitle)}
+                  <div className={styles.hideUsed}>
+                    <TinySwitch
+                      label={intl.formatMessage(messages.showUsedLabel)}
+                      onChange={this.toggleUsedAddresses}
+                      checked={showUsed}
+                    />
+                  </div>
+                </h2>
 
-                  <VirtualAddressesList
-                    rows={this.getFilteredAddresses(walletAddresses)}
-                    renderRow={this.renderRow}
-                  />
-                </div>
-              </>
+                <VirtualAddressesList
+                  rows={this.getFilteredAddresses(walletAddresses)}
+                  renderRow={this.renderRow}
+                />
+              </div>
             ) : null}
           </div>
         </BorderedBox>

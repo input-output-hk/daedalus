@@ -31,8 +31,24 @@ let
     };
   };
   pkgs = import sources.nixpkgs { inherit system config; };
-  pkgsNative = localLib.iohkNix.getPkgsDefault {};
-  sources = localLib.sources;
+  sources = localLib.sources // {
+    cardano-wallet = pkgs.runCommand "cardano-wallet" {} ''
+      cp -r ${localLib.sources.cardano-wallet} $out
+      chmod -R +w $out
+      cd $out
+      patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+    '';
+  };
+  haskellNix = import sources."haskell.nix" {};
+  inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
+  flake-compat = import sources.flake-compat;
+  walletFlake = flake-compat  { src = sources.cardano-wallet; };
+  walletPackages = with walletFlake.defaultNix.hydraJobs; {
+    x86_64-windows = linux.windows;
+    x86_64-linux = linux.native;
+    x86_64-darwin = macos.intel;
+    aarch64-darwin = macos.silicon;
+  }.${target};
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
@@ -49,13 +65,14 @@ let
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
+  ostable.aarch64-darwin = "macos64-arm";
+
   packages = self: {
-    inherit cluster pkgs version target nodeImplementation;
-    inherit (pkgs) hello cabal2nix;
+    inherit walletFlake cluster pkgs version target nodeImplementation;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = pkgs.nodejs-14_x;
+    nodejs = pkgs.nodejs-16_x;
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
       version = "1.22.4";
@@ -73,17 +90,13 @@ let
 
     sources = localLib.sources;
     bridgeTable = {
-      cardano = self.callPackage ./nix/cardano-bridge.nix {
-        cardano-wallet = self.cardano-wallet.cardano-wallet;
-        cardanoWalletPkgs = self.cardano-wallet.pkgs;
-      };
+      cardano = self.callPackage ./nix/cardano-bridge.nix {};
     };
-    cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
-    cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).cardano-address;
-    mock-token-metadata-server = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).mock-token-metadata-server;
+    inherit (walletPackages) cardano-wallet;
+    inherit (walletPackages) cardano-address;
+    inherit (walletPackages) mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    local-cluster = if cluster == "selfnode" then (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).local-cluster else null;
+    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -99,10 +112,10 @@ let
     in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
-                   else self.cardano-wallet.cardano-node;
+                   else walletPackages.cardano-node;
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
-                   else self.cardano-wallet.cardano-cli;
+                   else walletPackages.cardano-cli;
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
@@ -123,7 +136,6 @@ let
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
-      runCommandNative = pkgsNative.runCommand;
     };
 
     unsignedUnpackedCardano = self.daedalus-bridge; # TODO
@@ -264,7 +276,7 @@ let
       pushd dlls
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
-      cp -v ${self.unpackedCardano}/bin/* .
+      cp -vr ${self.unpackedCardano}/bin/* .
       cp -v ${self.nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
       cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
@@ -314,7 +326,11 @@ let
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ./.;
-    yaml2json = pkgs.haskell.lib.addExtraLibrary (pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe") pkgs.haskellPackages.optparse-applicative;
+    inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
+      packages: .
+      package yaml
+        flags: -no-exe
+    ''; }).components.exes) yaml2json;
 
     electron = pkgs.callPackage ./installers/nix/electron.nix {};
 

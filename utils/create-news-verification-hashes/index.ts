@@ -74,7 +74,7 @@ const readModuleFile = (path, callback) => {
 
     console.log('\n \x1b[33m', 'NOTE: create file with NAME and put HASH as content! \n', '\x1b[0m');
     lodash.map(filesToHash, file => {
-      readModuleFile(`../../source/renderer/app/config/newsfeed-files/${file.name}`, function (error, fileContent) {
+      readModuleFile(`../../source/renderer/app/config/newsfeed-files/${file.name}`, (error, fileContent) => {
         // Log Environment
         console.log('\n \x1b[32m', `${lodash.capitalize(file.env)}`, '\x1b[0m');
 

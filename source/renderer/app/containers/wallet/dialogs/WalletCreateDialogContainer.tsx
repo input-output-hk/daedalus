@@ -11,8 +11,9 @@ import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
 
 type Props = InjectedProps;
 
-// TODO create component;
-const CreateWalletAbortConfirmation = () => <div>Are you sure</div>;
+function CreateWalletAbortConfirmation() {
+  return <div>Are you sure</div>;
+}
 
 @inject('stores', 'actions')
 @observer

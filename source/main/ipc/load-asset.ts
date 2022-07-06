@@ -14,14 +14,14 @@ const loadAssetChannel: MainIpcChannel<
 export default () => {
   loadAssetChannel.onRequest((request: LoadAssetRendererRequest) => {
     const asset = path.resolve(__dirname, `../renderer/${request.fileName}`);
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
       fs.readFile(asset, 'base64', (error, data) => {
         if (error) {
           reject(error);
         } else {
           resolve(data);
         }
-      })
-    );
+      });
+    });
   });
 };

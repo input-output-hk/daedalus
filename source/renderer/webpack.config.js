@@ -1,29 +1,34 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const AutoDllPlugin = require('autodll-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
-// Process env flags from buildkite
-const isTestEnv = process.env.NODE_ENV === 'test';
-const isCi = process.env.CI && process.env.CI !== '';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-cheap-module-source-map',
-  entry: './source/renderer/index.ts',
-  optimization: {
-    // https://github.com/webpack/webpack/issues/7470
-    nodeEnv: false,
+  entry: {
+    index: './source/renderer/index.ts',
   },
   output: {
-    path: path.join(__dirname, './dist/renderer'),
-    filename: 'index.js',
+    path: path.join(process.cwd(), 'dist/renderer'),
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
-  // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
-  target: isTestEnv ? 'electron-renderer' : 'web',
-  cache: true,
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json'],
+  mode: isDevelopment ? 'development' : 'production',
+  target: 'web',
+  devtool: isDevelopment ? 'eval-source-map' : 'source-map',
+  optimization: {
+    minimize: false,
+  },
+  devServer: {
+    hot: true,
+    static: {
+      directory: path.join(__dirname, '../../dist'),
+    },
+    client: {
+      overlay: true,
+      progress: true,
+    },
   },
   module: {
     rules: [
@@ -31,29 +36,35 @@ module.exports = {
         test: /\.tsx?$/,
         include: /source/,
         exclude: /source\/main/,
-        use: (isCi ? [] : ['cache-loader', 'thread-loader']).concat([
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react',
-                '@babel/preset-typescript',
-              ],
+        loader: 'swc-loader',
+        options: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              tsx: true,
+              decorators: true,
             },
+            transform: {
+              react: {
+                refresh: isDevelopment,
+              },
+            },
+            target: 'es2019',
+            loose: false,
           },
-        ]),
+        },
       },
       {
         test: /\.scss/,
         use: [
-          MiniCssExtractPlugin.loader,
+          isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
+              modules: {
+                localIdentName: '[name]_[local]',
+              },
               sourceMap: true,
-              modules: true,
-              localIdentName: '[name]_[local]',
               importLoaders: true,
             },
           },
@@ -61,6 +72,7 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
+              implementation: require.resolve('sass'),
             },
           },
         ],
@@ -79,41 +91,42 @@ module.exports = {
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'assets/',
-          },
-        },
+        type: 'asset/resource',
       },
       {
         test: /\.md$/,
-        use: [
-          { loader: 'html-loader', options: { importLoaders: true } },
-          { loader: 'markdown-loader?gfm=false' },
-        ],
+        use: ['html-loader', 'markdown-loader?gfm=false'],
       },
     ],
   },
+  resolve: {
+    symlinks: true, // for native libraries
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {
+      react: require.resolve('react'), // else, it’s added a few times to index.js 🙄
+    },
+    fallback: {
+      process: require.resolve('process/browser'),
+      path: require.resolve('path-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      url: require.resolve('url'),
+      buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
+    },
+  },
+  experiments: {
+    syncWebAssembly: true,
+  },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'styles.css',
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
     new webpack.DefinePlugin(
       Object.assign(
-        {
-          'process.env.API_VERSION': JSON.stringify(
-            process.env.API_VERSION || 'dev'
-          ),
-          'process.env.NETWORK': JSON.stringify(
-            process.env.NETWORK || 'development'
-          ),
-          'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
-          'process.env.BUILD_NUMBER': JSON.stringify(
-            process.env.BUILD_NUMBER || 'dev'
-          ),
-        },
+        {},
         process.env.NODE_ENV === 'production'
           ? {
               // Only bake in NODE_ENV value for production builds.
@@ -122,43 +135,19 @@ module.exports = {
           : {}
       )
     ),
-    new AutoDllPlugin({
-      inherit: !isCi,
-      filename: 'vendor.dll.js',
-      context: path.join(__dirname, '..'),
-      entry: {
-        vendor: [
-          'aes-js',
-          'bignumber.js',
-          'bip39',
-          'blakejs',
-          'bs58',
-          'classnames',
-          'es6-error',
-          'history',
-          'humanize-duration',
-          'lodash',
-          'mobx',
-          'mobx-react',
-          'mobx-react-form',
-          'mobx-react-router',
-          'moment',
-          'pbkdf2',
-          'qrcode.react',
-          'react',
-          'react-copy-to-clipboard',
-          'react-datetime',
-          'react-dom',
-          'react-router',
-          'react-router-dom',
-          'react-svg-inline',
-          'recharts',
-          'route-parser',
-          'safe-buffer',
-          'unorm',
-          'validator',
-        ],
-      },
+    new webpack.EnvironmentPlugin({
+      API_VERSION: 'dev',
+      NETWORK: 'development',
+      BUILD_NUMBER: 'dev',
     }),
+    new HtmlWebpackPlugin({
+      template: 'source/renderer/index.ejs',
+      inject: 'body',
+      scriptLoading: 'blocking',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+    isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),
 };

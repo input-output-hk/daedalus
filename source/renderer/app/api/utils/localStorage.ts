@@ -39,15 +39,18 @@ export type SetHardwareWalletLocalDataRequestType = {
 export type SetHardwareWalletDeviceRequestType = {
   deviceId: string | null | undefined;
   // @TODO - mark as mandatory parameter once Ledger improver
-  data: {
-    deviceType?: DeviceType;
-    deviceModel?: string;
-    deviceName?: string;
-    path?: string | null | undefined;
-    paired?: string | null | undefined;
-    disconnected?: boolean;
-  };
+  data: UnpairedHardwareWalletData;
 };
+
+export type UnpairedHardwareWalletData = {
+  deviceType?: DeviceType;
+  deviceModel?: string;
+  deviceName?: string;
+  path?: string | null | undefined;
+  paired?: string | null | undefined;
+  disconnected?: boolean;
+};
+
 export type HardwareWalletLocalData = {
   id: string;
   deviceType: DeviceType;

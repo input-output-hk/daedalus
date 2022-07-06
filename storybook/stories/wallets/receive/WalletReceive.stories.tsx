@@ -16,7 +16,7 @@ const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
-storiesOf('Wallets|Receive', module)
+storiesOf('Wallets / Receive', module)
   .addDecorator(WalletsWrapper)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Receive - sequential', ({ locale }: { locale: string }) => {

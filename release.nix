@@ -10,6 +10,7 @@ let
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
+    darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
@@ -19,6 +20,7 @@ let
       x86_64-linux = import ./. { target = "x86_64-linux"; };
       x86_64-windows = import ./. { target = "x86_64-windows"; };
       x86_64-darwin = import ./. { target = "x86_64-darwin"; };
+      aarch64-darwin = import ./. { target = "aarch64-darwin"; };
     };
   in
     table.${system};
@@ -58,11 +60,17 @@ in {
     inherit (sources) iohk-nix cardano-wallet cardano-shell;
   };
 } // (builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters))
-// (mapOverArches {
-  daedalus-installer = [ "x86_64-linux" "x86_64-darwin" ];
-  yaml2json = [ "x86_64-linux" "x86_64-darwin" ];
+// (mapOverArches (let
+    allArchesNoWindows = [
+      "x86_64-linux" "x86_64-darwin"
+      # "aarch64-darwin"    # TODO: re-enable when we have `aarch64-darwin` in Hydra
+    ];
+    allArches = allArchesNoWindows ++ [ "x86_64-windows" ];
+  in {
+  daedalus-installer = allArchesNoWindows;
+  yaml2json = allArchesNoWindows;
   bridgeTable = {
-    cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
+    cardano = allArches;
   };
-  cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
-})
+  cardano-node = allArches;
+}))

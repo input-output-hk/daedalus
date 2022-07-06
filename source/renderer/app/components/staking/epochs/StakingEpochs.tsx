@@ -23,6 +23,10 @@ const messages = defineMessages({
     description: 'Headline for the previous epoch.',
   },
 });
+type SelectOption = {
+  label: string;
+  value: unknown;
+};
 type Props = {
   currentEpochName: string;
   currentEpochData: EpochData;
@@ -109,7 +113,7 @@ class StakingEpochs extends Component<Props, State> {
               value={selectedEpoch}
               onChange={this.onSelectedEpochChange}
               skin={SelectSkin}
-              selectionRenderer={(option) => (
+              selectionRenderer={(option: SelectOption) => (
                 <div className={styles.customSelectValue}>{option.label}</div>
               )}
               optionHeight={50}

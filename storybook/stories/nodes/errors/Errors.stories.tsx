@@ -6,7 +6,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import { NoDiskSpaceErrorStory } from './NoDiskSpaceError.stories';
 import { SystemTimeErrorStory } from './SystemTimeError.stories';
 
-storiesOf('Nodes | Errors', module)
+storiesOf('Nodes / Errors', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======

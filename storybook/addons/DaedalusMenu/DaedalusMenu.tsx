@@ -60,12 +60,6 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
     // @ts-ignore ts-migrate(2322) FIXME: Type 'URLSearchParams' is not assignable to type '... Remove this comment to see the full error message
     parent.window.location.hash = hash;
   };
-  handleSetParam = (param: string, value: string) => {
-    const query = set({}, param, value);
-    this.setState(query);
-    this.setHashParam(param, value);
-    sessionStorage.setItem(param, value); // updateParam(query);
-  };
 
   render() {
     const { themeName, localeName, osName } = this.state;

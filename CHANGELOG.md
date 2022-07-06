@@ -2,8 +2,41 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
+
+### Chores
+
+- Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+
+## 4.11.0
+
+### Fixes
+
+- Fixed incorrect behaviour of creating new wallet when paired incorrect hardware wallet during address verification ([PR 2906](https://github.com/input-output-hk/daedalus/pull/2906))
+- Fixed phrasing of insufficient funds for tokens message ([PR 2966](https://github.com/input-output-hk/daedalus/pull/2966))
+- Improved error handling for incorrect passphrase and incorrect hardware wallet error ([PR 2860](https://github.com/input-output-hk/daedalus/pull/2860))
+
 ### Features
 
+- Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
+- Support of Apple AArch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
+
+### Chores
+
+- Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
+- Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
+- Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
+- Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))
+
+## 4.10.0
+
+### Features
+
+- Implemented hover tooltips for menu ([PR 2938](https://github.com/input-output-hk/daedalus/pull/2938))
 - Improved UI regarding the Hardware Wallet public key export error ([PR 2922](https://github.com/input-output-hk/daedalus/pull/2922))
 - Added ASCII name to token header when metadata name is missing ([PR 2904](https://github.com/input-output-hk/daedalus/pull/2904))
 - Improved IPC by reducing the amount of messages from periodic events ([PR 2892](https://github.com/input-output-hk/daedalus/pull/2892))
@@ -12,6 +45,10 @@
 
 ### Fixes
 
+- Fixed dialogs being closed after receiving address shared ([PR 2965](https://github.com/input-output-hk/daedalus/pull/2965))
+- Fixed no progress shown on loading screen on Windows ([PR 2967](https://github.com/input-output-hk/daedalus/pull/2967))
+- Fixes hardware wallet issues on Windows ([PR 2900](https://github.com/input-output-hk/daedalus/pull/2900))
+- Fixed stake pool list styling ([PR 2920](https://github.com/input-output-hk/daedalus/pull/2920))
 - Fixed PopOver overlap ([PR 2954](https://github.com/input-output-hk/daedalus/pull/2954))
 - Fixed tooltip being hidden in several places ([PR-2934](https://github.com/input-output-hk/daedalus/pull/2934))
 - Adjusted padding for search field in stake pools ([PR 2945](https://github.com/input-output-hk/daedalus/pull/2945))
@@ -28,6 +65,9 @@
 
 ### Chores
 
+- Updated cardano-wallet to v2022-04-27 and cardano-node to 1.34.1 ([PR 2951](https://github.com/input-output-hk/daedalus/pull/2951))
+- Refactor to remove duplicated code ([PR 2956](https://github.com/input-output-hk/daedalus/pull/2956))
+- Updated cardano-launcher to 0.20220119.0 ([PR 2839](https://github.com/input-output-hk/daedalus/pull/2839))
 - Added `storybook:build` check to pre-push hook ([PR 2955](https://github.com/input-output-hk/daedalus/pull/2955))
 - Using new faker.js ([PR 2855](https://github.com/input-output-hk/daedalus/pull/2855))
 - Fixed spelling issues and typos ([PR 2915](https://github.com/input-output-hk/daedalus/pull/2915))
@@ -81,7 +121,7 @@
 - Fixed behaviour of wallet settings option of the app menu ([PR 2838](https://github.com/input-output-hk/daedalus/pull/2838))
 - Fixed styling of ITN rewards feature ([PR 2861](https://github.com/input-output-hk/daedalus/pull/2861))
 - Fixed available disk space takes a long time to show ([PR 2849](https://github.com/input-output-hk/daedalus/pull/2849))
-  
+
 ### Chores
 
 - Migrated codebase from javascript to typescript ([PR 2843](https://github.com/input-output-hk/daedalus/pull/2843))

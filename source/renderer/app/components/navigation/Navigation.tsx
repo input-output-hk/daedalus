@@ -4,20 +4,21 @@ import styles from './Navigation.scss';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
 
-export type NavButtonProps = {
-  type?: 'button';
+type NavItemProps = {
   id: string;
   label: string;
   icon?: string;
   hasNotification?: boolean;
 };
-export type NavDropdownProps = NavButtonProps & {
+export type NavButtonProps = NavItemProps & {
+  type?: 'button';
+};
+export type NavDropdownProps = NavItemProps & {
   type: 'dropdown';
   options: Array<{
     value: number | string;
     label: string;
   }>;
-  hasNotification?: boolean;
 };
 type Props = {
   activeItem: string;

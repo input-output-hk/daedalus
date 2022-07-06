@@ -37,7 +37,7 @@ const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
 /* eslint-disable consistent-return */
-storiesOf('Settings|General', module)
+storiesOf('Settings / General', module)
   .addDecorator(SettingsWrapper) // ====== Stories ======
   .add('General', () => (
     <ProfileSettingsForm

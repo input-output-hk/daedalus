@@ -19,7 +19,7 @@ const Toggle = observer(({ knob }: { knob: boolean }) => {
   }, [knob, feature.isDiscreetMode]);
   return null;
 });
-storiesOf('Discreet Mode|Discreet Asset Amount', module)
+storiesOf('Discreet Mode / Discreet Asset Amount', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => (
     <StoryDecorator>

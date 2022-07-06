@@ -12,6 +12,9 @@ import {
   DERIVE_XPUB_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
   SHOW_ADDRESS_CHANNEL,
+  WAIT_FOR_LEDGER_DEVICES,
+  waitForLedgerDevicesRequest,
+  waitForLedgerDevicesResponse,
 } from '../../../common/ipc/api';
 import type {
   getHardwareWalletTransportRendererRequest,
@@ -93,3 +96,7 @@ export const showAddressChannel: RendererIpcChannel<
   showAddressMainResponse,
   showAddressRendererRequest
 > = new RendererIpcChannel(SHOW_ADDRESS_CHANNEL);
+export const waitForLedgerDevicesToConnectChannel: RendererIpcChannel<
+  waitForLedgerDevicesResponse,
+  waitForLedgerDevicesRequest
+> = new RendererIpcChannel(WAIT_FOR_LEDGER_DEVICES);

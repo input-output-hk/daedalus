@@ -6,6 +6,7 @@ import {
   ALONZO_PURPLE,
   SELFNODE,
 } from './environment.types';
+import { GetBlockSyncProgressType } from '../ipc/api';
 
 export type TlsConfig = {
   hostname: string;
@@ -159,8 +160,11 @@ export const NetworkMagics: {
   // Cardano Selfnode network magic
   [SELFNODE]: [1, null],
 };
+
 export enum BlockSyncType {
   pushingLedger = 'pushingLedger',
   replayedBlock = 'replayedBlock',
   validatingChunk = 'validatingChunk',
 }
+
+export type BlockSyncProgress = Record<GetBlockSyncProgressType, number>;

@@ -14,15 +14,17 @@ const rewards = map(REWARDS, (reward) => {
     unspent: new BigNumber(reward.unspent),
   };
 });
-export const StakingRewardsStory = () => (
-  <StakingRewards
-    // @ts-ignore ts-migrate(2322) FIXME: Type '{ total: BigNumber; unspent: BigNumber; date... Remove this comment to see the full error message
-    rewards={rewards}
-    isLoading={false}
-    isExporting={false}
-    onLearnMoreClick={action('onLearnMoreClick')}
-    onExportCsv={action('onExportCsv')}
-    onCopyAddress={action('onCopyAddress')}
-    onOpenExternalLink={action('onOpenExternalLink')}
-  />
-);
+export function StakingRewardsStory() {
+  return (
+    <StakingRewards
+      // @ts-ignore ts-migrate(2322) FIXME: Type '{ total: BigNumber; unspent: BigNumber; date... Remove this comment to see the full error message
+      rewards={rewards}
+      isLoading={false}
+      isExporting={false}
+      onLearnMoreClick={action('onLearnMoreClick')}
+      onExportCsv={action('onExportCsv')}
+      onCopyAddress={action('onCopyAddress')}
+      onOpenExternalLink={action('onOpenExternalLink')}
+    />
+  );
+}

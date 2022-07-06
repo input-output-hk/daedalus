@@ -27,7 +27,7 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Question if the user really wants to unpair the wallet.',
   },
 });
-storiesOf('Wallets|Settings', module)
+storiesOf('Wallets / Settings', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   .add('Unpair - Accepted', () => (
     <div>

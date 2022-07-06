@@ -886,7 +886,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-font-color-light': '#2d2d2db3',
     '--theme-staking-font-color-lighter': 'rgba(45, 45, 45, 0.5)',
     '--theme-staking-table-head-background-color': '#f9f9f9',
-    '--theme-staking-table-border-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-staking-table-border-color': 'rgba(45, 45, 45, 0.15)',
     '--theme-staking-link-color': '#29b595',
     '--theme-staking-link-color-light': 'rgba(41, 181, 149, 0.7)',
     '--theme-staking-progress-bar-background-color': 'rgba(94, 96, 102, 0.07)',

@@ -17,13 +17,38 @@ export type IpcReceiver = {
   ) => void;
 };
 
+export interface Channel<Incoming, Outgoing> {
+  send(
+    message: Outgoing,
+    sender: IpcSender,
+    receiver?: IpcReceiver
+  ): Promise<Incoming>;
+
+  request(
+    message: Outgoing,
+    sender: IpcSender,
+    receiver: IpcReceiver
+  ): Promise<Incoming>;
+
+  onReceive(
+    handler: (message: Incoming) => Promise<Outgoing>,
+    receiver: IpcReceiver
+  ): void;
+
+  onRequest(
+    handler: (arg0: Incoming) => Promise<Outgoing>,
+    receiver?: IpcReceiver
+  ): void;
+}
+
 /**
  * Provides a coherent, typed api for working with electron
  * ipc messages over named channels. Where possible it uses
  * promises to reduce the necessary boilerplate for request
  * and response cycles.
  */
-export class IpcChannel<Incoming, Outgoing> {
+export class IpcChannel<Incoming, Outgoing>
+  implements Channel<Incoming, Outgoing> {
   /**
    * Each ipc channel should be a singleton (based on the channelName)
    * Here we track the created instances.
@@ -59,7 +84,8 @@ export class IpcChannel<Incoming, Outgoing> {
 
     // Enforce the singleton pattern based on the channel name
     const existingChannel = IpcChannel._instances[channelName];
-    if (existingChannel) return existingChannel;
+    if (existingChannel)
+      throw new Error(`Channel ${channelName} already exists`);
     IpcChannel._instances[channelName] = this;
     this._broadcastChannel = `${channelName}-broadcast`;
     this._requestChannel = `${channelName}-request`;
@@ -74,7 +100,7 @@ export class IpcChannel<Incoming, Outgoing> {
   async send(
     message: Outgoing,
     sender: IpcSender,
-    receiver: IpcReceiver
+    receiver?: IpcReceiver
   ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
       sender.send(this._broadcastChannel, message);
@@ -144,7 +170,7 @@ export class IpcChannel<Incoming, Outgoing> {
    */
   onRequest(
     handler: (arg0: Incoming) => Promise<Outgoing>,
-    receiver: IpcReceiver
+    receiver?: IpcReceiver
   ): void {
     receiver.on(
       this._requestChannel,

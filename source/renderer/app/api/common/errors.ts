@@ -15,7 +15,7 @@ export const messages = defineMessages({
 });
 export class GenericApiError extends LocalizableError {
   // @ts-ignore ts-migrate(1015) FIXME: Parameter cannot have question mark and initialize... Remove this comment to see the full error message
-  constructor(values?: Record<string, any> = {}) {
+  constructor(values: Record<string, any> = {}) {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,

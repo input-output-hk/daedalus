@@ -14,7 +14,7 @@ import Notification from '../../../source/renderer/app/components/notifications/
 import InlineNotification from '../../../source/renderer/app/components/notifications/InlineNotification';
 import { NOTIFICATION_DEFAULT_DURATION } from '../../../source/renderer/app/config/timingConfig';
 
-storiesOf('Common|Notifications', module)
+storiesOf('Common / Notifications', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs) // ====== Stories ======
   .add(

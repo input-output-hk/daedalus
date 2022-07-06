@@ -17,13 +17,10 @@ import Wallet, {
 } from '../../../../source/renderer/app/domains/Wallet';
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
-import WalletSendAssetsConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendAssetsConfirmationDialog';
-import WalletSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/send-form/WalletSendConfirmationDialog';
-import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
+import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 
 const allAssets = [
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -33,22 +30,16 @@ const allAssets = [
       name: 'MakerDAO',
       ticker: 'DAI',
       description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     400
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -58,15 +49,10 @@ const allAssets = [
       name: 'Tether',
       ticker: 'USDT',
       description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -76,10 +62,6 @@ const allAssets = [
       name: 'USD Coin',
       ticker: 'USDC',
       description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
@@ -222,7 +204,7 @@ const sendFormAssetData = walletTokens.total.map((assetTotal) => {
         },
   };
 });
-storiesOf('Wallets|Send', module)
+storiesOf('Wallets / Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - No Assets', () => (
     <WalletSendForm
@@ -376,32 +358,28 @@ storiesOf('Wallets|Send', module)
     };
     return (
       <div>
-        <WalletSendAssetsConfirmationDialog
+        <WalletSendConfirmationDialogView
           amount="20.000000"
+          areTermsAccepted={boolean('areTermsAccepted', true)}
           wallet={wallet}
           totalAmount={new BigNumber('21.000000')}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          sender={
-            generateWallet('Wallet name', '45119903750165', walletTokens).id
-          }
           receiver={generateHash()}
           selectedAssets={confirmationTokens}
-          allAvailableTokens={confirmationTokens}
+          assetTokens={confirmationTokens}
           assetsAmounts={confirmationTokensAmounts}
           transactionFee="1.000000"
-          amountToNaturalUnits={formattedAmountToNaturalUnits}
-          onSubmit={() => null}
-          isSubmitting={false}
-          error={null}
-          isFlight={false}
-          onCancel={() => null}
-          onExternalLinkClick={() => null}
           hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+          isFlight={boolean('isFlight', false)}
           isHardwareWallet={boolean('isHardwareWallet', false)}
-          onInitiateTransaction={() => null}
-          onCopyAssetParam={() => {}}
+          isSubmitting={boolean('isSubmitting', false)}
           isTrezor={boolean('isTrezor', false)}
           formattedTotalAmount="21.000000"
+          error={null}
+          onCancel={action('onCancel')}
+          onSubmitCb={action('onSubmitCb')}
+          onTermsCheckboxClick={action('onTermsCheckboxClick')}
+          onCopyAssetParam={action('onCopyAssetParam')}
+          onExternalLinkClick={action('onExternalLinkClick')}
         />
       </div>
     );
@@ -415,31 +393,28 @@ storiesOf('Wallets|Send', module)
     };
     return (
       <div>
-        <WalletSendConfirmationDialog
+        <WalletSendConfirmationDialogView
+          wallet={wallet}
+          receiver={generateHash()}
           amount="20.000000"
           totalAmount={new BigNumber('21.000000')}
-          wallet={wallet}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          sender={
-            generateWallet('Wallet name', '45119903750165', walletTokens).id
-          }
-          receiver={generateHash()}
           transactionFee="1.000000"
-          amountToNaturalUnits={formattedAmountToNaturalUnits}
-          onSubmit={() => null}
-          isSubmitting={false}
-          error={null}
-          isFlight={false}
-          onCancel={() => null}
-          onExternalLinkClick={() => null}
+          selectedAssets={[]}
+          assetTokens={confirmationTokens}
+          assetsAmounts={confirmationTokensAmounts}
           hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-          isHardwareWallet={boolean('isHardwareWallet', false)}
-          onInitiateTransaction={() => null}
-          walletName={
-            generateWallet('TrueUSD', '15119903750165', walletTokens).name
-          }
+          areTermsAccepted={boolean('areTermsAccepted', true)}
+          isFlight={boolean('isFlight', false)}
           isTrezor={boolean('isTrezor', false)}
+          isSubmitting={boolean('isSubmitting', false)}
+          isHardwareWallet={boolean('isHardwareWallet', false)}
           formattedTotalAmount="21.000000"
+          error={null}
+          onCancel={action('onCancel')}
+          onSubmitCb={action('onSubmitCb')}
+          onTermsCheckboxClick={action('onTermsCheckboxClick')}
+          onCopyAssetParam={action('onCopyAssetParam')}
+          onExternalLinkClick={action('onExternalLinkClick')}
         />
       </div>
     );

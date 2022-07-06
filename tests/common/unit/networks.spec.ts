@@ -1,4 +1,4 @@
-import { getNetworkExplorerUri } from "../../../source/renderer/app/utils/network";
+import { getNetworkExplorerUri } from '../../../source/renderer/app/utils/network';
 
 describe('Function getNetworkExplorerUri returns:', () => {
   it('the correct Url for TESTNET', () => {

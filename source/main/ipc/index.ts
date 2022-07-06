@@ -1,4 +1,4 @@
-import type { BrowserWindow } from 'electron';
+import { BrowserWindow } from 'electron';
 import compressLogsApi from './compress-logs';
 import downloadLogsApi from './download-logs';
 import { handleElectronStoreChannel } from './electronStoreConversation';
@@ -21,6 +21,8 @@ import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
+import { MainIpcChannel } from './lib/MainIpcChannel';
+import { createChannels } from './createHardwareWalletIPCChannels';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -46,5 +48,5 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests(window);
+  handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
 };

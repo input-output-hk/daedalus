@@ -30,7 +30,7 @@ let
     buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
     shellHook = ''
       git diff > pre-yarn.diff
-      yarn
+      yarn --frozen-lockfile
       git diff > post-yarn.diff
       diff pre-yarn.diff post-yarn.diff > /dev/null
       if [ $? != 0 ]
@@ -57,12 +57,11 @@ let
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      chromedriver
       pkgconfig
       libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
+    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
       darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
     ] else [
       daedalusPkgs.electron
@@ -113,9 +112,16 @@ let
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
       mkdir -p ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/usb/build/${BUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID.node ${BUILDTYPE}/
-      ln -svf $PWD/node_modules/node-hid/build/${BUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
+      ${let
+        # (TODO: investigate why – @michalrus)
+        sourceBUILDTYPE = "Release";
+      in ''
+        ln -svf $PWD/node_modules/usb/build/${sourceBUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
+        ln -svf $PWD/node_modules/usb-detection/build/${sourceBUILDTYPE}/detection.node ${BUILDTYPE}/
+      ''}
+
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
@@ -128,13 +134,14 @@ let
         npm cache clean --force
         ''
       }
-      yarn install
+      yarn install --frozen-lockfile
       yarn build:electron
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
         ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
+        # TODO: is this needed for `detection.node`?
+        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/detection.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
-        ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'
       echo debug the node by running debug-node

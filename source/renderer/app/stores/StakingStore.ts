@@ -169,8 +169,10 @@ export default class StakingStore extends Store {
   @observable
   calculateDelegationFeeRequest: Request<
     DelegationCalculateFeeResponse
+  > = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-  > = new Request(this.api.ada.calculateDelegationFee);
+    this.api.ada.calculateDelegationFee
+  );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable
   getRedeemItnRewardsFeeRequest: Request<any> = new Request(

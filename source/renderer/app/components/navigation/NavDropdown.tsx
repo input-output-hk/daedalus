@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 import NavButton from './NavButton';
 import styles from './NavDropdown.scss';
+import { NavDropdownProps } from './Navigation';
 
 type Props = {
   label: string;
@@ -56,7 +57,7 @@ class NavDropdown extends Component<Props> {
           onItemSelected={({ value }) => {
             onChange(value);
           }}
-          optionRenderer={(o) => (
+          optionRenderer={(o: NavDropdownProps) => (
             <div className={getOptionLabelStyles(o.hasNotification)}>
               {o.label}
             </div>

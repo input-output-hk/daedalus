@@ -1,14 +1,26 @@
-import fs from "fs";
-import { When, Then } from "cucumber";
-import path from "path";
-import moment from "moment";
+import fs from 'fs';
+import { When, Then } from 'cucumber';
+import path from 'path';
+import moment from 'moment';
 
-const exportedCSVPath = path.resolve(__dirname, '../documents/rewards_exported.csv');
-const exportedCSVContent = [['Wallet', 'Reward', 'Date'], ['Test Wallet', '1,000,000.000000 ADA', moment().format('YYYY-MM-DDTHHmmss.0SSS')]];
+const exportedCSVPath = path.resolve(
+  __dirname,
+  '../documents/rewards_exported.csv'
+);
+const exportedCSVContent = [
+  ['Wallet', 'Reward', 'Date'],
+  [
+    'Test Wallet',
+    '1,000,000.000000 ADA',
+    moment().format('YYYY-MM-DDTHHmmss.0SSS'),
+  ],
+];
 const REWARDS_TAB_BUTTON = '.rewards.NavButton_component.NavButton_normal';
 const REWARDS_PAGE = '.StakingRewards_component';
-const NO_REWARDS_SELECTOR = '.StakingRewards_component .StakingRewards_noRewardsLabel';
-const REWARDS_LIST_SELECTOR = '.StakingRewards_component .BorderedBox_component table';
+const NO_REWARDS_SELECTOR =
+  '.StakingRewards_component .StakingRewards_noRewardsLabel';
+const REWARDS_LIST_SELECTOR =
+  '.StakingRewards_component .BorderedBox_component table';
 When(/^I click on rewards tab button$/, async function () {
   return this.waitAndClick(REWARDS_TAB_BUTTON);
 });
@@ -28,16 +40,12 @@ Then(/^I click on the Export to CSV button$/, async function () {
    */
   const data = {
     filePath: exportedCSVPath,
-    fileContent: exportedCSVContent
+    fileContent: exportedCSVContent,
   };
-  await this.client.execute(({
-    fileContent,
-    filePath
-  }) => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
+  await this.client.execute(({ fileContent, filePath }) => {
     daedalus.actions.wallets.generateCsv.trigger({
       fileContent,
-      filePath
+      filePath,
     });
   }, data);
   this.exportedCSVPath = exportedCSVPath;

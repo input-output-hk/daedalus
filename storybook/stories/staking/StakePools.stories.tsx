@@ -72,7 +72,7 @@ type Props = {
   locale: string;
   isLoading: boolean;
 };
-export const StakePoolsStory = (props: Props) => {
+export function StakePoolsStory(props: Props) {
   const selectedWallet = select(
     'selectedWallet',
     {
@@ -121,4 +121,4 @@ export const StakePoolsStory = (props: Props) => {
       selectedDelegationWalletId={selectedWallet}
     />
   );
-};
+}

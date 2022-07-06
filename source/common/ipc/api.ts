@@ -1,3 +1,10 @@
+import {
+  CardanoSignedTxData,
+  CardanoSignTransaction,
+  CommonParams,
+  Success,
+  Unsuccessful,
+} from 'trezor-connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
@@ -14,6 +21,7 @@ import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types'
 import type { GenerateCsvParams } from '../types/csv-request.types';
 import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
 import type {
+  BlockSyncProgress,
   BlockSyncType,
   CardanoNodeState,
   CardanoStatus,
@@ -31,19 +39,19 @@ import type {
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
 import type {
-  DownloadLocalDataRequest,
-  DownloadLocalDataResponse,
-  DownloadsLocalDataRequest,
-  DownloadsLocalDataResponse,
-  DownloadRequest,
-  DownloadResponse,
-  ResumeDownloadRequest,
-  ResumeDownloadResponse,
+  CheckFileExistsRequest,
   ClearDownloadLocalDataRequest,
   ClearDownloadLocalDataResponse,
   DeleteDownloadedFileRequest,
   DeleteDownloadedFileResponse,
-  CheckFileExistsRequest,
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
+  DownloadRequest,
+  DownloadResponse,
+  DownloadsLocalDataRequest,
+  DownloadsLocalDataResponse,
+  ResumeDownloadRequest,
+  ResumeDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 import type {
@@ -51,16 +59,17 @@ import type {
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 import type {
-  HardwareWalletTransportDeviceRequest,
-  HardwareWalletTransportDeviceResponse,
+  HardwareWalletCardanoAdaAppResponse,
+  HardwareWalletConnectionRequest,
   HardwareWalletExtendedPublicKeyRequest,
   HardwareWalletExtendedPublicKeyResponse,
-  HardwareWalletCardanoAdaAppResponse,
+  HardwareWalletTransportDeviceRequest,
+  HardwareWalletTransportDeviceResponse,
+  LedgerDevicePayload,
   LedgerSignTransactionRequest,
   LedgerSignTransactionResponse,
-  TrezorSignTransactionRequest,
-  TrezorSignTransactionResponse,
-  HardwareWalletConnectionRequest,
+  TrezorDeviceErrorPayload,
+  TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
 
 /**
@@ -455,14 +464,12 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 export const GET_BLOCK_SYNC_PROGRESS_CHANNEL = 'GetBlockSyncProgressChannel';
 export type GetBlockSyncProgressType = BlockSyncType;
 export type GetBlockSyncProgressRendererRequest = void;
-export type GetBlockSyncProgressMainResponse = {
-  progress: number;
-  type: GetBlockSyncProgressType;
-};
+export type GetBlockSyncProgressMainResponse = BlockSyncProgress;
 
 /**
  * Channels for connecting / interacting with Hardware Wallet devices
  */
+
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
 export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
@@ -474,20 +481,27 @@ export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyRe
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = {
   path: string | null | undefined;
+  product?: string;
 };
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
 export type getHardwareWalletConnectionMainRequest = HardwareWalletConnectionRequest;
-export type getHardwareWalletConnectionRendererResponse = Record<string, any>;
+export type getHardwareWalletConnectionRendererResponse =
+  | LedgerDevicePayload
+  | TrezorDevicePayload
+  | TrezorDeviceErrorPayload;
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =
   'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
 export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
 export const SIGN_TRANSACTION_TREZOR_CHANNEL =
   'SIGN_TRANSACTION_TREZOR_CHANNEL';
-export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
-export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
+export type signTransactionTrezorRendererRequest = CommonParams &
+  CardanoSignTransaction;
+export type signTransactionTrezorMainResponse =
+  | Success<CardanoSignedTxData>
+  | Unsuccessful;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
@@ -511,3 +525,7 @@ export type showAddressMainResponse = void;
 export const TOGGLE_RTS_FLAGS_MODE_CHANNEL = 'TOGGLE_RTS_FLAGS_MODE_CHANNEL';
 export type ToggleRTSFlagsModeRendererRequest = void;
 export type ToggleRTSFlagsModeMainResponse = void;
+export const DEVICE_NOT_CONNECTED = 'DEVICE_NOT_CONNECTED';
+export const WAIT_FOR_LEDGER_DEVICES = 'WAIT_FOR_LEDGER_DEVICES';
+export type waitForLedgerDevicesRequest = void;
+export type waitForLedgerDevicesResponse = LedgerDevicePayload;

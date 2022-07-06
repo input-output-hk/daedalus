@@ -6,7 +6,7 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Stories
 import { DataLayerMigrationStory } from './DataLayerMigration.stories';
 
-storiesOf('Nodes|Updates', module)
+storiesOf('Nodes / Updates', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======

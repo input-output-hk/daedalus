@@ -20,7 +20,34 @@ import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
-import WalletSendForm from './WalletSendForm';
+import WalletSendForm, { FormData } from './WalletSendForm';
+
+jest.mock(
+  '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
+  () => {
+    function Dialog({
+      amount,
+      formattedTotalAmount,
+    }: {
+      amount: number;
+      formattedTotalAmount: number;
+    }) {
+      return (
+        <div>
+          <span data-testid="confirmation-dialog-ada-amount">{amount}</span>
+          <span data-testid="confirmation-dialog-total-amount">
+            {formattedTotalAmount}
+          </span>
+        </div>
+      );
+    }
+
+    return {
+      __esModule: true,
+      WalletSendConfirmationDialogContainer: Dialog,
+    };
+  }
+);
 
 describe('wallet/Wallet Send Form', () => {
   beforeEach(() => addLocaleData([...en]));
@@ -50,11 +77,21 @@ describe('wallet/Wallet Send Form', () => {
   function SetupWallet({
     calculateTransactionFee,
     currentNumberFormat = NUMBER_OPTIONS[0].value,
+    validationDebounceWait,
+    validateAmount = jest.fn().mockResolvedValue(true),
+    onTransactionFeeChange = jest.fn(),
   }: {
     calculateTransactionFee: (...args: Array<any>) => any;
+    validateAmount?: (amount: string) => Promise<boolean>;
     currentNumberFormat?: string;
+    validationDebounceWait?: number;
+    onTransactionFeeChange?: () => Promise<void>;
   }) {
     const [tokenPickerOpen, setTokenPickerOpen] = useState<boolean>(false);
+    const [state, setState] = useState<{
+      isDialogOpen: boolean;
+      formData: FormData;
+    }>({ isDialogOpen: false, formData: null });
 
     return (
       <TestDecorator>
@@ -65,15 +102,18 @@ describe('wallet/Wallet Send Form', () => {
                 currencyMaxFractionalDigits={currencyMaxFractionalDigits}
                 currencyMaxIntegerDigits={11}
                 currentNumberFormat={currentNumberFormat}
-                validateAmount={jest.fn().mockResolvedValue(true)}
+                validateAmount={validateAmount}
                 validateAssetAmount={jest.fn().mockResolvedValue(true)}
                 calculateTransactionFee={calculateTransactionFee}
                 walletAmount={new BigNumber(123)}
                 assets={assets}
                 addressValidator={() => true}
-                onSubmit={jest.fn()}
+                onSubmit={(formData) =>
+                  setState({ isDialogOpen: true, formData })
+                }
                 isDialogOpen={(dialog) =>
-                  dialog === WalletTokenPicker && tokenPickerOpen
+                  (dialog === WalletTokenPicker && tokenPickerOpen) ||
+                  state.isDialogOpen
                 }
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
@@ -88,6 +128,9 @@ describe('wallet/Wallet Send Form', () => {
                 walletName={faker.name.firstName()}
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
+                confirmationDialogData={state.formData}
+                validationDebounceWait={validationDebounceWait}
+                onTransactionFeeChange={onTransactionFeeChange}
               />
             </MobxProvider>
           </DiscreetModeFeatureProvider>
@@ -183,6 +226,18 @@ describe('wallet/Wallet Send Form', () => {
     ).toHaveTextContent(
       `Note: the ada field was automatically updated because this transaction requires a minimum of ${minimumAda} ADA.`
     );
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  async function waitForTransactionFee() {
+    const transactionFeeSpinner = screen.getByTestId('transaction-fee-spinner');
+
+    return waitForElementToBeRemoved(transactionFeeSpinner);
   }
 
   test('should update Ada input field to minimum required and restore to original value when tokens are removed', async () => {
@@ -415,4 +470,153 @@ describe('wallet/Wallet Send Form', () => {
     assertAdaInput(minimumAda);
     assertMinimumAmountNoticeMessage(minimumAda);
   });
+
+  type Cases = [
+    Array<[number, number]>,
+    [number, number],
+    Array<[number, number]>,
+    [string, string, number]
+  ];
+
+  const cases: Cases[] = [
+    [
+      // ada inputs [delay, value]
+      [
+        [0, 2.5],
+        [0, 1.5],
+      ],
+      // validate amount [delay]
+      [50, 5],
+      // fee calculation [delay, value]
+      [
+        [50, 2],
+        [0, 1],
+      ],
+      ['1.500000', '3.500000', 1],
+    ],
+    [
+      [
+        [0, 2.5],
+        [0, 1.5],
+      ],
+      [0, 0],
+      [
+        [0, 1],
+        [0, 2],
+      ],
+      ['1.500000', '3.500000', 1],
+    ],
+    [
+      [
+        [50, 2.5],
+        [0, 1.5],
+      ],
+      [0, 0],
+      [
+        [0, 1],
+        [0, 2],
+      ],
+      ['1.500000', '3.500000', 2],
+    ],
+  ];
+
+  cases.forEach(
+    (
+      [
+        inputs,
+        validateAmountParams,
+        feeCalculationParams,
+        [expectedAdaAmount, expectedTotalAmount, expectedTimesFeeCalled],
+      ],
+      idx
+    ) => {
+      test(`case ${idx}: should not allow to submit before fees are calculated`, async () => {
+        expect.assertions(5);
+
+        const validationDebounceWait = 0;
+        const onTransactionFeeChangeSpy = jest.fn();
+
+        const calculateTransactionFeeMock = jest.fn();
+
+        feeCalculationParams.forEach(([delay, value]) => {
+          calculateTransactionFeeMock.mockImplementationOnce(
+            () =>
+              new Promise(async (resolve) => {
+                await sleep(delay);
+                resolve({
+                  fee: new BigNumber(value),
+                  minimumAda: new BigNumber(1),
+                });
+              })
+          );
+        });
+
+        const validateAmountMock = jest.fn();
+
+        validateAmountParams.forEach((delay) => {
+          validateAmountMock.mockImplementationOnce(
+            () =>
+              new Promise(async (resolve) => {
+                await sleep(delay);
+                return resolve(true);
+              })
+          );
+        });
+
+        render(
+          <SetupWallet
+            validateAmount={validateAmountMock}
+            calculateTransactionFee={calculateTransactionFeeMock}
+            validationDebounceWait={validationDebounceWait}
+            onTransactionFeeChange={onTransactionFeeChangeSpy}
+          />
+        );
+
+        enterReceiverAddress();
+
+        const adaField = await screen.findByLabelText('Ada');
+
+        for (const [delay, value] of inputs) {
+          fireEvent.change(adaField, {
+            target: {
+              value,
+            },
+          });
+
+          await sleep(delay);
+        }
+
+        const sendButton: HTMLButtonElement = screen.getByText('Send');
+        expect(sendButton).not.toBeEnabled();
+
+        await waitForTransactionFee();
+
+        expect(sendButton).toBeEnabled();
+
+        fireEvent.keyPress(adaField, {
+          key: 'Enter',
+          code: 13,
+          charCode: 13,
+          target: adaField,
+        });
+
+        const adaAmountConfirmation = await screen.findByTestId(
+          'confirmation-dialog-ada-amount',
+          {}
+        );
+
+        expect(adaAmountConfirmation).toHaveTextContent(expectedAdaAmount);
+
+        const totalAmountConfirmation = screen.getByTestId(
+          'confirmation-dialog-total-amount',
+          {}
+        );
+
+        expect(totalAmountConfirmation).toHaveTextContent(expectedTotalAmount);
+        expect(onTransactionFeeChangeSpy).toHaveBeenCalledTimes(
+          expectedTimesFeeCalled
+        );
+      });
+    }
+  );
 });

@@ -18,12 +18,14 @@ export type SidebarCategoryInfo = {
   name: string;
   icon: string;
   route: string;
+  tooltipTextId?: string;
 };
 export const CATEGORIES_BY_NAME = {
   WALLETS: {
     name: 'WALLETS',
     icon: walletsIcon,
     route: ROUTES.WALLETS.ROOT,
+    tooltipTextId: 'wallets',
   },
   PAPER_WALLET_CREATE_CERTIFICATE: {
     name: 'PAPER_WALLET_CREATE_CERTIFICATE',
@@ -34,16 +36,19 @@ export const CATEGORIES_BY_NAME = {
     name: 'STAKING_DELEGATION_COUNTDOWN',
     icon: delegationIcon,
     route: ROUTES.STAKING.COUNTDOWN,
+    tooltipTextId: 'staking',
   },
   STAKING: {
     name: 'STAKING',
     icon: delegationProgressIcon,
     route: ROUTES.STAKING.ROOT,
+    tooltipTextId: 'staking',
   },
   SETTINGS: {
     name: 'SETTINGS',
     icon: settingsIcon,
     route: ROUTES.SETTINGS.ROOT,
+    tooltipTextId: 'settings',
   },
   NETWORK_INFO: {
     name: 'NETWORK_INFO',
@@ -54,6 +59,7 @@ export const CATEGORIES_BY_NAME = {
     name: 'VOTING',
     icon: votingIcon,
     route: ROUTES.VOTING.REGISTRATION,
+    tooltipTextId: 'voting',
   },
 };
 export const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [

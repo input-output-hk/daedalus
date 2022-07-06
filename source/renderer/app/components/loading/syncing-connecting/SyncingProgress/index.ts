@@ -1,1 +1,3 @@
-export { default } from './SyncingProgress';
+import syncProgress from './SyncingProgress';
+
+export default syncProgress;

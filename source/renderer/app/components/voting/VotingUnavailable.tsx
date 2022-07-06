@@ -10,7 +10,7 @@ type Props = {
   syncPercentage: number;
 };
 
-const VotingUnavailable = ({ syncPercentage }: Props) => {
+function VotingUnavailable({ syncPercentage }: Props) {
   return (
     <div className={styles.component}>
       <LoadingSpinner big />
@@ -24,6 +24,6 @@ const VotingUnavailable = ({ syncPercentage }: Props) => {
       </div>
     </div>
   );
-};
+}
 
 export default observer(VotingUnavailable);

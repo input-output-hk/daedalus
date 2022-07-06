@@ -14,7 +14,7 @@ const wrapperStyles = {
 };
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Add Wallet', module) // ====== Stories ======
+storiesOf('Wallets / Add Wallet', module) // ====== Stories ======
   .add('Add', () => (
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ alignItems: string; backgroundColor: strin... Remove this comment to see the full error message
     <div style={wrapperStyles}>

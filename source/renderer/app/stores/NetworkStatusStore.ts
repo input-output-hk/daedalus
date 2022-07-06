@@ -62,7 +62,6 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UNRECOVERABLE,
 ];
 // END CONSTANTS ----------------------------
-// @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
 const { isFlight } = global;
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -805,14 +804,10 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onBlockSyncProgressUpdate = async ({
-    progress,
-    type,
-  }: GetBlockSyncProgressMainResponse) => {
-    this.blockSyncProgress = {
-      ...this.blockSyncProgress,
-      [type]: progress,
-    };
+  @action _onBlockSyncProgressUpdate = async (
+    blockSyncProgress: GetBlockSyncProgressMainResponse
+  ) => {
+    this.blockSyncProgress = blockSyncProgress;
   };
 
   @action

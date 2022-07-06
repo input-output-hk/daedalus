@@ -8,25 +8,28 @@ import type { ReplacerFn } from './types';
 
 export class DiscreetMode extends Feature {
   api: DiscreetModeApi;
+
+  constructor(api: DiscreetModeApi) {
+    super();
+    this.api = api;
+    runInAction(() => {
+      this.getDiscreetModeSettingsRequest = new Request(
+        this.api.getDiscreetModeSettings
+      );
+      this.setDiscreetModeSettingsRequest = new Request(
+        this.api.setDiscreetModeSettings
+      );
+    });
+  }
+
   @observable
   isDiscreetMode = false;
   @observable
   openInDiscreetMode = false;
   @observable
-  getDiscreetModeSettingsRequest: Request<Promise<boolean>> = new Request(
-    // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
-    this.api.getDiscreetModeSettings
-  );
+  getDiscreetModeSettingsRequest: Request<Promise<boolean>>;
   @observable
-  setDiscreetModeSettingsRequest: Request<Promise<boolean>> = new Request(
-    // @ts-ignore ts-migrate(2729) FIXME: Property 'api' is used before its initialization.
-    this.api.setDiscreetModeSettings
-  );
-
-  constructor(api: DiscreetModeApi) {
-    super();
-    this.api = api;
-  }
+  setDiscreetModeSettingsRequest: Request<Promise<boolean>>;
 
   async start() {
     super.start();

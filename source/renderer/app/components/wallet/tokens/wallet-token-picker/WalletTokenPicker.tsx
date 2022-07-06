@@ -19,7 +19,7 @@ import { useFilters, useCheckboxes, useScrollPosition } from './hooks';
 import { MAX_TOKENS, ScrollPositionEnum } from './const';
 import type { Props } from './types';
 
-const WalletTokenPicker = ({
+function WalletTokenPicker({
   intl,
   assets,
   walletName,
@@ -27,7 +27,7 @@ const WalletTokenPicker = ({
   previouslyCheckedIds = [],
   onAdd,
   onCancel,
-}: Props) => {
+}: Props) {
   const { onScroll, scrollPosition } = useScrollPosition();
   const {
     searchValue,
@@ -102,7 +102,7 @@ const WalletTokenPicker = ({
               onChange={setFilterOption}
               className={styles.filterSelect}
               options={filterSelectOptions(intl)}
-              selectionRenderer={(option) => (
+              selectionRenderer={(option: { label: string }) => (
                 <span>
                   {option.label}
                   <span className={styles.filterCounter}>
@@ -113,7 +113,7 @@ const WalletTokenPicker = ({
                   </span>
                 </span>
               )}
-              optionRenderer={(option) => (
+              optionRenderer={(option: { label: string }) => (
                 <span className={styles.filterOption}>{option.label}</span>
               )}
               optionHeight={33}
@@ -169,6 +169,6 @@ const WalletTokenPicker = ({
       </div>
     </Dialog>
   );
-};
+}
 
 export default injectIntl(observer(WalletTokenPicker));

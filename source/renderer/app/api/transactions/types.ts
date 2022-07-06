@@ -8,7 +8,6 @@ import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
 
 export type TransactionAmount = {
   quantity: number;
-  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type TransactionDepth = {
@@ -24,12 +23,14 @@ export type Transaction = {
   amount: TransactionAmount;
   fee: {
     quantity: number;
-    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
     unit: WalletUnits.LOVELACE;
   };
-  deposit: {
+  deposit_taken: {
     quantity: number;
-    // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
+    unit: WalletUnits.LOVELACE;
+  };
+  deposit_returned: {
+    quantity: number;
     unit: WalletUnits.LOVELACE;
   };
   inserted_at?: {
@@ -140,7 +141,6 @@ export type TransactionParams = {
 };
 export type TransactionFeeAmount = {
   quantity: number;
-  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type GetTransactionFeeParams = {
@@ -162,7 +162,6 @@ export type TransactionFee = {
 };
 export type CoinSelectionAmount = {
   quantity: number;
-  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'WalletUnits'.
   unit: WalletUnits.LOVELACE;
 };
 export type CoinSelectionInput = {

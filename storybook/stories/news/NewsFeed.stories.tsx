@@ -17,7 +17,7 @@ const updateDownloadProgressOptions = {
   max: 100,
   step: 1,
 };
-storiesOf('News|NewsFeed', module)
+storiesOf('News / NewsFeed', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======

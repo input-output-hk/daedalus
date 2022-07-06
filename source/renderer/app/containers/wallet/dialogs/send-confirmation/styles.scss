@@ -1,79 +1,8 @@
-@import '../../../themes/mixins/error-message';
+@import '../../../../themes/mixins//error-message.scss';
 
-.dialog {
+.root {
   font-family: var(--font-medium);
   width: 580px;
-
-  :global {
-    .Dialog_title {
-      margin-bottom: 0;
-    }
-  }
-
-  .currencySymbol {
-    font-family: var(--font-light);
-    text-transform: uppercase;
-  }
-
-  .addressToLabelWrapper,
-  .amountFeesWrapper {
-    margin-bottom: 20px;
-  }
-
-  .addressToLabel {
-    font-size: 16px;
-    line-height: 1.38;
-  }
-
-  .addressTo {
-    font-family: var(--font-light);
-    line-height: 1.38;
-    margin-top: 6px;
-    user-select: text;
-    word-wrap: break-word;
-  }
-
-  .amountFeesWrapper {
-    display: flex;
-    flex-direction: row;
-    .amountWrapper,
-    .feesWrapper {
-      width: 50%;
-    }
-    .amountWrapper {
-      margin-right: 10px;
-    }
-    .feesWrapper {
-      margin-left: 10px;
-    }
-    .amountLabel,
-    .feesLabel {
-      line-height: 1.38;
-    }
-    .amount,
-    .fees {
-      color: var(--theme-send-confirmation-dialog-send-values-color);
-      line-height: 1.38;
-      margin-top: 6px;
-      user-select: text;
-      word-break: break-word;
-    }
-    .fees {
-      opacity: 0.5;
-    }
-  }
-
-  .totalAmountLabel {
-    line-height: 1.38;
-  }
-
-  .totalAmount {
-    color: var(--theme-send-confirmation-dialog-send-values-color);
-    line-height: 1.38;
-    margin-top: 6px;
-    user-select: text;
-    word-break: break-word;
-  }
 
   .passphrase {
     margin-top: 20px;
@@ -126,6 +55,10 @@
   }
 
   :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+
     .LoadingSpinner_component {
       .LoadingSpinner_icon {
         svg {

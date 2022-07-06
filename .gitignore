@@ -31,6 +31,7 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+/node_modules.*
 
 # OSX
 .DS_Store
@@ -41,6 +42,14 @@ installers/tls/client
 installers/tls/server
 installers/DLLs
 installers/libressl
+installers/cfg-files
+installers/config.yaml
+installers/icons/electron.icns
+installers/installer-config.json
+installers/topology.yaml
+installers/csl-daedalus/
+installers/delegation.cert
+installers/signing.key
 
 # temporary certs for daedalus dev
 tls/client
@@ -119,6 +128,8 @@ Debug
 /cardano-cli
 /cardano-wallet
 .vscode
+.yalc
+yalc.lock
 
 # Typescript
 *.scss.d.ts

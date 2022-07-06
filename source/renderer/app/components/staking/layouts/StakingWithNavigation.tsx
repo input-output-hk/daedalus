@@ -20,7 +20,7 @@ export const StakingPageScrollContext = React.createContext<ContextValue>({
 
 @observer
 class StakingWithNavigation extends Component<Props> {
-  stakingPageRef = createRef<HTMLDivElement>();
+  stakingPageScrollContext = { scrollElementRef: createRef<HTMLDivElement>() };
 
   render() {
     const {
@@ -32,11 +32,7 @@ class StakingWithNavigation extends Component<Props> {
     } = this.props;
     const componentStyles = classnames([styles.component, styles[activeItem]]);
     return (
-      <StakingPageScrollContext.Provider
-        value={{
-          scrollElementRef: this.stakingPageRef,
-        }}
-      >
+      <StakingPageScrollContext.Provider value={this.stakingPageScrollContext}>
         <div className={componentStyles}>
           <div className={styles.navigation}>
             <StakingNavigation
@@ -46,7 +42,10 @@ class StakingWithNavigation extends Component<Props> {
               showInfoTab={showInfoTab}
             />
           </div>
-          <div className={styles.page} ref={this.stakingPageRef}>
+          <div
+            className={styles.page}
+            ref={this.stakingPageScrollContext.scrollElementRef}
+          >
             {children}
           </div>
         </div>

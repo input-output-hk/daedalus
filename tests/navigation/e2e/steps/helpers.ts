@@ -1,8 +1,8 @@
-import { waitAndClick } from "../../../common/e2e/steps/helpers";
+import { waitAndClick } from '../../../common/e2e/steps/helpers';
 
 const SELECTORS = {
   ACTIVE_CATEGORY: '.SidebarCategory_active',
-  ADD_WALLET_BTN: '.SidebarWalletsMenu_addWalletButton'
+  ADD_WALLET_BTN: '.SidebarWalletsMenu_addWalletButton',
 };
 export const getCurrentAppRoute = async function () {
   const url = (await this.client.url()).value;
@@ -16,29 +16,34 @@ export const waitUntilUrlEquals = function (expectedUrl: string) {
   });
 };
 export const navigateTo = function (requestedRoute: string) {
-  return this.client.execute(route => {
-    // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
+  return this.client.execute((route) => {
     daedalus.actions.router.goToRoute.trigger({
-      route
+      route,
     });
   }, requestedRoute);
 };
 export const sidebarHelpers = {
-  activateCategory: async (client: Record<string, any>, {
-    category
-  }: {
-    category: string;
-  }) => {
-    await client.execute(cat => {
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'daedalus'.
+  activateCategory: async (
+    client: Record<string, any>,
+    {
+      category,
+    }: {
+      category: string;
+    }
+  ) => {
+    await client.execute((cat) => {
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
-        showSubMenu: true
+        showSubMenu: true,
       });
     }, `/${category}`);
     return client.waitForVisible(`${SELECTORS.ACTIVE_CATEGORY}.${category}`);
   },
-  clickAddWalletButton: (client: Record<string, any>) => waitAndClick.call({
-    client
-  }, SELECTORS.ADD_WALLET_BTN)
+  clickAddWalletButton: (client: Record<string, any>) =>
+    waitAndClick.call(
+      {
+        client,
+      },
+      SELECTORS.ADD_WALLET_BTN
+    ),
 };

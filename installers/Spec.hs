@@ -50,7 +50,9 @@ macBuildSpec = do
       liftIO $ do
         withDir installersDir $ do
           mktree "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app"
+          mktree "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app"
           writeFile "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app/package.json" "{}"
+          writeFile "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app/package.json" "{}"
           Mac.main opts
 
         -- there should be an installer file at the end

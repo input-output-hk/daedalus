@@ -2,7 +2,6 @@ export type Environment = {
   network: Network;
   apiVersion: string;
   nodeVersion: string;
-  mobxDevTools: boolean | string;
   current: string;
   isDev: boolean;
   isTest: boolean;
@@ -14,7 +13,6 @@ export type Environment = {
   isShelleyQA: boolean;
   isSelfnode: boolean;
   isDevelopment: boolean;
-  isWatchMode: boolean;
   build: string;
   buildNumber: string;
   platform: string;

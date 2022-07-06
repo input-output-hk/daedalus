@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .component {
   background-color: var(--theme-nav-item-background-color);
   display: flex;
@@ -9,5 +11,5 @@
 
 .navItem {
   height: 100%;
-  width: percentage(1/5); // Update when adding new nav items!
+  width: percentage(math.div(1, 5)); // Update when adding new nav items!
 }

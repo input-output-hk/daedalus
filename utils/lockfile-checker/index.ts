@@ -28,7 +28,6 @@ const dependencyNamesToRemove = [
   'blake2b@https://github.com/BitGo/blake2b',
   '@types/aria-query',
   '@types/istanbul-lib-report',
-  '@types/react-syntax-highlighter',
 ];
 const dependenciesToRemove = Object.keys(json.object).filter((key) =>
   dependencyNamesToRemove.find((name) => key.includes(name))

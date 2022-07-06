@@ -5,6 +5,8 @@
 !source/
 !features/
 !storybook/
+!hardware-wallet-tests/
+!tests/
 
 # Now we ignore all files
 *.*

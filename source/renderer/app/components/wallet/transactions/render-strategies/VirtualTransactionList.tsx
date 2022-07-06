@@ -34,7 +34,6 @@ class VirtualTransactionList extends Component<Props> {
   rowHeights: RowHeight[] = [];
   txAddressHeight = 0;
   txIdHeight = 0;
-  visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
   static defaultProps = {
