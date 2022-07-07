@@ -10,7 +10,6 @@ import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { validateMnemonics } from '../../../utils/validations';
-import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -68,6 +67,7 @@ const messages = defineMessages({
   },
 });
 type Props = {
+  recoveryPhrase: string;
   enteredPhrase: Array<string>;
   isValid: boolean;
   isTermOfflineAccepted: boolean;
@@ -101,6 +101,13 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             this.props.onUpdateVerificationPhrase({
               verificationPhrase: enteredWords,
             });
+
+            if (this.props.recoveryPhrase !== enteredWords.join(' ')) {
+              return this.context.intl.formatMessage(
+                messages.recoveryPhraseInvalidMnemonics
+              );
+            }
+
             return validateMnemonics({
               requiredWords: WALLET_RECOVERY_PHRASE_WORD_COUNT,
               providedWords: field.value,
@@ -120,10 +127,19 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }
   );
+
+  handleSubmit = () => {
+    this.form.submit({
+      onSuccess: () => {
+        this.props.onFinishBackup();
+      },
+    });
+  };
 
   render() {
     const { form } = this;
@@ -139,7 +155,7 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
-      onFinishBackup,
+      recoveryPhrase,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([
@@ -152,11 +168,17 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     ) : (
       <LoadingSpinner />
     );
+    const canSubmit =
+      (!recoveryPhraseField.error &&
+        recoveryPhraseField.value.length === recoveryPhrase.split(' ').length &&
+        recoveryPhraseField.value.every((word) => word)) ||
+      canFinishBackup;
+
     const actions = [
       {
         label: buttonLabel,
-        onClick: onFinishBackup,
-        disabled: !canFinishBackup,
+        onClick: this.handleSubmit,
+        disabled: !canSubmit,
         primary: true,
       },
     ];
