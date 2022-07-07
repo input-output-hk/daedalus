@@ -6,7 +6,7 @@ import AssetContent from '../../../assets/AssetContent';
 import type { AssetToken } from '../../../../api/assets/types';
 import WalletTokenFooter from './WalletTokenFooter';
 import WalletTokenHeader from './WalletTokenHeader';
-import { isRecommendedDecimal } from './helpers';
+import { isNonRecommendedDecimalSettingUsed } from './helpers';
 
 type Props = {
   anyAssetWasHovered: boolean;
@@ -49,7 +49,7 @@ const WalletToken = observer((props: Props) => {
     setIsExpanded(!isExpanded);
   }, [setIsExpanded, isExpanded]);
 
-  const hasWarning = isRecommendedDecimal({
+  const hasWarning = isNonRecommendedDecimalSettingUsed({
     decimals: asset.decimals,
     recommendedDecimals: asset.recommendedDecimals,
   });
