@@ -223,11 +223,11 @@ import type {
   ApiAsset,
   StoredAssetMetadata,
 } from './assets/types';
-import type { AssetLocalData } from './utils/localStorage';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
+import { AssetLocalData } from '../types/localDataTypes';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -663,14 +663,14 @@ export default class AdaApi {
       logger.debug('AdaApi::getAssets success', {
         assets: response,
       });
-      const assetsLocaldata = await global.daedalus.api.localStorage.getAssetsLocalData();
+      const assetsLocalData = await global.daedalus.api.localStorage.getAssetsLocalData();
       logger.debug('AdaApi::getAssetsLocalData success', {
-        assetsLocaldata,
+        assetsLocalData,
       });
       const assets = response.map((asset) =>
         _createAssetFromServerData(
           asset,
-          assetsLocaldata[asset.policy_id + asset.asset_name] || {},
+          assetsLocalData[asset.policy_id + asset.asset_name] || {},
           this.storedAssetMetadata
         )
       );

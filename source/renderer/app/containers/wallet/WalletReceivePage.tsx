@@ -12,7 +12,7 @@ import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
-import type { WalletLocalData } from '../../api/utils/localStorage';
+import { WalletLocalData } from '../../types/localDataTypes';
 
 const messages = defineMessages({
   address: {
