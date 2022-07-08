@@ -37,6 +37,7 @@ let
       chmod -R +w $out
       cd $out
       patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${./nix/cardano-wallet--node-1.35.1.patch}
     '';
   };
   haskellNix = import sources."haskell.nix" {};

@@ -1,0 +1,15 @@
+diff --git a/cabal.project b/cabal.project
+index 40f1ec889..9eb3a27fd 100644
+--- a/cabal.project
++++ b/cabal.project
+@@ -213,8 +213,8 @@ source-repository-package
+ source-repository-package
+     type: git
+     location: https://github.com/input-output-hk/cardano-node
+-    tag: 9f1d7dc163ee66410d912e48509d6a2300cfa68a
+-    --sha256: 06arx9hv7dn3qxfy83f0b6018rxbsvh841nvfyg5w6qclm1hddj7
++    tag: c75451f0ffd7a60b5ad6c4263891e6c8acac105a
++    --sha256: 1z0zv1i58ikmbqg878f9z573jkwp4lzhmmswshm6c96rq6lprzh8
+     subdir:
+       cardano-api
+       cardano-git-rev
