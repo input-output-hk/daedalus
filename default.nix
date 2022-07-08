@@ -37,6 +37,10 @@ let
       chmod -R +w $out
       cd $out
       patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${pkgs.fetchurl {
+        url = "https://github.com/input-output-hk/cardano-wallet/pull/3382.patch";
+        sha256 = "1ii12g2zikv4197c7bsh4v5dc1jzygn1jap8xvnr7mvh3a09pdgn";
+      }}
     '';
   };
   haskellNix = import sources."haskell.nix" {};
