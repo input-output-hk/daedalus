@@ -10,6 +10,7 @@ import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../../config/stakingConfig';
 import Wallet from '../../../../domains/Wallet';
+import LocalizableError from '../../../../i18n/LocalizableError';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
@@ -41,8 +42,25 @@ class Step1ConfigurationContainer extends Component<Props> {
     return walletAmount && walletAmount.gte(minRewardsFunds);
   };
 
+  getErrorMessage = (wallet?: Wallet): LocalizableError | null => {
+    if (!wallet) {
+      return null;
+    }
+
+    const { amount, isRestoring } = wallet;
+
+    if (isRestoring) {
+      return messages.errorRestoringWallet;
+    }
+    if (!this.hasEnoughAdaToCoverFees(amount)) {
+      return messages.errorMinRewardFunds;
+    }
+
+    return null;
+  };
+
   render() {
-    const { actions, stores, onBack, onClose } = this.props;
+    const { actions, stores, onClose } = this.props;
     const { app, staking, wallets } = stores;
     const { allWallets } = wallets;
     const {
@@ -59,22 +77,13 @@ class Step1ConfigurationContainer extends Component<Props> {
     const selectedWallet: Wallet | null | undefined = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId
     );
-    const { amount, isRestoring } = selectedWallet || {};
-    let errorMessage = null;
-
-    if (selectedWallet && isRestoring) {
-      errorMessage = messages.errorRestoringWallet;
-    } else if (selectedWallet && !this.hasEnoughAdaToCoverFees(amount)) {
-      errorMessage = messages.errorMinRewardFunds;
-    }
+    const errorMessage = this.getErrorMessage(selectedWallet);
 
     return (
       <Step1ConfigurationDialog
         error={errorMessage}
         isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}
         onSelectWallet={(walletId, recoveryPhrase) =>
