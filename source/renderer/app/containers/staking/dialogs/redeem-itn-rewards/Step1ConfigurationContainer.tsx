@@ -34,7 +34,7 @@ const messages = defineMessages({
 @observer
 class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
-  onWalletAcceptable = (walletAmount?: BigNumber) => {
+  hasEnoughAdaToCoverFees = (walletAmount?: BigNumber) => {
     const minRewardsFunds = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
@@ -62,11 +62,10 @@ class Step1ConfigurationContainer extends Component<Props> {
     const { amount, isRestoring } = selectedWallet || {};
     let errorMessage = null;
 
-    if (selectedWallet && !this.onWalletAcceptable(amount)) {
-      // Wallet is restoring
-      if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet balance < min rewards redemption funds
-      else errorMessage = messages.errorMinRewardFunds;
+    if (selectedWallet && isRestoring) {
+      errorMessage = messages.errorRestoringWallet;
+    } else if (selectedWallet && !this.hasEnoughAdaToCoverFees(amount)) {
+      errorMessage = messages.errorMinRewardFunds;
     }
 
     return (
