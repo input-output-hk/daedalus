@@ -28,6 +28,7 @@ let
   fixYarnLock = pkgs.stdenv.mkDerivation {
     name = "fix-yarn-lock";
     buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
+    phases = [ "buildPhase" ]; buildPhase = "export > $out"; # actually cache the shell setup in $out (Hydra etc.)
     shellHook = ''
       git diff > pre-yarn.diff
       yarn --frozen-lockfile
@@ -70,9 +71,10 @@ let
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
       debug.node
     ]);
-  buildShell = pkgs.stdenv.mkDerivation {
+  buildShell = pkgs.stdenv.mkDerivation { # Only used by (impure) Darwin installer build script
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
+    phases = [ "buildPhase" ]; buildPhase = "export > $out"; # actually cache the shell setup in $out (Hydra etc.)
   };
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
     cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
@@ -80,7 +82,7 @@ let
   daedalusShell = pkgs.stdenv.mkDerivation (rec {
     buildInputs = daedalusShellBuildInputs;
     name = "daedalus";
-    buildCommand = "touch $out";
+    phases = [ "buildPhase" ]; buildPhase = "export > $out"; # actually cache the shell setup in $out (Hydra etc.)
     LAUNCHER_CONFIG = launcherConfig';
     DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
     DAEDALUS_INSTALL_DIRECTORY = "./";
@@ -186,6 +188,7 @@ let
     buildInputs = let
       inherit (localLib.iohkNix) niv;
     in if nivOnly then [ niv ] else [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
+    phases = [ "buildPhase" ]; buildPhase = "export > $out"; # actually cache the shell setup in $out (Hydra etc.)
     shellHook = ''
       export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
       echo "DevOps Tools" \
