@@ -29,5 +29,9 @@ if [ -z "$command" ] ; then
 fi
 
 export NETWORK
+
+# Prevent segfaults on Darwin in `GC_*` code:
+export GC_DONT_GC=1
+
 # `return` will make the user stay in `nix-shell` after the initial command finishes:
 exec nix-shell --argstr nodeImplementation cardano --argstr cluster "$cluster" --command "$command ; return"

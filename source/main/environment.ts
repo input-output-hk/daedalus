@@ -46,7 +46,7 @@ const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.35.0'; // TODO: pick up this value from process.env
+const NODE_VERSION = '1.35.1'; // TODO: pick up this value from process.env
 
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;

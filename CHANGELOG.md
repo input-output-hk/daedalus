@@ -14,8 +14,13 @@
 
 ### Chores
 
+- Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
 - Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
 - Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+
+### Features
+
+- Updated Terms of Service ([PR 3009](https://github.com/input-output-hk/daedalus/pull/3009))
 
 ## 4.11.0
 
