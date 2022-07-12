@@ -306,7 +306,7 @@ let
     signed-windows-installer = let
       backend_version = self.daedalus-bridge.wallet-version;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
+      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}-x86_64-windows.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
       cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
@@ -423,7 +423,7 @@ let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       backend = "cardano-wallet-${nodeImplementation}";
       suffix = if buildNum == null then "" else "-${toString buildNum}";
-      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}.bin";
+      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
