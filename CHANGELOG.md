@@ -9,6 +9,7 @@
 
 ### Chores
 
+- Added OS-architecture tuple to installer file names to help with releases ([PR 3016](https://github.com/input-output-hk/daedalus/pull/3016))
 - Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
 - Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
 
