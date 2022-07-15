@@ -13,7 +13,7 @@
     "build:main": "yarn webpack -c source/main/webpack.config.js --progress",
     "build:renderer": "yarn webpack -c source/renderer/webpack.config.js --progress",
     "build:cleanup": "rimraf ./dist",
-    "build:electron": "electron-rebuild -w usb --useCache -s --debug",
+    "build:electron": "electron-rebuild --useCache && electron-rebuild -w usb --useCache -s --debug",
     "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn lockfile:check && yarn i18n:manage && yarn storybook:build",
     "start": "yarn electron ./",
     "start:dev": "nodemon --watch 'dist/main' --exec 'NODE_ENV=development yarn start'",
