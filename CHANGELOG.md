@@ -4,19 +4,29 @@
 
 ### Fixes
 
-- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
-- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
 - Ensured non-recommended decimal place setting alert is correctly shown ([PR 3007](https://github.com/input-output-hk/daedalus/pull/3007))
 
 ### Chores
 
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
-- Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
-- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
 
 ### Features
 
 - Updated Terms of Service ([PR 3009](https://github.com/input-output-hk/daedalus/pull/3009))
+
+## 4.12.0
+
+### Fixes
+
+- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
+
+### Chores
+
+- Made Windows installer more resilient w.r.t. auto-updates ([PR 3017](https://github.com/input-output-hk/daedalus/pull/3017))
+- Added OS-architecture tuple to installer file names to help with releases ([PR 3016](https://github.com/input-output-hk/daedalus/pull/3016))
+- Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
 
 ## 4.11.0
 
