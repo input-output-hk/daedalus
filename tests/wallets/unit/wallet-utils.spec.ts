@@ -1,5 +1,10 @@
-import BigNumber from "bignumber.js";
-import { isWalletRewardsWithdrawalPossible, shouldShowEmptyWalletWarning } from "../../../source/renderer/app/utils/walletUtils";
+import BigNumber from 'bignumber.js';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
+import {
+  isWalletRewardsWithdrawalPossible,
+  shouldShowEmptyWalletWarning,
+} from '../../../source/renderer/app/utils/walletUtils';
+
 // As a user using a shelly wallet when sending ADA and the balance
 // after the transactions remains < 10 ADA, the following Warning message
 // is displayed in the send confirmation dialog
@@ -8,13 +13,17 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS`, () => {
     const transactionAmount = new BigNumber(100);
     const walletBalance = new BigNumber(101);
-    expect(isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)).toBe(false);
+    expect(
+      isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)
+    ).toBe(false);
   });
   it(`<true> in case the balance after transaction is higher than
     MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS`, () => {
     const transactionAmount = new BigNumber(100);
     const walletBalance = new BigNumber(110);
-    expect(isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)).toBe(true);
+    expect(
+      isWalletRewardsWithdrawalPossible(transactionAmount, walletBalance)
+    ).toBe(true);
   });
   // This does not apply if
   //
@@ -33,11 +42,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = {
       amount: walletBalance,
       isLegacy,
-      isDelegating
-    };
+      isDelegating,
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
-    expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
+    expect(
+      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+    ).toBe(true);
   });
   it(`<false> in case of:
     - remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS
@@ -51,11 +61,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = {
       amount: walletBalance,
       isLegacy,
-      isDelegating
-    };
+      isDelegating,
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
-    expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
+    expect(
+      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+    ).toBe(false);
   });
   it(`<true> in case of:
     - remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS
@@ -69,11 +80,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = {
       amount: walletBalance,
       isLegacy,
-      isDelegating
-    };
+      isDelegating,
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
-    expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
+    expect(
+      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+    ).toBe(true);
   });
   it(`<false> in case of:
     - remain balance far more than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS
@@ -87,11 +99,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = {
       amount: walletBalance,
       isLegacy,
-      isDelegating
-    };
+      isDelegating,
+    } as Wallet;
     const hasAssets = false;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
-    expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(false);
+    expect(
+      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+    ).toBe(false);
   });
   it(`<true> in case of:
     - remain balance less than MINIMUM_MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS
@@ -105,10 +118,11 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = {
       amount: walletBalance,
       isLegacy,
-      isDelegating
-    };
+      isDelegating,
+    } as Wallet;
     const hasAssets = true;
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ amount: BigNumber; isLegacy: b... Remove this comment to see the full error message
-    expect(shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)).toBe(true);
+    expect(
+      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+    ).toBe(true);
   });
 });

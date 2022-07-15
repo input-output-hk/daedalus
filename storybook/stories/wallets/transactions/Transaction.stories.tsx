@@ -108,7 +108,7 @@ const transactionTokens = [
 ];
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Transactions', module)
+storiesOf('Wallets / Transactions', module)
   .addDecorator(withKnobs)
   .addDecorator((story, context) => (
     <StoryProvider>

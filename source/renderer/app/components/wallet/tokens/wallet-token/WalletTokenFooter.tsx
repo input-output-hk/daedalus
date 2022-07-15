@@ -22,7 +22,7 @@ type Props = {
   onOpenAssetSend?: (...args: Array<any>) => any;
 };
 
-const WalletTokenFooter = (props: Props) => {
+function WalletTokenFooter(props: Props) {
   const {
     asset,
     className,
@@ -102,6 +102,6 @@ const WalletTokenFooter = (props: Props) => {
       </div>
     </div>
   );
-};
+}
 
 export default injectIntl(observer(WalletTokenFooter));

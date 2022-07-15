@@ -4,4 +4,4 @@ export {
   useSortedStakePoolList,
   StakePoolsOrder,
 } from './useSortedStakePoolList';
-export { StakePoolSortableProps } from './types';
+export type { StakePoolSortableProps } from './types';

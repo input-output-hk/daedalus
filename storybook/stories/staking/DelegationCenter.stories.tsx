@@ -351,7 +351,7 @@ const wallets = [
       RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
   }),
 ];
-export const StakingDelegationCenterStory = ({
+export function StakingDelegationCenterStory({
   locale,
   isLoading,
   isEpochsInfoAvailable,
@@ -361,38 +361,40 @@ export const StakingDelegationCenterStory = ({
   isLoading: boolean;
   isEpochsInfoAvailable: boolean;
   currentTheme: string;
-}) => (
-  <DelegationCenter
-    wallets={wallets}
-    onDelegate={action('onDelegate')}
-    onUndelegate={action('onUndelegate')}
-    getStakePoolById={(poolId) =>
-      find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
-    }
-    numberOfStakePools={STAKE_POOLS.length}
-    networkTip={networkTip}
-    nextEpoch={nextEpoch}
-    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-    fetchingStakePoolsFailed={isLoading}
-    futureEpoch={futureEpoch}
-    currentLocale={locale}
-    isLoading={isLoading}
-    isEpochsInfoAvailable={isEpochsInfoAvailable}
-    slotLength={null}
-    epochLength={null}
-    containerClassName="StakingWithNavigation_page"
-    currentTheme={currentTheme}
-    numberOfRankedStakePools={
-      STAKE_POOLS.slice(
-        0,
-        number('Pools', 300, {
-          range: true,
-          min: 37,
-          max: 300,
-          step: 1,
-        })
-      ).length
-    }
-    onOpenExternalLink={action('onOpenExternalLink')}
-  />
-);
+}) {
+  return (
+    <DelegationCenter
+      wallets={wallets}
+      onDelegate={action('onDelegate')}
+      onUndelegate={action('onUndelegate')}
+      getStakePoolById={(poolId) =>
+        find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
+      }
+      numberOfStakePools={STAKE_POOLS.length}
+      networkTip={networkTip}
+      nextEpoch={nextEpoch}
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      fetchingStakePoolsFailed={isLoading}
+      futureEpoch={futureEpoch}
+      currentLocale={locale}
+      isLoading={isLoading}
+      isEpochsInfoAvailable={isEpochsInfoAvailable}
+      slotLength={null}
+      epochLength={null}
+      containerClassName="StakingWithNavigation_page"
+      currentTheme={currentTheme}
+      numberOfRankedStakePools={
+        STAKE_POOLS.slice(
+          0,
+          number('Pools', 300, {
+            range: true,
+            min: 37,
+            max: 300,
+            step: 1,
+          })
+        ).length
+      }
+      onOpenExternalLink={action('onOpenExternalLink')}
+    />
+  );
+}

@@ -16,7 +16,7 @@ const cfg = {
 };
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Transactions', module)
+storiesOf('Wallets / Transactions', module)
   .addDecorator(WalletsWrapper) // ====== Stories ======
   .add('UTXO Distribution', () => (
     <WalletUtxo

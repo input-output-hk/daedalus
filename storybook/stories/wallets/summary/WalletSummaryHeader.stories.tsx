@@ -15,7 +15,7 @@ function WalletSummaryHeaderDecorator(story: any, context: any) {
   );
 }
 
-storiesOf('Wallets|Summary', module)
+storiesOf('Wallets / Summary', module)
   .addDecorator(WalletSummaryHeaderDecorator)
   .add('Wallet Summary Header', () => {
     const rewardsGroup = 'Rewards';

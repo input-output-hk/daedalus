@@ -42,6 +42,7 @@ import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
 import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:), genericParseJSON, defaultOptions)
 import qualified Data.ByteString.Lazy.Char8       as L8
+import qualified System.Info
 
 data OS
   = Linux64
@@ -113,7 +114,7 @@ packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob
 packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext
   where
     name = T.intercalate "-" parts
-    parts = ["daedalus", fromVer ver, lshowText cluster] ++ build'
+    parts = ["daedalus", fromVer ver, lshowText cluster] ++ build' ++ [archOS]
     _backend' = case backend of
                  Cardano _ -> "cardano-wallet"
     ext = case _os of
@@ -124,6 +125,13 @@ packageFileName _os cluster ver backend _backendVer build = fromText name <.> ex
             Win64   -> "windows"
             Macos64 -> "macos"
             Linux64 -> "linux"
+    archOS = case _os of
+            Win64   -> "x86_64-windows"
+            Macos64 ->
+              if System.Info.arch == "aarch64"
+              then "aarch64-darwin"
+              else "x86_64-darwin"
+            Linux64 -> "x86_64-linux"
     build' = maybe [] (\b -> [fromBuildJob b]) build
 
 instance FromJSON Version where

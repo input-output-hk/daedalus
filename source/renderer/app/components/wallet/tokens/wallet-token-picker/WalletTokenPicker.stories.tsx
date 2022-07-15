@@ -56,7 +56,7 @@ const assets = [
     uniqueId: generateHash(),
   },
 ];
-storiesOf('Wallets|Tokens', module)
+storiesOf('Wallets / Tokens', module)
   .addDecorator((story) => (
     <StoryProvider>
       <StoryDecorator>{story()}</StoryDecorator>

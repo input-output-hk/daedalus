@@ -373,22 +373,20 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
             </p>
           </div>
           {fees && !fees.depositsReclaimed.isZero() && (
-            <>
-              <div className={styles.depositWrapper}>
-                <p className={styles.depositLabel}>
-                  {intl.formatMessage(messages.depositLabel)}
-                </p>
-                <p className={styles.depositAmount}>
-                  <span>
-                    {formattedWalletAmount(fees.depositsReclaimed, false)}
-                  </span>
-                  <span className={styles.depositAmountLabel}>
-                    {` `}
-                    {intl.formatMessage(globalMessages.adaUnit)}
-                  </span>
-                </p>
-              </div>
-            </>
+            <div className={styles.depositWrapper}>
+              <p className={styles.depositLabel}>
+                {intl.formatMessage(messages.depositLabel)}
+              </p>
+              <p className={styles.depositAmount}>
+                <span>
+                  {formattedWalletAmount(fees.depositsReclaimed, false)}
+                </span>
+                <span className={styles.depositAmountLabel}>
+                  {` `}
+                  {intl.formatMessage(globalMessages.adaUnit)}
+                </span>
+              </p>
+            </div>
           )}
         </div>
         {isHardwareWallet ? (

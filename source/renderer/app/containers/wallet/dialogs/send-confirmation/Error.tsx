@@ -9,7 +9,7 @@ interface Props {
   onExternalLinkClick: (...args: Array<any>) => any;
 }
 
-export const ConfirmationError = ({ error, onExternalLinkClick }: Props) => {
+export function ConfirmationError({ error, onExternalLinkClick }: Props) {
   if (!error) {
     return null;
   }
@@ -29,4 +29,4 @@ export const ConfirmationError = ({ error, onExternalLinkClick }: Props) => {
       )}
     </p>
   );
-};
+}

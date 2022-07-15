@@ -2,14 +2,14 @@ env:
   ARTIFACT_BUCKET: s3://ci-output-sink
 steps:
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/build-installer-unix.sh--nix-2.5 --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     env:
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
     agents:
       queue: daedalus
       system: x86_64-darwin
   - label: 'daedalus-aarch64-darwin'
-    command: 'scripts/build-installer-unix.sh--nix-2.5 --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     env:
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
       UPLOAD_DIR_OVERRIDE: UNSAFE-internal-build
@@ -17,11 +17,11 @@ steps:
       queue: daedalus
       system: aarch64-darwin
   - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-2.5.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
   - label: 'daedalus-x86_64-windows-nix'
-    command: 'scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-2.5.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
 

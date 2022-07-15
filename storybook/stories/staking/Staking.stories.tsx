@@ -89,7 +89,7 @@ const decorator = (story, context) => {
   );
 };
 
-storiesOf('Decentralization | Countdown', module)
+storiesOf('Decentralization / Countdown', module)
   .addDecorator(decorator)
   .add(
     pageNames.countdown,
@@ -108,7 +108,7 @@ storiesOf('Decentralization | Countdown', module)
       id: 'countdown',
     }
   );
-storiesOf('Decentralization | Staking', module)
+storiesOf('Decentralization / Staking', module)
   .addDecorator(decorator) // ====== Stories ======
   .add(
     pageNames['delegation-center'],
@@ -273,7 +273,7 @@ storiesOf('Decentralization | Staking', module)
       id: 'undelegate-confirmation-result',
     }
   );
-storiesOf('Decentralization | Redeem ITN Rewards', module)
+storiesOf('Decentralization / Redeem ITN Rewards', module)
   .addDecorator(decorator) // ====== Stories ======
   .add('Step 1', Step1ConfigurationDialogStory, {
     id: 'redeem-itn-wallets-story',

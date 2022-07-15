@@ -84,7 +84,8 @@ export class IpcChannel<Incoming, Outgoing>
 
     // Enforce the singleton pattern based on the channel name
     const existingChannel = IpcChannel._instances[channelName];
-    if (existingChannel) return existingChannel;
+    if (existingChannel)
+      throw new Error(`Channel ${channelName} already exists`);
     IpcChannel._instances[channelName] = this;
     this._broadcastChannel = `${channelName}-broadcast`;
     this._requestChannel = `${channelName}-request`;

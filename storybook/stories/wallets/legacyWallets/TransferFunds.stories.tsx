@@ -12,7 +12,7 @@ import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/number
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
-storiesOf('Wallets|Legacy Wallets', module)
+storiesOf('Wallets / Legacy Wallets', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs) // ====== Stories ======
   .add('Transfer Funds - Step1', () => {

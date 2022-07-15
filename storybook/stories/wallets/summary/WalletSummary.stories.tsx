@@ -16,21 +16,18 @@ import currenciesList from '../../../../source/renderer/app/config/currenciesLis
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
 
 const allAssets = [
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234',
     100
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 4.
   generateAssetToken(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345',
     100
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
@@ -40,15 +37,10 @@ const allAssets = [
       name: 'USD Coin',
       ticker: 'USDC',
       description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
   ),
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 7 arguments, but got 5.
   generateAssetToken(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
@@ -58,10 +50,6 @@ const allAssets = [
       name: 'MakerDAO',
       ticker: 'DAI',
       description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
       url: 'http://example.com',
       logo: '',
     }
@@ -163,7 +151,7 @@ const walletAssets = assets.total.map((assetTotal) => {
 });
 
 /* eslint-disable consistent-return */
-storiesOf('Wallets|Summary', module)
+storiesOf('Wallets / Summary', module)
   .addDecorator(WalletsWrapper)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Wallet Summary', ({ locale }: { locale: string }) => {
@@ -190,13 +178,8 @@ storiesOf('Wallets|Summary', module)
 
     const currencySelected = select(
       'currencySelected',
-      // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
       currenciesList,
-      {
-        id: 'uniswap-state-dollar',
-        symbol: 'usd',
-        name: 'unified Stable Dollar',
-      },
+      currenciesList.usd,
       'Currency'
     );
     const wallet = generateWallet('Wallet name', '45119903750165', assets);

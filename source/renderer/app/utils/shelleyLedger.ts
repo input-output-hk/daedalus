@@ -158,10 +158,10 @@ export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
 
   return tokenBundle;
 };
-export const ShelleyTxOutput = (
+export function ShelleyTxOutput(
   output: CoinSelectionOutput,
   addressStyle: AddressStyle
-) => {
+) {
   const { address, amount, derivationPath, assets } = output;
   const adaCoinQuantity = amount.quantity;
   const coins =
@@ -186,12 +186,12 @@ export const ShelleyTxOutput = (
     stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
     encodeCBOR,
   };
-};
-export const ShelleyTxCert = (cert: {
+}
+export function ShelleyTxCert(cert: {
   type: string;
   accountAddress: string;
   pool: string | null | undefined;
-}) => {
+}) {
   const { type, accountAddress, pool } = cert;
   let hash;
   let poolHash;
@@ -221,7 +221,7 @@ export const ShelleyTxCert = (cert: {
     poolHash: poolHash || null,
     encodeCBOR,
   };
-};
+}
 export const ShelleyTxWithdrawal = (
   withdrawals: Array<CoinSelectionWithdrawal>
 ) => {

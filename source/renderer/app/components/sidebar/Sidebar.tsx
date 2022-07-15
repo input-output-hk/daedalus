@@ -29,7 +29,7 @@ const getCategoryContent = (categoryName: string, network) =>
     <SidebarCategoryNetworkInfo network={network} />
   ) : null;
 
-const Sidebar = ({
+function Sidebar({
   menus,
   categories,
   activeSidebarCategory,
@@ -39,7 +39,7 @@ const Sidebar = ({
   isShelleyActivated,
   onActivateCategory,
   network,
-}: Props) => {
+}: Props) {
   const hasSubMenu = shouldShowWalletSubMenu({
     activeSidebarCategory,
     walletRoute: CATEGORIES_BY_NAME.WALLETS.route,
@@ -85,6 +85,6 @@ const Sidebar = ({
       )}
     </div>
   );
-};
+}
 
 export default observer(Sidebar);

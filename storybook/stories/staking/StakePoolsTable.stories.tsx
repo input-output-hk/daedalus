@@ -14,70 +14,40 @@ const listTitle = {
 type Props = {
   currentTheme: string;
 };
-export const StakePoolsTableStory = (props: Props) => {
+export function StakePoolsTableStory(props: Props) {
   return (
-    <React.Fragment>
-      <div
+    <div
+      style={{
+        margin: '0 20px 20px',
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+      }}
+    >
+      <StakePoolsSearch
+        search={''}
+        onSearch={action('onOpenExternalLink')}
+        onClearSearch={action('onOpenExternalLink')}
+        onGridView={action('onOpenExternalLink')}
+        onListView={action('onOpenExternalLink')}
+        isListView
+        isGridView={false}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        isClearTooltipOpeningDownward
+      />
+      <h2
         style={{
-          margin: '0 20px 20px',
-          display: 'flex',
-          flex: 1,
-          flexDirection: 'column',
+          lineHeight: 1.38,
+          margin: '20px 0 10px',
+          opacity: 0.5,
+          paddingLeft: '20px',
+          fontFamily: '"NotoSans-Regular, NotoSansCJKjp-Regular", sans-serif',
         }}
       >
-        <StakePoolsSearch
-          search={''}
-          onSearch={action('onOpenExternalLink')}
-          onClearSearch={action('onOpenExternalLink')}
-          onGridView={action('onOpenExternalLink')}
-          onListView={action('onOpenExternalLink')}
-          isListView
-          isGridView={false}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          isClearTooltipOpeningDownward
-        />
-        <h2
-          style={{
-            lineHeight: 1.38,
-            margin: '20px 0 10px',
-            opacity: 0.5,
-            paddingLeft: '20px',
-            fontFamily: '"NotoSans-Regular, NotoSansCJKjp-Regular", sans-serif',
-          }}
-        >
-          <FormattedMessage
-            {...listTitle}
-            values={{
-              pools: STAKE_POOLS.slice(
-                0,
-                number('Pools', 300, {
-                  range: true,
-                  min: 37,
-                  max: 300,
-                  step: 1,
-                })
-              ).length,
-            }}
-          />
-        </h2>
-        <StakePoolsTable
-          listName="selectedIndexList"
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          stakePoolsList={STAKE_POOLS.slice(
-            0,
-            number('Pools', 300, {
-              range: true,
-              min: 37,
-              max: 300,
-              step: 1,
-            })
-          )}
-          currentLocale="en-US"
-          currentTheme={props.currentTheme}
-          onOpenExternalLink={action('onOpenExternalLink')}
-          containerClassName="StakingWithNavigation_page"
-          numberOfRankedStakePools={
-            STAKE_POOLS.slice(
+        <FormattedMessage
+          {...listTitle}
+          values={{
+            pools: STAKE_POOLS.slice(
               0,
               number('Pools', 300, {
                 range: true,
@@ -85,12 +55,40 @@ export const StakePoolsTableStory = (props: Props) => {
                 max: 300,
                 step: 1,
               })
-            ).length
-          }
-          onTableHeaderMouseEnter={() => {}}
-          onTableHeaderMouseLeave={() => {}}
+            ).length,
+          }}
         />
-      </div>
-    </React.Fragment>
+      </h2>
+      <StakePoolsTable
+        listName="selectedIndexList"
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        stakePoolsList={STAKE_POOLS.slice(
+          0,
+          number('Pools', 300, {
+            range: true,
+            min: 37,
+            max: 300,
+            step: 1,
+          })
+        )}
+        currentLocale="en-US"
+        currentTheme={props.currentTheme}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        containerClassName="StakingWithNavigation_page"
+        numberOfRankedStakePools={
+          STAKE_POOLS.slice(
+            0,
+            number('Pools', 300, {
+              range: true,
+              min: 37,
+              max: 300,
+              step: 1,
+            })
+          ).length
+        }
+        onTableHeaderMouseEnter={() => {}}
+        onTableHeaderMouseLeave={() => {}}
+      />
+    </div>
   );
-};
+}

@@ -30,7 +30,7 @@ export const CURRENCY_REQUEST_RATE_INTERVAL = 60 * 1000; // 1 minute | unit: mil
 export const genericCurrencyRequest = (
   requestName: RequestName
   // @ts-ignore ts-migrate(1064) FIXME: The return type of an async function or method mus... Remove this comment to see the full error message
-): ((...args: Array<any>) => any) => async (payload?: any): any => {
+): ((...args: Array<any>) => any) => async (payload?: any): Promise<any> => {
   const request = currencyConfig.requests[requestName];
   let response;
 

@@ -23,11 +23,11 @@ type Props = {
   searchValue?: string;
 };
 
-const WalletSearchComponent = ({
+function WalletSearchComponent({
   searchValue = '',
   onSearch = noop,
   intl,
-}: Props) => {
+}: Props) {
   const hasValue = !!searchValue.length;
   return (
     <label htmlFor="sidebarWalletSearch" className={styles.component}>
@@ -47,6 +47,6 @@ const WalletSearchComponent = ({
       )}
     </label>
   );
-};
+}
 
 export const WalletSearch = injectIntl(observer(WalletSearchComponent));

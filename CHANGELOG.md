@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.12.0
+
+### Fixes
+
+- Fixed downloaded installer being left in Downloads after latest update installs ([PR 2941](https://github.com/input-output-hk/daedalus/pull/2941))
+- Fixed incorrect amount of token sent ([PR 2962](https://github.com/input-output-hk/daedalus/pull/2962))
+
+### Chores
+
+- Added OS-architecture tuple to installer file names to help with releases ([PR 3016](https://github.com/input-output-hk/daedalus/pull/3016))
+- Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
+
 ## 4.11.0
 
 ### Fixes
@@ -15,6 +28,7 @@
 
 ### Chores
 
+- Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
 - Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))
 - Published selfnode installers for all 3 platforms ([PR 2971](https://github.com/input-output-hk/daedalus/pull/2971))

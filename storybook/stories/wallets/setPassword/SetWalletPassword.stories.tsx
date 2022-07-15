@@ -60,7 +60,7 @@ const WALLETS = [
 ];
 const activeWallet: Wallet = WALLETS[0];
 let walletPasswordIsOpen = false;
-storiesOf('Wallets|Set Password', module)
+storiesOf('Wallets / Set Password', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))

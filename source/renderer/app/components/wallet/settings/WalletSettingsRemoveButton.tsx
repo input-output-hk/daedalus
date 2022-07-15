@@ -9,19 +9,21 @@ type Props = {
   disabled?: boolean;
 };
 
-const WalletSettingsRemoveButton = ({
+function WalletSettingsRemoveButton({
   onClick,
   label,
   disabled = false,
-}: Props) => (
-  <Button
-    className="flat"
-    disabled={disabled}
-    label={label}
-    onClick={onClick}
-    skin={ButtonSkin}
-    themeOverrides={styles}
-  />
-);
+}: Props) {
+  return (
+    <Button
+      className="flat"
+      disabled={disabled}
+      label={label}
+      onClick={onClick}
+      skin={ButtonSkin}
+      themeOverrides={styles}
+    />
+  );
+}
 
 export default WalletSettingsRemoveButton;

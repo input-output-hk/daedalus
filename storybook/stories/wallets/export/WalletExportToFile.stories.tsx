@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
-storiesOf('Wallets|Export to File', module)
+storiesOf('Wallets / Export to File', module)
   .addDecorator(WalletsWrapper) // ====== Stories ======
   .add('default', () => (
     <div>

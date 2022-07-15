@@ -10,7 +10,7 @@ import {
   ConnectivityIssuesSyncingConnectingStory,
 } from './SyncingConnecting.stories';
 
-storiesOf('Nodes|Connecting and Loading', module)
+storiesOf('Nodes / Connecting and Loading', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   )) // ====== Stories ======

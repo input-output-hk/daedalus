@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
+import { History } from 'history';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
-import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
@@ -16,8 +16,8 @@ import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDi
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
-import type { StoresMap } from './stores/index';
-import type { ActionsMap } from './actions/index';
+import type { StoresMap } from './stores';
+import type { ActionsMap } from './actions';
 import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
@@ -27,7 +27,7 @@ import { MenuUpdater } from './containers/MenuUpdater';
 class App extends Component<{
   stores: StoresMap;
   actions: ActionsMap;
-  history: Record<string, any>;
+  history: History;
 }> {
   componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
@@ -41,7 +41,6 @@ class App extends Component<{
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
-    const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
 
     const themeVars = require(`./themes/daedalus/${currentTheme}.ts`).default;
@@ -62,7 +61,7 @@ class App extends Component<{
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <MenuUpdater />
+          <MenuUpdater stores={stores} />
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}
@@ -80,7 +79,6 @@ class App extends Component<{
                 <Router history={history}>
                   <Routes />
                 </Router>
-                {mobxDevTools}
                 {[
                   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
                   isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,

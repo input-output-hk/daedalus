@@ -4,7 +4,7 @@ import StoryLayout from '../../_support/StoryLayout';
 import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 
-export default (story: any, context: any) => {
+export default function (story: any, context: any) {
   const storyWithKnobs = withKnobs(story, context);
   return (
     <StoryDecorator>
@@ -15,4 +15,4 @@ export default (story: any, context: any) => {
       </StoryProvider>
     </StoryDecorator>
   );
-};
+}

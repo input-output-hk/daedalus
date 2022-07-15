@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import Wallet from '../domains/Wallet'; // @ts-ignore TODO: fix this in flowconfig
+import Wallet from '../domains/Wallet';
 
 export default import('@iohk-jormungandr/wallet-js').then((modules) => modules);
 const MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS = 10; // 1 ADA | unit: ADA

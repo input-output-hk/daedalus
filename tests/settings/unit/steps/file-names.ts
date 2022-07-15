@@ -1,9 +1,12 @@
-import { Given, Then } from "cucumber";
-import { expect } from "chai";
-import { pickBy, identity } from "lodash";
-import { generateFileNameWithTimestamp, defaultProps } from "../../../../source/common/utils/files";
+import { Given, Then } from 'cucumber';
+import { expect } from 'chai';
+import { pickBy, identity } from 'lodash';
+import {
+  generateFileNameWithTimestamp,
+  defaultProps,
+} from '../../../../source/common/utils/files';
 
-const getDataFromFunction = props => {
+const getDataFromFunction = (props) => {
   const filename = generateFileNameWithTimestamp(props);
   let prefix = filename.match(/^[^-]*[^ -]/i);
   let extension = filename.match(/\.[0-9a-z]+$/i);
@@ -27,7 +30,7 @@ const getDataFromFunction = props => {
     filename,
     prefix,
     extension,
-    isUTC
+    isUTC,
   };
 };
 
@@ -36,8 +39,8 @@ Given('I dont pass any props to the function', function () {
     filename,
     extension,
     prefix,
-    isUTC
-  // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
+    isUTC,
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
   } = getDataFromFunction();
   this.context.filename = filename;
   this.context.extension = extension;
@@ -47,13 +50,11 @@ Given('I dont pass any props to the function', function () {
 Given('I pass the following props to the function:', function (data) {
   let [expectedProps] = data.hashes();
   expectedProps = pickBy(expectedProps, identity);
-  if (expectedProps.isUTC) expectedProps.isUTC = Boolean(expectedProps.isUTC === 'should');
-  const {
-    filename,
-    extension,
-    prefix,
-    isUTC
-  } = getDataFromFunction(expectedProps);
+  if (expectedProps.isUTC)
+    expectedProps.isUTC = Boolean(expectedProps.isUTC === 'should');
+  const { filename, extension, prefix, isUTC } = getDataFromFunction(
+    expectedProps
+  );
   this.context.filename = filename;
   this.context.extension = extension;
   this.context.prefix = prefix;

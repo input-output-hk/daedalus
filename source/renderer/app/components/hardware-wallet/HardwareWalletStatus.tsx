@@ -321,38 +321,32 @@ class HardwareWalletStatus extends Component<Props, State> {
     }
 
     return (
-      <>
-        <div className={componentClasses}>
-          <div className={styles.messageWrapper}>
-            <div className={styles.message}>
-              {hasInstructionsLink && instructionsLink ? (
-                <FormattedMessage
-                  {...messages[hwDeviceStatus]}
-                  values={{
-                    instructionsLink,
-                  }}
-                />
-              ) : (
-                label
-              )}
-            </div>
-            {secondaryMessage && (
-              <div className={styles.secondaryMessage}>
-                {intl.formatMessage(secondaryMessage)}
-              </div>
+      <div className={componentClasses}>
+        <div className={styles.messageWrapper}>
+          <div className={styles.message}>
+            {hasInstructionsLink && instructionsLink ? (
+              <FormattedMessage
+                {...messages[hwDeviceStatus]}
+                values={{
+                  instructionsLink,
+                }}
+              />
+            ) : (
+              label
             )}
           </div>
-          {isLoading && (
-            <LoadingSpinner className="hardwareWalletProcessProgress" />
-          )}
-          {isReady && (
-            <SVGInline svg={checkIcon} className={styles.checkIcon} />
-          )}
-          {isError && (
-            <SVGInline svg={clearIcon} className={styles.clearIcon} />
+          {secondaryMessage && (
+            <div className={styles.secondaryMessage}>
+              {intl.formatMessage(secondaryMessage)}
+            </div>
           )}
         </div>
-      </>
+        {isLoading && (
+          <LoadingSpinner className="hardwareWalletProcessProgress" />
+        )}
+        {isReady && <SVGInline svg={checkIcon} className={styles.checkIcon} />}
+        {isError && <SVGInline svg={clearIcon} className={styles.clearIcon} />}
+      </div>
     );
   }
 }

@@ -7,7 +7,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
 import WalletRestoreDialog from '../../../../source/renderer/app/components/wallet/WalletRestoreDialog';
 
-storiesOf('Wallets|Add Wallet', module)
+storiesOf('Wallets / Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Restore - Old', () => (
     <WalletRestoreDialog

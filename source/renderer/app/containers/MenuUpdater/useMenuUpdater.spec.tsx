@@ -50,10 +50,10 @@ const makeRebuildApplicationMenu = ({
     send,
   } as any);
 
-const Component = (props) => {
+function Component(props) {
   useMenuUpdater(props);
   return null;
-};
+}
 
 const renderComponent = (props) => {
   const { rerender } = render(<Component {...props} />);

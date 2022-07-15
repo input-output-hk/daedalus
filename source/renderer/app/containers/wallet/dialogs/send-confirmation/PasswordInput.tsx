@@ -7,7 +7,7 @@ import { PasswordInputProps as Props } from './types';
 import HardwareWalletStatus from '../../../../components/hardware-wallet/HardwareWalletStatus';
 import styles from './styles.scss';
 
-const Component = ({
+function Component({
   isFlight,
   isTrezor,
   isHardwareWallet,
@@ -17,7 +17,7 @@ const Component = ({
   hwDeviceStatus,
   onExternalLinkClick,
   handleSubmitOnEnter,
-}: Props) => {
+}: Props) {
   if (doTermsNeedAcceptance({ isFlight, areTermsAccepted })) {
     return null;
   }
@@ -42,6 +42,6 @@ const Component = ({
       autoFocus
     />
   );
-};
+}
 
 export const PasswordInput = observer(Component);

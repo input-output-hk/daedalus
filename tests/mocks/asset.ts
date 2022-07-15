@@ -7,7 +7,7 @@ export const commonTokenProperties: Token = {
   assetName: '',
   quantity: new BigNumber(6),
   uniqueId: '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7',
-}
+};
 
 export const zeroDecimalPlacesToken: AssetToken = {
   ...commonTokenProperties,
@@ -16,11 +16,11 @@ export const zeroDecimalPlacesToken: AssetToken = {
     url: 'https://developers.cardano.org/',
     name: 'ZeroDecimalCoin',
     ticker: 'ZDP',
-    description: 'Zero decimal coin.'
+    description: 'Zero decimal coin.',
   },
   recommendedDecimals: 0,
   decimals: undefined,
-}
+};
 
 export const withDecimalPlacesToken: AssetToken = {
   ...commonTokenProperties,
@@ -29,8 +29,8 @@ export const withDecimalPlacesToken: AssetToken = {
     url: 'https://developers.cardano.org/',
     name: 'Non-zero DecimalCoin',
     ticker: 'nZDP',
-    description: 'Non zero decimal coin.'
+    description: 'Non zero decimal coin.',
   },
   recommendedDecimals: 1,
   decimals: 2,
-}
+};

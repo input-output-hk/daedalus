@@ -21,7 +21,9 @@ export const testSync = (apiMethod: (...args: Array<any>) => any) => {
 };
 // helper code for deferring API call execution
 export const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 export const doesWalletRequireAdaToRemainToSupportTokens = (
   error: ErrorType,
   hasAssetsRemainingAfterTransaction?: boolean

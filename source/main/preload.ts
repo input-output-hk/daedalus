@@ -28,18 +28,7 @@ process.once('loaded', () => {
     os: {
       platform: os.platform(),
     },
-    ipcRenderer: {
-      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
-      on: (...args) => ipcRenderer.on(...args),
-      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
-      once: (...args) => ipcRenderer.once(...args),
-      // @ts-ignore ts-migrate(2557) FIXME: Expected at least 1 arguments, but got 0 or more.
-      send: (...args) => ipcRenderer.send(...args),
-      // @ts-ignore ts-migrate(2556) FIXME: Expected 2 arguments, but got 0 or more.
-      removeListener: (...args) => ipcRenderer.removeListener(...args),
-      // @ts-ignore ts-migrate(2556) FIXME: Expected 1 arguments, but got 0 or more.
-      removeAllListeners: (...args) => ipcRenderer.removeAllListeners(...args),
-    },
+    ipcRenderer,
     electronLog: {
       debug: (...args) => electronLog.debug(...args),
       info: (...args) => electronLog.info(...args),
@@ -58,10 +47,12 @@ process.once('loaded', () => {
   }
 
   // ESLint will warn about any use of eval(), even this one
-  // eslint-disable-next-line no-eval
-  global.eval = () => {
-    throw new Error('This app does not support window.eval().');
-  };
+  if (environment.isProduction) {
+    // eslint-disable-next-line no-eval
+    global.eval = () => {
+      throw new Error('This app does not support window.eval().');
+    };
+  }
 
   // Prevent context-menu for elements which don't support copy&paste options
   if (_process.env.NODE_ENV === 'production') {

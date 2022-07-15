@@ -275,7 +275,8 @@ export default class ProfileStore extends Store {
 
   @computed
   get termsOfUse(): string {
-    return require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`)
+      .default;
   }
 
   @computed

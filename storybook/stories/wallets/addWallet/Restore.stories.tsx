@@ -20,7 +20,7 @@ import SuccessDialog from '../../../../source/renderer/app/components/wallet/wal
 type Props = {
   locale: string;
 };
-storiesOf('Wallets|Add Wallet', module)
+storiesOf('Wallets / Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Restore - Step 1', () => {
     const walletKindSelect = select(

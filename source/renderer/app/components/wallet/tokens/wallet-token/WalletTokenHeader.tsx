@@ -29,7 +29,7 @@ type Props = {
   onToggleFavorite?: (...args: Array<any>) => any;
 };
 
-const WalletTokenHeader = (props: Props) => {
+function WalletTokenHeader(props: Props) {
   const {
     anyAssetWasHovered,
     asset,
@@ -99,6 +99,6 @@ const WalletTokenHeader = (props: Props) => {
       <SVGInline svg={arrow} className={styles.arrow} />
     </div>
   );
-};
+}
 
 export default observer(WalletTokenHeader);

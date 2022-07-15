@@ -109,8 +109,8 @@ export const generateWallet = (
     total: [],
   },
   reward: string | number = 0,
-  delegatedStakePool?: StakePool,
-  hasPassword?: boolean,
+  delegatedStakePool: StakePool = null,
+  hasPassword = false,
   status: SyncStateStatus = WalletSyncStateStatuses.READY,
   isHardwareWallet = false,
   id: string = generateHash()
@@ -171,10 +171,10 @@ export const generateAssetToken = (
   policyId: string,
   assetName = '',
   fingerprint = '',
-  quantity: number,
-  metadata: AssetMetadata | null | undefined,
-  decimals: number | null | undefined,
-  recommendedDecimals: number | null | undefined
+  quantity = 0,
+  metadata?: AssetMetadata | null,
+  decimals?: number | null,
+  recommendedDecimals?: number | null
 ): AssetToken => ({
   policyId,
   assetName,
@@ -238,7 +238,7 @@ export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
-    new BigNumber(faker.random.number(5))
+    new BigNumber(faker.datatype.number(5))
   );
 export const generateMultipleTransactions = (
   amount: number

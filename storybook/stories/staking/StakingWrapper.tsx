@@ -17,7 +17,7 @@ const pageNames = {
   epochs: 'Epochs',
   info: 'Info',
 };
-export default (story, context) => {
+export default function (story, context) {
   const storyWithKnobs = withKnobs(story, context);
 
   const getItemFromContext = () => context.parameters.id;
@@ -56,4 +56,4 @@ export default (story, context) => {
       </StoryProvider>
     </StoryDecorator>
   );
-};
+}

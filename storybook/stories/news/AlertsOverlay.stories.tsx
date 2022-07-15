@@ -87,7 +87,7 @@ const getAlerts = (locale: string) => [
   }),
 ];
 
-storiesOf('News|Overlays', module)
+storiesOf('News / Overlays', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))

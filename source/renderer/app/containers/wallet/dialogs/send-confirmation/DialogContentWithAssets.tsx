@@ -12,7 +12,7 @@ import { messages } from './messages';
 import { getFormattedAssetAmount } from './helpers';
 import styles from './DialogContentWithAssets.scss';
 
-const Component = ({
+function Component({
   intl,
   amount,
   receiver,
@@ -21,7 +21,7 @@ const Component = ({
   selectedAssets,
   assetsAmounts,
   onCopyAssetParam,
-}: Props) => {
+}: Props) {
   const assetsSeparatorBasicHeight = 27;
   const assetsSeparatorCalculatedHeight = selectedAssets.length
     ? assetsSeparatorBasicHeight * selectedAssets.length * 2 - 18
@@ -130,7 +130,7 @@ const Component = ({
       </div>
     </div>
   );
-};
+}
 
 export const DialogContentWithAssets = compose(
   injectIntl,

@@ -31,7 +31,22 @@ let
     };
   };
   pkgs = import sources.nixpkgs { inherit system config; };
-  sources = localLib.sources;
+  sources = localLib.sources // {
+    cardano-wallet = pkgs.runCommand "cardano-wallet" {} ''
+      cp -r ${localLib.sources.cardano-wallet} $out
+      chmod -R +w $out
+      cd $out
+      patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${builtins.path {
+        # XXX: unfortunately, GitHub changed lengths of hashes in patches it returns for PRs,
+        # that’s why we’re providing this patch inside our repo, with the same exact SHA-256,
+        # to the one released in 4.12.0:
+        path = ./nix/cardano-wallet--pr-3382--ledger-bug.patch;
+        recursive = false;
+        sha256 = "1ii12g2zikv4197c7bsh4v5dc1jzygn1jap8xvnr7mvh3a09pdgn";
+      }}
+    '';
+  };
   haskellNix = import sources."haskell.nix" {};
   inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
   flake-compat = import sources.flake-compat;
@@ -61,7 +76,7 @@ let
   ostable.aarch64-darwin = "macos64-arm";
 
   packages = self: {
-    inherit cluster pkgs version target nodeImplementation;
+    inherit walletFlake cluster pkgs version target nodeImplementation;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -295,7 +310,7 @@ let
     signed-windows-installer = let
       backend_version = self.daedalus-bridge.wallet-version;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
+      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}-x86_64-windows.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
       cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
@@ -412,7 +427,7 @@ let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       backend = "cardano-wallet-${nodeImplementation}";
       suffix = if buildNum == null then "" else "-${toString buildNum}";
-      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}.bin";
+      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}

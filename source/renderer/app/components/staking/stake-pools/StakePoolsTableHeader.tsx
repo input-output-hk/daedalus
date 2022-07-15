@@ -20,14 +20,14 @@ type Props = {
   onTableHeaderMouseLeave: () => void;
 };
 
-export const Component = ({
+export function Component({
   stakePoolsSortBy,
   stakePoolsOrder,
   headerGroups,
   onHandleSort,
   onTableHeaderMouseEnter,
   onTableHeaderMouseLeave,
-}: Props) => {
+}: Props) {
   const { setTargetRef, isInViewport } = useInViewPort();
 
   return (
@@ -63,6 +63,6 @@ export const Component = ({
       </div>
     </>
   );
-};
+}
 
 export const StakePoolsTableHeader = observer(Component);

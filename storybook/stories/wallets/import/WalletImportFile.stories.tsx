@@ -27,7 +27,7 @@ const getWallet = (
   },
 });
 
-storiesOf('Wallets|Import File', module)
+storiesOf('Wallets / Import File', module)
   .addDecorator(WalletsWrapper)
   .add('Step 1 - Import File', () => (
     <VerticalFlexContainer>

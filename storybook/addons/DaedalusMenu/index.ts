@@ -8,12 +8,16 @@ export const setInitialState = (initialState: Record<string, any>) =>
       value,
     })
   );
+
 channel.on('daedalusMenu/updateParam', (query) => {
   channel.emit('daedalusMenu/paramUpdated', query);
 });
+
 export const updateParam = (query: Record<string, any>) =>
   channel.emit('daedalusMenu/updateParam', query);
-export const onReceiveParam = (cb: (...args: Array<any>) => any) =>
-  channel.on('daedalusMenu/updateParam', (query) => {
-    cb(query);
-  });
+
+export const onReceiveParam = (cb: (...args: Array<any>) => any) => {
+  const eventHandler = (query) => cb(query);
+  channel.on('daedalusMenu/updateParam', eventHandler);
+  return () => channel.off('daedalusMenu/updateParam', eventHandler);
+};
