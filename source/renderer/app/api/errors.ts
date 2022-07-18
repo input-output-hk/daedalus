@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { defineMessages } from 'react-intl';
-
+import get from 'lodash/get';
 import ApiError, { ErrorType } from '../domains/ApiError';
 
 export const messages = defineMessages({
