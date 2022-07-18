@@ -16,6 +16,7 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
+import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
   title: {
@@ -116,6 +117,30 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     this.props.onSelectWallet(selectedWalletId);
   };
 
+  getErrorMessage = (wallet?: Wallet): LocalizableError | null => {
+    if (!wallet) {
+      return null;
+    }
+
+    const { amount, reward, isRestoring } = wallet;
+
+    if (isRestoring) {
+      return messages.errorRestoringWallet;
+    }
+
+    if (!this.props.isWalletAcceptable(amount, reward)) {
+      // Wallet only has Reward balance
+      if (!amount.isZero() && amount.isEqualTo(reward)) {
+        return messages.errorMinDelegationFundsRewardsOnly;
+      }
+
+      // Wallet balance < min delegation funds
+      return messages.errorMinDelegationFunds;
+    }
+
+    return null;
+  };
+
   render() {
     const { intl } = this.context;
     const { selectedWalletId } = this.state;
@@ -125,25 +150,13 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       minDelegationFunds,
       onClose,
       onBack,
-      isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
     const selectedWallet: Wallet | null | undefined = wallets.find(
       (wallet: Wallet) => wallet && wallet.id === selectedWalletId
     );
-    const { amount, reward, isRestoring } = selectedWallet || {};
-    let errorMessage;
-
-    if (selectedWallet && !isWalletAcceptable(amount, reward)) {
-      // Wallet is restoring
-      if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.isEqualTo(reward))
-        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
-      // Wallet balance < min delegation funds
-      else errorMessage = messages.errorMinDelegationFunds;
-    }
+    const errorMessage = this.getErrorMessage(selectedWallet);
 
     const error = errorMessage && (
       <p className={styles.errorMessage}>
