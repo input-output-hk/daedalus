@@ -1,8 +1,8 @@
 { stdenv, lib, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core, libxshmfence,
-  libxkbcommon }:
+  libxkbcommon, runCommand, binutils-unwrapped }:
 
 let
-  version = "13.6.3";
+  version = (builtins.fromJSON (builtins.readFile ../../package.json)).dependencies.electron;
   name = "electron-${version}";
 
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
