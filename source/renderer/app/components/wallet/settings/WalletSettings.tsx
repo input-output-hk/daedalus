@@ -334,27 +334,23 @@ class WalletSettings extends Component<Props, State> {
             />
           )}
 
-          {/* TODO This feature is temporarily disabled and waiting for the new design.
-          At this point we don't know how many words are required for the recovery phrase,
-          to pass it down to the Mnemonic Input. We will probably need to introduce
-          the same picker that's being used during wallet restoration. */}
-          {/* {shouldDisplayRecoveryPhrase && ( */}
-          {/*   <WalletRecoveryPhraseVerificationWidget */}
-          {/*     onVerify={onVerifyRecoveryPhrase} */}
-          {/*     recoveryPhraseVerificationDate={recoveryPhraseVerificationDate} */}
-          {/*     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
-          {/*     recoveryPhraseVerificationStatus={ */}
-          {/*       recoveryPhraseVerificationStatus */}
-          {/*     } */}
-          {/*     recoveryPhraseVerificationStatusType={ */}
-          {/*       recoveryPhraseVerificationStatusType */}
-          {/*     } */}
-          {/*     creationDate={creationDate} */}
-          {/*     locale={locale} */}
-          {/*     wordCount={wordCount} */}
-          {/*     isLegacy={isLegacy} */}
-          {/*   /> */}
-          {/* )} */}
+          {shouldDisplayRecoveryPhrase && (
+            <WalletRecoveryPhraseVerificationWidget
+              onVerify={onVerifyRecoveryPhrase}
+              recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+              recoveryPhraseVerificationStatus={
+                recoveryPhraseVerificationStatus
+              }
+              recoveryPhraseVerificationStatusType={
+                recoveryPhraseVerificationStatusType
+              }
+              creationDate={creationDate}
+              locale={locale}
+              wordCount={wordCount}
+              isLegacy={isLegacy}
+            />
+          )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>

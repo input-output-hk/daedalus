@@ -5847,6 +5847,11 @@
         "id": "wallet.settings.recoveryPhraseStep2Button"
       },
       {
+        "defaultMessage": "!!!Enter word #{wordNumber}",
+        "description": "Placeholder \"Enter word #{wordNumber}\" for the recovery phrase input on the verification dialog.",
+        "id": "wallet.settings.recoveryPhraseInputPlaceholder"
+      },
+      {
         "defaultMessage": "!!!No results",
         "description": "\"No results\" message for the recovery phrase input search results.",
         "id": "wallet.settings.recoveryPhraseInputNoResults"
