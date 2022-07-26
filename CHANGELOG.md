@@ -10,6 +10,7 @@
 ### Chores
 
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
+- Refactored error handling for reward only wallets. ([PR 2952](https://github.com/input-output-hk/daedalus/pull/2952))
 
 ### Features
 
