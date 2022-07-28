@@ -9,6 +9,7 @@
 
 ### Chores
 
+- Fix `darwin-launcher.go` to replace its process image with `cardano-launcher` (binary), and not swallow `stdout` ([PR 3023](https://github.com/input-output-hk/daedalus/pull/3023))
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
 
 ### Features
