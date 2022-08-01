@@ -401,13 +401,9 @@ export default class ProfileStore extends Store {
       this.analytics.disableTracking();
     }
 
-    if (
-      previousStatus === AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED
-    ) {
+    if (previousStatus === AnalyticsAcceptanceStatus.PENDING) {
       this._redirectToRoot();
-    } else if (
-      previousStatus === AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED
-    ) {
+    } else {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.SETTINGS.SUPPORT,
       });
@@ -475,10 +471,7 @@ export default class ProfileStore extends Store {
       !this.isInitialScreen &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      (this.analyticsAcceptanceStatus ===
-        AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED ||
-        this.analyticsAcceptanceStatus ===
-          AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED)
+      this.analyticsAcceptanceStatus === AnalyticsAcceptanceStatus.PENDING
     ) {
       this.actions.router.goToRoute.trigger({
         route: ROUTES.PROFILE.ANALYTICS,
@@ -496,8 +489,7 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.analyticsAcceptanceStatus !==
-        AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED &&
+      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted

@@ -35,10 +35,7 @@ const useMenuUpdater = ({
     rebuildApplicationMenu.send({
       isNavigationEnabled:
         profile.areTermsOfUseAccepted &&
-        profile.analyticsAcceptanceStatus !==
-          AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED &&
-        profile.analyticsAcceptanceStatus !==
-          AnalyticsAcceptanceStatus.DECISION_CHANGE_REQUESTED,
+        profile.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING,
       walletSettingsState,
     });
   }, [

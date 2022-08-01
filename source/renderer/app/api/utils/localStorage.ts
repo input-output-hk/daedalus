@@ -147,14 +147,14 @@ export default class LocalStorageApi {
   getAnalyticsAcceptance = (): Promise<AnalyticsAcceptanceStatus> =>
     LocalStorageApi.get(
       keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED
+      AnalyticsAcceptanceStatus.PENDING
     );
   setAnalyticsAcceptance = (status: AnalyticsAcceptanceStatus): Promise<void> =>
     LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, status);
   unsetAnalyticsAcceptance = (): Promise<void> =>
     LocalStorageApi.set(
       keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.INITIAL_DECISION_REQUIRED
+      AnalyticsAcceptanceStatus.PENDING
     );
   getUserID = async (): Promise<string> => {
     let userId: string = await LocalStorageApi.get(keys.USER_ID, null);
