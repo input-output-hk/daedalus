@@ -11,9 +11,8 @@ import {
 } from '../../../../common/config/electron-store.config';
 import type { NewsTimestamp } from '../news/types';
 import type {
-  DeviceType,
-  HardwareWalletExtendedPublicKeyResponse,
   TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 import type { Currency, DeprecatedCurrency } from '../../types/currencyTypes';
@@ -21,15 +20,16 @@ import {
   CURRENCY_DEFAULT_SELECTED,
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
 } from '../../config/currencyConfig';
-import { AnalyticsAcceptanceStatus } from '../../analytics/types';
+import {
+  AssetLocalData,
+  HardwareWalletDevicesType,
+  HardwareWalletLocalData,
+  HardwareWalletsLocalData,
+  UnpairedHardwareWalletData,
+  WalletLocalData,
+} from '../../types/localDataTypes';
+import { AnalyticsAcceptanceStatus } from '../../analytics';
 
-export type WalletLocalData = {
-  id: string;
-  recoveryPhraseVerificationDate?: Date | null | undefined;
-  creationDate: Date;
-  showUsedAddresses: boolean;
-};
-export type WalletsLocalData = Record<StorageKey, WalletLocalData>;
 export type SetHardwareWalletLocalDataRequestType = {
   walletId: string;
   data: {
@@ -44,27 +44,6 @@ export type SetHardwareWalletDeviceRequestType = {
   data: UnpairedHardwareWalletData;
 };
 
-export type UnpairedHardwareWalletData = {
-  deviceType?: DeviceType;
-  deviceModel?: string;
-  deviceName?: string;
-  path?: string | null | undefined;
-  paired?: string | null | undefined;
-  disconnected?: boolean;
-};
-
-export type HardwareWalletLocalData = {
-  id: string;
-  deviceType: DeviceType;
-  device: TransportDevice;
-  extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
-  disconnected: boolean;
-};
-export type HardwareWalletsLocalData = Record<string, HardwareWalletLocalData>;
-export type HardwareWalletDevicesType = Record<string, TransportDevice>;
-export type AssetLocalData = {
-  decimals: number;
-};
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.

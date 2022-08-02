@@ -84,12 +84,8 @@ import type {
   VotingDataType,
 } from '../api/transactions/types';
 import type {
-  HardwareWalletLocalData,
-  HardwareWalletsLocalData,
-  HardwareWalletDevicesType,
   SetHardwareWalletLocalDataRequestType,
   SetHardwareWalletDeviceRequestType,
-  UnpairedHardwareWalletData,
 } from '../api/utils/localStorage';
 import type {
   TransportDevice,
@@ -102,6 +98,12 @@ import type {
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
 import { EventCategories } from '../analytics';
+import {
+  HardwareWalletDevicesType,
+  HardwareWalletLocalData,
+  HardwareWalletsLocalData,
+  UnpairedHardwareWalletData,
+} from '../types/localDataTypes';
 
 export type TxSignRequestTypes = {
   coinSelection: CoinSelectionsResponse;
