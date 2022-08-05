@@ -228,6 +228,7 @@ import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 import { AssetLocalData } from '../types/localDataTypes';
+import { handleNotEnoughMoneyError } from './errors';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -1061,51 +1062,14 @@ export default class AdaApi {
         minimumAda,
       };
     } catch (error) {
-      let notEnoughMoneyError;
-
-      if (walletBalance.gt(availableBalance)) {
-        // 1. Amount exceeds availableBalance due to pending transactions:
-        // - walletBalance > availableBalance
-        // = show "Cannot calculate fees while there are pending transactions."
-        notEnoughMoneyError = 'canNotCalculateTransactionFees';
-      } else if (
-        !walletBalance.isZero() &&
-        walletBalance.isEqualTo(rewardsBalance)
-      ) {
-        // 2. Wallet contains only rewards:
-        // - walletBalance === rewardsBalance
-        // = show "Cannot send from a wallet that contains only rewards balances."
-        notEnoughMoneyError = 'inputsDepleted';
-      } else {
-        // 3. Amount exceeds walletBalance:
-        // - walletBalance === availableBalance
-        // = show "Not enough Ada. Try sending a smaller amount."
-        notEnoughMoneyError = 'notEnoughFundsForTransaction';
-      }
-
-      // ApiError with logging showcase
-      throw new ApiError(error, {
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean' is not assignable to type 'Record<s... Remove this comment to see the full error message
-        logError: true,
-        msg: 'AdaApi::calculateTransactionFee error',
-      })
-        .set(notEnoughMoneyError, true)
-        .where('code', 'not_enough_money')
-        .set('utxoTooSmall', true, {
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'exec' does not exist on type '{}'.
-          minimumAda: get(
-            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
-            2,
-            0
-          ),
-        })
-        .where('code', 'utxo_too_small')
-        .set('invalidAddress')
-        .where('code', 'bad_request')
-        .inc('message', 'Unable to decode Address')
-        .result();
+      handleNotEnoughMoneyError(error, {
+        walletBalance,
+        availableBalance,
+        rewardsBalance,
+      });
     }
   };
+
   selectCoins = async (request: {
     walletId: string;
     walletBalance: BigNumber;
@@ -1270,48 +1234,12 @@ export default class AdaApi {
       logger.error('AdaApi::selectCoins error', {
         error,
       });
-      let notEnoughMoneyError;
 
-      if (walletBalance.gt(availableBalance)) {
-        // 1. Amount exceeds availableBalance due to pending transactions:
-        // - walletBalance > availableBalance
-        // = show "Cannot calculate fees while there are pending transactions."
-        notEnoughMoneyError = 'canNotCalculateTransactionFees';
-      } else if (
-        !walletBalance.isZero() &&
-        walletBalance.isEqualTo(rewardsBalance)
-      ) {
-        // 2. Wallet contains only rewards:
-        // - walletBalance === rewardsBalance
-        // = show "Cannot send from a wallet that contains only rewards balances."
-        notEnoughMoneyError = 'inputsDepleted';
-      } else {
-        // 3. Amount exceeds walletBalance:
-        // - walletBalance === availableBalance
-        // = show "Not enough Ada. Try sending a smaller amount."
-        notEnoughMoneyError = 'notEnoughFundsForTransaction';
-      }
-
-      // ApiError with logging showcase
-      throw new ApiError(error, {
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean' is not assignable to type 'Record<s... Remove this comment to see the full error message
-        logError: true,
-        msg: 'AdaApi::calculateTransactionFee error',
-      })
-        .set(notEnoughMoneyError, true)
-        .where('code', 'not_enough_money')
-        .set('utxoTooSmall', true, {
-          minimumAda: get(
-            /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
-            2,
-            0
-          ),
-        })
-        .where('code', 'utxo_too_small')
-        .set('invalidAddress')
-        .where('code', 'bad_request')
-        .inc('message', 'Unable to decode Address')
-        .result();
+      handleNotEnoughMoneyError(error, {
+        walletBalance,
+        availableBalance,
+        rewardsBalance,
+      });
     }
   };
   createExternalTransaction = async (
