@@ -10,7 +10,7 @@
 , lz4
 , pkgconfig
 , systemd
-, writeShellScriptBin
+, writeShellScript
 , xz
 , nodePackages
 , zlib
@@ -35,24 +35,29 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "13.6.3";
-  electronPath = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}";
+  electronVersion = origPackage.dependencies.electron;
+  electronPath = "https://github.com/electron/electron/releases/download/v${electronVersion}";
   windowsElectron = fetchurl {
-    url = "${electronPath}/electron-v${windowsElectronVersion}-win32-x64.zip";
+    url = "${electronPath}/electron-v${electronVersion}-win32-x64.zip";
     sha256 = "18085a2509447fef8896daeee96a12f48f8e60a4d5ec4cfab44d8d59b9d89a72";
   };
   electronPathHash = builtins.hashString "sha256" electronPath;
   electron-cache = runCommand "electron-cache" {} ''
     # newer style
     mkdir -p $out/${electronPathHash}/
-    ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${windowsElectronVersion}-win32-x64.zip
-    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip
-    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
+    ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${electronVersion}-win32-x64.zip
+    mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${electronVersion}electron-v${electronVersion}-win32-x64.zip
+    ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${electronVersion}electron-v${electronVersion}-win32-x64.zip/electron-v${electronVersion}-win32-x64.zip
   '';
-  electron-gyp = fetchurl {
-    url = "https://www.electronjs.org/headers/v${windowsElectronVersion}/node-v${windowsElectronVersion}-headers.tar.gz";
+  electron-node-headers = fetchurl {
+    url = "https://www.electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
     sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
   };
+  electron-node-headers-unpacked = runCommand "electron-node-headers-${electronVersion}-unpacked" {} ''
+    tar -xf ${electron-node-headers}
+    mkdir -p $out
+    mv node_headers/* $out/
+  '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
     sansPrefix = lib.removePrefix (toString ./.) name;
@@ -74,6 +79,38 @@ let
     pkgconfig
     libusb
   ];
+
+  # We patch `node_modules/electron-rebuild` to force specific Node.js
+  # headers to be used when building native extensions for
+  # Electron. Electron’s Node.js ABI differs from the same version of
+  # Node.js, because different libraries are used in Electon,
+  # e.g. BoringSSL instead of OpenSSL,
+  # cf. <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>
+  #
+  # We also use this same code in `shell.nix`, since for some reason
+  # `electron-rebuild` there determines incorrect headers to use
+  # automatically, and we keep getting ABI errors. TODO: investigate
+  # why…
+  #
+  # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
+  patchElectronRebuild = writeShellScript "patch-electron-rebuild" ''
+    echo 'Patching electron-rebuild to force our Node.js headers…'
+
+    nodeGypJs=lib/src/module-type/node-gyp.js
+    if [ ! -e $nodeGypJs ] ; then
+      # makes it work both here, and in shell.nix:
+      nodeGypJs="node_modules/electron-rebuild/$nodeGypJs"
+    fi
+    if [ ! -e $nodeGypJs ] ; then
+      echo >&2 'fatal: shouldn’t happen unless electron-rebuild changes'
+      exit 1
+    fi
+
+    # Patch idempotently (matters in repetitive shell.nix):
+    if ! grep -qF ${electron-node-headers} $nodeGypJs ; then
+      sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-node-headers}", "--nodedir", "${electron-node-headers-unpacked}");|' -i $nodeGypJs
+    fi
+  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -141,12 +178,6 @@ yarn2nix.mkYarnPackage {
     export HOME=$(realpath home)
     yarn --offline run build
 
-    mkdir -pv $HOME/.electron-gyp/
-    tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
-    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/${windowsElectronVersion}/
-
-    ln -sv $HOME/.electron-gyp $HOME/.node-gyp
-
     #export DEBUG=electron-rebuild
 
     ls -ltrha $NIX_BUILD_TOP/daedalus/node_modules/
@@ -206,25 +237,24 @@ yarn2nix.mkYarnPackage {
   #  libunistring
   #  libusb1
   #] ++ stdenv.cc.libc.buildInputs;
+
+  # `yarnPreBuild` is only used in `yarn2nix.mkYarnModules`, not `yarn2nix.mkYarnPackage`:
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
+
+  inherit patchElectronRebuild; # for use in shell.nix
+
   pkgConfig = {
     electron-rebuild = {
-      # TODO: That is rather awful… Can it be done better? – @michalrus
       postInstall = ''
-        nodeGypJs=lib/src/module-type/node-gyp.js
-        if [ ! -e $nodeGypJs ] ; then
-          echo >&2 'shouldn’t happen unless electron-rebuild changes'
-          exit 1
-        fi
-
-        sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-gyp}", "--nodedir", process.env["HOME"] + "/.node-gyp/${windowsElectronVersion}");|' -i $nodeGypJs
+        ${patchElectronRebuild}
       '';
     };
   };
+
   # work around some purity problems in nix
   yarnLock = ./yarn.lock;
   packageJSON = ./package.json;
