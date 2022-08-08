@@ -279,7 +279,8 @@ export default class StakingStore extends Store {
         await this.api.localStorage.setSmashServer(smashServerUrl);
         this.analytics.sendEvent(
           EventCategories.SETTINGS,
-          'Changed SMASH server'
+          'Changed SMASH server',
+          smashServerUrl
         );
       } catch (error) {
         runInAction(() => {
