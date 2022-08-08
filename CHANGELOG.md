@@ -12,6 +12,8 @@
 - Updated cardano-node to 1.35.2 ([PR 3021](https://github.com/input-output-hk/daedalus/pull/3021))
 - Fix `darwin-launcher.go` to replace its process image with `cardano-launcher` (binary), and not swallow `stdout` ([PR 3023](https://github.com/input-output-hk/daedalus/pull/3023))
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
+- Allow specifying Node.js version, patch electron-rebuild forcing proper Electron-Node.js headers ([PR 2998](https://github.com/input-output-hk/daedalus/pull/2998))
+- Refactor and remove code duplication in the wallet api ([PR 2952](https://github.com/input-output-hk/daedalus/pull/2952))
 
 ### Features
 
