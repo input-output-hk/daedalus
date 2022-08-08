@@ -5,9 +5,12 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
 )
 
 func main() {
+	fmt.Fprintf(os.Stderr, "darwin-launcher: PID = %d\n", os.Getpid())
+
 	ex, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -17,14 +20,23 @@ func main() {
 
 	os.Setenv("PATH", fmt.Sprintf("%s:%s", installDir, os.Getenv("PATH")))
 
-	launcherConfig := filepath.Join(installDir, "../Resources/launcher-config.yaml")
-	helper := filepath.Join(installDir, "../Resources/helper")
+	launcherConfigPath := filepath.Join(installDir, "../Resources/launcher-config.yaml")
+	helperPath := filepath.Join(installDir, "../Resources/helper")
 
-
-	if err = exec.Command(helper).Run(); err != nil {
+	helperCmd := exec.Command(helperPath)
+	helperCmd.Stdout = os.Stdout
+	helperCmd.Stderr = os.Stderr
+	if err := helperCmd.Run(); err != nil {
 		panic(err)
 	}
-	if err = exec.Command("cardano-launcher", "--config", launcherConfig).Run(); err != nil {
-		panic(err)
+
+	// Replace the current process (otherwise WDIO complains in end-to-end tests):
+	img := filepath.Join(installDir, "cardano-launcher")
+	argv := []string{"cardano-launcher", "--config", launcherConfigPath}
+	env := os.Environ()
+	if err := syscall.Exec(img, argv, env); err != nil {
+		fmt.Println(err)
 	}
+
+	fmt.Fprintf(os.Stderr, "this won’t happen\n")
 }
