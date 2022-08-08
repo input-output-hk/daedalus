@@ -16,7 +16,7 @@ function TrackedRoute(props: TrackedRouteProps) {
     if (match !== null) {
       analytics.sendPageNavigationEvent(pageTitle);
     }
-  }, [window.location.hash, props, pageTitle]);
+  }, [window.location.hash, props]);
 
   return <Route {...restProps} />;
 }

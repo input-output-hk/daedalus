@@ -15,3 +15,8 @@ export const NETWORK_TO_ANALYTICS_SITE_ID_MAP: Record<Network, number> = {
   selfnode: 1,
   development: 1,
 };
+
+export const CPU_DIMENSION_KEY = 'dimension2';
+export const RAM_DIMENSION_KEY = 'dimension3';
+export const OS_DIMENSION_KEY = 'dimension4';
+export const VERSION_DIMENSION_KEY = 'dimension5';
