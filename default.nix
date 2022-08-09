@@ -37,14 +37,6 @@ let
       chmod -R +w $out
       cd $out
       patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
-      patch -p1 -i ${builtins.path {
-        # XXX: unfortunately, GitHub changed lengths of hashes in patches it returns for PRs,
-        # that’s why we’re providing this patch inside our repo, with the same exact SHA-256,
-        # to the one released in 4.12.0:
-        path = ./nix/cardano-wallet--pr-3382--ledger-bug.patch;
-        recursive = false;
-        sha256 = "1ii12g2zikv4197c7bsh4v5dc1jzygn1jap8xvnr7mvh3a09pdgn";
-      }}
     '';
   };
   haskellNix = import sources."haskell.nix" {};
