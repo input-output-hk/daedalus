@@ -1108,7 +1108,7 @@
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",
   "wallet.settings.passwordNotSet": "パスワードが設定されていません",
   "wallet.settings.recoveryPhraseInputNoResults": "該当するフレーズは見つかりませんでした",
-  "wallet.settings.recoveryPhraseInputPlaceholder": "!!!Enter word #{wordNumber}",
+  "wallet.settings.recoveryPhraseInputPlaceholder": "{wordNumber}番目の単語を入力",
   "wallet.settings.recoveryPhraseStep1Button": "続ける",
   "wallet.settings.recoveryPhraseStep1Paragraph1": "お持ちの復元フレーズが正しいかどうか確認するには、次の画面で復元フレーズを入力してください。",
   "wallet.settings.recoveryPhraseStep1Paragraph2": "誰かに見られていませんか。ウォレット復元フレーズを入力する際には、画面を誰にも見られないように注意してください。",
