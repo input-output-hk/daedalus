@@ -40,7 +40,7 @@ import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
-import { Divider } from './widgets/Divider';
+import { VerticalSeparator } from './widgets/VerticalSeparator';
 import { AnalyticsTracker, EventCategories } from '../../analytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
@@ -1147,7 +1147,7 @@ class WalletSendForm extends Component<Props, State> {
                         onClick={this.clearAdaAmountFieldValue}
                       />
                       <div className={styles.dividerContainer}>
-                        <Divider />
+                        <VerticalSeparator />
                       </div>
                     </div>
                   )}
