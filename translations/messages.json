@@ -367,6 +367,11 @@
         "id": "global.labels.reset"
       },
       {
+        "defaultMessage": "!!!Token",
+        "description": "Token description.",
+        "id": "global.labels.token"
+      },
+      {
         "defaultMessage": "!!!Reveal",
         "description": "Reveal label.",
         "id": "global.labels.reveal"
@@ -398,16 +403,6 @@
       }
     ],
     "path": "source/renderer/app/i18n/global-messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Token",
-        "description": "Token description.",
-        "id": "global.labels.token"
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/MnemonicInputWidget.tsx"
   },
   {
     "descriptors": [
@@ -2037,19 +2032,9 @@
         "id": "wallet.restore.dialog.recovery.phrase.input.label"
       },
       {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
-        "id": "wallet.restore.dialog.recovery.phrase.input.hint"
-      },
-      {
         "defaultMessage": "!!!New",
         "description": "Label \"new\" on the wallet restore dialog.",
         "id": "wallet.restore.dialog.recovery.phrase.newLabel"
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"No results\" message for the recovery phrase input search results.",
-        "id": "wallet.restore.dialog.recovery.phrase.input.noResults"
       },
       {
         "defaultMessage": "!!!Restore wallet",
@@ -2105,16 +2090,6 @@
         "defaultMessage": "!!!27-word paper wallet recovery phrase",
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label"
-      },
-      {
-        "defaultMessage": "!!!Enter your {numberOfWords}-word paper wallet recovery phrase",
-        "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
-        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint"
-      },
-      {
-        "defaultMessage": "!!!Enter word #{wordNumber}",
-        "description": "Placeholder \"Enter word #\" for the recovery phrase input on the wallet restore dialog.",
-        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.placeholder"
       },
       {
         "defaultMessage": "!!!Restore paper wallet",
@@ -4737,16 +4712,6 @@
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint"
       },
       {
-        "defaultMessage": "!!!Enter word #{wordNumber}",
-        "description": "Placeholder for the mnemonics autocomplete.",
-        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder"
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"No results\" message for the recovery phrase input search results.",
-        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults"
-      },
-      {
         "defaultMessage": "!!!Invalid recovery phrase",
         "description": "Error message shown when invalid recovery phrase was entered.",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics"
@@ -4818,6 +4783,21 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
+        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults"
+      },
+      {
+        "defaultMessage": "!!!{providedWordCount} of {requiredWordCount} words entered",
+        "description": "Mnemonic input word counter",
+        "id": "paper.wallet.create.certificate.verification.dialog.mnemonicCounter"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/mnemonic-input/MnemonicInput.tsx"
   },
   {
     "descriptors": [
@@ -5115,16 +5095,6 @@
         "defaultMessage": "!!!Paper wallet recovery phrase",
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase label.",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label"
-      },
-      {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint"
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults"
       },
       {
         "defaultMessage": "!!!Clear",

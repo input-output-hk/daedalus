@@ -84,6 +84,7 @@ class WalletBackupDialog extends Component<Props> {
         <WalletRecoveryPhraseEntryDialog
           isTermOfflineAccepted={isTermOfflineAccepted}
           enteredPhrase={enteredPhrase}
+          recoveryPhrase={recoveryPhrase}
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isValid={isValid}
