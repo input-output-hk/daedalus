@@ -10,7 +10,6 @@ import StoryLayout from '../_support/StoryLayout';
 import enMessages from '../../../source/renderer/app/i18n/locales/en-US.json';
 import jpMessages from '../../../source/renderer/app/i18n/locales/ja-JP.json';
 import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
-import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import InlineEditingInput from '../../../source/renderer/app/components/widgets/forms/InlineEditingInput';
 import CountdownWidget from '../../../source/renderer/app/components/widgets/CountdownWidget';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
@@ -193,25 +192,6 @@ storiesOf('Common / Widgets', module)
       </div>
     </div>
   ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('MnemonicInputWidget - 9 words', (props: { locale: string }) => {
-    const tokens = observable(['', '', '', '', '', '', '', '', '']);
-    return (
-      <div
-        style={{
-          padding: 20,
-        }}
-      >
-        <MnemonicInputWidget
-          label={intl[props.locale].formatMessage(messages.recoveryPhrase)}
-          tokens={tokens}
-          onTokenChanged={(index, token) => {
-            tokens[index] = token;
-          }}
-        />
-      </div>
-    );
-  })
   .add('TinySwitch', () => <TinySwitch />)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
   .add('TinySwitch - short label', (props: { locale: string }) => (

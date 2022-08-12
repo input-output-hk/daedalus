@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -16,10 +16,9 @@ import ReactToolboxMobxForm, {
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
 import {
-  isValidWalletName,
-  isValidSpendingPassword,
   isValidRepeatPassword,
-  errorOrIncompleteMarker,
+  isValidSpendingPassword,
+  isValidWalletName,
   validateMnemonics,
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
@@ -28,8 +27,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
 import { submitOnEnter } from '../../utils/form';
 import {
-  WALLET_RESTORE_TYPES,
   RECOVERY_PHRASE_WORD_COUNT_OPTIONS,
+  WALLET_RESTORE_TYPES,
 } from '../../config/walletsConfig';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -38,6 +37,7 @@ import {
 } from '../../config/cryptoConfig';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import { MnemonicInput } from './mnemonic-input';
 
 const messages = defineMessages({
   title: {
@@ -87,22 +87,10 @@ const messages = defineMessages({
     description:
       'Label for the recovery phrase input on the wallet restore dialog.',
   },
-  recoveryPhraseInputHint: {
-    id: 'wallet.restore.dialog.recovery.phrase.input.hint',
-    defaultMessage: '!!!Enter recovery phrase',
-    description:
-      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
-  },
   newLabel: {
     id: 'wallet.restore.dialog.recovery.phrase.newLabel',
     defaultMessage: '!!!New',
     description: 'Label "new" on the wallet restore dialog.',
-  },
-  recoveryPhraseNoResults: {
-    id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
-    defaultMessage: '!!!No results',
-    description:
-      '"No results" message for the recovery phrase input search results.',
   },
   importButtonLabel: {
     id: 'wallet.restore.dialog.restore.wallet.button.label',
@@ -166,19 +154,6 @@ const messages = defineMessages({
     defaultMessage: '!!!27-word paper wallet recovery phrase',
     description:
       'Label for the shielded recovery phrase input on the wallet restore dialog.',
-  },
-  shieldedRecoveryPhraseInputHint: {
-    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.hint',
-    defaultMessage:
-      '!!!Enter your {numberOfWords}-word paper wallet recovery phrase',
-    description:
-      'Hint "Enter your 27-word paper wallet recovery phrase." for the recovery phrase input on the wallet restore dialog.',
-  },
-  shieldedRecoveryPhraseInputPlaceholder: {
-    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.placeholder',
-    defaultMessage: '!!!Enter word #{wordNumber}',
-    description:
-      'Placeholder "Enter word #" for the recovery phrase input on the wallet restore dialog.',
   },
   restorePaperWalletButtonLabel: {
     id: 'wallet.restore.dialog.paper.wallet.button.label',
@@ -326,6 +301,7 @@ class WalletRestoreDialog extends Component<Props, State> {
       },
       options: {
         validateOnChange: true,
+        showErrorsOnChange: false,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -364,8 +340,6 @@ class WalletRestoreDialog extends Component<Props, State> {
     recoveryPhraseField.debouncedValidation.cancel();
     recoveryPhraseField.reset();
     recoveryPhraseField.showErrors(false);
-    // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
   };
 
   render() {
@@ -406,6 +380,8 @@ class WalletRestoreDialog extends Component<Props, State> {
       'yoroiTab',
       this.isYoroi() ? styles.activeButton : '',
     ]);
+    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+
     return (
       <Dialog
         className={dialogClasses}
@@ -554,44 +530,18 @@ class WalletRestoreDialog extends Component<Props, State> {
             ]}
           />
         )}
-
-        <Autocomplete
-          {...recoveryPhraseField.bind()}
-          ref={(autocomplete) => {
-            this.recoveryPhraseAutocomplete = autocomplete;
-          }}
+        <MnemonicInput
+          {...mnemonicInputProps}
           label={
-            !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputLabel)
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
+            this.isCertificate()
+              ? intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
+              : intl.formatMessage(messages.recoveryPhraseInputLabel)
           }
-          placeholder={
-            !this.isCertificate()
-              ? intl.formatMessage(messages.recoveryPhraseInputHint)
-              : intl.formatMessage(
-                  messages.shieldedRecoveryPhraseInputPlaceholder,
-                  {
-                    wordNumber: recoveryPhraseField.value.length + 1,
-                  }
-                )
-          }
-          options={suggestedMnemonics}
-          requiredSelections={[RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]]}
-          requiredSelectionsInfo={(required, actual) =>
-            intl.formatMessage(globalMessages.knownMnemonicWordCount, {
-              actual,
-              required,
-            })
-          }
-          maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
-          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
-          maxVisibleOptions={5}
-          noResultsMessage={intl.formatMessage(
-            messages.recoveryPhraseNoResults
-          )}
-          optionHeight={50}
+          availableWords={suggestedMnemonics}
+          wordCount={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
+          error={recoveryPhraseField.error}
+          reset={form.resetting}
         />
-
         <div className={styles.spendingPasswordWrapper}>
           <div className={styles.passwordSectionLabel}>
             {intl.formatMessage(messages.passwordSectionLabel)}

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import {
-  errorOrIncompleteMarker,
+  INCOMPLETE_MNEMONIC_MARKER,
   validateMnemonics,
 } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -105,15 +105,27 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }
   );
 
+  handleSubmit = () => {
+    this.form.submit({
+      onSuccess: (form) => {
+        const { recoveryPhrase } = form.values();
+
+        this.setState({ isVerifying: true });
+        this.props.onContinue({ recoveryPhrase });
+      },
+    });
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onContinue, expectedWordCount, walletName } = this.props;
+    const { onClose, expectedWordCount, walletName } = this.props;
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
@@ -123,20 +135,13 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
       (Array.isArray(expectedWordCount)
         ? expectedWordCount.includes(enteredWordCount)
         : enteredWordCount === expectedWordCount);
-    const recoveryPhrase = recoveryPhraseField.value;
+    // const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
-        onClick: () => {
-          this.setState({
-            isVerifying: true,
-          });
-          onContinue({
-            recoveryPhrase,
-          });
-        },
+        onClick: this.handleSubmit,
         disabled: !canSubmit,
       },
     ];
@@ -156,6 +161,7 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
         <div className={styles.subtitle}>
           <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
+        {/* TODO https://input-output.atlassian.net/browse/DDW-1119 */}
         <Autocomplete
           {...recoveryPhraseField.bind()}
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
@@ -182,7 +188,10 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
                 })
           }
           maxSelections={maxSelections}
-          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
+          error={
+            recoveryPhraseField.error !== INCOMPLETE_MNEMONIC_MARKER &&
+            recoveryPhraseField.error
+          }
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults

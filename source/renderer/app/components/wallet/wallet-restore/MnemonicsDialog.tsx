@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import {
-  errorOrIncompleteMarker,
-  validateMnemonics,
-} from '../../../utils/validations';
+import { validateMnemonics } from '../../../utils/validations';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import validWords from '../../../../../common/config/crypto/valid-words.en';
 import type {
-  WalletKind,
   WalletDaedalusKind,
-  WalletYoroiKind,
   WalletHardwareKind,
+  WalletKind,
+  WalletYoroiKind,
 } from '../../../types/walletRestoreTypes';
+import { MnemonicInput } from '../mnemonic-input';
 
 const messages = defineMessages({
   autocompletePlaceholder: {
@@ -95,6 +92,7 @@ class MnemonicsDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }
@@ -108,16 +106,14 @@ class MnemonicsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onClose,
-      onBack,
-      mnemonics,
-      onSetWalletMnemonics,
-      maxWordCount,
-      expectedWordCount,
-    } = this.props;
+    const { onClose, onBack, onSetWalletMnemonics, maxWordCount } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-    const canSubmit = recoveryPhraseField.isValid && !recoveryPhraseField.error;
+    const canSubmit =
+      !recoveryPhraseField.error &&
+      recoveryPhraseField.value.length === maxWordCount &&
+      recoveryPhraseField.value.every((word) => word);
+    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+
     return (
       <WalletRestoreDialog
         stepNumber={1}
@@ -132,45 +128,18 @@ class MnemonicsDialog extends Component<Props> {
         onClose={onClose}
         onBack={onBack}
       >
-        <div>
-          <Autocomplete
-            {...recoveryPhraseField.bind()}
-            label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
-            placeholder={
-              Array.isArray(expectedWordCount)
-                ? intl.formatMessage(messages.autocompleteMultiLengthPhrase)
-                : intl.formatMessage(messages.autocompletePlaceholder, {
-                    wordNumber: mnemonics.length + 1,
-                  })
-            }
-            options={validWords}
-            requiredSelections={
-              Array.isArray(expectedWordCount)
-                ? expectedWordCount
-                : [expectedWordCount]
-            }
-            requiredSelectionsInfo={(required, actual) =>
-              intl.formatMessage(globalMessages.knownMnemonicWordCount, {
-                actual,
-                required,
-              })
-            }
-            maxSelections={maxWordCount}
-            error={errorOrIncompleteMarker(recoveryPhraseField.error)}
-            maxVisibleOptions={5}
-            noResultsMessage={intl.formatMessage(
-              messages.autocompleteNoResults
-            )}
-            skin={AutocompleteSkin}
-            onChange={(enteredMnemonics) => {
-              recoveryPhraseField.set(enteredMnemonics);
-              onSetWalletMnemonics(enteredMnemonics);
-            }}
-            preselectedOptions={[...mnemonics]}
-            optionHeight={50}
-          />
-          <div className="error" />
-        </div>
+        <MnemonicInput
+          {...mnemonicInputProps}
+          label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
+          onChange={(enteredMnemonics) => {
+            recoveryPhraseField.set(enteredMnemonics);
+            onSetWalletMnemonics(enteredMnemonics);
+          }}
+          availableWords={validWords}
+          wordCount={maxWordCount}
+          error={recoveryPhraseField.error}
+          reset={this.form.resetting}
+        />
       </WalletRestoreDialog>
     );
   }
