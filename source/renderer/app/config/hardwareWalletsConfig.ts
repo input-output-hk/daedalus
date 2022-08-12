@@ -12,7 +12,8 @@ export const DEFAULT_ADDRESS_INDEX = 0;
 const { isMainnet, isStaging, isSelfnode, isPreprod } = global.environment;
 const hardwareWalletNetworksConfig = {};
 map(NetworkMagics, (networkMagic: NetworkMagicType, network: Network) => {
-  const isMainnetLikeNetwork = isMainnet || isSelfnode || isStaging || isPreprod; // TODO: I’m not sure if Preprod is mainnet-like – @michalrus
+  const isMainnetLikeNetwork =
+    isMainnet || isSelfnode || isStaging || isPreprod; // TODO: I’m not sure if Preprod is mainnet-like – @michalrus
   hardwareWalletNetworksConfig[network] = {
     networkId: isMainnetLikeNetwork ? 1 : networkMagic[1],
     protocolMagic: isMainnetLikeNetwork ? 764824073 : networkMagic[0],

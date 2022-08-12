@@ -64,10 +64,8 @@ export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsTestnet = (network: string) => network === TESTNET;
 export const checkIsAlonzoPurple = (network: string) =>
   network === ALONZO_PURPLE;
-export const checkIsVasilDev = (network: string) =>
-  network === VASIL_DEV;
-export const checkIsPreprod = (network: string) =>
-  network === PREPROD;
+export const checkIsVasilDev = (network: string) => network === VASIL_DEV;
+export const checkIsPreprod = (network: string) => network === PREPROD;
 export const checkIsShelleyQA = (network: string) => network === SHELLEY_QA;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsSelfnode = (network: string) => network === SELFNODE;

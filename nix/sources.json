@@ -41,10 +41,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-world",
-        "rev": "4ce2e2053a6e3ee38d1877c9f7ee366cfce31e4e",
-        "sha256": "1pqmficg45721p0ymgzrfv1b2sh8cfgczdq8fq3cy602rc9w4r8r",
+        "rev": "74e93f9fdc863638ce43998e0ccccbf56b4612aa",
+        "sha256": "16nvwmb7n22x0ql1n2cah36dylxgcybm1mi9n4pbb3xsr75b8b5b",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-world/archive/4ce2e2053a6e3ee38d1877c9f7ee366cfce31e4e.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-world/archive/74e93f9fdc863638ce43998e0ccccbf56b4612aa.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "flake-compat": {
