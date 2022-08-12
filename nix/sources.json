@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "tags/1.35.2",
+        "branch": "tags/1.35.3",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "7612a245a6e2c51d0f1c3e0d65d7fe9363850043",
-        "sha256": "01a5qdrmsag18s2mlf8axfbrag59j2fp6xyc89pwmzgs7x77ldsr",
+        "rev": "950c4e222086fed5ca53564e642434ce9307b0b9",
+        "sha256": "020fwimsm24yblr1fmnwx240wj8r3x715p89cpjgnnd8axwf32p0",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/7612a245a6e2c51d0f1c3e0d65d7fe9363850043.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/950c4e222086fed5ca53564e642434ce9307b0b9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -29,10 +29,22 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "7ed8f067dd6d5dc78e7353bf65ea5e3423cdfca8",
-        "sha256": "1f9lwqi4qghaqi3754732h0cz98f7qbjhcx416jliqy6nibly6lp",
+        "rev": "8dd5d6f70c9f8307f901bbaece9558506454470e",
+        "sha256": "07q79wwfcvjs4ll7p0kq4kx3r71qpswk1545l0lm65ngrgb30ysr",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/7ed8f067dd6d5dc78e7353bf65ea5e3423cdfca8.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/8dd5d6f70c9f8307f901bbaece9558506454470e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "cardano-world": {
+        "branch": "master",
+        "description": "Future Cardano mono-repo",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-world",
+        "rev": "4ce2e2053a6e3ee38d1877c9f7ee366cfce31e4e",
+        "sha256": "1pqmficg45721p0ymgzrfv1b2sh8cfgczdq8fq3cy602rc9w4r8r",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-world/archive/4ce2e2053a6e3ee38d1877c9f7ee366cfce31e4e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "flake-compat": {

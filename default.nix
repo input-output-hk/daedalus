@@ -50,6 +50,7 @@ let
     aarch64-darwin = macos.silicon;
   }.${target};
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix") {};
@@ -68,7 +69,7 @@ let
   ostable.aarch64-darwin = "macos64-arm";
 
   packages = self: {
-    inherit walletFlake cluster pkgs version target nodeImplementation;
+    inherit walletFlake cardanoWorldFlake cluster pkgs version target nodeImplementation;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -145,7 +146,7 @@ let
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
-      inherit devShell topologyOverride configOverride genesisOverride;
+      inherit devShell topologyOverride configOverride genesisOverride system;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;

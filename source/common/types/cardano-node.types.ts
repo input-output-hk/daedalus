@@ -4,6 +4,8 @@ import {
   STAGING,
   SHELLEY_QA,
   ALONZO_PURPLE,
+  VASIL_DEV,
+  PREPROD,
   SELFNODE,
 } from './environment.types';
 import { GetBlockSyncProgressType } from '../ipc/api';
@@ -29,6 +31,8 @@ export type NetworkNames =
   | 'staging'
   | 'shelley_qa'
   | 'alonzo_purple'
+  | 'vasil_dev'
+  | 'preprod'
   | 'selfnode'
   | 'development'
   | string;
@@ -39,6 +43,8 @@ export const NetworkNameOptions = {
   staging: 'staging',
   shelley_qa: 'shelley_qa',
   alonzo_purple: 'alonzo_purple',
+  vasil_dev: 'vasil_dev',
+  preprod: 'preprod',
   selfnode: 'selfnode',
   development: 'development',
 };
@@ -73,6 +79,8 @@ export type CardanoPidOptions =
   | 'staging-PREVIOUS-CARDANO-PID'
   | 'shelley_qa-PREVIOUS-CARDANO-PID'
   | 'alonzo_purple-PREVIOUS-CARDANO-PID'
+  | 'vasil_dev-PREVIOUS-CARDANO-PID'
+  | 'preprod-PREVIOUS-CARDANO-PID'
   | 'selfnode-PREVIOUS-CARDANO-PID'
   | 'development-PREVIOUS-CARDANO-PID'
   | string;
@@ -144,6 +152,8 @@ export const NetworkMagics: {
   testnet: NetworkMagicType;
   staging: NetworkMagicType;
   alonzo_purple: NetworkMagicType;
+  vasil_dev: NetworkMagicType;
+  preprod: NetworkMagicType;
   shelley_qa: NetworkMagicType;
   selfnode: NetworkMagicType;
 } = {
@@ -155,6 +165,10 @@ export const NetworkMagics: {
   [TESTNET]: [1097911063, 0],
   // Cardano Alonzo Purple network magic
   [ALONZO_PURPLE]: [8, 0],
+  // Cardano Vasil-Dev network magic
+  [VASIL_DEV]: [9, 0],
+  // Cardano Pre-Prod network magic
+  [PREPROD]: [1, null],
   // Cardano Shelley QA network magic
   [SHELLEY_QA]: [3, 0],
   // Cardano Selfnode network magic
