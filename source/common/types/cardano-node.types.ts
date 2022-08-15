@@ -173,9 +173,9 @@ export const NetworkMagics: {
   // Cardano Vasil-Dev network magic
   [VASIL_DEV]: [9, 0],
   // Cardano Pre-Prod network magic
-  [PREPROD]: [1, null],
+  [PREPROD]: [1, 0],
   // Cardano Preview network magic
-  [PREVIEW]: [2, null],
+  [PREVIEW]: [2, 0],
   // Cardano Shelley QA network magic
   [SHELLEY_QA]: [3, 0],
   // Cardano Selfnode network magic
