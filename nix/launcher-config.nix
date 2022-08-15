@@ -34,6 +34,7 @@ let
     shelley_qa = fromCardanoWorld "shelley_qa";
     vasil_dev  = fromCardanoWorld "vasil-dev";
     preprod    = fromCardanoWorld "preprod";
+    preview    = fromCardanoWorld "preview";
   };
 
   fromCardanoWorld = envName: let
@@ -135,6 +136,7 @@ let
       alonzo_purple = "Alonzo Purple";
       vasil_dev = "Vasil-Dev";
       preprod = "Pre-Prod";
+      preview = "Preview";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;

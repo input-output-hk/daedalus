@@ -232,6 +232,11 @@ export default defineMessages({
     defaultMessage: '!!!Pre-Prod',
     description: '"Pre-Prod" Cardano network',
   },
+  network_preview: {
+    id: 'environment.network.preview',
+    defaultMessage: '!!!Preview',
+    description: '"Preview" Cardano network',
+  },
   network_development: {
     id: 'environment.network.development',
     defaultMessage: '!!!Development',

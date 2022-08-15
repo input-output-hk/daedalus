@@ -8,6 +8,7 @@ import {
   checkIsAlonzoPurple,
   checkIsVasilDev,
   checkIsPreprod,
+  checkIsPreview,
   checkIsShelleyQA,
   checkIsDev,
   checkIsTest,
@@ -45,6 +46,7 @@ const isTestnet = checkIsTestnet(NETWORK);
 const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
 const isVasilDev = checkIsVasilDev(NETWORK);
 const isPreprod = checkIsPreprod(NETWORK);
+const isPreview = checkIsPreview(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
@@ -88,6 +90,7 @@ export const environment: Environment = Object.assign(
     isAlonzoPurple,
     isVasilDev,
     isPreprod,
+    isPreview,
     isShelleyQA,
     isSelfnode,
     isDevelopment,
