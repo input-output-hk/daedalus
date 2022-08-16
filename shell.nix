@@ -74,6 +74,12 @@ let
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
   };
+
+  gcRoot = pkgs.runCommandLocal "gc-root" {
+    properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
+    cardanoWallet = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
+  } "export >$out";
+
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
     cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
   '');
@@ -201,4 +207,4 @@ let
       "
     '';
   };
-in daedalusShell // { inherit fixYarnLock buildShell devops; }
+in daedalusShell // { inherit fixYarnLock buildShell devops gcRoot; }
