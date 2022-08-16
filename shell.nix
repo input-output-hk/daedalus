@@ -77,7 +77,8 @@ let
 
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
-    cardanoWallet = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
+    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
+    ourHaskellNix = daedalusPkgs.yaml2json.project.roots;
   } "export >$out";
 
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
