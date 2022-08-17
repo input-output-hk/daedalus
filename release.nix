@@ -10,7 +10,8 @@ let
   shellEnvs = {
     linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
-    darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
+    # TODO: re-enable when we have `aarch64-darwin` in Hydra
+    #darwin-arm = import ./shell.nix { system = "aarch64-darwin"; autoStartBackend = true; };
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
@@ -20,7 +21,8 @@ let
       x86_64-linux = import ./. { target = "x86_64-linux"; };
       x86_64-windows = import ./. { target = "x86_64-windows"; };
       x86_64-darwin = import ./. { target = "x86_64-darwin"; };
-      aarch64-darwin = import ./. { target = "aarch64-darwin"; };
+      # TODO: re-enable when we have `aarch64-darwin` in Hydra
+      #aarch64-darwin = import ./. { target = "aarch64-darwin"; };
     };
   in
     table.${system};
@@ -52,6 +54,7 @@ let
   sources = import ./nix/sources.nix;
 in {
   inherit shellEnvs;
+  gcRoot = builtins.mapAttrs (_: v: v.gcRoot) shellEnvs;
   inherit ((daedalusPkgs {}).pkgs) mono;
   wine = (daedalusPkgs {}).wine;
   wine64 = (daedalusPkgs {}).wine64;
