@@ -78,7 +78,8 @@ let
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
     cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
-    ourHaskellNix = daedalusPkgs.yaml2json.project.roots;
+    ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
+    daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
   } "export >$out";
 
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
