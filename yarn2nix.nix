@@ -147,6 +147,12 @@ yarn2nix.mkYarnPackage {
     cd deps/daedalus/
 
     cp ${newPackagePath} package.json
+
+    rm -r installers/icons/
+    cp -r ${windowsIcons} installers/icons
+    chmod -R +w installers/icons
+
+    # TODO: why are the following 2 lines needed?
     mkdir -p installers/icons/${cluster}/${cluster}
     cp ${windowsIcons}/${cluster}/* installers/icons/${cluster}/${cluster}/
 
