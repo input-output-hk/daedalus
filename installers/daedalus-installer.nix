@@ -8,17 +8,7 @@
 mkDerivation {
   pname = "daedalus-installer";
   version = "0.1.0.0";
-  src = lib.cleanSourceWith {
-    name = "daedalus-installer-src";
-    src = ./.;
-    filter = name: type: (type == "directory" && (
-      lib.hasSuffix "/common" name
-    )) || (type == "regular" && (
-      lib.hasSuffix ".hs" name ||
-      lib.hasSuffix ".cabal" name ||
-      lib.hasSuffix "/cabal.project" name
-    ));
-  };
+  src = ./.;
   isLibrary = true;
   isExecutable = true;
   doCheck = false;

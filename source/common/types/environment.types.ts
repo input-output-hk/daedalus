@@ -10,9 +10,6 @@ export type Environment = {
   isStaging: boolean;
   isTestnet: boolean;
   isAlonzoPurple: boolean;
-  isVasilDev: boolean;
-  isPreprod: boolean;
-  isPreview: boolean;
   isShelleyQA: boolean;
   isSelfnode: boolean;
   isDevelopment: boolean;
@@ -45,9 +42,6 @@ export const TESTNET = 'testnet';
 export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
 export const ALONZO_PURPLE = 'alonzo_purple';
-export const VASIL_DEV = 'vasil_dev';
-export const PREPROD = 'preprod';
-export const PREVIEW = 'preview';
 export const SELFNODE = 'selfnode';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
@@ -65,9 +59,6 @@ export type Network =
   | 'staging'
   | 'shelley_qa'
   | 'alonzo_purple'
-  | 'vasil_dev'
-  | 'preprod'
-  | 'preview'
   | 'selfnode'
   | 'development';
 export const networkPrettyNames = {
@@ -76,9 +67,6 @@ export const networkPrettyNames = {
   staging: 'Staging',
   shelley_qa: 'Shelley QA',
   alonzo_purple: 'Alonzo Purple',
-  vasil_dev: 'Vasil-Dev',
-  preprod: 'Pre-Prod',
-  preview: 'Preview',
   selfnode: 'Selfnode',
   development: 'Development',
 };
