@@ -6,9 +6,12 @@ export const NETWORK_TO_ANALYTICS_SITE_ID_MAP: Record<Network, number> = {
   mainnet: 4,
   mainnet_flight: 4,
   testnet: 3,
+  preprod: 3,
+  preview: 3,
   staging: 5,
   shelley_qa: 5,
   alonzo_purple: 5,
   selfnode: 5,
   development: 5,
+  vasil_dev: 5,
 };
