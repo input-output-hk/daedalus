@@ -6,6 +6,9 @@ import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
 import {
   evaluateNetwork,
   checkIsAlonzoPurple,
+  checkIsVasilDev,
+  checkIsPreprod,
+  checkIsPreview,
   checkIsShelleyQA,
   checkIsDev,
   checkIsTest,
@@ -41,13 +44,16 @@ const isMainnet = checkIsMainnet(NETWORK);
 const isStaging = checkIsStaging(NETWORK);
 const isTestnet = checkIsTestnet(NETWORK);
 const isAlonzoPurple = checkIsAlonzoPurple(NETWORK);
+const isVasilDev = checkIsVasilDev(NETWORK);
+const isPreprod = checkIsPreprod(NETWORK);
+const isPreview = checkIsPreview(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const analyticsFeatureEnabled = isMainnet || isStaging || isTestnet;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.35.2'; // TODO: pick up this value from process.env
+const NODE_VERSION = '1.35.3'; // TODO: pick up this value from process.env
 
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
@@ -83,6 +89,9 @@ export const environment: Environment = Object.assign(
     isStaging,
     isTestnet,
     isAlonzoPurple,
+    isVasilDev,
+    isPreprod,
+    isPreview,
     isShelleyQA,
     isSelfnode,
     isDevelopment,

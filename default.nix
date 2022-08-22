@@ -50,6 +50,7 @@ let
     aarch64-darwin = macos.silicon;
   }.${target};
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix") {};
@@ -68,7 +69,7 @@ let
   ostable.aarch64-darwin = "macos64-arm";
 
   packages = self: {
-    inherit walletFlake cluster pkgs version target nodeImplementation;
+    inherit walletFlake cardanoWorldFlake cluster pkgs version target nodeImplementation;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
@@ -145,7 +146,7 @@ let
     nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
-      inherit devShell topologyOverride configOverride genesisOverride;
+      inherit devShell topologyOverride configOverride genesisOverride system;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
@@ -261,6 +262,24 @@ let
     '';
     uninstaller = if needSignedBinaries then self.signedUninstaller else self.unsignedUninstaller;
 
+    windowsIcons = let
+      buildInputs = with pkgs; [ imagemagick ];
+      # Allow fallback to `mainnet` if cluster’s icons don’t exist:
+      srcCluster = if builtins.pathExists (./installers/icons + "/${cluster}") then cluster else "mainnet";
+    in pkgs.runCommand "windows-icons-${cluster}" { inherit buildInputs; } ''
+      mkdir -p $out/${cluster} $out
+      cp -r ${./installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
+      cp ${./installers/icons/installBanner.bmp} $out/installBanner.bmp
+      cd $out/${cluster}
+      rm *.ico *.ICO || true   # XXX: just in case
+      for f in *.png ; do
+        # XXX: these sizes are too large for the ICO format:
+        if [ "$f" == 1024x1024.png ] || [ "$f" == 512x512.png ] ; then continue ; fi
+        convert "$f" "''${f%.png}.ico"
+      done
+      convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
+    '';
+
     unsigned-windows-installer = let
       installDir = self.launcherConfigs.installerConfig.spacedName;
     in pkgs.runCommand "win64-installer-${cluster}" {
@@ -275,7 +294,7 @@ let
       mkdir -p $out/{nix-support,cfg-files}
       mkdir installers
       cp -vir ${./installers/dhall} installers/dhall
-      cp -vir ${./installers/icons} installers/icons
+      cp -vir ${self.windowsIcons} installers/icons
       cp -vir ${./package.json} package.json
       chmod -R +w installers
       cd installers
