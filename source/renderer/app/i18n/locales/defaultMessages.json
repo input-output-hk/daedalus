@@ -302,6 +302,21 @@
         "id": "environment.network.alonzo_purple"
       },
       {
+        "defaultMessage": "!!!Vasil-Dev",
+        "description": "\"Vasil-Dev\" Cardano network",
+        "id": "environment.network.vasil_dev"
+      },
+      {
+        "defaultMessage": "!!!Pre-Prod",
+        "description": "\"Pre-Prod\" Cardano network",
+        "id": "environment.network.preprod"
+      },
+      {
+        "defaultMessage": "!!!Preview",
+        "description": "\"Preview\" Cardano network",
+        "id": "environment.network.preview"
+      },
+      {
         "defaultMessage": "!!!Development",
         "description": "\"development\" Cardano network",
         "id": "environment.network.development"
@@ -1215,6 +1230,21 @@
         "defaultMessage": "!!!Alonzo Purple",
         "description": "Label for alonzo_purple with version.",
         "id": "test.environment.alonzoPurpleLabel"
+      },
+      {
+        "defaultMessage": "!!!Vasil-Dev",
+        "description": "Label for vasil_dev with version.",
+        "id": "test.environment.vasilDevLabel"
+      },
+      {
+        "defaultMessage": "!!!Pre-Prod",
+        "description": "Label for preprod with version.",
+        "id": "test.environment.preprodLabel"
+      },
+      {
+        "defaultMessage": "!!!Preview",
+        "description": "Label for preview with version.",
+        "id": "test.environment.previewLabel"
       },
       {
         "defaultMessage": "!!!Selfnode vx",

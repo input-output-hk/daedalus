@@ -1,4 +1,5 @@
 { lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+, windowsIcons
 , libcap
 , libgcrypt
 , libgpgerror
@@ -146,8 +147,14 @@ yarn2nix.mkYarnPackage {
     cd deps/daedalus/
 
     cp ${newPackagePath} package.json
+
+    rm -r installers/icons/
+    cp -r ${windowsIcons} installers/icons
+    chmod -R +w installers/icons
+
+    # TODO: why are the following 2 lines needed?
     mkdir -p installers/icons/${cluster}/${cluster}
-    cp ${iconPath.base}/* installers/icons/${cluster}/${cluster}/
+    cp ${windowsIcons}/${cluster}/* installers/icons/${cluster}/${cluster}/
 
     export DEBUG=electron-packager
     yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
