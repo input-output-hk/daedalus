@@ -9,7 +9,13 @@ export const SHELLEY_PURPOSE_INDEX = 1852;
 export const BYRON_PURPOSE_INDEX = 44;
 export const ADA_COIN_TYPE = 1815;
 export const DEFAULT_ADDRESS_INDEX = 0;
-const { isMainnet, isStaging, isSelfnode } = global.environment;
+const {
+  isMainnet,
+  isStaging,
+  isSelfnode,
+  isPreprod,
+  isPreview,
+} = global.environment;
 const hardwareWalletNetworksConfig = {};
 map(NetworkMagics, (networkMagic: NetworkMagicType, network: Network) => {
   const isMainnetLikeNetwork = isMainnet || isSelfnode || isStaging;

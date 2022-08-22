@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
+
 ### Fixes
 
 - Ensured non-recommended decimal place setting alert is correctly shown ([PR 3007](https://github.com/input-output-hk/daedalus/pull/3007))
@@ -9,6 +13,7 @@
 
 ### Chores
 
+- Updated cardano-node to 1.35.3; added `vasil-dev`, `preprod`, `preview` variants ([PR 3025](https://github.com/input-output-hk/daedalus/pull/3025))
 - Updated cardano-node to 1.35.2 ([PR 3021](https://github.com/input-output-hk/daedalus/pull/3021))
 - Fix `darwin-launcher.go` to replace its process image with `cardano-launcher` (binary), and not swallow `stdout` ([PR 3023](https://github.com/input-output-hk/daedalus/pull/3023))
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
@@ -46,6 +51,7 @@
 
 ### Chores
 
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
 - Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
 - Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))

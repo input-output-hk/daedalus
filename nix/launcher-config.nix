@@ -8,6 +8,8 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
+, cardanoWorldFlake
+, system
 }:
 
 # Creates an attr set for a cluster containing:
@@ -29,7 +31,48 @@ let
       cluster = "alonzo-purple";
       networkName = "alonzo-purple";
     };
+    shelley_qa = fromCardanoWorld "shelley_qa";
+    vasil_dev  = fromCardanoWorld "vasil-dev";
+    preprod    = fromCardanoWorld "preprod";
+    preview    = fromCardanoWorld "preview";
   };
+
+  fromCardanoWorld = envName: let
+    originalFiles = builtins.path {
+      name = "cardano-world-config-${envName}";
+      path = cardanoWorldFlake.${system}.cardano.packages.cardano-config-html-internal + "/config/" + envName;
+    };
+
+    originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
+      builtins.readFile (originalFiles + "/config.json")));
+
+    topology = builtins.fromJSON (builtins.unsafeDiscardStringContext (
+      builtins.readFile (originalFiles + "/topology.json")));
+
+    topologyFirstAccessPoint = builtins.head (builtins.head topology.PublicRoots).publicRoots.accessPoints;
+
+    isP2P = originalNodeConfig ? EnableP2P && originalNodeConfig.EnableP2P;
+
+    nodeConfig = originalNodeConfig // {
+      AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
+      ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
+      ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
+      minSeverity = "Info";  # XXX: Needed for sync % updates.
+      EnableP2P = false;  # XXX: Doesn’t work behind NAT? Let’s use the legacy topology.
+    };
+  in {
+    cluster = envName;
+    networkName = envName;
+    cardanoEnv = {
+      inherit nodeConfig;
+    } // (if isP2P then {
+      relaysNew = topologyFirstAccessPoint.address;
+      edgePort  = topologyFirstAccessPoint.port;
+    } else {
+      topologyFile = originalFiles + "/topology.json";
+    });
+  };
+
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
     linux = configFilesSource;
@@ -91,6 +134,9 @@ let
       testnet = "Testnet";
       shelley_qa = "Shelley QA";
       alonzo_purple = "Alonzo Purple";
+      vasil_dev = "Vasil-Dev";
+      preprod = "Pre-Prod";
+      preview = "Preview";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
@@ -215,7 +261,14 @@ let
       edgePort = 30001;
       edgeNodes = [ "127.0.0.1" ];
     };
-    topologyFile = if (topologyOverride == null) then (if network == "local" then localTopology else normalTopologyFile) else topologyOverride;
+    topologyFile =
+      if envCfg ? topologyFile
+      then envCfg.topologyFile
+      else if (topologyOverride == null)
+           then (if network == "local"
+                 then localTopology
+                 else normalTopologyFile)
+           else topologyOverride;
     nodeConfigFiles = runCommand "node-cfg-files" {
       inherit nodeConfig topologyFile;
       passAsFile = [ "nodeConfig" ];

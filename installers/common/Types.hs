@@ -58,6 +58,9 @@ data Cluster
   | Shelley_QA
   | Testnet
   | Alonzo_Purple
+  | Vasil_Dev
+  | Preprod
+  | Preview
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -109,6 +112,9 @@ clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork Testnet = "testnet"
 clusterNetwork Alonzo_Purple = "alonzo_purple"
+clusterNetwork Vasil_Dev = "vasil_dev"
+clusterNetwork Preprod = "preprod"
+clusterNetwork Preview = "preview"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext
