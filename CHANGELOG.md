@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 5.0.0
 
 ### Features
 
