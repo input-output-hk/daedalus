@@ -5,6 +5,7 @@
 ### Features
 
 - Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
+- Added analytics data collection ([PR 2927](https://github.com/input-output-hk/daedalus/pull/2927), [PR 2989](https://github.com/input-output-hk/daedalus/pull/2989), [PR 3003](https://github.com/input-output-hk/daedalus/pull/3003), [PR 3028](https://github.com/input-output-hk/daedalus/pull/3028))
 
 ### Fixes
 
@@ -48,7 +49,6 @@
 
 - Added support for Ledger Nano S Plus ([PR 2975](https://github.com/input-output-hk/daedalus/pull/2975))
 - Support of Apple AArch64 chip ([PR 2684](https://github.com/input-output-hk/daedalus/pull/2684))
-- Added analytics data collection ([PR 2927](https://github.com/input-output-hk/daedalus/pull/2927), [PR 2989](https://github.com/input-output-hk/daedalus/pull/2989), [PR 3003](https://github.com/input-output-hk/daedalus/pull/3003))
 
 ### Chores
 
