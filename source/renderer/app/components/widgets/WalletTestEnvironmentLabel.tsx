@@ -29,6 +29,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Alonzo Purple',
     description: 'Label for alonzo_purple with version.',
   },
+  vasil_dev: {
+    id: 'test.environment.vasilDevLabel',
+    defaultMessage: '!!!Vasil-Dev',
+    description: 'Label for vasil_dev with version.',
+  },
+  preprod: {
+    id: 'test.environment.preprodLabel',
+    defaultMessage: '!!!Pre-Prod',
+    description: 'Label for preprod with version.',
+  },
+  preview: {
+    id: 'test.environment.previewLabel',
+    defaultMessage: '!!!Preview',
+    description: 'Label for preview with version.',
+  },
   selfnode: {
     id: 'test.environment.selfnodeLabel',
     defaultMessage: '!!!Selfnode vx',

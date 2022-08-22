@@ -1,38 +1,32 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import classnames from 'classnames';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import {
   defineMessages,
-  intlShape,
-  FormattedMessage,
   FormattedHTMLMessage,
+  FormattedMessage,
+  intlShape,
 } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
-import {
-  errorOrIncompleteMarker,
-  validateMnemonics,
-} from '../../../utils/validations';
+import { validateMnemonics } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
+import { MnemonicInput } from '../../wallet/mnemonic-input';
 
 const messages = defineMessages({
   title: {
@@ -167,7 +161,6 @@ class Step1ConfigurationDialog extends Component<Props, State> {
     wasRecoveryPhraseValidAtLeastOnce: false,
   };
 
-  recoveryPhraseAutocomplete: Autocomplete;
   form = new ReactToolboxMobxForm<FormFields>(
     {
       fields: {
@@ -217,6 +210,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
       },
       options: {
         validateOnChange: true,
+        showErrorsOnChange: false,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -258,7 +252,6 @@ class Step1ConfigurationDialog extends Component<Props, State> {
       suggestedMnemonics,
       openExternalLink,
       wallets,
-      recoveryPhrase,
       error,
     } = this.props;
     const calculatedMinRewardsReceiverBalance = new BigNumber(
@@ -339,6 +332,8 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         onClose={onClose}
       />
     );
+    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -360,28 +355,16 @@ class Step1ConfigurationDialog extends Component<Props, State> {
             />{' '}
             <FormattedHTMLMessage {...messages.description2} />
           </p>
-          <Autocomplete
-            {...recoveryPhraseField.bind()}
-            ref={(autocomplete) => {
-              this.recoveryPhraseAutocomplete = autocomplete;
-            }}
-            options={suggestedMnemonics}
-            requiredSelections={[ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT]}
-            requiredSelectionsInfo={(required, actual) =>
-              intl.formatMessage(globalMessages.knownMnemonicWordCount, {
-                actual,
-                required,
-              })
-            }
-            maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-            error={errorOrIncompleteMarker(recoveryPhraseField.error)}
-            maxVisibleOptions={5}
-            noResultsMessage={intl.formatMessage(messages.noResults)}
-            className={styles.recoveryPhrase}
-            skin={AutocompleteSkin}
-            optionHeight={50}
-            preselectedOptions={[...(recoveryPhrase || [])]}
-          />
+          <div className={styles.recoveryPhrase}>
+            <MnemonicInput
+              {...mnemonicInputProps}
+              label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
+              availableWords={suggestedMnemonics}
+              wordCount={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+              error={recoveryPhraseField.error}
+              reset={form.resetting}
+            />
+          </div>
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown
               {...walletsDropdownField.bind()}
