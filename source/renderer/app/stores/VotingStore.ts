@@ -11,10 +11,13 @@ import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
   VOTING_PHASE_CHECK_INTERVAL,
-  VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
+  VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
 } from '../config/votingConfig';
-import { votingPDFGenerator } from '../utils/votingPDFGenerator';
+import {
+  votingPDFGenerator,
+  VotingPDFGeneratorResult,
+} from '../utils/votingPDFGenerator';
 import { i18nContext } from '../utils/i18nContext';
 import type { PathRoleIdentityType } from '../utils/hardwareWalletUtils';
 import type {
@@ -423,7 +426,7 @@ export default class VotingStore extends Store {
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
-    const wasSaved = await votingPDFGenerator({
+    const result = await votingPDFGenerator({
       nextVotingFundNumber,
       qrCode,
       walletName,
@@ -436,7 +439,7 @@ export default class VotingStore extends Store {
       intl,
     });
 
-    if (wasSaved) {
+    if (result === VotingPDFGeneratorResult.FileSaved) {
       this.actions.voting.saveAsPDFSuccess.trigger();
     }
   };
