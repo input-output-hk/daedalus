@@ -255,7 +255,11 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
-    const { selectCoins, initiateTransaction } = hardwareWallets;
+    const {
+      selectCoins,
+      initiateTransaction,
+      updateTxSignRequest,
+    } = hardwareWallets;
     const { prepareVotingData } = voting;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
@@ -269,30 +273,32 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
       const selectedWallet = getWalletById(this.selectedWalletId);
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
-      let fee;
+      let coinSelection;
       let votingData;
 
       if (isHardwareWallet) {
         votingData = await prepareVotingData({
           walletId: this.selectedWalletId,
         });
-        ({ fee } = await selectCoins({
+        coinSelection = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
           metadata: votingData.metadata,
-        }));
+        });
+
+        updateTxSignRequest(coinSelection);
       } else {
-        ({ fee } = await calculateTransactionFee({
+        coinSelection = await calculateTransactionFee({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
-        }));
+        });
       }
 
       if (this._isMounted) {
         this.setState({
-          transactionFee: fee,
+          transactionFee: coinSelection.fee,
           transactionFeeError: null,
         });
       }
