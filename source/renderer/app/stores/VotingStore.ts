@@ -424,7 +424,7 @@ export default class VotingStore extends Store {
     const intl = i18nContext(currentLocale);
 
     try {
-      await votingPDFGenerator({
+      const wasSaved = await votingPDFGenerator({
         nextVotingFundNumber,
         qrCode,
         walletName,
@@ -437,7 +437,10 @@ export default class VotingStore extends Store {
         intl,
       });
       // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-      this.actions.voting.saveAsPDFSuccess.trigger();
+
+      if (wasSaved) {
+        this.actions.voting.saveAsPDFSuccess.trigger();
+      }
     } catch (error) {
       throw new Error(error);
     }

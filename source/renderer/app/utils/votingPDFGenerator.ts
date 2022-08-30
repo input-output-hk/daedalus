@@ -57,7 +57,7 @@ export const votingPDFGenerator = async ({
   network,
   isMainnet,
   intl,
-}: Params) => {
+}: Params): Promise<boolean> => {
   // Consolidate data
   const title = intl.formatMessage(messages.title, {
     nextVotingFundNumber,
@@ -93,6 +93,11 @@ export const votingPDFGenerator = async ({
   };
   const dialogPath = await showSaveDialogChannel.send(params);
   const filePath = dialogPath.filePath || '';
+
+  if (dialogPath.canceled || !!filePath) {
+    return false;
+  }
+
   await generateVotingPDFChannel.send({
     title,
     currentLocale,
@@ -106,4 +111,6 @@ export const votingPDFGenerator = async ({
     filePath,
     author,
   });
+
+  return true;
 };
