@@ -101,7 +101,7 @@ export const votingPDFGenerator = async ({
   const dialogPath = await showSaveDialogChannel.send(params);
   const filePath = dialogPath.filePath || '';
 
-  if (dialogPath.canceled || !!filePath) {
+  if (dialogPath.canceled || !filePath) {
     return VotingPDFGeneratorResult.CancelledByUser;
   }
 
