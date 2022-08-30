@@ -22,7 +22,8 @@
     .SimpleInput_input:not(.SimpleInput_disabled),
     .SimpleInput_input:focus:not(.SimpleInput_disabled),
     .SimpleInput_input:hover:not(.SimpleInput_disabled),
-    .SimpleLink_root {
+    .SimpleLink_root,
+    .MnemonicInput_content {
       background-color: transparent !important;
     }
 
@@ -94,7 +95,10 @@
     .SimpleInput_input,
     .SimpleInput_input::placeholder,
     .SimpleInput_input:focus,
-    .SimpleInput_input:hover {
+    .SimpleInput_input:hover,
+    .MnemonicInput_headerSlot,
+    .MnemonicAutocompleteLayout_inputLabel,
+    .MnemonicAutocompleteLayout_root {
       color: var(--theme-dialog-fullsize-text-color);
     }
 
@@ -112,7 +116,8 @@
       .SimpleInput_input:not(.SimpleInput_disabled),
     .SimpleInput_input:focus:not(.SimpleInput_errored),
     .SimpleInput_input:hover:not(.SimpleInput_errored),
-    .SimpleOptions_option:after {
+    .SimpleOptions_option:after,
+    .MnemonicAutocompleteLayout_input {
       background-color: transparent !important;
       border-color: var(--theme-dialog-fullsize-text-color) !important;
     }
