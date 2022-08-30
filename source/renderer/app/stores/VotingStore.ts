@@ -423,26 +423,21 @@ export default class VotingStore extends Store {
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
-    try {
-      const wasSaved = await votingPDFGenerator({
-        nextVotingFundNumber,
-        qrCode,
-        walletName,
-        currentLocale,
-        currentDateFormat,
-        currentTimeFormat,
-        desktopDirectoryPath,
-        network,
-        isMainnet,
-        intl,
-      });
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
+    const wasSaved = await votingPDFGenerator({
+      nextVotingFundNumber,
+      qrCode,
+      walletName,
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+      desktopDirectoryPath,
+      network,
+      isMainnet,
+      intl,
+    });
 
-      if (wasSaved) {
-        this.actions.voting.saveAsPDFSuccess.trigger();
-      }
-    } catch (error) {
-      throw new Error(error);
+    if (wasSaved) {
+      this.actions.voting.saveAsPDFSuccess.trigger();
     }
   };
   _checkVotingRegistrationTransaction = async () => {
