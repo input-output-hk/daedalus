@@ -273,14 +273,14 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
       const selectedWallet = getWalletById(this.selectedWalletId);
       const [address] = await getAddressesByWalletId(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
-      let coinSelection;
+      let fee;
       let votingData;
 
       if (isHardwareWallet) {
         votingData = await prepareVotingData({
           walletId: this.selectedWalletId,
         });
-        coinSelection = await selectCoins({
+        const coinSelection = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
@@ -288,17 +288,18 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         });
 
         updateTxSignRequest(coinSelection);
+        fee = coinSelection.fee;
       } else {
-        coinSelection = await calculateTransactionFee({
+        ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
-        });
+        }));
       }
 
       if (this._isMounted) {
         this.setState({
-          transactionFee: coinSelection.fee,
+          transactionFee: fee,
           transactionFeeError: null,
         });
       }
