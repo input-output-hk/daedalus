@@ -358,7 +358,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
           <div className={styles.recoveryPhrase}>
             <MnemonicInput
               {...mnemonicInputProps}
-              label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
+              label={intl.formatMessage(messages.recoveryPhraseInputHint)}
               availableWords={suggestedMnemonics}
               wordCount={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
               error={recoveryPhraseField.error}
