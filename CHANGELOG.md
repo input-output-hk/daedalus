@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- Fixed blank screen when opening ITN rewards ([PR 3030](https://github.com/input-output-hk/daedalus/pull/3030))
 - Ensured non-recommended decimal place setting alert is correctly shown ([PR 3007](https://github.com/input-output-hk/daedalus/pull/3007))
 - Disabled the possibility to choose a syncing wallet for ITN rewards and delegation ([PR 3015](https://github.com/input-output-hk/daedalus/pull/3015))
 
