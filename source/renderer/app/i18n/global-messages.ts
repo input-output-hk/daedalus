@@ -222,6 +222,21 @@ export default defineMessages({
     defaultMessage: '!!!Alonzo Purple',
     description: '"Alonzo Purple" Cardano network',
   },
+  network_vasil_dev: {
+    id: 'environment.network.vasil_dev',
+    defaultMessage: '!!!Vasil-Dev',
+    description: '"Vasil-Dev" Cardano network',
+  },
+  network_preprod: {
+    id: 'environment.network.preprod',
+    defaultMessage: '!!!Pre-Prod',
+    description: '"Pre-Prod" Cardano network',
+  },
+  network_preview: {
+    id: 'environment.network.preview',
+    defaultMessage: '!!!Preview',
+    description: '"Preview" Cardano network',
+  },
   network_development: {
     id: 'environment.network.development',
     defaultMessage: '!!!Development',

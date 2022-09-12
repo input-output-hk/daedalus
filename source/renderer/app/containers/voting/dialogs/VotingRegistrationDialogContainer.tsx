@@ -255,7 +255,11 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
-    const { selectCoins, initiateTransaction } = hardwareWallets;
+    const {
+      selectCoins,
+      initiateTransaction,
+      updateTxSignRequest,
+    } = hardwareWallets;
     const { prepareVotingData } = voting;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
@@ -276,12 +280,15 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         votingData = await prepareVotingData({
           walletId: this.selectedWalletId,
         });
-        ({ fee } = await selectCoins({
+        const coinSelection = await selectCoins({
           walletId: this.selectedWalletId,
           address: address.id,
           amount,
           metadata: votingData.metadata,
-        }));
+        });
+
+        updateTxSignRequest(coinSelection);
+        fee = coinSelection.fee;
       } else {
         ({ fee } = await calculateTransactionFee({
           walletId: this.selectedWalletId,

@@ -2,20 +2,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import {
-  errorOrIncompleteMarker,
-  validateMnemonics,
-} from '../../../utils/validations';
-import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
+import { validateMnemonics } from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -23,6 +17,7 @@ import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { MnemonicInput } from '../mnemonic-input';
 
 const messages = defineMessages({
   verificationInstructions: {
@@ -42,19 +37,6 @@ const messages = defineMessages({
     id: 'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint',
     defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',
     description: 'Placeholder hint for the mnemonics autocomplete.',
-  },
-  recoveryPhraseInputPlaceholder: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder',
-    defaultMessage: '!!!Enter word #{wordNumber}',
-    description: 'Placeholder for the mnemonics autocomplete.',
-  },
-  recoveryPhraseNoResults: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults',
-    defaultMessage: '!!!No results',
-    description:
-      '"No results" message for the recovery phrase input search results.',
   },
   recoveryPhraseInvalidMnemonics: {
     id:
@@ -85,6 +67,7 @@ const messages = defineMessages({
   },
 });
 type Props = {
+  recoveryPhrase: string;
   enteredPhrase: Array<string>;
   isValid: boolean;
   isTermOfflineAccepted: boolean;
@@ -118,6 +101,13 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             this.props.onUpdateVerificationPhrase({
               verificationPhrase: enteredWords,
             });
+
+            if (this.props.recoveryPhrase !== enteredWords.join(' ')) {
+              return this.context.intl.formatMessage(
+                messages.recoveryPhraseInvalidMnemonics
+              );
+            }
+
             return validateMnemonics({
               requiredWords: WALLET_RECOVERY_PHRASE_WORD_COUNT,
               providedWords: field.value,
@@ -137,10 +127,19 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         vjf: vjf(),
       },
       options: {
+        showErrorsOnChange: false,
         validateOnChange: true,
       },
     }
   );
+
+  handleSubmit = () => {
+    this.form.submit({
+      onSuccess: () => {
+        this.props.onFinishBackup();
+      },
+    });
+  };
 
   render() {
     const { form } = this;
@@ -156,7 +155,7 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
-      onFinishBackup,
+      recoveryPhrase,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([
@@ -164,20 +163,27 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       'WalletRecoveryPhraseEntryDialog',
     ]);
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-    const enteredPhraseString = enteredPhrase.join(' ');
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelConfirm)
     ) : (
       <LoadingSpinner />
     );
+    const canSubmit =
+      (!recoveryPhraseField.error &&
+        recoveryPhraseField.value.length === recoveryPhrase.split(' ').length &&
+        recoveryPhraseField.value.every((word) => word)) ||
+      canFinishBackup;
+
     const actions = [
       {
         label: buttonLabel,
-        onClick: onFinishBackup,
-        disabled: !canFinishBackup,
+        onClick: this.handleSubmit,
+        disabled: !canSubmit,
         primary: true,
       },
     ];
+    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+
     return (
       <Dialog
         className={dialogClasses}
@@ -200,39 +206,24 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 }
               )}
             />
-
-            <Autocomplete
-              {...recoveryPhraseField.bind()}
+            <MnemonicInput
+              {...mnemonicInputProps}
               label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
-              placeholder={intl.formatMessage(
-                messages.recoveryPhraseInputPlaceholder,
-                {
-                  wordNumber: enteredPhrase.length + 1,
-                }
-              )}
-              options={suggestedMnemonics}
-              requiredSelections={[wordCount]}
-              requiredSelectionsInfo={(required, actual) =>
-                intl.formatMessage(globalMessages.knownMnemonicWordCount, {
-                  actual,
-                  required,
-                })
-              }
-              maxSelections={wordCount}
-              error={errorOrIncompleteMarker(recoveryPhraseField.error)}
-              maxVisibleOptions={5}
-              noResultsMessage={intl.formatMessage(
-                messages.recoveryPhraseNoResults
-              )}
-              skin={AutocompleteSkin}
-              optionHeight={50}
+              availableWords={suggestedMnemonics}
+              wordCount={wordCount}
+              error={recoveryPhraseField.error}
+              reset={form.resetting}
             />
           </>
         )}
 
         {isValid && (
           <>
-            <WalletRecoveryPhraseMnemonic phrase={enteredPhraseString} />
+            <MnemonicInput
+              disabled
+              value={enteredPhrase}
+              wordCount={enteredPhrase.length}
+            />
             <div>
               <div className={styles.checkbox}>
                 <Checkbox

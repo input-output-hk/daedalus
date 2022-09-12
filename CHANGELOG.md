@@ -1,5 +1,28 @@
 # Changelog
 
+## 5.0.0
+
+### Features
+
+- Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
+
+### Fixes
+
+- Fixed blank screen when opening ITN rewards ([PR 3030](https://github.com/input-output-hk/daedalus/pull/3030))
+- Ensured non-recommended decimal place setting alert is correctly shown ([PR 3007](https://github.com/input-output-hk/daedalus/pull/3007))
+- Disabled the possibility to choose a syncing wallet for ITN rewards and delegation ([PR 3015](https://github.com/input-output-hk/daedalus/pull/3015))
+
+### Chores
+
+- Updated cardano-node to 1.35.3; added `vasil-dev`, `preprod`, `preview` variants ([PR 3025](https://github.com/input-output-hk/daedalus/pull/3025))
+- Updated cardano-node to 1.35.2 ([PR 3021](https://github.com/input-output-hk/daedalus/pull/3021))
+- Fix `darwin-launcher.go` to replace its process image with `cardano-launcher` (binary), and not swallow `stdout` ([PR 3023](https://github.com/input-output-hk/daedalus/pull/3023))
+- Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
+
+### Features
+
+- Updated Terms of Service ([PR 3009](https://github.com/input-output-hk/daedalus/pull/3009))
+
 ## 4.12.0
 
 ### Fixes
@@ -9,6 +32,7 @@
 
 ### Chores
 
+- Made Windows installer more resilient w.r.t. auto-updates ([PR 3017](https://github.com/input-output-hk/daedalus/pull/3017))
 - Added OS-architecture tuple to installer file names to help with releases ([PR 3016](https://github.com/input-output-hk/daedalus/pull/3016))
 - Added Vasil-supported cardano-wallet ([PR 3001](https://github.com/input-output-hk/daedalus/pull/3001))
 - Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
@@ -28,6 +52,7 @@
 
 ### Chores
 
+- Upgraded webpack to version 5 ([PR 2772](https://github.com/input-output-hk/daedalus/pull/2772))
 - Bumped vulnerable dependencies versions ([PR 2943](https://github.com/input-output-hk/daedalus/pull/2943))
 - Added support for Trezor firmware 2.5.1 ([PR 2991](https://github.com/input-output-hk/daedalus/pull/2991))
 - Added steps on how to link with `react-polymorph` and other external UI libraries ([PR 2948](https://github.com/input-output-hk/daedalus/pull/2948))

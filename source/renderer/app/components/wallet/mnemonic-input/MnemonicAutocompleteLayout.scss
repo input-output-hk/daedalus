@@ -1,0 +1,46 @@
+$label-width: 24px;
+$label-margin-right: 11px;
+
+.root {
+  color: var(--theme-main-body-messages-color);
+  height: 22px;
+  line-height: 22px;
+  position: relative;
+}
+
+.inputWrapper {
+  height: 100%;
+}
+
+.input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: var(--rp-autocomplete-border);
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  height: 100%;
+  line-height: inherit;
+  padding: 0 0 0 $label-width + $label-margin-right;
+  width: 100%;
+
+  &:focus {
+    border-bottom-color: var(--rp-autocomplete-border-color-opened);
+    outline: none;
+  }
+
+  &Error {
+    border-bottom-color: var(--rp-theme-color-error);
+  }
+}
+
+.inputLabel {
+  bottom: 0;
+  color: var(--theme-input-border-color);
+  height: 100%;
+  left: 0;
+  line-height: inherit;
+  position: absolute;
+  text-align: right;
+  width: $label-width;
+}
