@@ -17,7 +17,7 @@ import {
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
-import { isRecommendedDecimal } from '../wallet/tokens/wallet-token/helpers';
+import { isNonRecommendedDecimalSettingUsed } from '../wallet/tokens/wallet-token/helpers';
 
 const messages = defineMessages({
   title: {
@@ -154,7 +154,7 @@ class AssetSettingsDialog extends Component<Props, State> {
       },
     ];
 
-    const hasWarning = isRecommendedDecimal({
+    const hasWarning = isNonRecommendedDecimalSettingUsed({
       recommendedDecimals,
       decimals: savedDecimals,
     });

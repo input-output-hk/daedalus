@@ -74,6 +74,16 @@ let
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
   };
+
+  gcRoot = pkgs.runCommandLocal "gc-root" {
+    properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
+    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
+    ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
+    daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
+    # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
+    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./nix/cardano-bridge.nix)));
+  } "export >$out";
+
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
     cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
   '');
@@ -111,16 +121,6 @@ let
       ln -svf $(type -P cardano-node)
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
-      mkdir -p ${BUILDTYPE}/
-      ${let
-        # (TODO: investigate why – @michalrus)
-        sourceBUILDTYPE = "Release";
-      in ''
-        ln -svf $PWD/node_modules/usb/build/${sourceBUILDTYPE}/usb_bindings.node ${BUILDTYPE}/
-        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID.node ${BUILDTYPE}/
-        ln -svf $PWD/node_modules/node-hid/build/${sourceBUILDTYPE}/HID_hidraw.node ${BUILDTYPE}/
-        ln -svf $PWD/node_modules/usb-detection/build/${sourceBUILDTYPE}/detection.node ${BUILDTYPE}/
-      ''}
 
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
@@ -135,14 +135,51 @@ let
         ''
       }
       yarn install --frozen-lockfile
+
+      # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
+      find Debug/ Release/ -name '*.node' | xargs rm -v || true
       yarn build:electron
+
+      ${let
+        # Several native modules have to be linked in ${BUILDTYPE}/ in
+        # root directory, for `yarn dev` to work correctly. If a Debug
+        # version of such extension exists, we use it, otherwise, we
+        # use Release:
+        tryLink = dependency: fileName: ''
+          symlinkTarget=$(ls 2>/dev/null -d \
+            "$PWD/node_modules/${dependency}/build/Debug/${fileName}" \
+            "$PWD/node_modules/${dependency}/build/Release/${fileName}" \
+            | head -1
+          )
+
+          if [ -z "$symlinkTarget" ] ; then
+            echo >&2 "error: symlink target not found: ‘${fileName}’ in ‘${dependency}’"
+            # ~exit 1~ — do not exit, let the person fix from inside `nix-shell`
+          fi
+
+          ${localLib.optionalString pkgs.stdenv.isLinux ''
+            ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
+              pkgs.stdenv.cc.cc pkgs.udev
+            ]} "$symlinkTarget"
+          ''}
+
+          mkdir -p ${BUILDTYPE}/
+          ln -svf "$symlinkTarget" ${BUILDTYPE}/
+          unset symlinkTarget
+        '';
+      in ''
+        ${tryLink "usb"           "usb_bindings.node"}
+        ${tryLink "usb-detection" "detection.node"}
+        ${tryLink "node-hid"      "HID.node"}
+        ${localLib.optionalString pkgs.stdenv.isLinux ''
+          ${tryLink "node-hid"      "HID_hidraw.node"}
+        ''}
+      ''}
+
       ${localLib.optionalString pkgs.stdenv.isLinux ''
-        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/usb_bindings.node
-        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/HID.node
-        # TODO: is this needed for `detection.node`?
-        ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.udev ]} ${BUILDTYPE}/detection.node
         ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
       ''}
+
       echo 'jq < $LAUNCHER_CONFIG'
       echo debug the node by running debug-node
     '';
@@ -174,4 +211,4 @@ let
       "
     '';
   };
-in daedalusShell // { inherit fixYarnLock buildShell devops; }
+in daedalusShell // { inherit fixYarnLock buildShell devops gcRoot; }

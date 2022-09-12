@@ -6,17 +6,7 @@ directories.
 
 ### Windows
 
-Use Nix to enter a shell with the necessary tools available:
-
-    nix run nixpkgs.icoutils nixpkgs.imagemagick
-
-To generate ico files:
-
-    icotool -c -o 256x256.ico 256x256.png
-
-To Merge all icons into a single bundle:
-
-    ./update_icons
+Are generated automatically, based on the PNG files.
 
 Currently, the Windows installer uses the bundle with 8 of the icons.
 

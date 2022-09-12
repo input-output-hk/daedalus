@@ -1,4 +1,7 @@
+import BigNumber from 'bignumber.js';
+import get from 'lodash/get';
 import { defineMessages } from 'react-intl';
+import ApiError, { ErrorType } from '../domains/ApiError';
 
 export const messages = defineMessages({
   // common
@@ -119,3 +122,60 @@ export const messages = defineMessages({
       '"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet',
   },
 });
+
+type Balances = {
+  walletBalance: BigNumber;
+  availableBalance: BigNumber;
+  rewardsBalance: BigNumber;
+};
+
+export const handleNotEnoughMoneyError = (
+  error: ErrorType,
+  balance: Balances
+) => {
+  let notEnoughMoneyError;
+
+  const { walletBalance, availableBalance, rewardsBalance } = balance;
+
+  if (walletBalance.gt(availableBalance)) {
+    // 1. Amount exceeds availableBalance due to pending transactions:
+    // - walletBalance > availableBalance
+    // = show "Cannot calculate fees while there are pending transactions."
+    notEnoughMoneyError = 'canNotCalculateTransactionFees';
+  } else if (
+    !walletBalance.isZero() &&
+    walletBalance.isEqualTo(rewardsBalance)
+  ) {
+    // 2. Wallet contains only rewards:
+    // - walletBalance === rewardsBalance
+    // = show "Cannot send from a wallet that contains only rewards balances."
+    notEnoughMoneyError = 'inputsDepleted';
+  } else {
+    // 3. Amount exceeds walletBalance:
+    // - walletBalance === availableBalance
+    // = show "Not enough Ada. Try sending a smaller amount."
+    notEnoughMoneyError = 'notEnoughFundsForTransaction';
+  }
+
+  // ApiError with logging showcase
+  throw new ApiError(error, {
+    // @ts-ignore ts-migrate(2322) FIXME: Type 'boolean' is not assignable to type 'Record<s... Remove this comment to see the full error message
+    logError: true,
+    msg: 'AdaApi::calculateTransactionFee error',
+  })
+    .set(notEnoughMoneyError, true)
+    .where('code', 'not_enough_money')
+    .set('utxoTooSmall', true, {
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'exec' does not exist on type '{}'.
+      minimumAda: get(
+        /(Expected min coin value: +)([0-9]+.[0-9]+)/.exec(error.message),
+        2,
+        0
+      ),
+    })
+    .where('code', 'utxo_too_small')
+    .set('invalidAddress')
+    .where('code', 'bad_request')
+    .inc('message', 'Unable to decode Address')
+    .result();
+};
