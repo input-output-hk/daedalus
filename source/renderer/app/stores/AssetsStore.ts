@@ -202,7 +202,7 @@ export default class AssetsStore extends Store {
 
     this.analytics.sendEvent(
       EventCategories.WALLETS,
-      `${!isFavorite ? 'Added' : 'Removed'} token from favorites`
+      `${!isFavorite ? 'Added token to' : 'Removed token from'} favorites`
     );
   };
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
