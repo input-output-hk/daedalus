@@ -33,3 +33,5 @@ import './common/ItemsDropdown.stories';
 // Discreet Mode
 import '../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story';
 import '../../source/renderer/app/features/discreet-mode/ui/DiscreetValue.story';
+// Analytics
+import '../../source/renderer/app/components/profile/analytics/Analytics.stories';
