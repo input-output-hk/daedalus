@@ -34,6 +34,7 @@ const messages = defineMessages({
     description: 'PDF author',
   },
 });
+
 type Params = {
   nextVotingFundNumber: number;
   qrCode: string;
@@ -46,6 +47,12 @@ type Params = {
   isMainnet: boolean;
   intl: Record<string, any>;
 };
+
+export enum VotingPDFGeneratorResult {
+  FileSaved = 'FileSaved',
+  CancelledByUser = 'CancelledByUser',
+}
+
 export const votingPDFGenerator = async ({
   nextVotingFundNumber,
   qrCode,
@@ -57,7 +64,7 @@ export const votingPDFGenerator = async ({
   network,
   isMainnet,
   intl,
-}: Params) => {
+}: Params): Promise<VotingPDFGeneratorResult> => {
   // Consolidate data
   const title = intl.formatMessage(messages.title, {
     nextVotingFundNumber,
@@ -93,6 +100,11 @@ export const votingPDFGenerator = async ({
   };
   const dialogPath = await showSaveDialogChannel.send(params);
   const filePath = dialogPath.filePath || '';
+
+  if (dialogPath.canceled || !filePath) {
+    return VotingPDFGeneratorResult.CancelledByUser;
+  }
+
   await generateVotingPDFChannel.send({
     title,
     currentLocale,
@@ -106,4 +118,6 @@ export const votingPDFGenerator = async ({
     filePath,
     author,
   });
+
+  return VotingPDFGeneratorResult.FileSaved;
 };
