@@ -1,0 +1,62 @@
+.component {
+  align-items: center;
+  color: var(--theme-main-body-messages-color);
+  display: flex;
+  font-family: var(--font-regular);
+  height: 100%;
+  justify-content: center;
+  line-height: 1.38;
+}
+
+.centeredBox {
+  background-color: var(--theme-bordered-box-background-color);
+  border: var(--theme-bordered-box-border);
+  border-radius: 10px;
+  padding: 30px 30px 20px;
+  width: 620px;
+}
+
+.title,
+.dataCollectionTitle {
+  font-family: var(--font-medium);
+  margin-bottom: 14px;
+}
+
+.dataCollectionTitle {
+  align-items: center;
+  display: flex;
+  font-family: var(--font-medium);
+}
+
+.description {
+  font-family: var(--font-light);
+  margin-bottom: 20px;
+}
+
+.descriptionLink {
+  color: var(--theme-link-main-color);
+}
+
+.actions {
+  display: flex;
+  margin-top: 24px;
+}
+
+.skipButton {
+  margin-right: 12px;
+}
+
+.privacyPolicyLink {
+  font-family: var(--font-regular);
+  // unfortunately, global overrides for link component set it to 14px with higher specificity
+  font-size: 16px !important;
+  word-break: break-word;
+}
+
+.privacyPolicyDescription {
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.43;
+  margin-top: 20px;
+}

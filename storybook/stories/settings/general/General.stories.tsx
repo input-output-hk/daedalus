@@ -129,6 +129,7 @@ storiesOf('Settings / General', module)
       onSupportRequestClick={action('onSupportRequestClick')}
       onDownloadLogs={action('onDownloadLogs')}
       disableDownloadLogs={boolean('disableDownloadLogs', false)}
+      analyticsAccepted={boolean('analyticsAccepted', false)}
     />
   ))
   .add('Security', () => (

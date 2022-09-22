@@ -1,6 +1,8 @@
 import { action, observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { includes, camelCase } from 'lodash';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -41,6 +43,7 @@ import {
   PROFILE_SETTINGS,
 } from '../config/profileConfig';
 import { buildSystemInfo } from '../utils/buildSystemInfo';
+import { AnalyticsAcceptanceStatus } from '../analytics/types';
 
 export default class ProfileStore extends Store {
   @observable
@@ -104,13 +107,19 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
-  getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
+  getAnalyticsAcceptanceRequest: Request<
+    AnalyticsAcceptanceStatus
+  > = new Request(this.api.localStorage.getAnalyticsAcceptance);
+  @observable
+  setAnalyticsAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.setAnalyticsAcceptance
+  );
+  @observable
+  getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
     this.api.localStorage.getDataLayerMigrationAcceptance
   );
   @observable
   setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'ProfileStor... Remove this comment to see the full error message
     this.api.localStorage.setDataLayerMigrationAcceptance
   );
   @observable
@@ -124,8 +133,7 @@ export default class ProfileStore extends Store {
   @observable
   error: LocalizableError | null | undefined = null;
   @observable
-  // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
-  logFiles: LogFiles = {};
+  logFiles: LogFiles = null;
   @observable
   compressedLogsFilePath: string | null | undefined = null;
   @observable
@@ -147,6 +155,7 @@ export default class ProfileStore extends Store {
       this._finishInitialScreenSettings
     );
     profileActions.updateUserLocalSetting.listen(this._updateUserLocalSetting);
+    profileActions.acceptAnalytics.listen(this._setAnalyticsAcceptanceStatus);
     profileActions.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     profileActions.acceptDataLayerMigration.listen(
       this._acceptDataLayerMigration
@@ -163,12 +172,16 @@ export default class ProfileStore extends Store {
     this.registerReactions([
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
+      this._redirectToAnalyticsScreenIfNotConfirmed,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted, // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
+      this._redirectToMainUiAfterAnalyticsAreConfirmed,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
 
     this._getTermsOfUseAcceptance();
+
+    this._getAnalyticsAcceptance();
 
     this._getDataLayerMigrationAcceptance();
 
@@ -294,6 +307,14 @@ export default class ProfileStore extends Store {
   }
 
   @computed
+  get analyticsAcceptanceStatus(): AnalyticsAcceptanceStatus {
+    return (
+      this.getAnalyticsAcceptanceRequest.result ||
+      AnalyticsAcceptanceStatus.PENDING
+    );
+  }
+
+  @computed
   get hasLoadedDataLayerMigrationAcceptance(): boolean {
     return (
       this.getDataLayerMigrationAcceptanceRequest.wasExecuted &&
@@ -303,7 +324,6 @@ export default class ProfileStore extends Store {
 
   @computed
   get isDataLayerMigrationAccepted(): boolean {
-    // @ts-ignore ts-migrate(2367) FIXME: This condition will always return 'false' since th... Remove this comment to see the full error message
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
@@ -342,7 +362,6 @@ export default class ProfileStore extends Store {
     const consolidatedValue =
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message
       value || (this as any)[camelCase(['current', param])];
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'set' does not exist on type 'LocalizedRe... Remove this comment to see the full error message
     const { set, get } = getRequestKeys(param, this.currentLocale);
     await (this as any)[set].execute(consolidatedValue);
     await (this as any)[get].execute();
@@ -365,9 +384,15 @@ export default class ProfileStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getTermsOfUseAcceptanceRequest.execute();
   };
-  _getTermsOfUseAcceptance = async () => {
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    await this.getTermsOfUseAcceptanceRequest.execute();
+  _getTermsOfUseAcceptance = () => {
+    this.getTermsOfUseAcceptanceRequest.execute();
+  };
+  _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+    this.setAnalyticsAcceptanceRequest.execute(status);
+    this.getAnalyticsAcceptanceRequest.execute();
+  };
+  _getAnalyticsAcceptance = () => {
+    this.getAnalyticsAcceptanceRequest.execute();
   };
   _acceptDataLayerMigration = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -419,9 +444,22 @@ export default class ProfileStore extends Store {
       });
     }
   };
+  _isOnAnalyticsPage = () =>
+    this.stores.app.currentRoute === ROUTES.PROFILE.ANALYTICS;
   _isOnTermsOfUsePage = () =>
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
+  _redirectToAnalyticsScreenIfNotConfirmed = () => {
+    if (
+      !this.isInitialScreen &&
+      this.isCurrentLocaleSet &&
+      this.areTermsOfUseAccepted &&
+      this.analyticsAcceptanceStatus === AnalyticsAcceptanceStatus.PENDING
+    ) {
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.PROFILE.ANALYTICS,
+      });
+    }
+  };
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
     const { isConnected } = this.stores.networkStatus;
@@ -433,6 +471,7 @@ export default class ProfileStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
+      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
@@ -453,6 +492,14 @@ export default class ProfileStore extends Store {
   };
   _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+      this._redirectToRoot();
+    }
+  };
+  _redirectToMainUiAfterAnalyticsAreConfirmed = () => {
+    if (
+      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
+      this._isOnAnalyticsPage()
+    ) {
       this._redirectToRoot();
     }
   };
@@ -553,7 +600,6 @@ export default class ProfileStore extends Store {
   // Collect all relevant state snapshot params and send them for log file creation
   _setStateSnapshotLog = async () => {
     try {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('ProfileStore: Requesting state snapshot log file creation');
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       const { networkStatus } = this.stores;
