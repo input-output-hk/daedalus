@@ -1,0 +1,1 @@
+export { AnalyticsAcceptanceStatus } from './types';

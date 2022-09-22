@@ -17,6 +17,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-about-window-icon-close-button-color': '#fff',
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
+  analytics: {
+    '--theme-analytics-toc-details-background': 'rgba(68, 91, 124, 0.05)',
+  },
   appUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
@@ -167,12 +170,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-connecting-sync-progress-color': '#fafbfc',
   },
   dapps: {
-    '--theme-dapp-transaction-request-separator': '#5e6066',
     '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-    '--theme-dapp-transaction-request-toggle-button-background-color':
-      'rgba(94, 96, 102, 0.1)',
-    '--theme-dapp-transaction-request-code-background-color':
-      'rgba(94, 96, 102, 0.05)',
   },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#243E62',
@@ -358,7 +356,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-input-text-color': '#5e6066',
   },
   link: {
-    '--theme-link-main-color': 'rgb(41, 111, 208)',
+    '--theme-link-main-color': '#296fd0',
   },
   loading: {
     '--theme-loading-background-color': '#fafbfc',
@@ -1114,10 +1112,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
       '#ea4c5b',
   },
-  walletSettings: {
-    '--theme-wallet-settings-section-separator-color':
-      'rgba(94, 96, 102, 0.15)',
-  },
   widgets: {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(94,96,102,0.1)',
@@ -1125,6 +1119,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-background-color': 'rgba(255, 255, 255, 0.97)',
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
     '--theme-widgets-itemsDropdown-option-label-text-color': '#5e6066',
+    '--theme-widgets-separator-color': 'rgba(94, 96, 102, 0.15)',
+    '--theme-widgets-collapsible-section-button-background-color':
+      'rgba(94, 96, 102, 0.1)',
+    '--theme-widgets-monospace-text-block-background-color':
+      'rgba(94, 96, 102, 0.05)',
   },
 };
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {

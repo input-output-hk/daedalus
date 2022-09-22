@@ -16,6 +16,7 @@ export const ROUTES = {
   PROFILE: {
     INITIAL_SETTINGS: '/profile/initial-settings',
     TERMS_OF_USE: '/profile/terms-of-service',
+    ANALYTICS: '/profile/analytics',
     DATA_LAYER_MIGRATION: '/profile/data-layer-migration',
   },
   WALLETS: {

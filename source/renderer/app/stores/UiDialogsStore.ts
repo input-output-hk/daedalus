@@ -1,9 +1,10 @@
+import { ReactNode } from 'react';
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
 
 export default class UiDialogsStore extends Store {
   @observable
-  activeDialog: ((...args: Array<any>) => any) | null | undefined = null;
+  activeDialog: ReactNode | null = null;
   @observable
   secondsSinceActiveDialogIsOpen = 0;
   @observable
@@ -20,8 +21,7 @@ export default class UiDialogsStore extends Store {
     );
   }
 
-  isOpen = (dialog: (...args: Array<any>) => any): boolean =>
-    this.activeDialog === dialog;
+  isOpen = (dialog: ReactNode): boolean => this.activeDialog === dialog;
   countdownSinceDialogOpened = (countDownTo: number) =>
     Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0);
   @action

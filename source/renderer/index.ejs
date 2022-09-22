@@ -9,11 +9,12 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="
-          default-src 'self';
-          script-src 'self' 'unsafe-eval' 'unsafe-inline';
-          style-src 'self' 'unsafe-inline';
-          img-src 'self' data:;
-        "
+        default-src 'self';
+        script-src 'self' 'unsafe-eval' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        connect-src 'self' https://*.matomo.cloud/;
+      "
     >
     <title>Daedalus</title>
     <script>

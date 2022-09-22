@@ -44,53 +44,9 @@
       }
     }
   }
-  hr {
-    border: 0;
-    border-top: 1px solid var(--theme-dapp-transaction-request-separator);
-    margin: 20px 0;
-    opacity: 0.3;
-  }
   .transactionFee {
     color: var(--theme-dapp-transaction-request-fees-text-color);
     font-family: var(--font-regular);
     margin-bottom: 20px;
-  }
-  .additionalData,
-  .metadata {
-    background-color: var(
-      --theme-dapp-transaction-request-code-background-color
-    );
-    pre {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.38;
-      max-height: 250px;
-      overflow: auto;
-      padding: 9px 12px;
-      user-select: text;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      &::-webkit-scrollbar-corner {
-        background: transparent !important;
-      }
-      &::-webkit-scrollbar-button {
-        height: 2px !important;
-      }
-    }
-  }
-  .toggleButton {
-    background-color: var(
-      --theme-dapp-transaction-request-toggle-button-background-color
-    );
-    border-radius: 4px;
-    color: var(--theme-label-button-color);
-    cursor: pointer;
-    font-family: var(--font-medium);
-    font-size: 10px;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-    margin-left: 10px;
-    padding: 4px 8px;
-    text-transform: uppercase;
   }
 }
