@@ -218,7 +218,6 @@
     "cardano-js": "0.4.8",
     "cardano-launcher": "0.20220119.0",
     "cbor": "5.0.2",
-    "cbor-web": "7.0.6",
     "check-disk-space": "3.2.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
