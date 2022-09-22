@@ -1,4 +1,4 @@
-import { Manifest } from 'trezor-connect';
+import { Manifest } from '@trezor/connect';
 
 export const manifest: Manifest = {
   email: 'support@iohk.io',

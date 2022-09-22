@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { logger } from '../utils/logging';
 import { manifest } from './manifest';
 

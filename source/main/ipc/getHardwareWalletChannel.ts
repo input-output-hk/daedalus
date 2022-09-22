@@ -4,7 +4,6 @@ import TransportNodeHid, {
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import TrezorConnect, {
-  CardanoPublicKey,
   DEVICE,
   DEVICE_EVENT,
   Features,
@@ -14,7 +13,7 @@ import TrezorConnect, {
   UI,
   UI_EVENT,
   Unsuccessful,
-} from 'trezor-connect';
+} from '@trezor/connect';
 import { find, get, includes, last, omit } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import {
