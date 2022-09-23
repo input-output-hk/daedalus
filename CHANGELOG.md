@@ -1,10 +1,23 @@
 # Changelog
 
+## vNext
+
+### Features
+
+
+### Fixes
+
+
+### Chores
+
+- Updated LedgerJS to 5.1.0 ([PR 3036](https://github.com/input-output-hk/daedalus/pull/3036))
+
 ## 5.0.0
 
 ### Features
 
 - Added new Mnemonic input component ([PR 2979](https://github.com/input-output-hk/daedalus/pull/2979))
+- Updated Terms of Service ([PR 3009](https://github.com/input-output-hk/daedalus/pull/3009))
 
 ### Fixes
 
@@ -18,10 +31,6 @@
 - Updated cardano-node to 1.35.2 ([PR 3021](https://github.com/input-output-hk/daedalus/pull/3021))
 - Fix `darwin-launcher.go` to replace its process image with `cardano-launcher` (binary), and not swallow `stdout` ([PR 3023](https://github.com/input-output-hk/daedalus/pull/3023))
 - Updated cardano-node to 1.35.1 ([PR 3012](https://github.com/input-output-hk/daedalus/pull/3012))
-
-### Features
-
-- Updated Terms of Service ([PR 3009](https://github.com/input-output-hk/daedalus/pull/3009))
 
 ## 4.12.0
 
