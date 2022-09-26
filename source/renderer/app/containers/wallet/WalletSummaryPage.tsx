@@ -14,6 +14,10 @@ import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import { getAssetTokens, sortAssets } from '../../utils/assets';
+import {
+  withAnalytics,
+  WithAnalyticsTrackerProps,
+} from '../../components/analytics/withAnalytics';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 export const messages = defineMessages({
@@ -24,7 +28,7 @@ export const messages = defineMessages({
       'Message shown when wallet has no transactions on wallet summary page.',
   },
 });
-type Props = InjectedProps;
+type Props = InjectedProps & WithAnalyticsTrackerProps;
 type OpenAssetSettingsDialogArgs = {
   asset: AssetToken;
 };
@@ -162,6 +166,7 @@ class WalletSummaryPage extends Component<Props> {
           hasAssetsEnabled={hasAssetsEnabled}
           getAsset={getAsset}
           onCopyAssetParam={onCopyAssetParam.trigger}
+          analyticsTracker={this.props.analyticsTracker}
         />
       );
     } else if (!hasAny) {
@@ -203,4 +208,4 @@ class WalletSummaryPage extends Component<Props> {
   }
 }
 
-export default WalletSummaryPage;
+export default withAnalytics(WalletSummaryPage);

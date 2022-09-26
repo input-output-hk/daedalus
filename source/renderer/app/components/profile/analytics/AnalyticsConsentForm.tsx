@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -8,6 +8,7 @@ import styles from './AnalyticsConsentForm.scss';
 import { Intl } from '../../../types/i18nTypes';
 import { messages } from './AnalyticsConsentForm.messages';
 import { CollectedDataOverview } from './CollectedDataOverview';
+import { PRIVACY_POLICY_LINK } from '../../../config/analyticsConfig';
 
 interface AnalyticsConsentFormProps {
   intl: Intl;
@@ -32,11 +33,7 @@ function AnalyticsConsentForm({
   const privacyPolicyLink = (
     <Link
       className={styles.privacyPolicyLink}
-      onClick={() =>
-        onExternalLinkClick(
-          'https://static.iohk.io/terms/iog-privacy-policy.pdf'
-        )
-      }
+      onClick={() => onExternalLinkClick(PRIVACY_POLICY_LINK)}
       label={intl.formatMessage(messages.privacyPolicyLink)}
       hasIconAfter={false}
     />
@@ -60,8 +57,8 @@ function AnalyticsConsentForm({
         </p>
         <div className={styles.actions}>
           <Button
-            className={classnames(styles.skipButton, 'flat')}
-            label={intl.formatMessage(messages.skipButton)}
+            className={classnames(styles.disallowButton, 'flat')}
+            label={intl.formatMessage(messages.disallowButton)}
             skin={ButtonSpinnerSkin}
             loading={loading}
             onClick={handleSkip}

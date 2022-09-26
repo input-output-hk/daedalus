@@ -42,6 +42,7 @@ import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 import { toggleRTSFlagsModeChannel } from '../ipc/toggleRTSFlagsModeChannel';
+import { EventCategories } from '../analytics';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -431,6 +432,10 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE ACTIONS
   @action _toggleRTSFlagsMode = async () => {
+    this.analytics.sendEvent(
+      EventCategories.SETTINGS,
+      `RTS flags ${this.isRTSFlagsModeEnabled ? 'disabled' : 'enabled'}`
+    );
     await toggleRTSFlagsModeChannel.send();
   };
 

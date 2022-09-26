@@ -13,6 +13,7 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 import { WalletLocalData } from '../../types/localDataTypes';
+import Wallet from '../../domains/Wallet';
 
 const messages = defineMessages({
   address: {
@@ -40,7 +41,7 @@ class WalletReceivePage extends Component<Props, State> {
     addressToShare: null,
   };
 
-  get activeWallet() {
+  get activeWallet(): Wallet {
     return this.props.stores.wallets.active;
   }
 
@@ -142,6 +143,7 @@ class WalletReceivePage extends Component<Props, State> {
       note,
       address,
       filePath,
+      wallet: this.activeWallet,
     });
   };
   handleSaveQRCodeImage = async () => {
@@ -151,6 +153,7 @@ class WalletReceivePage extends Component<Props, State> {
     this.props.actions.wallets.saveQRCodeImage.trigger({
       address,
       filePath,
+      wallet: this.activeWallet,
     });
   };
   handleGenerateAddress = (passphrase: string) => {

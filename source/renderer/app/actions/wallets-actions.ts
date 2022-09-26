@@ -7,6 +7,7 @@ import type {
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
 import type { AssetToken } from '../api/assets/types';
+import Wallet from '../domains/Wallet';
 
 export type WalletImportFromFileParams = {
   filePath: string;
@@ -76,6 +77,7 @@ export default class WalletsActions {
     note: string;
     address: string;
     filePath: string;
+    wallet: Wallet;
   }> = new Action();
   generateAddressPDFSuccess: Action<{
     walletAddress: string;
@@ -83,6 +85,7 @@ export default class WalletsActions {
   saveQRCodeImage: Action<{
     address: string;
     filePath: string;
+    wallet: Wallet;
   }> = new Action();
   saveQRCodeImageSuccess: Action<{
     walletAddress: string;

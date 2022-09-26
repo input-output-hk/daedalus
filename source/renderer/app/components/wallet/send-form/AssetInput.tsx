@@ -11,7 +11,7 @@ import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
-import { Divider } from '../widgets/Divider';
+import { VerticalSeparator } from '../widgets/VerticalSeparator';
 import { ClearButton } from '../widgets/ClearButton';
 import styles from './AssetInput.scss';
 import messages from './messages';
@@ -152,7 +152,7 @@ class AssetInput extends Component<Props> {
             )}
             {ticker ? (
               <>
-                <Divider />
+                <VerticalSeparator />
                 <span className={styles.ticker}>{ticker}</span>
               </>
             ) : null}
