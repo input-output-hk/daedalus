@@ -3,6 +3,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
+import { debounce } from 'lodash';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
@@ -19,11 +20,10 @@ import {
   IS_RANKING_DATA_AVAILABLE,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/smash-s... Remove this comment to see the full error message
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
+import { AnalyticsTracker, EventCategories } from '../../../analytics';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -70,6 +70,7 @@ const messages = defineMessages({
 });
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
 type Props = {
+  analyticsTracker: AnalyticsTracker;
   currentLocale: string;
   currentTheme: string;
   getStakePoolById: (...args: Array<any>) => any;
@@ -115,26 +116,52 @@ class StakePools extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
   state = { ...initialState };
-  handleSearch = (search: string) =>
+
+  sendSearchAnalyticsEvent = debounce(
+    () =>
+      this.props.analyticsTracker.sendEvent(
+        EventCategories.STAKE_POOLS,
+        'Used stake pools search'
+      ),
+    5000
+  );
+
+  handleSearch = (search: string) => {
     this.setState({
       search,
     });
+
+    this.sendSearchAnalyticsEvent();
+  };
+
   handleClearSearch = () =>
     this.setState({
       search: '',
     });
-  handleGridView = () =>
+
+  handleGridView = () => {
     this.setState({
       isGridView: true,
       isGridRewardsView: false,
       isListView: false,
     });
+
+    this.props.analyticsTracker.sendEvent(
+      EventCategories.STAKE_POOLS,
+      'Changed view to grid view'
+    );
+  };
   handleGridRewardsView = () => {
     this.setState({
       isGridView: false,
       isGridRewardsView: true,
       isListView: false,
     });
+
+    this.props.analyticsTracker.sendEvent(
+      EventCategories.STAKE_POOLS,
+      'Changed view to grid rewards view'
+    );
   };
   handleListView = () => {
     this.setState({
@@ -142,6 +169,11 @@ class StakePools extends Component<Props, State> {
       isGridRewardsView: false,
       isListView: true,
     });
+
+    this.props.analyticsTracker.sendEvent(
+      EventCategories.STAKE_POOLS,
+      'Changed view to list view'
+    );
   };
   handleSetListActive = (selectedList: string) =>
     this.setState({

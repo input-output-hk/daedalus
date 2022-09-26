@@ -21,6 +21,7 @@ import { BrowserLocalStorageBridge } from '../../features/local-storage';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import WalletSendForm, { FormData } from './WalletSendForm';
+import { noopAnalyticsTracker } from '../../analytics';
 
 jest.mock(
   '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container',
@@ -128,6 +129,7 @@ describe('wallet/Wallet Send Form', () => {
                 walletName={faker.name.firstName()}
                 onTokenPickerDialogClose={() => setTokenPickerOpen(false)}
                 onTokenPickerDialogOpen={() => setTokenPickerOpen(true)}
+                analyticsTracker={noopAnalyticsTracker}
                 confirmationDialogData={state.formData}
                 validationDebounceWait={validationDebounceWait}
                 onTransactionFeeChange={onTransactionFeeChange}

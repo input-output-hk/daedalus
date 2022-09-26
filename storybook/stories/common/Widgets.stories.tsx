@@ -23,6 +23,7 @@ import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLi
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
 import { Separator } from '../../../source/renderer/app/components/widgets/separator/Separator';
 import { CollapsibleSection } from '../../../source/renderer/app/components/widgets/collapsible-section/CollapsibleSection';
+import { VerticalSeparator } from '../../../source/renderer/app/components/wallet/widgets/VerticalSeparator';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -249,5 +250,10 @@ storiesOf('Common / Widgets', module)
   .add('Separator', () => (
     <WidgetPresentationBox>
       <Separator />
+    </WidgetPresentationBox>
+  ))
+  .add('VerticalSeparator', () => (
+    <WidgetPresentationBox>
+      <VerticalSeparator />
     </WidgetPresentationBox>
   ));

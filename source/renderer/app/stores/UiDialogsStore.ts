@@ -1,6 +1,10 @@
-import { ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
+import WalletReceiveDialog from '../components/wallet/receive/WalletReceiveDialog';
+import AssetSettingsDialog from '../components/assets/AssetSettingsDialog';
+import DelegationSetupWizardDialog from '../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { EventCategories } from '../analytics';
 
 export default class UiDialogsStore extends Store {
   @observable
@@ -25,7 +29,7 @@ export default class UiDialogsStore extends Store {
   countdownSinceDialogOpened = (countDownTo: number) =>
     Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0);
   @action
-  _onOpen = ({ dialog }: { dialog: (...args: Array<any>) => any }) => {
+  _onOpen = ({ dialog }: { dialog: object }) => {
     this._reset();
 
     this.activeDialog = dialog;
@@ -34,6 +38,8 @@ export default class UiDialogsStore extends Store {
     this.secondsSinceActiveDialogIsOpen = 0;
     if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
     this._secondsTimerInterval = setInterval(this._updateSeconds, 1000);
+
+    this._handleAnalytics(dialog);
   };
   @action
   _onClose = () => {
@@ -52,5 +58,32 @@ export default class UiDialogsStore extends Store {
     this.activeDialog = null;
     this.secondsSinceActiveDialogIsOpen = 0;
     this.dataForActiveDialog = {};
+  };
+  _handleAnalytics = (dialog: object) => {
+    switch (dialog) {
+      case WalletReceiveDialog:
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Opened share wallet address modal'
+        );
+        break;
+
+      case AssetSettingsDialog:
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Opened native token settings'
+        );
+        break;
+
+      case DelegationSetupWizardDialog:
+        this.analytics.sendEvent(
+          EventCategories.STAKE_POOLS,
+          'Opened delegate wallet dialog'
+        );
+        break;
+
+      default:
+        break;
+    }
   };
 }

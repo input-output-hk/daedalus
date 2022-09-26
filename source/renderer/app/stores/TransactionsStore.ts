@@ -28,6 +28,7 @@ import {
   isTransactionInFilterRange,
 } from '../utils/transaction';
 import type { ApiTokens } from '../api/assets/types';
+import { EventCategories } from '../analytics';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
@@ -367,6 +368,11 @@ export default class TransactionsStore extends Store {
       ...currentFilterOptions,
       ...filterOptions,
     };
+
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Set transaction filters'
+    );
     return true;
   };
   @action
@@ -376,6 +382,7 @@ export default class TransactionsStore extends Store {
     this._filterOptionsForWallets[wallet.id] = {
       ...emptyTransactionFilterOptions,
     };
+
     return true;
   };
   @action
@@ -402,8 +409,13 @@ export default class TransactionsStore extends Store {
       getAsset,
       isInternalAddress,
     });
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    if (success) actions.transactions.requestCSVFileSuccess.trigger();
+    if (success) {
+      actions.transactions.requestCSVFileSuccess.trigger();
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Exported transactions as CSV'
+      );
+    }
   };
   @action
   _createExternalTransaction = async (signedTransactionBlob: Buffer) => {

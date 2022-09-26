@@ -16,6 +16,8 @@ import {
   withDiscreetMode,
 } from './ui';
 import { DiscreetMode } from './feature';
+import { AnalyticsProvider } from '../../components/analytics';
+import { noopAnalyticsTracker } from '../../analytics';
 
 describe('Discreet Mode feature', () => {
   afterEach(cleanup);
@@ -29,15 +31,17 @@ describe('Discreet Mode feature', () => {
   }) {
     return (
       <IntlProvider locale="en-US">
-        <BrowserLocalStorageBridge>
-          <DiscreetModeFeatureProvider>
-            <>
-              <DiscreetModeToggle />
+        <AnalyticsProvider tracker={noopAnalyticsTracker}>
+          <BrowserLocalStorageBridge>
+            <DiscreetModeFeatureProvider>
+              <>
+                <DiscreetModeToggle />
 
-              <div data-testid={testId}>{children}</div>
-            </>
-          </DiscreetModeFeatureProvider>
-        </BrowserLocalStorageBridge>
+                <div data-testid={testId}>{children}</div>
+              </>
+            </DiscreetModeFeatureProvider>
+          </BrowserLocalStorageBridge>
+        </AnalyticsProvider>
       </IntlProvider>
     );
   }

@@ -97,6 +97,7 @@ import type {
   TrezorWitness,
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
+import { EventCategories } from '../analytics';
 import {
   HardwareWalletDevicesType,
   HardwareWalletLocalData,
@@ -525,6 +526,12 @@ export default class HardwareWalletsStore extends Store {
             walletId,
             isVotingRegistrationTransaction,
           }
+        );
+
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Transaction made',
+          'Hardware wallet'
         );
       } else {
         this.setTransactionPendingState(false);
@@ -1276,6 +1283,7 @@ export default class HardwareWalletsStore extends Store {
       this.unfinishedWalletAddressVerification = address;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
+
     const walletId = get(this.stores.wallets, ['active', 'id']);
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -1473,6 +1481,11 @@ export default class HardwareWalletsStore extends Store {
           );
           this.showAddress(params);
         }
+
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Verified wallet address with hardware wallet'
+        );
       } else {
         runInAction(
           'HardwareWalletsStore:: Address Verified but not correct',

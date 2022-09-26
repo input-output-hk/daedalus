@@ -5,6 +5,7 @@ import SupportSettings from '../../../components/settings/categories/SupportSett
 import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { AnalyticsAcceptanceStatus } from '../../../analytics';
+import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -28,9 +29,9 @@ class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleChangeAnalyticsSettings = () => {
-    this.props.actions.profile.acceptAnalytics.trigger(
-      AnalyticsAcceptanceStatus.PENDING
-    );
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.PROFILE.ANALYTICS,
+    });
   };
 
   handleSupportRequestClick = async (
