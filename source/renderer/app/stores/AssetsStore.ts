@@ -6,6 +6,7 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
+import { EventCategories } from '../analytics';
 
 type WalletId = string;
 export default class AssetsStore extends Store {
@@ -107,6 +108,11 @@ export default class AssetsStore extends Store {
     await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
+
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Changed native token settings'
+    );
   };
   @action
   _onEditedAssetUnset = () => {
@@ -193,6 +199,11 @@ export default class AssetsStore extends Store {
     );
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.favoritesRequest.execute();
+
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      `${!isFavorite ? 'Added token to' : 'Removed token from'} favorites`
+    );
   };
   _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
     this.assetsRequests[walletId] || this._createWalletTokensRequest(walletId);

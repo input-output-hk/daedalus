@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { FormattedMessage, injectIntl, Intl } from 'react-intl';
+import {
+  FormattedMessage,
+  FormattedHTMLMessage,
+  injectIntl,
+  Intl,
+} from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
-import { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from './SupportSettings.messages';
 import { Separator } from '../../widgets/separator/Separator';
 
@@ -124,10 +128,13 @@ class SupportSettings extends Component<SupportSettingsProps> {
           {intl.formatMessage(messages.analyticsSectionTitle)}
         </h2>
         <p className={styles.analyticsSectionDescription}>
-          <FormattedMessage
+          <FormattedHTMLMessage
             {...(this.props.analyticsAccepted
               ? messages.analyticsAcceptedDescription
               : messages.analyticsDeclinedDescription)}
+          />
+          <FormattedMessage
+            {...messages.changeAnalyticsSettings}
             values={{
               changeAnalyticsSettingsLink,
             }}

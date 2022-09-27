@@ -22,8 +22,8 @@ export const messages = defineMessages({
     defaultMessage: '!!!Allow',
     description: 'Analytics data collection allow button text',
   },
-  skipButton: {
-    id: 'analytics.dialog.skipButton',
+  disallowButton: {
+    id: 'analytics.form.disallowButton',
     defaultMessage: '!!!Skip',
     description: 'Analytics data collection skip button text',
   },

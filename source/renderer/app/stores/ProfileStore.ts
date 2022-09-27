@@ -1,8 +1,6 @@
-import { action, observable, computed, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { includes, camelCase } from 'lodash';
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
+import { camelCase, includes } from 'lodash';
 import { toJS } from '../../../common/utils/helper';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -15,35 +13,35 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
+import type { Locale } from '../../../common/types/locales.types';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
   downloadLogsChannel,
   getLogsChannel,
 } from '../ipc/logs.ipc';
-import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
+import type { CompressedLogStatus, LogFiles } from '../types/LogTypes';
 import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
-import type { Locale } from '../../../common/types/locales.types';
 import {
   DEFAULT_NUMBER_FORMAT,
   NUMBER_FORMATS,
 } from '../../../common/types/number.types';
 import {
+  getRequestKeys,
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
   requestGetterLocale,
-  getRequestKeys,
 } from '../utils/storesUtils';
 import {
-  NUMBER_OPTIONS,
   DATE_ENGLISH_OPTIONS,
   DATE_JAPANESE_OPTIONS,
-  TIME_OPTIONS,
+  NUMBER_OPTIONS,
   PROFILE_SETTINGS,
+  TIME_OPTIONS,
 } from '../config/profileConfig';
 import { buildSystemInfo } from '../utils/buildSystemInfo';
-import { AnalyticsAcceptanceStatus } from '../analytics/types';
+import { AnalyticsAcceptanceStatus, EventCategories } from '../analytics/types';
 
 export default class ProfileStore extends Store {
   @observable
@@ -173,8 +171,7 @@ export default class ProfileStore extends Store {
       this._updateBigNumberFormat,
       this._redirectToInitialSettingsIfNoLocaleSet,
       this._redirectToAnalyticsScreenIfNotConfirmed,
-      this._redirectToTermsOfUseScreenIfTermsNotAccepted, // this._redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted,
-      this._redirectToMainUiAfterAnalyticsAreConfirmed,
+      this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
@@ -308,10 +305,7 @@ export default class ProfileStore extends Store {
 
   @computed
   get analyticsAcceptanceStatus(): AnalyticsAcceptanceStatus {
-    return (
-      this.getAnalyticsAcceptanceRequest.result ||
-      AnalyticsAcceptanceStatus.PENDING
-    );
+    return this.getAnalyticsAcceptanceRequest.result;
   }
 
   @computed
@@ -371,12 +365,20 @@ export default class ProfileStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'ProfileS... Remove this comment to see the full error message
       this.stores.wallets.refreshWalletsData();
     }
+
+    this.analytics.sendEvent(
+      EventCategories.SETTINGS,
+      'Changed user settings',
+      param
+    );
   };
   _updateTheme = async ({ theme }: { theme: string }) => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setThemeRequest.execute(theme);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getThemeRequest.execute();
+
+    this.analytics.sendEvent(EventCategories.SETTINGS, 'Changed theme', theme);
   };
   _acceptTermsOfUse = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -388,8 +390,24 @@ export default class ProfileStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
   _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+    const previousStatus = this.analyticsAcceptanceStatus;
+
     this.setAnalyticsAcceptanceRequest.execute(status);
     this.getAnalyticsAcceptanceRequest.execute();
+
+    if (status === AnalyticsAcceptanceStatus.ACCEPTED) {
+      this.analytics.enableTracking();
+    } else if (status === AnalyticsAcceptanceStatus.REJECTED) {
+      this.analytics.disableTracking();
+    }
+
+    if (previousStatus === AnalyticsAcceptanceStatus.PENDING) {
+      this._redirectToRoot();
+    } else {
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.SETTINGS.SUPPORT,
+      });
+    }
   };
   _getAnalyticsAcceptance = () => {
     this.getAnalyticsAcceptanceRequest.execute();
@@ -492,14 +510,6 @@ export default class ProfileStore extends Store {
   };
   _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
-      this._redirectToRoot();
-    }
-  };
-  _redirectToMainUiAfterAnalyticsAreConfirmed = () => {
-    if (
-      this.analyticsAcceptanceStatus !== AnalyticsAcceptanceStatus.PENDING &&
-      this._isOnAnalyticsPage()
-    ) {
       this._redirectToRoot();
     }
   };

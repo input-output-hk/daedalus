@@ -29,6 +29,7 @@ import {
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
 import { IS_AUTOMATIC_WALLET_MIGRATION_ENABLED } from '../config/walletsConfig';
 import type { ImportWalletStep } from '../types/walletRestoreTypes';
+import { EventCategories } from '../analytics';
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -311,6 +312,11 @@ export default class WalletMigrationStore extends Store {
     runInAction('update isRestorationRunning', () => {
       this.isRestorationRunning = false;
     });
+
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Restored legacy wallet(s)'
+    );
   };
   @action
   _restoreWallet = async (exportedWallet: ExportedByronWallet) => {

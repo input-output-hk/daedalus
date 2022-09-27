@@ -2677,14 +2677,19 @@
         "id": "settings.support.steps.reportProblem.link"
       },
       {
-        "defaultMessage": "!!!You have opted in to analytics data collection. You can {changeAnalyticsSettingsLink}.",
+        "defaultMessage": "!!!You have <strong>opted in</strong> to analytics data collection. You can {changeAnalyticsSettingsLink}.",
         "description": "Analytics data collection description when user opted in",
         "id": "analytics.form.analyticsAcceptedDescription"
       },
       {
-        "defaultMessage": "!!!You have opted out of analytics data collection. You can {changeAnalyticsSettingsLink}.",
+        "defaultMessage": "!!!You have <strong>opted out</strong> of analytics data collection. You can {changeAnalyticsSettingsLink}.",
         "description": "Analytics data collection description when user opted out ",
         "id": "analytics.form.analyticsDeclinedDescription"
+      },
+      {
+        "defaultMessage": "!!!You can {changeAnalyticsSettingsLink}.",
+        "description": "Change analytics settings link",
+        "id": "analytics.form.changeAnalyticsSettings"
       },
       {
         "defaultMessage": "!!!change this setting here",
@@ -2714,7 +2719,7 @@
       {
         "defaultMessage": "!!!Skip",
         "description": "Analytics data collection skip button text",
-        "id": "analytics.dialog.skipButton"
+        "id": "analytics.form.disallowButton"
       },
       {
         "defaultMessage": "!!!Daedalus Privacy Policy",

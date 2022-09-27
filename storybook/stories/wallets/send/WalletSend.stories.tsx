@@ -19,6 +19,7 @@ import Wallet, {
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
+import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
 
 const allAssets = [
   generateAssetToken(
@@ -232,6 +233,7 @@ storiesOf('Wallets / Send', module)
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+      analyticsTracker={analyticsTracker}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -260,6 +262,7 @@ storiesOf('Wallets / Send', module)
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+      analyticsTracker={analyticsTracker}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -288,6 +291,7 @@ storiesOf('Wallets / Send', module)
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+      analyticsTracker={analyticsTracker}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -316,6 +320,7 @@ storiesOf('Wallets / Send', module)
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+      analyticsTracker={analyticsTracker}
     />
   ))
   .add('Send - With Assets', () => (
@@ -347,6 +352,7 @@ storiesOf('Wallets / Send', module)
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+      analyticsTracker={analyticsTracker}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => {

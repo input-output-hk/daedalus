@@ -24,6 +24,9 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
+import { AnalyticsTracker } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export const storeClasses = {
   addresses: AddressesStore,
@@ -82,12 +85,17 @@ function executeOnEveryStore(fn: (store: Store) => void) {
   });
 } // Set up and return the stores for this app -> also used to reset all stores to defaults
 
-export default action(
-  (api, actions, router): StoresMap => {
+export const setUpStores = action(
+  (
+    api: Api,
+    actions: ActionsMap,
+    router: RouterStore,
+    analyticsTracker: AnalyticsTracker
+  ): StoresMap => {
     function createStoreInstanceOf<T extends Store>(
       StoreSubClass: Class<T>
     ): T {
-      return new StoreSubClass(api, actions);
+      return new StoreSubClass(api, actions, analyticsTracker);
     }
 
     // Teardown existing stores

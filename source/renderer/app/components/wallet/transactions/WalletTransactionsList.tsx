@@ -16,6 +16,7 @@ import { SimpleTransactionList } from './render-strategies/SimpleTransactionList
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
 import { getNonZeroAssetTokens } from '../../../utils/assets';
+import { AnalyticsTracker, EventCategories } from '../../../analytics';
 
 const messages = defineMessages({
   today: {
@@ -69,6 +70,7 @@ type Props = {
   getAsset: (...args: Array<any>) => any;
   isInternalAddress: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
+  analyticsTracker: AnalyticsTracker;
 };
 type State = {
   isPreloading: boolean;
@@ -203,6 +205,10 @@ class WalletTransactionsList extends Component<Props, State> {
   onShowMoreTransactions = (walletId: string) => {
     if (this.props.onShowMoreTransactions) {
       this.props.onShowMoreTransactions(walletId);
+      this.props.analyticsTracker.sendEvent(
+        EventCategories.WALLETS,
+        'Clicked Show More Transactions button'
+      );
     }
   };
   getExpandedTransactions = () => this.expandedTransactionIds;

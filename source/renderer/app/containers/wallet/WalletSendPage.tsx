@@ -15,9 +15,13 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
 import type { ApiTokens } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
+import {
+  withAnalytics,
+  WithAnalyticsTrackerProps,
+} from '../../components/analytics/withAnalytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
-type Props = InjectedProps;
+type Props = InjectedProps & WithAnalyticsTrackerProps;
 type State = {
   confirmationDialogData: ConfirmationDialogData;
 };
@@ -186,10 +190,11 @@ class WalletSendPage extends Component<Props, State> {
         walletName={walletName}
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
+        analyticsTracker={this.props.analyticsTracker}
         confirmationDialogData={this.state.confirmationDialogData}
       />
     );
   }
 }
 
-export default WalletSendPage;
+export default withAnalytics(WalletSendPage);
