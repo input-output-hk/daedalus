@@ -1,4 +1,4 @@
-import { BridgeInfo, Device as TrezorDevice, UdevInfo } from 'trezor-connect';
+import { BridgeInfo, Device as TrezorDevice, UdevInfo } from '@trezor/connect';
 
 export type BIP32Path = Array<number>;
 export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';
