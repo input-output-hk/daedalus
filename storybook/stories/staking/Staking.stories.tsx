@@ -112,7 +112,7 @@ storiesOf('Decentralization / Staking', module)
   .addDecorator(decorator) // ====== Stories ======
   .add(
     pageNames['delegation-center'],
-    (props) => (
+    (_, props) => (
       // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: true; id: string; n... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
     ),
@@ -122,7 +122,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Center - Loading',
-    (props) => (
+    (_, props) => (
       // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; isEpochsInfoAvailable: tr... Remove this comment to see the full error message
       <StakingDelegationCenterStory
         {...props}
@@ -136,7 +136,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Center - Not an Shelley era',
-    (props) => (
+    (_, props) => (
       // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: false; id: string; ... Remove this comment to see the full error message
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
@@ -217,7 +217,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Delegation Wizard',
-    (props) => {
+    (_, props) => {
       const oversaturationPercentage = number('Oversaturation Percentage', 0, {
         min: 0,
         max: 1000,
@@ -239,14 +239,14 @@ storiesOf('Decentralization / Staking', module)
   .add(
     'Delegation Wizard - Delegation Not Available',
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-    (props) => <StakingDelegationSteps {...props} isDisabled />,
+    (_, props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
     }
   )
   .add(
     'Undelegate Confirmation',
-    (props) => (
+    (_, props) => (
       <StakingUndelegateConfirmationStory
         {...props}
         isHardwareWallet={boolean('isHardwareWallet', false)}
@@ -258,7 +258,7 @@ storiesOf('Decentralization / Staking', module)
   )
   .add(
     'Undelegate Confirmation - unknownn stake pool',
-    (props) => (
+    (_, props) => (
       <StakingUndelegateConfirmationStory {...props} unknownStakePool />
     ),
     {
@@ -268,7 +268,7 @@ storiesOf('Decentralization / Staking', module)
   .add(
     'Undelegate Confirmation Result',
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale, }: { locale: string; ... Remove this comment to see the full error message
-    StakingUndelegateConfirmationResultStory,
+    (_, props) => <StakingUndelegateConfirmationResultStory {...props} />,
     {
       id: 'undelegate-confirmation-result',
     }
