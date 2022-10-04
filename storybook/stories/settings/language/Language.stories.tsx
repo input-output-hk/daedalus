@@ -12,7 +12,7 @@ import {
 storiesOf('Settings / Language', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Select Language - initial', ({ locale }: { locale: string }) => (
+  .add('Select Language - initial', (_, { locale }: { locale: string }) => (
     <div>
       <InitialSettings
         onSubmit={action('submit')}
@@ -25,7 +25,7 @@ storiesOf('Settings / Language', module)
     </div>
   ))
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Select Language - submitting', ({ locale }: { locale: string }) => (
+  .add('Select Language - submitting', (_, { locale }: { locale: string }) => (
     <div>
       <InitialSettings
         onSubmit={action('submit')}

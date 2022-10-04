@@ -113,7 +113,7 @@ storiesOf('Settings / General', module)
       }}
     />
   ))
-  .add('Terms of Service', (props) => {
+  .add('Terms of Service', (_, props) => {
     const termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`);
 
     return (

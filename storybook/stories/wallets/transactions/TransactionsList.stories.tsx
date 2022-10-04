@@ -155,7 +155,7 @@ storiesOf('Wallets / Transactions', module)
   })
   .addDecorator(WalletsWrapper) // ====== Stories ======
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
-  .add('Transactions List', (props: Props) => {
+  .add('Transactions List', (_, props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,
@@ -198,7 +198,7 @@ storiesOf('Wallets / Transactions', module)
     );
   })
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
-  .add('Wallet Tokens Transactions List', (props: Props) => {
+  .add('Wallet Tokens Transactions List', (_, props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,

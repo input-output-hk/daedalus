@@ -26,7 +26,7 @@ storiesOf('Wallets / Settings', module)
   .add(
     'Recovery Prase Verification - Widget',
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-    ({ locale }: { locale: string }) => {
+    (_, { locale }: { locale: string }) => {
       const groupId = 'Recovery Phrase Verification';
       const wordCount = options(
         'Word count',
