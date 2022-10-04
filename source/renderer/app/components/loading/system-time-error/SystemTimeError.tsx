@@ -104,20 +104,17 @@ class SystemTimeError extends Component<Props> {
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
     const rawTimeOffset = (localTimeDifference || 0) / 1000;
-    const timeOffset = currentLocale
-      ? humanizeDurationByLocale(rawTimeOffset, currentLocale, {
-          delimiter: ' ',
-          units: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'],
-          localeConfig: {
-            'ja-JP': {
-              spacer: '',
-              delimiter: '',
-              serialComma: false,
-            },
-          },
-        })
-      : null;
-
+    const timeOffset = humanizeDurationByLocale(rawTimeOffset, currentLocale, {
+      delimiter: ' ',
+      units: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'],
+      localeConfig: {
+        'ja-JP': {
+          spacer: '',
+          delimiter: '',
+          serialComma: false,
+        },
+      },
+    });
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />
