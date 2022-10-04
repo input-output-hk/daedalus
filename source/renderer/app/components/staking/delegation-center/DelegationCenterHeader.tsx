@@ -133,10 +133,9 @@ class DelegationCenterHeader extends Component<Props, State> {
     const slot = get(networkTip, 'slot', '-');
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft);
-    const timeUntilFutureEpoch = humanizeDurationByLocale(
-      this.state.timeUntilFutureEpoch,
-      currentLocale
-    );
+    const timeUntilFutureEpoch = currentLocale
+      ? humanizeDurationByLocale(this.state.timeUntilFutureEpoch, currentLocale)
+      : null;
     const description = intl.formatMessage(messages.description, {
       timeUntilFutureEpoch,
     });
