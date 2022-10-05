@@ -7,6 +7,7 @@
 
 ### Fixes
 - Fix locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
+- Fixes Language components in Storybook to have it's own mocked store ([PR 3043](https://github.com/input-output-hk/daedalus/pull/3043))
 
 ### Chores
 
