@@ -6,23 +6,15 @@ import StoryDecorator from '../../_support/StoryDecorator';
 import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
 
 const onValueChange = (store, id, value) => {
-  let key;
-  switch (id) {
-    case 'dateFormat':
-      key = 'currentDateFormat';
-      break;
-    case 'numberFormat':
-      key = 'currentNumberFormat';
-      break;
-    case 'timeFormat':
-      key = 'currentTimeFormat';
-      break;
-    default:
-      key = 'currentLocale';
-  }
+  const options = {
+    dateFormat: 'currentDateFormat',
+    numberFormat: 'currentNumberFormat',
+    timeFormat: 'currentTimeFormat',
+    locale: 'currentLocale',
+  };
 
   store.set({
-    [key]: value,
+    [options[id]]: value,
   });
 };
 
