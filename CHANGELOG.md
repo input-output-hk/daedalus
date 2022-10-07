@@ -10,7 +10,8 @@
 
 ### Chores
 
-- Changed japanese translations in delegate screen ([PR 3044](https://github.com/input-output-hk/daedalus/pull/3044))
+- Updated `cardano-wallet` to v2022-10-06 ([PR 3045](https://github.com/input-output-hk/daedalus/pull/3045))
+- Changed Japanese translations in delegate screen ([PR 3044](https://github.com/input-output-hk/daedalus/pull/3044))
 - Updated trezor-connect to v9 ([PR 3038](https://github.com/input-output-hk/daedalus/pull/3038))
 - Added analytics data collection ([PR 2927](https://github.com/input-output-hk/daedalus/pull/2927), [PR 2989](https://github.com/input-output-hk/daedalus/pull/2989), [PR 3003](https://github.com/input-output-hk/daedalus/pull/3003), [PR 3028](https://github.com/input-output-hk/daedalus/pull/3028))
 - Updated LedgerJS to 5.1.0 ([PR 3036](https://github.com/input-output-hk/daedalus/pull/3036))
