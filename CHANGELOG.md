@@ -1,19 +1,20 @@
 # Changelog
 
-## 5.1.0
-
 ## vNext
 
 ### Features
-
 
 ### Fixes
 
 ### Chores
 
-- Fixes Language components in Storybook to have it's own mocked store ([PR 3043](https://github.com/input-output-hk/daedalus/pull/3043))
-- Fix locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
-- Fix locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
+- Fixed Language components in Storybook to have it's own mocked store ([PR 3043](https://github.com/input-output-hk/daedalus/pull/3043))
+- Fixed locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
+
+## 5.1.0
+
+### Chores
+
 - Updated `cardano-wallet` to v2022-10-06 ([PR 3045](https://github.com/input-output-hk/daedalus/pull/3045))
 - Changed Japanese translations in delegate screen ([PR 3044](https://github.com/input-output-hk/daedalus/pull/3044))
 - Updated trezor-connect to v9 ([PR 3038](https://github.com/input-output-hk/daedalus/pull/3038))
