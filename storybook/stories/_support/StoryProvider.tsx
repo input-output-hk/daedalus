@@ -33,6 +33,16 @@ export const WALLETS = [
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
+    assets: {
+      total: [
+        {
+          policyId: '008',
+          assetName: 'NFT',
+          quantity: new BigNumber(0),
+          uniqueId: '9998',
+        },
+      ],
+    },
   },
   {
     id: '1',
@@ -154,6 +164,45 @@ export const WALLETS_V2 = [
   },
 ];
 
+const coinSelectionResponse = {
+  inputs: {
+    address: '',
+    amount: {
+      quantity: 1,
+      unit: 'lovelace',
+    },
+    id: '001',
+    index: 1,
+    derivationPath: [''],
+  },
+  outputs: {
+    address: '',
+    amount: {
+      quantity: 1,
+      unit: 'lovelace',
+    },
+    derivationPath: [''],
+    assets: [
+      {
+        policyId: '',
+        assetName: 'NFT',
+        quantity: 1,
+      },
+    ],
+  },
+  certificates: [
+    {
+      pool: '',
+      certificateType: 'register_reward_account',
+      rewardAccountPath: [''],
+    },
+  ],
+  deposits: new BigNumber(10),
+  depositsReclaimed: new BigNumber(1),
+  withdrawals: [],
+  fee: new BigNumber(0.2),
+  metadata: null,
+};
 @observer
 class StoryProvider extends Component<Props> {
   @observable
@@ -171,6 +220,31 @@ class StoryProvider extends Component<Props> {
   @computed
   get stores(): {} {
     return {
+      assets: {
+        getAsset: () => {
+          return {
+            coinSelection: coinSelectionResponse,
+            receiver:
+              'addr1qzhk85furdn6r9tlyp2q23q9vq7nfl420j7y0yqp3hf6yw7jar5rnzqr4h3g9whm0zjh65utc2ty5uqtcpm0rm7ahj0qq75een',
+            selectedAssets: [
+              {
+                assetName: 'coin',
+                fingerprint: 'urdn6r9tlyp2q23q9vq7nfl420',
+                uniqueId: 'u000',
+                policyId: '003',
+                quantity: new BigNumber(2),
+              },
+            ],
+            assetsAmounts: [''],
+            amount: new BigNumber(20),
+            totalAmount: new BigNumber(20),
+            transactionFee: new BigNumber(20),
+            adaAmount: 20,
+            selectedAddress:
+              'addr1qzhk85furdn6r9tlyp2q23q9vq7nfl420j7y0yqp3hf6yw7jar5rnzqr4h3g9whm0zjh65utc2ty5uqtcpm0rm7ahj0qq75ytr',
+          };
+        },
+      },
       wallets: {
         active: WALLETS[parseInt(this.activeWalletId, 10)],
         sendMoney: () => {},
@@ -178,6 +252,13 @@ class StoryProvider extends Component<Props> {
           isExecuting: false,
           reset: () => {},
         },
+      },
+      hardwareWallets: {
+        _resetTransaction: () => {},
+        sendMoneyRequest: () => {},
+        isTransactionPending: false,
+        checkIsTrezorByWalletId: () => {},
+        initiateTransaction: null,
       },
     };
   }
