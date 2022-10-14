@@ -6,7 +6,7 @@ import type { Locale } from '../../../common/types/locales.types';
 export const getRequestKeys = (
   param: string,
   currentLocale: Locale
-): Request<string> => {
+): { get: string; set: string } => {
   const currentLanguage = findKey(LOCALES, (l) => l === currentLocale);
   const languageSufix = param === 'dateFormat' ? currentLanguage : '';
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string[]' is not assignable to p... Remove this comment to see the full error message

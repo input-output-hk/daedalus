@@ -15,6 +15,9 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-about-window-icon-close-button-color': '#fafbfc',
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.16)',
   },
+  analytics: {
+    '--theme-analytics-toc-details-background': 'rgba(255, 255, 255, 0.07)',
+  },
   appUpdate: {
     '--theme-node-update-background-color': '#121326',
     '--theme-node-update-title-color': '#ffffff',
@@ -159,12 +162,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-connecting-sync-progress-color': '#fff',
   },
   dapps: {
-    '--theme-dapp-transaction-request-separator': '#ffffff',
     '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-    '--theme-dapp-transaction-request-toggle-button-background-color':
-      'rgba(255, 255, 255, 0.1)',
-    '--theme-dapp-transaction-request-code-background-color':
-      'rgba(255, 255, 255, 0.05)',
   },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#36374d',
@@ -1107,10 +1105,6 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-wallet-restore-dialog-step-walletType-hardwareWalletDisclaimer-text-color':
       '#ea4c5b',
   },
-  walletSettings: {
-    '--theme-wallet-settings-section-separator-color':
-      'rgba(255, 255, 255, 0.15)',
-  },
   widgets: {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(255,255,255,0.1)',
@@ -1118,6 +1112,11 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-widgets-asset-token-background-color': 'rgba(42, 43, 60, 0.98)',
     '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
     '--theme-widgets-itemsDropdown-option-label-text-color': '#ffffff',
+    '--theme-widgets-separator-color': 'rgba(255, 255, 255, 0.15)',
+    '--theme-widgets-collapsible-section-button-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-widgets-monospace-text-block-background-color':
+      'rgba(255, 255, 255, 0.05)',
   },
 };
 const SHELLEY_TESTNET_THEME_PARAMS: CreateThemeParams = {

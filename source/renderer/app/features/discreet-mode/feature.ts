@@ -5,13 +5,14 @@ import { DiscreetModeApi } from './api';
 import { SENSITIVE_DATA_SYMBOL } from './config';
 import { defaultReplacer } from './replacers/defaultReplacer';
 import type { ReplacerFn } from './types';
+import { AnalyticsTracker, EventCategories } from '../../analytics';
 
 export class DiscreetMode extends Feature {
-  api: DiscreetModeApi;
-
-  constructor(api: DiscreetModeApi) {
+  constructor(
+    private api: DiscreetModeApi,
+    private analyticsTracker: AnalyticsTracker
+  ) {
     super();
-    this.api = api;
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
         this.api.getDiscreetModeSettings
@@ -50,6 +51,10 @@ export class DiscreetMode extends Feature {
   @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
+    this.analyticsTracker.sendEvent(
+      EventCategories.SETTINGS,
+      `Turned ${this.isDiscreetMode ? 'on' : 'off'} discreet mode`
+    );
   };
   @action
   toggleOpenInDiscreetMode = async () => {
@@ -59,6 +64,10 @@ export class DiscreetMode extends Feature {
     runInAction('Update open in discreet mode settings', () => {
       this.openInDiscreetMode = nextSetting;
     });
+    this.analyticsTracker.sendEvent(
+      EventCategories.SETTINGS,
+      `Turned ${nextSetting ? 'on' : 'off'} discreet mode by default`
+    );
   };
 
   discreetValue({

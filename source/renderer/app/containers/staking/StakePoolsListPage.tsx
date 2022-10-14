@@ -6,8 +6,12 @@ import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizar
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import {
+  withAnalytics,
+  WithAnalyticsTrackerProps,
+} from '../../components/analytics/withAnalytics';
 
-type Props = InjectedProps;
+type Props = InjectedProps & WithAnalyticsTrackerProps;
 
 @inject('stores', 'actions')
 @observer
@@ -55,6 +59,7 @@ class StakePoolsListPage extends Component<Props> {
       networkStatus,
       profile,
       wallets,
+      analytics,
     } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
@@ -77,6 +82,7 @@ class StakePoolsListPage extends Component<Props> {
     return (
       <Fragment>
         <StakePools
+          analyticsTracker={this.props.analyticsTracker}
           wallets={all}
           currentLocale={currentLocale}
           stakePoolsList={stakePools}
@@ -107,4 +113,4 @@ class StakePoolsListPage extends Component<Props> {
   }
 }
 
-export default StakePoolsListPage;
+export default withAnalytics(StakePoolsListPage);

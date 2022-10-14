@@ -25,6 +25,7 @@ import type {
   VotingMetadataType,
 } from '../api/transactions/types';
 import type { CatalystFund } from '../api/voting/types';
+import { EventCategories } from '../analytics';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -409,6 +410,7 @@ export default class VotingStore extends Store {
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
 
     this._nextRegistrationStep();
+    this.analytics.sendEvent(EventCategories.VOTING, 'Registered for voting');
   };
   _saveAsPDF = async () => {
     const { qrCode, selectedWalletId } = this;
