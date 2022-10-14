@@ -1,9 +1,11 @@
-{ nodeImplementation ? "cardano" }:
+{ nodeImplementation ? "cardano"
+, system ? builtins.currentSystem
+}:
 
 let
   sources = import ./nix/sources.nix;
   iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
-  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; };
+  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; inherit system; };
   # TODO: can we use the filter in iohk-nix instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (

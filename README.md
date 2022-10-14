@@ -38,7 +38,7 @@ Daedalus - Cryptocurrency Wallet
    trusted-users = root
    allowed-users = *
 
-   substituters = https://hydra.iohk.io https://cache.nixos.org/
+   substituters = https://cache.iog.io https://cache.nixos.org/
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib

@@ -1,6 +1,7 @@
 { target ? builtins.currentSystem
+, localLibSystem ? builtins.currentSystem
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation; }
+, localLib ? import ./lib.nix { inherit nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
