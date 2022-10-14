@@ -99,6 +99,5 @@ backendOptionParser = cardano
     cardano = Cardano <$> optPath "cardano" 'S' "Use Cardano backend with given Daedalus bridge path"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the
--- Dhall syntax.
 dfp :: Format r (FilePath -> r)
 dfp = makeFormat (\fpath -> either id id (FP.toText FP.posix fpath))

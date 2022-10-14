@@ -77,7 +77,6 @@ makeTestInstallersDir = do
   liftIO $ writeTextFile (src </> "package.json") "{ \"version\": \"0.4.2\" }"
   let installersDir = src </> "installers"
   mkdir installersDir
-  cptree "dhall" (installersDir </> "dhall")
   mktree (installersDir </> "data/scripts")
   liftIO $ writeTextFile (installersDir </> "data/scripts/dockutil") "fake dock util"
   pure installersDir

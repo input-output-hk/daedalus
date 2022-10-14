@@ -58,7 +58,6 @@ let
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix") {};
   inherit (pkgs.lib) optionalString optional concatStringsSep;
-  inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
@@ -296,7 +295,6 @@ let
 
       mkdir -p $out/{nix-support,cfg-files}
       mkdir installers
-      cp -vir ${./installers/dhall} installers/dhall
       cp -vir ${self.windowsIcons} installers/icons
       cp -vir ${./package.json} package.json
       chmod -R +w installers
@@ -452,7 +450,6 @@ let
     }).installerBundle;
     wrappedBundle = let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      backend = "cardano-wallet-${nodeImplementation}";
       suffix = if buildNum == null then "" else "-${toString buildNum}";
       fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
