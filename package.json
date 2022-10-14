@@ -85,7 +85,7 @@
     "@faker-js/faker": "6.0.0",
     "@formatjs/cli": "4.8.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
-    "@storybook/addon-actions": "6.4.22",
+    "@storybook/addon-actions": "6.5.12",
     "@storybook/addon-knobs": "6.4.0",
     "@storybook/addon-links": "6.5.12",
     "@storybook/addons": "6.4.22",
