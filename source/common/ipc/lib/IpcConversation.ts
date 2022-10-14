@@ -1,5 +1,5 @@
 import { isString } from 'lodash';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export type IpcSender = {
   send: (channel: string, conversationId: string, ...args: Array<any>) => void;
@@ -68,7 +68,7 @@ export class IpcConversation<Incoming, Outgoing> {
     receiver: IpcReceiver
   ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
-      const conversationId = uuid();
+      const conversationId = uuidv4();
 
       const handler = (
         event,

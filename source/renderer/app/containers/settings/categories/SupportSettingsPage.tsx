@@ -4,6 +4,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { AnalyticsAcceptanceStatus } from '../../../analytics';
+import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -20,10 +22,18 @@ class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   static defaultProps = {
     actions: null,
     stores: null,
   };
+
+  handleChangeAnalyticsSettings = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.PROFILE.ANALYTICS,
+    });
+  };
+
   handleSupportRequestClick = async (
     event: React.SyntheticEvent<HTMLButtonElement>
   ) => {
@@ -42,6 +52,7 @@ class SupportSettingsPage extends Component<InjectedProps> {
     );
     this.props.stores.app.openExternalLink(supportUrl);
   };
+
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
@@ -55,8 +66,13 @@ class SupportSettingsPage extends Component<InjectedProps> {
         onExternalLinkClick={stores.app.openExternalLink}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
+        onChangeAnalyticsSettings={this.handleChangeAnalyticsSettings}
         disableDownloadLogs={
           this.props.stores.app.isDownloadNotificationVisible
+        }
+        analyticsAccepted={
+          this.props.stores.profile.analyticsAcceptanceStatus ===
+          AnalyticsAcceptanceStatus.ACCEPTED
         }
       />
     );

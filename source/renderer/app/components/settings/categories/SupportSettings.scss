@@ -1,9 +1,7 @@
 @import '../../../themes/mixins/error-message';
 @import '../../../themes/mixins/link';
 
-.component {
-  padding-bottom: 10px;
-
+.supportGuide {
   h1 {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-semibold);
@@ -21,19 +19,20 @@
   }
 
   ol {
-    color: var(--theme-support-settings-item-color);
+    color: var(--theme-main-body-messages-color);
     font-family: var(--font-semibold);
     list-style: decimal;
-    padding-left: 17px;
-  }
+    padding-left: 30px;
 
-  li {
-    padding-left: 6.5px;
+    li {
+      font-family: var(--font-medium);
+      padding-left: 12px;
+    }
   }
 
   p {
     color: var(--theme-support-settings-text-color);
-    font-family: var(--font-regular);
+    font-family: var(--font-light);
     font-size: 16px;
   }
 
@@ -62,4 +61,24 @@
       margin-top: 24px;
     }
   }
+}
+
+.analyticsSectionTitle {
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-medium);
+  margin-bottom: 14px;
+}
+
+.analyticsSectionDescription {
+  color: var(--theme-main-body-messages-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.43;
+}
+
+.changeAnalyticsSettingsLink {
+  font-family: var(--font-regular);
+  // unfortunately, global overrides for link component set it to 14px with higher specificity
+  font-size: 16px !important;
+  word-break: break-word;
 }

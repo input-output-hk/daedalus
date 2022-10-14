@@ -57,6 +57,8 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
+import { EventCategories } from '../analytics';
+import { getEventNameFromWallet } from '../analytics/utils/getEventNameFromWallet';
 /* eslint-disable consistent-return */
 
 /**
@@ -365,6 +367,10 @@ export default class WalletsStore extends Store {
       runInAction('update account public key', () => {
         this.activePublicKey = accountPublicKey;
       });
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Revealed wallet public key'
+      );
     } catch (error) {
       throw error;
     }
@@ -397,6 +403,10 @@ export default class WalletsStore extends Store {
       runInAction('update ICO public key', () => {
         this.icoPublicKey = icoPublicKey;
       });
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Revealed wallet multi-signature public key'
+      );
     } catch (error) {
       throw error;
     }
@@ -464,8 +474,13 @@ export default class WalletsStore extends Store {
       this.goToWalletRoute(restoredWallet.id);
       this.refreshWalletsData();
 
-      this._restoreWalletResetRequests();
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Restored a software wallet',
+        this.walletKind
+      );
 
+      this._restoreWalletResetRequests();
       this._restoreWalletResetData();
     }
   };
@@ -619,6 +634,10 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
         this.actions.dialogs.closeActiveDialog.trigger();
+        this.analytics.sendEvent(
+          EventCategories.WALLETS,
+          'Created a new hardware wallet'
+        );
       }
     } catch (error) {
       throw error;
@@ -639,6 +658,10 @@ export default class WalletsStore extends Store {
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
       this.refreshWalletsData();
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Created a new software wallet'
+      );
     }
   };
   _deleteWallet = async (params: { walletId: string; isLegacy: boolean }) => {
@@ -681,6 +704,13 @@ export default class WalletsStore extends Store {
         });
       }
     });
+
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Wallet deleted',
+      getEventNameFromWallet(walletToDelete)
+    );
+
     this.actions.dialogs.closeActiveDialog.trigger();
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
       walletId: params.walletId,
@@ -817,6 +847,11 @@ export default class WalletsStore extends Store {
       assets: formattedAssets,
       hasAssetsRemainingAfterTransaction,
     });
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Transaction made',
+      'Software wallet'
+    );
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
@@ -1479,10 +1514,12 @@ export default class WalletsStore extends Store {
     note,
     address,
     filePath,
+    wallet,
   }: {
     note: string;
     address: string;
     filePath: string;
+    wallet: Wallet;
   }) => {
     const {
       currentLocale,
@@ -1508,6 +1545,11 @@ export default class WalletsStore extends Store {
       this.actions.wallets.generateAddressPDFSuccess.trigger({
         walletAddress,
       });
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Saved wallet address as PDF',
+        getEventNameFromWallet(wallet)
+      );
     } catch (error) {
       throw new Error(error);
     }
@@ -1515,9 +1557,11 @@ export default class WalletsStore extends Store {
   _saveQRCodeImage = async ({
     address,
     filePath,
+    wallet,
   }: {
     address: string;
     filePath: string;
+    wallet: Wallet;
   }) => {
     try {
       await saveQRCodeImageChannel.send({
@@ -1528,6 +1572,11 @@ export default class WalletsStore extends Store {
       this.actions.wallets.saveQRCodeImageSuccess.trigger({
         walletAddress,
       });
+      this.analytics.sendEvent(
+        EventCategories.WALLETS,
+        'Saved wallet address as QR code',
+        getEventNameFromWallet(wallet)
+      );
     } catch (error) {
       throw new Error(error);
     }

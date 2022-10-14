@@ -40,7 +40,8 @@ import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
-import { Divider } from './widgets/Divider';
+import { VerticalSeparator } from './widgets/VerticalSeparator';
+import { AnalyticsTracker, EventCategories } from '../../analytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -111,6 +112,7 @@ type Props = {
   walletName: string;
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
+  analyticsTracker: AnalyticsTracker;
   confirmationDialogData?: ConfirmationDialogData;
   validationDebounceWait?: number;
 };
@@ -868,6 +870,11 @@ class WalletSendForm extends Component<Props, State> {
         };
 
         this.calculateTransactionFee(payload).finally(requestToken.release);
+
+        this.props.analyticsTracker.sendEvent(
+          EventCategories.WALLETS,
+          'Removed token from transaction'
+        );
       }
     );
   };
@@ -1140,7 +1147,7 @@ class WalletSendForm extends Component<Props, State> {
                         onClick={this.clearAdaAmountFieldValue}
                       />
                       <div className={styles.dividerContainer}>
-                        <Divider />
+                        <VerticalSeparator />
                       </div>
                     </div>
                   )}
@@ -1373,6 +1380,10 @@ class WalletSendForm extends Component<Props, State> {
             onAdd={(checked) => {
               onTokenPickerDialogClose();
               checked.forEach(this.addAssetRow);
+              this.props.analyticsTracker.sendEvent(
+                EventCategories.WALLETS,
+                'Added token to transaction'
+              );
             }}
           />
         )}

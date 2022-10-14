@@ -1,6 +1,8 @@
-import Action from './lib/Action'; // ======= PROFILE ACTIONS =======
+import Action from './lib/Action';
+import { AnalyticsAcceptanceStatus } from '../analytics/types';
 
 export default class ProfileActions {
+  acceptAnalytics: Action<AnalyticsAcceptanceStatus> = new Action();
   acceptTermsOfUse: Action<any> = new Action();
   acceptDataLayerMigration: Action<any> = new Action();
   getLogs: Action<any> = new Action();

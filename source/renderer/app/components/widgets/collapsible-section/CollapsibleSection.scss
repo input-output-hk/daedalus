@@ -1,0 +1,46 @@
+.header {
+  align-items: center;
+  color: var(--theme-main-body-messages-color);
+  font-size: 16px;
+  line-height: 1.43;
+  margin: 20px 0 14px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flexHeader {
+  display: flex;
+}
+
+.boldHeader {
+  font-family: var(--font-medium);
+}
+
+.lightHeader {
+  font-family: var(--font-light);
+}
+
+.toggleButton {
+  background-color: var(
+    --theme-widgets-collapsible-section-button-background-color
+  );
+  border-radius: 4px;
+  color: var(--theme-label-button-color);
+  cursor: pointer;
+  font-family: var(--font-medium);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-left: 10px;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+
+.toggleLink {
+  display: inline;
+  // important required because of global link overrides
+  font: 16px var(--font-regular) !important;
+  word-break: break-word;
+}

@@ -32,12 +32,15 @@ let
   };
   pkgs = import sources.nixpkgs { inherit system config; };
   sources = localLib.sources // {
-    cardano-wallet = pkgs.runCommand "cardano-wallet" {} ''
-      cp -r ${localLib.sources.cardano-wallet} $out
-      chmod -R +w $out
-      cd $out
-      patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
-    '';
+    cardano-wallet =
+      if target != "aarch64-darwin"
+      then localLib.sources.cardano-wallet
+      else pkgs.runCommand "cardano-wallet" {} ''
+        cp -r ${localLib.sources.cardano-wallet} $out
+        chmod -R +w $out
+        cd $out
+        patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+      '';
   };
   haskellNix = import sources."haskell.nix" {};
   inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;

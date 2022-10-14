@@ -4,7 +4,7 @@ import {
   CommonParams,
   Success,
   Unsuccessful,
-} from 'trezor-connect';
+} from '@trezor/connect';
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,

@@ -1,5 +1,5 @@
 import { action, computed, observable } from 'mobx';
-import { get } from 'lodash';
+import { debounce, get } from 'lodash';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import type {
@@ -10,6 +10,7 @@ import type {
 import { WalletSortBy, WalletSortOrder } from '../types/sidebarTypes';
 import { changeWalletSorting, sortWallets } from '../utils/walletSorting';
 import Store from './lib/Store';
+import { EventCategories } from '../analytics';
 
 export default class SidebarStore extends Store {
   @observable
@@ -97,10 +98,16 @@ export default class SidebarStore extends Store {
       sortOrder: this.walletSortConfig.sortOrder,
       currentSortBy: this.walletSortConfig.sortBy,
     });
+
+    this.analytics.sendEvent(
+      EventCategories.LAYOUT,
+      'Changed wallet sorting settings'
+    );
   };
   @action
   onSearchValueUpdated = (searchValue: string) => {
     this.searchValue = searchValue;
+    this._sendSearchAnalyticsEvent();
   };
   @action
   _configureCategories = () => {
@@ -175,14 +182,17 @@ export default class SidebarStore extends Store {
   @action
   _showSubMenus = () => {
     this.isShowingSubMenus = true;
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   @action
   _hideSubMenus = () => {
     this.isShowingSubMenus = false;
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   @action
   _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Toggled submenu');
   };
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
@@ -199,4 +209,7 @@ export default class SidebarStore extends Store {
       this._configureCategories();
     }
   };
+  _sendSearchAnalyticsEvent = debounce(() => {
+    this.analytics.sendEvent(EventCategories.LAYOUT, 'Used wallet search');
+  }, 5000);
 }
