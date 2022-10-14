@@ -249,7 +249,7 @@
     "mobx-react": "6.3.1",
     "mobx-react-form": "2.0.8",
     "mobx-react-router": "4.1.0",
-    "moment": "2.29.0",
+    "moment": "2.29.4",
     "nanoid": "3.2.0",
     "node-downloader-helper": "1.0.18",
     "node-hid": "2.1.1",
