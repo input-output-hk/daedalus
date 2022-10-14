@@ -1,12 +1,6 @@
 # Changelog
 
-## vNext
-
-### Features
-
-
-### Fixes
-
+## 5.1.0
 
 ### Chores
 
