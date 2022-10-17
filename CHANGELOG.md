@@ -11,6 +11,8 @@
 
 ### Chores
 
+- Fixes Language components in Storybook to have it's own mocked store ([PR 3043](https://github.com/input-output-hk/daedalus/pull/3043))
+- Fix locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
 - Fix locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
 - Updated `cardano-wallet` to v2022-10-06 ([PR 3045](https://github.com/input-output-hk/daedalus/pull/3045))
 - Changed Japanese translations in delegate screen ([PR 3044](https://github.com/input-output-hk/daedalus/pull/3044))
