@@ -291,7 +291,7 @@ const selectedAsset = {
 
 storiesOf('Wallets / Send', module)
   .addDecorator(WalletsWrapper)
-  .add('Send - No Assets', () => (
+  .add('Send - Send screen', () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -401,39 +401,6 @@ storiesOf('Wallets / Send', module)
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets
       selectedAsset={null}
-      onUnsetActiveAsset={() => {}}
-      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
-      tokenFavorites={{}}
-      walletName="My wallet"
-      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
-      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
-      analyticsTracker={analyticsTracker}
-      confirmationDialogData={formData}
-    />
-  ))
-  .add('Send - With Assets', () => (
-    <WalletSendForm
-      currencyMaxFractionalDigits={6}
-      currencyMaxIntegerDigits={11}
-      currentNumberFormat={NUMBER_OPTIONS[0].value}
-      validateAmount={promise(true)}
-      validateAssetAmount={promise(true)}
-      calculateTransactionFee={promise({
-        fee: new BigNumber(number('fee', 1)),
-        minimumAda: new BigNumber(number('minimumAda', 1)),
-      })}
-      addressValidator={() => true}
-      onSubmit={action('onSubmit')}
-      assets={sendFormAssetData}
-      isDialogOpen={() => false}
-      isRestoreActive={boolean('isRestoreActive', false)}
-      walletAmount={new BigNumber(123)}
-      hwDeviceStatus={HwDeviceStatuses.READY}
-      isHardwareWallet
-      isLoadingAssets={boolean('isLoadingAssets', false)}
-      onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets
-      selectedAsset={selectedAsset}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
       tokenFavorites={{}}
