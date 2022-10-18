@@ -20,7 +20,6 @@ import WalletSendForm from '../../../../source/renderer/app/components/wallet/Wa
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
-// import WalletTokenPicker from '../../../../source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 
 const allAssets = [
   generateAssetToken(
