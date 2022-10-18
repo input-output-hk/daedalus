@@ -20,7 +20,7 @@ import WalletSendForm from '../../../../source/renderer/app/components/wallet/Wa
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
-import WalletTokenPicker from '../../../../source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
+// import WalletTokenPicker from '../../../../source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 
 const allAssets = [
   generateAssetToken(
@@ -308,7 +308,7 @@ storiesOf('Wallets / Send', module)
       hasAssets={false}
       selectedAsset={null}
       assets={[]}
-      isHardwareWallet={true}
+      isHardwareWallet
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       onUnsetActiveAsset={() => {}}
@@ -336,10 +336,10 @@ storiesOf('Wallets / Send', module)
       walletAmount={new BigNumber(123)}
       isDialogOpen={(view) => view === WalletSendConfirmationDialogView}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
-      isHardwareWallet={true}
+      isHardwareWallet
       isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={true}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={false}
@@ -366,10 +366,10 @@ storiesOf('Wallets / Send', module)
       isRestoreActive={false}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
-      isHardwareWallet={true}
+      isHardwareWallet
       isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={true}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
@@ -396,10 +396,10 @@ storiesOf('Wallets / Send', module)
       isRestoreActive={false}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
-      isHardwareWallet={true}
+      isHardwareWallet
       isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={true}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
@@ -429,10 +429,10 @@ storiesOf('Wallets / Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
-      isHardwareWallet={true}
+      isHardwareWallet
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={true}
+      hasAssets
       selectedAsset={selectedAsset}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
