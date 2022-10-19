@@ -5,6 +5,12 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withState, Store } from '@dump247/storybook-state';
 import SettingsWrapper from '../utils/SettingsWrapper';
+import {
+  DATE_ENGLISH_OPTIONS,
+  LANGUAGE_OPTIONS,
+  NUMBER_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../../source/renderer/app/config/profileConfig';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { themesIds } from '../../_support/config';
 // Screens
@@ -15,12 +21,6 @@ import SupportSettings from '../../../../source/renderer/app/components/settings
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 import SecuritySettings from '../../../../source/renderer/app/components/settings/categories/SecuritySettings';
-import {
-  DATE_ENGLISH_OPTIONS,
-  LANGUAGE_OPTIONS,
-  NUMBER_OPTIONS,
-  TIME_OPTIONS,
-} from '../../../../source/renderer/app/config/profileConfig';
 // Assets and helpers
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
@@ -37,6 +37,15 @@ const mockedGeneralState = {
   currentNumberFormat: NUMBER_OPTIONS[0].value,
   currentTimeFormat: TIME_OPTIONS[0].value,
   currentLocale: LANGUAGE_OPTIONS[0].value,
+};
+
+const mockedWalletsState = {
+  isToggleActive: true,
+  currencySelected: {
+    id: 'uniswap-state-dollar',
+    code: 'usd',
+    name: 'unified Stable Dollar',
+  },
 };
 
 const onValueChange = (
@@ -94,32 +103,25 @@ storiesOf('Settings / General', module)
   )
   .add(
     'Wallets',
-    withState(
-      {
-        currencySelected: {
-          id: 'uniswap-state-dollar',
-          code: 'usd',
-          name: 'unified Stable Dollar',
-        },
-      },
-      (store) => (
-        <WalletsSettings
-          currencySelected={store.state.currencySelected}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          currencyRate={0.321}
-          // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
-          currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
-          currencyIsActive
-          onSelectCurrency={(code) =>
-            store.set({
-              currencySelected: currenciesList[code],
-            })
-          }
-          onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
-          onOpenExternalLink={action('onOpenExternalLink')}
-        />
-      )
-    )
+    withState(mockedWalletsState, (store) => (
+      <WalletsSettings
+        currencySelected={store.state.currencySelected}
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        currencyRate={0.321}
+        // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
+        currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
+        currencyIsActive={store.state.isToggleActive}
+        onSelectCurrency={(code) =>
+          store.set({
+            currencySelected: currenciesList[code],
+          })
+        }
+        onToggleCurrencyIsActive={(value) =>
+          store.set({ isToggleActive: value })
+        }
+        onOpenExternalLink={action('onOpenExternalLink')}
+      />
+    ))
   )
   .add('Stake Pools', () => (
     <StakePoolsSettings
