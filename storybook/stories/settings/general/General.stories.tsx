@@ -48,6 +48,11 @@ const mockedWalletsState = {
   },
 };
 
+const mockedSecurityStore = {
+  discreetMode: true,
+  openDiscreetMode: false,
+};
+
 const onValueChange = (
   store: Store<StoryStore>,
   id: string,
@@ -169,17 +174,16 @@ storiesOf('Settings / General', module)
       analyticsAccepted={boolean('analyticsAccepted', false)}
     />
   ))
-  .add('Security', () => (
-    <SecuritySettings
-      discreetMode={boolean('discreetMode', false)}
-      openDiscreetMode={boolean('openDiscreetMode', false)}
-      onDiscreetModeToggle={() =>
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
-        changeControl('discreetMode', !boolean('discreetMode'))
-      }
-      onOpenDiscreetModeToggle={() =>
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
-        changeControl('openDiscreetMode', !boolean('openDiscreetMode'))
-      }
-    />
-  ));
+  .add(
+    'Security',
+    withState(mockedSecurityStore, (store) => (
+      <SecuritySettings
+        discreetMode={store.state.discreetMode}
+        openDiscreetMode={store.state.openDiscreetMode}
+        onDiscreetModeToggle={(value) => store.set({ discreetMode: value })}
+        onOpenDiscreetModeToggle={(value) =>
+          store.set({ openDiscreetMode: value })
+        }
+      />
+    ))
+  );
