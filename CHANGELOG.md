@@ -9,6 +9,7 @@
 ### Chores
 
 - Fixed the properties and providers for the Send stories ([PR 3047](https://github.com/input-output-hk/daedalus/pull/3047))
+- Fixed locale in Storybook ([PR 3062](https://github.com/input-output-hk/daedalus/pull/3062))
 
 ## 5.1.0
 
