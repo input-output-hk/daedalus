@@ -18,7 +18,7 @@
 
 let
   systemTable = {
-    x86_64-windows = builtins.currentSystem;
+    x86_64-windows = "x86_64-linux"; # builtins.currentSystem
   };
   crossSystemTable = lib: {
     x86_64-windows = lib.systems.examples.mingwW64;
@@ -43,8 +43,7 @@ let
         patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
       '';
   };
-  haskellNix = import sources."haskell.nix" {};
-  inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
+  haskell-nix = walletFlake.defaultNix.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   flake-compat = import sources.flake-compat;
   walletFlake = flake-compat  { src = sources.cardano-wallet; };
   walletPackages = with walletFlake.defaultNix.hydraJobs; {

@@ -1,11 +1,13 @@
 {
   description = "Cicero jobs populating https://cache.iog.io – this cannot yet build Daedalus";
-  inputs = {};
+  inputs = {
+    tullia.url = "github:input-output-hk/tullia";
+  };
   outputs = inputs: {
     hydraJobs = {
 
       # --- Linux ----------------------------------------------------
-      x86_64-linux = let
+      x86_64-linux.x86_64-linux = let
         d = import ./default.nix { target = "x86_64-linux"; localLibSystem = "x86_64-linux"; };
       in {
         cardano-bridge = d.daedalus-bridge;
@@ -23,7 +25,7 @@
       # --------------------------------------------------------------
 
       # --- Windows (x-compiled from Linux) --------------------------
-      x86_64-windows = let
+      x86_64-linux.x86_64-windows = let
         d = import ./default.nix { target = "x86_64-windows"; localLibSystem = "x86_64-linux"; };
       in {
         cardano-bridge = d.daedalus-bridge;
@@ -32,7 +34,7 @@
       # --------------------------------------------------------------
 
       # --- Darwin ---------------------------------------------------
-      x86_64-darwin = let
+      x86_64-darwin.x86_64-darwin = let
         d = import ./default.nix { target = "x86_64-darwin"; localLibSystem = "x86_64-darwin"; };
       in {
         cardano-bridge = d.daedalus-bridge;
@@ -45,7 +47,16 @@
       # --------------------------------------------------------------
 
     };
-  };
+  }
+  // (let
+    x86_64-linux  = inputs.tullia.fromSimple "x86_64-linux"  (import ./nix/tullia.nix inputs.self "x86_64-linux");
+    x86_64-darwin = inputs.tullia.fromSimple "x86_64-darwin" (import ./nix/tullia.nix inputs.self "x86_64-darwin");
+  in {
+    tullia.x86_64-linux = x86_64-linux.tullia;
+    cicero.x86_64-linux = x86_64-linux.cicero;
+    tullia.x86_64-darwin = x86_64-darwin.tullia;
+    cicero.x86_64-darwin = x86_64-darwin.cicero;
+  });
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
     extra-substituters = ["https://cache.iog.io" "https://iog.cachix.org"];
