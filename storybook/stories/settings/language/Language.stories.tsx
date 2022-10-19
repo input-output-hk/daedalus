@@ -2,6 +2,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withState, Store } from '@dump247/storybook-state';
+import {
+  DATE_ENGLISH_OPTIONS,
+  LANGUAGE_OPTIONS,
+  NUMBER_OPTIONS,
+  TIME_OPTIONS,
+} from '../../../../source/renderer/app/config/profileConfig';
 import StoryDecorator from '../../_support/StoryDecorator';
 import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
 
@@ -13,10 +19,10 @@ interface StoryStore {
 }
 
 const mockedLanguageState = {
-  currentDateFormat: 'MM/DD/YYYY',
-  currentNumberFormat: 'number-1',
-  currentTimeFormat: 'hh:mm:ss A',
-  currentLocale: 'en-US',
+  currentDateFormat: DATE_ENGLISH_OPTIONS[0].value,
+  currentNumberFormat: NUMBER_OPTIONS[0].value,
+  currentTimeFormat: TIME_OPTIONS[0].value,
+  currentLocale: LANGUAGE_OPTIONS[0].value,
 };
 
 const onValueChange = (
