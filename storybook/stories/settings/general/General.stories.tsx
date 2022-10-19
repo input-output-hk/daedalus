@@ -40,7 +40,7 @@ const mockedGeneralState = {
 };
 
 const mockedWalletsState = {
-  isToggleActive: true,
+  currencyIsActive: true,
   currencySelected: {
     id: 'uniswap-state-dollar',
     code: 'usd',
@@ -113,16 +113,16 @@ storiesOf('Settings / General', module)
         currencyRate={0.321}
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ aed: { code: string; decimalDi... Remove this comment to see the full error message
         currencyList={getLocalizedCurrenciesList(currenciesList, 'en-US')}
-        currencyIsActive={store.state.isToggleActive}
         onSelectCurrency={(code) =>
           store.set({
             currencySelected: currenciesList[code],
           })
         }
         onToggleCurrencyIsActive={(value) =>
-          store.set({ isToggleActive: value })
+          store.set({ currencyIsActive: value })
         }
         onOpenExternalLink={action('onOpenExternalLink')}
+        {...store.state}
       />
     ))
   )
@@ -176,12 +176,11 @@ storiesOf('Settings / General', module)
     'Security',
     withState(mockedSecurityStore, (store) => (
       <SecuritySettings
-        discreetMode={store.state.discreetMode}
-        openDiscreetMode={store.state.openDiscreetMode}
         onDiscreetModeToggle={(value) => store.set({ discreetMode: value })}
         onOpenDiscreetModeToggle={(value) =>
           store.set({ openDiscreetMode: value })
         }
+        {...store.state}
       />
     ))
   );
