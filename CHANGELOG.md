@@ -9,7 +9,7 @@
 ### Chores
 
 - Fixed Language components in Storybook to have it's own mocked store ([PR 3063](https://github.com/input-output-hk/daedalus/pull/3063))
-- Fixed locale in Storybook ([PR 3042](https://github.com/input-output-hk/daedalus/pull/3042))
+- Fixed locale in Storybook ([PR 3062](https://github.com/input-output-hk/daedalus/pull/3062))
 
 ## 5.1.0
 

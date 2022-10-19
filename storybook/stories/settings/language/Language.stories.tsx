@@ -36,15 +36,13 @@ const onValueChange = (
   });
 
   if (id === 'locale') {
-    if (value === mockedLanguageState.currentLocale) {
-      store.set({
-        currentDateFormat: mockedLanguageState.currentDateFormat,
-      });
-    } else {
-      store.set({
-        currentDateFormat: 'YYYY年MM月DD日',
-      });
-    }
+    const currentDateFormat =
+      value === mockedLanguageState.currentLocale
+        ? mockedLanguageState.currentDateFormat
+        : 'YYYY年MM月DD日';
+    store.set({
+      currentDateFormat,
+    });
   }
 };
 
