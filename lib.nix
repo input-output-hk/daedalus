@@ -20,7 +20,6 @@ let
 
       # Filter out the files which I'm editing often.
       lib.hasSuffix ".nix" baseName ||
-      lib.hasSuffix ".dhall" baseName ||
       lib.hasSuffix ".hs" baseName ||
       # Filter out nix-build result symlinks
       (type == "symlink" && lib.hasPrefix "result" baseName)

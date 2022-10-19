@@ -1,9 +1,0 @@
-{ name                   : Text
-, keyPrefix              : Text
-, relays                 : Text
-, updateServer           : Text
-, installDirectorySuffix : Text
-, macPackageSuffix       : Text
-, walletPort             : Natural
-, extraNodeArgs          : List Text
-}
