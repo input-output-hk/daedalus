@@ -12,4 +12,6 @@ storiesOf('Nodes / Errors', module)
   )) // ====== Stories ======
   .add('No Disk Space Error', NoDiskSpaceErrorStory)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('System Time Error', SystemTimeErrorStory);
+  .add('System Time Error', (_, props) => (
+    <SystemTimeErrorStory locale={props.locale} />
+  ));

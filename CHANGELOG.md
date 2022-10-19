@@ -1,5 +1,15 @@
 # Changelog
 
+## vNext
+
+### Features
+
+### Fixes
+
+### Chores
+
+- Fixed locale in Storybook ([PR 3062](https://github.com/input-output-hk/daedalus/pull/3062))
+
 ## 5.1.0
 
 ### Chores
