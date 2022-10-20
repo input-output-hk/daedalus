@@ -159,7 +159,7 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 - `yarn install`
 - `yarn dev:windows`
 
-#### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
+#### Updating upstream dependencies (cardano-wallet, cardano-node)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
@@ -167,7 +167,6 @@ Dependencies are updated with the follow nix commands:
 - Update cardano-wallet to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
 - Update cardano-wallet to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
 - Update cardano-node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
-- Update iohk-nix to the latest master: `nix-shell -A devops --arg nivOnly true --run  "niv update iohk-nix -b master"`
 
 #### Notes
 

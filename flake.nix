@@ -51,11 +51,16 @@
   // (let
     x86_64-linux  = inputs.tullia.fromSimple "x86_64-linux"  (import ./nix/tullia.nix inputs.self "x86_64-linux");
     x86_64-darwin = inputs.tullia.fromSimple "x86_64-darwin" (import ./nix/tullia.nix inputs.self "x86_64-darwin");
+    fakeEvent = { inputs={"GitHub event".value = {github_body.head_commit.id="0000000";};}; id=""; ociRegistry=""; };
   in {
     tullia.x86_64-linux = x86_64-linux.tullia;
     cicero.x86_64-linux = x86_64-linux.cicero;
     tullia.x86_64-darwin = x86_64-darwin.tullia;
     cicero.x86_64-darwin = x86_64-darwin.cicero;
+
+    ciceroLocalTest.x86_64-linux  = (x86_64-linux.cicero."daedalus/ci"  fakeEvent).job;
+    ciceroLocalTest.x86_64-darwin = (x86_64-darwin.cicero."daedalus/ci" fakeEvent).job;
+
   });
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
