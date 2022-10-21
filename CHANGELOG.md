@@ -4,6 +4,7 @@
 
 ### Chores
 
+- Fixed locale in Storybook ([PR 3062](https://github.com/input-output-hk/daedalus/pull/3062))
 - Switched from Hydra’s `release.nix` to Cicero’s `flake.nix` ([PR 3060](https://github.com/input-output-hk/daedalus/pull/3060))
 
 ## 5.1.0
