@@ -18,7 +18,7 @@
 
 let
   systemTable = {
-    x86_64-windows = "x86_64-linux"; # builtins.currentSystem
+    x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   };
   crossSystemTable = lib: {
     x86_64-windows = lib.systems.examples.mingwW64;
@@ -57,7 +57,7 @@ let
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
-  inherit (pkgs.lib) optionalString optional concatStringsSep;
+  inherit (pkgs.lib) optionalString;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
