@@ -1,40 +1,81 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from '../../_support/StoryDecorator';
-import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
+import { withState, Store } from '@dump247/storybook-state';
 import {
   DATE_ENGLISH_OPTIONS,
+  LANGUAGE_OPTIONS,
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
+import StoryDecorator from '../../_support/StoryDecorator';
+import InitialSettings from '../../../../source/renderer/app/components/profile/initial-settings/InitialSettings';
+
+interface StoryStore {
+  currentDateFormat: string;
+  currentNumberFormat: string;
+  currentTimeFormat: string;
+  currentLocale: string;
+}
+
+const mockedLanguageState = {
+  currentDateFormat: DATE_ENGLISH_OPTIONS[0].value,
+  currentNumberFormat: NUMBER_OPTIONS[0].value,
+  currentTimeFormat: TIME_OPTIONS[0].value,
+  currentLocale: LANGUAGE_OPTIONS[0].value,
+};
+
+const onValueChange = (
+  store: Store<StoryStore>,
+  id: string,
+  value: string
+): void => {
+  const fieldIdToStoreKeyMap = {
+    dateFormat: 'currentDateFormat',
+    numberFormat: 'currentNumberFormat',
+    timeFormat: 'currentTimeFormat',
+    locale: 'currentLocale',
+  };
+
+  store.set({
+    [fieldIdToStoreKeyMap[id]]: value,
+  });
+
+  if (id === 'locale') {
+    const currentDateFormat =
+      value === mockedLanguageState.currentLocale
+        ? mockedLanguageState.currentDateFormat
+        : 'YYYY年MM月DD日';
+    store.set({
+      currentDateFormat,
+    });
+  }
+};
 
 storiesOf('Settings / Language', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Select Language - initial', (_, { locale }: { locale: string }) => (
-    <div>
-      <InitialSettings
-        onSubmit={action('submit')}
-        onChangeItem={action('onChangeItem')}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentLocale={locale}
-        currentNumberFormat={NUMBER_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-      />
-    </div>
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Select Language - submitting', (_, { locale }: { locale: string }) => (
-    <div>
-      <InitialSettings
-        onSubmit={action('submit')}
-        onChangeItem={action('onChangeItem')}
-        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
-        currentLocale={locale}
-        currentNumberFormat={NUMBER_OPTIONS[0].value}
-        currentTimeFormat={TIME_OPTIONS[0].value}
-        isSubmitting
-      />
-    </div>
-  ));
+  .add(
+    'Select Language - initial',
+    withState(mockedLanguageState, (store) => (
+      <div>
+        <InitialSettings
+          onSubmit={action('submit')}
+          onChangeItem={(id, value) => onValueChange(store, id, value)}
+          {...store.state}
+        />
+      </div>
+    ))
+  )
+  .add(
+    'Select Language - submitting',
+    withState(mockedLanguageState, (store) => (
+      <div>
+        <InitialSettings
+          onSubmit={action('submit')}
+          onChangeItem={(id, value) => onValueChange(store, id, value)}
+          isSubmitting
+          {...store.state}
+        />
+      </div>
+    ))
+  );
