@@ -1,6 +1,7 @@
 { target ? builtins.currentSystem
+, localLibSystem ? builtins.currentSystem
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation; }
+, localLib ? import ./lib.nix { inherit nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -17,7 +18,7 @@
 
 let
   systemTable = {
-    x86_64-windows = builtins.currentSystem;
+    x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   };
   crossSystemTable = lib: {
     x86_64-windows = lib.systems.examples.mingwW64;
@@ -42,22 +43,21 @@ let
         patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
       '';
   };
-  haskellNix = import sources."haskell.nix" {};
-  inherit (import haskellNix.sources.nixpkgs-unstable haskellNix.nixpkgsArgs) haskell-nix;
+  haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   flake-compat = import sources.flake-compat;
-  walletFlake = flake-compat  { src = sources.cardano-wallet; };
-  walletPackages = with walletFlake.defaultNix.hydraJobs; {
+  walletFlake = (flake-compat  { src = sources.cardano-wallet; }).defaultNix;
+  walletPackages = with walletFlake.hydraJobs; {
     x86_64-windows = linux.windows;
     x86_64-linux = linux.native;
     x86_64-darwin = macos.intel;
     aarch64-darwin = macos.silicon;
   }.${target};
-  walletPkgs = import "${sources.cardano-wallet}/nix" {};
+  walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
   cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
-  shellPkgs = (import "${sources.cardano-shell}/nix") {};
-  inherit (pkgs.lib) optionalString optional concatStringsSep;
+  shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
+  inherit (pkgs.lib) optionalString;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
@@ -72,7 +72,7 @@ let
 
   packages = self: {
     inherit walletFlake cardanoWorldFlake cluster pkgs version target nodeImplementation;
-    cardanoLib = localLib.iohkNix.cardanoLib;
+    cardanoLib = walletPkgs.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
     nodejs = let

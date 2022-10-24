@@ -1,10 +1,11 @@
-{ nodeImplementation ? "cardano" }:
+{ nodeImplementation ? "cardano"
+, system ? builtins.currentSystem
+}:
 
 let
   sources = import ./nix/sources.nix;
-  iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
-  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; };
-  # TODO: can we use the filter in iohk-nix instead?
+  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; inherit system; };
+  # TODO: can we use the filter in cardano-wallet instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -29,5 +30,5 @@ let
   lib = pkgs.lib;
 in
 lib // {
-  inherit sources iohkNix pkgs isDaedalus cleanSourceFilter;
+  inherit sources pkgs isDaedalus cleanSourceFilter;
 }
