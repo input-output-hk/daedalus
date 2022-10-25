@@ -1,16 +1,9 @@
 import React from 'react';
-import addons from '@storybook/addons';
-import { boolean, number, CHANGE } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withState, Store } from '@dump247/storybook-state';
+import { withState } from '@dump247/storybook-state';
 import SettingsWrapper from '../utils/SettingsWrapper';
-import {
-  DATE_ENGLISH_OPTIONS,
-  LANGUAGE_OPTIONS,
-  NUMBER_OPTIONS,
-  TIME_OPTIONS,
-} from '../../../../source/renderer/app/config/profileConfig';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { themesIds } from '../../_support/config';
 // Screens
@@ -22,22 +15,9 @@ import TermsOfUseSettings from '../../../../source/renderer/app/components/setti
 import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 import SecuritySettings from '../../../../source/renderer/app/components/settings/categories/SecuritySettings';
 // Assets and helpers
+import { mockedLocaleState, onLocaleValueChange } from '../utils/helpers';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
-
-interface StoryStore {
-  currentDateFormat: string;
-  currentNumberFormat: string;
-  currentTimeFormat: string;
-  currentLocale: string;
-}
-
-const mockedGeneralState = {
-  currentDateFormat: DATE_ENGLISH_OPTIONS[0].value,
-  currentNumberFormat: NUMBER_OPTIONS[0].value,
-  currentTimeFormat: TIME_OPTIONS[0].value,
-  currentLocale: LANGUAGE_OPTIONS[0].value,
-};
 
 const mockedWalletsState = {
   currencyIsActive: true,
@@ -53,40 +33,6 @@ const mockedSecurityStore = {
   openDiscreetMode: false,
 };
 
-const onValueChange = (
-  store: Store<StoryStore>,
-  id: string,
-  value: string
-): void => {
-  const fieldIdToStoreKeyMap = {
-    dateFormat: 'currentDateFormat',
-    numberFormat: 'currentNumberFormat',
-    timeFormat: 'currentTimeFormat',
-    locale: 'currentLocale',
-  };
-
-  store.set({
-    [fieldIdToStoreKeyMap[id]]: value,
-  });
-
-  if (id === 'locale') {
-    const currentDateFormat =
-      value === mockedGeneralState.currentLocale
-        ? mockedGeneralState.currentDateFormat
-        : 'YYYY年MM月DD日';
-    store.set({
-      currentDateFormat,
-    });
-  }
-};
-
-const changeControl = (name: string, value: boolean) => {
-  addons.getChannel().emit(CHANGE, {
-    name,
-    value,
-  });
-};
-
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
@@ -95,11 +41,11 @@ storiesOf('Settings / General', module)
   .addDecorator(SettingsWrapper) // ====== Stories ======
   .add(
     'General',
-    withState(mockedGeneralState, (store) => (
+    withState(mockedLocaleState, (store) => (
       <ProfileSettingsForm
         isSubmitting={boolean('isSubmitting', false)}
         onSubmit={action('submit')}
-        onChangeItem={(id, value) => onValueChange(store, id, value)}
+        onChangeItem={(id, value) => onLocaleValueChange(store, id, value)}
         {...store.state}
       />
     ))
