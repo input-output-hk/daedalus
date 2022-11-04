@@ -173,6 +173,7 @@ const confirmationTokens = walletTokens.total.map((assetTotal) => {
 const confirmationTokensAmounts = confirmationTokens.map(
   (token) => `${token.quantity}`
 );
+
 const sendFormAssetData = walletTokens.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
@@ -205,9 +206,91 @@ const sendFormAssetData = walletTokens.total.map((assetTotal) => {
         },
   };
 });
+
+const coinSelectionResponse = {
+  inputs: {
+    address: '',
+    amount: {
+      quantity: 1,
+      unit: 'lovelace',
+    },
+    id: '001',
+    index: 1,
+    derivationPath: [''],
+  },
+  outputs: {
+    address: '',
+    amount: {
+      quantity: 1,
+      unit: 'lovelace',
+    },
+    derivationPath: [''],
+    assets: [
+      {
+        policyId: '',
+        assetName: 'NFT',
+        quantity: 1,
+      },
+    ],
+  },
+  certificates: [
+    {
+      pool: '',
+      certificateType: 'register_reward_account',
+      rewardAccountPath: [''],
+    },
+  ],
+  deposits: new BigNumber(10),
+  depositsReclaimed: new BigNumber(1),
+  withdrawals: [],
+  fee: new BigNumber(0.2),
+  metadata: null,
+};
+
+const formData = {
+  coinSelection: coinSelectionResponse,
+  receiver:
+    'addr1qzhk85furdn6r9tlyp2q23q9vq7nfl420j7y0yqp3hf6yw7jar5rnzqr4h3g9whm0zjh65utc2ty5uqtcpm0rm7ahj0qq75een',
+  selectedAssets: [
+    {
+      assetName: 'coin',
+      fingerprint: 'urdn6r9tlyp2q23q9vq7nfl420',
+      uniqueId: 'u000',
+      policyId: '003',
+      quantity: new BigNumber(2),
+    },
+  ],
+  assetsAmounts: [''],
+  amount: new BigNumber(20),
+  totalAmount: new BigNumber(20),
+  transactionFee: new BigNumber(20),
+  adaAmount: 20,
+  selectedAddress:
+    'addr1qzhk85furdn6r9tlyp2q23q9vq7nfl420j7y0yqp3hf6yw7jar5rnzqr4h3g9whm0zjh65utc2ty5uqtcpm0rm7ahj0qq75ytr',
+};
+
+const selectedAsset = {
+  assetName: '',
+  assetNameASCII: '',
+  decimals: 0,
+  fingerprint: 'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+  metadata: {
+    name: 'MakerDAO',
+    ticker: 'DAI',
+    description: 'Test description',
+    url: 'http://example.com',
+    logo: '',
+  },
+  policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+  quantity: new BigNumber(4),
+  recommendedDecimals: null,
+  uniqueId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+  update: () => {},
+};
+
 storiesOf('Wallets / Send', module)
   .addDecorator(WalletsWrapper)
-  .add('Send - No Assets', () => (
+  .add('Send - Send screen', () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -216,24 +299,25 @@ storiesOf('Wallets / Send', module)
       validateAssetAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       walletAmount={new BigNumber(123)}
-      assets={sendFormAssetData}
       addressValidator={() => true}
       onSubmit={action('onSubmit')}
-      isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
-      isHardwareWallet={boolean('isHardwareWallet', false)}
+      isDialogOpen={() => false}
+      hasAssets={false}
+      selectedAsset={null}
+      assets={[]}
+      isHardwareWallet
       isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={boolean('hasAssets', false)}
-      selectedAsset={null}
       onUnsetActiveAsset={() => {}}
-      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      isAddressFromSameWallet={false}
       tokenFavorites={{}}
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
       analyticsTracker={analyticsTracker}
+      confirmationDialogData={formData}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -247,22 +331,23 @@ storiesOf('Wallets / Send', module)
       assets={sendFormAssetData}
       addressValidator={() => true}
       onSubmit={action('onSubmit')}
-      isDialogOpen={() => boolean('isDialogOpen', false)}
-      isRestoreActive={boolean('isRestoreActive', false)}
+      isRestoreActive={false}
       walletAmount={new BigNumber(123)}
+      isDialogOpen={(view) => view === WalletSendConfirmationDialogView}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
-      isHardwareWallet={boolean('isHardwareWallet', true)}
-      isLoadingAssets={boolean('isLoadingAssets', false)}
+      isHardwareWallet
+      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={boolean('hasAssets', false)}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
-      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
+      isAddressFromSameWallet={false}
       tokenFavorites={{}}
       walletName="My wallet"
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
       analyticsTracker={analyticsTracker}
+      confirmationDialogData={formData}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -276,14 +361,14 @@ storiesOf('Wallets / Send', module)
       assets={sendFormAssetData}
       addressValidator={() => true}
       onSubmit={action('onSubmit')}
-      isDialogOpen={() => boolean('isDialogOpen', false)}
-      isRestoreActive={boolean('isRestoreActive', false)}
+      isDialogOpen={(view) => view === WalletSendConfirmationDialogView}
+      isRestoreActive={false}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
-      isHardwareWallet={boolean('isHardwareWallet', true)}
-      isLoadingAssets={boolean('isLoadingAssets', false)}
+      isHardwareWallet
+      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={boolean('hasAssets', false)}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
@@ -292,6 +377,7 @@ storiesOf('Wallets / Send', module)
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
       analyticsTracker={analyticsTracker}
+      confirmationDialogData={formData}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -305,14 +391,14 @@ storiesOf('Wallets / Send', module)
       assets={sendFormAssetData}
       addressValidator={() => true}
       onSubmit={action('onSubmit')}
-      isDialogOpen={() => boolean('isDialogOpen', false)}
-      isRestoreActive={boolean('isRestoreActive', false)}
+      isDialogOpen={(view) => view === WalletSendConfirmationDialogView}
+      isRestoreActive={false}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
-      isHardwareWallet={boolean('isHardwareWallet', true)}
-      isLoadingAssets={boolean('isLoadingAssets', false)}
+      isHardwareWallet
+      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={boolean('hasAssets', false)}
+      hasAssets
       selectedAsset={null}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
@@ -321,38 +407,7 @@ storiesOf('Wallets / Send', module)
       onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
       onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
       analyticsTracker={analyticsTracker}
-    />
-  ))
-  .add('Send - With Assets', () => (
-    <WalletSendForm
-      currencyMaxFractionalDigits={6}
-      currencyMaxIntegerDigits={11}
-      currentNumberFormat={NUMBER_OPTIONS[0].value}
-      validateAmount={promise(true)}
-      validateAssetAmount={promise(true)}
-      calculateTransactionFee={promise({
-        fee: new BigNumber(number('fee', 1)),
-        minimumAda: new BigNumber(number('minimumAda', 1)),
-      })}
-      addressValidator={() => true}
-      onSubmit={action('onSubmit')}
-      isDialogOpen={() => boolean('isDialogOpen', false)}
-      isRestoreActive={boolean('isRestoreActive', false)}
-      hwDeviceStatus={HwDeviceStatuses.READY}
-      isHardwareWallet={boolean('isHardwareWallet', false)}
-      isLoadingAssets={boolean('isLoadingAssets', false)}
-      assets={sendFormAssetData}
-      walletAmount={new BigNumber(123)}
-      onExternalLinkClick={action('onExternalLinkClick')}
-      hasAssets={boolean('hasAssets', true)}
-      selectedAsset={null}
-      onUnsetActiveAsset={() => {}}
-      isAddressFromSameWallet={boolean('isAddressFromSameWallet', false)}
-      tokenFavorites={{}}
-      walletName="My wallet"
-      onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
-      onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
-      analyticsTracker={analyticsTracker}
+      confirmationDialogData={formData}
     />
   ))
   .add('Wallet Send Confirmation Dialog With Assets', () => {
