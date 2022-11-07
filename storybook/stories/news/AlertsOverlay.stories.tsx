@@ -92,7 +92,7 @@ storiesOf('News / Overlays', module)
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('Alerts', (props: { locale: string }) => (
+  .add('Alerts', (_, props: { locale: string }) => (
     <AlertsOverlay
       allAlertsCount={getAlerts(props.locale).length}
       alerts={getAlerts(props.locale)}
