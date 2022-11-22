@@ -1,0 +1,22 @@
+# Basic set up for three package managers
+
+version: 2
+updates:
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "06:00"
+    commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "npm"
+    labels:
+      - "npm"
+      - "dependencies"
+    assignees:
+      - "danielmain"
+    target-branch: "dependabot"
+    versioning-strategy: increase-if-necessary

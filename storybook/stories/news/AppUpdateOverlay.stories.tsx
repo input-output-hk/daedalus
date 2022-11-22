@@ -11,7 +11,7 @@ storiesOf('News / Overlays', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Update', ({ locale }: { locale: string }) => {
+  .add('Update', (_, { locale }: { locale: string }) => {
     const scenario = radios(
       'Scenario',
       {

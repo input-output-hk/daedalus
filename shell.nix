@@ -1,7 +1,7 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation; }
+, localLib ? import ./lib.nix { inherit nodeImplementation system; }
 , pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
@@ -20,9 +20,9 @@ let
   daedalusPkgs = import ./. {
     inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
     target = system;
+    localLibSystem = system;
     devShell = true;
   };
-  hostPkgs = import pkgs.path { config = {}; overlays = []; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {
@@ -77,7 +77,7 @@ let
 
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
-    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.defaultNix.outputs.legacyPackages.${system}.roots;
+    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
     ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
     daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
     # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
@@ -194,7 +194,7 @@ let
   devops = pkgs.stdenv.mkDerivation {
     name = "devops-shell";
     buildInputs = let
-      inherit (localLib.iohkNix) niv;
+      inherit (daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.pkgs) niv;
     in if nivOnly then [ niv ] else [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
     shellHook = ''
       export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket

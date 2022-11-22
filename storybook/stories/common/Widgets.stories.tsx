@@ -146,8 +146,7 @@ storiesOf('Common / Widgets', module)
       </div>
     </div>
   ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('BigButtonForDialogs', (props: { locale: string }) => (
+  .add('BigButtonForDialogs', (_, props) => (
     <div>
       <div
         style={{
@@ -201,12 +200,10 @@ storiesOf('Common / Widgets', module)
     </div>
   ))
   .add('TinySwitch', () => <TinySwitch />)
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('TinySwitch - short label', (props: { locale: string }) => (
+  .add('TinySwitch - short label', (_, props) => (
     <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
   ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('ButtonLink', (props: { locale: string }) => (
+  .add('ButtonLink', (_, props) => (
     <ButtonLink
       label={intl[props.locale].formatMessage(messages.save)}
       // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.

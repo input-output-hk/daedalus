@@ -62,7 +62,7 @@ storiesOf('News / NewsFeed', module)
     </div>
   ))
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Fetched', ({ locale }: { locale: string }) => {
+  .add('Fetched', (_, { locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
       ? number('updateDownloadProgress', 30, updateDownloadProgressOptions)
