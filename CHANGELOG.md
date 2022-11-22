@@ -4,7 +4,8 @@
 
 ### Chores
 
-- Increase minimum free space required from 2gb to 4gb ([PR 3071](https://github.com/input-output-hk/daedalus/pull/3071))
+- Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
+- Increased minimum free space required from 2gb to 4gb ([PR 3071](https://github.com/input-output-hk/daedalus/pull/3071))
 - Fixed Language components in Storybook to have it's own mocked store ([PR 3063](https://github.com/input-output-hk/daedalus/pull/3063))
 - Updated `cardano-node` configs for Preprod respin ([PR 3070](https://github.com/input-output-hk/daedalus/pull/3070))
 - Fixed the properties and providers for the Send stories ([PR 3047](https://github.com/input-output-hk/daedalus/pull/3047))
