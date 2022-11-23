@@ -219,7 +219,7 @@
     "cardano-launcher": "0.20220119.0",
     "cbor": "5.0.2",
     "check-disk-space": "3.2.0",
-    "chroma-js": "2.1.0",
+    "chroma-js": "2.4.2",
     "classnames": "2.2.6",
     "csv-stringify": "5.5.1",
     "cucumber-html-reporter": "5.2.0",
