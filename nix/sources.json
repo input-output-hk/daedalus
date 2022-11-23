@@ -41,10 +41,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-world",
-        "rev": "74e93f9fdc863638ce43998e0ccccbf56b4612aa",
-        "sha256": "16nvwmb7n22x0ql1n2cah36dylxgcybm1mi9n4pbb3xsr75b8b5b",
+        "rev": "7561fe35ee8c532f2666f0627d49ea6e107e0e3f",
+        "sha256": "1sxf611cnqlwc3sz10nnxjip2w9j7ii9n42zby90j409sx40mg7g",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-world/archive/74e93f9fdc863638ce43998e0ccccbf56b4612aa.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-world/archive/7561fe35ee8c532f2666f0627d49ea6e107e0e3f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "flake-compat": {
@@ -69,30 +69,6 @@
         "sha256": "0jrh5ghisaqdd0vldbywags20m2cxpkbbk5jjjmwaw0gr8nhsafv",
         "type": "tarball",
         "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "haskell.nix": {
-        "branch": "master",
-        "description": "Alternative Haskell Infrastructure for Nixpkgs",
-        "homepage": "https://input-output-hk.github.io/haskell.nix",
-        "owner": "input-output-hk",
-        "repo": "haskell.nix",
-        "rev": "4b6ee9767daaf5fc1d5419e07733ab006b95ec93",
-        "sha256": "03hkqrdjbab0m16y3bpmcg4nvrnpajkbaa595v67r77hhqja3nqj",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/4b6ee9767daaf5fc1d5419e07733ab006b95ec93.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "iohk-nix": {
-        "branch": "master",
-        "description": "nix scripts shared across projects",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "iohk-nix",
-        "rev": "266ca46a8d1cb4286b9699b4fd435066e88440ac",
-        "sha256": "132fbnnpp7bbfqv3dgvn9xi9dc1gsn9mivbqnxmglgmlv4lmrad8",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/266ca46a8d1cb4286b9699b4fd435066e88440ac.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
