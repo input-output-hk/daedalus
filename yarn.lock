@@ -6542,9 +6542,9 @@ cucumber-tag-expressions@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/cucumber-tag-expressions/-/cucumber-tag-expressions-2.0.3.tgz#5525d60fbecb3fa2707051ace27004e0512e700e"
 
-cucumber@6.0.5:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/cucumber/-/cucumber-6.0.5.tgz#cdc752ad18b551bcf7bc92774c925302f4408714"
+cucumber@6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/cucumber/-/cucumber-6.0.7.tgz#66a803bee90978b14b5d546ec2b06eb329cc6fc2"
   dependencies:
     assertion-error-formatter "^3.0.0"
     bluebird "^3.4.1"
