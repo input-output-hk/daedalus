@@ -1,9 +1,60 @@
 {
-  description = "Cicero jobs populating https://cache.iog.io – this cannot yet build Daedalus";
+  description = "Daedalus itself, and jobs populating <https://cache.iog.io> with its dependencies";
   inputs = {
     tullia.url = "github:input-output-hk/tullia";
   };
-  outputs = inputs: {
+  outputs = inputs: let
+    sourceLib = import ./nix/source-lib.nix { inherit inputs; };
+  in {
+
+    packages = {
+      x86_64-linux = let
+        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+          target = "x86_64-linux"; localLibSystem = "x86_64-linux";
+          inherit cluster;
+        });
+      in rec {
+        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.daedalus);
+        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.wrappedBundle);
+        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
+        default = package.mainnet;
+      };
+
+      x86_64-windows = let
+        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+          target = "x86_64-windows"; localLibSystem = "x86_64-linux";
+          inherit cluster;
+        });
+      in rec {
+        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.rawapp-win64); # FIXME: this is wrong
+        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.unsigned-windows-installer);
+        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
+        default = installer.mainnet;
+      };
+
+      x86_64-darwin = let
+        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+          target = "x86_64-darwin"; localLibSystem = "x86_64-darwin";
+          inputsSelf = toString inputs.self;
+          inherit cluster;
+        });
+      in rec {
+        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.x86_64-darwin.package);
+        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.x86_64-darwin.unsignedInstaller);
+        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
+        default = package.mainnet;
+      };
+    };
+
+    devShells = sourceLib.forEach [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
+      let all = sourceLib.forEachCluster (cluster: import ./shell.nix { inherit system cluster; });
+      in all // { default = all.mainnet; }
+    );
+
+    # Compatibility with older Nix:
+    defaultPackage = builtins.mapAttrs (_: a: a.default) inputs.self.outputs.packages;
+    devShell = builtins.mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
+
     hydraJobs = {
 
       # --- Linux ----------------------------------------------------

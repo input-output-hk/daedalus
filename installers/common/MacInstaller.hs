@@ -45,7 +45,7 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
+main opts@Options{oCodeSigningConfigPath,oDontPkgbuild,oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
 
   installerConfig <- decodeFileThrow "installer-config.json"
 
@@ -85,30 +85,32 @@ main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oB
   print "appRoot:"
   print (tt appRoot)
 
-  case mCodeSigningConfig of
-    Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
-    Nothing -> pure ()
+  unless oDontPkgbuild $ do
 
-  tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
+    case mCodeSigningConfig of
+      Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
+      Nothing -> pure ()
 
-  case mSigningConfig of
-    Just signingConfig -> signInstaller signingConfig tempInstaller opkg
-    Nothing -> cp tempInstaller opkg
+    tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  run "rm" [tt tempInstaller]
-  printf ("Generated "%fp%"\n") opkg
+    case mSigningConfig of
+      Just signingConfig -> signInstaller signingConfig tempInstaller opkg
+      Nothing -> cp tempInstaller opkg
 
-  when (oTestInstaller == TestInstaller) $ do
-    echo $ "--test-installer passed, will test the installer for installability"
-    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
+    run "rm" [tt tempInstaller]
+    printf ("Generated "%fp%"\n") opkg
 
-  case mSigningConfig of
-    Just _ -> do
-      signed <- checkSignature opkg
-      case signed of
-        SignedOK -> pure ()
-        NotSigned -> rm opkg
-    Nothing -> pure ()
+    when (oTestInstaller == TestInstaller) $ do
+      echo $ "--test-installer passed, will test the installer for installability"
+      procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
+
+    case mSigningConfig of
+      Just _ -> do
+        signed <- checkSignature opkg
+        case signed of
+          SignedOK -> pure ()
+          NotSigned -> rm opkg
+      Nothing -> pure ()
 
 -- | Define the code signing script to be used for code signing
 codeSignScriptContents :: String
@@ -340,7 +342,9 @@ npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "Installing nodejs dependencies..."
-  procs "yarn" ["install", "--frozen-lockfile"] empty
+  need "DEVX_FIXME_DONT_YARN_INSTALL" >>= \case
+    Just _ -> echo "   ... skip"
+    Nothing -> procs "yarn" ["install", "--frozen-lockfile"] empty
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
   homeDir <- home

@@ -62,6 +62,7 @@ data Options = Options
   , oOS                    :: OS
   , oCluster               :: Cluster
   , oAppName               :: AppName
+  , oDontPkgbuild          :: Bool
   , oOutputDir             :: FilePath
   , oTestInstaller         :: TestInstaller
   , oCodeSigningConfigPath :: Maybe FilePath
@@ -87,6 +88,7 @@ optionsParser detectedOS = Options
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet, staging, or testnet"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
+  <*> (switch                   "dont-pkgbuild"       'd' "Stop after preparing the package (content root), don’t create the final *.pkg file")
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")

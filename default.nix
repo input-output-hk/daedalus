@@ -5,6 +5,7 @@
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
+, inputsSelf ? null
 , dummyInstaller ? false
 , signingKeys ? null
 , HSMServer ? null
@@ -60,7 +61,7 @@ let
   inherit (pkgs.lib) optionalString;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
-  nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
+  nsisNixPkgs = import localLib.sources.nixpkgs-nsis { inherit system; };
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
@@ -456,5 +457,10 @@ let
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
     '';
+
+    x86_64-darwin = self.callPackage (import ./nix/x86_64-darwin.nix) {
+      inherit cluster inputsSelf;
     };
+
+  };
 in pkgs.lib.makeScope pkgs.newScope packages
