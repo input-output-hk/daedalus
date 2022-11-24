@@ -4,6 +4,7 @@
 
 ### Chores
 
+- Update `cardano-node` to 1.35.4 for the Preview network respin ([PR 3082](https://github.com/input-output-hk/daedalus/pull/3082))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
 ## 5.1.1
