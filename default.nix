@@ -458,7 +458,7 @@ let
       cp ${self.newBundle} $out/${fn}
     '';
 
-    x86_64-darwin = self.callPackage (import ./nix/x86_64-darwin.nix) {
+    any-darwin = self.callPackage (import ./nix/any-darwin.nix) {
       inherit cluster inputsSelf;
     };
 

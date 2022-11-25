@@ -87,8 +87,10 @@ in rec {
 
   # XXX: Whenever changing `yarn.lock`, make sure this still builds
   # without network. I.e. since there is no network sanbox in Nix on
-  # Darwin, you have to first build `offlineCache` with network (it’s
-  # pure), and then build the `package` with network turned off.
+  # Darwin, you have to first build `package` with network (to populate
+  # /nix/store with pure dependencies), then add a newline in the middle
+  # of `package.json`, and then build the `package` again, only this time
+  # with network turned off system-wise.
   #
   # TODO: probably run `electron-rebuild` here, not in `package` (in `MacInstaller.hs`)
   node_modules = pkgs.stdenv.mkDerivation {

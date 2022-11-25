@@ -7,6 +7,7 @@
     sourceLib = import ./nix/source-lib.nix { inherit inputs; };
   in {
 
+    # FIXME: clean up this repetition soon (but now they differ slightly)
     packages = {
       x86_64-linux = let
         oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
@@ -39,8 +40,21 @@
           inherit cluster;
         });
       in rec {
-        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.x86_64-darwin.package);
-        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.x86_64-darwin.unsignedInstaller);
+        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
+        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
+        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
+        default = package.mainnet;
+      };
+
+      aarch64-darwin = let
+        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+          target = "aarch64-darwin"; localLibSystem = "aarch64-darwin";
+          inputsSelf = toString inputs.self;
+          inherit cluster;
+        });
+      in rec {
+        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
+        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
       };
