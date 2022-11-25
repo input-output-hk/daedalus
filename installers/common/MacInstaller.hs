@@ -8,7 +8,6 @@
 
 module MacInstaller
   ( main
-  , readCardanoVersionFile
   ) where
 
 ---
@@ -17,14 +16,12 @@ module MacInstaller
 
 import           Universum                 hiding (FilePath, toText, (<>))
 
-import           Control.Exception         (handle)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Text.RawString.QQ
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
-import           System.IO.Error           (IOError, isDoesNotExistError)
 import qualified System.Info
 import           System.Environment        (getEnv)
 import           System.Posix.Files
@@ -34,7 +31,7 @@ import           Turtle                    hiding (e, prefix, stdout)
 import           Config
 import           RewriteLibs               (chain)
 import           Types
-import           Util                      (exportBuildVars, rewritePackageJson)
+import           Util                      (rewritePackageJson)
 
 data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
@@ -71,9 +68,6 @@ main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigning
       }
   print darwinConfig
 
-  ver <- getBackendVersion oBackend
-  exportBuildVars opts ver
-
   appRoot <- case oAppRootOverride of
     Just ar -> pure ar
     Nothing -> do
@@ -83,7 +77,7 @@ main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigning
   makeComponentRoot opts appRoot darwinConfig installerConfig
   daedalusVer <- getAppVersion "../package.json"
 
-  let pkg = packageFileName (uglyName installerConfig) Macos64 oCluster daedalusVer oBackend ver oBuildJob oBuildRevCount
+  let pkg = packageFileName (uglyName installerConfig) Macos64 oCluster daedalusVer oBackend oBuildJob oBuildRevCount
       opkg = oOutputDir </> pkg
 
   print "appRoot:"
@@ -359,9 +353,6 @@ npmPackage DarwinConfig{dcAppName} = do
   printf ("Size of Electron app is " % l % "\n") size
   procs "find" ["-name", "*.node"] empty
 
-getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
-
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
   let
@@ -475,16 +466,6 @@ makeInstaller Options{oOutputDir} DarwinConfig{dcPkgName} componentRoot pkg = do
 
   run "rm" [tempPkg1]
   pure tempPkg2
-
--- | cardano-sl.daedalus-bridge should have a file containing its version.
-readCardanoVersionFile :: FilePath -> IO Text
-readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
-  where
-    verFile = bridge </> "version"
-    prefix = fromMaybe "UNKNOWN" . safeHead . T.lines
-    handler :: IOError -> IO Text
-    handler e | isDoesNotExistError e = pure ""
-              | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
 writeLauncherFile dir DarwinConfig{dcDataDir} = do

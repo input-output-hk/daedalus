@@ -9,8 +9,6 @@ import qualified System.IO as IO
 
 import qualified MacInstaller
 import qualified WindowsInstaller
-import qualified Data.Text.IO as T
-import qualified Data.Text as T
 import           Data.Yaml                 (decodeFileThrow)
 
 import           Types
@@ -34,9 +32,8 @@ main = do
         genSignedInstaller (oOS options') options'
     BuildkiteCrossWin -> do
       fullVersion <- getAppVersion "../package.json"
-      ver <- T.strip <$> T.readFile "version" -- TODO
       installerConfig <- decodeFileThrow "installer-config.json"
-      let fullName = packageFileName (uglyName installerConfig) Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options') (oBuildRevCount options')
+      let fullName = packageFileName (uglyName installerConfig) Win64 (oCluster options') fullVersion (oBackend options') (oBuildJob options') (oBuildRevCount options')
       WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig options' (oCluster options')
       WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
 -- | The contract of `genSignedInstaller` is not to produce unsigned installer binaries.

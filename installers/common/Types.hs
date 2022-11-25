@@ -116,8 +116,8 @@ clusterNetwork Vasil_Dev = "vasil_dev"
 clusterNetwork Preprod = "preprod"
 clusterNetwork Preview = "preview"
 
-packageFileName :: Text -> OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> Maybe BuildJob -> FilePath
-packageFileName uglyName _os cluster ver backend _backendVer buildJob buildRevCount = fromText name <.> ext
+packageFileName :: Text -> OS -> Cluster -> Version -> Backend -> Maybe BuildJob -> Maybe BuildJob -> FilePath
+packageFileName uglyName _os cluster ver backend buildJob buildRevCount = fromText name <.> ext
   where
     name = T.intercalate "-" parts
     parts = [uglyName, fromVer ver <> buildRevCount', lshowText cluster] ++ buildJob' ++ [archOS]

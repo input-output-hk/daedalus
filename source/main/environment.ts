@@ -52,8 +52,8 @@ const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const analyticsFeatureEnabled = true;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
-const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = process.env.CARDANO_NODE_VERSION || 'dev';
+const CARDANO_WALLET_VERSION = process.env.CARDANO_WALLET_VERSION || 'dev';
+const CARDANO_NODE_VERSION = process.env.CARDANO_NODE_VERSION || 'dev';
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -64,8 +64,8 @@ const ram = os.totalmem();
 const hasMetHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_REV_SHORT || 'dev';
-const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
+const BUILD_NUMBER = uniq([CARDANO_WALLET_VERSION, BUILD]).join('.');
+const INSTALLER_VERSION = uniq([CARDANO_WALLET_VERSION, BUILD]).join('.');
 const isMacOS = checkIsMacOS(PLATFORM);
 const isWindows = checkIsWindows(PLATFORM);
 const isLinux = checkIsLinux(PLATFORM);
@@ -78,8 +78,8 @@ export const environment: Environment = Object.assign(
   {},
   {
     network: NETWORK,
-    apiVersion: API_VERSION,
-    nodeVersion: NODE_VERSION,
+    apiVersion: CARDANO_WALLET_VERSION,
+    nodeVersion: CARDANO_NODE_VERSION,
     current: CURRENT_NODE_ENV,
     isDev,
     isTest,

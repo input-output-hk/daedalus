@@ -4,11 +4,8 @@ module Util where
 
 import Data.Text (Text)
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
-import Turtle (export)
 import Data.Aeson (Value, Value(Object, String), encodeFile, decodeFileStrict')
 import qualified Data.HashMap.Strict as HM
-
-import Config (Options(..), Backend(..))
 
 windowsRemoveDirectoryRecursive :: FilePath -> IO ()
 windowsRemoveDirectoryRecursive path = do
@@ -20,19 +17,6 @@ windowsRemoveDirectoryRecursive path = do
         removeDirectory path
     else do
         removeFile path
-
--- | Sets the many environment variables required for the
--- "yarn package" build.
--- When updating this, check that all variables are baked in with both
--- webpack.config.js files.
-exportBuildVars :: Options -> Text -> IO ()
-exportBuildVars Options{oBackend} backendVersion = do
-    mapM_ (uncurry export)
-        [ ("API", apiName oBackend)
-        , ("API_VERSION", backendVersion)
-        ]
-    where
-        apiName (Cardano _) = "ada"
 
 rewritePackageJson :: FilePath -> Text -> IO ()
 rewritePackageJson path name = do

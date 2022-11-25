@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, cardanoWalletVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , windowsIcons
 , libcap
 , libgcrypt
@@ -118,8 +118,7 @@ in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
   src = lib.cleanSourceWith { inherit filter; src = ./.; name = "daedalus"; };
-  API = api;
-  API_VERSION = apiVersion;
+  CARDANO_WALLET_VERSION = cardanoWalletVersion;
   CARDANO_NODE_VERSION = cardanoNodeVersion;
   CI = "nix";
   NETWORK = cluster';

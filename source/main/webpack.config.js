@@ -109,7 +109,7 @@ module.exports = {
       )
     ),
     new webpack.EnvironmentPlugin({
-      API_VERSION: 'dev',
+      CARDANO_WALLET_VERSION: 'dev',
       CARDANO_NODE_VERSION: 'dev',
       NETWORK: 'development',
       BUILD_REV: '0000000000000000000000000000000000000000',

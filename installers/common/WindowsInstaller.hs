@@ -27,8 +27,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
-import           Turtle.Pattern (text, plus, noneOf, star, dot)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, testfile, export, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 
 import           Config
 import           Types
@@ -308,13 +307,11 @@ main opts@Options{..}  = do
     installerConfig <- decodeFileThrow "installer-config.json"
 
     fullVersion <- getAppVersion "../package.json"
-    ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts ver
     packageFrontend oCluster installerConfig
 
-    let fullName = packageFileName (uglyName installerConfig) Win64 oCluster fullVersion oBackend ver oBuildJob oBuildRevCount
+    let fullName = packageFileName (uglyName installerConfig) Win64 oCluster fullVersion oBackend oBuildJob oBuildRevCount
 
     printf ("Building: "%fp%"\n") fullName
 
@@ -348,20 +345,6 @@ main opts@Options{..}  = do
     case signed of
       SignedOK  -> pure ()
       NotSigned -> rm fullName
-
--- | Run cardano-node --version to get a version string.
--- Because this is Windows, all necessary DLLs for cardano-node.exe
--- need to be in the PATH.
-getCardanoVersion :: IO Text
-getCardanoVersion = withDir "DLLs" (grepCardanoVersion run)
-  where
-    run = inproc (tt prog) ["--version"] empty
-    prog = ".." </> "cardano-node.exe"
-
-grepCardanoVersion :: Shell Line -> IO Text
-grepCardanoVersion = fmap T.stripEnd . strict . sed versionPattern
-  where
-    versionPattern = text "cardano-node-" *> plus (noneOf ", ") <* star dot
 
 getTempDir :: MonadIO io => io FilePath
 getTempDir = need "TEMP" >>= \case

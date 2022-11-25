@@ -1,7 +1,7 @@
 { pkgs, lib, inputsSelf
 , nodejs, nodePackages, yarn
 , cluster, daedalus-bridge, daedalus-installer, darwin-launcher, launcherConfigs, mock-token-metadata-server
-, sourceLib, cardanoNodeVersion
+, sourceLib, cardanoNodeVersion, cardanoWalletVersion
 , ... }:
 
 let
@@ -149,7 +149,7 @@ in rec {
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
     BUILD_REV_COUNT = sourceLib.buildRevCount;
-    API_VERSION = daedalus-bridge.wallet-version;
+    CARDANO_WALLET_VERSION = cardanoWalletVersion;
     CARDANO_NODE_VERSION = cardanoNodeVersion;
     configurePhase = setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:

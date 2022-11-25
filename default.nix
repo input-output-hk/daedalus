@@ -132,6 +132,7 @@ let
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
                    else walletPackages.cardano-node;
     cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
+    cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 localLib.sources.cardano-wallet.rev;
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
                    else walletPackages.cardano-cli;
@@ -236,8 +237,6 @@ let
       cp -vir ${./package.json} package.json
       cd installers
 
-      echo ${self.daedalus-bridge.wallet-version} > version
-
       export LANG=en_US.UTF-8
       cp -v ${self.launcherConfigs.configFiles}/* .
       make-installer --${nodeImplementation'} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
@@ -336,7 +335,7 @@ let
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
     signed-windows-installer = let
-      backend_version = self.daedalus-bridge.wallet-version;
+      backend_version = self.cardanoWalletVersion;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
       fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}-x86_64-windows.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
@@ -355,8 +354,6 @@ let
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       inherit sourceLib;
-      api = "ada";
-      apiVersion = self.daedalus-bridge.wallet-version;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
