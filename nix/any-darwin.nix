@@ -160,7 +160,7 @@ in rec {
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
         cd installers/
-        cp -rv ${launcherConfigs.configFiles}/. ./.
+        cp -r ${launcherConfigs.configFiles}/. ./.
 
         # make-installer needs to see `bin/nix-store` to break all references to dylibs inside /nix/store:
         export PATH="${lib.makeBinPath [ pkgs.nixUnstable ]}:$PATH"

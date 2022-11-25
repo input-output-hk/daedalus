@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python3, python2, cardanoWalletVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, cardanoWalletVersion, cluster, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , windowsIcons
 , libcap
 , libgcrypt

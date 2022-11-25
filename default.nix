@@ -4,7 +4,6 @@
 , localLib ? import ./lib.nix { inherit nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
-, buildNum ? null
 , inputsSelf ? null
 , dummyInstaller ? false
 , signingKeys ? null
@@ -65,7 +64,6 @@ let
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis { inherit system; };
   installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
-  buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
@@ -239,7 +237,13 @@ let
 
       export LANG=en_US.UTF-8
       cp -v ${self.launcherConfigs.configFiles}/* .
-      make-installer --${nodeImplementation'} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation'} dummy \
+        --os win64 \
+        -o $out \
+        --cluster ${cluster} \
+        --build-rev-short ${sourceLib.buildRevShort} \
+        --build-rev-count ${toString sourceLib.buildRevCount} \
+        buildkite-cross
 
       mkdir $out
       cp -v daedalus.nsi uninstaller.nsi $out/
@@ -337,7 +341,7 @@ let
     signed-windows-installer = let
       backend_version = self.cardanoWalletVersion;
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fullName = "daedalus-${frontend_version}-${cluster}${buildNumSuffix}-x86_64-windows.exe"; # must match to packageFileName in make-installer
+      fullName = "daedalus-${frontend_version}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
       cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
@@ -352,7 +356,6 @@ let
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     rawapp = self.callPackage ./yarn2nix.nix {
-      inherit buildNum;
       inherit sourceLib;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
@@ -451,8 +454,7 @@ let
     }).installerBundle;
     wrappedBundle = let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      suffix = if buildNum == null then "" else "-${toString buildNum}";
-      fn = "daedalus-${version}-${self.linuxClusterBinName}${suffix}-x86_64-linux.bin";
+      fn = "daedalus-${version}.${sourceLib.buildRevCount}-${self.linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
