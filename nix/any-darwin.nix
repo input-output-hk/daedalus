@@ -7,8 +7,11 @@
 let
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
-  electronVersion = (builtins.fromJSON (builtins.readFile ../package.json)).dependencies.electron;
+  originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
+  electronVersion = originalPackageJson.dependencies.electron;
+  packageVersion = originalPackageJson.version;
   chromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
+  installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
 in rec {
 
@@ -33,6 +36,15 @@ in rec {
     src = inputsSelf;
     name = "daedalus-lockfiles";
     filter = name: type: let b = baseNameOf (toString name); in (b == "package.json" || b == "yarn.lock");
+  };
+
+  srcWithoutNix = lib.cleanSourceWith {
+    src = inputsSelf;
+    filter = name: type: !(type == "regular" && (
+      lib.hasSuffix ".nix" name ||
+      lib.hasSuffix ".hs" name ||
+      lib.hasSuffix ".cabal" name
+    ));
   };
 
   # This is the only thing we use the original `yarn2nix` for:
@@ -130,7 +142,7 @@ in rec {
     pname = "daedalus";
   in pkgs.stdenv.mkDerivation {
     name = pname;
-    src = inputsSelf;
+    src = srcWithoutNix;
     nativeBuildInputs = ([ yarn nodejs daedalus-installer ]) ++ (with pkgs; [ python3 ]) ++
       [(pkgs.runCommandLocal "system-path-exports" {} ''
         mkdir -p $out/bin
@@ -182,7 +194,7 @@ in rec {
       mkdir -p $out/bin/
       cat >$out/bin/${pname} << EOF
       #!/bin/sh
-      exec $out/Applications/${pkgs.lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app/Contents/MacOS/${pkgs.lib.escapeShellArg launcherConfigs.installerConfig.spacedName}
+      exec $out/Applications/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app/Contents/MacOS/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}
       EOF
       chmod +x $out/bin/${pname}
     '';
@@ -191,13 +203,24 @@ in rec {
 
   unsignedInstaller = pkgs.stdenv.mkDerivation {
     name = "daedalus-unsigned-darwin-installer";
-    src = package;
+    dontUnpack = true;
     buildPhase = ''
-      pwd
-      ls -alh
+      appDir=${package}/Applications/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app
+
+      /usr/bin/pkgbuild \
+        --identifier ${lib.escapeShellArg ("org." + launcherConfigs.installerConfig.macPackageName + ".pkg")} \
+        --component "$appDir" \
+        --install-location /Applications \
+        ${lib.escapeShellArg (installerName + ".tmp.pkg")}
+
+      mkdir -p $out
+
+      /usr/bin/productbuild --product ${../installers/data/plist} \
+        --package *.tmp.pkg \
+        $out/${lib.escapeShellArg (installerName + ".pkg")}
     '';
     installPhase = ''
-      exit 77
+      :
     '';
   };
 

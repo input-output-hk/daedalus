@@ -454,7 +454,7 @@ let
     }).installerBundle;
     wrappedBundle = let
       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fn = "daedalus-${version}.${sourceLib.buildRevCount}-${self.linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
+      fn = "daedalus-${version}.${toString sourceLib.buildRevCount}-${self.linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
