@@ -19,6 +19,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.wrappedBundle);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-linux"; };
       };
 
       x86_64-windows = let
@@ -31,6 +32,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.unsigned-windows-installer);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = installer.mainnet;
+        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-windows"; };
       };
 
       x86_64-darwin = let
@@ -44,6 +46,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-darwin"; };
       };
 
       aarch64-darwin = let
@@ -57,6 +60,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "aarch64-darwin"; };
       };
     };
 

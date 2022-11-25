@@ -1,32 +1,27 @@
 env:
+
   ARTIFACT_BUCKET: s3://ci-output-sink
+
 steps:
+
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
-    env:
-      NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: x86_64-darwin
+
   - label: 'daedalus-aarch64-darwin'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
-    env:
-      NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
-      UPLOAD_DIR_OVERRIDE: UNSAFE-internal-build
+    command: '.buildkite/with-nixFlakes.sh nix run .#packages.aarch64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: aarch64-darwin
-  - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
-    agents:
-      system: x86_64-linux
-  - label: 'daedalus-x86_64-windows-nix'
-    command: 'scripts/with-nix-2.5.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
+
+  - label: 'daedalus-x86_64-linux'
+    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-linux.buildkitePipeline'
     agents:
       system: x86_64-linux
 
-  # TODO: Re-enable once script is fixed
-  # - label: 'release.nix'
-  #   command: 'ci/check-hydra.sh'
-  #   agents:
-  #     system: x86_64-linux
+  - label: 'daedalus-x86_64-windows'
+    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-windows.buildkitePipeline'
+    agents:
+      system: x86_64-linux
