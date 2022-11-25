@@ -36,8 +36,8 @@ import           Util
 
 
 
-daedalusShortcut :: Text -> [Attrib]
-daedalusShortcut installDir =
+desktopShortcut :: Text -> [Attrib]
+desktopShortcut installDir =
         [ Target "$INSTDIR\\cardano-launcher.exe"
         , IconFile $ fromString $ T.unpack $ "$INSTDIR\\" <> installDir <> ".exe"
         , StartOptions "SW_SHOWMINIMIZED"
@@ -130,13 +130,13 @@ parseVersion ver =
         _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirectory,spacedName} Options{oBackend} clusterName = do
+writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirectory,uglyName,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
     let fullVersion = T.unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
-    IO.writeFile "daedalus.nsi" $ nsis $ do
+    IO.writeFile (T.unpack uglyName ++ ".nsi") $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ lshow clusterName)
         _ <- constantStr "InstallDir" (str $ T.unpack installDirectory)
@@ -187,7 +187,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
 
-                -- XXX: sometimes during auto-update, it takes longer for Daedalus to exit,
+                -- XXX: sometimes during auto-update, it takes longer for the app to exit,
                 -- and cardano-launcher.exe’s lockfile to be unlocked (deletable), so
                 -- let’s loop waiting for this to happen:
                 let waitSeconds = 30
@@ -195,14 +195,16 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 lockfileDeleted <- mutable_ false
                 while ((lockfileCounter %< waitSeconds) %&& (not_ lockfileDeleted)) $ do
                     detailPrint (
-                        "Checking if Daedalus is not running ("
+                        "Checking if "
+                        Development.NSIS.& str (T.unpack spacedName)
+                        Development.NSIS.& " is not running ("
                         Development.NSIS.& strShow (lockfileCounter + 1)
                         Development.NSIS.& "/"
                         Development.NSIS.& strShow waitSeconds
                         Development.NSIS.& ")..."
                         )
                     lockfileDeleted @= true
-                    onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $ do
+                    onError (delete [] (str $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
                         lockfileDeleted @= false
                     iff_ (not_ lockfileDeleted) $ do
                         sleep 1000 -- milliseconds
@@ -254,7 +256,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
 
-                createShortcut "$DESKTOP\\$SpacedName.lnk" (daedalusShortcut spacedName)
+                createShortcut "$DESKTOP\\$SpacedName.lnk" (desktopShortcut spacedName)
 
                 -- Uninstaller
                 let
@@ -278,7 +280,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 createDirectory "$SMPROGRAMS/$SpacedName"
                 createShortcut "$SMPROGRAMS/$SpacedName/Uninstall $SpacedName.lnk"
                     [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-                createShortcut "$SMPROGRAMS/$SpacedName/$SpacedName.lnk" (daedalusShortcut installDirectory)
+                createShortcut "$SMPROGRAMS/$SpacedName/$SpacedName.lnk" (desktopShortcut installDirectory)
         return ()
 
 lshow :: Show a => a -> String
@@ -305,14 +307,14 @@ main opts@Options{..}  = do
 
     installerConfig <- decodeFileThrow "installer-config.json"
 
-    fullVersion <- getDaedalusVersion "../package.json"
+    fullVersion <- getAppVersion "../package.json"
     ver <- getCardanoVersion
 
     echo "Packaging frontend"
     exportBuildVars opts ver
     packageFrontend oCluster installerConfig
 
-    let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
+    let fullName = packageFileName (uglyName installerConfig) Win64 oCluster fullVersion oBackend ver oBuildJob oBuildRevCount
 
     printf ("Building: "%fp%"\n") fullName
 
@@ -326,17 +328,21 @@ main opts@Options{..}  = do
     writeUninstallerNSIS fullVersion installerConfig
     signUninstaller opts
 
-    echo "Writing daedalus.nsi"
+    let
+      nsiFileName :: String
+      nsiFileName = T.unpack (uglyName installerConfig) ++ ".nsi"
+
+    echo . fromString $ "Writing " ++ nsiFileName
     writeInstallerNSIS fullName fullVersion installerConfig opts oCluster
 
-    rawnsi <- readFile "daedalus.nsi"
+    rawnsi <- readFile nsiFileName
     putStr rawnsi
     IO.hFlush IO.stdout
 
     windowsRemoveDirectoryRecursive $ T.unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
-    procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
+    procs "C:\\Program Files (x86)\\NSIS\\makensis" [T.pack nsiFileName, "-V4"] mempty
 
     signed <- signFile opts fullName
     case signed of

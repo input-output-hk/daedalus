@@ -33,10 +33,10 @@ main = do
     GenInstaller -> do
         genSignedInstaller (oOS options') options'
     BuildkiteCrossWin -> do
-      fullVersion <- getDaedalusVersion "../package.json"
+      fullVersion <- getAppVersion "../package.json"
       ver <- T.strip <$> T.readFile "version" -- TODO
-      let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
       installerConfig <- decodeFileThrow "installer-config.json"
+      let fullName = packageFileName (uglyName installerConfig) Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options') (oBuildRevCount options')
       WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig options' (oCluster options')
       WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
 -- | The contract of `genSignedInstaller` is not to produce unsigned installer binaries.

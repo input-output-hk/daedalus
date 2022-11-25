@@ -110,8 +110,11 @@ module.exports = {
     ),
     new webpack.EnvironmentPlugin({
       API_VERSION: 'dev',
+      CARDANO_NODE_VERSION: 'dev',
       NETWORK: 'development',
-      BUILD_NUMBER: 'dev',
+      BUILD_REV: '0000000000000000000000000000000000000000',
+      BUILD_REV_SHORT: 'dev',
+      BUILD_REV_COUNT: '0',
       IS_WATCH_MODE: 'false',
       KEEP_LOCAL_CLUSTER_RUNNING: 'false',
     }),

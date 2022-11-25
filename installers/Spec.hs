@@ -116,7 +116,7 @@ utilSpec = do
   describe "Daedalus version loading" $ do
     xit "loads the actual version file" $ do
       -- referring to parent directory won't work in nix-build
-      Version ver <- getDaedalusVersion "../package.json"
+      Version ver <- getAppVersion "../package.json"
       ver `shouldSatisfy` (not . T.null)
 
     it "loads a version file" $ do

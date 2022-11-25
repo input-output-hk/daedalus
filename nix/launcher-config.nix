@@ -330,6 +330,7 @@ let
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
       inherit spacedName iconPath;
+      uglyName = "daedalus";
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       installerWinBinaries = [

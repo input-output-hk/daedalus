@@ -23,7 +23,7 @@ import {
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
 
-const { version } = packageJson;
+const version = `${packageJson.version}.${process.env.BUILD_REV_COUNT || '0'}`;
 // Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
 // actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
 //
@@ -53,8 +53,7 @@ const isDevelopment = checkIsDevelopment(NETWORK);
 const analyticsFeatureEnabled = true;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const NODE_VERSION = '1.35.3'; // TODO: pick up this value from process.env
-
+const NODE_VERSION = process.env.CARDANO_NODE_VERSION || 'dev';
 const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
@@ -64,7 +63,7 @@ const cpu = os.cpus();
 const ram = os.totalmem();
 const hasMetHardwareRequirements = ram >= RECOMMENDED_RAM_IN_BYTES;
 const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
-const BUILD = process.env.BUILD_NUMBER || 'dev';
+const BUILD = process.env.BUILD_REV_SHORT || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const isMacOS = checkIsMacOS(PLATFORM);

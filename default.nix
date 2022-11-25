@@ -15,6 +15,7 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
+, sourceLib ? null
 }:
 
 let
@@ -130,6 +131,7 @@ let
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
                    else walletPackages.cardano-node;
+    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
                    else walletPackages.cardano-cli;
@@ -352,6 +354,7 @@ let
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
+      inherit sourceLib;
       api = "ada";
       apiVersion = self.daedalus-bridge.wallet-version;
       inherit (self.launcherConfigs.installerConfig) spacedName;
@@ -459,7 +462,7 @@ let
     '';
 
     any-darwin = self.callPackage (import ./nix/any-darwin.nix) {
-      inherit cluster inputsSelf;
+      inherit cluster inputsSelf sourceLib;
     };
 
   };

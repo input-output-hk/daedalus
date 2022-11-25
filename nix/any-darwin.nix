@@ -1,6 +1,7 @@
 { pkgs, lib, inputsSelf
 , nodejs, nodePackages, yarn
 , cluster, daedalus-bridge, daedalus-installer, darwin-launcher, launcherConfigs, mock-token-metadata-server
+, sourceLib, cardanoNodeVersion
 , ... }:
 
 let
@@ -144,6 +145,12 @@ in rec {
       darwin-launcher
       mock-token-metadata-server
     ];
+    NETWORK = cluster;
+    BUILD_REV = sourceLib.buildRev;
+    BUILD_REV_SHORT = sourceLib.buildRevShort;
+    BUILD_REV_COUNT = sourceLib.buildRevCount;
+    API_VERSION = daedalus-bridge.wallet-version;
+    CARDANO_NODE_VERSION = cardanoNodeVersion;
     configurePhase = setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
@@ -159,8 +166,11 @@ in rec {
         export PATH="${lib.makeBinPath [ pkgs.nixUnstable ]}:$PATH"
 
         make-installer --cardano ${daedalus-bridge} \
-          --build-job 1010101 --cluster ${cluster} \
-          --out-dir csl-daedalus --dont-pkgbuild
+          --build-rev-short ${sourceLib.buildRevShort} \
+          --build-rev-count ${toString sourceLib.buildRevCount} \
+          --cluster ${cluster} \
+          --out-dir doesnt-matter \
+          --dont-pkgbuild
       )
     '';
     installPhase = ''

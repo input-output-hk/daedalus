@@ -9,7 +9,6 @@ import Data.Aeson (Value, Value(Object, String), encodeFile, decodeFileStrict')
 import qualified Data.HashMap.Strict as HM
 
 import Config (Options(..), Backend(..))
-import Types (fromBuildJob, clusterNetwork)
 
 windowsRemoveDirectoryRecursive :: FilePath -> IO ()
 windowsRemoveDirectoryRecursive path = do
@@ -27,12 +26,10 @@ windowsRemoveDirectoryRecursive path = do
 -- When updating this, check that all variables are baked in with both
 -- webpack.config.js files.
 exportBuildVars :: Options -> Text -> IO ()
-exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
+exportBuildVars Options{oBackend} backendVersion = do
     mapM_ (uncurry export)
         [ ("API", apiName oBackend)
         , ("API_VERSION", backendVersion)
-        , ("BUILD_NUMBER", maybe "" fromBuildJob oBuildJob)
-        , ("NETWORK", clusterNetwork oCluster)
         ]
     where
         apiName (Cardano _) = "ada"

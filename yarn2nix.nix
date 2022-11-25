@@ -15,6 +15,8 @@
 , xz
 , nodePackages
 , zlib
+, sourceLib
+, cardanoNodeVersion
 , strace }:
 let
   cluster' = launcherConfig.networkName;
@@ -118,9 +120,12 @@ yarn2nix.mkYarnPackage {
   src = lib.cleanSourceWith { inherit filter; src = ./.; name = "daedalus"; };
   API = api;
   API_VERSION = apiVersion;
+  CARDANO_NODE_VERSION = cardanoNodeVersion;
   CI = "nix";
   NETWORK = cluster';
-  BUILD_NUMBER = "${toString buildNum}";
+  BUILD_REV = sourceLib.buildRev;
+  BUILD_REV_SHORT = sourceLib.buildRevShort;
+  BUILD_REV_COUNT = sourceLib.buildRevCount;
   NODE_ENV = "production";
   BUILDTYPE = "Release";
   extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);

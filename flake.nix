@@ -12,7 +12,7 @@
       x86_64-linux = let
         oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
           target = "x86_64-linux"; localLibSystem = "x86_64-linux";
-          inherit cluster;
+          inherit cluster sourceLib;
         });
       in rec {
         package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.daedalus);
@@ -24,7 +24,7 @@
       x86_64-windows = let
         oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
           target = "x86_64-windows"; localLibSystem = "x86_64-linux";
-          inherit cluster;
+          inherit cluster sourceLib;
         });
       in rec {
         package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.rawapp-win64); # FIXME: this is wrong
@@ -37,7 +37,7 @@
         oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
           target = "x86_64-darwin"; localLibSystem = "x86_64-darwin";
           inputsSelf = toString inputs.self;
-          inherit cluster;
+          inherit cluster sourceLib;
         });
       in rec {
         package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
@@ -50,7 +50,7 @@
         oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
           target = "aarch64-darwin"; localLibSystem = "aarch64-darwin";
           inputsSelf = toString inputs.self;
-          inherit cluster;
+          inherit cluster sourceLib;
         });
       in rec {
         package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
