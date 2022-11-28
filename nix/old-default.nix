@@ -1,7 +1,7 @@
 { target ? builtins.currentSystem
 , localLibSystem ? builtins.currentSystem
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation; system = localLibSystem; }
+, localLib ? import ./old-lib.nix { inherit nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , inputsSelf ? null
@@ -28,7 +28,7 @@ let
   config = {
     packageOverrides = super: {
       systemd = super.systemd.overrideAttrs ({ patches ? [], ... }: {
-        patches = patches ++ [ ./nix/systemd.patch ];
+        patches = patches ++ [ ./systemd.patch ];
       });
     };
   };
@@ -41,7 +41,7 @@ let
         cp -r ${localLib.sources.cardano-wallet} $out
         chmod -R +w $out
         cd $out
-        patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+        patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
       '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
@@ -106,7 +106,7 @@ let
 
     sources = localLib.sources;
     bridgeTable = {
-      cardano = self.callPackage ./nix/cardano-bridge.nix {};
+      cardano = self.callPackage ./cardano-bridge.nix {};
     };
     inherit (walletPackages) cardano-wallet;
     inherit (walletPackages) cardano-address;
@@ -134,10 +134,10 @@ let
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
                    else walletPackages.cardano-cli;
-    darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
+    darwin-launcher = self.callPackage ./darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
-    fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
+    fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
     wine = pkgs.wine.override { wineBuild = "wine32"; };
     wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
 
@@ -147,9 +147,9 @@ let
     };
 
     # the native makensis binary, with cross-compiled windows stubs
-    nsis = nsisNixPkgs.callPackage ./nix/nsis.nix {};
+    nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    launcherConfigs = self.callPackage ./nix/launcher-config.nix {
+    launcherConfigs = self.callPackage ./launcher-config.nix {
       inherit devShell topologyOverride configOverride genesisOverride system;
       network = cluster;
       os = ostable.${target};
@@ -232,7 +232,7 @@ let
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
       mkdir installers
-      cp -vir ${./package.json} package.json
+      cp -vir ${../package.json} package.json
       cd installers
 
       export LANG=en_US.UTF-8
@@ -255,7 +255,7 @@ let
       mkdir home
       export HOME=$(realpath home)
 
-      ln -sv ${./installers/nsis_plugins} nsis_plugins
+      ln -sv ${../installers/nsis_plugins} nsis_plugins
       cp ${self.nsisFiles}/uninstaller.nsi .
 
       makensis uninstaller.nsi -V4
@@ -273,11 +273,11 @@ let
     windowsIcons = let
       buildInputs = with pkgs; [ imagemagick ];
       # Allow fallback to `mainnet` if cluster’s icons don’t exist:
-      srcCluster = if builtins.pathExists (./installers/icons + "/${cluster}") then cluster else "mainnet";
+      srcCluster = if builtins.pathExists (../installers/icons + "/${cluster}") then cluster else "mainnet";
     in pkgs.runCommand "windows-icons-${cluster}" { inherit buildInputs; } ''
       mkdir -p $out/${cluster} $out
-      cp -r ${./installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
-      cp ${./installers/icons/installBanner.bmp} $out/installBanner.bmp
+      cp -r ${../installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
+      cp ${../installers/icons/installBanner.bmp} $out/installBanner.bmp
       cd $out/${cluster}
       rm *.ico *.ICO || true   # XXX: just in case
       for f in *.png ; do
@@ -302,14 +302,14 @@ let
       mkdir -p $out/{nix-support,cfg-files}
       mkdir installers
       cp -vir ${self.windowsIcons} installers/icons
-      cp -vir ${./package.json} package.json
+      cp -vir ${../package.json} package.json
       chmod -R +w installers
       cd installers
       mkdir -pv ../release/win32-x64/
       ${if dummyInstaller then ''mkdir -pv "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/"'' else ''cp -rv ${self.rawapp-win64} "../release/win32-x64/${installDir}-win32-x64"''}
       chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
       cp -v ${self.fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
-      ln -s ${./installers/nsis_plugins} nsis_plugins
+      ln -s ${../installers/nsis_plugins} nsis_plugins
 
       mkdir dlls
       pushd dlls
@@ -340,7 +340,7 @@ let
     '';
     signed-windows-installer = let
       backend_version = self.cardanoWalletVersion;
-      frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+      frontend_version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
       fullName = "daedalus-${frontend_version}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
@@ -349,30 +349,30 @@ let
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
     ## TODO: move to installers/nix
-    hsDaedalusPkgs = self.callPackage ./installers {
+    hsDaedalusPkgs = self.callPackage ../installers {
       inherit (self) daedalus-bridge;
       inherit localLib system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
-    daedalus = self.callPackage ./installers/nix/linux.nix {};
-    rawapp = self.callPackage ./yarn2nix.nix {
+    daedalus = self.callPackage ../installers/nix/linux.nix {};
+    rawapp = self.callPackage ./old-yarn2nix.nix {
       inherit sourceLib;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
-    source = builtins.filterSource localLib.cleanSourceFilter ./.;
+    source = builtins.filterSource localLib.cleanSourceFilter ../.;
     inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
       packages: .
       package yaml
         flags: -no-exe
     ''; }).components.exes) yaml2json;
 
-    electron = pkgs.callPackage ./installers/nix/electron.nix {};
+    electron = pkgs.callPackage ../installers/nix/electron.nix {};
 
     tests = {
-      runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
+      runShellcheck = self.callPackage ../tests/shellcheck.nix { src = ../.;};
     };
     nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
@@ -445,7 +445,7 @@ let
     '';
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
-    in (import ./installers/nix/nix-installer.nix {
+    in (import ../installers/nix/nix-installer.nix {
       inherit (self) postInstall preInstall linuxClusterBinName rawapp;
       inherit pkgs;
       installationSlug = installPath;
@@ -453,14 +453,14 @@ let
       nix-bundle = self.nix-bundle;
     }).installerBundle;
     wrappedBundle = let
-      version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+      version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
       fn = "daedalus-${version}.${toString sourceLib.buildRevCount}-${self.linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
     '';
 
-    any-darwin = self.callPackage (import ./nix/any-darwin.nix) {
+    any-darwin = self.callPackage (import ./any-darwin.nix) {
       inherit cluster inputsSelf sourceLib;
     };
 

@@ -3,7 +3,7 @@
 }:
 
 let
-  sources = import ./nix/sources.nix;
+  sources = import ./sources.nix;
   nixpkgs = import sources.nixpkgs { sourcesOverride = sources; inherit system; };
   # TODO: can we use the filter in cardano-wallet instead?
   cleanSourceFilter = with pkgs.stdenv;

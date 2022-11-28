@@ -10,7 +10,7 @@
     # FIXME: clean up this repetition soon (but now they differ slightly)
     packages = {
       x86_64-linux = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
           target = "x86_64-linux"; localLibSystem = "x86_64-linux";
           inherit cluster sourceLib;
         });
@@ -23,7 +23,7 @@
       };
 
       x86_64-windows = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
           target = "x86_64-windows"; localLibSystem = "x86_64-linux";
           inherit cluster sourceLib;
         });
@@ -36,7 +36,7 @@
       };
 
       x86_64-darwin = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
           target = "x86_64-darwin"; localLibSystem = "x86_64-darwin";
           inputsSelf = toString inputs.self;
           inherit cluster sourceLib;
@@ -50,7 +50,7 @@
       };
 
       aarch64-darwin = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./default.nix {
+        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
           target = "aarch64-darwin"; localLibSystem = "aarch64-darwin";
           inputsSelf = toString inputs.self;
           inherit cluster sourceLib;
@@ -65,7 +65,7 @@
     };
 
     devShells = sourceLib.forEach [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
-      let all = sourceLib.forEachCluster (cluster: import ./shell.nix { inherit system cluster; });
+      let all = sourceLib.forEachCluster (cluster: import ./nix/old-shell.nix { inherit system cluster; });
       in all // { default = all.mainnet; }
     );
 
@@ -77,13 +77,13 @@
 
       # --- Linux ----------------------------------------------------
       x86_64-linux.x86_64-linux = let
-        d = import ./default.nix { target = "x86_64-linux"; localLibSystem = "x86_64-linux"; };
+        d = inputs.self.outputs.packages.x86_64-linux.internal.mainnet;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
         # daedalus = d.daedalus;  # TODO: I’m really not sure if it still makes sense, if we have Buildkite…
         daedalus-installer = d.daedalus-installer;
-        devShellGCRoot = (import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; }).gcRoot;
+        devShellGCRoot = inputs.self.outputs.devShells.x86_64-linux.default.gcRoot;
         mono = d.pkgs.mono;
         nodejs = d.nodejs;
         tests = d.tests;
@@ -95,7 +95,7 @@
 
       # --- Windows (x-compiled from Linux) --------------------------
       x86_64-linux.x86_64-windows = let
-        d = import ./default.nix { target = "x86_64-windows"; localLibSystem = "x86_64-linux"; };
+        d = inputs.self.outputs.packages.x86_64-windows.internal.mainnet;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
@@ -104,7 +104,7 @@
 
       # --- Darwin ---------------------------------------------------
       x86_64-darwin.x86_64-darwin = let
-        d = import ./default.nix { target = "x86_64-darwin"; localLibSystem = "x86_64-darwin"; };
+        d = inputs.self.outputs.packages.x86_64-darwin.internal.mainnet;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;

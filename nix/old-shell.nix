@@ -1,8 +1,8 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation system; }
-, pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
+, localLib ? import ./old-lib.nix { inherit nodeImplementation system; }
+, pkgs ? import (import ./sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
@@ -17,7 +17,7 @@
 }:
 
 let
-  daedalusPkgs = import ./. {
+  daedalusPkgs = import ./old-default.nix {
     inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
     target = system;
     localLibSystem = system;
@@ -81,7 +81,7 @@ let
     ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
     daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
     # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
-    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./nix/cardano-bridge.nix)));
+    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
   } "export >$out";
 
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
@@ -128,7 +128,7 @@ let
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ./.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
