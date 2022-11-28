@@ -93,6 +93,7 @@ let
     buildCommand = "touch $out";
     LAUNCHER_CONFIG = launcherConfig';
     CARDANO_NODE_VERSION = daedalusPkgs.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = daedalusPkgs.cardanoWalletVersion;
     DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
