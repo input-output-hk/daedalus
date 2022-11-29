@@ -83,6 +83,9 @@ main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigning
   print "appRoot:"
   print (tt appRoot)
 
+  when oDontPkgbuild $ do
+    codeSignComponent'saveScripts -- for later (impure) use during IOG release
+
   unless oDontPkgbuild $ do
 
     case mCodeSigningConfig of
@@ -112,7 +115,7 @@ main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigning
 
 -- | Define the code signing script to be used for code signing
 codeSignScriptContents :: String
-codeSignScriptContents = [r|#!/run/current-system/sw/bin/bash
+codeSignScriptContents = [r|#!/usr/bin/env bash
 set -x
 SIGN_ID="$1"
 KEYCHAIN="$2"
@@ -507,6 +510,12 @@ codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} com
                            , codeSigningKeyChain
                            , (tt component)
                            , entitlementsPath ]
+
+codeSignComponent'saveScripts :: IO ()
+codeSignComponent'saveScripts =
+  with makeSigningDir $ \(codesignScriptPath, entitlementsPath) -> do
+    cp (fromText codesignScriptPath) "codesign.sh"
+    cp (fromText entitlementsPath) "entitlements.xml"
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()

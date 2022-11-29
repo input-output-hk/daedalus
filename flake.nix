@@ -15,10 +15,11 @@
           inherit cluster sourceLib;
         });
       in rec {
+        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.daedalus);
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.wrappedBundle);
-        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.makeSignedLinuxInstaller);
         buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-linux"; };
       };
 
@@ -32,6 +33,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.unsigned-windows-installer);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = installer.mainnet;
+        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.makeSignedWindowsInstaller);
         buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-windows"; };
       };
 
@@ -46,6 +48,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.makeSignedInstaller);
         buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-darwin"; };
       };
 
@@ -60,6 +63,7 @@
         installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
         internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
         default = package.mainnet;
+        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.makeSignedInstaller);
         buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "aarch64-darwin"; };
       };
     };
