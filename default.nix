@@ -33,15 +33,14 @@ let
   };
   pkgs = import sources.nixpkgs { inherit system config; };
   sources = localLib.sources // {
-    cardano-wallet = pkgs.runCommand "cardano-wallet" {} ''
-      mkdir -p $out
-      cd $out
-      tar -x --strip 1 -f ${localLib.sources.cardano-wallet}
-      chmod -R +w $out
-      ${if target != "aarch64-darwin" then "" else ''
-        patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
-      ''}
-    '';
+    cardano-wallet =
+      if target != "aarch64-darwin"
+      then localLib.sources.cardano-wallet
+      else pkgs.runCommand "cardano-wallet" {} ''
+        cp -r ${localLib.sources.cardano-wallet} $out
+        chmod -R +w $out
+        cd $out
+      '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   flake-compat = import sources.flake-compat;
