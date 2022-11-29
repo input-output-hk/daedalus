@@ -226,12 +226,15 @@ in rec {
     codeSigningConfig = "/var/lib/buildkite-agent/code-signing-config.json";
     signingConfig = "/var/lib/buildkite-agent/signing-config.json";
     shallSignPredicate = "[ -f ${credentials} ] && [ -f ${codeSigningConfig} ] && [ -f ${signingConfig} ]";
-    readConfigs = pkgs.writeShellScript "read-signing-config" ''
+    bashSetup = ''
       set -o errexit
       set -o pipefail
       set -o nounset
+      export PATH="${lib.makeBinPath [ pkgs.coreutils pkgs.jq ]}:$PATH"
+    '';
+    readConfigs = pkgs.writeShellScript "read-signing-config" ''
+      ${bashSetup}
       if ${shallSignPredicate} ; then
-        export PATH="${lib.makeBinPath [ pkgs.jq ]}:$PATH"
         echo "codeSigningIdentity='$(jq -r .codeSigningIdentity ${codeSigningConfig})'"
         echo "codeSigningKeyChain='$(jq -r .codeSigningKeyChain ${codeSigningConfig})'"
         echo "signingIdentity='$(jq -r .signingIdentity ${signingConfig})'"
@@ -242,9 +245,7 @@ in rec {
     '';
 
     packAndSign = pkgs.writeShellScript "pack-and-sign" ''
-      set -o errexit
-      set -o pipefail
-      set -o nounset
+      ${bashSetup}
 
       eval $(${readConfigs})
 
@@ -296,6 +297,7 @@ in rec {
     '';
 
   in ''
+    ${bashSetup}
     if ${shallSignPredicate} ; then
       exec sudo -u buildkite-agent ${packAndSign}
     else
