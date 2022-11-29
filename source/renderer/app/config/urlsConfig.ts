@@ -11,7 +11,7 @@ export const DEVELOPMENT_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const MAINNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const TESTNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const STAGING_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
-export const MAINNET_SERVICING_STATION_URL = 'servicing-station.vit.iohk.io';
+export const MAINNET_SERVICING_STATION_URL = 'servicing-station.gov.iog.io';
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
