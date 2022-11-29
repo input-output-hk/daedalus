@@ -40,6 +40,7 @@ let
         cp -r ${localLib.sources.cardano-wallet} $out
         chmod -R +w $out
         cd $out
+        patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
       '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
