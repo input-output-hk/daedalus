@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Implemented CPU name grouping mechanism for analytics ([PR 3089](https://github.com/input-output-hk/daedalus/pull/3089))
+
 ### Chores
 
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
