@@ -5,83 +5,37 @@
   };
   outputs = inputs: let
     sourceLib = import ./nix/source-lib.nix { inherit inputs; };
+    inherit (sourceLib) forEachCluster;
   in {
 
-    # FIXME: clean up this repetition soon (but now they differ slightly)
-    packages = {
-      x86_64-linux = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
-          target = "x86_64-linux"; localLibSystem = "x86_64-linux";
-          inherit cluster sourceLib;
-        });
-      in rec {
-        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
-        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.daedalus);
-        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.wrappedBundle);
-        default = package.mainnet;
-        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.makeSignedLinuxInstaller);
-        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-linux"; };
-      };
-
-      x86_64-windows = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
-          target = "x86_64-windows"; localLibSystem = "x86_64-linux";
-          inherit cluster sourceLib;
-        });
-      in rec {
-        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.rawapp-win64); # FIXME: this is wrong
-        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.unsigned-windows-installer);
-        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
-        default = installer.mainnet;
-        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.makeSignedWindowsInstaller);
-        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-windows"; };
-      };
-
-      x86_64-darwin = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
-          target = "x86_64-darwin"; localLibSystem = "x86_64-darwin";
-          inputsSelf = toString inputs.self;
-          inherit cluster sourceLib;
-        });
-      in rec {
-        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
-        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
-        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
-        default = package.mainnet;
-        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.makeSignedInstaller);
-        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "x86_64-darwin"; };
-      };
-
-      aarch64-darwin = let
-        oldCode = sourceLib.forEachCluster (cluster: import ./nix/old-default.nix {
-          target = "aarch64-darwin"; localLibSystem = "aarch64-darwin";
-          inputsSelf = toString inputs.self;
-          inherit cluster sourceLib;
-        });
-      in rec {
-        package = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.package);
-        installer = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.unsignedInstaller);
-        internal = sourceLib.forEachCluster (cluster: oldCode.${cluster});
-        default = package.mainnet;
-        makeSignedInstaller = sourceLib.forEachCluster (cluster: oldCode.${cluster}.any-darwin.makeSignedInstaller);
-        buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs; targetSystem = "aarch64-darwin"; };
-      };
+    packages = __mapAttrs (targetSystem: definition: rec {
+      internal = forEachCluster (cluster: import definition { inherit inputs cluster targetSystem; });
+      package = __mapAttrs (_: a: a.package) internal;
+      installer = __mapAttrs (_: a: a.unsignedInstaller) internal;
+      default = package.mainnet;
+      makeSignedInstaller = __mapAttrs (_: a: a.makeSignedInstaller) internal;
+      buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs targetSystem; };
+    }) {
+      x86_64-linux = ./nix/x86_64-linux.nix;
+      x86_64-windows = ./nix/x86_64-windows.nix;
+      x86_64-darwin = ./nix/any-darwin.nix;
+      aarch64-darwin = ./nix/any-darwin.nix;
     };
 
     devShells = sourceLib.forEach [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
-      let all = sourceLib.forEachCluster (cluster: import ./nix/old-shell.nix { inherit system cluster; });
+      let all = forEachCluster (cluster: import ./nix/old-shell.nix { inherit system cluster; });
       in all // { default = all.mainnet; }
     );
 
     # Compatibility with older Nix:
-    defaultPackage = builtins.mapAttrs (_: a: a.default) inputs.self.outputs.packages;
-    devShell = builtins.mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
+    defaultPackage = __mapAttrs (_: a: a.default) inputs.self.outputs.packages;
+    devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
     hydraJobs = {
 
       # --- Linux ----------------------------------------------------
       x86_64-linux.x86_64-linux = let
-        d = inputs.self.outputs.packages.x86_64-linux.internal.mainnet;
+        d = inputs.self.outputs.packages.x86_64-linux.internal.mainnet.oldCode;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
@@ -99,7 +53,7 @@
 
       # --- Windows (x-compiled from Linux) --------------------------
       x86_64-linux.x86_64-windows = let
-        d = inputs.self.outputs.packages.x86_64-windows.internal.mainnet;
+        d = inputs.self.outputs.packages.x86_64-windows.internal.mainnet.oldCode;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
@@ -108,7 +62,7 @@
 
       # --- Darwin ---------------------------------------------------
       x86_64-darwin.x86_64-darwin = let
-        d = inputs.self.outputs.packages.x86_64-darwin.internal.mainnet;
+        d = inputs.self.outputs.packages.x86_64-darwin.internal.mainnet.oldCode;
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;

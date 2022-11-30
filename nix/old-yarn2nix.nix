@@ -28,9 +28,6 @@ let
   }) {
     inherit pkgs nodejs yarn;
   };
-  dotGitExists = builtins.pathExists ../.git;
-  isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
-  canUseFetchGit = dotGitExists && isNix2;
   origPackage = builtins.fromJSON (builtins.readFile ../package.json);
   newPackage = (origPackage // {
     productName = spacedName;

@@ -4,7 +4,6 @@
 , localLib ? import ./old-lib.nix { inherit nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
-, inputsSelf ? null
 , dummyInstaller ? false
 , signingKeys ? null
 , HSMServer ? null
@@ -459,10 +458,6 @@ let
       mkdir -p $out
       cp ${self.newBundle} $out/${fn}
     '';
-
-    any-darwin = self.callPackage (import ./any-darwin.nix) {
-      inherit cluster inputsSelf sourceLib;
-    };
 
   };
 in pkgs.lib.makeScope pkgs.newScope packages

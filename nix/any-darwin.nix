@@ -1,10 +1,23 @@
-{ pkgs, lib, inputsSelf
-, nodejs, nodePackages, yarn
-, cluster, daedalus-bridge, daedalus-installer, darwin-launcher, launcherConfigs, mock-token-metadata-server
-, sourceLib, cardanoNodeVersion, cardanoWalletVersion
-, ... }:
+{ inputs, targetSystem, cluster }:
+
+assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin";
 
 let
+
+  sourceLib = import ./source-lib.nix { inherit inputs; };
+
+  oldCode = import ./old-default.nix {
+    target = targetSystem;
+    localLibSystem = targetSystem;
+    inherit cluster sourceLib;
+  };
+
+  inherit (oldCode) pkgs
+    nodejs nodePackages yarn
+    daedalus-bridge daedalus-installer darwin-launcher launcherConfigs mock-token-metadata-server
+    cardanoNodeVersion cardanoWalletVersion;
+
+  inherit (pkgs) lib;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
@@ -15,7 +28,7 @@ let
 
 in rec {
 
-  inherit nodejs nodePackages yarn;
+  inherit oldCode nodejs nodePackages yarn;
 
   yarn2nix = let
     # Nixpkgs master @ 2022-07-18
@@ -33,13 +46,13 @@ in rec {
 
   # To better cache node_modules, let’s only depend on package.json, and yarn.lock:
   srcLockfiles = lib.cleanSourceWith {
-    src = inputsSelf;
+    src = inputs.self;
     name = "daedalus-lockfiles";
     filter = name: type: let b = baseNameOf (toString name); in (b == "package.json" || b == "yarn.lock");
   };
 
   srcWithoutNix = lib.cleanSourceWith {
-    src = inputsSelf;
+    src = inputs.self;
     filter = name: type: !(type == "regular" && (
       lib.hasSuffix ".nix" name ||
       lib.hasSuffix ".hs" name ||
