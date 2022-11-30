@@ -2,7 +2,7 @@
 
 let
 
-  inherit (inputs.self.outputs.packages.${targetSystem}.internal.mainnet.pkgs)
+  inherit (inputs.self.outputs.packages.${targetSystem}.internal.mainnet.oldCode.pkgs)
     lib writeShellScriptBin;
   inherit (import ./source-lib.nix { inherit inputs; }) installerClusters;
 
