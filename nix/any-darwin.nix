@@ -280,10 +280,13 @@ in rec {
 
       if ${shallSignPredicate} ; then
         echo "Signing installer…"
-        (
-          source ${credentials}
-          security unlock-keychain -p "$SIGNING" "$signingKeyChain"
-        )
+
+        # FIXME: this doesn’t work outside of `buildkite-agent`, it seems:
+        #(
+        #  source ${credentials}
+        #  security unlock-keychain -p "$SIGNING" "$signingKeyChain"
+        #)
+
         productsign --sign "$signingIdentity" --keychain "$signingKeyChain" \
           *.phase2.pkg \
           ${lib.escapeShellArg (installerName + ".pkg")}
@@ -297,8 +300,9 @@ in rec {
     '';
 
   in ''
+    cd /
     ${bashSetup}
-    if ${shallSignPredicate} ; then
+    if ${shallSignPredicate} && [ "$USER" == "root" ]; then
       exec sudo -u buildkite-agent ${packAndSign}
     else
       exec ${packAndSign}

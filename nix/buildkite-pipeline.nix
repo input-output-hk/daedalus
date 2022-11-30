@@ -55,6 +55,14 @@ writeShellScriptBin "buildkite-pipeline" ''
     echo "Built: $(readlink "$result")"
 
     if [ -n "''${BUILDKITE_JOB_ID:-}" ]; then
+      ${if targetSystem != "x86_64-darwin" then "" else ''
+        echo '~~~ Signing installer for cluster ‘${cluster}’'
+        nix run -L .#packages.${targetSystem}.makeSignedInstaller.${cluster} | tee make-installer.log
+        rm "$result"
+        mkdir -p "$result"
+        mv $(tail -n 1 make-installer.log) "$result"/
+      ''}
+
       echo '~~~ Uploading installer for cluster ‘${cluster}’'
       (
         # XXX: we have to chdir, since buildkite-agent uploads keeping full path
