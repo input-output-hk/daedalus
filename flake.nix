@@ -1,6 +1,7 @@
 {
   description = "Daedalus itself, and jobs populating <https://cache.iog.io> with its dependencies";
   inputs = {
+    nixpkgs.follows = "tullia/nixpkgs";
     tullia.url = "github:input-output-hk/tullia";
   };
   outputs = inputs: let
@@ -31,7 +32,7 @@
     defaultPackage = __mapAttrs (_: a: a.default) inputs.self.outputs.packages;
     devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
-    hydraJobs = {
+    hydraJobs = rec {
 
       # --- Linux ----------------------------------------------------
       x86_64-linux.x86_64-linux = let
@@ -73,12 +74,23 @@
       };
       # --------------------------------------------------------------
 
+      # --- What CI should build -------------------------------------
+      x86_64-linux.required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
+        name = "required for CI";
+        constituents = __attrValues x86_64-linux.x86_64-linux ++ __attrValues x86_64-linux.x86_64-windows;
+      };
+      x86_64-darwin.required = inputs.nixpkgs.legacyPackages.x86_64-darwin.releaseTools.aggregate {
+        name = "required for CI";
+        constituents = __attrValues x86_64-darwin.x86_64-darwin;
+      };
+      # --------------------------------------------------------------
+
     };
   }
   // (let
-    x86_64-linux  = inputs.tullia.fromSimple "x86_64-linux"  (import ./nix/tullia.nix inputs.self "x86_64-linux");
-    x86_64-darwin = inputs.tullia.fromSimple "x86_64-darwin" (import ./nix/tullia.nix inputs.self "x86_64-darwin");
-    fakeEvent = { inputs={"GitHub event".value = {github_body.head_commit.id="0000000";};}; id=""; ociRegistry=""; };
+    x86_64-linux  = inputs.tullia.fromSimple "x86_64-linux"  (import ./nix/tullia.nix);
+    x86_64-darwin = inputs.tullia.fromSimple "x86_64-darwin" (import ./nix/tullia.nix);
+    fakeEvent = { inputs."GitHub event" = {id = ""; created_at = ""; value = {github_body.head_commit.id="0000000";};}; id=""; ociRegistry=""; };
   in {
     tullia.x86_64-linux = x86_64-linux.tullia;
     cicero.x86_64-linux = x86_64-linux.cicero;
