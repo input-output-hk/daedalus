@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
+
 ### Chores
 
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
