@@ -98,6 +98,7 @@ let
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
+    NETWORK = cluster;
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
@@ -137,6 +138,11 @@ let
         ''
       }
       yarn install --frozen-lockfile
+
+      # Let’s patch electron-rebuild to force correct Node.js headers to
+      # build native modules against even in `nix-shell`, otherwise, it
+      # doesn’t work reliably.
+      ${daedalusPkgs.rawapp.patchElectronRebuild}
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
       find Debug/ Release/ -name '*.node' | xargs rm -v || true
