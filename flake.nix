@@ -50,7 +50,7 @@
       # --- What CI should build -------------------------------------
       x86_64-linux.required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
         name = "required for CI";
-        constituents = __attrValues x86_64-linux.x86_64-linux;
+        constituents = __attrValues x86_64-linux.x86_64-linux ++ __attrValues x86_64-linux.x86_64-windows;
       };
       x86_64-darwin.required = inputs.nixpkgs.legacyPackages.x86_64-darwin.releaseTools.aggregate {
         name = "required for CI";
