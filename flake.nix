@@ -103,8 +103,8 @@
   });
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
-    extra-substituters = ["https://cache.iog.io" "https://iog.cachix.org"];
-    extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" "iog.cachix.org-1:nYO0M9xTk/s5t1Bs9asZ/Sww/1Kt/hRhkLP0Hhv/ctY="];
+    extra-substituters = ["https://cache.iog.io"];
+    extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
     allow-import-from-derivation = "true";
   };
   # --------------------------------------------------------------
