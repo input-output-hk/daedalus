@@ -33,7 +33,7 @@ export class MatomoClient implements AnalyticsClient {
       action_name: pageTitle,
       url: this.getAnalyticsURL(),
       [CPU_DIMENSION_KEY]: getShortCpuDescription(
-        this.environment.cpu[0]?.model || ''
+        this.environment.cpu[0]?.model
       ),
       [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram),
       [VERSION_DIMENSION_KEY]: this.environment.version,

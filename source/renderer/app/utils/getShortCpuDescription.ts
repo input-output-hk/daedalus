@@ -4,7 +4,11 @@ const amdRyzenRegex = /AMD Ryzen ([0-9]+)/;
 const amdARegex = /AMD A([0-9]+)/;
 const otherAmdCpuRegex = /AMD ([A-Za-z][A-Za-z\s]*[A-Za-z]|[A-Za-z])[\s|(-]/;
 
-export const getShortCpuDescription = (cpu: string): string => {
+export const getShortCpuDescription = (cpu: string | undefined): string => {
+  if (!cpu) {
+    return 'Other';
+  }
+
   if (cpu.includes('Apple')) {
     return cpu;
   }
