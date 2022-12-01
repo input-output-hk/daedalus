@@ -40,14 +40,9 @@
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
-        # daedalus = d.daedalus;  # TODO: I’m really not sure if it still makes sense, if we have Buildkite…
-        daedalus-installer = d.daedalus-installer;
         devShellGCRoot = inputs.self.outputs.devShells.x86_64-linux.default.gcRoot;
-        mono = d.pkgs.mono;
         nodejs = d.nodejs;
-        tests = d.tests;
-        wine = d.wine;
-        wine64 = d.wine64;
+        tests = d.pkgs.releaseTools.aggregate { name = "tests"; constituents = __attrValues d.tests; };
         yaml2json = d.yaml2json;
       };
       # --------------------------------------------------------------
@@ -58,6 +53,11 @@
       in {
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
+        daedalus-installer = d.daedalus-installer;
+        mono = d.pkgs.mono;
+        wine = d.wine;
+        wine64 = d.wine64;
+        yaml2json = d.yaml2json;
       };
       # --------------------------------------------------------------
 
@@ -68,7 +68,7 @@
         cardano-bridge = d.daedalus-bridge;
         cardano-node = d.cardano-node;
         daedalus-installer = d.daedalus-installer;
-        devShellGCRoot = (import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; }).gcRoot;
+        devShellGCRoot = inputs.self.outputs.devShells.x86_64-darwin.default.gcRoot;
         nodejs = d.nodejs;
         yaml2json = d.yaml2json;
       };
