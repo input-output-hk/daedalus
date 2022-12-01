@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
+
 ### Chores
 
 - Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
