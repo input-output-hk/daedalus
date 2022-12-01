@@ -35,7 +35,8 @@ export class MatomoClient implements AnalyticsClient {
       [CPU_DIMENSION_KEY]: getShortCpuDescription(
         this.environment.cpu[0]?.model
       ),
-      [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram),
+      [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram, 0),
+      [OS_DIMENSION_KEY]: this.environment.os,
       [VERSION_DIMENSION_KEY]: this.environment.version,
     });
   };

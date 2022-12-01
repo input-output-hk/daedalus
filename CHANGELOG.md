@@ -5,9 +5,11 @@
 ### Features
 
 - Implemented CPU name grouping mechanism for analytics ([PR 3089](https://github.com/input-output-hk/daedalus/pull/3089))
+- Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
 
 ### Chores
 
+- Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
 ## 5.1.1
