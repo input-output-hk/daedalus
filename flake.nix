@@ -74,14 +74,17 @@
       };
       # --------------------------------------------------------------
 
-      # --- What CI should build -------------------------------------
+      # --- What CI (Cicero) should build -------------------------------------
       x86_64-linux.required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
         name = "required for CI";
-        constituents = __attrValues x86_64-linux.x86_64-linux ++ __attrValues x86_64-linux.x86_64-windows;
+        constituents = __attrValues x86_64-linux.x86_64-linux ++ __attrValues x86_64-linux.x86_64-windows
+          ++ map (c: inputs.self.outputs.packages.x86_64-linux.installer.${c}) sourceLib.installerClusters
+          ++ map (c: inputs.self.outputs.packages.x86_64-windows.installer.${c}) sourceLib.installerClusters;
       };
       x86_64-darwin.required = inputs.nixpkgs.legacyPackages.x86_64-darwin.releaseTools.aggregate {
         name = "required for CI";
-        constituents = __attrValues x86_64-darwin.x86_64-darwin;
+        constituents = __attrValues x86_64-darwin.x86_64-darwin
+          ++ map (c: inputs.self.outputs.packages.x86_64-darwin.installer.${c}) sourceLib.installerClusters;
       };
       # --------------------------------------------------------------
 
