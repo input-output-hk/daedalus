@@ -3,7 +3,7 @@ let
   repository = "input-output-hk/daedalus";
 in
 rec {
-  tasks.ci = { config, lib, ... }: {
+  tasks.ci = { config, lib, pkgs, ... }: {
     preset = {
       nix.enable = true;
 
@@ -21,7 +21,7 @@ rec {
 
     # XXX: Let’s display the original cores/max-jobs config first:
     command.text = ''
-      nix show-config | grep -E 'cores|max-jobs'
+      nix show-config | ${pkgs.gnugrep}/bin/grep -E 'cores|max-jobs'
     '' + config.preset.github.status.lib.reportBulk {
       bulk.text = "nix eval .#hydraJobs --apply __attrNames --json | nix-systems -i";
       each.text = ''nix build --cores 1 --max-jobs 1 -L .#hydraJobs."$1".required'';
