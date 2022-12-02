@@ -19,9 +19,12 @@ rec {
       };
     };
 
-    command.text = config.preset.github.status.lib.reportBulk {
+    # XXX: Let’s display the original cores/max-jobs config first:
+    command.text = ''
+      nix show-config | grep -E 'cores|max-jobs'
+    '' + config.preset.github.status.lib.reportBulk {
       bulk.text = "nix eval .#hydraJobs --apply __attrNames --json | nix-systems -i";
-      each.text = ''nix build --max-jobs 16 -L .#hydraJobs."$1".required'';
+      each.text = ''nix build --cores 1 --max-jobs 1 -L .#hydraJobs."$1".required'';
       skippedDescription = lib.escapeShellArg "No nix builder available for this system";
     };
 
