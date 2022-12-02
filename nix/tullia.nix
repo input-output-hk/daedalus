@@ -21,7 +21,7 @@ rec {
 
     command.text = config.preset.github.status.lib.reportBulk {
       bulk.text = "nix eval .#hydraJobs --apply __attrNames --json | nix-systems -i";
-      each.text = ''nix build -L .#hydraJobs."$1".required'';
+      each.text = ''nix build --max-jobs 16 -L .#hydraJobs."$1".required'';
       skippedDescription = lib.escapeShellArg "No nix builder available for this system";
     };
 
