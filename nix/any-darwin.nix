@@ -111,6 +111,18 @@ in rec {
     ln -sf ${darwinSources.electronHeaders} $HOME/.electron-gyp/${electronVersion}
   '';
 
+  # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
+  # because it takes too long (minutes) for all the JS/whatnot files we
+  # have. Instead, we locate targets in a more clever way.
+  signAllBinaries = pkgs.writeShellScript "signAllBinaries" ''
+    set -o nounset
+    source ${pkgs.darwin.signingUtils}
+    ${pkgs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
+      echo "ad-hoc signing ‘$target’…"
+      signIfRequired "$target"
+    done
+  '';
+
   # XXX: Whenever changing `yarn.lock`, make sure this still builds
   # without network. I.e. since there is no network sanbox in Nix on
   # Darwin, you have to first build `package` with network (to populate
@@ -122,11 +134,8 @@ in rec {
   node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
-    nativeBuildInputs = [ yarn nodejs ] ++ (with pkgs; [ python3 pkgconfig ]) ++
-      [(pkgs.runCommandLocal "system-path-exports" {} ''
-        mkdir -p $out/bin
-        ln -sf /usr/bin/{libtool,install_name_tool} $out/bin/
-      '')];
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.IOKit
       apple_sdk.frameworks.AppKit
@@ -147,6 +156,7 @@ in rec {
     installPhase = ''
       mkdir $out
       cp -r node_modules $out/
+      ${signAllBinaries} $out
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
@@ -156,11 +166,8 @@ in rec {
   in pkgs.stdenv.mkDerivation {
     name = pname;
     src = srcWithoutNix;
-    nativeBuildInputs = ([ yarn nodejs daedalus-installer ]) ++ (with pkgs; [ python3 ]) ++
-      [(pkgs.runCommandLocal "system-path-exports" {} ''
-        mkdir -p $out/bin
-        ln -sf /usr/bin/{iconutil,xcrun,xcodebuild,libtool,pkgbuild,productbuild} $out/bin/
-      '')];
+    nativeBuildInputs = [ yarn nodejs daedalus-installer ]
+      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -216,6 +223,8 @@ in rec {
       mkdir -p $futureInstaller/
       chmod +x installers/codesign.sh
       cp installers/{codesign.sh,entitlements.xml} $futureInstaller/
+
+      ${signAllBinaries} $out
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };

@@ -213,8 +213,8 @@ buildIcons :: Cluster -> IO ()
 buildIcons cluster = do
   let iconset = format ("icons/"%s%".iconset") (lshowText cluster)
   echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
-                   , iconset] mempty
+  procs "/usr/bin/iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                            , iconset] mempty
 
 -- | Builds the electron app with "yarn package" and returns its
 -- component root path.
