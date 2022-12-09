@@ -17,10 +17,9 @@ export const getCustomDimensions = async (
   environment: Environment,
   adaApi: AdaApi
 ) => {
-  const usesByronWallets = (await adaApi.getWallets()).some(
-    (wallet) => wallet.isLegacy
-  );
-  const usesHardwareWallets = (await adaApi.getWallets()).some(
+  const userWallets = await adaApi.getWallets();
+  const usesByronWallets = userWallets.some((wallet) => wallet.isLegacy);
+  const usesHardwareWallets = userWallets.some(
     (wallet) => wallet.isHardwareWallet
   );
 
