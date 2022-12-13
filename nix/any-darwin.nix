@@ -156,6 +156,7 @@ in rec {
     installPhase = ''
       mkdir $out
       cp -r node_modules $out/
+
       ${signAllBinaries} $out
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
