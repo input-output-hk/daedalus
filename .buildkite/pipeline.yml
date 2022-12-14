@@ -5,23 +5,23 @@ env:
 steps:
 
   - label: 'daedalus-x86_64-darwin'
-    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-darwin.buildkitePipeline'
+    command: 'nix run .#packages.x86_64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: '.buildkite/with-nixFlakes.sh nix run .#packages.aarch64-darwin.buildkitePipeline'
+    command: 'nix run .#packages.aarch64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux'
-    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-linux.buildkitePipeline'
+    command: 'nix run .#packages.x86_64-linux.buildkitePipeline'
     agents:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows'
-    command: '.buildkite/with-nixFlakes.sh nix run .#packages.x86_64-windows.buildkitePipeline'
+    command: 'nix run .#packages.x86_64-windows.buildkitePipeline'
     agents:
       system: x86_64-linux
