@@ -62,7 +62,7 @@ writeShellScriptBin "buildkite-pipeline" ''
     #  • but also unfortunately kills colors :'(
     # Another option would be to patch the `nix` binary used here:
 
-    nix build -L --out-link "$result" .#packages.${targetSystem}.installer.${cluster} 2>&1 | cat
+    nix build --no-accept-flake-config -L --out-link "$result" .#packages.${targetSystem}.installer.${cluster} 2>&1 | cat
 
     echo "Built: $(readlink "$result")"
 
