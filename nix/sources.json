@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "anviking/ADP-2382/node-1.35.4",
+        "branch": "v2022-12-14",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "d94d837334de723ff47f0acf5c89fea878ce9f02",
-        "sha256": "1h0ax3hiyralq0xmx9w7w7x9xxgn1bawf5xvlxi1gyd7n809cwq3",
+        "rev": "bbf11d4feefd5b770fb36717ec5c4c5c112aca87",
+        "sha256": "1gvxmyclarklajifbyi2l8zwc1gqhbdps73rl9if9a3mpn5xngcp",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d94d837334de723ff47f0acf5c89fea878ce9f02.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/bbf11d4feefd5b770fb36717ec5c4c5c112aca87.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-world": {
