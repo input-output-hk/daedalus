@@ -12,13 +12,12 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, useLocalNode ? false
 , nivOnly ? false
 }:
 
 let
   daedalusPkgs = import ./old-default.nix {
-    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
+    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
     localLibSystem = system;
     devShell = true;

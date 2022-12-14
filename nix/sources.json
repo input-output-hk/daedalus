@@ -1,16 +1,4 @@
 {
-    "cardano-node": {
-        "branch": "tags/1.35.3",
-        "description": null,
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "cardano-node",
-        "rev": "950c4e222086fed5ca53564e642434ce9307b0b9",
-        "sha256": "020fwimsm24yblr1fmnwx240wj8r3x715p89cpjgnnd8axwf32p0",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/950c4e222086fed5ca53564e642434ce9307b0b9.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "cardano-shell": {
         "branch": "update-haskell-nix-etc",
         "description": "Node shell, a thin layer for running the node and it's modules.",
@@ -57,30 +45,6 @@
         "sha256": "01iwymbnyadqj1xfl0xhk8582v7k9b2m6s6yxp3r805w4g3h1k62",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/flake-compat/archive/7da118186435255a30b5ffeabba9629c344c0bec.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "gitignore": {
-        "branch": "master",
-        "description": "Nix function for filtering local git sources",
-        "homepage": "",
-        "owner": "hercules-ci",
-        "repo": "gitignore",
-        "rev": "f9e996052b5af4032fe6150bba4a6fe4f7b9d698",
-        "sha256": "0jrh5ghisaqdd0vldbywags20m2cxpkbbk5jjjmwaw0gr8nhsafv",
-        "type": "tarball",
-        "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "js-chain-libs": {
-        "branch": "master",
-        "description": "chain-libs javascript SDK",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "js-chain-libs",
-        "rev": "1f1bbc5557ed5356a5fac89a3224d3449ef98ba3",
-        "sha256": "14v7zm2h3v4vb7f15i4mk6f5jsdd6akqv2pzqmj52hprh076p0hd",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/js-chain-libs/archive/1f1bbc5557ed5356a5fac89a3224d3449ef98ba3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
