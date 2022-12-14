@@ -4,6 +4,7 @@
 
 ### Features
 
+- Implemented CPU name grouping mechanism for analytics ([PR 3089](https://github.com/input-output-hk/daedalus/pull/3089))
 - Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
 
 ### Chores

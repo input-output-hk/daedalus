@@ -1,7 +1,6 @@
 import MatomoTracker from 'matomo-tracker';
 import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
-import formatCpuInfo from '../utils/formatCpuInfo';
 import {
   ANALYTICS_API_ENDPOINT,
   CPU_DIMENSION_KEY,
@@ -12,6 +11,7 @@ import {
   VERSION_DIMENSION_KEY,
 } from '../config/analyticsConfig';
 import { formattedBytesToSize } from '../utils/formatters';
+import { getShortCpuDescription } from '../utils/getShortCpuDescription';
 
 /**
  * Matomo API reference:
@@ -32,7 +32,9 @@ export class MatomoClient implements AnalyticsClient {
       _id: this.userId,
       action_name: pageTitle,
       url: this.getAnalyticsURL(),
-      [CPU_DIMENSION_KEY]: formatCpuInfo(this.environment.cpu),
+      [CPU_DIMENSION_KEY]: getShortCpuDescription(
+        this.environment.cpu[0]?.model
+      ),
       [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram, 0),
       [OS_DIMENSION_KEY]: this.environment.os,
       [VERSION_DIMENSION_KEY]: this.environment.version,
