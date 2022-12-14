@@ -104,11 +104,11 @@
     ciceroLocalTest.x86_64-darwin = (x86_64-darwin.cicero."daedalus/ci" fakeEvent).job;
 
   });
-  # --- Flake Local Nix Configuration ----------------------------
-  nixConfig = {
-    extra-substituters = ["https://cache.iog.io"];
-    extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
-    allow-import-from-derivation = "true";
-  };
-  # --------------------------------------------------------------
+  # # --- Flake Local Nix Configuration ----------------------------
+  # nixConfig = {
+  #   extra-substituters = ["https://cache.iog.io"];
+  #   extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
+  #   allow-import-from-derivation = "true";
+  # };
+  # # --------------------------------------------------------------
 }
