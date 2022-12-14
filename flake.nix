@@ -32,77 +32,15 @@
     defaultPackage = __mapAttrs (_: a: a.default) inputs.self.outputs.packages;
     devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
-    hydraJobs = rec {
-
-      # --- Linux ----------------------------------------------------
-      x86_64-linux.x86_64-linux = let
-        d = inputs.self.outputs.packages.x86_64-linux.internal.mainnet.oldCode;
-      in {
-        cardano-bridge = d.daedalus-bridge;
-        cardano-node = d.cardano-node;
-        devShellGCRoot = inputs.self.outputs.devShells.x86_64-linux.default.gcRoot;
-        nodejs = d.nodejs;
-        tests = d.pkgs.releaseTools.aggregate { name = "tests"; constituents = __attrValues d.tests; };
-        yaml2json = d.yaml2json;
-      };
-      # --------------------------------------------------------------
-
-      # --- Windows (x-compiled from Linux) --------------------------
-      x86_64-linux.x86_64-windows = let
-        d = inputs.self.outputs.packages.x86_64-windows.internal.mainnet.oldCode;
-      in {
-        cardano-bridge = d.daedalus-bridge;
-        cardano-node = d.cardano-node;
-        daedalus-installer = d.daedalus-installer;
-        mono = d.pkgs.mono;
-        wine = d.wine;
-        wine64 = d.wine64;
-        yaml2json = d.yaml2json;
-      };
-      # --------------------------------------------------------------
-
-      # --- Darwin ---------------------------------------------------
-      x86_64-darwin.x86_64-darwin = let
-        d = inputs.self.outputs.packages.x86_64-darwin.internal.mainnet.oldCode;
-      in {
-        cardano-bridge = d.daedalus-bridge;
-        cardano-node = d.cardano-node;
-        daedalus-installer = d.daedalus-installer;
-        devShellGCRoot = inputs.self.outputs.devShells.x86_64-darwin.default.gcRoot;
-        nodejs = d.nodejs;
-        yaml2json = d.yaml2json;
-      };
-      # --------------------------------------------------------------
-
-      # --- What CI (Cicero) should build -------------------------------------
-      x86_64-linux.required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
-        name = "required for CI";
-        constituents = __attrValues x86_64-linux.x86_64-linux ++ __attrValues x86_64-linux.x86_64-windows
-          ++ map (c: inputs.self.outputs.packages.x86_64-linux.installer.${c}) sourceLib.installerClusters
-          ++ map (c: inputs.self.outputs.packages.x86_64-windows.installer.${c}) sourceLib.installerClusters;
-      };
-      x86_64-darwin.required = inputs.nixpkgs.legacyPackages.x86_64-darwin.releaseTools.aggregate {
-        name = "required for CI";
-        constituents = __attrValues x86_64-darwin.x86_64-darwin
-          ++ map (c: inputs.self.outputs.packages.x86_64-darwin.installer.${c}) sourceLib.installerClusters;
-      };
-      # --------------------------------------------------------------
-
-    };
   }
   // (let
-    x86_64-linux  = inputs.tullia.fromSimple "x86_64-linux"  (import ./nix/tullia.nix);
-    x86_64-darwin = inputs.tullia.fromSimple "x86_64-darwin" (import ./nix/tullia.nix);
+    tullia = inputs.tullia.fromSimple "x86_64-linux" (import ./nix/tullia.nix);
     fakeEvent = { inputs."GitHub event" = {id = ""; created_at = ""; value = {github_body.head_commit.id="0000000";};}; id=""; ociRegistry=""; };
   in {
-    tullia.x86_64-linux = x86_64-linux.tullia;
-    cicero.x86_64-linux = x86_64-linux.cicero;
-    tullia.x86_64-darwin = x86_64-darwin.tullia;
-    cicero.x86_64-darwin = x86_64-darwin.cicero;
-
-    ciceroLocalTest.x86_64-linux  = (x86_64-linux.cicero."daedalus/ci"  fakeEvent).job;
-    ciceroLocalTest.x86_64-darwin = (x86_64-darwin.cicero."daedalus/ci" fakeEvent).job;
-
+    tullia.x86_64-linux = tullia.tullia;
+    cicero.x86_64-linux = tullia.cicero;
+    ciceroLocalTest.x86_64-linux = (tullia.cicero."daedalus/ci" fakeEvent).job; # XXX: only nix-eval this
+    tulliaLocalTest.x86_64-linux = tullia.tullia.task.ci.computedCommand; # XXX: fine to nix-build
   });
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {

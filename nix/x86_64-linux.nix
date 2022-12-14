@@ -25,4 +25,7 @@ in rec {
 
   makeSignedInstaller = throw "We don’t sign binary files inside installers for ‘${targetSystem}’, you’re good.";
 
+  # FIXME: for Tullia/Cicero debugging, remove later:
+  inherit (sourceLib) buildRev;
+
 }
