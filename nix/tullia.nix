@@ -66,7 +66,7 @@ rec {
         set -x
         export PATH="${lib.makeBinPath (with pkgs; [ curl jq gnused gnugrep ])}:$PATH"
 
-        tr ' ' '\n' <apps/desktop/installer-clusters.cfg | while IFS= read -r cluster ; do
+        tr ' ' '\n' <installer-clusters.cfg | while IFS= read -r cluster ; do
           echo >&2 "Building an ‘"${lib.escapeShellArg targetSystem}"’ installer for cluster ‘$cluster’…"
 
           outLink=./result-${lib.escapeShellArg targetSystem}
