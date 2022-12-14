@@ -9,6 +9,7 @@
 
 ### Chores
 
+- Switched Daedalus to be built with Nix flakes ([PR 3008](https://github.com/input-output-hk/daedalus/pull/3008))
 - Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
