@@ -1,8 +1,8 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation system; }
-, pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
+, localLib ? import ./old-lib.nix { inherit nodeImplementation system; }
+, pkgs ? import (import ./sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
@@ -12,13 +12,12 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, useLocalNode ? false
 , nivOnly ? false
 }:
 
 let
-  daedalusPkgs = import ./. {
-    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
+  daedalusPkgs = import ./old-default.nix {
+    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
     localLibSystem = system;
     devShell = true;
@@ -81,7 +80,7 @@ let
     ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
     daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
     # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
-    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./nix/cardano-bridge.nix)));
+    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
   } "export >$out";
 
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
@@ -92,10 +91,13 @@ let
     name = "daedalus";
     buildCommand = "touch $out";
     LAUNCHER_CONFIG = launcherConfig';
+    CARDANO_NODE_VERSION = daedalusPkgs.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = daedalusPkgs.cardanoWalletVersion;
     DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
+    NETWORK = cluster;
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
@@ -126,7 +128,7 @@ let
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ./.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
@@ -135,6 +137,11 @@ let
         ''
       }
       yarn install --frozen-lockfile
+
+      # Let’s patch electron-rebuild to force correct Node.js headers to
+      # build native modules against even in `nix-shell`, otherwise, it
+      # doesn’t work reliably.
+      ${daedalusPkgs.rawapp.patchElectronRebuild}
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
       find Debug/ Release/ -name '*.node' | xargs rm -v || true

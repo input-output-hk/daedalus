@@ -1,4 +1,4 @@
-{ lib, yarn, nodejs, python3, python2, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+{ lib, yarn, nodejs, python3, python2, cardanoWalletVersion, cluster, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
 , windowsIcons
 , libcap
 , libgcrypt
@@ -15,6 +15,8 @@
 , xz
 , nodePackages
 , zlib
+, sourceLib
+, cardanoNodeVersion
 , strace }:
 let
   cluster' = launcherConfig.networkName;
@@ -26,10 +28,7 @@ let
   }) {
     inherit pkgs nodejs yarn;
   };
-  dotGitExists = builtins.pathExists ./.git;
-  isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
-  canUseFetchGit = dotGitExists && isNix2;
-  origPackage = builtins.fromJSON (builtins.readFile ./package.json);
+  origPackage = builtins.fromJSON (builtins.readFile ../package.json);
   newPackage = (origPackage // {
     productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
@@ -61,7 +60,7 @@ let
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
-    sansPrefix = lib.removePrefix (toString ./.) name;
+    sansPrefix = lib.removePrefix (toString ../.) name;
   in (
       baseName == "package.json" ||
       baseName == "gulpfile.js" ||
@@ -115,12 +114,14 @@ let
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
-  src = lib.cleanSourceWith { inherit filter; src = ./.; name = "daedalus"; };
-  API = api;
-  API_VERSION = apiVersion;
+  src = lib.cleanSourceWith { inherit filter; src = ../.; name = "daedalus"; };
+  CARDANO_WALLET_VERSION = cardanoWalletVersion;
+  CARDANO_NODE_VERSION = cardanoNodeVersion;
   CI = "nix";
   NETWORK = cluster';
-  BUILD_NUMBER = "${toString buildNum}";
+  BUILD_REV = sourceLib.buildRev;
+  BUILD_REV_SHORT = sourceLib.buildRevShort;
+  BUILD_REV_COUNT = sourceLib.buildRevCount;
   NODE_ENV = "production";
   BUILDTYPE = "Release";
   extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
@@ -170,7 +171,7 @@ yarn2nix.mkYarnPackage {
     cp -r $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib} $out/resources/app/node_modules
 
     cd $out/resources/app/
-    unzip ${./nix/windows-usb-libs.zip}
+    unzip ${./windows-usb-libs.zip}
 
     # Investigate why this is needed:
     chmod -R +w $out
@@ -263,6 +264,6 @@ yarn2nix.mkYarnPackage {
   };
 
   # work around some purity problems in nix
-  yarnLock = ./yarn.lock;
-  packageJSON = ./package.json;
+  yarnLock = ../yarn.lock;
+  packageJSON = ../package.json;
 }
