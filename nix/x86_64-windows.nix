@@ -4,20 +4,14 @@ assert targetSystem == "x86_64-windows";
 
 let
 
-  sourceLib = import ./source-lib.nix { inherit inputs; };
+  newCommon = import ./new-common.nix { inherit inputs targetSystem cluster; };
 
-  oldCode = import ./old-default.nix {
-    target = targetSystem;
-    localLibSystem = targetSystem;
-    inherit cluster sourceLib;
-  };
-
-  inherit (oldCode) pkgs;
+  inherit (newCommon) sourceLib oldCode pkgs;
   inherit (pkgs) lib;
 
 in rec {
 
-  inherit oldCode;
+  inherit newCommon oldCode;
 
   package = unsignedInstaller; # FIXME: this is wrong
 

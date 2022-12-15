@@ -4,20 +4,15 @@ assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin";
 
 let
 
-  sourceLib = import ./source-lib.nix { inherit inputs; };
+  newCommon = import ./new-common.nix { inherit inputs targetSystem cluster; };
 
-  oldCode = import ./old-default.nix {
-    target = targetSystem;
-    localLibSystem = targetSystem;
-    inherit cluster sourceLib;
-  };
+  inherit (newCommon) sourceLib oldCode pkgs;
+  inherit (pkgs) lib;
 
-  inherit (oldCode) pkgs
+  inherit (oldCode)
     nodejs nodePackages yarn
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
-
-  inherit (pkgs) lib;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
@@ -28,7 +23,7 @@ let
 
 in rec {
 
-  inherit oldCode nodejs nodePackages yarn;
+  inherit newCommon oldCode nodejs nodePackages yarn;
 
   yarn2nix = let
     # Nixpkgs master @ 2022-07-18
