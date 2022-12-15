@@ -5,23 +5,23 @@ env:
 steps:
 
   - label: 'daedalus-x86_64-darwin'
-    command: 'nix run --no-accept-flake-config .#packages.x86_64-darwin.buildkitePipeline'
+    command: '.buildkite/with-nix-2.12 nix run --no-accept-flake-config .#packages.x86_64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: 'nix run --no-accept-flake-config .#packages.aarch64-darwin.buildkitePipeline'
+    command: '.buildkite/with-nix-2.12 nix run --no-accept-flake-config .#packages.aarch64-darwin.buildkitePipeline'
     agents:
       queue: daedalus
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux'
-    command: 'nix run --no-accept-flake-config .#packages.x86_64-linux.buildkitePipeline'
+    command: '.buildkite/with-nix-2.12 nix run --no-accept-flake-config .#packages.x86_64-linux.buildkitePipeline'
     agents:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows'
-    command: 'nix run --no-accept-flake-config .#packages.x86_64-windows.buildkitePipeline'
+    command: '.buildkite/with-nix-2.12 nix run --no-accept-flake-config .#packages.x86_64-windows.buildkitePipeline'
     agents:
       system: x86_64-linux

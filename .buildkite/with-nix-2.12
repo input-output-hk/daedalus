@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+if [ $# -eq 0 ] ; then
+  echo >&2 "fatal: usage: $0 <command> [<args>...]"
+  exit 1
+fi
+
+echo "~~~ Obtaining ‘nix-2.12’"
+
+# 1710ed1f6f8ceb75cf7d1cf55ee0cc21760e1c7a is `nixos-unstable` on 2022-12-15
+nixUnstable=$(nix-build --no-out-link 'https://github.com/NixOS/nixpkgs/archive/1710ed1f6f8ceb75cf7d1cf55ee0cc21760e1c7a.tar.gz' -A nixVersions.nix_2_12)
+
+PATH="$nixUnstable/bin:$PATH"
+
+nix --version
+echo
+
+echo "~~~ Running ‘$*’"
+
+exec "$@"
