@@ -14,7 +14,7 @@ let
 
   inherit (oldCode) pkgs
     nodejs nodePackages yarn
-    daedalus-bridge daedalus-installer darwin-launcher launcherConfigs mock-token-metadata-server
+    daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
   inherit (pkgs) lib;
@@ -161,6 +161,8 @@ in rec {
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
+
+  darwin-launcher = pkgs.callPackage ./darwin-launcher.nix {};
 
   package = let
     pname = "daedalus";

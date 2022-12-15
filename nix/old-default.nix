@@ -112,7 +112,6 @@ let
     cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
     cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 localLib.sources.cardano-wallet.rev;
     cardano-cli = walletPackages.cardano-cli;
-    darwin-launcher = self.callPackage ./darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
