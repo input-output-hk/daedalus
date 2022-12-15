@@ -59,7 +59,6 @@ let
   crossSystem = lib: (crossSystemTable lib).${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis { inherit system; };
-  installPath = ".daedalus";
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
@@ -333,14 +332,13 @@ let
       inherit localLib system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
-    daedalus = self.callPackage ../installers/nix/linux.nix {};
-    rawapp = self.callPackage ./old-yarn2nix.nix {
+    rawapp-win64 = self.callPackage ./old-yarn2nix.nix {
       inherit sourceLib;
       inherit (self.launcherConfigs.installerConfig) spacedName;
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
+      win64 = true;
     };
-    rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource localLib.cleanSourceFilter ../.;
     inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
       packages: .
@@ -353,91 +351,6 @@ let
     tests = {
       runShellcheck = self.callPackage ../tests/shellcheck.nix { src = ../.;};
     };
-    nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
-    iconPath = self.launcherConfigs.installerConfig.iconPath;
-    # used for name of profile, binary and the desktop shortcut
-    linuxClusterBinName = cluster;
-    namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
-      #!/usr/bin/env bash
-
-      set -e
-
-      cd ~/${installPath}/
-      mkdir -p etc
-      cat /etc/hosts > etc/hosts
-      cat /etc/nsswitch.conf > etc/nsswitch.conf
-      cat /etc/localtime > etc/localtime
-      cat /etc/machine-id > etc/machine-id
-      cat /etc/resolv.conf > etc/resolv.conf
-
-      if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 daedalus
-      else
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${self.linuxClusterBinName}/bin/enter-phase2 bash
-      fi
-    '';
-    desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus-${self.linuxClusterBinName}";
-      exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus ${self.linuxClusterBinName}";
-      genericName = "Crypto-Currency Wallet";
-      categories = "Application;Network;";
-      icon = "INSERT_ICON_PATH_HERE";
-    };
-    postInstall = pkgs.writeScriptBin "post-install" ''
-      #!${pkgs.stdenv.shell}
-
-      set -ex
-
-
-      test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-      export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
-      mkdir -pv $DAEDALUS_DIR/Logs/pub
-
-      exec 2>&1 > $DAEDALUS_DIR/Logs/pub/post-install.log
-
-      echo "in post-install hook"
-
-      cp -f ${self.iconPath.large} $DAEDALUS_DIR/icon_large.png
-      cp -f ${self.iconPath.small} $DAEDALUS_DIR/icon.png
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
-      mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${self.linuxClusterBinName}
-
-      cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
-        -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
-        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus-${self.linuxClusterBinName}.desktop"
-    '';
-    xdg-open = pkgs.writeScriptBin "xdg-open" ''
-      #!${pkgs.stdenv.shell}
-
-      echo -n "xdg-open \"$1\"" > /escape-hatch
-    '';
-    preInstall = pkgs.writeText "pre-install" ''
-      if grep sse4 /proc/cpuinfo -q; then
-        echo 'SSE4 check pass'
-      else
-        echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
-        exit 1
-      fi
-    '';
-    newBundle = let
-      daedalus' = self.daedalus.override { sandboxed = true; };
-    in (import ../installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall linuxClusterBinName rawapp;
-      inherit pkgs;
-      installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
-      nix-bundle = self.nix-bundle;
-    }).installerBundle;
-    wrappedBundle = let
-      version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
-      fn = "daedalus-${version}.${toString sourceLib.buildRevCount}-${self.linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
-    in pkgs.runCommand fn {} ''
-      mkdir -p $out
-      cp ${self.newBundle} $out/${fn}
-    '';
 
   };
 in pkgs.lib.makeScope pkgs.newScope packages

@@ -59,18 +59,6 @@
         "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "nix-bundle": {
-        "branch": "rm-style",
-        "description": "Bundle Nix derivations to run anywhere!",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "nix-bundle",
-        "rev": "a43e9280628d6e7fcc2f89257106f5262d531bc7",
-        "sha256": "10qgincrs8fjdl16mld6lzd69syhyzwx65lcbz4widnkdvhlwh3i",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/nix-bundle/archive/a43e9280628d6e7fcc2f89257106f5262d531bc7.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "nixpkgs": {
         "branch": "nixos-unstable",
         "description": "Nix Packages collection",
