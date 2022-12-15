@@ -59,39 +59,43 @@ rec {
         '') targetSystems}
       '';
 
-      makeOneFor = { targetSystem }: pkgs.writeShellScript "build-one-${targetSystem}" ''
-        set -o errexit
-        set -o nounset
-        set -o pipefail
-        set -x
-        export PATH="${lib.makeBinPath (with pkgs; [ curl jq gnused gnugrep ])}:$PATH"
+      makeOneFor = { targetSystem }: let
+        underlying = pkgs.writeShellScript "build-one-underlying-${targetSystem}" ''
+          set -o errexit
+          set -o nounset
+          set -o pipefail
+          set -x
+          export PATH="${lib.makeBinPath (with pkgs; [ curl jq gnused gnugrep ])}:$PATH"
 
-        tr ' ' '\n' <installer-clusters.cfg | while IFS= read -r cluster ; do
-          echo >&2 "Building an ‘"${lib.escapeShellArg targetSystem}"’ installer for cluster ‘$cluster’…"
+          tr ' ' '\n' <installer-clusters.cfg | while IFS= read -r cluster ; do
+            echo >&2 "Building an ‘"${lib.escapeShellArg targetSystem}"’ installer for cluster ‘$cluster’…"
 
-          outLink=./result-${lib.escapeShellArg targetSystem}
+            outLink=./result-${lib.escapeShellArg targetSystem}
 
-          echo >&2 "self.rev is: $(nix eval .#packages.x86_64-linux.internal.mainnet.buildRev)"
+            echo >&2 "self.rev is: $(nix eval .#packages.x86_64-linux.internal.mainnet.buildRev)"
 
-          ${checkGitStatus}
+            ${checkGitStatus}
 
-          nix build --no-accept-flake-config --out-link "$outLink" --cores 1 --max-jobs 1 -L .#packages.${lib.escapeShellArg targetSystem}.installer."$cluster" || {
-            ec=$?
-            echo "$ec" >$BUILD_FAILED_MARKER_FILE
-            exit "$ec"
-          }
+            nix build --no-accept-flake-config --out-link "$outLink" --cores 1 --max-jobs 1 -L .#packages.${lib.escapeShellArg targetSystem}.installer."$cluster"
 
-          echo '{}' \
-          | jq \
-            --arg system ${lib.escapeShellArg targetSystem} \
-            --arg cluster "$cluster" \
-            --arg url "$(realpath "$outLink"/*${lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
-            '.[$system][$cluster] = $url' \
-          | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
-            --output /dev/null --fail \
-            --no-progress-meter \
-            --data-binary @-
-        done
+            echo '{}' \
+            | jq \
+              --arg system ${lib.escapeShellArg targetSystem} \
+              --arg cluster "$cluster" \
+              --arg url "$(realpath "$outLink"/*${lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
+              '.[$system][$cluster] = $url' \
+            | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
+              --output /dev/null --fail \
+              --no-progress-meter \
+              --data-binary @-
+          done
+        '';
+      in pkgs.writeShellScript "build-one-${targetSystem}" ''
+        ${underlying} || {
+          ec=$?
+          echo "$ec" >$BUILD_FAILED_MARKER_FILE
+          exit "$ec"
+        }
       '';
 
       runInParallel = commands: ''
