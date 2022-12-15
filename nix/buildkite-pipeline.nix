@@ -56,11 +56,11 @@ writeShellScriptBin "buildkite-pipeline" ''
     tmpdir=$(mktemp -d)
     result="$tmpdir"/${bucketSubdir}
 
-    # XXX: this `2>&1 | cat` part below:
-    #  • turns off progress bar, which clutters the raw logs,
-    #  • but also keeps `derivation-name> ` prefix in logs
-    #  • but also unfortunately kills colors :'(
-    # Another option would be to patch the `nix` binary used here:
+    # XXX: `2>&1 | cat`:
+    #   • turns off any interactive questions from Nix (e.g. accept-flake-config)
+    #   • turns off the progress bar which bloats raw logs
+    #   • keeps `derivation-name> ` prefix in logs
+    #   • but also kills colors :-(
 
     nix build --no-accept-flake-config -L --out-link "$result" .#packages.${targetSystem}.installer.${cluster} 2>&1 | cat
 
