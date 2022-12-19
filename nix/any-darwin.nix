@@ -166,18 +166,19 @@ in rec {
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
 
+  impureExports = pkgs.runCommandLocal "impure-exports" {} ''
+    mkdir -p $out/bin
+    ln -sf /usr/bin/{xcrun,xcodebuild,xcode-select,libtool} $out/bin/
+  '';
+
   package = let
     pname = "daedalus";
   in pkgs.stdenv.mkDerivation {
     name = pname;
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
-    buildInputs = (with pkgs.darwin; [
-      apple_sdk.frameworks.CoreServices
-      apple_sdk.frameworks.AppKit
-      libobjc
-    ]) ++ [
+      ++ (with pkgs; [ python3 pkgconfig impureExports ]);
+    buildInputs = [
       daedalus-bridge
       darwin-launcher
       mock-token-metadata-server
