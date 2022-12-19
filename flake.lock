@@ -336,6 +336,10 @@
     },
     "root": {
       "inputs": {
+        "nixpkgs": [
+          "tullia",
+          "nixpkgs"
+        ],
         "tullia": "tullia"
       }
     },
@@ -383,11 +387,11 @@
         "std": "std"
       },
       "locked": {
-        "lastModified": 1666165159,
-        "narHash": "sha256-lZRWE3FTelNiuetCvYTVybfPnBoHRzHqkkC9sVbY1/I=",
+        "lastModified": 1668711738,
+        "narHash": "sha256-CBjky16o9pqsGE1bWu6nRlRajgSXMEk+yaFQLibqXcE=",
         "owner": "input-output-hk",
         "repo": "tullia",
-        "rev": "e70285595c6b9693138270f89fa5579c630ab772",
+        "rev": "ead1f515c251f0e060060ef0e2356a51d3dfe4b0",
         "type": "github"
       },
       "original": {
