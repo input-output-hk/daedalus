@@ -82,9 +82,16 @@ in rec {
     # export NODE_OPTIONS='--trace-warnings'
     # export DEBUG='*'
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
+    # echo 'verbose=true' >>$HOME/.prebuild-installrc
 
-    # Don’t try to download prebuilded packages:
-    echo 'buildFromSource=true' >$HOME/.prebuild-installrc
+    # FIXME: building everything from source interferes with Ledger on Catalina – investigate
+    # # Don’t try to download prebuilded packages:
+    # echo 'buildFromSource=true' >>$HOME/.prebuild-installrc
+
+    mkdir -p $HOME/.npm/_prebuilds/
+    ln -sf ${darwinSources.prebuilds.node-hid}      $HOME/.npm/_prebuilds/f2f951-node-hid-v2.1.1-napi-v3-darwin-x64.tar.gz
+    ln -sf ${darwinSources.prebuilds.usb}           $HOME/.npm/_prebuilds/8c652e-usb-v1.7.2-napi-v4-darwin-x64.tar.gz
+    ln -sf ${darwinSources.prebuilds.usb-detection} $HOME/.npm/_prebuilds/3dc692-usb-detection-v4.13.0-node-v83-darwin-x64.tar.gz
 
     ${lib.concatMapStringsSep "\n" (cacheDir: ''
 
@@ -135,11 +142,8 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
-    buildInputs = (with pkgs.darwin; [
-      apple_sdk.frameworks.IOKit
-      apple_sdk.frameworks.AppKit
-    ]);
+      ++ (with pkgs; [ python3 pkgconfig ]);
+    buildInputs = [];
     configurePhase = setupCacheAndGypDirs;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
@@ -375,5 +379,21 @@ in rec {
 
     chromedriverCacheHash = builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${chromedriverVersion}";
+
+    prebuilds = {
+      node-hid = pkgs.fetchurl {
+        url = "https://github.com/node-hid/node-hid/releases/download/v2.1.1/node-hid-v2.1.1-napi-v3-darwin-x64.tar.gz";
+        sha256 = "0mzyjkyl90x79a61mzb90cjgvqvxr3z3dikcx3bbfbxhvk8cczj5";
+      };
+      usb = pkgs.fetchurl {
+        url = "https://github.com/tessel/node-usb/releases/download/v1.7.2/usb-v1.7.2-napi-v4-darwin-x64.tar.gz";
+        sha256 = "0s05mpxdnfxnk9ilbhjq3aa7bipxdwcmmm36k1503ns65jq2fj9p";
+      };
+      usb-detection = pkgs.fetchurl {
+        url = "https://github.com/MadLittleMods/node-usb-detection/releases/download/v4.13.0/usb-detection-v4.13.0-node-v83-darwin-x64.tar.gz";
+        sha256 = "0ckj5bajzabwjp4j54pjyb3p395nj6k5a91nzkl8fa19lf7kfanv";
+      };
+    };
+
   };
 }
