@@ -152,6 +152,8 @@ in rec {
       yarn install --frozen-lockfile
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+
+      ${oldCode.rawapp.patchElectronRebuild}
     '';
     installPhase = ''
       mkdir $out
