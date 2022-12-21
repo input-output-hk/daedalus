@@ -4,6 +4,7 @@ import {
   AddressType,
   TxAuxiliaryDataType, // CHECK THIS
   StakeCredentialParamsType,
+  GovernanceVotingRegistrationFormat,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
@@ -472,14 +473,18 @@ export const prepareLedgerAuxiliaryData = (
 
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
-      type: TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      type: TxAuxiliaryDataType.GOVERNANCE_VOTING_REGISTRATION,
       params: {
+        format: GovernanceVotingRegistrationFormat.CIP_15,
         votingPublicKeyHex: votingPubKey,
         stakingPath: rewardDestinationAddress.stakingPath,
         rewardsDestination: {
-          type: AddressType.REWARD_KEY,
+          type: TxOutputDestinationType.DEVICE_OWNED,
           params: {
-            stakingPath: rewardDestinationAddress.stakingPath,
+            type: AddressType.REWARD_KEY,
+            params: {
+              stakingPath: rewardDestinationAddress.stakingPath,
+            },
           },
         },
         nonce: `${txAuxiliaryData.nonce}`,
