@@ -9,7 +9,7 @@
 
 ### Chores
 
-- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `6.0.0` ([PR 3092](https://github.com/input-output-hk/daedalus/pull/3092))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
 - Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
