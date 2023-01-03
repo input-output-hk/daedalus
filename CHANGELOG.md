@@ -4,6 +4,7 @@
 
 ### Features
 
+- Added custom dimension to track legacy and hardware wallets ([PR 3091](https://github.com/input-output-hk/daedalus/pull/3091))
 - Implemented CPU name grouping mechanism for analytics ([PR 3089](https://github.com/input-output-hk/daedalus/pull/3089))
 - Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
 
