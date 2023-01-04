@@ -1,9 +1,12 @@
 {
-  description = "Daedalus itself, and jobs populating <https://cache.iog.io> with its dependencies";
+  description = "The open source wallet for ada, built to grow with the Cardano blockchain";
+
   inputs = {
-    nixpkgs.follows = "tullia/nixpkgs";
+    nixpkgs.follows = "cardano-wallet-unpatched/nixpkgs";
+    cardano-wallet-unpatched.url = "github:input-output-hk/cardano-wallet/v2022-10-06";
     tullia.url = "github:input-output-hk/tullia";
   };
+
   outputs = inputs: let
     sourceLib = import ./nix/source-lib.nix { inherit inputs; };
     inherit (sourceLib) forEachCluster;
@@ -42,6 +45,7 @@
     ciceroLocalTest.x86_64-linux = (tullia.cicero."daedalus/ci" fakeEvent).job; # XXX: only nix-eval this
     tulliaLocalTest.x86_64-linux = tullia.tullia.task.ci.computedCommand; # XXX: fine to nix-build
   });
+
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
     extra-substituters = ["https://cache.iog.io"];

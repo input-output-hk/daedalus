@@ -9,7 +9,7 @@ rec {
   oldCode = import ./old-default.nix {
     target = targetSystem;
     localLibSystem = targetSystem;
-    inherit cluster sourceLib;
+    inherit inputs cluster sourceLib;
   };
 
   inherit (oldCode) pkgs;

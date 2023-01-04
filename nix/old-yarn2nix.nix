@@ -10,7 +10,6 @@
 , libudev
 , lz4
 , pkgconfig
-, systemd
 , writeShellScript
 , xz
 , nodePackages
@@ -229,7 +228,6 @@ yarn2nix.mkYarnPackage {
   '';
   #allowedReferences = [ "out" ];
   #allowedRequisites = [
-  #  systemd.lib
   #  stdenv.cc.cc.lib
   #  stdenv.cc.cc
   #  stdenv.cc.libc

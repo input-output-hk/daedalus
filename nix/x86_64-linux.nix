@@ -43,7 +43,7 @@ in rec {
     inherit (oldCode) yarn nodejs nodePackages cardanoWalletVersion cardanoNodeVersion wine64 windowsIcons;
     inherit (pkgs) lib stdenv python3 python2 python27 nukeReferences fetchzip runCommand fetchurl unzip
       libcap libgcrypt libgpgerror libidn2 libunistring libusb libusb1 libudev lz4 pkgconfig
-      systemd writeShellScript xz zlib strace;
+      writeShellScript xz zlib strace;
 
     inherit pkgs daedalus;
     inherit (linuxInstaller) iconPath;

@@ -1,7 +1,7 @@
-{ target ? builtins.currentSystem
-, localLibSystem ? builtins.currentSystem
+{ target
+, localLibSystem
 , nodeImplementation ? "cardano"
-, localLib ? import ./old-lib.nix { inherit nodeImplementation; system = localLibSystem; }
+, localLib ? import ./old-lib.nix { inherit inputs nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , dummyInstaller ? false
@@ -13,39 +13,31 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, sourceLib ? null
+, sourceLib
+, inputs
 }:
 
 let
-  systemTable = {
+  system = {
     x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
-  };
-  crossSystemTable = lib: {
-    x86_64-windows = lib.systems.examples.mingwW64;
-  };
-  system = systemTable.${target} or target;
-  config = {
-    packageOverrides = super: {
-      systemd = super.systemd.overrideAttrs ({ patches ? [], ... }: {
-        patches = patches ++ [ ./systemd.patch ];
-      });
-    };
-  };
-  pkgs = import sources.nixpkgs { inherit system config; };
-  sources = localLib.sources // {
-    cardano-wallet =
-      if target != "aarch64-darwin"
-      then localLib.sources.cardano-wallet
-      else pkgs.runCommand "cardano-wallet" {} ''
-        cp -r ${localLib.sources.cardano-wallet} $out
+  }.${target} or target;
+  pkgs = inputs.nixpkgs.legacyPackages.${system};
+  sources = localLib.sources;
+  haskell-nix = inputs.cardano-wallet-unpatched.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
+  walletFlake =
+    if target != "aarch64-darwin"
+    then inputs.cardano-wallet-unpatched
+    else ((import inputs.cardano-wallet-unpatched.inputs.flake-compat) {
+      # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
+      src = pkgs.runCommand "cardano-wallet" {} ''
+        cp -r ${inputs.cardano-wallet-unpatched} $out
         chmod -R +w $out
         cd $out
         patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
       '';
-  };
-  haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
-  flake-compat = import sources.flake-compat;
-  walletFlake = (flake-compat  { src = sources.cardano-wallet; }).defaultNix;
+    }).defaultNix // {
+      inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
+    };
   walletPackages = with walletFlake.hydraJobs; {
     x86_64-windows = linux.windows;
     x86_64-linux = linux.native;
@@ -53,10 +45,12 @@ let
     aarch64-darwin = macos.silicon;
   }.${target};
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
-  cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
+  cardanoWorldFlake = (inputs.cardano-wallet-unpatched.inputs.flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
   inherit (pkgs.lib) optionalString;
-  crossSystem = lib: (crossSystemTable lib).${target} or null;
+  crossSystem = lib: {
+    x86_64-windows = lib.systems.examples.mingwW64;
+  }.${target} or null;
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
   nsisNixPkgs = import localLib.sources.nixpkgs-nsis { inherit system; };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
@@ -110,7 +104,7 @@ let
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node = walletPackages.cardano-node;
     cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
-    cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 localLib.sources.cardano-wallet.rev;
+    cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
     cardano-cli = walletPackages.cardano-cli;
 
     # a cross-compiled fastlist for the ps-list package

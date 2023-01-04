@@ -1,4 +1,4 @@
-{ stdenv, lib, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at_spi2_core, libxshmfence,
+{ stdenv, lib, makeWrapper, fetchurl, unzip, atomEnv, libuuid, at-spi2-atk, at-spi2-core, libxshmfence,
   libxkbcommon, runCommand, binutils-unwrapped }:
 
 let
@@ -48,7 +48,7 @@ let
 
       patchelf \
         --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-        --set-rpath "${atomEnv.libPath}:${lib.makeLibraryPath [ libuuid at-spi2-atk at_spi2_core libxshmfence libxkbcommon ]}:$out/lib/electron" \
+        --set-rpath "${atomEnv.libPath}:${lib.makeLibraryPath [ libuuid at-spi2-atk at-spi2-core libxshmfence libxkbcommon ]}:$out/lib/electron" \
         $out/lib/electron/electron
     '';
   };
