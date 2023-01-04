@@ -4,30 +4,30 @@ env:
 
 steps:
 
-  # XXX: `2>&1 | cat`:
+  # XXX: `|& cat`:
   #   • turns off any interactive questions from Nix (e.g. accept-flake-config)
   #   • turns off the progress bar which bloats raw logs
   #   • keeps `derivation-name> ` prefix in logs
   #   • but also kills colors :-(
 
   - label: 'daedalus-x86_64-darwin'
-    command: 'nix run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline 2>&1 | cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline |& cat'
     agents:
       queue: daedalus
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: 'nix run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline 2>&1 | cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline |& cat'
     agents:
       queue: daedalus
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux'
-    command: 'nix run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline 2>&1 | cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline |& cat'
     agents:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows'
-    command: 'nix run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline 2>&1 | cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline |& cat'
     agents:
       system: x86_64-linux
