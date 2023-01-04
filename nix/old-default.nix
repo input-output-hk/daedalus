@@ -24,10 +24,11 @@ let
   localLib = import ./old-lib.nix { inherit inputs system nodeImplementation; };
   sources = localLib.sources;
   haskell-nix = inputs.cardano-wallet-unpatched.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
+  flake-compat = import inputs.cardano-wallet-unpatched.inputs.flake-compat;
   walletFlake =
     if target != "aarch64-darwin"
     then inputs.cardano-wallet-unpatched
-    else ((import inputs.cardano-wallet-unpatched.inputs.flake-compat) {
+    else (flake-compat {
       # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
       src = pkgs.runCommand "cardano-wallet" {} ''
         cp -r ${inputs.cardano-wallet-unpatched} $out
@@ -45,7 +46,7 @@ let
     aarch64-darwin = macos.silicon;
   }.${target};
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
-  cardanoWorldFlake = (inputs.cardano-wallet-unpatched.inputs.flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
+  cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
   inherit (pkgs.lib) optionalString;
   crossSystem = lib: {
