@@ -11,23 +11,23 @@ steps:
   #   • but also kills colors :-(
 
   - label: 'daedalus-x86_64-darwin'
-    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline |& cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline 2>&1 | cat'
     agents:
       queue: daedalus
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline |& cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline 2>&1 | cat'
     agents:
       queue: daedalus
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux'
-    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline |& cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline 2>&1 | cat'
     agents:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows'
-    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline |& cat'
+    command: 'set -o pipefail ; nix run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline 2>&1 | cat'
     agents:
       system: x86_64-linux

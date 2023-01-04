@@ -56,7 +56,7 @@ writeShellScriptBin "buildkite-pipeline" ''
     tmpdir=$(mktemp -d)
     result="$tmpdir"/${bucketSubdir}
 
-    # XXX: `set -x` to give CI users a reproduction, and `|& cat`:
+    # XXX: `set -x` to give CI users a reproduction, and `| cat`:
     #   • turns off any interactive questions from Nix (e.g. accept-flake-config)
     #   • turns off the progress bar which bloats raw logs
     #   • keeps `derivation-name> ` prefix in logs
@@ -65,7 +65,7 @@ writeShellScriptBin "buildkite-pipeline" ''
     (
       set -x
       nix build --no-accept-flake-config -L --out-link "$result" .#packages.${targetSystem}.installer.${cluster}
-    ) |& cat
+    ) 2>&1 | cat
 
     echo "Built: $(readlink "$result")"
 
