@@ -1,7 +1,6 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, localLib ? import ./old-lib.nix { inherit nodeImplementation system; }
 , pkgs ? import (import ./sources.nix).nixpkgs { inherit system config; }
 , cluster ? "selfnode"
 , systemStart ? null
@@ -13,15 +12,17 @@
 , configOverride ? null
 , genesisOverride ? null
 , nivOnly ? false
+, inputs
 }:
 
 let
   daedalusPkgs = import ./old-default.nix {
-    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride;
+    inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
     localLibSystem = system;
     devShell = true;
   };
+  localLib = import ./old-lib.nix { inherit nodeImplementation system; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   fixYarnLock = pkgs.stdenv.mkDerivation {

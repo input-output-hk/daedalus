@@ -91,7 +91,7 @@ in rec {
       exec = "INSERT_PATH_HERE";
       desktopName = "Daedalus ${linuxClusterBinName}";
       genericName = "Crypto-Currency Wallet";
-      categories = "Application;Network;";
+      categories = [ "Application" "Network" ];
       icon = "INSERT_ICON_PATH_HERE";
     };
 

@@ -27,7 +27,7 @@
     };
 
     devShells = sourceLib.forEach [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
-      let all = forEachCluster (cluster: import ./nix/old-shell.nix { inherit system cluster; });
+      let all = forEachCluster (cluster: import ./nix/old-shell.nix { inherit inputs system cluster; });
       in all // { default = all.mainnet; }
     );
 

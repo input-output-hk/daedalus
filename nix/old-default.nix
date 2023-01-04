@@ -1,7 +1,6 @@
 { target
 , localLibSystem
 , nodeImplementation ? "cardano"
-, localLib ? import ./old-lib.nix { inherit inputs nodeImplementation; system = localLibSystem; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , dummyInstaller ? false
@@ -22,6 +21,7 @@ let
     x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   }.${target} or target;
   pkgs = inputs.nixpkgs.legacyPackages.${system};
+  localLib = import ./old-lib.nix { inherit inputs system nodeImplementation; };
   sources = localLib.sources;
   haskell-nix = inputs.cardano-wallet-unpatched.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   walletFlake =
