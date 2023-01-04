@@ -45,8 +45,7 @@ desktopShortcut installDir =
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
 writeUninstallerNSIS :: Version -> InstallerConfig -> IO ()
-writeUninstallerNSIS (Version fullVersion) installerConfig = do
-    tempDir <- getTempDir
+writeUninstallerNSIS (Version fullVersion) installerConfig =
     IO.writeFile "uninstaller.nsi" $ nsis $ do
         _ <- constantStr "Version" (str $ T.unpack fullVersion)
         _ <- constantStr "InstallDir" (str $ T.unpack $ installDirectory installerConfig)
@@ -65,7 +64,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         -- TODO, the nsis library doesn't support translation vars
         -- name "$InstallDir $(UninstallName) $Version"
         --unsafeInjectGlobal $ T.unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
-        outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
+        outFile "tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
 
@@ -130,7 +129,6 @@ parseVersion ver =
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
 writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirectory,uglyName,spacedName} Options{oBackend} clusterName = do
-    tempDir <- getTempDir
     let fullVersion = T.unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
@@ -272,7 +270,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     writeRegStr HKLM uninstallKey "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
                     writeRegDWORD HKLM uninstallKey "NoModify" 1
                     writeRegDWORD HKLM uninstallKey "NoRepair" 1
-                file [] $ (str . encodeString $ tempDir </> "uninstall.exe")
+                file [] "uninstall.exe"
 
         -- this string never appears in the UI
         _ <- section "Start Menu Shortcuts" [] $ do

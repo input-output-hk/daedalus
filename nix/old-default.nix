@@ -294,7 +294,7 @@ let
       popd
       cp -vr ${self.unpackedCardano}/bin/* .
       cp -v ${self.nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
-      cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
+      cp ${self.uninstaller}/uninstall.exe .
       if [ -f ${self.nsisFiles}/block-0.bin ]; then
         cp -v ${self.nsisFiles}/block-0.bin .
       fi
@@ -337,6 +337,8 @@ let
       inherit (self.launcherConfigs) launcherConfig;
       inherit cluster;
       win64 = true;
+      daedalus = throw "do not use";
+      iconPath = throw "do not use";
     };
     source = builtins.filterSource localLib.cleanSourceFilter ../.;
     inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
