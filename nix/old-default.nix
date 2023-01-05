@@ -65,19 +65,21 @@ let
     cardanoLib = walletPkgs.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    nodejs = let
-      njPath = pkgs.path + "/pkgs/development/web/nodejs";
-      buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) {
-        python = pkgs.python3;
-        icu = pkgs.icu68; # can’t build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
-      };
-    in
-      buildNodeJs {
-        enableNpm = true;
-        version = "14.17.0";
-        sha256 = "1vf989canwcx0wdpngvkbz2x232yccp7fzs1vcbr60rijgzmpq2n";
-        patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
-      };
+    # nodejs = let
+    #   njPath = pkgs.path + "/pkgs/development/web/nodejs";
+    #   buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) {
+    #     python = pkgs.python39;
+    #     icu = pkgs.icu68; # can’t build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
+    #   };
+    # in
+    #   buildNodeJs {
+    #     enableNpm = true;
+    #     version = "14.17.0";
+    #     sha256 = "1vf989canwcx0wdpngvkbz2x232yccp7fzs1vcbr60rijgzmpq2n";
+    #     patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
+    #   };
+
+    nodejs = pkgs.nodejs-14_x;
 
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {

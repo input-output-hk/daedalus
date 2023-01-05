@@ -2,7 +2,7 @@
   description = "The open source wallet for ada, built to grow with the Cardano blockchain";
 
   inputs = {
-    nixpkgs.follows = "cardano-wallet-unpatched/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
     cardano-wallet-unpatched.url = "github:input-output-hk/cardano-wallet/v2022-10-06";
     tullia.url = "github:input-output-hk/tullia";
   };

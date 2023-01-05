@@ -5,7 +5,7 @@ module Util where
 import Data.Text (Text)
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
 import Data.Aeson (Value, Value(Object, String), encodeFile, decodeFileStrict')
-import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson.KeyMap as HM
 
 windowsRemoveDirectoryRecursive :: FilePath -> IO ()
 windowsRemoveDirectoryRecursive path = do

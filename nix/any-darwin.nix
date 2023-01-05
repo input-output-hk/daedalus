@@ -21,6 +21,19 @@ let
   chromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
   installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
+  # On Catalina (x86), we can’t detect Ledger devices, unless:
+  theSDK = if targetSystem == "aarch64-darwin" then {
+    apple_sdk = pkgs.darwin.apple_sdk;
+    xcbuild = pkgs.xcbuild;
+  } else rec {
+    apple_sdk = pkgs.darwin.apple_sdk_11_0;
+    xcbuild = pkgs.xcbuild.override {
+      inherit (apple_sdk) stdenv;
+      inherit (apple_sdk.frameworks) CoreServices CoreGraphics ImageIO;
+      #sdkVer = "11.0";
+    };
+  };
+
 in rec {
 
   inherit newCommon oldCode nodejs nodePackages yarn;
@@ -129,11 +142,12 @@ in rec {
   node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
-    nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
+    nativeBuildInputs = [ yarn nodejs theSDK.xcbuild ]
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
-      apple_sdk.frameworks.IOKit
-      apple_sdk.frameworks.AppKit
+      theSDK.apple_sdk.frameworks.IOKit
+      theSDK.apple_sdk.frameworks.AppKit
+      (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]);
     configurePhase = setupCacheAndGypDirs;
     buildPhase = ''
@@ -164,12 +178,13 @@ in rec {
   in pkgs.stdenv.mkDerivation {
     name = pname;
     src = srcWithoutNix;
-    nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 pkgconfig xcbuild darwin.cctools ]);
+    nativeBuildInputs = [ yarn nodejs daedalus-installer theSDK.xcbuild ]
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
-      apple_sdk.frameworks.CoreServices
-      apple_sdk.frameworks.AppKit
+      theSDK.apple_sdk.frameworks.CoreServices
+      theSDK.apple_sdk.frameworks.AppKit
       libobjc
+      (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]) ++ [
       daedalus-bridge
       darwin-launcher

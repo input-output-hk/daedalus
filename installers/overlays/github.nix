@@ -1,7 +1,7 @@
 { mkDerivation, aeson, base, base-compat, base16-bytestring, binary
 , binary-instances, bytestring, containers, cryptohash-sha1
 , deepseq, deepseq-generics, exceptions, file-embed, hashable
-, hspec, hspec-discover, http-client, http-client-tls
+, hspec_2_7_10, hspec-discover, http-client, http-client-tls
 , http-link-header, http-types, iso8601-time, lib, mtl, network-uri
 , tagged, text, time-compat, tls, transformers, transformers-compat
 , unordered-containers, vector, vector-instances
@@ -19,7 +19,7 @@ mkDerivation {
     vector-instances
   ];
   testHaskellDepends = [
-    aeson base base-compat bytestring file-embed hspec tagged text
+    aeson base base-compat bytestring file-embed hspec_2_7_10 tagged text
     unordered-containers vector
   ];
   testToolDepends = [ hspec-discover ];
