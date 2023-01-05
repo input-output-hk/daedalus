@@ -34,9 +34,11 @@ let
     };
   };
 
+  allFrameworks = __attrValues (removeAttrs theSDK.apple_sdk.frameworks ["QuickTime"]);
+
 in rec {
 
-  inherit newCommon oldCode nodejs nodePackages yarn;
+  inherit newCommon oldCode nodejs nodePackages yarn theSDK;
 
   yarn2nix = let
     # Nixpkgs master @ 2022-07-18
@@ -145,10 +147,10 @@ in rec {
     nativeBuildInputs = [ yarn nodejs theSDK.xcbuild ]
       ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
-      theSDK.apple_sdk.frameworks.IOKit
-      theSDK.apple_sdk.frameworks.AppKit
+      #theSDK.apple_sdk.frameworks.IOKit
+      #theSDK.apple_sdk.frameworks.AppKit
       (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
-    ]);
+    ]) ++ allFrameworks;
     configurePhase = setupCacheAndGypDirs;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
@@ -181,15 +183,15 @@ in rec {
     nativeBuildInputs = [ yarn nodejs daedalus-installer theSDK.xcbuild ]
       ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
     buildInputs = (with pkgs.darwin; [
-      theSDK.apple_sdk.frameworks.CoreServices
-      theSDK.apple_sdk.frameworks.AppKit
+      #theSDK.apple_sdk.frameworks.CoreServices
+      #theSDK.apple_sdk.frameworks.AppKit
       libobjc
       (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]) ++ [
       daedalus-bridge
       darwin-launcher
       mock-token-metadata-server
-    ];
+    ] ++ allFrameworks;
     NETWORK = cluster;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
