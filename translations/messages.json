@@ -4387,26 +4387,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Catalyst API unavailable",
-        "description": "Title",
-        "id": "voting.apiError.title"
-      },
-      {
-        "defaultMessage": "!!!Unable to communicate with the API that retrieves the Catalyst date information.",
-        "description": "Description 1",
-        "id": "voting.apiError.description1"
-      },
-      {
-        "defaultMessage": "!!!Please, try again later.",
-        "description": "Description 2",
-        "id": "voting.apiError.description2"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/ApiError.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "id": "voting.info.androidAppButtonUrl"
@@ -4482,77 +4462,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!End of voting:",
-        "description": "Headline for end date",
-        "id": "voting.resultsPhase.endDateLabel"
-      },
-      {
         "defaultMessage": "!!!View results",
         "description": "View results link label",
-        "id": "voting.resultsPhase.viewResultsLinkLabel"
+        "id": "voting.viewResultsLinkLabel"
       },
       {
         "defaultMessage": "https://cardano.ideascale.com/a/pages/results",
         "description": "View results link",
-        "id": "voting.resultsPhase.viewResultsLinkURL"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/ResultsPhase.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Snapshot date:",
-        "description": "Snapshot date label",
-        "id": "voting.snapshotPhase.snapshotDateLabel"
-      },
-      {
-        "defaultMessage": "!!!Next voting period:",
-        "description": "Next voting date label",
-        "id": "voting.snapshotPhase.votingDateLabel"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/SnapshotPhase.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Voting ended:",
-        "description": "Voting end date label",
-        "id": "voting.tallyingPhase.endDateLabel"
-      },
-      {
-        "defaultMessage": "!!!Check back for results on:",
-        "description": "Results date label",
-        "id": "voting.tallyingPhase.resultsLabel"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/TallyingPhase.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Fund{votingFundNumber}",
-        "description": "Current fund name",
-        "id": "voting.fundName"
+        "id": "voting.viewResultsLinkURL"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Voting period open between:",
-        "description": "Voting date label",
-        "id": "voting.votingOpenPhase.dateLabel"
-      },
-      {
-        "defaultMessage": "!!!Use mobile app to vote",
-        "description": "Voting instruction",
-        "id": "voting.votingOpenPhase.instruction"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-info/VotingPhase.messages.ts"
   },
   {
     "descriptors": [

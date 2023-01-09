@@ -1,5 +1,3 @@
-@import '../votingConfig';
-
 .component {
   flex: 1 0 0;
   padding: 20px;
@@ -13,6 +11,7 @@
 
   .bottomContent {
     display: flex;
+    margin-bottom: 100px;
 
     .leftContent {
       max-width: 271px;
@@ -25,7 +24,13 @@
   }
 
   .appStoreSpacing {
-    margin-top: 30px;
+    margin-top: 20px;
     padding: 0 20px;
+  }
+
+  .resultsButton {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
   }
 }

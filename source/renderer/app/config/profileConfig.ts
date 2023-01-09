@@ -68,30 +68,3 @@ export const TIME_OPTIONS = [
     label: '14:00',
   },
 ];
-export const DATE_ENGLISH_LL_MAP_OPTIONS = {
-  ['MM/DD/YYYY']: 'MMM D, YYYY',
-  ['DD/MM/YYYY']: 'D MMM, YYYY',
-  ['YYYY/MM/DD']: 'YYYY, MMM D',
-};
-export const TIME_LL_MAP_OPTIONS = {
-  ['hh:mm:ss A']: 'hh:mm A',
-  ['HH:mm:ss']: 'HH:mm',
-};
-export const DATE_TIME_SEPARATOR_MAP = new Proxy(
-  {
-    ['YYYY年MM月DD日']: '',
-    ['YY/MM/DD']: ' ',
-    ['YYYY/MM/DD']: ' ',
-  },
-  {
-    get: (target, prop, receiver) => {
-      const notSpecified = !(prop in target);
-
-      if (notSpecified) {
-        return ', ';
-      }
-
-      return Reflect.get(target, prop, receiver);
-    },
-  }
-);

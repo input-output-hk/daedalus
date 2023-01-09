@@ -27,7 +27,7 @@ class VotingRegistrationPage extends Component<Props> {
     });
   };
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
-    const { app, networkStatus, wallets, profile, voting } = this.props.stores;
+    const { app, networkStatus, wallets, voting } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { openExternalLink } = app;
 
@@ -51,14 +51,8 @@ class VotingRegistrationPage extends Component<Props> {
       );
     }
 
-    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     return (
       <VotingInfo
-        fundInfo={voting.catalystFund}
-        fundPhase={voting.fundPhase}
-        currentLocale={currentLocale}
-        currentDateFormat={currentDateFormat}
-        currentTimeFormat={currentTimeFormat}
         onRegisterToVoteClick={() =>
           this.props.actions.dialogs.open.trigger({
             dialog: VotingRegistrationDialog,
