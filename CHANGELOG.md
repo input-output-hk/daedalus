@@ -10,6 +10,7 @@
 
 ### Chores
 
+- Update `cardano-node` to 1.35.4 for the Preview network respin ([PR 3082](https://github.com/input-output-hk/daedalus/pull/3082))
 - Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
