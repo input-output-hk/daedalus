@@ -26,3 +26,5 @@ export const CPU_DIMENSION_KEY = 'dimension1';
 export const RAM_DIMENSION_KEY = 'dimension2';
 export const OS_DIMENSION_KEY = 'dimension3';
 export const VERSION_DIMENSION_KEY = 'dimension4';
+export const USES_LEGACY_WALLET_DIMENSION_KEY = 'dimension5';
+export const USES_HARDWARE_WALLET_DIMENSION_KEY = 'dimension6';

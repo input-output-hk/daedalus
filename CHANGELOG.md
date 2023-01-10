@@ -2,9 +2,22 @@
 
 ## vNext
 
+### Features
+
+- Added custom dimension to track legacy and hardware wallets ([PR 3091](https://github.com/input-output-hk/daedalus/pull/3091))
+- Implemented CPU name grouping mechanism for analytics ([PR 3089](https://github.com/input-output-hk/daedalus/pull/3089))
+- Implemented rounding RAM size in analytics ([PR 3088](https://github.com/input-output-hk/daedalus/pull/3088))
+
 ### Chores
 
+- Update `cardano-node` to 1.35.4 for the Preview network respin ([PR 3082](https://github.com/input-output-hk/daedalus/pull/3082))
+- Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
+
+## 5.1.1
+
+### Chores
+
 - Increased minimum free space required from 2gb to 4gb ([PR 3071](https://github.com/input-output-hk/daedalus/pull/3071))
 - Fixed Language components in Storybook to have it's own mocked store ([PR 3063](https://github.com/input-output-hk/daedalus/pull/3063))
 - Updated `cardano-node` configs for Preprod respin ([PR 3070](https://github.com/input-output-hk/daedalus/pull/3070))

@@ -37,7 +37,8 @@ const initializeDaedalus = () => {
   const routingStore = new RouterStore();
   const analyticsTracker = new MatomoAnalyticsTracker(
     environment,
-    api.localStorage
+    api.localStorage,
+    api.ada
   );
   const stores = setUpStores(api, actions, routingStore, analyticsTracker);
   const history = syncHistoryWithStore(hashHistory, routingStore);
