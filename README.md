@@ -9,6 +9,8 @@
 Daedalus - Cryptocurrency Wallet
 
 [Code of conduct](https://github.com/input-output-hk/cardano-engineering-handbook/blob/main/CODE-OF-CONDUCT.md)
+It is important that you read the code of conduct from the engineering handbook before you interact with Daedalus, in order to keep consistency and coherence across 
+communications and development. 
 
 ## Setup development environment
 
