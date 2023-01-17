@@ -185,7 +185,10 @@ export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
     .dividedBy(LOVELACES_PER_ADA)
     .toNumber();
-export const formattedBytesToSize = (bytes: number): string => {
+export const formattedBytesToSize = (
+  bytes: number,
+  decimalPlaces = 1
+): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes === 0) return 'n/a';
   const i = parseInt(
@@ -194,7 +197,7 @@ export const formattedBytesToSize = (bytes: number): string => {
     10
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
-  return `${formattedNumber(bytes / 1024 ** i, 1)} ${sizes[i]}`;
+  return `${formattedNumber(bytes / 1024 ** i, decimalPlaces)} ${sizes[i]}`;
 };
 export type FormattedDownloadData = {
   timeLeft: string;

@@ -1,17 +1,13 @@
 import MatomoTracker from 'matomo-tracker';
 import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
-import formatCpuInfo from '../utils/formatCpuInfo';
 import {
   ANALYTICS_API_ENDPOINT,
-  CPU_DIMENSION_KEY,
   DEV_MODE_SITE_MAP_ID,
   NETWORK_TO_ANALYTICS_SITE_ID_MAP,
-  OS_DIMENSION_KEY,
-  RAM_DIMENSION_KEY,
-  VERSION_DIMENSION_KEY,
 } from '../config/analyticsConfig';
-import { formattedBytesToSize } from '../utils/formatters';
+import { getCustomDimensions } from './getCustomDimensions';
+import AdaApi from '../api/api';
 
 /**
  * Matomo API reference:
@@ -20,7 +16,11 @@ import { formattedBytesToSize } from '../utils/formatters';
 export class MatomoClient implements AnalyticsClient {
   private matomoTracker: MatomoTracker;
 
-  constructor(private environment: Environment, private userId: string) {
+  constructor(
+    private environment: Environment,
+    private adaApi: AdaApi,
+    private userId: string
+  ) {
     this.matomoTracker = new MatomoTracker(
       this.getMatomoSiteId(environment),
       ANALYTICS_API_ENDPOINT
@@ -28,14 +28,16 @@ export class MatomoClient implements AnalyticsClient {
   }
 
   sendPageNavigationEvent = async (pageTitle: string) => {
+    const customDimensions = await getCustomDimensions(
+      this.environment,
+      this.adaApi
+    );
+
     this.matomoTracker.track({
       _id: this.userId,
       action_name: pageTitle,
       url: this.getAnalyticsURL(),
-      [CPU_DIMENSION_KEY]: formatCpuInfo(this.environment.cpu),
-      [RAM_DIMENSION_KEY]: formattedBytesToSize(this.environment.ram),
-      [OS_DIMENSION_KEY]: this.environment.os,
-      [VERSION_DIMENSION_KEY]: this.environment.version,
+      ...customDimensions,
     });
   };
 
