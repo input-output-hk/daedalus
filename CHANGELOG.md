@@ -2,6 +2,8 @@
 
 ## vNext
 
+## 5.2.0
+
 ### Features
 
 - Added custom dimension to track legacy and hardware wallets ([PR 3091](https://github.com/input-output-hk/daedalus/pull/3091))
