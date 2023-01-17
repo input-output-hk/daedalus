@@ -4,13 +4,15 @@ import { Environment } from '../../../common/types/environment.types';
 import LocalStorageApi from '../api/utils/localStorage';
 import { MatomoClient } from './MatomoClient';
 import { NoopAnalyticsClient } from './noopAnalyticsClient';
+import AdaApi from '../api/api';
 
 export class MatomoAnalyticsTracker implements AnalyticsTracker {
   #analyticsClient: AnalyticsClient;
 
   constructor(
     private environment: Environment,
-    private localStorageApi: LocalStorageApi
+    private localStorageApi: LocalStorageApi,
+    private adaApi: AdaApi
   ) {
     this.#analyticsClient = NoopAnalyticsClient;
     this.#enableTrackingIfAccepted();
@@ -19,6 +21,7 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
   async enableTracking() {
     this.#analyticsClient = new MatomoClient(
       this.environment,
+      this.adaApi,
       await this.localStorageApi.getUserID()
     );
   }
