@@ -213,10 +213,10 @@ After({ tags: '@reconnectApp' }, async function () {
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-After({ tags: '@e2e' }, async function ({ sourceLocation, result }) {
+After({ tags: '@e2e' }, async function ({ gherkinDocument, result }) {
   scenariosCount++;
-  if (result.status === 'failed') {
-    const testName = getTestNameFromTestFile(sourceLocation.uri);
+  if (result.status === 'FAILED') {
+    const testName = getTestNameFromTestFile(gherkinDocument.uri);
     const file = generateScreenshotFilePath(testName);
     await saveScreenshot(application, file);
     await printMainProcessLogs();
@@ -234,7 +234,7 @@ After({ tags: '@rewardsCsv' }, async function () {
 // eslint-disable-next-line prefer-arrow-callback
 AfterAll(async function () {
   const allWindowsClosed = (await application.client.getWindowCount()) === 0;
-  if (allWindowsClosed || !application.running) return;
+  if (allWindowsClosed || !application.isRunning) return;
   if (scenariosCount === 0) {
     await printMainProcessLogs();
   }

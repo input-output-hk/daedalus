@@ -28,6 +28,7 @@ const STAKE_POOL_CUSTOM_SERVER_INPUT_BOX_X_BUTTON =
 const STAKE_POOL_SERVER_DROPDOWN = '//*[@class="SimpleFormField_inputWrapper"]';
 const STAKE_POOL_SERVER_DROPDOWN_CUSTOM_OPTION = `//*[@class="ScrollbarsCustom-Content"]//span[text()="${CUSTOM_SERVER_TEXT}"]`;
 const STAKE_POOLS_SUBMENU_SETTINGS = `//*[@class="SettingsMenu_component"]//button[text()="${STAKE_POOL_TEXT}"]`;
+const SERVER_URL = 'http://localhost';
 
 When(/^I select custom server$/, function () {
   return this.waitAndClick(CUSTOM_SERVER_DROPDOWN_OPTION);
