@@ -69,7 +69,8 @@ When('I generate additional mnemonic words', function () {
 
 When('I generate spending password from 9-word mnemonic', function () {
   this.context.spendingPassword = mnemonicToSeedHex(
-    this.context.additionalMnemonicWords
+    this.context.additionalMnemonicWords,
+    this.context.password
   );
 });
 

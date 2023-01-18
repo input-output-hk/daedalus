@@ -2,7 +2,7 @@ import { When, Then } from '@cucumber/cucumber';
 import enCopy from '../../../../source/renderer/app/i18n/locales/en-US.json';
 import { environment } from '../../../../source/main/environment';
 
-const { IsTestnet } = environment;
+const { isTestnet } = environment;
 
 const CUSTOM_SERVER_TEXT =
   enCopy['settings.stakePools.smash.select.customServer'];
@@ -63,7 +63,7 @@ Then(/^The smash server input textBox is visible$/, function () {
 
 When(/^And I enter a custom server URL as custom server option$/, function () {
   let SERVER_URL = 'https://smash.cardano-testnet.iohkdev.io/';
-  if (IsTestnet) {
+  if (isTestnet) {
     SERVER_URL = 'https://smash.cardano-mainnet.iohk.io';
   }
   this.client.setValue(SMASH_SERVER_URL_INPUT_BOX, SERVER_URL);

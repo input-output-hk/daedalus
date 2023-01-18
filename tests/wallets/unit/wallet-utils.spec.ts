@@ -8,6 +8,54 @@ import {
 // after the transactions remains < 10 ADA, the following Warning message
 // is displayed in the send confirmation dialog
 
+const walletTokens = {
+  available: [],
+  total: [],
+};
+const walletSyncState = {
+  status: 'ready',
+};
+const walletPendingDelegations = [
+  {
+    status: 'delegating',
+    changes_at: null,
+  },
+];
+const discovery = {};
+
+const testWallet = {
+  id: '',
+  addressPoolGap: 123,
+  name: '',
+  amount: new BigNumber(100),
+  availableAmount: new BigNumber(100),
+  reward: new BigNumber(100),
+  assets: walletTokens,
+  passwordUpdateDate: null,
+  syncState: walletSyncState,
+  isLegacy: false,
+  delegatedStakePoolId: null,
+  delegationStakePoolStatus: null,
+  lastDelegatedStakePoolId: null,
+  lastDelegationStakePoolStatus: null,
+  pendingDelegations: walletPendingDelegations,
+  discovery: discovery,
+  hasPassword: false,
+  walletNotConnected: false,
+  isHardwareWallet: false,
+
+  update: () => {},
+  hasFunds: () => {},
+  hasAssets: () => {},
+  isRestoring: () => {},
+  isSyncing: () => {},
+  isNotResponding: () => {},
+  isRandom: () => {},
+  isDelegating: () => {},
+  isSequential: () => {},
+  restorationProgress: () => {},
+};
+
 describe('Function shouldShowEmptyWalletWarning returns:', () => {
   it(`<false> in case the balance after transaction is lower than
     MINIMUM_ADA_BALANCE_FOR_WITHDRAWING_REWARDS`, () => {
@@ -42,7 +90,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const walletBalance = new BigNumber(100);
     const isLegacy = false;
     const isDelegating = true;
-    const wallet = { amount: walletBalance, isLegacy, isDelegating };
+    const wallet = {
+      amount: walletBalance,
+      isLegacy,
+      isDelegating,
+      ...testWallet,
+    };
     const hasAssets = false;
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
@@ -58,7 +111,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const walletBalance = new BigNumber(100);
     const isLegacy = true;
     const isDelegating = true;
-    const wallet = { amount: walletBalance, isLegacy, isDelegating };
+    const wallet = {
+      amount: walletBalance,
+      isLegacy,
+      isDelegating,
+      ...testWallet,
+    };
     const hasAssets = false;
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
@@ -77,7 +135,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const wallet = { amount: walletBalance, isLegacy, isDelegating };
     const hasAssets = false;
     expect(
-      shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
+      shouldShowEmptyWalletWarning(totalAmountToSpend, testWallet, hasAssets)
     ).toBe(true);
   });
 
