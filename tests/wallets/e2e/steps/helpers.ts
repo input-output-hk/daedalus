@@ -26,7 +26,7 @@ export const noWalletsErrorMessage = `The byron wallet for funds transfering was
     Remove the "Daedalus Selfnode" directory and run \`nix:dev\` again.`;
 
 export const restoreWalletWithFunds = async (
-  client: Object,
+  client: any,
   { walletName }: { walletName: string }
 ) => {
   const recoveryPhrase = shelleyMnemonics[shelleyMnemonicsIndex++];
@@ -69,7 +69,7 @@ const getMnemonicsIndex = async function (maxIndex: number) {
 };
 
 export const restoreLegacyWallet = async (
-  client: Object,
+  client: any,
   {
     walletName,
     hasFunds,
@@ -130,7 +130,11 @@ export const restoreLegacyWallet = async (
   );
 };
 
-export const fillOutWalletSendForm = async function (values: Object) {
+export const fillOutWalletSendForm = async function (values: {
+  address: string;
+  amount: number;
+  spendingPassword: string;
+}) {
   const formSelector = '.WalletSendForm_component';
   await this.waitAndSetValue(
     `${formSelector} .receiver .SimpleInput_input`,
@@ -196,10 +200,12 @@ export const getFixedAmountByName = async function (walletName: string) {
 };
 
 export const importWalletHelpers = {
-  waitForDialog: (client: Object, { isHidden }: { isHidden: boolean } = {}) =>
-    client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
+  waitForDialog: (
+    client: any,
+    { isHidden }: { isHidden: boolean } = { isHidden: false }
+  ) => client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
   clickImport: (client: Object) =>
-    waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
+    waitAndClick(`${IMPORT_WALLET_DIALOG} .primary`),
   expectError: (client: Object, { error }: { error: string }) =>
     expectTextInSelector(client, {
       selector: `${IMPORT_WALLET_DIALOG}_error`,
@@ -208,8 +214,8 @@ export const importWalletHelpers = {
 };
 
 export const importWalletWithFunds = async (
-  client: Object,
-  { keyFilePath, password }: { keyFilePath: string; password: ?string }
+  client: any,
+  { keyFilePath, password }: { keyFilePath: string; password: string }
 ) =>
   client.executeAsync(
     (filePath, spendingPassword, done) => {
@@ -227,7 +233,7 @@ export const importWalletWithFunds = async (
     password
   );
 
-export const isActiveWalletBeingRestored = async (client: Object) => {
+export const isActiveWalletBeingRestored = async (client: any) => {
   const result = await client.execute(
     (expectedSyncTag) => daedalus.stores.wallets.active === expectedSyncTag,
     WalletSyncStateStatuses.RESTORING
@@ -273,7 +279,7 @@ export const expectActiveWallet = async function (walletName: string) {
 
 export const createWallets = async function (
   wallets: Array<any>,
-  options?: {
+  options: {
     sequentially?: boolean;
     isLegacy?: boolean;
   } = {}
@@ -340,9 +346,7 @@ const createWalletsAsync = async function (table, isLegacy?: boolean) {
             return createWallet(walletDetails);
           }
           return restoreByronRandomWallet({
-            name: wallet.name,
             walletName: wallet.name,
-            mnemonic,
             recoveryPhrase,
             spendingPassword: wallet.password || 'Secret1234',
           });
@@ -383,10 +387,7 @@ export const navigateTo = function (requestedRoute: string) {
 };
 
 export const sidebar = {
-  activateCategory: async (
-    client: Object,
-    { category }: { category: string }
-  ) => {
+  activateCategory: async (client: any, { category }: { category: string }) => {
     await client.execute((cat) => {
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
@@ -395,26 +396,26 @@ export const sidebar = {
     }, `/${category}`);
     return client.waitForVisible(`.SidebarCategory_active.${category}`);
   },
-  clickAddWalletButton: (client: Object) =>
+  clickAddWalletButton: (client: any) =>
     waitAndClick(client, '.SidebarWalletsMenu_addWalletButton'),
 };
 
 export const addWalletPage = {
-  waitForVisible: (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
+  waitForVisible: (client: any, { isHidden }: { isHidden?: boolean } = {}) =>
     client.waitForVisible(ADD_WALLET, null, isHidden),
-  clickImportButton: (client: Object) =>
+  clickImportButton: (client: any) =>
     waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`),
 };
 
 export default {
-  waitForDialog: (client: Object, { isHidden }: { isHidden?: boolean } = {}) =>
+  waitForDialog: (client: any, { isHidden }: { isHidden?: boolean } = {}) =>
     client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
-  selectFile: (client: Object, { filePath }: { filePath: string }) =>
+  selectFile: (client: any, { filePath }: { filePath: string }) =>
     client.chooseFile(
       `${IMPORT_WALLET_DIALOG} .FileUploadWidget_dropZone input`,
       filePath
     ),
-  clickImport: (client: Object) =>
+  clickImport: (client: any) =>
     waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
   expectError: (client: Object, { error }: { error: string }) =>
     expectTextInSelector(client, {
@@ -425,7 +426,7 @@ export default {
 
 export const i18n = {
   formatMessage: async (
-    client: Object,
+    client: any,
     { id, values }: { id: string; values?: Object }
   ) => {
     const translation = await client.execute(
@@ -447,8 +448,8 @@ export const i18n = {
     return translation.value;
   },
   setActiveLanguage: async (
-    client: Object,
-    { language }: { language: string } = {}
+    client: any,
+    { language }: { language: string } = { language: 'english' }
   ) =>
     client.execute((value) => {
       daedalus.actions.profile.updateUserLocalSetting.trigger({
@@ -459,11 +460,11 @@ export const i18n = {
 };
 
 export const waitForActiveRestoreNotification = (
-  client: Object,
+  client: any,
   { isHidden }: { isHidden?: boolean } = {}
 ) => client.waitForVisible('.ActiveRestoreNotification', null, isHidden);
 
-export const getWalletType = async function (_type?: string = '') {
+export const getWalletType = async function (_type: string = '') {
   let type = _type ? _type.trim() : null;
   if (type === 'byron') return 'byron';
   if (!type) {
