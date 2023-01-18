@@ -14,14 +14,14 @@ const walletTokens = {
 };
 const walletSyncState = {
   status: 'ready',
-};
+} as const;
 const walletPendingDelegations = [
   {
-    status: 'delegating',
+    status: 'delegating' as const,
     changes_at: null,
   },
 ];
-const discovery = {};
+const discovery = 'random' as const;
 
 const testWallet = {
   id: '',
@@ -45,16 +45,16 @@ const testWallet = {
   isHardwareWallet: false,
 
   update: () => {},
-  hasFunds: () => {},
-  hasAssets: () => {},
-  isRestoring: () => {},
-  isSyncing: () => {},
-  isNotResponding: () => {},
-  isRandom: () => {},
-  isDelegating: () => {},
-  isSequential: () => {},
-  restorationProgress: () => {},
-};
+  hasFunds: true,
+  hasAssets: true,
+  isRestoring: true,
+  isSyncing: true,
+  isNotResponding: true,
+  isRandom: true,
+  isDelegating: true,
+  isSequential: true,
+  restorationProgress: 0,
+} as const;
 
 describe('Function shouldShowEmptyWalletWarning returns:', () => {
   it(`<false> in case the balance after transaction is lower than
@@ -95,7 +95,7 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
       isLegacy,
       isDelegating,
       ...testWallet,
-    };
+    } as const;
     const hasAssets = false;
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
@@ -148,7 +148,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const walletBalance = new BigNumber(200);
     const isLegacy = false;
     const isDelegating = true;
-    const wallet = { amount: walletBalance, isLegacy, isDelegating };
+    const wallet = {
+      amount: walletBalance,
+      isLegacy,
+      isDelegating,
+      ...testWallet,
+    };
     const hasAssets = false;
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)
@@ -164,7 +169,12 @@ describe('Function shouldShowEmptyWalletWarning returns:', () => {
     const walletBalance = new BigNumber(100);
     const isLegacy = false;
     const isDelegating = true;
-    const wallet = { amount: walletBalance, isLegacy, isDelegating };
+    const wallet = {
+      amount: walletBalance,
+      isLegacy,
+      isDelegating,
+      ...testWallet,
+    };
     const hasAssets = true;
     expect(
       shouldShowEmptyWalletWarning(totalAmountToSpend, wallet, hasAssets)

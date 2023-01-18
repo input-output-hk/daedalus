@@ -9,7 +9,7 @@ import {
   AfterAll,
   setDefaultTimeout,
 } from '@cucumber/cucumber';
-import electronPath from 'electron';
+import electronPath from 'electron-prebuilt';
 import fakeDialog from 'spectron-fake-dialog';
 import { includes } from 'lodash';
 import {

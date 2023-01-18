@@ -8,18 +8,15 @@ const STAKING_BUTTON_SIDEBAR = '.SidebarCategory_component.staking';
 const DELEGATION_CENTER_PAGE = '.StakingWithNavigation_page';
 
 export const delegationCentreStakingHelper = {
-  stakingButtonVisible: async (client: Object) =>
+  stakingButtonVisible: async (client: any) =>
     client.waitForVisible(STAKING_BUTTON_SIDEBAR),
-  clickStakingButton: async (client: Object) =>
+  clickStakingButton: async (client: any) =>
     client.click(STAKING_BUTTON_SIDEBAR),
-  delegationCenterVisible: async (client: Object) =>
+  delegationCenterVisible: async (client: any) =>
     client.waitForVisible(DELEGATION_CENTER_PAGE),
 };
 
-export const getStakePoolByRanking = async (
-  client: Object,
-  ranking: number
-) => {
+export const getStakePoolByRanking = async (client: any, ranking: number) => {
   const result = await client.execute((ranking) => {
     const { stakePools } = daedalus.stores.staking;
     return stakePools.find(
