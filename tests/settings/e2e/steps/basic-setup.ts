@@ -1,12 +1,15 @@
 // @flow
 import { Given } from '@cucumber/cucumber';
-import { initialSettingsHelpers, migrationHelpers, termsOfUseHelpers } from './helpers';
+import {
+  initialSettingsHelpers,
+  migrationHelpers,
+  termsOfUseHelpers,
+} from './helpers';
 
 const { acceptMigration } = migrationHelpers;
 const { acceptTerms } = termsOfUseHelpers;
 const { ensureLanguageIsSelected } = initialSettingsHelpers;
-
-Given(/^I have completed the basic setup$/, async function() {
+Given(/^I have completed the basic setup$/, async function () {
   await ensureLanguageIsSelected(this.client, {
     language: 'en-US',
   });

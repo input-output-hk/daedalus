@@ -1,9 +1,11 @@
-{ nodeImplementation ? "cardano" }:
+{ nodeImplementation ? "cardano"
+, system ? builtins.currentSystem
+}:
 
 let
   sources = import ./nix/sources.nix;
-  iohkNix = import sources.iohk-nix { sourcesOverride = sources; };
-  # TODO: can we use the filter in iohk-nix instead?
+  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; inherit system; };
+  # TODO: can we use the filter in cardano-wallet instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -19,15 +21,14 @@ let
 
       # Filter out the files which I'm editing often.
       lib.hasSuffix ".nix" baseName ||
-      lib.hasSuffix ".dhall" baseName ||
       lib.hasSuffix ".hs" baseName ||
       # Filter out nix-build result symlinks
       (type == "symlink" && lib.hasPrefix "result" baseName)
     );
   isDaedalus = name: false;
-  pkgs = iohkNix.pkgs;
+  pkgs = nixpkgs.pkgs;
   lib = pkgs.lib;
 in
 lib // {
-  inherit sources iohkNix pkgs isDaedalus cleanSourceFilter;
+  inherit sources pkgs isDaedalus cleanSourceFilter;
 }

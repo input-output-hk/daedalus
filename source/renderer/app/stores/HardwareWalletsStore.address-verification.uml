@@ -1,0 +1,52 @@
+title Ledger Address Verification
+
+participant NanoS
+participant Daedalus
+participant WalletReceivePage
+participant initiateAddressVerification
+participant establishHardwareWalletConnection
+participant getCardanoAdaApp
+participant getExtendedPublicKey
+participant verifyAddress
+participant getHardwareWalletChannel
+participant deviceDetection
+
+
+autoactivation on
+WalletReceivePage->initiateAddressVerification:Start address verification
+
+group Wait for device
+
+
+initiateAddressVerification->getHardwareWalletChannel:Subscribe to WAIT_FOR_LEDGER_DEVICES channel
+
+
+getHardwareWalletChannel->deviceDetection:check for new devices
+
+NanoS->deviceDetection:Enter Pin
+
+getHardwareWalletChannel<--deviceDetection:Device info
+
+initiateAddressVerification<--getHardwareWalletChannel:Reply WAIT_FOR_LEDGER_DEVICES channel\nwith device info
+
+end
+deactivateafter initiateAddressVerification
+autoactivation off
+
+
+initiateAddressVerification->establishHardwareWalletConnection:get transport info
+initiateAddressVerification<--establishHardwareWalletConnection:device transport
+
+activate initiateAddressVerification
+initiateAddressVerification->initiateAddressVerification:start Ada App polling
+
+
+NanoS->deviceDetection:Open Ada App
+getCardanoAdaApp<--deviceDetection:App opened
+
+deactivate initiateAddressVerification
+
+getCardanoAdaApp->getExtendedPublicKey:Get public key
+getExtendedPublicKey->verifyAddress:Address verification
+
+WalletReceivePage<--verifyAddress:address verified

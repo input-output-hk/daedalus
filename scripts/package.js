@@ -19,9 +19,10 @@ const argv = require('minimist')(process.argv.slice(2));
 const appName = argv.name || argv.n || pkg.productName;
 const shouldUseAsar = argv.asar || argv.a || false;
 const shouldBuildAll = argv.all || false;
+const sourceDir = argv.dir || './';
 
 const DEFAULT_OPTS = {
-  dir: './',
+  dir: sourceDir,
   name: appName,
   asar: shouldUseAsar,
   ignore: [

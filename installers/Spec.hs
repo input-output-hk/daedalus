@@ -50,7 +50,9 @@ macBuildSpec = do
       liftIO $ do
         withDir installersDir $ do
           mktree "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app"
+          mktree "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app"
           writeFile "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app/package.json" "{}"
+          writeFile "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app/package.json" "{}"
           Mac.main opts
 
         -- there should be an installer file at the end
@@ -75,7 +77,6 @@ makeTestInstallersDir = do
   liftIO $ writeTextFile (src </> "package.json") "{ \"version\": \"0.4.2\" }"
   let installersDir = src </> "installers"
   mkdir installersDir
-  cptree "dhall" (installersDir </> "dhall")
   mktree (installersDir </> "data/scripts")
   liftIO $ writeTextFile (installersDir </> "data/scripts/dockutil") "fake dock util"
   pure installersDir

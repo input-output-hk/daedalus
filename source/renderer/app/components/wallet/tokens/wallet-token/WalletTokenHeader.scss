@@ -17,6 +17,7 @@
   .favoriteIcon {
     border-radius: 3px;
     cursor: pointer;
+    flex-shrink: 0;
     height: 22px;
     margin-left: 10px;
     opacity: 0.3;
@@ -50,6 +51,7 @@
   .asset {
     margin-left: 10px;
     margin-right: auto;
+    overflow: hidden;
     width: auto;
   }
 

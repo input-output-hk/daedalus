@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { get } from 'lodash';
 import { Given, When, Then } from '@cucumber/cucumber';
 import moment from 'moment';
-
 import newsDummyJson from '../documents/dummy-news.json';
 import {
   expectTextInSelector,
@@ -13,7 +12,7 @@ async function prepareFakeNews(context, fakeNews, preparation, ...args) {
   // Run custom preparation logic
   await context.client.executeAsync(preparation, fakeNews, ...args);
   // Extract the computed newsfeed data from the store
-  const newsData = await context.client.executeAsync(done => {
+  const newsData = await context.client.executeAsync((done) => {
     const { newsFeed } = daedalus.stores;
     // Refresh the newsfeed request & store
     newsFeed.getNews().then(() => {
@@ -29,6 +28,7 @@ async function prepareFakeNews(context, fakeNews, preparation, ...args) {
       });
     });
   });
+
   if (newsData.value) {
     // Provide the newsfeed data from the store to the other steps
     context.news = newsData.value;
@@ -42,7 +42,7 @@ async function prepareNewsOfType(
   markAsRead = false
 ) {
   const items = newsDummyJson.items
-    .filter(i => i.type === type)
+    .filter((i) => i.type === type)
     .slice(0, count);
   const newsFeed = {
     updatedAt: Date.now(),
@@ -54,8 +54,9 @@ async function prepareNewsOfType(
     (news, isRead, done) => {
       const { api } = daedalus;
       api.ada.setTestingNewsFeed(news);
+
       if (isRead) {
-        api.localStorage.markNewsAsRead(news.items.map(i => i.id)).then(done);
+        api.localStorage.markNewsAsRead(news.items.map((i) => i.id)).then(done);
       } else {
         done();
       }
@@ -65,17 +66,16 @@ async function prepareNewsOfType(
 }
 
 // Set newsfeed to open before each newsfeed step
-export function setNewsFeedIsOpen(client: Object, flag) {
-  return client.execute(desiredState => {
+export function setNewsFeedIsOpen(client: Record<string, any>, flag) {
+  return client.execute((desiredState) => {
     if (daedalus.stores.app.newsFeedIsOpen !== desiredState) {
       daedalus.actions.app.toggleNewsFeed.trigger();
     }
   }, flag);
 }
-
 // Reset the fake news before each newsfeed step
 export function resetTestNews(client) {
-  return client.executeAsync(done => {
+  return client.executeAsync((done) => {
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [],
@@ -83,10 +83,8 @@ export function resetTestNews(client) {
     daedalus.stores.newsFeed.getNews().then(done);
   });
 }
-
 // GIVEN STEPS
-
-Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
+Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function (
   count,
   read,
   newsType
@@ -98,8 +96,7 @@ Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
     read === 'read'
   );
 });
-
-Given('there is no news', async function() {
+Given('there is no news', async function () {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
@@ -108,10 +105,9 @@ Given('there is no news', async function() {
     done();
   });
 });
-
-Given('there is an incident', async function() {
+Given('there is an incident', async function () {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    const incident = news.items.find(i => i.type === 'incident');
+    const incident = news.items.find((i) => i.type === 'incident');
     daedalus.api.ada.setTestingNewsFeed({
       updatedAt: Date.now(),
       items: [incident],
@@ -119,88 +115,69 @@ Given('there is an incident', async function() {
     done();
   });
 });
-
-Given('the newsfeed server is unreachable', async function() {
-  this.client.executeAsync(done => {
+Given('the newsfeed server is unreachable', async function () {
+  this.client.executeAsync((done) => {
     daedalus.api.ada.setTestingNewsFeed(null);
     daedalus.stores.newsFeed.getNews().then(done);
   });
   this.news = [];
 });
-
-Given('the latest alert will cover the screen', async function() {
+Given('the latest alert will cover the screen', async function () {
   const latestAlert = this.news.alerts.unread[0];
   await expectTextInSelector(this.client, {
     selector: '.AlertsOverlay_date',
     text: moment(latestAlert.date).format('YYYY-MM-DD'),
   });
 });
-
 // WHEN STEPS
-
-When('I click on the newsfeed icon', async function() {
+When('I click on the newsfeed icon', async function () {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
-
-When('I open the newsfeed', async function() {
+When('I open the newsfeed', async function () {
   await setNewsFeedIsOpen(this.client, true);
 });
-
-When('I dismiss the alert', async function() {
+When('I dismiss the alert', async function () {
   this.dismissedAlert = get(this.news, ['alerts', 'unread', 0]);
   await this.waitAndClick('.AlertsOverlay_closeButton');
 });
-
-When(/^I click on the unread (\w+?) to expand it$/, async function(type) {
+When(/^I click on the unread (\w+?) to expand it$/, async function (type) {
   setNewsFeedIsOpen(this.client, true);
   await this.waitAndClick(`.NewsItem_${type}`);
 });
-
-When('I click on the alert in the newsfeed', async function() {
+When('I click on the alert in the newsfeed', async function () {
   await this.waitAndClick('.NewsItem_alert.NewsItem_isRead');
 });
-
 // THEN STEPS
-
-Then('I should see the newsfeed icon', async function() {
+Then('I should see the newsfeed icon', async function () {
   await this.client.waitForVisible('.NewsFeedIcon_component');
 });
-
-Then('the newsfeed icon is highlighted', async function() {
+Then('the newsfeed icon is highlighted', async function () {
   await this.client.waitForVisible('.NewsFeedIcon_notificationDot');
 });
-
-Then('the newsfeed icon is not highlighted', async function() {
+Then('the newsfeed icon is not highlighted', async function () {
   await this.client.waitForVisible('.NewsFeedIcon_notificationDot', null, true);
 });
-
-Then('the newsfeed is open', async function() {
+Then('the newsfeed is open', async function () {
   await this.client.waitForVisible('.NewsFeed_component');
 });
-
-Then('the newsfeed is empty', async function() {
+Then('the newsfeed is empty', async function () {
   setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible('.NewsFeed_newsFeedEmpty');
 });
-
-Then('no news are available', async function() {
+Then('no news are available', async function () {
   setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible('.NewsFeed_newsFeedNoFetch');
 });
-
-Then('the incident will cover the screen', async function() {
+Then('the incident will cover the screen', async function () {
   await this.client.waitForVisible('.IncidentOverlay_component');
 });
-
-Then('the alert disappears', async function() {
+Then('the alert disappears', async function () {
   await this.client.waitForVisible('.AlertsOverlay_component', null, true);
 });
-
-Then('the alert overlay opens', async function() {
+Then('the alert overlay opens', async function () {
   await this.client.waitForVisible('.AlertsOverlay_component');
 });
-
-Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
+Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function (
   expectedReadNewsCount,
   newsType
 ) {
@@ -211,15 +188,13 @@ Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
   );
   expect(readNewsCount).to.equal(expectedReadNewsCount);
 });
-
-Then(/^the (\w+?) content is shown$/, async function(type) {
+Then(/^the (\w+?) content is shown$/, async function (type) {
   setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible(
     `.NewsItem_${type} .NewsItem_newsItemContentContainer`
   );
 });
-
-Then(/^the (\w+?) is marked as read$/, async function(type) {
+Then(/^the (\w+?) is marked as read$/, async function (type) {
   setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible(`.NewsItem_${type}.NewsItem_isRead`);
 });

@@ -4,7 +4,8 @@
   .heading {
     @extend %accentText;
     font-family: var(--font-semibold);
-    font-size: 19px;
+    font-size: 18px;
+    letter-spacing: 2px;
     margin-bottom: 14px;
     text-align: center;
     text-transform: uppercase;

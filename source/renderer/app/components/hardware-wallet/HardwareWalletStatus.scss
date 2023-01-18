@@ -23,7 +23,7 @@
         font-size: 16px;
       }
     }
-    .passphraseLabel {
+    .secondaryMessage {
       color: var(--theme-hardware-wallet-status-passphrase-label-color);
       line-height: 1.38;
     }
@@ -47,6 +47,7 @@
   }
 
   .clearIcon {
+    flex-shrink: 0;
     height: 14px;
     margin-right: 6px;
     object-fit: contain;
@@ -74,12 +75,4 @@
       }
     }
   }
-}
-
-.errorText {
-  color: var(--rp-theme-color-error);
-  font-family: var(--font-regular);
-  font-size: 16px;
-  margin-top: 20px;
-  text-align: center;
 }

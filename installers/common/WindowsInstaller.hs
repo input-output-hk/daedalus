@@ -20,7 +20,8 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   loadLanguage,
+                                   loadLanguage, sleep, (@=), detailPrint, (%<), (%&&),
+                                   not_, mutableInt_, mutable_, while, false, true, strShow, (&),
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
@@ -185,9 +186,30 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
-                onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $
-                    --abort "$SpacedName $(AlreadyRunning)"
-                    unsafeInject $ T.unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
+
+                -- XXX: sometimes during auto-update, it takes longer for Daedalus to exit,
+                -- and cardano-launcher.exe’s lockfile to be unlocked (deletable), so
+                -- let’s loop waiting for this to happen:
+                let waitSeconds = 30
+                lockfileCounter <- mutableInt_ 0
+                lockfileDeleted <- mutable_ false
+                while ((lockfileCounter %< waitSeconds) %&& (not_ lockfileDeleted)) $ do
+                    detailPrint (
+                        "Checking if Daedalus is not running ("
+                        Development.NSIS.& strShow (lockfileCounter + 1)
+                        Development.NSIS.& "/"
+                        Development.NSIS.& strShow waitSeconds
+                        Development.NSIS.& ")..."
+                        )
+                    lockfileDeleted @= true
+                    onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $ do
+                        lockfileDeleted @= false
+                    iff_ (not_ lockfileDeleted) $ do
+                        sleep 1000 -- milliseconds
+                    lockfileCounter @= lockfileCounter + 1
+                iff_ (not_ (lockfileDeleted)) $ do
+                    unsafeInject $ T.unpack $ "Abort \"" <> installDirectory <> " $(AlreadyRunning)\""
+
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
@@ -199,15 +221,23 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
-                    file [] "genesis-byron.json"
-                    file [] "genesis-shelley.json"
-                    file [] "genesis-alonzo.json"
+                    when (clusterName /= Selfnode) $ do
+                      file [] "genesis-byron.json"
+                      file [] "genesis-shelley.json"
+                      file [] "genesis-alonzo.json"
                     file [] "libsodium-23.dll"
+                    file [] "libsecp256k1-0.dll"
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"
                       file [] "delegation.cert"
+                      file [] "local-cluster.exe"
+                      file [] "libgmpxx-4.dll"
+                      file [] "libwinpthread-1.dll"
+                      file [] "mock-token-metadata-server.exe"
+                      file [Recursive] "test\\"
+                      file [] "token-metadata.json"
                 file [] "cardano-launcher.exe"
-                file [] "libffi-7.dll"
+                file [] "libffi-8.dll"
                 file [] "libgmp-10.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"

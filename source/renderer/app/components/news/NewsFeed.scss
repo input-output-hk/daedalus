@@ -1,3 +1,5 @@
+@import '../../themes/mixins/layers.scss';
+
 .component {
   background: var(--theme-news-feed-background-color);
   box-shadow: var(--theme-news-feed-box-shadow-color);
@@ -11,7 +13,7 @@
   top: 0;
   transition: margin-right 400ms ease;
   width: 460px;
-  z-index: 20;
+  z-index: $news-feed-z-index;
 
   &.noTransition {
     transition: none;

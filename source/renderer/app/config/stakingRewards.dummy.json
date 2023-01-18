@@ -1,8 +1,9 @@
 [
   {
     "date": "15.01.2019",
-    "wallet": "Main Wallet",
-    "reward": 0.2,
+    "wallet": "Wallet with no rewards",
+    "total": 0,
+    "unspent": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwg069gh4",
     "pool": {
       "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",
@@ -20,7 +21,8 @@
   {
     "date": "15.01.2019",
     "wallet": "Spending Money",
-    "reward": 1.003,
+    "total": 1.003,
+    "unspent": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwg123kg9",
     "pool": {
       "id": "afd042672ed0212d074c5814771dc0f9d696b0fe3ca00c6bf613c1843f70419d",
@@ -38,7 +40,8 @@
   {
     "date": "10.01.2019",
     "wallet": "Spending Money",
-    "reward": 2,
+    "total": 2,
+    "unspent": 1,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwgpt83k9",
     "pool": {
       "id": "4484e2076b4604250f63032644acf37f0630e208b5d03378d546f747f9b7d3ff",
@@ -56,7 +59,8 @@
   {
     "date": "10.01.2019",
     "wallet": "Saving",
-    "reward": 0.9,
+    "total": 0.9,
+    "unspent": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwgklo341",
     "pool": {
       "id": "b537af120298162372fc393d87e35803a8573a654786838e7a34b8d2354ec2fb",
@@ -74,7 +78,8 @@
   {
     "date": "10.01.2019",
     "wallet": "Main Wallet",
-    "reward": 0.2,
+    "total": 0.2,
+    "unspent": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwgbhs6f8",
     "pool": {
       "id": "9438c572026bf8a7019ae1733e4c6a1b4208fc12291e4788a7db70891d6bdb97",
@@ -92,7 +97,8 @@
   {
     "date": "05.01.2019",
     "wallet": "Main Wallet",
-    "reward": 1.6,
+    "total": 1.6,
+    "unspent": 0,
     "rewardsAddress": "stake1u8v3renevakp4w3rgfd7629qz8ynzpd96chfh2eddytsvwgkf873g",
     "pool": {
       "id": "9eebf901e2ab6ee31eddd54b9725df5b59f23a531f5cb6d547b69f3fa880df89",

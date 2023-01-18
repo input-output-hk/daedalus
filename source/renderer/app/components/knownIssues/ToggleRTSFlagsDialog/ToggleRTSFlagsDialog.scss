@@ -1,0 +1,13 @@
+.dialog {
+  font-family: var(--font-light);
+
+  p {
+    line-height: 23px;
+  }
+
+  :global {
+    .SimpleCheckbox_root {
+      margin-top: 20px;
+    }
+  }
+}

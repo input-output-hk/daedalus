@@ -24,10 +24,6 @@
     position: relative;
   }
 
-  .switch {
-    margin: 0;
-  }
-
   .label {
     display: block;
     font-family: var(--font-semibold);
@@ -71,9 +67,12 @@
   }
 
   .separator {
-    background: var(--theme-wallet-settings-section-separator-color);
-    border: none;
-    height: 1px;
     margin: 15px 0;
+  }
+
+  :global {
+    .SimpleOptions_search:before {
+      opacity: 1;
+    }
   }
 }

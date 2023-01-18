@@ -7,17 +7,4 @@
   margin: 20px 0;
   padding: 16px 0;
   width: 240px;
-
-  .dot {
-    right: 140px;
-    top: 22px;
-
-    &.active {
-      right: 134px;
-    }
-
-    &:lang(ja-JP) {
-      right: 108px;
-    }
-  }
 }

@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .component {
   align-items: center;
   display: flex;
@@ -6,8 +8,8 @@
   width: 100%;
 }
 
-.ada-logo,
-.ada-apiLogo {
+.adaLogo,
+.adaApiLogo {
   & > svg {
     display: block;
     opacity: 0.5;
@@ -16,13 +18,13 @@
 }
 
 $cardanoLogoWidth: 86px;
-.ada-apiLogo > svg {
+.adaApiLogo > svg {
   width: $cardanoLogoWidth;
 }
 
 $adaLogoWidth: 43px;
-.ada-logo > svg {
-  margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
+.adaLogo > svg {
+  margin: 3px math.div(($cardanoLogoWidth - $adaLogoWidth), 2) 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
   width: $adaLogoWidth;
 }
 
@@ -37,7 +39,7 @@ $adaLogoWidth: 43px;
 }
 
 .connectingLogo {
-  &.ada-logo {
+  &.adaLogo {
     & svg > g > g path {
       fill: var(--theme-icon-connecting-ada-logo-color);
     }
@@ -47,7 +49,7 @@ $adaLogoWidth: 43px;
       fill: var(--theme-icon-connecting-daedalus-logo-color);
     }
   }
-  &.ada-apiLogo {
+  &.adaApiLogo {
     & svg > g > g path {
       fill: var(--theme-icon-connecting-ada-api-logo-color);
     }
@@ -55,7 +57,7 @@ $adaLogoWidth: 43px;
 }
 
 .syncingLogo {
-  &.ada-logo {
+  &.adaLogo {
     svg > g > g path {
       fill: var(--theme-icon-syncing-ada-logo-color);
     }
@@ -65,7 +67,7 @@ $adaLogoWidth: 43px;
       fill: var(--theme-icon-syncing-daedalus-logo-color);
     }
   }
-  &.ada-apiLogo {
+  &.adaApiLogo {
     & svg > g > g path {
       fill: var(--theme-icon-syncing-ada-api-logo-color);
     }

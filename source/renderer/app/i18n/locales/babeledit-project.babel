@@ -20404,7 +20404,7 @@
                                                 </translations>
                                             </concept_node>
                                             <concept_node>
-                                                <name>unamedWalletsTitle</name>
+                                                <name>unnamedWalletsTitle</name>
                                                 <definition_loaded>false</definition_loaded>
                                                 <description></description>
                                                 <comment></comment>
@@ -26448,7 +26448,7 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>wallet.select.import.dialog.unamedWalletsTitle</name>
+                <name>wallet.select.import.dialog.unnamedWalletsTitle</name>
                 <definition_loaded>false</definition_loaded>
                 <description></description>
                 <comment></comment>

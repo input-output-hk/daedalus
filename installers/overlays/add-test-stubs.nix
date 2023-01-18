@@ -19,7 +19,9 @@ self: super: {
           (stub "sudo" "exec $@")
           (stub "yarn" ''
             mkdir -p dist release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS
+            mkdir -p dist release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/MacOS
             touch release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS/Daedalus
+            touch release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/MacOS/Daedalus
             touch dist/index.html
           '')
           (stub "iconutil" "exit 0")

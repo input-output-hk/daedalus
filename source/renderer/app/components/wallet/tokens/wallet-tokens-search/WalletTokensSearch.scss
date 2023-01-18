@@ -2,7 +2,7 @@
   position: relative;
 
   .searchIcon {
-    color: var(--rp-input-border-color);
+    color: var(--theme-staking-stake-pools-search-icon-color);
     left: 20px;
     position: absolute;
     top: 19px;
@@ -15,8 +15,10 @@
     }
   }
 
-  .focusSearchIcon {
-    color: var(--rp-input-border-color-focus);
+  .searchIconFocus {
+    svg {
+      opacity: 0.7;
+    }
   }
 
   input {

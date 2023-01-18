@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/layers.scss';
+
 .component {
   align-items: center;
   background-color: var(--rp-modal-overlay-bg-color);
@@ -8,5 +10,5 @@
   position: fixed;
   right: 0;
   top: 134px;
-  z-index: 5000;
+  z-index: $loader-backdrop-z-index;
 }

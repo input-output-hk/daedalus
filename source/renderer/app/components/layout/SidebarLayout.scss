@@ -12,8 +12,6 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  // Show elements that overflow the main above the sidebar area
-  z-index: 20;
 }
 
 .sidebar {
@@ -24,8 +22,6 @@
 .topbar {
   box-shadow: 0 5px 20px 0 var(--theme-sidebar-layout-topbar-shadow-color);
   flex-shrink: 0;
-  // Show elements that overflow the topbar above the content area
-  z-index: 20;
 }
 
 .contentWrapper {

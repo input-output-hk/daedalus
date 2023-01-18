@@ -1,3 +1,5 @@
+@import '../../themes/mixins/layers.scss';
+
 .component {
   background-color: var(--theme-back-to-top-button-background-color);
   border-radius: 5px;
@@ -15,7 +17,7 @@
   top: 144px;
   transform: translateX(-50%);
   transition: opacity 0.25s ease-out, top 0.25s ease-out;
-  z-index: 1001;
+  z-index: $back-to-top-z-index;
 
   &.isActive {
     opacity: 1;

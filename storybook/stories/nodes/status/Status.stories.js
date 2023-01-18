@@ -1,2 +1,0 @@
-// @flow
-import './Diagnostics.stories';

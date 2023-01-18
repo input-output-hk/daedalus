@@ -180,6 +180,12 @@
           visibility: visible;
         }
       }
+
+      &.total,
+      &.unspent {
+        padding-right: 10px;
+        text-align: right;
+      }
     }
 
     td {
@@ -209,12 +215,9 @@
 
       .syncingProgress {
         position: absolute;
-        right: 10px;
-        top: 0;
-
+        right: 22px;
+        top: 10px;
         :global .LoadingSpinner_component.LoadingSpinner_medium {
-          margin: 10px auto !important;
-
           .LoadingSpinner_icon svg path {
             fill: var(--theme-loading-spinner-color);
             opacity: 0.3;
@@ -273,14 +276,9 @@
 
       &.rewardWallet {
         max-width: 200px;
-        min-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      &.rewardAmount {
-        min-width: 250px;
       }
 
       &.rewardsAddress {
@@ -301,7 +299,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            width: 237px;
+            width: 200px;
 
             &:hover {
               cursor: pointer;
@@ -324,6 +322,12 @@
             }
           }
         }
+      }
+
+      &.rewardTotal,
+      &.rewardUnspent {
+        padding-right: 23px;
+        text-align: right;
       }
     }
   }

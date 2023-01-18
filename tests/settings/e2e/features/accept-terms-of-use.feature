@@ -2,7 +2,7 @@
 Feature: Accept "Terms of use"
 
   Background:
-    Given I didnt accept "Terms of use"
+    Given I didn't accept "Terms of use"
     And I have selected English language
 
   Scenario: User accepts "Terms of use"

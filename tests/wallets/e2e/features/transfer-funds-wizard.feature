@@ -4,8 +4,8 @@ Feature: Transfer funds wizard
   Background:
     Given I have completed the basic setup
 
-  Scenario: Successfully transfering funds from "Daedalus Byron" wallet to "Daedalus Shelley" wallet
-    Given I have a "Byron Wallet" byron wallet for transfering funds
+  Scenario: Successfully transferring funds from "Daedalus Byron" wallet to "Daedalus Shelley" wallet
+    Given I have a "Byron Wallet" byron wallet for transferring funds
     And I have a "Test Wallet" wallet with funds
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished

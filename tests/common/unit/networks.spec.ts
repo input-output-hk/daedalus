@@ -17,7 +17,6 @@ describe('Function getNetworkExplorerUri returns:', () => {
     expect(result).toBe('explorer.staging.cardano.org');
   });
 });
-
 describe('Function getNetworkExplorerUri passing no arguments', () => {
   it('should return MAINNET_EXPLORER_URL', () => {
     // getNetworkExplorerUri

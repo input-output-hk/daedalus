@@ -23,33 +23,10 @@
 
   .recoveryPhrase {
     margin-bottom: 20px;
-
-    :global {
-      .SimpleOptions_option {
-        padding: 14px 20px;
-      }
-      .SimpleAutocomplete_requiredWordsInfo {
-        color: var(--rp-autocomplete-required-words-invert-color);
-      }
-    }
   }
 
   .walletsDropdownWrapper {
     margin-bottom: 17px;
-  }
-
-  .walletsDropdown {
-    &.disabled {
-      pointer-events: none;
-      :global {
-        .SelectOverrides_selectInput:after {
-          opacity: 0.5;
-        }
-        .SimpleFormField_inputWrapper {
-          opacity: 0.5;
-        }
-      }
-    }
   }
 
   .checkbox {

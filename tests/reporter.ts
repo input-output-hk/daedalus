@@ -8,5 +8,4 @@ const options = {
   scenarioTimestamp: true,
   launchReport: true,
 };
-
 reporter.generate(options);

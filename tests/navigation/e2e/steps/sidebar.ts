@@ -1,9 +1,7 @@
 // @flow
 import { Given, When, Then } from '@cucumber/cucumber';
 import { sidebarHelpers } from './helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   CATEGORY_ACTIVE: '.SidebarCategory_active',
   CATEGORY_COMPONENT: '.SidebarCategory_component',
@@ -14,58 +12,65 @@ const SELECTORS = {
   TOP_BAR: '.SidebarLayout_topbar',
   TOP_BAR_LEFT_ICON: '.TopBar_leftIcon',
 };
-
-Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
+Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
   const isVisible = state === 'visible';
   await this.client.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
-  await this.client.executeAsync((visible, SELECTORS, done) => {
-    const { isShowingSubMenus } = daedalus.stores.sidebar;
-    let sidebarWillAnimate = false;
-    if (isShowingSubMenus !== visible) {
-      sidebarWillAnimate = true;
-      daedalus.actions.sidebar.toggleSubMenus.trigger();
-    }
-    if (sidebarWillAnimate) {
-      // Wait until the sidebar transition is finished -> otherwise webdriver click error!
-      const sidebarElement = document.querySelectorAll(SELECTORS.SIDEBAR_COMPONENT)[0];
-      const onTransitionFinished = () => {
-        sidebarElement.removeEventListener(
-          'transitioned',
-          onTransitionFinished
-        );
+  await this.client.executeAsync(
+    (visible, SELECTORS, done) => {
+      const { isShowingSubMenus } = daedalus.stores.sidebar;
+      let sidebarWillAnimate = false;
+
+      if (isShowingSubMenus !== visible) {
+        sidebarWillAnimate = true;
+        daedalus.actions.sidebar.toggleSubMenus.trigger();
+      }
+
+      if (sidebarWillAnimate) {
+        // Wait until the sidebar transition is finished -> otherwise webdriver click error!
+        const sidebarElement = document.querySelectorAll(
+          SELECTORS.SIDEBAR_COMPONENT
+        )[0];
+
+        const onTransitionFinished = () => {
+          sidebarElement.removeEventListener(
+            'transitioned',
+            onTransitionFinished
+          );
+          done();
+        };
+
+        sidebarElement.addEventListener('transitionend', onTransitionFinished);
+      } else {
         done();
-      };
-      sidebarElement.addEventListener('transitionend', onTransitionFinished);
-    } else {
-      done();
-    }
-  }, isVisible, SELECTORS);
+      }
+    },
+    isVisible,
+    SELECTORS
+  );
   return this.client.waitForExist(SELECTORS.MENU_VISIBLE, null, !isVisible);
 });
-
-Given(/^The sidebar shows the "([^"]*)" category$/, function(category) {
-  return sidebarHelpers.activateCategory(this.client, { category });
+Given(/^The sidebar shows the "([^"]*)" category$/, function (category) {
+  return sidebarHelpers.activateCategory(this.client, {
+    category,
+  });
 });
-
-When(/^I click on the sidebar toggle button$/, function() {
-  return this.waitAndClick(`${SELECTORS.TOP_BAR} ${SELECTORS.TOP_BAR_LEFT_ICON}`);
+When(/^I click on the sidebar toggle button$/, function () {
+  return this.waitAndClick(
+    `${SELECTORS.TOP_BAR} ${SELECTORS.TOP_BAR_LEFT_ICON}`
+  );
 });
-
-When(/^I click on the "([^"]*)" category in the sidebar$/, function(category) {
+When(/^I click on the "([^"]*)" category in the sidebar$/, function (category) {
   return this.waitAndClick(`${SELECTORS.CATEGORY_COMPONENT}.${category}`);
 });
-
-When(/^I click on the add wallet button in the sidebar$/, function() {
+When(/^I click on the add wallet button in the sidebar$/, function () {
   return sidebarHelpers.clickAddWalletButton(this.client);
 });
-
-When(/^I click on the "([^"]*)" wallet in the sidebar$/, function(walletName) {
+When(/^I click on the "([^"]*)" wallet in the sidebar$/, function (walletName) {
   return this.waitAndClick(
     `//*[text()="${walletName}" and @class="SidebarWalletMenuItem_title"]`
   );
 });
-
-Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
+Then(/^the sidebar submenu should be (hidden|visible)/, function (state) {
   const waitForHidden = state === 'hidden';
   return this.client.waitForVisible(
     SELECTORS.MENU_COMPONENT,
@@ -73,11 +78,9 @@ Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
     waitForHidden
   );
 });
-
-Then(/^The "([^"]*)" category should be active$/, function(category) {
+Then(/^The "([^"]*)" category should be active$/, function (category) {
   return this.client.waitForVisible(`${SELECTORS.CATEGORY_ACTIVE}.${category}`);
 });
-
-Then(/^I should see the initial screen$/, function() {
+Then(/^I should see the initial screen$/, function () {
   return this.client.waitForVisible(SELECTORS.LAYOUT_COMPONENT);
 });

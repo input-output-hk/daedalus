@@ -89,6 +89,7 @@ module.exports = {
     // Jest does not support WASM imports from ESM modules
     // https://github.com/facebook/jest/issues/9430
     '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
+    'tests/(.*)': '<rootDir>/tests/$1',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -169,15 +170,28 @@ module.exports = {
   // testRunner: "jest-circus/runner",
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  // testURL: "http://localhost",
+  // testURL: 'http://localhost/',
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '\\.[jt]sx?$': 'babel-jest',
-    '^.+\\.svg$': 'jest-svg-transformer',
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+            tsx: true,
+            decorators: true,
+          },
+          target: 'es2019',
+          loose: false,
+        },
+      },
+    ],
+    '^.+\\.svg$': 'svg-jest',
     '.+\\.(css|styl|less|sass|scss)$': 'jest-css-modules-transform',
   },
 

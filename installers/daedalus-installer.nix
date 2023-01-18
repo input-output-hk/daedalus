@@ -8,7 +8,17 @@
 mkDerivation {
   pname = "daedalus-installer";
   version = "0.1.0.0";
-  src = ./.;
+  src = lib.cleanSourceWith {
+    name = "daedalus-installer-src";
+    src = ./.;
+    filter = name: type: (type == "directory" && (
+      lib.hasSuffix "/common" name
+    )) || (type == "regular" && (
+      lib.hasSuffix ".hs" name ||
+      lib.hasSuffix ".cabal" name ||
+      lib.hasSuffix "/cabal.project" name
+    ));
+  };
   isLibrary = true;
   isExecutable = true;
   doCheck = false;
@@ -30,6 +40,5 @@ mkDerivation {
     system-filepath temporary text turtle universum yaml
   ];
   description = "Daedalus Installer Builder";
-
   license = lib.licenses.asl20;
 }

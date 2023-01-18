@@ -1,5 +1,6 @@
 @import '../../../themes/mixins/link';
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/layers';
 
 .component {
   .headerWrapper {
@@ -91,29 +92,34 @@
     }
   }
 
-  table {
+  .table {
     border-style: hidden;
+    margin-bottom: -10px;
     user-select: text;
     width: 100%;
 
-    thead {
+    .thead {
       background: var(--theme-bordered-box-background-color);
       border-radius: 4px 4px 0 0;
-      box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: block;
-      margin: -20px -20px 0;
+      margin: -10px -20px 0;
       padding: 0 20px;
       position: sticky;
       top: 0;
-      z-index: 999;
+      transition: box-shadow 0.1s ease-in-out;
+      z-index: $sticky-header-z-index;
 
-      tr {
+      &.stickyHeader {
+        box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+      }
+
+      .tr {
         border: 0;
         display: flex;
         justify-content: space-between;
         width: 100%;
 
-        .tooltipWithHTMLContent {
+        .tooltipWithHtmlContent {
           p {
             -webkit-box-orient: horizontal;
             display: block;
@@ -130,8 +136,8 @@
       }
     }
 
-    tbody {
-      tr {
+    .tbody {
+      .tr {
         display: flex;
         justify-content: space-between;
         width: 100%;
@@ -144,11 +150,11 @@
       }
     }
 
-    tr {
+    .tr:not(:last-child) {
       border-bottom: 1px solid var(--theme-staking-table-border-color);
     }
 
-    th {
+    .th {
       color: var(--theme-staking-font-color-regular);
       cursor: pointer;
       font-family: var(--font-semibold);
@@ -206,7 +212,7 @@
       }
     }
 
-    td {
+    .td {
       color: var(--theme-staking-font-color-regular);
       font-family: var(--font-regular);
       font-size: 12px;
@@ -218,7 +224,7 @@
       -ms-user-select: none;
       user-select: none;
 
-      // Right alligned cells need this padding
+      // Right aligned cells need this padding
       // because of the sorting icon
       &:nth-child(7),
       &:nth-child(8) {
@@ -227,6 +233,7 @@
 
       .ticker {
         color: var(--theme-staking-stake-pool-tooltip-link-color);
+        text-transform: uppercase;
       }
 
       &:nth-child(2) {
@@ -264,6 +271,7 @@
         display: flex;
         flex-direction: row;
         height: 100%;
+        justify-content: center;
       }
 
       %saturationContainer {
@@ -344,8 +352,8 @@
       }
     }
 
-    th,
-    td {
+    .th,
+    .td {
       &:nth-child(1),
       &:nth-child(3),
       &:nth-child(4),

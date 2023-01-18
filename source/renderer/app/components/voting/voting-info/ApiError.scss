@@ -1,0 +1,24 @@
+@import '../votingConfig';
+
+.root {
+  @extend %regularText;
+  align-items: start;
+  background-color: var(--theme-button-flat-background-color);
+  border-radius: 5px;
+  color: var(--theme-button-flat-text-color);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 100%;
+
+  .title {
+    font-family: var(--font-semibold);
+    font-size: 18px;
+    line-height: 1.33;
+    margin-bottom: 11px;
+  }
+
+  .description2 {
+    font-family: var(--font-medium);
+  }
+}

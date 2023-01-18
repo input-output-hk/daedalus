@@ -75,6 +75,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &.ascii {
+    color: var(--theme-tokens-list-header-text-color);
+  }
 }
 
 .metadata {

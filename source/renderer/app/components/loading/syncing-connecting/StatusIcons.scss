@@ -23,14 +23,14 @@
   }
 }
 
-.icon-on path:nth-of-type(2) {
+.iconOn path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-on-color);
 }
-.icon-off path:nth-of-type(2) {
+.iconOff path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-off-color);
 }
-.icon-unloaded,
-.icon-unknown {
+.iconUnloaded,
+.iconUnknown {
   &.syncing {
     path:nth-of-type(2) {
       fill: var(--theme-loading-status-icons-unloaded-syncing-color);
@@ -42,7 +42,7 @@
     }
   }
 }
-.icon-unknown {
+.iconUnknown {
   opacity: 0.3;
 }
 

@@ -1,38 +1,37 @@
-// @flow
 import { waitAndClick } from '../../../common/e2e/steps/helpers';
-import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
 const SELECTORS = {
   ACTIVE_CATEGORY: '.SidebarCategory_active',
   ADD_WALLET_BTN: '.SidebarWalletsMenu_addWalletButton',
 };
-
-export const getCurrentAppRoute = async function() {
+export const getCurrentAppRoute = async function () {
   const url = (await this.client.url()).value;
   return url.substring(url.indexOf('#/') + 1); // return without the hash
 };
-
-export const waitUntilUrlEquals = function(expectedUrl: string) {
+export const waitUntilUrlEquals = function (expectedUrl: string) {
   const context = this;
   return context.client.waitUntil(async () => {
     const url = await getCurrentAppRoute.call(context);
     return url === expectedUrl;
   });
 };
-
-export const navigateTo = function(requestedRoute: string) {
-  return this.client.execute(route => {
-    daedalus.actions.router.goToRoute.trigger({ route });
+export const navigateTo = function (requestedRoute: string) {
+  return this.client.execute((route) => {
+    daedalus.actions.router.goToRoute.trigger({
+      route,
+    });
   }, requestedRoute);
 };
-
-export const sidebarHelpers =  {
+export const sidebarHelpers = {
   activateCategory: async (
-    client: Object,
-    { category }: { category: string }
+    client: Record<string, any>,
+    {
+      category,
+    }: {
+      category: string;
+    }
   ) => {
-    await client.execute(cat => {
+    await client.execute((cat) => {
       daedalus.actions.sidebar.activateSidebarCategory.trigger({
         category: cat,
         showSubMenu: true,
@@ -40,6 +39,11 @@ export const sidebarHelpers =  {
     }, `/${category}`);
     return client.waitForVisible(`${SELECTORS.ACTIVE_CATEGORY}.${category}`);
   },
-  clickAddWalletButton: (client: Object) =>
-    waitAndClick.call({ client }, SELECTORS.ADD_WALLET_BTN),
+  clickAddWalletButton: (client: Record<string, any>) =>
+    waitAndClick.call(
+      {
+        client,
+      },
+      SELECTORS.ADD_WALLET_BTN
+    ),
 };

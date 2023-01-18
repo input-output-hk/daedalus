@@ -1,0 +1,50 @@
+// has to be the same as in mnemonic-input/constants.ts
+$columns: 3;
+$header-vertical-padding: 10px;
+
+.root {
+  color: var(--theme-dialog-text-color);
+  font-family: var(--font-medium);
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  height: #{$header-vertical-padding * 2 + 19};
+  justify-content: space-between;
+  padding: $header-vertical-padding 0;
+}
+
+.headerSlot {
+  flex-basis: 100%;
+}
+
+.headerLeftSlot {
+  text-align: left;
+}
+
+.headerRightSlot {
+  color: var(--theme-input-border-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  text-align: right;
+}
+
+.headerError {
+  color: var(--rp-theme-color-error);
+}
+
+.content {
+  background-color: var(--theme-mnemonic-background-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.inputList {
+  width: calc(#{percentage(1 / $columns)} - 30px);
+}
+
+.inputWrapper {
+  margin-bottom: 10px;
+}

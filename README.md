@@ -1,5 +1,5 @@
 <blockquote>
-<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+<sub>Document maintainer: Daniel Main<br/>Document status: Active</sub>
 </blockquote>
 
 # Daedalus
@@ -8,17 +8,19 @@
 
 Daedalus - Cryptocurrency Wallet
 
-## Installation
+## Setup development environment
 
-### Yarn
+### Linux/macOS
+
+#### Yarn
 
 [Yarn](https://yarnpkg.com/lang/en/docs/install) is required to install `npm` dependencies to build Daedalus.
 
-### Nix
+#### Nix
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
-1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS Catalina)
+1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS 10.15 and higher)
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
@@ -36,13 +38,23 @@ Daedalus - Cryptocurrency Wallet
    trusted-users = root
    allowed-users = *
 
-   substituters = https://hydra.iohk.io https://cache.nixos.org/
+   substituters = https://cache.iog.io https://cache.nixos.org/
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+   
+   # Only if using mac 
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
 
-   # If you are running on a Mac with M1 chip please uncomment 'system' setting to enforce running on Rosetta2
-   # system = x86_64-darwin
+   experimental-features = nix-command flakes
+
+   # If you are running on Linux x86/64
+   system = x86_64-linux
+   
+   # If you are running on a Mac with Intel chip 
+   system = x86_64-darwin
+   
+   # If you are running on a Mac with M1 chip
+   system = aarch64-darwin
    ```
 
 3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
@@ -57,25 +69,23 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
    ```
 2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
-## Development
+#### Running Daedalus with Cardano Node
 
-### Running Daedalus with Cardano Node
-
-#### Selfnode
+##### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
-   - Byron wallets: `yarn byron:wallet:importer`
-   - Shelley wallets: `yarn shelley:wallet:importer`
-   - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
-   - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-   - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
-   - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+- Byron wallets: `yarn byron:wallet:importer`
+- Shelley wallets: `yarn shelley:wallet:importer`
+- Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+- Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+- _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+- _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
-   These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
@@ -90,37 +100,22 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 | desiredPoolNumber | 3
 | minimumUtxoValue | 1 ADA
 
-#### Mainnet
+##### Mainnet
 
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Flight
+##### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Testnet
+##### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Staging
-
-1. Run `yarn nix:staging` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Shelley QA
-
-1. Run `yarn nix:shelley_qa` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Alonzo Purple
-
-1. Run `yarn nix:alonzo_purple` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
-
-#### Native token metadata server
+##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
 
@@ -151,7 +146,26 @@ http://localhost:65432/metadata/query
 ```
 ... and expect a "200 OK" response.
 
-### Updating upstream dependencies (cardano-wallet, cardano-node, and iohk-nix)
+### Windows
+
+This option is only for troubleshooting windows specific issues with hardware wallets. It is not recommended to use Windows as a developer environment.
+Most of the commands need `nix` and will run only on Linux or macOS.
+
+#### Requisites
+- Windows 10/11
+- Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
+- NodeJS 16
+- Python2
+- `yarn global add windows-build-tools` (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
+- Microsoft Build Tools 2015
+- Microsoft Visual Studio 2017 (Include Desktop development with C++)
+- `yarn config set msvsversion 2015 --global`
+
+#### Steps
+- `yarn install`
+- `yarn dev:windows`
+
+#### Updating upstream dependencies (cardano-wallet, cardano-node)
 
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
@@ -159,7 +173,6 @@ Dependencies are updated with the follow nix commands:
 - Update cardano-wallet to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
 - Update cardano-wallet to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
 - Update cardano-node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
-- Update iohk-nix to the latest master: `nix-shell -A devops --arg nivOnly true --run  "niv update iohk-nix -b master"`
 
 #### Notes
 
@@ -193,6 +206,35 @@ Make sure to list bootstrap in externals in `webpack.config.base.js` or the app 
 ```js
 externals: ['bootstrap']
 ```
+
+### Debugging
+
+You can debug the main process by following one of these approaches:
+- [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
+- [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
+- [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
+
+The inspector runs on port 9229
+
+### Linking with UI Libraries (e.g. React Polymorph)
+
+You can link libraries with Daedalus using one of the following steps:
+
+#### 1) Using `yalc`
+
+1) Install `yalc` globally using `yarn global add yalc`.
+2) Run `yalc publish` from the library's root directory that you want to link with Daedalus.
+3) Switch to Daedalus and run `yalc add <package-name>` or preferably `yalc link <package-name>`.
+4) You should be able to start Daedalus and see the changes you are making locally in the library.
+5) To make sure your changes are reflected as you update code in the library, use `yalc push`.
+
+#### 2) Using `yarn link`
+
+1) From the Daedalus root directory, go to `node_modules/react` and `yarn link`.
+2) Navigate to the `react-dom` package in the same directory and run `yarn link` again.
+3) Go to the library's root directory and run `yarn link`, `yarn link react` and `yarn link react-dom`.
+4) Go back to the Daedalus root directory and run `yarn link <package-name>`.
+5) Finally, run `yarn build:watch` from the library's root directory.
 
 ## Testing
 

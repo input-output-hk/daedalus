@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-
 set -e
+source "$(dirname "$0")/utils.sh"
 
 BUILDKITE_BUILD_NUMBER="$1"
 
 upload_artifacts() {
-    buildkite-agent artifact upload "$@" --job "$BUILDKITE_JOB_ID"
+    retry 5 buildkite-agent artifact upload "$@" --job "$BUILDKITE_JOB_ID"
 }
 
 upload_artifacts_public() {
-    buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
+    retry 5 buildkite-agent artifact upload "$@" "${ARTIFACT_BUCKET:-}" --job "$BUILDKITE_JOB_ID"
 }
 
 rm -rf dist || true

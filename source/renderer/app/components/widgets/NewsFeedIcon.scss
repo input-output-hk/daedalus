@@ -3,21 +3,7 @@
   right: 29px;
   top: 20px;
 
-  &.notificationDot {
-    @extend .dot;
-
-    &:after {
-      background: var(
-        --theme-news-feed-icon-red-dot-background-color
-      ) !important;
-    }
-  }
-
-  &.updateDot {
-    @extend .dot;
-  }
-
-  .icon {
+  .button {
     border-radius: 50%;
     cursor: pointer;
     display: block;
@@ -25,6 +11,30 @@
     position: relative;
     width: 44px;
 
+    &:hover {
+      background-color: var(
+        --theme-news-feed-icon-toggle-hover-background-color
+      );
+    }
+
+    &.notificationDot {
+      @extend .dot;
+
+      &:after {
+        background: var(--theme-news-feed-icon-red-dot-background-color);
+      }
+    }
+
+    &.updateDot {
+      @extend .dot;
+
+      &:after {
+        background: var(--theme-news-feed-icon-green-dot-background-color);
+      }
+    }
+  }
+
+  .icon {
     svg {
       height: 22px;
       left: 11px;
@@ -36,18 +46,11 @@
         stroke: var(--theme-news-feed-icon-color);
       }
     }
-
-    &:hover {
-      background-color: var(
-        --theme-news-feed-icon-toggle-hover-background-color
-      );
-    }
   }
 }
 
 .dot {
   &:after {
-    background: var(--theme-news-feed-icon-green-dot-background-color);
     border-radius: 12.5px;
     content: '';
     display: block;
@@ -58,4 +61,8 @@
     top: 7px;
     width: 8px;
   }
+}
+
+.tooltip {
+  white-space: nowrap;
 }

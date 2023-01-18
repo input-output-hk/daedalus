@@ -26,6 +26,10 @@
     .SimpleBubble_bubble {
       border-radius: 2px !important;
     }
+
+    .Dialog_contentWrapper::-webkit-scrollbar-track {
+      margin-top: -8px;
+    }
   }
 
   .content {

@@ -2,17 +2,13 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import type { Daedalus } from '../../../types';
 
-declare var daedalus: Daedalus;
-
-Given(/^I see delete wallet dialog$/, function() {
+Given(/^I see delete wallet dialog$/, function () {
   return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
 });
-
-When(/^I click on delete wallet button$/, async function() {
+When(/^I click on delete wallet button$/, async function () {
   return this.waitAndClick('.WalletSettings_deleteWalletBox button');
 });
-
-When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function(
+When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function (
   walletName
 ) {
   return this.client.setValue(
@@ -20,21 +16,18 @@ When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function(
     walletName
   );
 });
-
 When(
   /^I click on the "Make sure you have access to backup before continuing" checkbox$/,
-  function() {
+  function () {
     return this.waitAndClick(
       '.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root'
     );
   }
 );
-
-When(/^I submit the delete wallet dialog$/, function() {
+When(/^I submit the delete wallet dialog$/, function () {
   return this.client.click('.DeleteWalletConfirmationDialog_dialog .primary');
 });
-
-Then(/^I should not see the delete wallet dialog anymore$/, function() {
+Then(/^I should not see the delete wallet dialog anymore$/, function () {
   return this.client.waitForVisible(
     '.DeleteWalletConfirmationDialog_dialog',
     null,

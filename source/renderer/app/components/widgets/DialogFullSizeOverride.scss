@@ -19,10 +19,11 @@
     .AutocompleteOverrides_autocompleteContent,
     .SimpleInput_customValueBlock,
     .SimpleInput_customValueWrapper,
-    .SimpleInput_input,
-    .SimpleInput_input:focus,
-    .SimpleInput_input:hover,
-    .SimpleLink_root {
+    .SimpleInput_input:not(.SimpleInput_disabled),
+    .SimpleInput_input:focus:not(.SimpleInput_disabled),
+    .SimpleInput_input:hover:not(.SimpleInput_disabled),
+    .SimpleLink_root,
+    .MnemonicInput_content {
       background-color: transparent !important;
     }
 
@@ -95,42 +96,52 @@
     .SimpleInput_input::placeholder,
     .SimpleInput_input:focus,
     .SimpleInput_input:hover,
-    .SimpleLink_root {
+    .MnemonicInput_headerSlot,
+    .MnemonicAutocompleteLayout_inputLabel,
+    .MnemonicAutocompleteLayout_root {
       color: var(--theme-dialog-fullsize-text-color);
     }
 
     // Text color highlight
     .SimpleAutocomplete_autocompleteContent input,
-    .SimpleOptions_option,
-    .SimpleLink_root {
+    .SimpleOptions_option {
       color: var(--theme-dialog-fullsize-text-highlight-color);
     }
 
     // Border Color
     .AutocompleteOverrides_autocompleteContent:not(.SimpleAutocomplete_errored),
-    .SelectOverrides_selectInput input,
+    .SelectOverrides_selectInput input:not(.SimpleInput_disabled),
     .SimpleInput_customValueBlock,
-    .SimpleInput_customValueWrapper .SimpleInput_input,
+    .SimpleInput_customValueWrapper
+      .SimpleInput_input:not(.SimpleInput_disabled),
     .SimpleInput_input:focus:not(.SimpleInput_errored),
     .SimpleInput_input:hover:not(.SimpleInput_errored),
-    .SimpleLink_root,
-    .SimpleOptions_option:after {
+    .SimpleOptions_option:after,
+    .MnemonicAutocompleteLayout_input {
       background-color: transparent !important;
       border-color: var(--theme-dialog-fullsize-text-color) !important;
     }
 
     .SimpleLink_root {
-      color: var(--theme-dialog-fullsize-text-highlight-color);
-      opacity: 0.8;
+      --opacity: 0.8;
+      --main-color: rgba(
+        var(--theme-dialog-fullsize-secondary-text-action-color),
+        1
+      );
+
+      border-color: rgba(
+        var(--theme-dialog-fullsize-secondary-text-action-color),
+        0.75
+      );
+      color: var(--main-color);
+      opacity: var(--opacity);
 
       &:hover {
-        opacity: 1;
+        --opacity: 1;
       }
 
       &:after {
-        background-color: var(
-          --theme-dialog-fullsize-text-highlight-color
-        ) !important;
+        background-color: var(--main-color);
       }
     }
 

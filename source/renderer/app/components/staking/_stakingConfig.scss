@@ -32,3 +32,9 @@
   color: var(--theme-staking-font-color-light);
   font-family: var(--font-regular);
 }
+
+%stakePoolTicker {
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+}
