@@ -1,4 +1,4 @@
-import { Given, Then, When } from 'cucumber';
+import { Given, Then, When } from '@cucumber/cucumber';
 import type { Daedalus } from '../../../types';
 
 let diskSpaceRequired;

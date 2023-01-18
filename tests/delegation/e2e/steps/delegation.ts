@@ -166,7 +166,6 @@ Given(/^the "([^"]*)" wallet is undelegated$/, async function (wallet) {
         const { id: stakePoolId } = pool;
         const { id: walletId } = wallet;
         daedalus.actions.staking.quitStakePool.trigger({
-          stakePoolId,
           walletId,
           passphrase,
         });
