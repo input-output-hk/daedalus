@@ -11,20 +11,20 @@ import translations from '../../source/renderer/app/i18n/locales/en-US.json';
 import en from 'react-intl/locale-data/en';
 
 type Props = {
-  children: Node,
+  children: Node;
 };
 
-export function TestDecorator({children}: Props) {
-    return (
-      <IntlProvider locale="en-US" messages={translations}>
-        <ThemeProvider
-          theme={daedalusTheme}
-          skins={SimpleSkins}
-          variables={SimpleDefaults}
-          themeOverrides={themeOverrides}
-        >
-          {children}
-        </ThemeProvider>
-      </IntlProvider>
-    );
+export function TestDecorator({ children }: Props) {
+  return (
+    <IntlProvider locale="en-US" messages={translations}>
+      <ThemeProvider
+        theme={daedalusTheme}
+        skins={SimpleSkins}
+        variables={SimpleDefaults}
+        themeOverrides={themeOverrides}
+      >
+        {children}
+      </ThemeProvider>
+    </IntlProvider>
+  );
 }

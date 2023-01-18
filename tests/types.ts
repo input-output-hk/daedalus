@@ -8,34 +8,48 @@ import type { StoresMap } from '../source/renderer/app/stores';
 defineParameterType({
   name: 'bool',
   regexp: /true|false/,
-  transformer: b => b === 'true',
+  transformer: (b) => b === 'true',
 });
 
 export type Daedalus = {
-  actions: ActionsMap,
-  api: Api,
-  environment: Object,
-  reset: Function,
-  stores: StoresMap,
-  translations: Object,
+  actions: ActionsMap;
+  api: Api;
+  environment: Object;
+  reset: Function;
+  stores: StoresMap;
+  translations: Object;
   utils: {
     crypto: {
-      generateMnemonic: Function
-    }
-  },
+      generateMnemonic: Function;
+    };
+  };
 };
 
 export type WebdriverExecuteResult<T> = { value: T };
 
 export type WebdriverClient = {
-  click: (selector: string) => Promise<any>,
-  elements: (selector: string) => Promise<Object>,
-  execute: (script: Function, ...scriptArgs: Array<any>) => WebdriverExecuteResult<any>,
-  executeAsync: (script: Function, ...scriptArgs: Array<any>) => Promise<WebdriverExecuteResult<any>>,
-  getText: (selector: string) => Promise<any>,
-  url: (url: string) => Promise<any>,
-  waitForEnabled: (selector: string, ms?: number | null, reverse?: boolean) => Promise<any>,
-  waitForText: (selector: string) => Promise<any>,
-  waitForVisible: (target: string, ms?: number | null, reverse?: boolean) => Promise<any>,
-  waitUntil: (script: Function, timeout?: number) => Promise<any>,
+  click: (selector: string) => Promise<any>;
+  elements: (selector: string) => Promise<Object>;
+  execute: (
+    script: Function,
+    ...scriptArgs: Array<any>
+  ) => WebdriverExecuteResult<any>;
+  executeAsync: (
+    script: Function,
+    ...scriptArgs: Array<any>
+  ) => Promise<WebdriverExecuteResult<any>>;
+  getText: (selector: string) => Promise<any>;
+  url: (url: string) => Promise<any>;
+  waitForEnabled: (
+    selector: string,
+    ms?: number | null,
+    reverse?: boolean
+  ) => Promise<any>;
+  waitForText: (selector: string) => Promise<any>;
+  waitForVisible: (
+    target: string,
+    ms?: number | null,
+    reverse?: boolean
+  ) => Promise<any>;
+  waitUntil: (script: Function, timeout?: number) => Promise<any>;
 };

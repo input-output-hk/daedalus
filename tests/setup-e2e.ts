@@ -22,7 +22,10 @@ import {
   skippablePromise,
 } from './common/e2e/steps/helpers';
 import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
-import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
+import {
+  setNewsFeedIsOpen,
+  resetTestNews,
+} from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './app/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
@@ -43,23 +46,20 @@ const application = new Application({
   }),
   startTimeout: DEFAULT_TIMEOUT,
   waitTimeout: DEFAULT_TIMEOUT,
-  chromeDriverArgs: ["--verbose"],
+  chromeDriverArgs: ['--verbose'],
 
-  chromeDriverLogPath: path.join(
-    __dirname,
-    '../logs/chrome-driver.log'
-  ),
+  chromeDriverLogPath: path.join(__dirname, '../logs/chrome-driver.log'),
   webdriverLogPath: path.join(__dirname, '../logs/webdriver'),
 });
 
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
-  application.client.getMainProcessLogs().then(logs => {
+  application.client.getMainProcessLogs().then((logs) => {
     // eslint-disable-next-line no-console
     console.log('========= DAEDALUS LOGS =========');
     // eslint-disable-next-line no-console
-    logs.forEach(log => console.log(log));
+    logs.forEach((log) => console.log(log));
     // eslint-disable-next-line no-console
     console.log('=================================');
     return true;
@@ -76,7 +76,7 @@ const defaultWalletKeyFilePath = path.resolve(
 setDefaultTimeout(DEFAULT_TIMEOUT + 1000);
 
 function getTagNames(testCase) {
-  return testCase.pickle.tags.map(t => t.name);
+  return testCase.pickle.tags.map((t) => t.name);
 }
 
 // Boot up the electron app before all features
@@ -92,14 +92,16 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
 });
 
 // Skip / Execute test depending on node integration
-Before(async function(testCase) {
+Before(async function (testCase) {
   const tags = getTagNames(testCase);
   const isWip = includes(tags, '@wip');
   if (isWip) return 'skipped';
 });
 
 // Make the electron app accessible in each scenario context
-Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
+Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function (
+  testCase
+) {
   const tags = getTagNames(testCase);
   this.app = application;
   this.client = application.client;
@@ -115,7 +117,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   // https://github.com/webdriverio/webdriverio/issues/974
 
   // Reset backend
-  await this.client.executeAsync(done => {
+  await this.client.executeAsync((done) => {
     const resetBackend = () => {
       if (daedalus.stores.networkStatus.isConnected) {
         daedalus.stores.wallets
@@ -127,7 +129,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
           .then(() => daedalus.stores.wallets._resumePolling())
           .then(() => daedalus.stores.wallets.refreshWalletsData())
           .then(done)
-          .catch(error => done(error));
+          .catch((error) => done(error));
       } else {
         setTimeout(resetBackend, 50);
       }
@@ -141,7 +143,7 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   }
 
   // Ensure that frontend is synced and ready before test case
-  await this.client.executeAsync(done => {
+  await this.client.executeAsync((done) => {
     const waitUntilSyncedAndReady = () => {
       if (daedalus.stores.networkStatus.isSynced) {
         done();
@@ -153,13 +155,13 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   });
 });
 
-Before({ tags: '@newsfeed' }, function() {
+Before({ tags: '@newsfeed' }, function () {
   setNewsFeedIsOpen(this.client, false);
   resetTestNews(this.client);
 });
 
 // adds waitAndClick method to webdriver
-Before(function(testCase) {
+Before(function (testCase) {
   const { name } = testCase.pickle;
   this.skippablePromise = skippablePromise.bind(this, name);
   this.waitAndClick = waitAndClick.bind(this);
@@ -168,7 +170,7 @@ Before(function(testCase) {
 });
 
 // ads intl method to webdriver
-Before({ tags: '@e2e' }, function() {
+Before({ tags: '@e2e' }, function () {
   this.intl = async (translationId, translationValues = {}) => {
     const translation = await this.client.execute(
       (id, values) => {
@@ -200,18 +202,18 @@ After({ tags: '@restartApp' }, () => {
 // this ensures that the reset-backend call successfully executes
 // after the app version difference test sets the app to disconnected state
 // eslint-disable-next-line prefer-arrow-callback
-After({ tags: '@reconnectApp' }, async function() {
-  await this.client.executeAsync(done => {
+After({ tags: '@reconnectApp' }, async function () {
+  await this.client.executeAsync((done) => {
     daedalus.api.ada.resetTestOverrides();
     daedalus.stores.networkStatus
       ._updateNetworkStatus()
       .then(done)
-      .catch(error => done(error));
+      .catch((error) => done(error));
   });
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
+After({ tags: '@e2e' }, async function ({ sourceLocation, result }) {
   scenariosCount++;
   if (result.status === 'failed') {
     const testName = getTestNameFromTestFile(sourceLocation.uri);
@@ -221,16 +223,16 @@ After({ tags: '@e2e' }, async function({ sourceLocation, result }) {
   }
 });
 
-After({ tags: '@rewardsCsv' }, async function() {
+After({ tags: '@rewardsCsv' }, async function () {
   // Remove exported rewards csv
   const file = 'tests/delegation/e2e/documents/rewards_exported.csv';
-  fs.unlink(file, err => {
+  fs.unlink(file, (err) => {
     if (err) throw err;
   });
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-AfterAll(async function() {
+AfterAll(async function () {
   const allWindowsClosed = (await application.client.getWindowCount()) === 0;
   if (allWindowsClosed || !application.running) return;
   if (scenariosCount === 0) {

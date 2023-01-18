@@ -11,39 +11,56 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-Given(/^I choose the following custom formats:$/, async function(formatsTable) {
+Given(/^I choose the following custom formats:$/, async function (
+  formatsTable
+) {
   const chosenFormats = formatsTable.hashes();
   const [
     { value: numberValue },
     { value: dateValue },
     { value: timeValue },
   ] = chosenFormats;
-  await chooseCustomOptionsByValue.call(this, numberValue, dateValue, timeValue);
+  await chooseCustomOptionsByValue.call(
+    this,
+    numberValue,
+    dateValue,
+    timeValue
+  );
 });
 
-Given(/^I have changed the following custom formats:$/, async function(formatsTable) {
+Given(/^I have changed the following custom formats:$/, async function (
+  formatsTable
+) {
   const chosenFormats = formatsTable.hashes();
   await this.client.executeAsync((chosenFormats, done) => {
     Promise.all(
       chosenFormats.map(({ param, value }) =>
-        daedalus.stores.profile._updateUserLocalSetting({ param: `${param}Format`, value }))
+        daedalus.stores.profile._updateUserLocalSetting({
+          param: `${param}Format`,
+          value,
+        })
+      )
     ).then(done);
   }, chosenFormats);
 });
 
-When(/^the "([^"]*)" wallet has received the transaction amount$/, async function(walletName) {
-  await this.client.waitUntil(async () => {
-    const walletHasAmount =
-      await this.client.execute(
-        () => daedalus.stores.wallets.active &&
-        !daedalus.stores.wallets.active.amount.isZero()
+When(
+  /^the "([^"]*)" wallet has received the transaction amount$/,
+  async function (walletName) {
+    await this.client.waitUntil(async () => {
+      const walletHasAmount = await this.client.execute(
+        () =>
+          daedalus.stores.wallets.active &&
+          !daedalus.stores.wallets.active.amount.isZero()
       );
-    return walletHasAmount.value;
-  });
-});
+      return walletHasAmount.value;
+    });
+  }
+);
 
-
-Then(/^I should see the following chosen options:$/, async function(expectedTable) {
+Then(/^I should see the following chosen options:$/, async function (
+  expectedTable
+) {
   const expectedValues = expectedTable.hashes();
   const [
     { value: expectedNumber },
@@ -60,7 +77,7 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
       selectedNumber === expectedNumber &&
       selectedDate === expectedDate &&
       selectedTime === expectedTime
-    )
+    );
   });
   const {
     selectedNumber,
@@ -72,21 +89,41 @@ Then(/^I should see the following chosen options:$/, async function(expectedTabl
   expect(selectedTime).to.equal(expectedTime);
 });
 
-Then(/^the "([^"]*)" should display the following custom formats:$/, async function(screenElement, expectedTable) {
-  const expectedValues = expectedTable.hashes();
-  await this.client.waitUntil(async () => {
-    const { param: expectedParam, value: expectedValue } = expectedValues[0];
-    const matcher = await doesMatchExpectedValue.call(this,screenElement, expectedParam, expectedValue);
-    return matcher;
-  })
-  for (let i = 0; i < expectedValues.length; i++) {
-    const { param: expectedParam, value: expectedValue } = expectedValues[i];
-    const matcher = await doesMatchExpectedValue.call(this,screenElement, expectedParam, expectedValue);
-    expect(matcher).to.be.true;
+Then(
+  /^the "([^"]*)" should display the following custom formats:$/,
+  async function (screenElement, expectedTable) {
+    const expectedValues = expectedTable.hashes();
+    await this.client.waitUntil(async () => {
+      const { param: expectedParam, value: expectedValue } = expectedValues[0];
+      const matcher = await doesMatchExpectedValue.call(
+        this,
+        screenElement,
+        expectedParam,
+        expectedValue
+      );
+      return matcher;
+    });
+    for (let i = 0; i < expectedValues.length; i++) {
+      const { param: expectedParam, value: expectedValue } = expectedValues[i];
+      const matcher = await doesMatchExpectedValue.call(
+        this,
+        screenElement,
+        expectedParam,
+        expectedValue
+      );
+      expect(matcher).to.be.true;
+    }
   }
-});
+);
 
-Then(/^the "([^"]*)" should display the "([^"]*)" of value "([^"]*)"$/, async function(screenElement, expectedParam, expectedValue) {
-  const currentValue = await getValueFromSelector.call(this, screenElement, expectedParam)
-  expect(currentValue).to.equal(expectedValue);
-});
+Then(
+  /^the "([^"]*)" should display the "([^"]*)" of value "([^"]*)"$/,
+  async function (screenElement, expectedParam, expectedValue) {
+    const currentValue = await getValueFromSelector.call(
+      this,
+      screenElement,
+      expectedParam
+    );
+    expect(currentValue).to.equal(expectedValue);
+  }
+);
