@@ -1,5 +1,4 @@
 { target
-, localLibSystem
 , nodeImplementation ? "cardano"
 , cluster ? "mainnet"
 , version ? "versionNotSet"

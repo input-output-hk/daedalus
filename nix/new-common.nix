@@ -8,7 +8,6 @@ rec {
 
   oldCode = import ./old-default.nix {
     target = targetSystem;
-    localLibSystem = targetSystem;
     inherit inputs cluster sourceLib;
   };
 

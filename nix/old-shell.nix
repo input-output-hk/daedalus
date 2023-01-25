@@ -19,7 +19,6 @@ let
   daedalusPkgs = import ./old-default.nix {
     inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
-    localLibSystem = system;
     devShell = true;
   };
   localLib = import ./old-lib.nix { inherit nodeImplementation system; };
