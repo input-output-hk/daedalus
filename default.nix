@@ -10,7 +10,7 @@
 , HSMServer ? null
 , fudgeConfig ? null
 , devShell ? false
-, useLocalNode ? false
+, useCustomNode ? true
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
@@ -53,9 +53,14 @@ let
     aarch64-darwin = macos.silicon;
   }.${target};
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
+  customNodeFlake = (flake-compat { src = sources.custom-cardano-node; }).defaultNix;
+  customNodePackages = with customNodeFlake.hydraJobs; {
+    x86_64-windows = linux.windows;
+    x86_64-linux = linux.native;
+    x86_64-darwin = macos.intel;
+    aarch64-darwin = macos.silicon;
+  }.${target};
   cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
-  # only used for CLI, to be removed when upgraded to next node version
-  nodePkgs = import "${sources.cardano-node}/nix" {};
   shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
   inherit (pkgs.lib) optionalString;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
@@ -113,24 +118,11 @@ let
     inherit (walletPackages) mock-token-metadata-server;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
-    cardano-node-cluster = let
-      # Test wallets with known mnemonics
-      walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
-      walletTestGenesisJson = pkgs.runCommand "yaml-to-json" { buildInputs = [self.yaml2json]; } ''
-        yaml2json ${walletTestGenesisYaml} > $out
-      '';
-      initialFundsAttrs = (__fromJSON (__readFile walletTestGenesisJson)).initialFunds;
-      # Funds required to register pools
-      clusterFunds = import (self.sources.cardano-node + "/nix/supervisord-cluster/initial-funds.nix");
-      customConfig = {
-        initialFunds = clusterFunds // __foldl' (s: x: s // x) {} initialFundsAttrs;
-      };
-    in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
-    cardano-node = if useLocalNode
-                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
+    cardano-node = if useCustomNode
+                   then customNodePackages.cardano-node
                    else walletPackages.cardano-node;
-    cardano-cli = if useLocalNode
-                   then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
+    cardano-cli = if useCustomNode
+                   then customNodePackages.cardano-cli
                    else walletPackages.cardano-cli;
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 

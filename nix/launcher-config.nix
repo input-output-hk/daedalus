@@ -236,6 +236,13 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
     '';
 
+  # cf. <https://github.com/input-output-hk/cardano-node/blob/b8f6178aa5e5c38baee997e338d824b086ec54e7/doc/getting-started/understanding-config-files.md#ledger-state-on-disk>
+  utxoHDAttrs = {
+    # LedgerDBBackend = "InMemory";
+    LedgerDBBackend = "LMDB";
+    LMDBMapSize = 16;
+  };
+
   mkConfigCardano = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
@@ -244,7 +251,7 @@ let
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
-    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
+    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // utxoHDAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
       AlonzoGenesisFile = "genesis-alonzo.json";
