@@ -54,11 +54,11 @@ let
   }.${target};
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
   customNodeFlake = (flake-compat { src = sources.custom-cardano-node; }).defaultNix;
-  customNodePackages = with customNodeFlake; {
-    x86_64-windows = hydraJobs.linux.windows;
-    x86_64-linux = hydraJobs.linux.native;
-    x86_64-darwin = hydraJobs.macos;
-    aarch64-darwin = packages.aarch64-darwin;
+  customNodePackages = {
+    x86_64-windows = customNodeFlake.hydraJobs.linux.windows;
+    x86_64-linux = customNodeFlake.hydraJobs.linux.native;
+    x86_64-darwin = customNodeFlake.hydraJobs.macos;
+    aarch64-darwin = customNodeFlake.packages.aarch64-darwin;
   }.${target};
   cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
