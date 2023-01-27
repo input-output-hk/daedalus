@@ -13,6 +13,7 @@ runCommandCC "daedalus-cardano-bridge" {
   cp -f ${cardano-address}/bin/cardano-address* .
   cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/* .
   cp -f ${cardano-node}/bin/cardano-node* .
+  cp -f ${cardano-node}/bin/libcrypto-3-x64.dll .
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) ''
 

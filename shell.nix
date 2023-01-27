@@ -12,12 +12,12 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, useLocalNode ? false
+, useCustomNode ? true
 }:
 
 let
   daedalusPkgs = import ./. {
-    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
+    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useCustomNode;
     target = system;
     localLibSystem = system;
     devShell = true;
