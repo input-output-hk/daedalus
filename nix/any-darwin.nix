@@ -18,7 +18,7 @@ let
   originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
   electronVersion = originalPackageJson.dependencies.electron;
   packageVersion = originalPackageJson.version;
-  chromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
+  electronChromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
   installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
   # On Catalina (x86), we can’t detect Ledger devices, unless:
@@ -106,9 +106,9 @@ in rec {
       ln -sf ${darwinSources.electronShaSums} ${cacheDir}/electron/${darwinSources.electronCacheHash}/SHASUMS256.txt
       ln -sf ${darwinSources.electron} ${cacheDir}/electron/${darwinSources.electronCacheHash}/electron-v${electronVersion}-darwin-${archSuffix}.zip
 
-      mkdir -p ${cacheDir}/electron/${darwinSources.chromedriverCacheHash}/
-      ln -sf ${darwinSources.chromedriverShaSums} ${cacheDir}/electron/${darwinSources.chromedriverCacheHash}/SHASUMS256.txt
-      ln -sf ${darwinSources.chromedriver} ${cacheDir}/electron/${darwinSources.chromedriverCacheHash}/chromedriver-v${chromedriverVersion}-darwin-${archSuffix}.zip
+      mkdir -p ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/
+      ln -sf ${darwinSources.electronChromedriverShaSums} ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/SHASUMS256.txt
+      ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip
 
     '') [
       "$HOME/.cache"          # Linux, Windows (cross-compiled)
@@ -372,20 +372,20 @@ in rec {
       echo 9 >$out/installVersion
     '';
 
-    chromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${chromedriverVersion}/chromedriver-v${chromedriverVersion}-darwin-${archSuffix}.zip";
+    electronChromedriver = pkgs.fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
       sha256 =
         if archSuffix == "x64"
         then "0wnwvq4m79jch0wpnl6v2yhpcwy5ccaxkkia99wrqwg4fdsxkwka"
         else "07i8d96mwm0h1r70hxny4ryp39mw2hrigh5fhp87i56cb6dmis4d";
     };
 
-    chromedriverShaSums = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${chromedriverVersion}/SHASUMS256.txt";
+    electronChromedriverShaSums = pkgs.fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
       sha256 = "07xxam8dvn1aixvx39gd5x3yc1bs6i599ywxwi5cbkpf957ilpcx";
     };
 
-    chromedriverCacheHash = builtins.hashString "sha256"
-      "https://github.com/electron/electron/releases/download/v${chromedriverVersion}";
+    electronChromedriverCacheHash = builtins.hashString "sha256"
+      "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}";
   };
 }
