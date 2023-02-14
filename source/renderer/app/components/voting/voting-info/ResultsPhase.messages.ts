@@ -16,4 +16,10 @@ export const messages = defineMessages({
     defaultMessage: 'https://cardano.ideascale.com/a/pages/results',
     description: 'View results link',
   },
+  toBeDefined: {
+    id: 'voting.resultsPhase.toBeDefined',
+    defaultMessage: '!!!To be defined',
+    description:
+      'Text to show when catalyst api is returning a past date value',
+  },
 });
