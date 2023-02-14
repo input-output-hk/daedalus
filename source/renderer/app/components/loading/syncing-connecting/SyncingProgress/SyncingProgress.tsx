@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import { intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
@@ -39,6 +40,14 @@ const makePercentageCellStyles = (loaded: boolean) =>
   cx(styles.cell, styles.cellTextRight, {
     [styles.faded]: loaded,
   });
+
+const getSafePercentage = (value: number): string => {
+  try {
+    return new BigNumber(value).toFixed(2).toString();
+  } catch (error) {
+    return '-';
+  }
+};
 
 function SyncingProgress(props: Props, { intl }: Context) {
   return (
@@ -80,7 +89,7 @@ function SyncingProgress(props: Props, { intl }: Context) {
             key={type}
             className={makePercentageCellStyles(props[type] === 100)}
           >
-            {props[type]}%
+            {getSafePercentage(props[type])}%
           </div>
         ))}
       </div>

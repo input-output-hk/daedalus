@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed decimals for syncing percentage ([PR ](https://github.com/input-output-hk/daedalus/pull/))
+
 ## 5.2.0
 
 ### Features
