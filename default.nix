@@ -46,12 +46,17 @@ let
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   flake-compat = import sources.flake-compat;
   walletFlake = (flake-compat  { src = sources.cardano-wallet; }).defaultNix;
-  walletPackages = with walletFlake.hydraJobs; {
-    x86_64-windows = linux.windows;
-    x86_64-linux = linux.native;
-    x86_64-darwin = macos.intel;
-    aarch64-darwin = macos.silicon;
+  walletRelease = {
+    x86_64-windows = walletFlake.packages.x86_64-linux.ci.artifacts.win64.release;
+    x86_64-linux = walletFlake.packages.x86_64-linux.ci.artifacts.linux64.release;
+    x86_64-darwin = walletFlake.packages.x86_64-darwin.ci.artifacts.macos-intel.release;
+    aarch64-darwin = walletFlake.packages.aarch64-darwin.ci.artifacts.macos-silicon.release;
   }.${target};
+  walletUnpacked = pkgs.runCommand "wallet-unpacked" {} ''
+    mkdir -p $out/bin
+    ${if target == "x86_64-windows" then "unzip" else "tar -xf"} ${walletRelease}/*.*
+    cp cardano-wallet-*/cardano-{address,cli,node,wallet} $out/bin/
+  '';
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
   cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
   # only used for CLI, to be removed when upgraded to next node version
@@ -108,11 +113,11 @@ let
     bridgeTable = {
       cardano = self.callPackage ./nix/cardano-bridge.nix {};
     };
-    inherit (walletPackages) cardano-wallet;
-    inherit (walletPackages) cardano-address;
-    inherit (walletPackages) mock-token-metadata-server;
+    cardano-wallet = walletUnpacked // { version = sources.cardano-wallet.rev; /* FIXME */ };
+    cardano-address = walletUnpacked;
+    mock-token-metadata-server = throw "FIXME: no mock-token-metadata-server now, patch";
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
+    local-cluster = if cluster == "selfnode" then throw "FIXME: no local-cluster now, patch" else null;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -128,10 +133,10 @@ let
     in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-node
-                   else walletPackages.cardano-node;
+                   else walletUnpacked;
     cardano-cli = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli
-                   else walletPackages.cardano-cli;
+                   else walletUnpacked;
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
