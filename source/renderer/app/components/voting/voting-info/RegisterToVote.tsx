@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import type { Intl } from '../../../types/i18nTypes';
+import NextFund from './NextFund';
 
 import type { Locale } from '../../../../../common/types/locales.types';
 import { messages } from './RegisterToVote.messages';
@@ -19,9 +20,9 @@ type Props = {
   onRegisterToVoteClick: (...args: Array<any>) => any;
 };
 
-const isNextFundToBeDefined = (registrationSnapshotTime: Date): boolean => {
+const isNextFundDefined = (registrationSnapshotTime: Date): boolean => {
   try {
-    return moment().diff(registrationSnapshotTime) > 0;
+    return moment().diff(registrationSnapshotTime) < 0;
   } catch (error) {
     logger.error('Voting::NextFund::Invalid date', {
       error,
@@ -30,7 +31,7 @@ const isNextFundToBeDefined = (registrationSnapshotTime: Date): boolean => {
   return false;
 };
 
-const NextFund = React.lazy(() => import('./NextFund'));
+// const NextFund = React.lazy(() => import('./NextFund'));
 
 export function RegisterToVote({
   currentLocale,
@@ -40,9 +41,6 @@ export function RegisterToVote({
   intl,
   onRegisterToVoteClick,
 }: Props) {
-  const isNextFundDefined = isNextFundToBeDefined(
-    fundInfo?.next?.registrationSnapshotTime
-  );
   // const isNextFundDefined = false;
   return (
     <div className={styles.root}>
@@ -51,7 +49,7 @@ export function RegisterToVote({
           votingFundNumber: fundInfo.next.number,
         })}
       </span>
-      {isNextFundDefined ? (
+      {isNextFundDefined(fundInfo?.next?.registrationSnapshotTime) ? (
         <NextFund
           currentLocale={currentLocale}
           currentDateFormat={currentDateFormat}
@@ -64,7 +62,9 @@ export function RegisterToVote({
           <span className={styles.dateLabel}>
             {intl.formatMessage(messages.dateLabel)}
           </span>
-          <span className={styles.date}>{'To be defined'}</span>
+          <span className={styles.date}>
+            {intl.formatMessage(messages.toBeDefined)}
+          </span>
         </React.Fragment>
       )}
     </div>

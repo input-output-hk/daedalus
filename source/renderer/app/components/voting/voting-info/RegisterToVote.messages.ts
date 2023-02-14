@@ -27,4 +27,10 @@ export const messages = defineMessages({
     defaultMessage: '!!!Register to vote',
     description: 'Button Label for voting registration steps',
   },
+  toBeDefined: {
+    id: 'voting.resultsPhase.toBeDefined',
+    defaultMessage: '!!!To be defined',
+    description:
+      'Text to show when catalyst api is returning a past date value',
+  },
 });
