@@ -14,6 +14,7 @@ import {
   getProgressDescriptionByBlockSyncType,
   getProgressNameByBlockSyncType,
 } from './utils';
+import { logger } from '../../../../utils/logging';
 
 type Props = Record<BlockSyncType, number>;
 
@@ -45,6 +46,9 @@ const getSafePercentage = (value: number): string => {
   try {
     return new BigNumber(value).toFixed(2).toString();
   } catch (error) {
+    logger.error('SyncingProgress::Percentage::Error parsing sync percentage', {
+      error,
+    });
     return '-';
   }
 };

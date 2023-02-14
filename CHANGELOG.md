@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Fixed decimals for syncing percentage ([PR ](https://github.com/input-output-hk/daedalus/pull/))
+- Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
 
 ## 5.2.0
 
