@@ -201,9 +201,9 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "https://github.com/vacuumlabs/ledgerjs-cardano-shelley/releases/download/v6.0.0-rc2/cardano-foundation-ledgerjs-hw-app-cardano-v6.0.0-rc2.tgz",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "6.0.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
-    "@ledgerhq/hw-transport-node-hid": "6.27.1",
+    "@ledgerhq/hw-transport-node-hid": "6.27.12",
     "@trezor/connect": "9.0.2",
     "aes-js": "3.1.2",
     "bech32": "2.0.0",
