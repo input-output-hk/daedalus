@@ -456,6 +456,7 @@ export const handleHardwareWalletRequests = async (
   });
   deriveXpubChannel.onRequest(async (params) => {
     const { parentXpubHex, lastIndex, derivationScheme } = params;
+    // @ts-ignore
     const parentXpub = utils.hex_to_buf(parentXpubHex);
 
     try {

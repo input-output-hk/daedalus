@@ -4,7 +4,7 @@ import {
   AddressType,
   TxAuxiliaryDataType, // CHECK THIS
   StakeCredentialParamsType,
-  GovernanceVotingRegistrationFormat,
+  CIP36VoteRegistrationFormat,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
@@ -30,6 +30,8 @@ import type {
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
 import type { AddressStyle } from '../api/addresses/types';
+
+const bs58 = require('bs58');
 
 export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 export type ShelleyTxInputType = {
@@ -175,7 +177,7 @@ export function ShelleyTxOutput(
     const addressBuff =
       addressStyle === AddressStyles.ADDRESS_SHELLEY
         ? utils.bech32_decodeAddress(address)
-        : utils.base58_decode(address);
+        : bs58.decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
 
@@ -399,6 +401,7 @@ export const CachedDeriveXpubFactory = (
     const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
 
     try {
+      // @ts-ignore
       const parentXpubHex = utils.buf_to_hex(parentXpub);
       const derivedXpub = await deriveXpubChannel.request({
         parentXpubHex,
@@ -460,7 +463,7 @@ export const prepareLedgerOutput = (
         addressHex:
           addressStyle === AddressStyles.ADDRESS_SHELLEY
             ? utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
-            : utils.buf_to_hex(utils.base58_decode(output.address)),
+            : utils.buf_to_hex(bs58.decode(output.address)),
       },
     },
     amount: output.amount.quantity.toString(),
@@ -474,9 +477,9 @@ export const prepareLedgerAuxiliaryData = (
 
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
-      type: TxAuxiliaryDataType.GOVERNANCE_VOTING_REGISTRATION,
+      type: TxAuxiliaryDataType.CIP36_REGISTRATION,
       params: {
-        format: GovernanceVotingRegistrationFormat.CIP_15,
+        format: CIP36VoteRegistrationFormat.CIP_15,
         votingPublicKeyHex: votingPubKey,
         stakingPath: rewardDestinationAddress.stakingPath,
         rewardsDestination: {

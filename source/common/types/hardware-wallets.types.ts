@@ -2,7 +2,7 @@ import { BridgeInfo, Device as TrezorDevice, UdevInfo } from '@trezor/connect';
 import {
   TxOutputDestinationType,
   AddressType,
-  GovernanceVotingRegistrationFormat,
+  CIP36VoteRegistrationFormat,
   TxAuxiliaryDataType,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 
@@ -147,7 +147,7 @@ export type LedgerSignTransactionOutputsType =
 export type LedgerAuxiliaryDataType = {
   type: TxAuxiliaryDataType;
   params: {
-    format: GovernanceVotingRegistrationFormat;
+    format: CIP36VoteRegistrationFormat;
     votingPublicKeyHex: string;
     stakingPath: BIP32Path;
     rewardsDestination: {
