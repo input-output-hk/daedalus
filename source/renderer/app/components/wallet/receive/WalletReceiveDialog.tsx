@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { map, filter } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -25,6 +24,8 @@ import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { bip32StrToPath } from '../../../../../common/utils/helper';
+
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
@@ -196,7 +197,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     field.value = field.value.replace(/\n/g, '');
   };
   constructPaths = (address: WalletAddress) => {
-    const hardenedSpendingPath = utils.str_to_path(address.spendingPath);
+    const hardenedSpendingPath = bip32StrToPath(address.spendingPath);
     const derivationSpendingPath = hardenedPathToDerivationPath(
       hardenedSpendingPath
     );

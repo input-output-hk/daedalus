@@ -16,6 +16,7 @@ import {
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
+import { bip32StrToPath } from '../../../common/utils/helper';
 // Types
 import type {
   CoinSelectionInput,
@@ -443,7 +444,7 @@ export const prepareLedgerOutput = (
           type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
           params: {
             spendingPath: derivationPathToLedgerPath(output.derivationPath),
-            stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+            stakingPath: bip32StrToPath("1852'/1815'/0'/2/0"),
           },
         },
       },

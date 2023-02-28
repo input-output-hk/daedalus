@@ -32,6 +32,7 @@ import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
+import { bip32StrToPath } from '../../common/utils/helper';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -474,10 +475,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = utils.str_to_path(spendingPathStr);
-    const stakingPath = stakingPathStr
-      ? utils.str_to_path(stakingPathStr)
-      : null;
+    const spendingPath = bip32StrToPath(spendingPathStr);
+    const stakingPath = stakingPathStr ? bip32StrToPath(stakingPathStr) : null;
 
     deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
 
@@ -542,10 +541,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = utils.str_to_path(spendingPathStr);
-    const stakingPath = stakingPathStr
-      ? utils.str_to_path(stakingPathStr)
-      : null;
+    const spendingPath = bip32StrToPath(spendingPathStr);
+    const stakingPath = stakingPathStr ? bip32StrToPath(stakingPathStr) : null;
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
@@ -804,9 +801,10 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-
+      console.debug('>>> EXPORT - start: ', path);
+      console.debug('>>> DERIVED: ', bip32StrToPath(path));
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey({
-        path: utils.str_to_path(path),
+        path: bip32StrToPath(path),
       });
       const deviceSerial = await deviceConnection.getSerial();
       return Promise.resolve({
@@ -815,6 +813,7 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serialHex,
       });
     } catch (error) {
+      console.debug('>>> EXPORT - ERROR: ', error);
       logger.info('[HW-DEBUG] EXPORT KEY ERROR', error);
       throw error;
     }
