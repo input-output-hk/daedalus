@@ -6,6 +6,11 @@ import {
   StakeCredentialParamsType,
   CIP36VoteRegistrationFormat,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  str_to_path,
+  base58_decode,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import _ from 'lodash';
@@ -16,7 +21,6 @@ import {
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { AddressStyles } from '../domains/WalletAddress';
-import { bip32StrToPath } from '../../../common/utils/helper';
 // Types
 import type {
   CoinSelectionInput,
@@ -30,8 +34,6 @@ import type {
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
 import type { AddressStyle } from '../api/addresses/types';
-
-const bs58 = require('bs58');
 
 export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
 export type ShelleyTxInputType = {
@@ -177,7 +179,7 @@ export function ShelleyTxOutput(
     const addressBuff =
       addressStyle === AddressStyles.ADDRESS_SHELLEY
         ? utils.bech32_decodeAddress(address)
-        : bs58.decode(address);
+        : base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
 
@@ -401,15 +403,13 @@ export const CachedDeriveXpubFactory = (
     const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
 
     try {
-      // @ts-ignore
       const parentXpubHex = utils.buf_to_hex(parentXpub);
       const derivedXpub = await deriveXpubChannel.request({
         parentXpubHex,
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
-      // @ts-ignore
-      return utils.hex_to_buf(derivedXpub);
+      return utils.hex_to_buf(derivedXpub as HexString);
     } catch (e) {
       throw e;
     }
@@ -447,7 +447,7 @@ export const prepareLedgerOutput = (
           type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
           params: {
             spendingPath: derivationPathToLedgerPath(output.derivationPath),
-            stakingPath: bip32StrToPath("1852'/1815'/0'/2/0"),
+            stakingPath: str_to_path("1852'/1815'/0'/2/0"),
           },
         },
       },
@@ -463,7 +463,7 @@ export const prepareLedgerOutput = (
         addressHex:
           addressStyle === AddressStyles.ADDRESS_SHELLEY
             ? utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
-            : utils.buf_to_hex(bs58.decode(output.address)),
+            : utils.buf_to_hex(base58_decode(output.address)),
       },
     },
     amount: output.amount.quantity.toString(),

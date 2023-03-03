@@ -3,6 +3,8 @@ import TransportNodeHid, {
   getDevices,
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import TrezorConnect, {
   DEVICE,
   DEVICE_EVENT,
@@ -32,7 +34,6 @@ import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
-import { bip32StrToPath } from '../../common/utils/helper';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -456,8 +457,7 @@ export const handleHardwareWalletRequests = async (
   });
   deriveXpubChannel.onRequest(async (params) => {
     const { parentXpubHex, lastIndex, derivationScheme } = params;
-    // @ts-ignore
-    const parentXpub = utils.hex_to_buf(parentXpubHex);
+    const parentXpub = utils.hex_to_buf(parentXpubHex as HexString);
 
     try {
       const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
@@ -476,8 +476,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = bip32StrToPath(spendingPathStr);
-    const stakingPath = stakingPathStr ? bip32StrToPath(stakingPathStr) : null;
+    const spendingPath = str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr ? str_to_path(stakingPathStr) : null;
 
     deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
 
@@ -542,8 +542,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = bip32StrToPath(spendingPathStr);
-    const stakingPath = stakingPathStr ? bip32StrToPath(stakingPathStr) : null;
+    const spendingPath = str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr ? str_to_path(stakingPathStr) : null;
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
@@ -802,10 +802,8 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-      console.debug('>>> EXPORT - start: ', path);
-      console.debug('>>> DERIVED: ', bip32StrToPath(path));
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey({
-        path: bip32StrToPath(path),
+        path: str_to_path(path),
       });
       const deviceSerial = await deviceConnection.getSerial();
       return Promise.resolve({
@@ -814,7 +812,6 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serialHex,
       });
     } catch (error) {
-      console.debug('>>> EXPORT - ERROR: ', error);
       logger.info('[HW-DEBUG] EXPORT KEY ERROR', error);
       throw error;
     }

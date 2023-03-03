@@ -11,6 +11,7 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import QRCode from 'qrcode.react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import RadioSet from '../../widgets/RadioSet';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -24,7 +25,6 @@ import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { bip32StrToPath } from '../../../../../common/utils/helper';
 
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
@@ -197,7 +197,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     field.value = field.value.replace(/\n/g, '');
   };
   constructPaths = (address: WalletAddress) => {
-    const hardenedSpendingPath = bip32StrToPath(address.spendingPath);
+    const hardenedSpendingPath = str_to_path(address.spendingPath);
     const derivationSpendingPath = hardenedPathToDerivationPath(
       hardenedSpendingPath
     );
