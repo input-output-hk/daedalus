@@ -474,15 +474,14 @@ export const prepareLedgerAuxiliaryData = (
   txAuxiliaryData: TxAuxiliaryData
 ) => {
   const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
-
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
       type: TxAuxiliaryDataType.CIP36_REGISTRATION,
       params: {
         format: CIP36VoteRegistrationFormat.CIP_15,
-        votingPublicKeyHex: votingPubKey,
+        voteKeyHex: votingPubKey,
         stakingPath: rewardDestinationAddress.stakingPath,
-        rewardsDestination: {
+        paymentDestination: {
           type: TxOutputDestinationType.DEVICE_OWNED,
           params: {
             type: AddressType.REWARD_KEY,

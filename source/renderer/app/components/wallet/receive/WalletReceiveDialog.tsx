@@ -25,7 +25,6 @@ import { HW_SHELLEY_CONFIG } from '../../../config/hardwareWalletsConfig';
 import { hardenedPathToDerivationPath } from '../../../utils/hardwareWalletUtils';
 import { AddressVerificationCheckStatuses } from '../../../stores/HardwareWalletsStore';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
 import type { AddressVerificationCheckStatus } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 

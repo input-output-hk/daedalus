@@ -148,9 +148,9 @@ export type LedgerAuxiliaryDataType = {
   type: TxAuxiliaryDataType;
   params: {
     format: CIP36VoteRegistrationFormat;
-    votingPublicKeyHex: string;
+    voteKeyHex: string;
     stakingPath: BIP32Path;
-    rewardsDestination: {
+    paymentDestination: {
       type: TxOutputDestinationType;
       params: {
         type: AddressType;
@@ -209,7 +209,7 @@ export type LedgerSignTransactionResponse = {
   txHashHex: string;
   witnesses: Array<Witness>;
   auxiliaryDataSupplement?: {
-    governanceVotingRegistrationSignatureHex: string;
+    cip36VoteRegistrationSignatureHex: string;
     auxiliaryDataHashHex: string;
     type: 'catalyst_registration';
   };
