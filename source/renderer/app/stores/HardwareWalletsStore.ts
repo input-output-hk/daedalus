@@ -2639,7 +2639,7 @@ export default class HardwareWalletsStore extends Store {
         txAuxiliaryData = cborizeTxAuxiliaryVotingData(
           unsignedTxAuxiliaryData,
           signedTransaction.auxiliaryDataSupplement
-            .catalystRegistrationSignatureHex
+            .cip36VoteRegistrationSignatureHex
         );
       }
 

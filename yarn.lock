@@ -992,15 +992,13 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-5.1.0.tgz#69b94f7c5055bdb19aa719ff277fa5f683d11067"
+"@cardano-foundation/ledgerjs-hw-app-cardano@6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-6.0.0.tgz#720f2eb90efd8ca90a055bb09e22d8988bdda7cd"
   dependencies:
-    "@ledgerhq/hw-transport" "^5.12.0"
-    "@types/ledgerhq__hw-transport" "^4.21.3"
+    "@ledgerhq/hw-transport" "^6.27.10"
     base-x "^3.0.5"
     bech32 "^1.1.4"
-    blake2 "^4.0.2"
     int64-buffer "^1.0.1"
 
 "@colors/colors@1.5.0":
@@ -1436,15 +1434,6 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@ledgerhq/devices@^5.26.0":
-  version "5.51.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.51.1.tgz#d741a4a5d8f17c2f9d282fd27147e6fe1999edb7"
-  dependencies:
-    "@ledgerhq/errors" "^5.50.0"
-    "@ledgerhq/logs" "^5.50.0"
-    rxjs "6"
-    semver "^7.3.5"
-
 "@ledgerhq/devices@^6.27.1":
   version "6.27.1"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-6.27.1.tgz#3b13ab1d1ba8201e9e74a08f390560483978c962"
@@ -1454,27 +1443,28 @@
     rxjs "6"
     semver "^7.3.5"
 
-"@ledgerhq/errors@^5.26.0":
-  version "5.26.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.26.0.tgz#a2d3da356e8053817b6517a94eff876ca1d0c972"
+"@ledgerhq/devices@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-8.0.0.tgz#8fe9f9e442e28b7a20bcdf4c2eed06ce7b8f76ae"
+  dependencies:
+    "@ledgerhq/errors" "^6.12.3"
+    "@ledgerhq/logs" "^6.10.1"
+    rxjs "6"
+    semver "^7.3.5"
 
-"@ledgerhq/errors@^5.50.0":
-  version "5.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.50.0.tgz#e3a6834cb8c19346efca214c1af84ed28e69dad9"
-
-"@ledgerhq/errors@^6.10.0":
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.10.0.tgz#dda9127b65f653fbb2f74a55e8f0e550d69de6e4"
+"@ledgerhq/errors@^6.10.0", "@ledgerhq/errors@^6.12.3":
+  version "6.12.3"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.12.3.tgz#a610caae1eeeb7cb038525e5212fe03217dda683"
 
 "@ledgerhq/hw-transport-node-hid-noevents@^6.27.1":
-  version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid-noevents/-/hw-transport-node-hid-noevents-6.27.1.tgz#f5bb720402978ed7ecf679d3cd8d07d466e0bca7"
+  version "6.27.12"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid-noevents/-/hw-transport-node-hid-noevents-6.27.12.tgz#5dacbaf7e146018a73d18d16ce975925b5795732"
   dependencies:
-    "@ledgerhq/devices" "^6.27.1"
-    "@ledgerhq/errors" "^6.10.0"
-    "@ledgerhq/hw-transport" "^6.27.1"
-    "@ledgerhq/logs" "^6.10.0"
-    node-hid "2.1.1"
+    "@ledgerhq/devices" "^8.0.0"
+    "@ledgerhq/errors" "^6.12.3"
+    "@ledgerhq/hw-transport" "^6.28.1"
+    "@ledgerhq/logs" "^6.10.1"
+    node-hid "^2.1.2"
 
 "@ledgerhq/hw-transport-node-hid@6.27.1":
   version "6.27.1"
@@ -1489,29 +1479,17 @@
     node-hid "2.1.1"
     usb "^1.7.0"
 
-"@ledgerhq/hw-transport@^5.12.0":
-  version "5.26.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.26.0.tgz#bfedc3d48400ad2fe48278d9444344b72aa9d0fe"
+"@ledgerhq/hw-transport@^6.27.1", "@ledgerhq/hw-transport@^6.27.10", "@ledgerhq/hw-transport@^6.28.1":
+  version "6.28.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.28.1.tgz#cb22fe9bc23af4682c30f2aac7fe6f7ab13ed65a"
   dependencies:
-    "@ledgerhq/devices" "^5.26.0"
-    "@ledgerhq/errors" "^5.26.0"
-    events "^3.2.0"
-
-"@ledgerhq/hw-transport@^6.27.1":
-  version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.27.1.tgz#88072278f69c279cb6569352acd4ae2fec33ace3"
-  dependencies:
-    "@ledgerhq/devices" "^6.27.1"
-    "@ledgerhq/errors" "^6.10.0"
+    "@ledgerhq/devices" "^8.0.0"
+    "@ledgerhq/errors" "^6.12.3"
     events "^3.3.0"
 
-"@ledgerhq/logs@^5.50.0":
-  version "5.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.50.0.tgz#29c6419e8379d496ab6d0426eadf3c4d100cd186"
-
-"@ledgerhq/logs@^6.10.0":
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.0.tgz#c012c1ecc1a0e53d50e6af381618dca5268461c1"
+"@ledgerhq/logs@^6.10.0", "@ledgerhq/logs@^6.10.1":
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.1.tgz#5bd16082261d7364eabb511c788f00937dac588d"
 
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.3"
@@ -2987,12 +2965,6 @@
 "@types/keyv@*":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@types/keyv/-/keyv-3.1.4.tgz#3ccdb1c6751b0c7e52300bcdacd5bcbf8faa75b6"
-  dependencies:
-    "@types/node" "*"
-
-"@types/ledgerhq__hw-transport@^4.21.3":
-  version "4.21.4"
-  resolved "https://registry.yarnpkg.com/@types/ledgerhq__hw-transport/-/ledgerhq__hw-transport-4.21.4.tgz#3a78a02d2b51d2b0dd8099412d5567d21118225c"
   dependencies:
     "@types/node" "*"
 
@@ -4832,12 +4804,6 @@ blake-hash@^2.0.0:
     node-gyp-build "^4.2.2"
     readable-stream "^3.6.0"
 
-blake2@^4.0.2:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/blake2/-/blake2-4.1.1.tgz#0c23524776ebbf76b3ffecb6fa73422a33f20526"
-  dependencies:
-    nan "^2.15.0"
-
 blake2b-wasm@^1.1.0:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/blake2b-wasm/-/blake2b-wasm-1.1.7.tgz#e4d075da10068e5d4c3ec1fb9accc4d186c55d81"
@@ -4855,11 +4821,7 @@ blakejs@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
 
-blakejs@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.2.1.tgz#5057e4206eadb4a97f7c0b6e197a505042fc3814"
-
-blakejs@^1.2.1:
+blakejs@^1.1.0, blakejs@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.2.1.tgz#5057e4206eadb4a97f7c0b6e197a505042fc3814"
 
@@ -5401,10 +5363,6 @@ cashaddrjs@0.4.4:
   resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.4.4.tgz#169f1ae620d325db77700273d972282adeeee331"
   dependencies:
     big-integer "1.6.36"
-
-cbor-web@7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-7.0.6.tgz#6e23a0c58db4c38e485e395de511b9e2f628961c"
 
 cbor@5.0.2:
   version "5.0.2"
@@ -6775,6 +6733,10 @@ detect-file@^1.0.0:
 detect-libc@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
+
+detect-libc@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.1.tgz#e1897aa88fa6ad197862937fbc0441ef352ee0cd"
 
 detect-newline@^3.0.0:
   version "3.1.0"
@@ -12142,6 +12104,12 @@ node-abi@^3.0.0:
   dependencies:
     semver "^7.3.5"
 
+node-abi@^3.3.0:
+  version "3.33.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.33.0.tgz#8b23a0cec84e1c5f5411836de6a9b84bccf26e7f"
+  dependencies:
+    semver "^7.3.5"
+
 node-addon-api@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.0.2.tgz#04bc7b83fd845ba785bb6eae25bc857e1ef75681"
@@ -12216,6 +12184,14 @@ node-hid@2.1.1:
     bindings "^1.5.0"
     node-addon-api "^3.0.2"
     prebuild-install "^6.0.0"
+
+node-hid@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-hid/-/node-hid-2.1.2.tgz#3145fa86ed4336a402a71e9f372c54213b88797c"
+  dependencies:
+    bindings "^1.5.0"
+    node-addon-api "^3.0.2"
+    prebuild-install "^7.1.1"
 
 node-int64@^0.4.0:
   version "0.4.0"
@@ -13371,6 +13347,23 @@ prebuild-install@^6.0.0, prebuild-install@^6.1.4:
     pump "^3.0.0"
     rc "^1.2.7"
     simple-get "^3.0.3"
+    tar-fs "^2.0.0"
+    tunnel-agent "^0.6.0"
+
+prebuild-install@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
+  dependencies:
+    detect-libc "^2.0.0"
+    expand-template "^2.0.3"
+    github-from-package "0.0.0"
+    minimist "^1.2.3"
+    mkdirp-classic "^0.5.3"
+    napi-build-utils "^1.0.1"
+    node-abi "^3.3.0"
+    pump "^3.0.0"
+    rc "^1.2.7"
+    simple-get "^4.0.0"
     tar-fs "^2.0.0"
     tunnel-agent "^0.6.0"
 
@@ -15221,6 +15214,14 @@ simple-get@^3.0.3:
   resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-3.1.1.tgz#cc7ba77cfbe761036fbfce3d021af25fc5584d55"
   dependencies:
     decompress-response "^4.2.0"
+    once "^1.3.1"
+    simple-concat "^1.0.0"
+
+simple-get@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-4.0.1.tgz#4a39db549287c979d352112fa03fd99fd6bc3543"
+  dependencies:
+    decompress-response "^6.0.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
 
