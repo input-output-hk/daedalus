@@ -223,7 +223,7 @@
     "classnames": "2.2.6",
     "csv-stringify": "5.5.1",
     "cucumber-html-reporter": "5.2.0",
-    "electron": "13.6.3",
+    "electron": "18.3.7",
     "electron-log-daedalus": "2.2.21",
     "electron-store": "8.0.1",
     "es6-error": "4.1.1",
