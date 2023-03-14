@@ -2929,8 +2929,6 @@
 "@types/istanbul-reports@^3.0.0":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-reports/-/istanbul-reports-3.0.1.tgz#9153fe98bba2bd565a63add9436d6f0d7f8468ff"
-  dependencies:
-    
 
 "@types/jest@*":
   version "27.5.0"
@@ -6547,8 +6545,8 @@ decimal.js@^10.2.0, decimal.js@^10.2.1:
   resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.3.1.tgz#d8c3a444a9c6774ba60ca6ad7261c3a94fd5e783"
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
 
 decompress-response@^3.3.0:
   version "3.3.0"
