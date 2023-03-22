@@ -3,6 +3,8 @@ import TransportNodeHid, {
   getDevices,
 } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import TrezorConnect, {
   DEVICE,
   DEVICE_EVENT,
@@ -455,7 +457,7 @@ export const handleHardwareWalletRequests = async (
   });
   deriveXpubChannel.onRequest(async (params) => {
     const { parentXpubHex, lastIndex, derivationScheme } = params;
-    const parentXpub = utils.hex_to_buf(parentXpubHex);
+    const parentXpub = utils.hex_to_buf(parentXpubHex as HexString);
 
     try {
       const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
@@ -474,10 +476,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = utils.str_to_path(spendingPathStr);
-    const stakingPath = stakingPathStr
-      ? utils.str_to_path(stakingPathStr)
-      : null;
+    const spendingPath = str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr ? str_to_path(stakingPathStr) : null;
 
     deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
 
@@ -542,10 +542,8 @@ export const handleHardwareWalletRequests = async (
       networkId,
       protocolMagic,
     } = params;
-    const spendingPath = utils.str_to_path(spendingPathStr);
-    const stakingPath = stakingPathStr
-      ? utils.str_to_path(stakingPathStr)
-      : null;
+    const spendingPath = str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr ? str_to_path(stakingPathStr) : null;
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
@@ -804,9 +802,8 @@ export const handleHardwareWalletRequests = async (
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey({
-        path: utils.str_to_path(path),
+        path: str_to_path(path),
       });
       const deviceSerial = await deviceConnection.getSerial();
       return Promise.resolve({
