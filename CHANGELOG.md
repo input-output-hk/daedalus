@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
+
 ### Chores
 
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
