@@ -29,6 +29,19 @@ const website = 'https://www.coingecko.com/en/api';
 const hostname = 'api.coingecko.com';
 const version = 'v3';
 const pathBase = `api/${version}`;
+
+interface CoinList {
+  type: 'CoinList';
+}
+
+interface SupportedCurrencies {
+  type: 'supportedCurrencies';
+}
+
+interface Markets {
+  type: 'Markets';
+}
+
 const requests = {
   list: [
     {
