@@ -2,28 +2,6 @@
 set -e
 source "$(dirname "$0")/utils.sh"
 
-
-
-########################################################################
-
-echo '~~~ Manual download of GHC .narinfo'
-curl -v http://192.168.64.1:8081/xcpjv70n9y8c2gjxgcvy2yrjqjgi5rv1.narinfo
-
-echo '~~~ Manual download of GHC .nar'
-curl -vO http://192.168.64.1:8081/nar/0brbiadnn8smrdxpc6m44xh8xj9dl2x0h4f51l1p7qfr0w76144v.nar
-
-echo '~~~ ls -l'
-ls -l 0brbiadnn8smrdxpc6m44xh8xj9dl2x0h4f51l1p7qfr0w76144v.nar
-
-echo '~~~ nix nar ls'
-nix nar ls 0brbiadnn8smrdxpc6m44xh8xj9dl2x0h4f51l1p7qfr0w76144v.nar /
-
-exit 77
-
-########################################################################
-
-
-
 # DEPENDENCIES (binaries should be in PATH):
 #   0. 'git'
 #   1. 'curl'
@@ -119,7 +97,7 @@ function checkItnCluster() {
 
 # Build/get cardano bridge which is used by make-installer
 echo '~~~ Prebuilding cardano bridge'
-CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
+CARDANO_BRIDGE=$(nix-build --fallback --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
