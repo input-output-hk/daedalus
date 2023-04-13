@@ -9,26 +9,26 @@ steps:
     key: 'trigger-aarch64-darwin'
 
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     depends_on: 'trigger-x86_64-darwin'
     agents:
       queue: daedalus
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     depends_on: 'trigger-aarch64-darwin'
     agents:
       queue: daedalus
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/with-nix-2.5.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-unstable.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows-nix'
-    command: 'scripts/with-nix-2.5.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
+    command: 'scripts/with-nix-unstable.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
 
