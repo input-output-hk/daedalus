@@ -97,7 +97,7 @@ function checkItnCluster() {
 
 # Build/get cardano bridge which is used by make-installer
 echo '~~~ Prebuilding cardano bridge'
-CARDANO_BRIDGE=$(nix-build --fallback --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
+CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano)
 
 pushd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
