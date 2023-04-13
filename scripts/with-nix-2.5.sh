@@ -8,8 +8,8 @@ fi
 
 echo "~~~ Obtaining ‘pkgs.nixUnstable’"
 
-myDir=$(dirname "$0")
-nixUnstable=$(nix-build "$myDir"/../default.nix -A pkgs.nixUnstable)
+# fe2ecaf706a5907b5e54d979fbde4924d84b65fc is nixos-unstable on 2023-04-13
+nixUnstable=$(nix-build https://github.com/NixOS/nixpkgs/archive/fe2ecaf706a5907b5e54d979fbde4924d84b65fc.tar.gz -A pkgs.nixUnstable)
 
 PATH="$nixUnstable/bin:$PATH"
 
