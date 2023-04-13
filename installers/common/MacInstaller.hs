@@ -121,7 +121,9 @@ XML_PATH="$4"
 ABS_PATH="$(pwd)/$REL_PATH"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 function sign_cmd() {
-  codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$1" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+  for targetFile in "$@" ; do
+    codesign --force --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$targetFile" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+  done
 }
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 ENTITLEMENT_CMD="codesign -d --entitlements :-"
