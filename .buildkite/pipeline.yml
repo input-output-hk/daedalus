@@ -12,24 +12,26 @@ steps:
     command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     depends_on: 'trigger-x86_64-darwin'
     agents:
-      queue: daedalus
+      queue: lace
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
     command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
     depends_on: 'trigger-aarch64-darwin'
     agents:
-      queue: daedalus
+      queue: lace
       system: aarch64-darwin
 
   - label: 'daedalus-x86_64-linux-nix'
     command: 'scripts/with-nix-unstable.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
+      queue: lace
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows-nix'
     command: 'scripts/with-nix-unstable.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
     agents:
+      queue: lace
       system: x86_64-linux
 
   # TODO: Re-enable once script is fixed
