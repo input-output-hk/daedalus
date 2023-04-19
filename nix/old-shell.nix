@@ -1,7 +1,7 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, pkgs ? import (import ./sources.nix).nixpkgs { inherit system config; }
+, pkgs ? inputs.self.packages.${system}.internal.${cluster}.newCommon.pkgs
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
@@ -20,28 +20,10 @@ let
     inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
     devShell = true;
+    inherit (inputs.self.packages.${system}.internal.${cluster}.newCommon) sourceLib;
   };
-  localLib = import ./old-lib.nix { inherit nodeImplementation system; };
+  localLib = import ./old-lib.nix { inherit nodeImplementation system inputs; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
-  launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
-  fixYarnLock = pkgs.stdenv.mkDerivation {
-    name = "fix-yarn-lock";
-    buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
-    shellHook = ''
-      git diff > pre-yarn.diff
-      yarn --frozen-lockfile
-      git diff > post-yarn.diff
-      diff pre-yarn.diff post-yarn.diff > /dev/null
-      if [ $? != 0 ]
-      then
-        echo "Changes by yarn have been made. Please commit them."
-      else
-        echo "No changes were made."
-      fi
-      rm pre-yarn.diff post-yarn.diff
-      exit
-    '';
-  };
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
   daedalusShellBuildInputs = [
@@ -49,7 +31,6 @@ let
       daedalusPkgs.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
-      daedalusPkgs.darwin-launcher
       daedalusPkgs.mock-token-metadata-server
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
@@ -61,7 +42,11 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
-      darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
+      inputs.self.packages.${system}.internal.${cluster}.darwin-launcher
+      darwin.apple_sdk.frameworks.CoreServices
+      darwin.apple_sdk.frameworks.AppKit
+      darwin.cctools
+      xcbuild
     ] else [
       daedalusPkgs.electron
       winePackages.minimal
@@ -90,10 +75,13 @@ let
     buildInputs = daedalusShellBuildInputs;
     name = "daedalus";
     buildCommand = "touch $out";
-    LAUNCHER_CONFIG = launcherConfig';
+    LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
     CARDANO_NODE_VERSION = daedalusPkgs.cardanoNodeVersion;
     CARDANO_WALLET_VERSION = daedalusPkgs.cardanoWalletVersion;
-    DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
+    DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
+      mkdir -pv $out
+      cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON daedalusPkgs.launcherConfigs.launcherConfig)} $out/launcher-config.yaml
+    '';
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
@@ -116,7 +104,7 @@ let
       source <(cardano-address --bash-completion-script cardano-address)
       [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
-      cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config
@@ -136,12 +124,12 @@ let
         npm cache clean --force
         ''
       }
-      yarn install --frozen-lockfile
+      yarn install
 
       # Let’s patch electron-rebuild to force correct Node.js headers to
       # build native modules against even in `nix-shell`, otherwise, it
       # doesn’t work reliably.
-      ${daedalusPkgs.rawapp.patchElectronRebuild}
+      ${inputs.self.packages.${system}.internal.${cluster}.newCommon.patchElectronRebuild}
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
       find Debug/ Release/ -name '*.node' | xargs rm -v || true
@@ -218,4 +206,4 @@ let
       "
     '';
   };
-in daedalusShell // { inherit fixYarnLock buildShell devops gcRoot; }
+in daedalusShell // { inherit buildShell devops gcRoot; }

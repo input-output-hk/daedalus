@@ -16,6 +16,8 @@
 , zlib
 , sourceLib
 , cardanoNodeVersion
+, electronVersion
+, patchElectronRebuild
 , strace }:
 let
   cluster' = launcherConfig.networkName;
@@ -27,14 +29,13 @@ let
   }) {
     inherit pkgs nodejs yarn;
   };
-  origPackage = builtins.fromJSON (builtins.readFile ../package.json);
+  origPackage = originalPackageJson;
   newPackage = (origPackage // {
     productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  electronVersion = origPackage.dependencies.electron;
   electronPath = "https://github.com/electron/electron/releases/download/v${electronVersion}";
   windowsElectron = fetchurl {
     url = "${electronPath}/electron-v${electronVersion}-win32-x64.zip";
@@ -47,15 +48,6 @@ let
     ln -sv ${windowsElectron} $out/${electronPathHash}/electron-v${electronVersion}-win32-x64.zip
     mkdir $out/httpsgithub.comelectronelectronreleasesdownloadv${electronVersion}electron-v${electronVersion}-win32-x64.zip
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${electronVersion}electron-v${electronVersion}-win32-x64.zip/electron-v${electronVersion}-win32-x64.zip
-  '';
-  electron-node-headers = fetchurl {
-    url = "https://www.electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-    sha256 = "f8567511857ab62659505ba5158b6ad69afceb512105a3251d180fe47f44366c";
-  };
-  electron-node-headers-unpacked = runCommand "electron-node-headers-${electronVersion}-unpacked" {} ''
-    tar -xf ${electron-node-headers}
-    mkdir -p $out
-    mv node_headers/* $out/
   '';
   filter = name: type: let
     baseName = baseNameOf (toString name);
@@ -78,38 +70,6 @@ let
     pkgconfig
     libusb
   ];
-
-  # We patch `node_modules/electron-rebuild` to force specific Node.js
-  # headers to be used when building native extensions for
-  # Electron. Electron’s Node.js ABI differs from the same version of
-  # Node.js, because different libraries are used in Electon,
-  # e.g. BoringSSL instead of OpenSSL,
-  # cf. <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>
-  #
-  # We also use this same code in `shell.nix`, since for some reason
-  # `electron-rebuild` there determines incorrect headers to use
-  # automatically, and we keep getting ABI errors. TODO: investigate
-  # why…
-  #
-  # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
-  patchElectronRebuild = writeShellScript "patch-electron-rebuild" ''
-    echo 'Patching electron-rebuild to force our Node.js headers…'
-
-    nodeGypJs=lib/src/module-type/node-gyp.js
-    if [ ! -e $nodeGypJs ] ; then
-      # makes it work both here, and in shell.nix:
-      nodeGypJs="node_modules/electron-rebuild/$nodeGypJs"
-    fi
-    if [ ! -e $nodeGypJs ] ; then
-      echo >&2 'fatal: shouldn’t happen unless electron-rebuild changes'
-      exit 1
-    fi
-
-    # Patch idempotently (matters in repetitive shell.nix):
-    if ! grep -qF ${electron-node-headers} $nodeGypJs ; then
-      sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${electron-node-headers}", "--nodedir", "${electron-node-headers-unpacked}");|' -i $nodeGypJs
-    fi
-  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -250,8 +210,6 @@ yarn2nix.mkYarnPackage {
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
   '';
-
-  inherit patchElectronRebuild; # for use in shell.nix
 
   pkgConfig = {
     electron-rebuild = {

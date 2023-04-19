@@ -157,12 +157,6 @@ Dependencies are updated with the follow nix commands:
 - Update cardano-wallet to a specific revision: `nix develop .#default.devops --command niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab`
 - Update cardano-node to a specific tag: `nix develop .#default.devops --command niv update cardano-node -b tags/1.20.0`
 
-#### Notes
-
-`nix develop` also provides a script for updating `yarn.lock` file:
-
-    nix develop .#default.fixYarnLock
-
 ### Cardano Wallet Api documentation
 
 Api documentation for edge `cardano-wallet` version: https://input-output-hk.github.io/cardano-wallet/api/edge/

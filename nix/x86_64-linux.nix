@@ -48,6 +48,8 @@ in rec {
     inherit pkgs daedalus;
     inherit (linuxInstaller) iconPath;
 
+    inherit (newCommon) electronVersion patchElectronRebuild;
+
     win64 = false;
   };
 

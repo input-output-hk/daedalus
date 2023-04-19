@@ -14,25 +14,25 @@ let
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
+  inherit (newCommon) originalPackageJson electronVersion electronHeaders;
+
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
-  originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
-  electronVersion = originalPackageJson.dependencies.electron;
   packageVersion = originalPackageJson.version;
   electronChromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
   installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
-  # On Catalina (x86), we can’t detect Ledger devices, unless:
-  theSDK = if targetSystem == "aarch64-darwin" then {
-    apple_sdk = pkgs.darwin.apple_sdk;
-    xcbuild = pkgs.xcbuild;
-  } else rec {
-    apple_sdk = pkgs.darwin.apple_sdk_11_0;
-    xcbuild = pkgs.xcbuild.override {
-      inherit (apple_sdk) stdenv;
-      inherit (apple_sdk.frameworks) CoreServices CoreGraphics ImageIO;
-      #sdkVer = "11.0";
-    };
-  };
+  # # On Catalina (x86), we can’t detect Ledger devices, unless:
+  # theSDK = if targetSystem == "aarch64-darwin" then {
+  #   apple_sdk = pkgs.darwin.apple_sdk;
+  #   xcbuild = pkgs.xcbuild;
+  # } else rec {
+  #   apple_sdk = pkgs.darwin.apple_sdk_11_0;
+  #   xcbuild = pkgs.xcbuild.override {
+  #     inherit (apple_sdk) stdenv;
+  #     inherit (apple_sdk.frameworks) CoreServices CoreGraphics ImageIO;
+  #     #sdkVer = "11.0";
+  #   };
+  # };
 
 in rec {
 
@@ -91,8 +91,9 @@ in rec {
     # export DEBUG='*'
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
 
-    # Don’t try to download prebuilded packages:
-    echo 'buildFromSource=true' >$HOME/.prebuild-installrc
+    # Don’t try to download prebuilded packages (with prebuild-install):
+    export npm_config_build_from_source=true
+    ( echo 'buildFromSource=true' ; echo 'compile=true' ; ) >$HOME/.prebuild-installrc
 
     ${lib.concatMapStringsSep "\n" (cacheDir: ''
 
@@ -116,7 +117,7 @@ in rec {
     ]}
 
     mkdir -p $HOME/.electron-gyp/
-    ln -sf ${darwinSources.electronHeaders} $HOME/.electron-gyp/${electronVersion}
+    ln -sf ${electronHeaders} $HOME/.electron-gyp/${electronVersion}
   '';
 
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
@@ -142,12 +143,13 @@ in rec {
   node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
-    nativeBuildInputs = [ yarn nodejs theSDK.xcbuild ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools /*theSDK.*/xcbuild ]);
     buildInputs = (with pkgs.darwin; [
-      theSDK.apple_sdk.frameworks.IOKit
-      theSDK.apple_sdk.frameworks.AppKit
-      (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
+      #/*theSDK.*/apple_sdk.frameworks.IOKit
+      /*theSDK.*/apple_sdk.frameworks.CoreServices   # old-shell.nix has this instead of IOKit, let’s try
+      /*theSDK.*/apple_sdk.frameworks.AppKit
+      #(theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]);
     configurePhase = setupCacheAndGypDirs;
     buildPhase = ''
@@ -161,6 +163,8 @@ in rec {
       yarn install --frozen-lockfile
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+
+      ${newCommon.patchElectronRebuild}
     '';
     installPhase = ''
       mkdir $out
@@ -178,13 +182,13 @@ in rec {
   in pkgs.stdenv.mkDerivation {
     name = pname;
     src = srcWithoutNix;
-    nativeBuildInputs = [ yarn nodejs daedalus-installer theSDK.xcbuild ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools ]);
+    nativeBuildInputs = [ yarn nodejs daedalus-installer ]
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools /*theSDK.*/xcbuild ]);
     buildInputs = (with pkgs.darwin; [
-      theSDK.apple_sdk.frameworks.CoreServices
-      theSDK.apple_sdk.frameworks.AppKit
+      /*theSDK.*/apple_sdk.frameworks.CoreServices
+      /*theSDK.*/apple_sdk.frameworks.AppKit
       libobjc
-      (theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
+      #(theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]) ++ [
       daedalus-bridge
       darwin-launcher
@@ -360,17 +364,6 @@ in rec {
 
     electronCacheHash = builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronVersion}";
-
-    electronHeaders = pkgs.runCommandLocal "electron-headers" {
-      src = pkgs.fetchzip {
-        url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-        sha256 = "0rfidarpb2y0ibx22jnd06781sx47aqsw22ksi4zxhqhjh8rqf1q";
-      };
-    } ''
-      mkdir -p $out
-      cp -r $src/. $out/.
-      echo 9 >$out/installVersion
-    '';
 
     electronChromedriver = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";

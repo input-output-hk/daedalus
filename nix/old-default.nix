@@ -78,7 +78,12 @@ let
     #     patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
     #   };
 
-    nodejs = pkgs.nodejs-14_x;
+    nodejs = pkgs.nodejs-14_x.overrideAttrs (drv: {
+      # XXX: we don’t want `bypass-xcodebuild.diff`, rather we supply
+      # the pure `xcbuild` – without that, `blake2` doesn’t build,
+      # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
+      patches = [];
+    });
 
     nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
     yarnInfo = {
@@ -335,6 +340,7 @@ let
       win64 = true;
       daedalus = throw "do not use";
       iconPath = throw "do not use";
+      inherit (inputs.self.packages.x86_64-windows.internal.mainnet.newCommon) electronVersion patchElectronRebuild;
     };
     source = builtins.filterSource localLib.cleanSourceFilter ../.;
     inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
