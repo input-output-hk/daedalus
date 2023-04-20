@@ -126,49 +126,16 @@ let
       }
       yarn install
 
-      # Let’s patch electron-rebuild to force correct Node.js headers to
-      # build native modules against even in `nix-shell`, otherwise, it
-      # doesn’t work reliably.
-      ${inputs.self.packages.${system}.internal.${cluster}.newCommon.patchElectronRebuild}
-
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
-      find Debug/ Release/ -name '*.node' | xargs rm -v || true
       yarn build:electron
 
-      ${let
-        # Several native modules have to be linked in ${BUILDTYPE}/ in
-        # root directory, for `yarn dev` to work correctly. If a Debug
-        # version of such extension exists, we use it, otherwise, we
-        # use Release:
-        tryLink = dependency: fileName: ''
-          symlinkTarget=$(ls 2>/dev/null -d \
-            "$PWD/node_modules/${dependency}/build/Debug/${fileName}" \
-            "$PWD/node_modules/${dependency}/build/Release/${fileName}" \
-            | head -1
-          )
-
-          if [ -z "$symlinkTarget" ] ; then
-            echo >&2 "error: symlink target not found: ‘${fileName}’ in ‘${dependency}’"
-            # ~exit 1~ — do not exit, let the person fix from inside `nix-shell`
-          fi
-
-          ${localLib.optionalString pkgs.stdenv.isLinux ''
-            ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
-              pkgs.stdenv.cc.cc pkgs.udev
-            ]} "$symlinkTarget"
-          ''}
-
-          mkdir -p ${BUILDTYPE}/
-          ln -svf "$symlinkTarget" ${BUILDTYPE}/
-          unset symlinkTarget
-        '';
-      in ''
-        ${tryLink "usb"           "usb_bindings.node"}
-        ${tryLink "usb-detection" "detection.node"}
-        ${tryLink "node-hid"      "HID.node"}
-        ${localLib.optionalString pkgs.stdenv.isLinux ''
-          ${tryLink "node-hid"      "HID_hidraw.node"}
-        ''}
+      # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
+      ${localLib.optionalString pkgs.stdenv.isLinux ''
+        for ext in ${BUILDTYPE}/*.node ; do
+          ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc pkgs.udev
+          ]} "$(readlink -f "$symlinkTarget")"
+        done
       ''}
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''

@@ -42,7 +42,7 @@ rec {
   # why…
   #
   # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
-  patchElectronRebuild = pkgs.writeShellScript "patch-electron-rebuild" ''
+  patchElectronRebuild = pkgs.writeShellScriptBin "patch-electron-rebuild" ''
     echo 'Patching electron-rebuild to force our Node.js headers…'
 
     nodeGypJs=lib/src/module-type/node-gyp.js

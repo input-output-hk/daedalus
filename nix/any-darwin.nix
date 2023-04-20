@@ -138,8 +138,6 @@ in rec {
   # /nix/store with pure dependencies), then add a newline in the middle
   # of `package.json`, and then build the `package` again, only this time
   # with network turned off system-wise.
-  #
-  # TODO: probably run `electron-rebuild` here, not in `package` (in `MacInstaller.hs`)
   node_modules = pkgs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
@@ -156,15 +154,10 @@ in rec {
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
 
-      # The original is only used in devShells:
-      mkdir scripts && touch scripts/postinstall.sh && chmod +x scripts/postinstall.sh
-
       # Now, install from ${offlineCache} to node_modules/
       yarn install --frozen-lockfile
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
-
-      ${newCommon.patchElectronRebuild}
     '';
     installPhase = ''
       mkdir $out
@@ -207,6 +200,8 @@ in rec {
     '';
     outputs = [ "out" "futureInstaller" ];
     buildPhase = ''
+      sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
         cd installers/

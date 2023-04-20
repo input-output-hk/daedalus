@@ -353,10 +353,8 @@ npmPackage DarwinConfig{dcAppName} = do
     Nothing -> procs "yarn" ["install", "--frozen-lockfile"] empty
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
-  homeDir <- home
-  export "TMPDIR" . tt $ homeDir </> "electron-rebuild-tmp-dir" -- else, new `electron-rebuild` fails with EACCESS
+  procs "yarn" ["build:electron"] empty
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
-  procs "node_modules/.bin/electron-rebuild" ["-w", "usb-detection", "--useCache", "-s"] empty -- <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
   procs "find" ["-name", "*.node"] empty

@@ -151,8 +151,8 @@ yarn2nix.mkYarnPackage {
 
     chmod -R +w node_modules/
 
-    # We ship debug version because the release one has issues with ledger nano s
-    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
+    sed -r 's#.*patchElectronRebuild.*#${patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+    yarn build:electron
 
     mkdir -p $out/bin $out/share/daedalus
     cp -R deps/daedalus/dist/* $out/share/daedalus
@@ -174,7 +174,6 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/daedalus/node_modules/node-hid/build
     cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
 
-    node_modules/.bin/electron-rebuild -w usb-detection --useCache -s
     mkdir -p $out/share/daedalus/node_modules/usb-detection/build
     cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/node_modules/usb-detection/build
 
