@@ -18,19 +18,20 @@
 , cardanoNodeVersion
 , electronVersion
 , patchElectronRebuild
+, originalPackageJson
+, yarn2nix
 , strace }:
 let
   cluster' = launcherConfig.networkName;
-  yarn2nix = import (fetchzip {
-    # v1.0.0 with a PR to handle duplicate file names between @types/* and original/* – <https://github.com/nix-community/yarn2nix/pull/75>
-    # TODO: use the version from recent Nixpkgs
-    url = "https://github.com/nix-community/yarn2nix/archive/276994748d556e0812bb1bc5f92ac095b5da71d2.tar.gz";
-    sha256 = "1fxiq43w8mfs0aiyj4kazwjl6b829a5r0jbx6bcs3kmil9asq3fg";
-  }) {
-    inherit pkgs nodejs yarn;
-  };
-  origPackage = originalPackageJson;
-  newPackage = (origPackage // {
+  # yarn2nix = import (fetchzip {
+  #   # v1.0.0 with a PR to handle duplicate file names between @types/* and original/* – <https://github.com/nix-community/yarn2nix/pull/75>
+  #   # TODO: use the version from recent Nixpkgs
+  #   url = "https://github.com/nix-community/yarn2nix/archive/276994748d556e0812bb1bc5f92ac095b5da71d2.tar.gz";
+  #   sha256 = "1fxiq43w8mfs0aiyj4kazwjl6b829a5r0jbx6bcs3kmil9asq3fg";
+  # }) {
+  #   inherit pkgs nodejs yarn;
+  # };
+  newPackage = (originalPackageJson // {
     productName = spacedName;
   }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
@@ -140,48 +141,7 @@ yarn2nix.mkYarnPackage {
     cp $out/resources/app/build/Debug/HID.node $out/resources/app/node_modules/node-hid/build
     mkdir -p $out/resources/app/node_modules/usb/build
     cp $out/resources/app/build/Debug/usb_bindings.node $out/resources/app/node_modules/usb/build
-  '' else ''
-    mkdir -pv home/.cache/
-    export HOME=$(realpath home)
-    yarn --offline run build
-
-    #export DEBUG=electron-rebuild
-
-    ls -ltrha $NIX_BUILD_TOP/daedalus/node_modules/
-
-    chmod -R +w node_modules/
-
-    sed -r 's#.*patchElectronRebuild.*#${patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
-    yarn build:electron
-
-    mkdir -p $out/bin $out/share/daedalus
-    cp -R deps/daedalus/dist/* $out/share/daedalus
-    cp ${newPackagePath} $out/share/daedalus/package.json
-    pushd $out/share/daedalus
-    ${nukeAllRefs}
-    popd
-    mkdir -p $out/share/fonts
-    ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
-    mkdir -pv $out/share/daedalus/node_modules
-    cp -r $node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib} $out/share/daedalus/node_modules/
-    find $out $NIX_BUILD_TOP -name '*.node'
-
-    chmod -R +w $out
-
-    mkdir -p $out/share/daedalus/node_modules/usb/build
-    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
-
-    mkdir -p $out/share/daedalus/node_modules/node-hid/build
-    cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
-
-    mkdir -p $out/share/daedalus/node_modules/usb-detection/build
-    cp node_modules/usb-detection/build/Release/detection.node $out/share/daedalus/node_modules/usb-detection/build
-
-    for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
-      $STRIP $file
-      patchelf --shrink-rpath $file
-    done
-  '';
+  '' else throw "code for x86_64-linux from here is no longer used";
   distPhase = ''
     # unused
   '';

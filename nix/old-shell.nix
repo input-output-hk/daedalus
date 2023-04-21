@@ -48,7 +48,7 @@ let
       darwin.cctools
       xcbuild
     ] else [
-      daedalusPkgs.electron
+      inputs.self.packages.${system}.internal.${cluster}.electronBin
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -139,7 +139,8 @@ let
       ''}
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
-        ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
+        # FIXME: use `internal.patchelfElectron`, like Lace
+        ln -svf ${inputs.self.packages.${system}.internal.${cluster}.electronBin}/bin/electron ./node_modules/electron/dist/electron
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'

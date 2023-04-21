@@ -64,42 +64,6 @@ let
     cardanoLib = walletPkgs.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
 
-    # nodejs = let
-    #   njPath = pkgs.path + "/pkgs/development/web/nodejs";
-    #   buildNodeJs = pkgs.callPackage (import (njPath + "/nodejs.nix")) {
-    #     python = pkgs.python39;
-    #     icu = pkgs.icu68; # can’t build against ICU 69: <https://chromium-review.googlesource.com/c/v8/v8/+/2477751>
-    #   };
-    # in
-    #   buildNodeJs {
-    #     enableNpm = true;
-    #     version = "14.17.0";
-    #     sha256 = "1vf989canwcx0wdpngvkbz2x232yccp7fzs1vcbr60rijgzmpq2n";
-    #     patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
-    #   };
-
-    nodejs = pkgs.nodejs-14_x.overrideAttrs (drv: {
-      # XXX: we don’t want `bypass-xcodebuild.diff`, rather we supply
-      # the pure `xcbuild` – without that, `blake2` doesn’t build,
-      # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-      patches = [];
-    });
-
-    nodePackages = pkgs.nodePackages.override { nodejs = self.nodejs; };
-    yarnInfo = {
-      version = "1.22.4";
-      hash = "1l3sv30g61dcn7ls213prcja2y3dqdi5apq9r7yyick295w25npq";
-    };
-    yarn = (pkgs.yarn.override { inherit (self) nodejs; }) /*.overrideAttrs (old: {
-      version = self.yarnInfo.version;
-      src = pkgs.fetchFromGitHub {
-        owner = "yarnpkg";
-        repo = "yarn";
-        rev = "v${self.yarnInfo.version}";
-        sha256 = self.yarnInfo.hash;
-      };
-    })*/;
-
     sources = localLib.sources;
     bridgeTable = {
       cardano = self.callPackage ./cardano-bridge.nix {};
@@ -340,7 +304,7 @@ let
       win64 = true;
       daedalus = throw "do not use";
       iconPath = throw "do not use";
-      inherit (inputs.self.packages.x86_64-windows.internal.mainnet.newCommon) electronVersion patchElectronRebuild;
+      inherit (inputs.self.packages.x86_64-windows.internal.mainnet.newCommon) electronVersion patchElectronRebuild yarn2nix;
     };
     source = builtins.filterSource localLib.cleanSourceFilter ../.;
     inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''

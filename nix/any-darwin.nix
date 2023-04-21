@@ -10,15 +10,13 @@ let
   inherit (pkgs) lib;
 
   inherit (oldCode)
-    nodejs nodePackages yarn
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
-  inherit (newCommon) originalPackageJson electronVersion electronHeaders;
+  inherit (newCommon) originalPackageJson electronVersion electronChromedriverVersion commonSources;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
-  electronChromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
   installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
   # # On Catalina (x86), we can’t detect Ledger devices, unless:
@@ -36,88 +34,20 @@ let
 
 in rec {
 
-  inherit newCommon oldCode nodejs nodePackages yarn;
-
-  yarn2nix = let
-    # Nixpkgs master @ 2022-07-18
-    # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
-    source = pkgs.fetchzip {
-      url = "https://github.com/NixOS/nixpkgs/archive/qe4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
-      sha256 = "0y0c9ybkcfmjgrl93wzzlk7ii95kh2fb4v5ac5w6rmcsq2ff3yaz";
-    };
-    subdir = builtins.path { path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix"; };
-    in
-    import subdir {
-      inherit pkgs nodejs yarn;
-      allowAliases = true;
-    };
-
-  # To better cache node_modules, let’s only depend on package.json, and yarn.lock:
-  srcLockfiles = lib.cleanSourceWith {
-    src = inputs.self;
-    name = "daedalus-lockfiles";
-    filter = name: type: let b = baseNameOf (toString name); in (b == "package.json" || b == "yarn.lock");
-  };
-
-  srcWithoutNix = lib.cleanSourceWith {
-    src = inputs.self;
-    filter = name: type: !(type == "regular" && (
-      lib.hasSuffix ".nix" name ||
-      lib.hasSuffix ".hs" name ||
-      lib.hasSuffix ".cabal" name
-    ));
-  };
-
-  # This is the only thing we use the original `yarn2nix` for:
-  offlineCache = yarn2nix.importOfflineCache (yarn2nix.mkYarnNix {
-    yarnLock = srcLockfiles + "/yarn.lock";
-  });
+  inherit newCommon oldCode;
+  inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
 
   # The following is used in all `configurePhase`s:
-  setupCacheAndGypDirs = ''
-    # XXX: `HOME` (for various caches) cannot be under our source root, that confuses `electron-packager`:
-    export HOME=$(realpath $NIX_BUILD_TOP/home)
-    mkdir -p $HOME
+  darwinSpecificCaches = let
+    cacheDir = "$HOME/Library/Caches";
+  in ''
+    mkdir -p ${cacheDir}/electron/${darwinSources.electronCacheHash}/
+    ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
+    ln -sf ${darwinSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-darwin-${archSuffix}.zip
 
-    # Do not look up in the registry, but in the offline cache, cf. <https://classic.yarnpkg.com/en/docs/yarnrc>:
-    echo '"--offline" true' >>$HOME/.yarnrc
-    yarn config set yarn-offline-mirror ${offlineCache}
-
-    # These are sometimes useful:
-    #
-    # npm config set loglevel verbose
-    # echo '"--verbose" true' >>$HOME/.yarnrc
-    # export NODE_OPTIONS='--trace-warnings'
-    # export DEBUG='*'
-    # export DEBUG='node-gyp @electron/get:* electron-rebuild'
-
-    # Don’t try to download prebuilded packages (with prebuild-install):
-    export npm_config_build_from_source=true
-    ( echo 'buildFromSource=true' ; echo 'compile=true' ; ) >$HOME/.prebuild-installrc
-
-    ${lib.concatMapStringsSep "\n" (cacheDir: ''
-
-      # Node.js headers for building native `*.node` extensions with node-gyp:
-      # TODO: learn why installVersion=9 – where does it come from? see node-gyp
-      mkdir -p ${cacheDir}/node-gyp/${nodejs.version}
-      echo 9 > ${cacheDir}/node-gyp/${nodejs.version}/installVersion
-      ln -sf ${nodejs}/include ${cacheDir}/node-gyp/${nodejs.version}
-
-      mkdir -p ${cacheDir}/electron/${darwinSources.electronCacheHash}/
-      ln -sf ${darwinSources.electronShaSums} ${cacheDir}/electron/${darwinSources.electronCacheHash}/SHASUMS256.txt
-      ln -sf ${darwinSources.electron} ${cacheDir}/electron/${darwinSources.electronCacheHash}/electron-v${electronVersion}-darwin-${archSuffix}.zip
-
-      mkdir -p ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/
-      ln -sf ${darwinSources.electronChromedriverShaSums} ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/SHASUMS256.txt
-      ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${darwinSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip
-
-    '') [
-      "$HOME/.cache"          # Linux, Windows (cross-compiled)
-      "$HOME/Library/Caches"  # Darwin
-    ]}
-
-    mkdir -p $HOME/.electron-gyp/
-    ln -sf ${electronHeaders} $HOME/.electron-gyp/${electronVersion}
+    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
+    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
+    ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${commonSources.electronChromedriverVersion}-darwin-${archSuffix}.zip
   '';
 
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
@@ -149,7 +79,7 @@ in rec {
       /*theSDK.*/apple_sdk.frameworks.AppKit
       #(theSDK.apple_sdk.sdk or theSDK.apple_sdk.MacOSX-SDK)
     ]);
-    configurePhase = setupCacheAndGypDirs;
+    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
@@ -193,13 +123,14 @@ in rec {
     BUILD_REV_COUNT = sourceLib.buildRevCount;
     CARDANO_WALLET_VERSION = cardanoWalletVersion;
     CARDANO_NODE_VERSION = cardanoNodeVersion;
-    configurePhase = setupCacheAndGypDirs + ''
+    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
     '';
     outputs = [ "out" "futureInstaller" ];
     buildPhase = ''
+      patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
@@ -346,34 +277,18 @@ in rec {
   darwinSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
-      sha256 =
+      hash =
         if archSuffix == "x64"
-        then "0bz0a0g59fc1xc1lavv4jqy7n4r5l66pb9q6z2mbn87hssa9gw3b"
-        else "06igqaayqsmcrzznpr606b097091z5r830h0x7p32jvrh42xyk9p";
+        then "sha256-a/CXlNbwILuq+AandY2hJRN7PJZkb0UD64G5VB5Q4C8="
+        else "sha256-N03fBYF5SzHu6QCCgXL5IYGTwDLA5Gv/z6xq7JXCLxo=";
     };
-
-    electronShaSums = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      sha256 = "081sw9hkkzsl8z4jsbnf4b6j98sn16wzfkb63yknranxzya2j99n";
-    };
-
-    electronCacheHash = builtins.hashString "sha256"
-      "https://github.com/electron/electron/releases/download/v${electronVersion}";
 
     electronChromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
-      sha256 =
+      url = "https://github.com/electron/electron/releases/download/v${commonSources.electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
+      hash =
         if archSuffix == "x64"
-        then "0wnwvq4m79jch0wpnl6v2yhpcwy5ccaxkkia99wrqwg4fdsxkwka"
-        else "07i8d96mwm0h1r70hxny4ryp39mw2hrigh5fhp87i56cb6dmis4d";
+        then "sha256-avLZdXPkcZx5SirO2RVjxXN2oRfbUHs5gEymUwne3HI="
+        else "sha256-jehYm1nMlHjQha7AFzMUvKZxfSbedghODhBUXk1qKB4=";
     };
-
-    electronChromedriverShaSums = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      sha256 = "07xxam8dvn1aixvx39gd5x3yc1bs6i599ywxwi5cbkpf957ilpcx";
-    };
-
-    electronChromedriverCacheHash = builtins.hashString "sha256"
-      "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}";
   };
 }

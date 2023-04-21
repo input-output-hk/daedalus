@@ -6,14 +6,15 @@ let
 
   newCommon = import ./new-common.nix { inherit inputs targetSystem cluster; };
 
-  inherit (newCommon) sourceLib oldCode pkgs;
+  inherit (newCommon) sourceLib oldCode pkgs commonSources;
   inherit (pkgs) lib;
 
 in rec {
 
   inherit newCommon oldCode;
+  inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
-  package = daedalus { sandboxed = false; };
+  package = mkDaedalus { sandboxed = false; };
 
   unsignedInstaller = linuxInstaller.wrappedBundle;
 
@@ -22,35 +23,165 @@ in rec {
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
 
-  daedalus = { sandboxed }: import ../installers/nix/linux.nix {
+  # The following is used in all `configurePhase`s:
+  linuxSpecificCaches = let
+    cacheDir = "$HOME/.cache";
+  in ''
+    mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
+    ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
+    ln -sf ${linuxSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-linux-x64.zip
+
+    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
+    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
+    ln -sf ${linuxSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip
+  '';
+
+  node_modules = pkgs.stdenv.mkDerivation {
+    name = "daedalus-node_modules";
+    src = srcLockfiles;
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with pkgs; [ python3 pkgconfig jq ]);
+    buildInputs = with pkgs; [ libusb ];
+    configurePhase = newCommon.setupCacheAndGypDirs + linuxSpecificCaches;
+    buildPhase = ''
+      # Do not look up in the registry, but in the offline cache:
+      ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
+
+      # Now, install from offlineCache to node_modules/, but do not
+      # execute any scripts defined in the project package.json and
+      # its dependencies we need to `patchShebangs` first, since even
+      # ‘/usr/bin/env’ is not available in the build sandbox
+      yarn install --ignore-scripts
+
+      patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+      sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
+
+      # And now, with correct shebangs, run the install scripts (we have to do that
+      # semi-manually, because another `yarn install` will overwrite those shebangs…):
+      find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
+        # The grep pre-filter is not ideal:
+        if [ "$(jq .scripts.install "$dependency")" != "null" ] ; then
+          echo ' '
+          echo "Running the install script for ‘$dependency’:"
+          ( cd "$(dirname "$dependency")" ; yarn run install ; )
+        fi
+      done
+
+      patchShebangs . >/dev/null  # a few new files will have appeared
+    '';
+    installPhase = ''
+      mkdir $out
+      cp -r node_modules $out/
+    '';
+    dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
+  };
+
+  daedalusJs = pkgs.stdenv.mkDerivation {
+    name = "daedalus-js";
+    src = srcWithoutNix;
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with pkgs; [ python3 pkgconfig ]);
+    buildInputs = with pkgs; [ libusb ];
+    CARDANO_WALLET_VERSION = oldCode.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = oldCode.cardanoNodeVersion;
+    CI = "nix";
+    NETWORK = oldCode.launcherConfigs.launcherConfig.networkName;
+    BUILD_REV = sourceLib.buildRev;
+    BUILD_REV_SHORT = sourceLib.buildRevShort;
+    BUILD_REV_COUNT = sourceLib.buildRevCount;
+    NODE_ENV = "production";
+    BUILDTYPE = "Release";
+    configurePhase = newCommon.setupCacheAndGypDirs + linuxSpecificCaches + ''
+      # Grab all cached `node_modules` from above:
+      cp -r ${node_modules}/. ./
+      chmod -R +w .
+    '';
+    patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
+      pkgs.lib.recursiveUpdate originalPackageJson {
+        productName = oldCode.launcherConfigs.installerConfig.spacedName;
+        main = "main/index.js";
+      }
+    ));
+    buildPhase = ''
+      cp -v $patchedPackageJson package.json
+
+      patchShebangs .
+      sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+      yarn build:electron
+
+      yarn run package -- --name ${lib.escapeShellArg oldCode.launcherConfigs.installerConfig.spacedName}
+    '';
+    installPhase = ''
+      mkdir -p $out/bin $out/share/daedalus
+      cp -R dist/. $out/share/daedalus/.
+      cp $patchedPackageJson $out/share/daedalus/package.json
+
+      # XXX: the webpack utils embed the original source paths into map files, which causes the derivation
+      # to depend on the original inputs at the nix layer, and double the size of the linux installs.
+      # this will just replace all storepaths with an invalid one:
+      (
+        cd $out/share/daedalus
+        for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
+          ${pkgs.nukeReferences}/bin/nuke-refs $x
+        done
+      )
+
+      mkdir -p $out/share/fonts
+      ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
+
+      mkdir -pv $out/share/daedalus/node_modules
+      cp -r node_modules/{\@babel,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,parse-uri,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,blake2,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib} $out/share/daedalus/node_modules/
+
+      chmod -R +w $out
+
+      mkdir -p $out/share/daedalus/node_modules/usb/build
+      cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
+
+      mkdir -p $out/share/daedalus/node_modules/node-hid/build
+      cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
+
+      mkdir -p $out/share/daedalus/node_modules/usb-detection/build
+      # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
+      cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
+
+      for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
+        $STRIP $file
+        patchelf --shrink-rpath $file
+      done
+    '';
+    dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
+  };
+
+  electronBin = pkgs.stdenv.mkDerivation {
+    name = "electron-${electronVersion}";
+    src = linuxSources.electron;
+    buildInputs = with pkgs; [ unzip makeWrapper ];
+    buildCommand = with pkgs; ''
+      mkdir -p $out/lib/electron $out/bin
+      unzip -d $out/lib/electron $src
+      ln -s $out/lib/electron/electron $out/bin
+
+      fixupPhase
+
+      patchelf \
+        --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+        --set-rpath "${atomEnv.libPath}:${lib.makeLibraryPath [ libuuid at-spi2-atk at-spi2-core xorg.libxshmfence libxkbcommon ]}:$out/lib/electron" \
+        $out/lib/electron/electron
+    '';
+  };
+
+  mkDaedalus = { sandboxed }: import ../installers/nix/linux.nix {
     inherit (pkgs) stdenv runCommand writeText writeScriptBin coreutils
       utillinux procps gsettings-desktop-schemas gtk3 hicolor-icon-theme xfce;
     inherit (oldCode) daedalus-bridge daedalus-installer;
-    inherit cluster rawapp sandboxed;
+    inherit cluster sandboxed;
+
+    rawapp = daedalusJs;
+    electron = electronBin;
 
     # FIXME: ???
-    inherit (oldCode) nodeImplementation launcherConfigs electron;
+    inherit (oldCode) nodeImplementation launcherConfigs;
     linuxClusterBinName = cluster;
-  };
-
-  # FIXME: rewrite
-  rawapp = import ./old-yarn2nix.nix {
-    inherit sourceLib;
-    inherit (oldCode.launcherConfigs.installerConfig) spacedName;
-    inherit (oldCode.launcherConfigs) launcherConfig;
-    inherit cluster;
-
-    inherit (oldCode) yarn nodejs nodePackages cardanoWalletVersion cardanoNodeVersion wine64 windowsIcons;
-    inherit (pkgs) lib stdenv python3 python2 python27 nukeReferences fetchzip runCommand fetchurl unzip
-      libcap libgcrypt libgpgerror libidn2 libunistring libusb libusb1 libudev lz4 pkgconfig
-      writeShellScript xz zlib strace;
-
-    inherit pkgs daedalus;
-    inherit (linuxInstaller) iconPath;
-
-    inherit (newCommon) electronVersion patchElectronRebuild;
-
-    win64 = false;
   };
 
   linuxInstaller = rec {
@@ -139,9 +270,10 @@ in rec {
     '';
 
     newBundle = let
-      daedalus' = daedalus { sandboxed = true; };
+      daedalus' = mkDaedalus { sandboxed = true; };
     in (import ../installers/nix/nix-installer.nix {
-      inherit postInstall preInstall linuxClusterBinName rawapp;
+      inherit postInstall preInstall linuxClusterBinName;
+      rawapp = daedalusJs;
       inherit pkgs;
       installationSlug = installPath;
       installedPackages = [ daedalus' postInstall namespaceHelper daedalus'.cfg oldCode.daedalus-bridge daedalus'.daedalus-frontend xdg-open ];
@@ -156,6 +288,18 @@ in rec {
       cp ${newBundle} $out/${fn}
     '';
 
+  };
+
+  linuxSources = {
+    electron = pkgs.fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
+      hash = "sha256-dgdCKkuoDNpL1/77L74vTguac9uS4egtwBASqFtdDSs=";
+    };
+
+    electronChromedriver = pkgs.fetchurl {
+      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip";
+      hash = "sha256-bkeA1l1cBppdsbLISwu8MdC/2E5sjVJx6e+KhLgQ5yA=";
+    };
   };
 
 }
