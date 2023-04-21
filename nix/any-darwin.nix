@@ -41,13 +41,13 @@ in rec {
   darwinSpecificCaches = let
     cacheDir = "$HOME/Library/Caches";
   in ''
-    mkdir -p ${cacheDir}/electron/${darwinSources.electronCacheHash}/
+    mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
     ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
     ln -sf ${darwinSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-darwin-${archSuffix}.zip
 
     mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
     ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
-    ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${commonSources.electronChromedriverVersion}-darwin-${archSuffix}.zip
+    ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip
   '';
 
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
@@ -72,7 +72,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools /*theSDK.*/xcbuild ]);
+      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools /*theSDK.*/xcbuild ]);
     buildInputs = (with pkgs.darwin; [
       #/*theSDK.*/apple_sdk.frameworks.IOKit
       /*theSDK.*/apple_sdk.frameworks.CoreServices   # old-shell.nix has this instead of IOKit, let’s try
@@ -85,9 +85,25 @@ in rec {
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
 
       # Now, install from ${offlineCache} to node_modules/
-      yarn install --frozen-lockfile
+      yarn install --ignore-scripts
+      # TODO: remove all prebuilt *.node files extracted from `.tgz`s
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+      sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
+
+      # And now, with correct shebangs, run the install scripts (we have to do that
+      # semi-manually, because another `yarn install` will overwrite those shebangs…):
+      find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
+        # The grep pre-filter is not ideal:
+        if [ "$(jq .scripts.install "$dependency")" != "null" ] ; then
+          echo ' '
+          echo "Running the install script for ‘$dependency’:"
+
+          ( cd "$(dirname "$dependency")" ; yarn run install ; )
+        fi
+      done
+
+      patchShebangs . >/dev/null  # a few new files will have appeared
     '';
     installPhase = ''
       mkdir $out
@@ -284,7 +300,7 @@ in rec {
     };
 
     electronChromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${commonSources.electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
+      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
         then "sha256-avLZdXPkcZx5SirO2RVjxXN2oRfbUHs5gEymUwne3HI="

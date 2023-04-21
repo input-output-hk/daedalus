@@ -52,6 +52,7 @@ in rec {
       # its dependencies we need to `patchShebangs` first, since even
       # ‘/usr/bin/env’ is not available in the build sandbox
       yarn install --ignore-scripts
+      # TODO: remove all prebuilt *.node files extracted from `.tgz`s
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
       sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
