@@ -116,6 +116,37 @@ in rec {
 
   darwin-launcher = pkgs.callPackage ./darwin-launcher.nix {};
 
+
+  # XXX: we can’t make node-hid compiled from source work on x86
+  # Catalina (and the majority of Intel users are still there), let’s
+  # use a binary blob for now
+  # FIXME: investigate why and fix
+  catalinaBlobs = rec {
+    officialRelease = pkgs.fetchurl {
+      url = "https://update-cardano-mainnet.iohk.io/daedalus-5.2.0-mainnet-22505-x86_64-darwin.pkg";
+      hash = "sha256-PTXAzw8FdR954wZPhrBZeQXbULi0RRHx0nXYQwvd7Yk=";
+    };
+
+    officialReleaseUnpacked = pkgs.runCommand "officialReleaseUnpacked" {} ''
+      ${pkgs.xar}/bin/xar -xf ${officialRelease}
+      cd daedalus-*
+      cat Payload | ${pkgs.gzip}/bin/gunzip | ${pkgs.cpio}/bin/cpio -i
+      mkdir -p $out
+      cp -r Daedalus*.app/Contents/. $out/
+    '';
+
+    nodeHidPath = "Resources/app/node_modules/node-hid/build/Release/HID.node";
+
+    spliceTheBlobs = pkgs.writeShellScript "splice-catalina-blobs" ''
+      cp -vf ${officialReleaseUnpacked}/MacOS/usb_bindings.node node_modules/usb/build/Release/
+      cp -vf ${officialReleaseUnpacked}/MacOS/HID.node          node_modules/node-hid/build/Release/
+    '';
+
+    nodeHid = pkgs.runCommand "catalina-blobs--node-hid.node" {} ''
+      cp ${officialReleaseUnpacked}/${nodeHidPath} $out
+    '';
+  };
+
   package = let
     pname = "daedalus";
   in pkgs.stdenv.mkDerivation {
@@ -148,6 +179,10 @@ in rec {
     buildPhase = ''
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+
+      ${if pkgs.system == "x86_64-darwin" then ''
+        ( echo ; echo ${catalinaBlobs.spliceTheBlobs} ; ) >>scripts/rebuild-native-modules.sh
+      '' else ""}
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
