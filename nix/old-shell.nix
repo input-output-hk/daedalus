@@ -62,7 +62,6 @@ let
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
     cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
-    ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
     daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
     # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
     cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
