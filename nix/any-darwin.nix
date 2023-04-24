@@ -180,13 +180,12 @@ in rec {
       chmod -R +w .
     '';
     outputs = [ "out" "futureInstaller" ];
+      # ${if pkgs.system == "x86_64-darwin" then ''
+      #   ( echo ; echo ${catalinaBlobs.spliceTheBlobs} ; ) >>scripts/rebuild-native-modules.sh
+      # '' else ""}
     buildPhase = ''
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
-
-      ${if pkgs.system == "x86_64-darwin" then ''
-        ( echo ; echo ${catalinaBlobs.spliceTheBlobs} ; ) >>scripts/rebuild-native-modules.sh
-      '' else ""}
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
