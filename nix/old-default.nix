@@ -313,8 +313,6 @@ let
         flags: -no-exe
     ''; }).components.exes) yaml2json;
 
-    electron = pkgs.callPackage ../installers/nix/electron.nix {};
-
     tests = {
       runShellcheck = self.callPackage ../tests/shellcheck.nix { src = ../.;};
     };
