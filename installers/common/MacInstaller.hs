@@ -152,28 +152,6 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib"
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
 
-# Sign native electron bindings and supplementary binaries
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-arm64/node.napi.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-arm64-"*"/blake-hash.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/build/Release/binding.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/bin/darwin-x64-"*"/blake2.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake2/bin/darwin-arm64-"*"/blake2.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-arm64-"*"/tiny-secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-x64-"*"/usb-detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-arm64-"*"/usb-detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-x64-"*"/node-hid.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-arm64-"*"/node-hid.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
-
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
 
