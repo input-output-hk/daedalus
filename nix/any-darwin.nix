@@ -55,6 +55,7 @@ in rec {
   # have. Instead, we locate targets in a more clever way.
   signAllBinaries = pkgs.writeShellScript "signAllBinaries" ''
     set -o nounset
+    echo 'Searching for binaries to ad-hoc sign…'
     source ${pkgs.darwin.signingUtils}
     ${pkgs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
       echo "ad-hoc signing ‘$target’…"
@@ -203,6 +204,14 @@ in rec {
     installPhase = ''
       mkdir -p $out/Applications/
       cp -r release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app $out/Applications/
+
+      # XXX: remove redundant native modules:
+      echo 'Deleting all redundant ‘*.node’ files under to-be-distributed ‘node_modules/’:'
+      (
+        cd $out/Applications/*/Contents/
+        find Resources/app/node_modules -type f '(' -name '*.node' -o -name '*.o' ')' -exec rm -vf '{}' ';'
+        sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i Resources/app/node_modules/bindings/bindings.js
+      )
 
       # XXX: For `nix run`, unfortunately, we cannot use symlinks, because then golang’s `os.Executable()`
       # will not return the target, but the symlink, and all paths will break… :sigh:
