@@ -177,7 +177,8 @@ in rec {
       echo 'Deleting all redundant ‘*.node’ files under to-be-distributed ‘node_modules/’:'
       (
         cd $out/Applications/*/Contents/
-        find Resources/app/node_modules -type f '(' -name '*.node' -o -name '*.o' ')' -exec rm -vf '{}' ';'
+        find Resources/ -name '*.node' -exec rm -vf '{}' ';'
+        find Resources/app/node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
         sed -r 's#try: \[#\0 [process.env.DAEDALUS_INSTALL_DIRECTORY, "bindings"],#' -i Resources/app/node_modules/bindings/bindings.js
       )
 
