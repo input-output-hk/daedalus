@@ -92,6 +92,9 @@ in rec {
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
       sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
 
+      # GNU sed is a bit different:
+      sed -r "s#sed -i '''#sed -i#" -i node_modules/lzma-native/liblzma-config.sh
+
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
       find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
