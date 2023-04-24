@@ -141,8 +141,8 @@ in rec {
 
     nodeHidPath = "Resources/app/node_modules/node-hid/build/Release/HID.node";
 
+      #cp -vf ${officialReleaseUnpacked}/MacOS/usb_bindings.node node_modules/usb/build/Release/
     spliceTheBlobs = pkgs.writeShellScript "splice-catalina-blobs" ''
-      cp -vf ${officialReleaseUnpacked}/MacOS/usb_bindings.node node_modules/usb/build/Release/
       cp -vf ${officialReleaseUnpacked}/MacOS/HID.node          node_modules/node-hid/build/Release/
     '';
 
