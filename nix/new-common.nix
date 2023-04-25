@@ -121,7 +121,13 @@ rec {
   '';
 
   electronVersion = originalPackageJson.dependencies.electron;
-  electronChromedriverVersion = "12.0.0"; # FIXME: obtain programmatically
+
+  versionInOfflineCache = safeName:
+    __unsafeDiscardStringContext (__readFile (pkgs.runCommandLocal "electron-chromedriver-version" {} ''
+      ls ${offlineCache} | grep -F ${pkgs.lib.escapeShellArg (safeName + "___" + safeName)} | grep -Po '\d+(\.\d+)*' | tr -d '\n' >$out
+    ''));
+
+  electronChromedriverVersion = versionInOfflineCache "electron_chromedriver";
 
   commonSources = {
     electronHeaders = pkgs.runCommandLocal "electron-headers" {
