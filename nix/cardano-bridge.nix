@@ -38,6 +38,13 @@ runCommandCC "daedalus-cardano-bridge" {
     cp -f ${mock-token-metadata-server}/bin/* . || true
     cp -f ${./../utils/cardano/selfnode}/token-metadata.json .
   ''}
+  ${lib.optionalString (target == "x86_64-linux") ''
+    chmod +w -R .
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
+      $STRIP $x
+      patchelf --shrink-rpath $x
+    done
+  ''}
   ${lib.optionalString (target == "aarch64-darwin") ''
     chmod +w -R .
     for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
