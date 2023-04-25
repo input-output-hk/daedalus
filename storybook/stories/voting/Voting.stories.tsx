@@ -96,7 +96,6 @@ storiesOf('Voting / Voting Registration Wizard', module)
       selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
-      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 2', () => (
@@ -105,7 +104,6 @@ storiesOf('Voting / Voting Registration Wizard', module)
       onBack={action('onBack')}
       stepsList={stepsList}
       activeStep={2}
-      nextFundNumber={8}
       transactionFee={
         new BigNumber(
           number('transactionFee', 0.3, {
@@ -138,7 +136,6 @@ storiesOf('Voting / Voting Registration Wizard', module)
       onConfirm={action('onConfirm')}
       onRestart={action('onRestart')}
       transactionError={boolean('transactionError', false)}
-      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 4', () => (
@@ -147,7 +144,6 @@ storiesOf('Voting / Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={4}
       onSetPinCode={action('onSetPinCode')}
-      nextFundNumber={8}
     />
   ))
   .add('Voting Registration - Step 5', () => (
@@ -157,7 +153,6 @@ storiesOf('Voting / Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={2}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
-      nextFundNumber={8}
     />
   ));
 storiesOf('Voting / Voting Info', module)

@@ -26,7 +26,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.register.step.description',
     defaultMessage:
-      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund{nextVotingFundNumber} voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
+      '!!!Please sign the voting registration transaction. This transaction links your wallet balance with your voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.',
     description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
@@ -76,7 +76,6 @@ type Props = {
   transactionError?: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   selectedWallet: Wallet | null | undefined;
-  nextFundNumber: number;
   isTrezor: boolean;
   isHardwareWallet: boolean;
   isSubmitting: boolean;
@@ -157,7 +156,6 @@ class VotingRegistrationStepsRegister extends Component<Props> {
       selectedWallet,
       isTrezor,
       isHardwareWallet,
-      nextFundNumber,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
@@ -186,15 +184,9 @@ class VotingRegistrationStepsRegister extends Component<Props> {
         actions={actions}
         onBack={onBack}
         containerClassName={styles.component}
-        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
-          <FormattedHTMLMessage
-            {...messages.description}
-            values={{
-              nextVotingFundNumber: nextFundNumber,
-            }}
-          />
+          <FormattedHTMLMessage {...messages.description} />
         </p>
 
         <div className={styles.learnMoreWrapper}>

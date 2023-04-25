@@ -27,7 +27,7 @@ class VotingRegistrationPage extends Component<Props> {
     });
   };
   getInnerContent = (isVotingRegistrationDialogOpen: boolean) => {
-    const { app, networkStatus, wallets, voting } = this.props.stores;
+    const { app, networkStatus, wallets } = this.props.stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { openExternalLink } = app;
 
@@ -44,7 +44,6 @@ class VotingRegistrationPage extends Component<Props> {
     if (!wallets.allWallets.length) {
       return (
         <VotingNoWallets
-          nextFundNumber={voting.fundInfo?.next?.number}
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
           minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         />
