@@ -36,15 +36,7 @@
     devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
   }
-  // (let
-    tullia = inputs.tullia.fromSimple "x86_64-linux" (import ./nix/tullia.nix);
-    fakeEvent = { inputs."GitHub event" = {id = ""; created_at = ""; value = {github_body.head_commit.id="0000000";};}; id=""; ociRegistry=""; };
-  in {
-    tullia.x86_64-linux = tullia.tullia;
-    cicero.x86_64-linux = tullia.cicero;
-    ciceroLocalTest.x86_64-linux = (tullia.cicero."daedalus/ci" fakeEvent).job; # XXX: only nix-eval this
-    tulliaLocalTest.x86_64-linux = tullia.tullia.task.ci.computedCommand; # XXX: fine to nix-build
-  });
+  // (import ./nix/cicero.nix {inherit inputs;});
 
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {

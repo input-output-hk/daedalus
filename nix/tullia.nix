@@ -1,165 +1,157 @@
 let
   ciInputName = "GitHub event";
   repository = "input-output-hk/daedalus";
-in
-rec {
+  githubCheckName = targetSystem: "Cicero (${targetSystem})";
 
-  # XXX: We cross-build for Windows on Linux, but want a separate
-  # GitHub Check for both Linux, and Windows targets. (Separate Cicero
-  # tasks still run in the same Nomad container, so that wouldn’t be
-  # useful.)
-  #
-  # Since Darwin builds are also being “built” inside a Linux container by
-  # using the remote builders feature, we want to run Darwin in parallel
-  # to Linux+Windows, running the latter two sequentially, to get it
-  # faster.
-  #
-  # Therefore, we don’t use `preset.github.status.lib.reportBulk` with
-  # all of them inside a single `reportBulk` – that would build all
-  # systems sequentially.
-  #
-  # Moreover, we don’t want to fail the any of those sub-builds if any
-  # other fails.
-  #
-  # Inside a build for a particular target system, we want to build
-  # for target clusters (mainnet, preprod, etc.) sequentially.
-  #
-  # Further more, we want to fail the top-level `ci` GitHub
-  # Check. That’s tricky, since `preset.github.status.lib.reportBulk`
-  # doesn't carry over non-0 exit codes.
+  allJobs = {
+    x86_64-windows = [mkInstaller];
+    x86_64-darwin = [mkInstaller mkDevshell];
+    x86_64-linux = [mkInstaller mkDevshell];
+    aarch64-darwin = [mkInstaller mkDevshell];
+  };
 
-  tasks.ci = { config, lib, pkgs, ... }: {
-    preset = {
-      nix.enable = true;
-      github.ci = {
-        # Tullia tasks can run locally or on Cicero.
-        # When no facts are present we know that we are running locally and vice versa.
-        # When running locally, the current directory is already bind-mounted
-        # into the container, so we don't need to fetch the source from GitHub
-        # and we don't want to report a GitHub status.
-        enable = config.actionRun.facts != { };
-        inherit repository;
-        revision = config.preset.github.lib.readRevision ciInputName null;
-      };
-    };
+  # XXX: We cross-build for Windows on Linux, and want separate
+  # action+task per each platform, so that they are built in parallel
+  # (like Buildkite), but logs are easy to view separately, and they
+  # don’t consume each other’s resources. Darwin is built remotely. See also
+  # <https://github.com/input-output-hk/cicero/discussions/75>.
 
-    command.text = let
-
-      makeAndReportSequentiallyFor = { targetSystems }: pkgs.writeShellScript "build-and-report-seq-${lib.concatStringsSep "-" targetSystems}" ''
-        set -x
-
-        # Mark all as pending:
-        ${lib.concatMapStringsSep "\n" (targetSystem: ''
-          ${config.preset.github.status.lib.report} -c ${lib.escapeShellArg " (${targetSystem})"} -s pending -d Queued
-        '') targetSystems}
-
-        # Run all sequentially, reporting status:
-        ${lib.concatMapStringsSep "\n" (targetSystem: ''
-          ${config.preset.github.status.lib.report} -c ${lib.escapeShellArg " (${targetSystem})"} -- ${makeOneFor { inherit targetSystem; }}
-        '') targetSystems}
+  actions = __listToAttrs (map (targetSystem: {
+    name = "daedalus/ci/${targetSystem}";
+    value = {
+      task = githubCheckName targetSystem;
+      io = ''
+        // This is a CUE expression that defines what events trigger a new run of this action.
+        // There is no documentation for this yet. Ask SRE if you have trouble changing this.
+        let github = {
+          #input: "${ciInputName}"
+          #repo: "${repository}"
+        }
+        #lib.merge
+        #ios: [
+          { #lib.io.github_push, github, #default_branch: true },
+          { #lib.io.github_pr,   github, #target_default: false },
+        ]
       '';
+    };
+  }) (__attrNames allJobs));
 
-      makeOneFor = { targetSystem }: let
-        underlying = pkgs.writeShellScript "build-one-underlying-${targetSystem}" ''
+  tasks = __listToAttrs (map (targetSystem: {
+    name = githubCheckName targetSystem;
+    value = {
+      config,
+      lib,
+      pkgs,
+      ...
+    }: {
+      preset = {
+        nix.enable = true;
+        github.ci = {
+          # Tullia tasks can run locally or on Cicero.
+          # When no facts are present we know that we are running locally and vice versa.
+          # When running locally, the current directory is already bind-mounted
+          # into the container, so we don't need to fetch the source from GitHub
+          # and we don't want to report a GitHub status.
+          enable = config.actionRun.facts != {};
+          inherit repository;
+          remote = config.preset.github.lib.readRepository ciInputName null;
+          revision = config.preset.github.lib.readRevision ciInputName null;
+        };
+      };
+      # Linux & Windows builds require 32 GB, but Darwin happens on a remote builder that we don’t control:
+      memory =
+        if lib.hasInfix "darwin" targetSystem
+        then 8 * 1024
+        else 32 * 1024;
+      nomad.resources.cpu = 10000;
+      nomad.driver = "exec"; # Robin Stumm’s suggestion (more reliable), not building inside a container
+      nomad.templates = [
+        {
+          destination = "secrets/cicero-token";
+          data = ''{{(secret "kv/data/cicero/sessions/lace").Data.data.token}}'';
+        }
+      ];
+
+      command.text = lib.concatMapStringsSep "\n" (job:
+        pkgs.writeShellScript "job-${targetSystem}-${job.name}" ''
           set -o errexit
           set -o nounset
           set -o pipefail
+          echo '~~~ Starting job: '${pkgs.lib.escapeShellArg job.name}
           set -x
-          export PATH="${lib.makeBinPath (with pkgs; [ curl jq gnused gnugrep ])}:$PATH"
+          ${job.command}
+        '') (map (j: j {inherit pkgs targetSystem;}) (allJobs.${targetSystem}));
+    };
+  }) (__attrNames allJobs));
 
-          tr ' ' '\n' <installer-clusters.cfg | while IFS= read -r cluster ; do
-            echo >&2 "Building an ‘"${lib.escapeShellArg targetSystem}"’ installer for cluster ‘$cluster’…"
-
-            outLink=./result-${lib.escapeShellArg targetSystem}
-
-            echo >&2 "self.rev is: $(nix eval .#packages.x86_64-linux.internal.mainnet.buildRev)"
-
-            ${checkGitStatus}
-
-            nix build --no-accept-flake-config --out-link "$outLink" --cores 1 --max-jobs 1 -L .#packages.${lib.escapeShellArg targetSystem}.installer."$cluster"
-
-            echo '{}' \
-            | jq \
-              --arg system ${lib.escapeShellArg targetSystem} \
-              --arg cluster "$cluster" \
-              --arg url "$(realpath "$outLink"/*${lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
-              '.[$system][$cluster] = $url' \
-            | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
-              --output /dev/null --fail \
-              --no-progress-meter \
-              --data-binary @-
-          done
-        '';
-      in pkgs.writeShellScript "build-one-${targetSystem}" ''
-        ${underlying} || {
-          ec=$?
-          echo "$ec" >$BUILD_FAILED_MARKER_FILE
-          exit "$ec"
-        }
-      '';
-
-      runInParallel = commands: ''
-        ${pkgs.parallel}/bin/parallel -j ${toString (__length commands)} -k ::: ${lib.escapeShellArgs commands}
-      '';
-
-      checkGitStatus = ''
-        gitStatus=$(${pkgs.gitMinimal}/bin/git status --porcelain)
-        if [ -n "$gitStatus" ] ; then
-          echo >&2 "git-status is non-empty, i.e. repository is dirty, and inputs.self.sourceInfo is not available:"
-          echo >&2 "$gitStatus"
-          exit 1
-        fi
-      '';
-
+  mkInstaller = {
+    pkgs,
+    targetSystem,
+  }: {
+    name = "installer";
+    command = let
+      outLink = "./result-${targetSystem}";
     in ''
-      ${checkGitStatus}
-
-      BUILD_FAILED_MARKER_FILE="$(mktemp)"
-      export BUILD_FAILED_MARKER_FILE
-
-      echo >&2 "Cicero API URL: $CICERO_WEB_URL"
-      echo >&2 "Nomad job ID: $NOMAD_JOB_ID"
-
-      ${runInParallel [
-        (makeAndReportSequentiallyFor { targetSystems = [ "x86_64-darwin" ]; })
-        (makeAndReportSequentiallyFor { targetSystems = [ "x86_64-windows" "x86_64-linux" ]; })
-      ]}
-
-      # Propagate the last ‘nix build’ error exit code:
-      maybeExitCode=$(cat "$BUILD_FAILED_MARKER_FILE")
-      if [ -n "$maybeExitCode" ] ; then
-        exit "$maybeExitCode"
-      fi
-    '';
-
-    memory = 1024 * 32;
-    nomad.resources.cpu = 10000;
-    nomad.templates = [
-      {
-        destination = "${config.env.HOME}/.netrc";
-        data = ''
-          machine cicero.ci.iog.io
-          login cicero
-          password {{with secret "kv/data/cicero/api"}}{{.Data.data.basic}}{{end}}
-        '';
+      retry() {
+        local total_tries=$1
+        shift
+        local current_try=1
+        while [ "$current_try" -le "$total_tries" ] ; do
+          local context="‘$*’ (try: $current_try of $total_tries)"
+          if "$@" ; then
+            echo >&2 "info: success running $context"
+            return 0
+          elif [ "$current_try" == "$total_tries" ] ; then
+            echo >&2 "fatal: failed to run $context"
+            return 1
+          else
+            echo >&2 "error: failed to run $context"
+            sleep 5
+          fi
+          current_try=$((current_try + 1))
+        done
       }
-    ];
+
+      installable=${pkgs.lib.escapeShellArg "packages.${targetSystem}.installer"}
+
+      ${
+        # XXX: this is nasty, but on Darwin, we often trigger auto-gc, which has races
+        # (<https://github.com/NixOS/nix/issues/6757>, <https://github.com/NixOS/nix/issues/1970>,
+        # <https://input-output-rnd.slack.com/archives/C02H2Q4L54Y/p1677172044575869>),
+        # and builds fail. Furthermore, you can’t trigger a GC remotely. We also can’t control
+        # `--builders` with `driver=exec`, and `driver=podman` fails randomly and often with
+        # “image not found”. Let’s then trigger auto-gc in first try/tries, and then retry the build.
+        # That usually works.
+        if pkgs.lib.hasInfix "darwin" targetSystem
+        then "retry 4"
+        else ""
+      } nix build --out-link ${pkgs.lib.escapeShellArg outLink} --cores 1 --max-jobs 1 -L ".#$installable"
+
+      # XXX: create a link to the artifact:
+      export PATH="${pkgs.lib.makeBinPath (with pkgs; [curl jq gnused])}:$PATH"
+      jq --null-input \
+        --arg system ${pkgs.lib.escapeShellArg targetSystem} \
+        --arg url "$(realpath ${pkgs.lib.escapeShellArg outLink}/*${pkgs.lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
+        '.[$system] = $url' \
+      | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
+        --header @<(
+          # cannot use --oauth2-bearer as that leaks the token in the CLI args
+          echo -n 'Authorization: Bearer '
+          cat /secrets/cicero-token
+        ) \
+        --output /dev/null --fail \
+        --no-progress-meter \
+        --data-binary @-
+    '';
   };
 
-  actions."daedalus/ci" = {
-    task = "ci";  # Refer to the aggregated one.
-    io = ''
-      // This is a CUE expression that defines what events trigger a new run of this action.
-      // There is no documentation for this yet. Ask SRE if you have trouble changing this.
-      let github = {
-        #input: "${ciInputName}"
-        #repo: "${repository}"
-      }
-      #lib.merge
-      #ios: [
-        #lib.io.github_push & github,
-        { #lib.io.github_pr, github, #target_default: false },
-      ]
+  mkDevshell = {
+    pkgs,
+    targetSystem,
+  }: {
+    name = "devshell";
+    command = ''
+      nix build --cores 1 --max-jobs 1 -L .#devShell.${pkgs.lib.escapeShellArg targetSystem}
     '';
   };
-}
+in {inherit actions tasks;}
