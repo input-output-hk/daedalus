@@ -52,6 +52,7 @@ let
       daedalusPkgs.daedalus-installer
       daedalusPkgs.darwin-launcher
       daedalusPkgs.mock-token-metadata-server
+      regenerateDevCerts
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
@@ -74,7 +75,17 @@ let
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
   };
-
+  regenerateDevCerts = let
+    moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
+      daedalusPkgs.launcherConfigs.launcherConfig
+      // {
+        daedalusBin = "true";
+      }
+    ));
+  in
+    pkgs.writeShellScriptBin "regenerate-dev-certs" ''
+      ${daedalusPkgs.daedalus-bridge}/bin/cardano-launcher --config ${moddedConfig}
+    '';
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
     cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
@@ -182,6 +193,17 @@ let
 
       echo 'jq < $LAUNCHER_CONFIG'
       echo debug the node by running debug-node
+
+      echo 'Resolving environment variables to absolute paths…'
+      # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
+      export CARDANO_WALLET_TLS_PATH="${daedalusPkgs.launcherConfigs.launcherConfig.tlsPath}"
+
+      echo 'Re-generating dev certificates for ‘cardano-wallet’…'
+      mkdir -p "$CARDANO_WALLET_TLS_PATH"
+      regenerate-dev-certs >/dev/null
+
+      echo
+      echo 'Now, run ‘yarn dev’.'
     '';
   });
   daedalus = daedalusShell.overrideAttrs (oldAttrs: {
