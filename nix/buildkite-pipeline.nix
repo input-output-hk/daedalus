@@ -6,9 +6,6 @@ let
     lib writeShellScriptBin;
   inherit (import ./source-lib.nix { inherit inputs; }) installerClusters;
 
-  # FIXME: change all to `csl-daedalus` once we get official aarch64-darwin workers:
-  bucketSubdir = if targetSystem != "aarch64-darwin" then "csl-daedalus" else "UNSAFE-internal-build";
-
 in
 
 writeShellScriptBin "buildkite-pipeline" ''
@@ -54,7 +51,7 @@ writeShellScriptBin "buildkite-pipeline" ''
     echo '~~~ Generating installer for cluster ‘${cluster}’'
 
     tmpdir=$(mktemp -d)
-    result="$tmpdir"/${bucketSubdir}
+    result="$tmpdir"/csl-daedalus
 
     # XXX: `set -x` to give CI users a reproduction, and `| cat`:
     #   • turns off any interactive questions from Nix (e.g. accept-flake-config)
