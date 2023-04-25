@@ -68,7 +68,7 @@ const createHandleNewLogLine = (mainWindow: BrowserWindow) => {
       return;
     }
 
-    const progress = Math.floor(parseFloat(unparsedProgress));
+    const progress = parseFloat(unparsedProgress);
 
     if (progressReport[type] !== progress) {
       progressReport[type] = progress;

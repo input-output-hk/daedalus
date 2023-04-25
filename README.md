@@ -1,5 +1,5 @@
 <blockquote>
-<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+<sub>Document maintainer: Daniel Main<br/>Document status: Active</sub>
 </blockquote>
 
 # Daedalus
@@ -20,7 +20,7 @@ Daedalus - Cryptocurrency Wallet
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
-1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS Catalina)
+1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS 10.15 and higher)
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
@@ -41,9 +41,15 @@ Daedalus - Cryptocurrency Wallet
    substituters = https://cache.iog.io https://cache.nixos.org/
    trusted-substituters =
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+   
+   # Only if using mac 
    extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
+
    experimental-features = nix-command flakes
 
+   # If you are running on Linux x86/64
+   system = x86_64-linux
+   
    # If you are running on a Mac with Intel chip 
    system = x86_64-darwin
    
@@ -70,16 +76,16 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
-  - Byron wallets: `yarn byron:wallet:importer`
-  - Shelley wallets: `yarn shelley:wallet:importer`
-  - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
-  - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-  - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
-  - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+- Byron wallets: `yarn byron:wallet:importer`
+- Shelley wallets: `yarn shelley:wallet:importer`
+- Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+- Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+- _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+- _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
-   These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.

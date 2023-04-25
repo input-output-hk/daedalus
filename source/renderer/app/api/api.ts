@@ -2403,11 +2403,11 @@ export default class AdaApi {
         stake
       );
       const stakePools = response
-        .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
-        .filter(({ flags }: AdaApiStakePool) => !flags.includes('delisted'))
         .filter(
-          ({ margin }: AdaApiStakePool) =>
-            margin !== undefined && margin.quantity < 100
+          (stakePool: AdaApiStakePool) =>
+            !!stakePool?.metadata &&
+            !stakePool?.flags?.includes('delisted') &&
+            stakePool?.margin?.quantity < 100
         )
         .map(_createStakePoolFromServerData);
       logger.debug('AdaApi::getStakePools success', {

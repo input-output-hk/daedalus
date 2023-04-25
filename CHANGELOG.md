@@ -2,6 +2,17 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
+
+### Chores
+
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
+- Added regeneration of dev TLS certificates for cardano-wallet on each nix-shell entry ([PR 3117](https://github.com/input-output-hk/daedalus/pull/3117))
+
+## 5.2.0
+
 ### Features
 
 - Added custom dimension to track legacy and hardware wallets ([PR 3091](https://github.com/input-output-hk/daedalus/pull/3091))
@@ -10,6 +21,7 @@
 
 ### Chores
 
+- Update `cardano-node` to 1.35.4 for the Preview network respin ([PR 3082](https://github.com/input-output-hk/daedalus/pull/3082))
 - Updated new Catalyst API URL ([PR 3087](https://github.com/input-output-hk/daedalus/pull/3087))
 - Fixed Storybook state for General stories ([PR 3064](https://github.com/input-output-hk/daedalus/pull/3064))
 
