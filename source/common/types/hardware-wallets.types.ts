@@ -1,4 +1,10 @@
 import { BridgeInfo, Device as TrezorDevice, UdevInfo } from '@trezor/connect';
+import {
+  TxOutputDestinationType,
+  AddressType,
+  CIP36VoteRegistrationFormat,
+  TxAuxiliaryDataType,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano';
 
 export type BIP32Path = Array<number>;
 export type LedgerModel = 'nanoS' | 'nanoSP' | 'nanoX';
@@ -139,14 +145,18 @@ export type LedgerSignTransactionOutputsType =
   | []
   | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
 export type LedgerAuxiliaryDataType = {
-  type: string;
+  type: TxAuxiliaryDataType;
   params: {
-    votingPublicKeyHex: string;
+    format: CIP36VoteRegistrationFormat;
+    voteKeyHex: string;
     stakingPath: BIP32Path;
-    rewardsDestination: {
-      type: number;
+    paymentDestination: {
+      type: TxOutputDestinationType;
       params: {
-        stakingPath: BIP32Path;
+        type: AddressType;
+        params: {
+          stakingPath: BIP32Path;
+        };
       };
     };
     nonce: string;
@@ -199,7 +209,7 @@ export type LedgerSignTransactionResponse = {
   txHashHex: string;
   witnesses: Array<Witness>;
   auxiliaryDataSupplement?: {
-    catalystRegistrationSignatureHex: string;
+    cip36VoteRegistrationSignatureHex: string;
     auxiliaryDataHashHex: string;
     type: 'catalyst_registration';
   };

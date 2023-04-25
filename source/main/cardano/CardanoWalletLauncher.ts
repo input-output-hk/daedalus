@@ -83,15 +83,6 @@ export async function CardanoWalletLauncher(
     svCert: path.join(tlsPath, 'server/server.crt'),
     svKey: path.join(tlsPath, 'server/server.key'),
   };
-  // Prepare development TLS files
-  const { isProduction } = environment;
-
-  if (
-    !isProduction &&
-    nodeImplementation === CardanoNodeImplementationOptions.CARDANO
-  ) {
-    await fs.copy('tls', tlsPath);
-  }
 
   let tokenMetadataServer;
   // This switch statement handles any node specific

@@ -1,5 +1,5 @@
 <blockquote>
-<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+<sub>Document maintainer: Daniel Main<br/>Document status: Active</sub>
 </blockquote>
 
 # Daedalus
@@ -59,16 +59,16 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix develop` shell (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
-  - Byron wallets: `yarn byron:wallet:importer`
-  - Shelley wallets: `yarn shelley:wallet:importer`
-  - Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
-  - Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-  - _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
-  - _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+- Byron wallets: `yarn byron:wallet:importer`
+- Shelley wallets: `yarn shelley:wallet:importer`
+- Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+- Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+- _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+- _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
-   These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
+These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-   List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
