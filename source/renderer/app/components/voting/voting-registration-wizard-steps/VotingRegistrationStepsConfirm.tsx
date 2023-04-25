@@ -80,7 +80,6 @@ type Props = {
     | (LocalizableError | null | undefined);
   onConfirm: (...args: Array<any>) => any;
   onRestart: (...args: Array<any>) => any;
-  nextFundNumber: number;
 };
 
 @observer
@@ -101,7 +100,6 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
       transactionConfirmations,
       transactionError,
       onClose,
-      nextFundNumber,
     } = this.props;
     const description = intl.formatMessage(messages.description);
     const descriptionRestart = (
@@ -156,7 +154,6 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
         actions={actions}
         containerClassName={styles.component}
         hideSteps={!!transactionError}
-        nextFundNumber={nextFundNumber}
       >
         {transactionError ? (
           <Fragment>

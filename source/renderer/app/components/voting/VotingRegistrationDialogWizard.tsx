@@ -42,7 +42,6 @@ type Props = {
   onRestart: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
   hwDeviceStatus: HwDeviceStatus;
-  nextFundNumber: number;
 };
 
 @observer
@@ -76,7 +75,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
       hwDeviceStatus,
       isTrezor,
       isHardwareWallet,
-      nextFundNumber,
     } = this.props;
     const selectedWalletId = get(selectedWallet, 'id', null);
     let content = null;
@@ -95,7 +93,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
             getStakePoolById={getStakePoolById}
-            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -117,7 +114,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
             selectedWallet={selectedWallet}
             isTrezor={isTrezor}
             isHardwareWallet={isHardwareWallet}
-            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -134,7 +130,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
             transactionError={transactionError}
             onConfirm={onContinue}
             onRestart={onRestart}
-            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -146,7 +141,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
             onClose={onClose}
             stepsList={stepsList}
             activeStep={activeStep}
-            nextFundNumber={nextFundNumber}
           />
         );
         break;
@@ -159,7 +153,6 @@ class VotingRegistrationDialogWizard extends Component<Props> {
             onDownloadPDF={onDownloadPDF}
             stepsList={stepsList}
             activeStep={activeStep}
-            nextFundNumber={nextFundNumber}
           />
         );
         break;
