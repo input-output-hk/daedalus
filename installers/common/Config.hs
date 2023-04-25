@@ -59,7 +59,7 @@ data Command
 data Options = Options
   { oBackend               :: Backend
   , oBuildJob              :: Maybe BuildJob
-  , oBuildRevCount         :: Maybe BuildJob
+  , oBuildCounter         :: Maybe BuildJob
   , oOS                    :: OS
   , oCluster               :: Cluster
   , oAppName               :: AppName
@@ -85,7 +85,7 @@ optionsParser detectedOS = Options
   <*> (optional      $
       (BuildJob     <$> optText "build-rev-short"     'b' "CI Build Job/ID"))
   <*> (optional      $
-      (BuildJob     <$> optText "build-rev-count"     'v' "‘inputs.self.sourceInfo.revCount’"))
+      (BuildJob     <$> optText "build-counter"     'v' "‘inputs.self.sourceInfo.revCount’"))
   <*> (fromMaybe detectedOS <$> (optional $
                    optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 macos64 win64"))
   <*> (fromMaybe Selfnode   <$> (optional $

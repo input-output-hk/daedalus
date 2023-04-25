@@ -117,10 +117,10 @@ clusterNetwork Preprod = "preprod"
 clusterNetwork Preview = "preview"
 
 packageFileName :: Text -> OS -> Cluster -> Version -> Backend -> Maybe BuildJob -> Maybe BuildJob -> FilePath
-packageFileName uglyName _os cluster ver backend buildJob buildRevCount = fromText name <.> ext
+packageFileName uglyName _os cluster ver backend buildJob buildCounter = fromText name <.> ext
   where
     name = T.intercalate "-" parts
-    parts = [uglyName, fromVer ver <> buildRevCount', lshowText cluster] ++ buildJob' ++ [archOS]
+    parts = [uglyName, fromVer ver <> buildCounter', lshowText cluster] ++ buildJob' ++ [archOS]
     _backend' = case backend of
                  Cardano _ -> "cardano-wallet"
     ext = case _os of
@@ -139,7 +139,7 @@ packageFileName uglyName _os cluster ver backend buildJob buildRevCount = fromTe
               else "x86_64-darwin"
             Linux64 -> "x86_64-linux"
     buildJob' = maybe [] (\b -> [fromBuildJob b]) buildJob
-    buildRevCount' = "." <> maybe "0" fromBuildJob buildRevCount
+    buildCounter' = "." <> maybe "0" fromBuildJob buildCounter
 
 instance FromJSON Version where
   parseJSON = withObject "Package" $ \o -> Version <$> o .: "version"

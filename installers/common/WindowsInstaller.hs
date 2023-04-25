@@ -309,7 +309,7 @@ main opts@Options{..}  = do
     echo "Packaging frontend"
     packageFrontend oCluster installerConfig
 
-    let fullName = packageFileName (uglyName installerConfig) Win64 oCluster fullVersion oBackend oBuildJob oBuildRevCount
+    let fullName = packageFileName (uglyName installerConfig) Win64 oCluster fullVersion oBackend oBuildJob oBuildCounter
 
     printf ("Building: "%fp%"\n") fullName
 

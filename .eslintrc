@@ -101,7 +101,7 @@
     "NETWORK": true,
     "BUILD_REV": true,
     "BUILD_REV_SHORT": true,
-    "BUILD_REV_COUNT": true,
+    "BUILD_COUNTER": true,
     "Process": true // TODO: remove after fix
   },
   "settings": {

@@ -42,7 +42,7 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigningConfigPath,oCluster,oBackend,oBuildJob,oBuildRevCount,oOutputDir,oTestInstaller} = do
+main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigningConfigPath,oCluster,oBackend,oBuildJob,oBuildCounter,oOutputDir,oTestInstaller} = do
 
   installerConfig <- decodeFileThrow "installer-config.json"
 
@@ -77,7 +77,7 @@ main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigning
   makeComponentRoot opts appRoot darwinConfig installerConfig
   daedalusVer <- getAppVersion "../package.json"
 
-  let pkg = packageFileName (uglyName installerConfig) Macos64 oCluster daedalusVer oBackend oBuildJob oBuildRevCount
+  let pkg = packageFileName (uglyName installerConfig) Macos64 oCluster daedalusVer oBackend oBuildJob oBuildCounter
       opkg = oOutputDir </> pkg
 
   print "appRoot:"

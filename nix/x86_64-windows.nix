@@ -51,7 +51,7 @@ in rec {
     NETWORK = launcherConfigs.launcherConfig.networkName;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
-    BUILD_REV_COUNT = sourceLib.buildRevCount;
+    BUILD_COUNTER = sourceLib.buildCounter;
     NODE_ENV = "production";
     BUILDTYPE = "Release";
     configurePhase = newCommon.setupCacheAndGypDirs + ''
@@ -228,7 +228,7 @@ in rec {
       -o $out \
       --cluster ${cluster} \
       --build-rev-short ${sourceLib.buildRevShort} \
-      --build-rev-count ${toString sourceLib.buildRevCount} \
+      --build-counter ${toString sourceLib.buildCounter} \
       buildkite-cross
 
     mkdir $out
@@ -330,7 +330,7 @@ in rec {
   signed-windows-installer = let
     backend_version = oldCode.cardanoWalletVersion;
     frontend_version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
-    fullName = "daedalus-${frontend_version}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe"; # must match to packageFileName in make-installer
+    fullName = "daedalus-${frontend_version}.${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe"; # must match to packageFileName in make-installer
   in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
     mkdir $out
     cp -v ${signFile "${unsigned-windows-installer}/${fullName}"} $out/${fullName}

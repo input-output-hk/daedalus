@@ -89,7 +89,7 @@ in rec {
     NETWORK = oldCode.launcherConfigs.launcherConfig.networkName;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
-    BUILD_REV_COUNT = sourceLib.buildRevCount;
+    BUILD_COUNTER = sourceLib.buildCounter;
     NODE_ENV = "production";
     BUILDTYPE = "Release";
     configurePhase = newCommon.setupCacheAndGypDirs + linuxSpecificCaches + ''
@@ -283,7 +283,7 @@ in rec {
 
     wrappedBundle = let
       version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
-      fn = "daedalus-${version}.${toString sourceLib.buildRevCount}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
+      fn = "daedalus-${version}.${toString sourceLib.buildCounter}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${newBundle} $out/${fn}

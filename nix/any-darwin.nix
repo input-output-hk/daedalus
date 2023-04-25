@@ -17,7 +17,7 @@ let
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
-  installerName = "daedalus-${packageVersion}.${toString sourceLib.buildRevCount}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
+  installerName = "daedalus-${packageVersion}.${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
 in rec {
 
@@ -124,7 +124,7 @@ in rec {
     NETWORK = cluster;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
-    BUILD_REV_COUNT = sourceLib.buildRevCount;
+    BUILD_COUNTER = sourceLib.buildCounter;
     CARDANO_WALLET_VERSION = cardanoWalletVersion;
     CARDANO_NODE_VERSION = cardanoNodeVersion;
     configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches + ''
@@ -147,7 +147,7 @@ in rec {
 
         make-installer --cardano ${daedalus-bridge} \
           --build-rev-short ${sourceLib.buildRevShort} \
-          --build-rev-count ${toString sourceLib.buildRevCount} \
+          --build-counter ${toString sourceLib.buildCounter} \
           --cluster ${cluster} \
           --out-dir doesnt-matter \
           --dont-pkgbuild

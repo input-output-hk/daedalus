@@ -141,7 +141,7 @@ module.exports = {
       NETWORK: 'development',
       BUILD_REV: '0000000000000000000000000000000000000000',
       BUILD_REV_SHORT: 'dev',
-      BUILD_REV_COUNT: '0',
+      BUILD_COUNTER: '0',
     }),
     new HtmlWebpackPlugin({
       template: 'source/renderer/index.ejs',

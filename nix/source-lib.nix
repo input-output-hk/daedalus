@@ -23,8 +23,26 @@ in rec {
 
   forEachCluster = forEach allClusters;
 
-  buildRev = if inputs.self ? revCount then inputs.self.rev else "0000000000000000000000000000000000000000";
-  buildRevShort = if inputs.self ? revCount then builtins.substring 0 9 buildRev else "dirty";
-  buildRevCount = inputs.self.revCount or 0;
+  # When did the project start? → `git show --no-patch --date=unix $(git rev-list --max-parents=0 HEAD)`
+  daedalusEpoch = 1475675335;
+
+  # In `std`, we don’t get `inputs.self.sourceInfo`. Instead, when Git
+  # status is dirty, we get only `.rev = "not-a-commit"`. When clean,
+  # we get all normal attributes. Cf.
+  # <https://github.com/divnix/std/blob/d2bde49f82331db61ebabf7d0b7441a31364908a/src/grow.nix#L184>.
+
+  buildRev =
+    if inputs.self ? shortRev
+    then inputs.self.rev
+    else "0000000000000000000000000000000000000000";
+  buildRevShort =
+    if inputs.self ? shortRev
+    then builtins.substring 0 9 buildRev
+    else "dirty";
+  # XXX: inputs.self.revCount is not available in Cicero, let’s use a counter incrementing every hour:
+  buildCounter =
+    if inputs.self ? shortRev
+    then (inputs.self.lastModified - daedalusEpoch) / (60 * 60)
+    else 0;
 
 }
