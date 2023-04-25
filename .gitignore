@@ -51,10 +51,6 @@ installers/csl-daedalus/
 installers/delegation.cert
 installers/signing.key
 
-# temporary certs for daedalus dev
-tls/client
-tls/server
-
 # App packaged
 dist
 release

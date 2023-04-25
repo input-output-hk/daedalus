@@ -2,6 +2,15 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
+
+### Chores
+
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
+- Added regeneration of dev TLS certificates for cardano-wallet on each nix-shell entry ([PR 3117](https://github.com/input-output-hk/daedalus/pull/3117))
+
 ## 5.2.0
 
 ### Features

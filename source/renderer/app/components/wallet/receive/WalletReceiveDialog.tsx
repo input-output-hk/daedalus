@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { map, filter } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -12,6 +11,7 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import QRCode from 'qrcode.react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import RadioSet from '../../widgets/RadioSet';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -196,7 +196,7 @@ class WalletReceiveDialog extends Component<Props, State> {
     field.value = field.value.replace(/\n/g, '');
   };
   constructPaths = (address: WalletAddress) => {
-    const hardenedSpendingPath = utils.str_to_path(address.spendingPath);
+    const hardenedSpendingPath = str_to_path(address.spendingPath);
     const derivationSpendingPath = hardenedPathToDerivationPath(
       hardenedSpendingPath
     );
