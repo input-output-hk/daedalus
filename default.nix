@@ -114,7 +114,7 @@ let
     bridgeTable = {
       cardano = self.callPackage ./nix/cardano-bridge.nix {};
     };
-    cardano-wallet = walletUnpacked // { version = sources.cardano-wallet.rev; /* FIXME */ };
+    cardano-wallet = walletUnpacked // { version = localLib.sources.cardano-wallet.branch + "-" + builtins.substring 0 9 localLib.sources.cardano-wallet.rev; };
     cardano-address = walletUnpacked;
     mock-token-metadata-server = throw "FIXME: no mock-token-metadata-server now, patch";
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
