@@ -27,29 +27,3 @@ export type SignatureParams = {
     passphrase: string;
   };
 };
-export type GetCatalystFundResponse = {
-  id: number;
-  fund_end_time: string;
-  fund_name: string;
-  fund_start_time: string;
-  next_fund_start_time: string;
-  next_registration_snapshot_time: string;
-  registration_snapshot_time: string;
-  chain_vote_plans: Array<{
-    chain_committee_end_time: string;
-  }>;
-};
-export type CatalystFund = {
-  current: {
-    number: number;
-    startTime: Date;
-    endTime: Date;
-    resultsTime: Date;
-    registrationSnapshotTime: Date;
-  };
-  next: {
-    number: number;
-    startTime: Date;
-    registrationSnapshotTime: Date;
-  };
-};

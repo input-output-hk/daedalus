@@ -1,4 +1,4 @@
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -10,7 +10,6 @@ import {
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import walletUtils from '../utils/walletUtils';
 import {
-  VOTING_PHASE_CHECK_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
 } from '../config/votingConfig';
@@ -24,7 +23,6 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
-import type { CatalystFund } from '../api/voting/types';
 import { EventCategories } from '../analytics';
 
 export type VotingRegistrationKeyType = {
@@ -42,12 +40,6 @@ export type VotingDataType = {
   absoluteSlotNumber: number;
 };
 
-export enum FundPhase {
-  SNAPSHOT = 'snapshot',
-  VOTING = 'voting',
-  TALLYING = 'tallying',
-  RESULTS = 'results',
-}
 export default class VotingStore extends Store {
   @observable
   registrationStep = 1;
@@ -67,14 +59,8 @@ export default class VotingStore extends Store {
   qrCode: string | null | undefined = null;
   @observable
   isConfirmationDialogOpen = false;
-  @observable
-  fundPhase?: FundPhase;
-  @observable
-  catalystFund: CatalystFund;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
-  // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
-  fundPhaseInterval: IntervalID | null | undefined = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -89,20 +75,7 @@ export default class VotingStore extends Store {
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
-
-    this._setupFund();
   }
-
-  @action
-  _setupFund = async () => {
-    await this.getCatalystFundRequest.execute().promise;
-    this._initializeFundPhaseInterval();
-
-    runInAction('Initialize fund', () => {
-      this.catalystFund = this.getCatalystFundRequest.result;
-      this._checkFundPhase(new Date());
-    });
-  };
 
   // REQUESTS
   @observable
@@ -120,10 +93,6 @@ export default class VotingStore extends Store {
   @observable
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
     this.api.ada.getTransaction
-  );
-  @observable
-  getCatalystFundRequest: Request<CatalystFund> = new Request(
-    this.api.ada.getCatalystFund
   );
 
   // ACTIONS
@@ -165,10 +134,6 @@ export default class VotingStore extends Store {
     if (this.transactionPollingInterval) {
       clearInterval(this.transactionPollingInterval);
     }
-
-    if (this.fundPhaseInterval) {
-      clearInterval(this.fundPhaseInterval);
-    }
   };
   @action
   _startTransactionPolling = () => {
@@ -177,16 +142,6 @@ export default class VotingStore extends Store {
     this.transactionPollingInterval = setInterval(() => {
       this._checkVotingRegistrationTransaction();
     }, VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL);
-  };
-  @action
-  _initializeFundPhaseInterval = () => {
-    if (this.fundPhaseInterval) {
-      clearInterval(this.fundPhaseInterval);
-    }
-
-    this.fundPhaseInterval = setInterval(() => {
-      this._checkFundPhase(new Date());
-    }, VOTING_PHASE_CHECK_INTERVAL);
   };
   @action
   _setVotingRegistrationKey = (value: VotingRegistrationKeyType) => {
@@ -424,7 +379,7 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const nextVotingFundNumber = this.catalystFund?.next?.number;
+    const nextVotingFundNumber = 1;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
@@ -475,24 +430,6 @@ export default class VotingStore extends Store {
       if (this.transactionPollingInterval)
         clearInterval(this.transactionPollingInterval);
     }
-  };
-  @action
-  _checkFundPhase = (now: Date) => {
-    const phaseValidation = {
-      [FundPhase.SNAPSHOT]: (date: Date) =>
-        date < this.catalystFund?.current?.startTime,
-      [FundPhase.VOTING]: (date: Date) =>
-        date >= this.catalystFund?.current?.startTime &&
-        date < this.catalystFund?.current?.endTime,
-      [FundPhase.TALLYING]: (date: Date) =>
-        date >= this.catalystFund?.current?.endTime &&
-        date < this.catalystFund?.current?.resultsTime,
-      [FundPhase.RESULTS]: (date: Date) =>
-        date >= this.catalystFund?.current?.resultsTime,
-    };
-    this.fundPhase =
-      Object.values(FundPhase).find((phase) => phaseValidation[phase](now)) ||
-      null;
   };
   _generateVotingRegistrationKey = async () => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
