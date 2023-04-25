@@ -41,6 +41,7 @@ let
         chmod -R +w $out
         cd $out
         patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+        patch -p1 -i ${./nix/cardano-wallet--expose-local-cluster.patch}
       '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
@@ -54,7 +55,7 @@ let
   }.${target};
   walletUnpacked = pkgs.runCommand "wallet-unpacked" {} ''
     mkdir -p $out/bin
-    ${if target == "x86_64-windows" then "unzip" else "tar -xf"} ${walletRelease}/*.*
+    ${if target == "x86_64-windows" then "${pkgs.unzip}/bin/unzip" else "tar -xf"} ${walletRelease}/*.*
     cp cardano-wallet-*/cardano-{address,cli,node,wallet} $out/bin/
   '';
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
