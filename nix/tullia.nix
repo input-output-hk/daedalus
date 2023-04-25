@@ -112,36 +112,40 @@ let
         done
       }
 
-      installable=${pkgs.lib.escapeShellArg "packages.${targetSystem}.installer"}
+      for cluster in $(cat ./installer-clusters.cfg) ; do
 
-      ${
-        # XXX: this is nasty, but on Darwin, we often trigger auto-gc, which has races
-        # (<https://github.com/NixOS/nix/issues/6757>, <https://github.com/NixOS/nix/issues/1970>,
-        # <https://input-output-rnd.slack.com/archives/C02H2Q4L54Y/p1677172044575869>),
-        # and builds fail. Furthermore, you can’t trigger a GC remotely. We also can’t control
-        # `--builders` with `driver=exec`, and `driver=podman` fails randomly and often with
-        # “image not found”. Let’s then trigger auto-gc in first try/tries, and then retry the build.
-        # That usually works.
-        if pkgs.lib.hasInfix "darwin" targetSystem
-        then "retry 4"
-        else ""
-      } nix build --out-link ${pkgs.lib.escapeShellArg outLink} --cores 1 --max-jobs 1 -L ".#$installable"
+        installable=${pkgs.lib.escapeShellArg "packages.${targetSystem}.installer"}."$cluster"
 
-      # XXX: create a link to the artifact:
-      export PATH="${pkgs.lib.makeBinPath (with pkgs; [curl jq gnused])}:$PATH"
-      jq --null-input \
-        --arg system ${pkgs.lib.escapeShellArg targetSystem} \
-        --arg url "$(realpath ${pkgs.lib.escapeShellArg outLink}/*${pkgs.lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
-        '.[$system] = $url' \
-      | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
-        --header @<(
-          # cannot use --oauth2-bearer as that leaks the token in the CLI args
-          echo -n 'Authorization: Bearer '
-          cat /secrets/cicero-token
-        ) \
-        --output /dev/null --fail \
-        --no-progress-meter \
-        --data-binary @-
+        ${
+          # XXX: this is nasty, but on Darwin, we often trigger auto-gc, which has races
+          # (<https://github.com/NixOS/nix/issues/6757>, <https://github.com/NixOS/nix/issues/1970>,
+          # <https://input-output-rnd.slack.com/archives/C02H2Q4L54Y/p1677172044575869>),
+          # and builds fail. Furthermore, you can’t trigger a GC remotely. We also can’t control
+          # `--builders` with `driver=exec`, and `driver=podman` fails randomly and often with
+          # “image not found”. Let’s then trigger auto-gc in first try/tries, and then retry the build.
+          # That usually works.
+          if pkgs.lib.hasInfix "darwin" targetSystem
+          then "retry 4"
+          else ""
+        } nix build --out-link ${pkgs.lib.escapeShellArg outLink} --cores 1 --max-jobs 1 -L ".#$installable"
+
+        # XXX: create a link to the artifact:
+        export PATH="${pkgs.lib.makeBinPath (with pkgs; [curl jq gnused])}:$PATH"
+        jq --null-input \
+          --arg system ${pkgs.lib.escapeShellArg targetSystem} \
+          --arg url "$(realpath ${pkgs.lib.escapeShellArg outLink}/*${pkgs.lib.escapeShellArg targetSystem}* | sed  -r 's,^/nix/store/,https://nar-proxy.ci.iog.io/dl/,')" \
+          '.[$system] = $url' \
+        | curl "$CICERO_WEB_URL"/api/run/"$NOMAD_JOB_ID"/fact \
+          --header @<(
+            # cannot use --oauth2-bearer as that leaks the token in the CLI args
+            echo -n 'Authorization: Bearer '
+            cat /secrets/cicero-token
+          ) \
+          --output /dev/null --fail \
+          --no-progress-meter \
+          --data-binary @-
+
+      done
     '';
   };
 
