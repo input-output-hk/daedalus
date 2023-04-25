@@ -10,7 +10,7 @@ set -o pipefail
 chmod -R +w node_modules/
 
 echo 'Deleting all current ‘*.node’ files before rebuilding for Electron’s ABI:'
-find . -type f -name '*.node' -not -path '*/prebuilds/*' -not -path '*/@swc*/*' -exec rm -vf {} ';'
+find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
 # Let’s patch electron-rebuild to force correct Node.js headers to
 # build native modules against even in `nix-shell`, otherwise, it
