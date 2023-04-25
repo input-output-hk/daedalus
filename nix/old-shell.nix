@@ -16,19 +16,20 @@
 }:
 
 let
+  internal = inputs.self.packages.${system}.internal.${cluster};
   daedalusPkgs = import ./old-default.nix {
     inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
     devShell = true;
-    inherit (inputs.self.packages.${system}.internal.${cluster}.newCommon) sourceLib;
+    inherit (internal.newCommon) sourceLib;
   };
   localLib = import ./old-lib.nix { inherit nodeImplementation system inputs; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
   daedalusShellBuildInputs = [
-      daedalusPkgs.nodejs
-      daedalusPkgs.yarn
+      internal.newCommon.nodejs
+      internal.newCommon.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
       daedalusPkgs.mock-token-metadata-server
@@ -43,13 +44,13 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
-      inputs.self.packages.${system}.internal.${cluster}.darwin-launcher
+      internal.darwin-launcher
       darwin.apple_sdk.frameworks.CoreServices
       darwin.apple_sdk.frameworks.AppKit
       darwin.cctools
       xcbuild
     ] else [
-      inputs.self.packages.${system}.internal.${cluster}.electronBin
+      internal.electronBin
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -126,7 +127,7 @@ let
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
@@ -150,7 +151,7 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
         # FIXME: use `internal.patchelfElectron`, like Lace
-        ln -svf ${inputs.self.packages.${system}.internal.${cluster}.electronBin}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${internal.electronBin}/bin/electron ./node_modules/electron/dist/electron
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'
