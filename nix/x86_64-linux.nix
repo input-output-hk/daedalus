@@ -137,6 +137,19 @@ in rec {
 
       chmod -R +w $out
 
+      # XXX: they increase the closure (i.e. installer) size greatly:
+      echo 'Deleting all redundant /nix/store references from to-be-distributed ‘node_modules/’:'
+      (
+        cd $out/share/daedalus/
+        find node_modules -type f '(' -name '*.o' -o -name '*.o.d' -o -name '*.target.mk' -o -name '*.Makefile' -o -name 'Makefile' -o -name 'config.gypi' ')' -exec rm -vf '{}' ';'
+
+        # Get rid of ${nodejs}, too – another 60 MiB:
+        cd node_modules/
+        for file in $(grep -RF ${nodejs} . 2>/dev/null | cut -d: -f1) ; do
+          sed -r 's,^#!${nodejs}/bin/,#!/usr/bin/env ,g' -i "$file"
+        done
+      )
+
       mkdir -p $out/share/daedalus/node_modules/usb/build
       cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/node_modules/usb/build
 
