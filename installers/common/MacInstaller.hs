@@ -185,8 +185,6 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
     <true/>
-    <key>com.apple.security.cs.disable-library-validation</key>
-    <true/>
     <key>com.apple.security.cs.allow-jit</key>
     <true/>
   </dict>
