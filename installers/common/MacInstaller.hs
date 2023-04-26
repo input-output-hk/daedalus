@@ -122,11 +122,6 @@ ABS_PATH="$(pwd)/$REL_PATH"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 function sign_cmd() {
   for targetFile in "$@" ; do
-    codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$targetFile" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
-  done
-}
-function sign_cmd_force() {
-  for targetFile in "$@" ; do
     codesign --force --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$targetFile" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
   done
 }
@@ -155,21 +150,21 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
 
 # Sign native electron bindings and supplementary binaries
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/build/HID.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/build/detection.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-arm64/node.napi.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-arm64-"*"/blake-hash.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-arm64-"*"/tiny-secp256k1.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-arm64-"*"/usb-detection.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-x64-"*"/node-hid.node"
-sign_cmd_force "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/build/detection.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-arm64/node.napi.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-arm64-"*"/blake-hash.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-arm64-"*"/tiny-secp256k1.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-arm64-"*"/usb-detection.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-x64-"*"/node-hid.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
@@ -189,6 +184,10 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    <key>com.apple.security.cs.allow-jit</key>
     <true/>
   </dict>
 </plist>|]
