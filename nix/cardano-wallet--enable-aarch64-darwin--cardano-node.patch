@@ -1,0 +1,19 @@
+diff --git a/flake.nix b/flake.nix
+index af206a740e..e8e4792daa 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -217,7 +217,13 @@
+             collectChecks
+             check;
+ 
+-          nodePkgs = cardano-node-1_35_4.packages.${system};
++          nodePkgs = (import ./nix/flake-compat.nix {
++            src = pkgs.runCommandLocal "patched-cardano-node" {} ''
++              cp -r ${cardano-node-1_35_4.outPath} $out
++              chmod -R +w $out
++              cat ${./nix/supported-systems.nix} >$out/nix/supported-systems.nix
++            '';
++          }).packages.${system};
+ 
+           project = (import ./nix/haskell.nix
+               CHaP

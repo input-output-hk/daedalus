@@ -39,6 +39,7 @@ let
       cd $out
       patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
       patch -p1 -i ${./nix/cardano-wallet--expose-windowsPackages.patch}
+      patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin--cardano-node.patch}
     '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
