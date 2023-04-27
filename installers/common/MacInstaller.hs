@@ -121,7 +121,9 @@ XML_PATH="$4"
 ABS_PATH="$(pwd)/$REL_PATH"
 TS="$(date +%Y-%m-%d_%H-%M-%S)"
 function sign_cmd() {
-  codesign --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$1" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+  for targetFile in "$@" ; do
+    codesign --force --verbose=4 --deep --strict --timestamp --options=runtime --entitlements $XML_PATH --sign "$SIGN_ID" "$targetFile" 2>&1 | tee -a /tmp/codesign-output-${TS}.txt
+  done
 }
 VERIFY_CMD="codesign --verbose=4 --verify --deep --strict"
 ENTITLEMENT_CMD="codesign -d --entitlements :-"
@@ -160,6 +162,7 @@ sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Rel
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-arm64-"*"/tiny-secp256k1.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node"
+sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-arm64-"*"/usb-detection.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-x64-"*"/node-hid.node"
 sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
 
@@ -181,6 +184,8 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+    <key>com.apple.security.cs.allow-jit</key>
     <true/>
   </dict>
 </plist>|]
