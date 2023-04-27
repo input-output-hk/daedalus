@@ -65,7 +65,7 @@ let
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node = walletPackages.cardano-node;
-    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
+    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_4.rev;
     cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
     cardano-cli = walletPackages.cardano-cli;
 
