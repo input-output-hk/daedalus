@@ -1,0 +1,45 @@
+diff --git a/flake.nix b/flake.nix
+index af206a740e..dd6d6377e3 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -217,7 +217,15 @@
+             collectChecks
+             check;
+ 
+-          nodePkgs = cardano-node-1_35_4.packages.${system};
++          cardano-node-1_35_4-patched = (import ./nix/flake-compat.nix {
++            src = pkgs.runCommandLocal "patched-cardano-node" {} ''
++              cp -r ${cardano-node-1_35_4.outPath} $out
++              chmod -R +w $out
++              cat ${./nix/supported-systems.nix} >$out/nix/supported-systems.nix
++            '';
++          }).defaultNix;
++
++          nodePkgs = cardano-node-1_35_4-patched.packages.${system};
+ 
+           project = (import ./nix/haskell.nix
+               CHaP
+@@ -235,6 +243,12 @@
+           mkPackages = project:
+             let
+               coveredProject = project.appendModule { coverage = true; };
++              runtimeNodePkgs = {
++                x86_64-linux   = cardano-node-1_35_4-patched.hydraJobs.linux.native;
++                x86_64-windows = cardano-node-1_35_4-patched.hydraJobs.linux.windows;
++                x86_64-darwin  = cardano-node-1_35_4-patched.packages.x86_64-darwin;
++                aarch64-darwin = cardano-node-1_35_4-patched.packages.aarch64-darwin;
++              }.${project.pkgs.system};
+               self = {
+                 # Cardano wallet
+                 cardano-wallet = import ./nix/release-build.nix {
+@@ -250,8 +264,8 @@
+                 inherit (project.hsPkgs.cardano-addresses-cli.components.exes) cardano-address;
+ 
+                 # Cardano
+-                inherit (project.hsPkgs.cardano-cli.components.exes) cardano-cli;
+-                cardano-node = project.hsPkgs.cardano-node.components.exes.cardano-node // {
++                inherit (runtimeNodePkgs) cardano-cli;
++                cardano-node = runtimeNodePkgs.cardano-node // {
+                   deployments = pkgs.cardano-node-deployments;
+                 };
+ 
