@@ -1,10 +1,11 @@
-{ nodeImplementation ? "cardano"
-, system ? builtins.currentSystem
+{ inputs
+, nodeImplementation ? "cardano"
+, system
 }:
 
 let
-  sources = import ./nix/sources.nix;
-  nixpkgs = import sources.nixpkgs { sourcesOverride = sources; inherit system; };
+  sources = import ./sources.nix;
+  nixpkgs = inputs.nixpkgs.legacyPackages.${system};
   # TODO: can we use the filter in cardano-wallet instead?
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (

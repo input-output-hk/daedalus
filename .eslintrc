@@ -96,9 +96,12 @@
   "plugins": ["@typescript-eslint", "import", "promise", "react", "jest"],
   "globals": {
     "API": true,
-    "API_VERSION": true,
+    "CARDANO_WALLET_VERSION": true,
+    "CARDANO_NODE_VERSION": true,
     "NETWORK": true,
-    "BUILD_NUMBER": true,
+    "BUILD_REV": true,
+    "BUILD_REV_SHORT": true,
+    "BUILD_COUNTER": true,
     "Process": true // TODO: remove after fix
   },
   "settings": {

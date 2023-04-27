@@ -1,8 +1,7 @@
 { system ? builtins.currentSystem
 , config ? {}
 , nodeImplementation ? "cardano"
-, localLib ? import ./lib.nix { inherit nodeImplementation system; }
-, pkgs ? import (import ./nix/sources.nix).nixpkgs { inherit system config; }
+, pkgs ? inputs.self.packages.${system}.internal.${cluster}.newCommon.pkgs
 , cluster ? "selfnode"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
@@ -12,45 +11,27 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, useLocalNode ? false
 , nivOnly ? false
+, inputs
 }:
 
 let
-  daedalusPkgs = import ./. {
-    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
+  internal = inputs.self.packages.${system}.internal.${cluster};
+  daedalusPkgs = import ./old-default.nix {
+    inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
     target = system;
-    localLibSystem = system;
     devShell = true;
+    inherit (internal.newCommon) sourceLib;
   };
+  localLib = import ./old-lib.nix { inherit nodeImplementation system inputs; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
-  launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
-  fixYarnLock = pkgs.stdenv.mkDerivation {
-    name = "fix-yarn-lock";
-    buildInputs = [ daedalusPkgs.nodejs daedalusPkgs.yarn pkgs.git ];
-    shellHook = ''
-      git diff > pre-yarn.diff
-      yarn --frozen-lockfile
-      git diff > post-yarn.diff
-      diff pre-yarn.diff post-yarn.diff > /dev/null
-      if [ $? != 0 ]
-      then
-        echo "Changes by yarn have been made. Please commit them."
-      else
-        echo "No changes were made."
-      fi
-      rm pre-yarn.diff post-yarn.diff
-      exit
-    '';
-  };
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
   daedalusShellBuildInputs = [
-      daedalusPkgs.nodejs
-      daedalusPkgs.yarn
+      internal.newCommon.nodejs
+      internal.newCommon.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
-      daedalusPkgs.darwin-launcher
       daedalusPkgs.mock-token-metadata-server
       regenerateDevCerts
     ] ++ (with pkgs; [
@@ -63,9 +44,13 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
-      darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.AppKit
+      internal.darwin-launcher
+      darwin.apple_sdk.frameworks.CoreServices
+      darwin.apple_sdk.frameworks.AppKit
+      darwin.cctools
+      xcbuild
     ] else [
-      daedalusPkgs.electron
+      internal.electronBin
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -89,10 +74,9 @@ let
   gcRoot = pkgs.runCommandLocal "gc-root" {
     properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
     cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
-    ourHaskellNix = if pkgs.stdenv.isLinux then daedalusPkgs.yaml2json.project.roots else "";
     daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
     # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
-    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./nix/cardano-bridge.nix)));
+    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
   } "export >$out";
 
   debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
@@ -102,11 +86,17 @@ let
     buildInputs = daedalusShellBuildInputs;
     name = "daedalus";
     buildCommand = "touch $out";
-    LAUNCHER_CONFIG = launcherConfig';
-    DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
+    LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
+    CARDANO_NODE_VERSION = daedalusPkgs.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = daedalusPkgs.cardanoWalletVersion;
+    DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
+      mkdir -pv $out
+      cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON daedalusPkgs.launcherConfigs.launcherConfig)} $out/launcher-config.yaml
+    '';
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
+    NETWORK = cluster;
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
     NODE_IMPLEMENTATION = nodeImplementation;
@@ -125,7 +115,7 @@ let
       source <(cardano-address --bash-completion-script cardano-address)
       [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
-      cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config
@@ -137,7 +127,7 @@ let
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${daedalusPkgs.nodejs}/include/node -I${toString ./.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
       ${localLib.optionalString purgeNpmCache ''
         warn "purging all NPM/Yarn caches"
         rm -rf node_modules
@@ -145,50 +135,23 @@ let
         npm cache clean --force
         ''
       }
-      yarn install --frozen-lockfile
+      yarn install
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
-      find Debug/ Release/ -name '*.node' | xargs rm -v || true
       yarn build:electron
 
-      ${let
-        # Several native modules have to be linked in ${BUILDTYPE}/ in
-        # root directory, for `yarn dev` to work correctly. If a Debug
-        # version of such extension exists, we use it, otherwise, we
-        # use Release:
-        tryLink = dependency: fileName: ''
-          symlinkTarget=$(ls 2>/dev/null -d \
-            "$PWD/node_modules/${dependency}/build/Debug/${fileName}" \
-            "$PWD/node_modules/${dependency}/build/Release/${fileName}" \
-            | head -1
-          )
-
-          if [ -z "$symlinkTarget" ] ; then
-            echo >&2 "error: symlink target not found: ‘${fileName}’ in ‘${dependency}’"
-            # ~exit 1~ — do not exit, let the person fix from inside `nix-shell`
-          fi
-
-          ${localLib.optionalString pkgs.stdenv.isLinux ''
-            ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
-              pkgs.stdenv.cc.cc pkgs.udev
-            ]} "$symlinkTarget"
-          ''}
-
-          mkdir -p ${BUILDTYPE}/
-          ln -svf "$symlinkTarget" ${BUILDTYPE}/
-          unset symlinkTarget
-        '';
-      in ''
-        ${tryLink "usb"           "usb_bindings.node"}
-        ${tryLink "usb-detection" "detection.node"}
-        ${tryLink "node-hid"      "HID.node"}
-        ${localLib.optionalString pkgs.stdenv.isLinux ''
-          ${tryLink "node-hid"      "HID_hidraw.node"}
-        ''}
+      # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
+      ${localLib.optionalString pkgs.stdenv.isLinux ''
+        for ext in ${BUILDTYPE}/*.node ; do
+          ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc pkgs.udev
+          ]} "$(readlink -f "$symlinkTarget")"
+        done
       ''}
 
       ${localLib.optionalString pkgs.stdenv.isLinux ''
-        ln -svf ${daedalusPkgs.electron}/bin/electron ./node_modules/electron/dist/electron
+        # FIXME: use `internal.patchelfElectron`, like Lace
+        ln -svf ${internal.electronBin}/bin/electron ./node_modules/electron/dist/electron
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'
@@ -233,4 +196,4 @@ let
       "
     '';
   };
-in daedalusShell // { inherit fixYarnLock buildShell devops gcRoot; }
+in daedalusShell // { inherit buildShell devops gcRoot; }
