@@ -2,6 +2,9 @@
 
 ## vNext
 
+### Features
+- Removed date and results details from Catalyst page ([PR 3096](https://github.com/input-output-hk/daedalus/pull/3096))
+
 ### Fixes
 
 - Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
