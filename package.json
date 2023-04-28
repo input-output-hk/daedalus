@@ -14,7 +14,7 @@
     "build:renderer": "yarn webpack -c source/renderer/webpack.config.js --progress",
     "build:cleanup": "rimraf ./dist",
     "build:electron": "./scripts/rebuild-native-modules.sh",
-    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn lockfile:check && yarn i18n:manage && yarn storybook:build",
+    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn i18n:manage && yarn storybook:build",
     "start": "yarn electron ./",
     "start:dev": "nodemon --watch 'dist/main' --exec 'NODE_ENV=development yarn start'",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e:fail-fast",
@@ -71,8 +71,6 @@
     "itn:shelley:wallet:importer": "yarn node-swc utils/api-importer/itn-shelley-wallet-importer.ts",
     "yoroi:wallet:importer": "yarn node-swc utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "yarn node-swc utils/create-news-verification-hashes/index.ts",
-    "lockfile:check": "yarn node-swc utils/lockfile-checker/index.ts --check",
-    "lockfile:fix": "yarn node-swc utils/lockfile-checker/index.ts --fix",
     "typedef:sass": "typed-scss-modules source/renderer/app"
   },
   "bin": {
