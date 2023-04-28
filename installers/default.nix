@@ -1,6 +1,5 @@
 { system ? builtins.currentSystem
 , config ? {}
-, localLib ? import ../lib.nix {}
 , pkgs
 , daedalus-bridge
 }:

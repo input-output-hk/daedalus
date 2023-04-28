@@ -196,7 +196,7 @@ in rec {
     electron = electronBin;
 
     # FIXME: ???
-    inherit (oldCode) nodeImplementation launcherConfigs;
+    inherit (oldCode) launcherConfigs;
     linuxClusterBinName = cluster;
   };
 

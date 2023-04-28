@@ -1,14 +1,7 @@
 { target
-, nodeImplementation ? "cardano"
-, cluster ? "mainnet"
-, version ? "versionNotSet"
-, devShell ? false
-, useLocalNode ? false
-, topologyOverride ? null
-, configOverride ? null
-, genesisOverride ? null
-, sourceLib
 , inputs
+, cluster
+, devShell
 }:
 
 let
@@ -16,8 +9,6 @@ let
     x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   }.${target} or target;
   pkgs = inputs.nixpkgs.legacyPackages.${system};
-  localLib = import ./old-lib.nix { inherit inputs system nodeImplementation; };
-  sources = localLib.sources;
   flake-compat = import inputs.cardano-wallet-unpatched.inputs.flake-compat;
   walletFlake =
     if target != "aarch64-darwin"
@@ -39,12 +30,9 @@ let
     x86_64-darwin = macos.intel;
     aarch64-darwin = macos.silicon;
   }.${target};
-  walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
-  cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;
-  shellPkgs = (import "${sources.cardano-shell}/nix") { inherit system; };
-  inherit (pkgs.lib) optionalString;
-  crossSystem = lib: {
-    x86_64-windows = lib.systems.examples.mingwW64;
+  cardanoWorldFlake = (flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
+  crossSystem = {
+    x86_64-windows = pkgs.lib.systems.examples.mingwW64;
   }.${target} or null;
   ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
@@ -52,18 +40,14 @@ let
   ostable.aarch64-darwin = "macos64-arm";
 
   packages = self: {
-    inherit walletFlake cardanoWorldFlake cluster pkgs version target nodeImplementation;
-    cardanoLib = walletPkgs.cardanoLib;
-    daedalus-bridge = self.bridgeTable.${nodeImplementation};
+    inherit walletFlake cardanoWorldFlake cluster pkgs target;
+    inherit (walletFlake.legacyPackages.${system}.pkgs) cardanoLib;
+    daedalus-bridge = self.callPackage ./cardano-bridge.nix {};
 
-    sources = localLib.sources;
-    bridgeTable = {
-      cardano = self.callPackage ./cardano-bridge.nix {};
-    };
     inherit (walletPackages) cardano-wallet;
     inherit (walletPackages) cardano-address;
     inherit (walletPackages) mock-token-metadata-server;
-    cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
+    cardano-shell = import inputs.cardano-shell { inherit system crossSystem; };
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node = walletPackages.cardano-node;
     cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
@@ -71,19 +55,17 @@ let
     cardano-cli = walletPackages.cardano-cli;
 
     launcherConfigs = self.callPackage ./launcher-config.nix {
-      inherit devShell topologyOverride configOverride genesisOverride system;
+      inherit devShell system;
       network = cluster;
       os = ostable.${target};
-      backend = nodeImplementation;
     };
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = self.callPackage ../installers {
       inherit (self) daedalus-bridge;
-      inherit localLib system;
+      inherit system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
-    source = builtins.filterSource localLib.cleanSourceFilter ../.;
 
     tests = {
       runShellcheck = self.callPackage ../tests/shellcheck.nix { src = ../.;};

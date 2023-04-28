@@ -8,7 +8,8 @@ rec {
 
   oldCode = import ./old-default.nix {
     target = targetSystem;
-    inherit inputs cluster sourceLib;
+    inherit inputs cluster;
+    devShell = false;
   };
 
   inherit (oldCode) pkgs;

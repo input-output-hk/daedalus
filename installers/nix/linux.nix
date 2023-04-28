@@ -2,7 +2,6 @@
 , coreutils, utillinux, procps, cluster
 , rawapp, daedalus-bridge, daedalus-installer
 , sandboxed ? false
-, nodeImplementation
 , launcherConfigs
 , linuxClusterBinName
 , gsettings-desktop-schemas

@@ -1,33 +1,40 @@
-{ system ? builtins.currentSystem
-, config ? {}
-, nodeImplementation ? "cardano"
-, pkgs ? inputs.self.packages.${system}.internal.${cluster}.newCommon.pkgs
-, cluster ? "selfnode"
-, systemStart ? null
-, autoStartBackend ? systemStart != null
-, walletExtraArgs ? []
-, allowFaultInjection ? false
-, purgeNpmCache ? false
-, topologyOverride ? null
-, configOverride ? null
-, genesisOverride ? null
-, nivOnly ? false
+{ system
 , inputs
+, cluster ? "selfnode"
 }:
 
 let
   internal = inputs.self.packages.${system}.internal.${cluster};
+  pkgs = internal.newCommon.pkgs;
+
   daedalusPkgs = import ./old-default.nix {
-    inherit inputs nodeImplementation cluster topologyOverride configOverride genesisOverride;
+    inherit inputs cluster;
     target = system;
     devShell = true;
-    inherit (internal.newCommon) sourceLib;
   };
-  localLib = import ./old-lib.nix { inherit nodeImplementation system inputs; };
-  fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
-  # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
-  # to evaluate it.
-  daedalusShellBuildInputs = [
+
+  regenerateDevCerts = let
+    moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
+      daedalusPkgs.launcherConfigs.launcherConfig
+      // {
+        daedalusBin = "true";
+      }
+    ));
+  in
+    pkgs.writeShellScriptBin "regenerate-dev-certs" ''
+      ${daedalusPkgs.daedalus-bridge}/bin/cardano-launcher --config ${moddedConfig}
+    '';
+
+  gcRoot = pkgs.runCommandLocal "gc-root" {
+    inherit daedalusShell;
+    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
+    daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
+    # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
+    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
+  } "export >$out";
+
+  daedalusShell = pkgs.stdenv.mkDerivation (rec {
+    buildInputs = [
       internal.newCommon.nodejs
       internal.newCommon.yarn
       daedalusPkgs.daedalus-bridge
@@ -41,9 +48,7 @@ let
       gnumake
       pkgconfig
       libusb
-    ] ++ (localLib.optionals autoStartBackend [
-      daedalusPkgs.daedalus-bridge
-    ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
+    ] ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
       internal.darwin-launcher
       darwin.apple_sdk.frameworks.CoreServices
       darwin.apple_sdk.frameworks.AppKit
@@ -52,38 +57,7 @@ let
     ] else [
       internal.electronBin
       winePackages.minimal
-    ])
-    ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
-      debug.node
-    ]);
-  buildShell = pkgs.stdenv.mkDerivation {
-    name = "daedalus-build";
-    buildInputs = daedalusShellBuildInputs;
-  };
-  regenerateDevCerts = let
-    moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
-      daedalusPkgs.launcherConfigs.launcherConfig
-      // {
-        daedalusBin = "true";
-      }
-    ));
-  in
-    pkgs.writeShellScriptBin "regenerate-dev-certs" ''
-      ${daedalusPkgs.daedalus-bridge}/bin/cardano-launcher --config ${moddedConfig}
-    '';
-  gcRoot = pkgs.runCommandLocal "gc-root" {
-    properBuildShell = buildShell.overrideAttrs (old: { buildCommand = "export >$out"; });
-    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
-    daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
-    # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
-    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
-  } "export >$out";
-
-  debug.node = pkgs.writeShellScriptBin "debug-node" (with daedalusPkgs.launcherConfigs.launcherConfig; ''
-    cardano-node run --topology ${nodeConfig.network.topologyFile} --config ${nodeConfig.network.configFile} --database-path ${stateDir}/chain --port 3001 --socket-path ${stateDir}/cardano-node.socket
-  '');
-  daedalusShell = pkgs.stdenv.mkDerivation (rec {
-    buildInputs = daedalusShellBuildInputs;
+    ]));
     name = "daedalus";
     buildCommand = "touch $out";
     LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
@@ -99,7 +73,7 @@ let
     NETWORK = cluster;
     NODE_EXE = "cardano-wallet";
     CLI_EXE = "cardano-cli";
-    NODE_IMPLEMENTATION = nodeImplementation;
+    NODE_IMPLEMENTATION = "cardano";
     BUILDTYPE = "Debug";
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
@@ -108,8 +82,8 @@ let
          (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
       }
 
-      ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
-      ${localLib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
+      ${pkgs.lib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
+      ${pkgs.lib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
       source <(cardano-cli --bash-completion-script cardano-cli)
       source <(cardano-node --bash-completion-script cardano-node)
       source <(cardano-address --bash-completion-script cardano-address)
@@ -123,39 +97,29 @@ let
       ln -svf $(type -P cardano-wallet)
       ln -svf $(type -P cardano-cli)
 
-      ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
-        source <(cardano-node --bash-completion-script `type -p cardano-node`)
-      ''}
+      source <(cardano-node --bash-completion-script `type -p cardano-node`)
 
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
-      ${localLib.optionalString purgeNpmCache ''
-        warn "purging all NPM/Yarn caches"
-        rm -rf node_modules
-        yarn cache clean
-        npm cache clean --force
-        ''
-      }
       yarn install
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
       yarn build:electron
 
       # Patchelf possibly downloaded binary blobs (prebuilds) on Linux (most probably not needed – TODO: check):
-      ${localLib.optionalString pkgs.stdenv.isLinux ''
-        for ext in ${BUILDTYPE}/*.node ; do
+      ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+        for nodeExtension in ${BUILDTYPE}/*.node ; do
           ${pkgs.patchelf}/bin/patchelf --set-rpath ${pkgs.lib.makeLibraryPath [
             pkgs.stdenv.cc.cc pkgs.udev
-          ]} "$(readlink -f "$symlinkTarget")"
+          ]} "$(readlink -f "$nodeExtension")"
         done
       ''}
 
-      ${localLib.optionalString pkgs.stdenv.isLinux ''
+      ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
         # FIXME: use `internal.patchelfElectron`, like Lace
         ln -svf ${internal.electronBin}/bin/electron ./node_modules/electron/dist/electron
       ''}
 
       echo 'jq < $LAUNCHER_CONFIG'
-      echo debug the node by running debug-node
 
       echo 'Resolving environment variables to absolute paths…'
       # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
@@ -169,31 +133,4 @@ let
       echo 'Now, run ‘yarn dev’.'
     '';
   });
-  daedalus = daedalusShell.overrideAttrs (oldAttrs: {
-    shellHook = ''
-      ${oldAttrs.shellHook}
-      yarn dev
-      exit 0
-    '';
-  });
-  devops = pkgs.stdenv.mkDerivation {
-    name = "devops-shell";
-    buildInputs = let
-      inherit (daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.pkgs) niv;
-    in if nivOnly then [ niv ] else [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
-    shellHook = ''
-      export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
-      echo "DevOps Tools" \
-      | ${pkgs.figlet}/bin/figlet -f banner -c \
-      | ${pkgs.lolcat}/bin/lolcat
-
-      echo "NOTE: you may need to export GITHUB_TOKEN if you hit rate limits with niv"
-      echo "Commands:
-        * niv update <package> - update package
-        * start-cluster - start a development cluster
-        * stop-cluster - stop a development cluster
-
-      "
-    '';
-  };
-in daedalusShell // { inherit buildShell devops gcRoot; }
+in daedalusShell // { inherit gcRoot; }

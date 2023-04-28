@@ -132,6 +132,23 @@
     "cardano-shell": {
       "flake": false,
       "locked": {
+        "lastModified": 1651849514,
+        "narHash": "sha256-g5vqy7WoRusIq7eOwSXLLH/+VKHJUSbErhnrzfLvmBU=",
+        "owner": "input-output-hk",
+        "repo": "cardano-shell",
+        "rev": "0d1d5f036c73d18e641412d2c58d4acda592d493",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "cardano-shell",
+        "rev": "0d1d5f036c73d18e641412d2c58d4acda592d493",
+        "type": "github"
+      }
+    },
+    "cardano-shell_2": {
+      "flake": false,
+      "locked": {
         "lastModified": 1608537748,
         "narHash": "sha256-PulY1GfiMgKVnBci3ex4ptk2UNYMXqGjJOxcPy2KYT4=",
         "owner": "input-output-hk",
@@ -178,6 +195,23 @@
         "owner": "input-output-hk",
         "ref": "v2022-12-14",
         "repo": "cardano-wallet",
+        "type": "github"
+      }
+    },
+    "cardano-world": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1669223728,
+        "narHash": "sha256-Zo6YeS+43AsJy7TKVfe42O/hR+JOwhalLkH3KFGRTCM=",
+        "owner": "input-output-hk",
+        "repo": "cardano-world",
+        "rev": "a0a315100ee320395be97fcc83f46678d5a7fb6e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "cardano-world",
+        "rev": "a0a315100ee320395be97fcc83f46678d5a7fb6e",
         "type": "github"
       }
     },
@@ -881,7 +915,7 @@
         "cabal-32": "cabal-32",
         "cabal-34": "cabal-34",
         "cabal-36": "cabal-36",
-        "cardano-shell": "cardano-shell",
+        "cardano-shell": "cardano-shell_2",
         "flake-compat": "flake-compat_3",
         "flake-utils": "flake-utils_5",
         "ghc-8.6.5-iohk": "ghc-8.6.5-iohk",
@@ -1923,7 +1957,9 @@
     },
     "root": {
       "inputs": {
+        "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
+        "cardano-world": "cardano-world",
         "nixpkgs": "nixpkgs_16",
         "tullia": "tullia_3"
       }

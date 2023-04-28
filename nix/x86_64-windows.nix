@@ -8,10 +8,8 @@ let
 
   inherit (newCommon) sourceLib oldCode pkgs srcWithoutNix yarn nodejs originalPackageJson commonSources electronVersion;
   inherit (pkgs) lib;
-  inherit (oldCode) nodeImplementation launcherConfigs;
+  inherit (oldCode) launcherConfigs;
 
-  dummyInstaller = false;
-  fudgeConfig = null;
   signingKeys = null;
   HSMServer = null;
 
@@ -139,14 +137,21 @@ in rec {
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
 
   # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
-  nsisNixPkgs = import oldCode.sources.nixpkgs-nsis { system = "x86_64-linux"; };
+  nsisNixpkgs = pkgs.fetchFromGitHub {
+    owner = "input-output-hk";
+    repo = "nixpkgs";
+    rev = "be445a9074f139d63e704fa82610d25456562c3d";
+    hash = "sha256-ivcmGg01aeeod0rzjMJ86exUNHHRJu4526rGq9s7rJU=";
+  };
+
+  nsisPkgs = import nsisNixpkgs { system = "x86_64-linux"; };
 
   # the native makensis binary, with cross-compiled windows stubs
-  nsis = nsisNixPkgs.callPackage ./nsis.nix {};
+  nsis = nsisPkgs.callPackage ./nsis.nix {};
 
   unsignedUnpackedCardano = oldCode.daedalus-bridge; # TODO
 
-  unpackedCardano = if dummyInstaller then dummyUnpacked else (if needSignedBinaries then signedCardano else unsignedUnpackedCardano);
+  unpackedCardano = if needSignedBinaries then signedCardano else unsignedUnpackedCardano;
 
   signFile = file: let
     localSigningScript = pkgs.writeScript "signing-script" ''
@@ -212,15 +217,7 @@ in rec {
     ${copySignedBinaries}
   '';
 
-  dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
-    mkdir $out
-    cd $out
-    touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
-  '';
-
-  nsisFiles = let
-    nodeImplementation' = "${nodeImplementation}";
-  in pkgs.runCommand "nsis-files" {
+  nsisFiles = pkgs.runCommand "nsis-files" {
     buildInputs = [ oldCode.daedalus-installer pkgs.glibcLocales ];
   } ''
     mkdir installers
@@ -229,7 +226,7 @@ in rec {
 
     export LANG=en_US.UTF-8
     cp -v ${launcherConfigs.configFiles}/* .
-    make-installer --${nodeImplementation'} dummy \
+    make-installer --cardano dummy \
       --os win64 \
       -o $out \
       --cluster ${cluster} \
@@ -300,14 +297,14 @@ in rec {
     chmod -R +w installers
     cd installers
     mkdir -pv ../release/win32-x64/
-    ${if dummyInstaller then ''mkdir -pv "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/"'' else ''cp -rv ${daedalusJs} "../release/win32-x64/${installDir}-win32-x64"''}
+    cp -rv ${daedalusJs} "../release/win32-x64/${installDir}-win32-x64"
     chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
     cp -v ${fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
     ln -s ${../installers/nsis_plugins} nsis_plugins
 
     mkdir dlls
     pushd dlls
-    ${if dummyInstaller then "touch foo" else "unzip ${dlls}"}
+    unzip ${dlls}
     popd
     cp -vr ${unpackedCardano}/bin/* .
     cp -v ${nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
@@ -316,13 +313,6 @@ in rec {
       cp -v ${nsisFiles}/block-0.bin .
     fi
     chmod -R +w .
-    ${pkgs.lib.optionalString (fudgeConfig != null) ''
-      set -x
-      KEY=$(yaml2json launcher-config.yaml | jq .configuration.key -r)
-      config-mutator configuration.yaml ''${KEY} ${toString fudgeConfig.applicationVersion} > temp
-      mv temp configuration.yaml
-      set +x
-    ''}
 
     echo '~~~   Generating installer'
     makensis daedalus.nsi -V4

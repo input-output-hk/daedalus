@@ -19,13 +19,13 @@ nix run -L .#internal.mainnet.newCommon.patchElectronRebuild
 
 # TODO: do we really need to run `electron-rebuild` 3×?
 
-electron-rebuild --useCache
+electron-rebuild --force
 
-electron-rebuild -w usb-detection --useCache -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
+electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
 
 if [ "$(uname)" == "Linux" ] ; then
   # We ship debug version because the release one has issues with Ledger Nano S
-  electron-rebuild -w usb --useCache -s --debug
+  electron-rebuild -w usb --force -s --debug
 fi
 
 # XXX: we compare sha1sums before any signing (ad-hoc or real),

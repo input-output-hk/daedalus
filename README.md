@@ -150,12 +150,13 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 
 #### Updating upstream dependencies (cardano-wallet, cardano-node)
 
-`Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
+Nix flake is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `flake.nix`.
 
-Dependencies are updated with the follow nix commands:
-- Update cardano-wallet to the latest master: `nix develop .#default.devops --command niv update cardano-wallet`
-- Update cardano-wallet to a specific revision: `nix develop .#default.devops --command niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab`
-- Update cardano-node to a specific tag: `nix develop .#default.devops --command niv update cardano-node -b tags/1.20.0`
+Dependencies are updated in the `inputs` section of `flake.nix` followed with e.g.:
+
+```
+nix flake lock --update-input cardano-wallet-unpatched
+```
 
 ### Cardano Wallet Api documentation
 
@@ -247,7 +248,7 @@ Run:
 
 If you want to run an Intel build from an Apple Silicon machine:
 
-    nix run -L .#package.mainnet
+    nix run -L .#packages.x86_64-darwin.package.mainnet
 
 ## Installers
 

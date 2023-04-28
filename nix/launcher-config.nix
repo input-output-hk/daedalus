@@ -1,5 +1,4 @@
-{ backend ? "cardano"
-, network ? "staging"
+{ network ? "staging"
 , os ? "linux"
 , cardanoLib
 , runCommand
@@ -218,7 +217,7 @@ let
     networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
-    nodeImplementation = backend;
+    nodeImplementation = "cardano";
   };
 
   mkConfigFiles = nodeConfigFiles: launcherConfig: installerConfig:
@@ -347,5 +346,4 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
 
-  configs.cardano = mkConfigCardano;
-in configs.${backend}
+in mkConfigCardano
