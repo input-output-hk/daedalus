@@ -10,20 +10,21 @@ let
   inherit (pkgs) lib;
   inherit (oldCode) launcherConfigs;
 
-  signingKeys = null;
-  HSMServer = null;
-
 in rec {
 
   inherit newCommon oldCode;
 
-  package = daedalusJs; # FIXME: this is wrong
+  package = preSigning;  # XXX: this is slightly wrong, as not all files are in their final relative paths
 
-  unsignedInstaller = unsigned-windows-installer;
+  # XXX: Please, use ‘nix run -L .#packages.x86_64-windows.makeSignedInstaller.mainnet’,
+  # as the process cannot be done purely, as it requires passing files
+  # through `ssh` at the HSM server
+  makeSignedInstaller = makeInstaller { signed = true; };
 
-  makeSignedInstaller = oldCode.pkgs.writeScriptBin "make-signed-installer" ''
-    echo >&2 'fatal: not yet implemented'
-    exit 1
+  unsignedInstaller = pkgs.runCommand "win64-installer-${cluster}" {} ''
+    ${makeInstaller { signed = false; }}/bin/make-signed-installer
+    mkdir $out
+    cp -v installers/daedalus-*-*.exe $out/
   '';
 
   # They’re initially the same as Linux when cross-compiling for Windows:
@@ -124,97 +125,22 @@ in rec {
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
 
-  # a cross-compiled fastlist for the ps-list package
-  fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
-  wine = pkgs.wine.override { wineBuild = "wine32"; };
-  wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
-
-  dlls = pkgs.fetchurl {
-    url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
-    sha256 = "0p6nrf8sg2wgcaf3b1qkbb98bz2dimb7lnshsa93xnmia9m2vsxa";
-  };
-
-  needSignedBinaries = (signingKeys != null) || (HSMServer != null);
-
-  # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
-  nsisNixpkgs = pkgs.fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "nixpkgs";
-    rev = "be445a9074f139d63e704fa82610d25456562c3d";
-    hash = "sha256-ivcmGg01aeeod0rzjMJ86exUNHHRJu4526rGq9s7rJU=";
-  };
-
-  nsisPkgs = import nsisNixpkgs { system = "x86_64-linux"; };
-
-  # the native makensis binary, with cross-compiled windows stubs
-  nsis = nsisPkgs.callPackage ./nsis.nix {};
-
-  unsignedUnpackedCardano = oldCode.daedalus-bridge; # TODO
-
-  unpackedCardano = if needSignedBinaries then signedCardano else unsignedUnpackedCardano;
-
-  signFile = file: let
-    localSigningScript = pkgs.writeScript "signing-script" ''
-      #!${pkgs.stdenv.shell}
-
-      exec 3>&1
-      exec 1>&2
-
-      export PATH=${pkgs.mono}/bin:$PATH
-      PASS=hunter2
-
-      DIR=$(realpath $(mktemp -d))
-      cd $DIR
-      cp ${file} .
-      FILE=$(basename ${file})
-      chmod +w $FILE
-
-      # if stdout is a tty, then mono 5.8 will barf over the terminfo files being too new
-      # mono 5.16 supports them, but isn't in our current nixpkgs
-      # for more info, refer to `mcs/class/corlib/System/TermInfoReader.cs` and `ReadHeader`
-      echo $PASS | signcode -spc ${toString signingKeys.spc} -v ${toString signingKeys.pvk} -a sha1 -$ commercial -n "TODO description" -i http://iohk.io -t http://timestamp.verisign.com/scripts/timstamp.dll -tr 10 $FILE | cat
-      storePath=$(nix-store --add-fixed sha256 $FILE)
-      rm -rf $DIR
-      echo $storePath >&3
-    '';
-    remoteSigningScript = pkgs.writeScript "signing-script" ''
-      #!${pkgs.stdenv.shell}
-
-      exec 3>&1
-      exec 1>&2
-
-      echo signing "${file}"
-
-      set -e
-
-      DIR=$(realpath $(mktemp -d))
-      cd $DIR
-      FILE=$(basename ${file})
-
-      cat ${file} | ssh ${HSMServer} > $FILE
-
-      storePath=$(nix-store --add-fixed sha256 $FILE)
-      cd /
-      rm -rf $DIR
-      echo $storePath >&3
-    '';
-    signingScript = if (HSMServer != null) then remoteSigningScript else localSigningScript;
-    # requires --allow-unsafe-native-code-during-evaluation
-    res = builtins.exec [ signingScript ];
-  in res;
-
-  signedCardano = let
-    copySignedBinaries = let
-      signAndCopy = bin: ''
-        cp ${signFile "${unsignedUnpackedCardano}/bin/${bin}"} bin/${bin}
-      '';
-    in __concatStringsSep "\n" (map signAndCopy launcherConfigs.installerConfig.installerWinBinaries);
-  in pkgs.runCommand "signed-daedalus-bridge" {} ''
-    cp -r ${unsignedUnpackedCardano} $out
-    chmod -R +w $out
-    cd $out
-    rm bin/*.exe
-    ${copySignedBinaries}
+  windowsIcons = let
+    buildInputs = with pkgs; [ imagemagick ];
+    # Allow fallback to `mainnet` if cluster’s icons don’t exist:
+    srcCluster = if builtins.pathExists (../installers/icons + "/${cluster}") then cluster else "mainnet";
+  in pkgs.runCommand "windows-icons-${cluster}" { inherit buildInputs; } ''
+    mkdir -p $out/${cluster} $out
+    cp -r ${../installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
+    cp ${../installers/icons/installBanner.bmp} $out/installBanner.bmp
+    cd $out/${cluster}
+    rm *.ico *.ICO || true   # XXX: just in case
+    for f in *.png ; do
+      # XXX: these sizes are too large for the ICO format:
+      if [ "$f" == 1024x1024.png ] || [ "$f" == 512x512.png ] ; then continue ; fi
+      convert "$f" "''${f%.png}.ico"
+    done
+    convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
   '';
 
   nsisFiles = pkgs.runCommand "nsis-files" {
@@ -240,6 +166,21 @@ in rec {
     ls -lR $out
   '';
 
+  # the native makensis binary, with cross-compiled windows stubs
+  nsis = let
+    # TODO, nsis can't cross-compile with the nixpkgs daedalus currently uses
+    nsisNixpkgs = pkgs.fetchFromGitHub {
+      owner = "input-output-hk";
+      repo = "nixpkgs";
+      rev = "be445a9074f139d63e704fa82610d25456562c3d";
+      hash = "sha256-ivcmGg01aeeod0rzjMJ86exUNHHRJu4526rGq9s7rJU=";
+    };
+    nsisPkgs = import nsisNixpkgs { system = "x86_64-linux"; };
+  in nsisPkgs.callPackage ./nsis.nix {};
+
+  wine = pkgs.wine.override { wineBuild = "wine32"; };
+  wine64 = pkgs.wine.override { wineBuild = "wineWow"; };
+
   unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ nsis wine ]; } ''
     mkdir home
     export HOME=$(realpath home)
@@ -254,43 +195,21 @@ in rec {
     mv -v $HOME/.wine/drive_c/uninstall.exe $out/uninstall.exe
   '';
 
-  signedUninstaller = pkgs.runCommand "uninstaller-signed" {} ''
-    mkdir $out
-    cp ${signFile "${unsignedUninstaller}/uninstall.exe"} $out/uninstall.exe
-  '';
+  # a cross-compiled fastlist for the ps-list package
+  fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
 
-  uninstaller = if needSignedBinaries then signedUninstaller else unsignedUninstaller;
+  dlls = pkgs.fetchurl {
+    url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
+    sha256 = "0p6nrf8sg2wgcaf3b1qkbb98bz2dimb7lnshsa93xnmia9m2vsxa";
+  };
 
-  windowsIcons = let
-    buildInputs = with pkgs; [ imagemagick ];
-    # Allow fallback to `mainnet` if cluster’s icons don’t exist:
-    srcCluster = if builtins.pathExists (../installers/icons + "/${cluster}") then cluster else "mainnet";
-  in pkgs.runCommand "windows-icons-${cluster}" { inherit buildInputs; } ''
-    mkdir -p $out/${cluster} $out
-    cp -r ${../installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
-    cp ${../installers/icons/installBanner.bmp} $out/installBanner.bmp
-    cd $out/${cluster}
-    rm *.ico *.ICO || true   # XXX: just in case
-    for f in *.png ; do
-      # XXX: these sizes are too large for the ICO format:
-      if [ "$f" == 1024x1024.png ] || [ "$f" == 512x512.png ] ; then continue ; fi
-      convert "$f" "''${f%.png}.ico"
-    done
-    convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
-  '';
-
-  unsigned-windows-installer = let
+  preSigning = let
     installDir = oldCode.launcherConfigs.installerConfig.spacedName;
-  in pkgs.runCommand "win64-installer-${cluster}" {
-    buildInputs = [
-      oldCode.daedalus-installer nsis pkgs.unzip pkgs.jq yaml2json
-    ];
-  } ''
-    echo '~~~   Preparing files for installer'
-    mkdir home
-    export HOME=$(realpath home)
+  in pkgs.runCommand "pre-signing" { buildInputs = [ pkgs.unzip ]; } ''
+    mkdir $out
+    cd $out
 
-    mkdir -p $out/{nix-support,cfg-files}
+    echo '~~~   Preparing files for installer'
     mkdir installers
     cp -vir ${windowsIcons} installers/icons
     cp -vir ${../package.json} package.json
@@ -306,41 +225,50 @@ in rec {
     pushd dlls
     unzip ${dlls}
     popd
-    cp -vr ${unpackedCardano}/bin/* .
+    cp -vr ${oldCode.daedalus-bridge}/bin/* .
     cp -v ${nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
-    cp ${uninstaller}/uninstall.exe .
+    cp ${unsignedUninstaller}/uninstall.exe .
     if [ -f ${nsisFiles}/block-0.bin ]; then
       cp -v ${nsisFiles}/block-0.bin .
     fi
+  '';
+
+  makeInstaller = { signed ? false }: oldCode.pkgs.writeScriptBin "make-signed-installer" ''
+    set -euo pipefail
+
+    ${if signed then ''
+      # We have to do it impurely:
+      cd $(mktemp -d)
+      echo "~~~ We’re signing in $PWD:"
+
+      sign_cmd() {
+        echo "Signing: ‘$1’…"
+        ssh HSM <"$1" >"$1".signed
+        mv "$1".signed "$1"
+      }
+    '' else ''
+      sign_cmd() {
+        echo "Would sign: ‘$1’"
+      }
+    ''}
+
+    cp -r ${preSigning}/. ./
     chmod -R +w .
 
-    echo '~~~   Generating installer'
-    makensis daedalus.nsi -V4
+    find . '(' -iname '*.exe' -o -iname '*.dll' -o -iname '*.node' ')' | sort | while IFS= read -r binaryToSign ; do
+      sign_cmd "$binaryToSign"
+    done
 
-    echo '~~~   Copying to $out'
-    cp daedalus-*-*.exe $out/
-    cp *.yaml $out/cfg-files/
-    echo file installer $out/*.exe > $out/nix-support/hydra-build-products
+    echo '~~~ Generating installer'
+    (
+      cd installers/
+      ${nsis}/bin/makensis daedalus.nsi -V4
+    )
+
+    sign_cmd installers/daedalus-*-*.exe
+
+    echo "Final installer: ‘$(realpath installers/daedalus-*-*.exe)’"
   '';
-
-  signed-windows-installer = let
-    backend_version = oldCode.cardanoWalletVersion;
-    frontend_version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
-    fullName = "daedalus-${frontend_version}.${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe"; # must match to packageFileName in make-installer
-  in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
-    mkdir $out
-    cp -v ${signFile "${unsigned-windows-installer}/${fullName}"} $out/${fullName}
-  '';
-
-  windows-installer = if needSignedBinaries then signed-windows-installer else unsigned-windows-installer;
-
-  haskell-nix = inputs.cardano-wallet-unpatched.inputs.haskellNix.legacyPackages.x86_64-linux.haskell-nix;
-
-  inherit ((haskell-nix.hackage-package { name = "yaml"; compiler-nix-name = "ghc8107"; cabalProject = ''
-    packages: .
-    package yaml
-      flags: -no-exe
-  ''; }).components.exes) yaml2json;
 
   windowsSources = {
     electron = pkgs.fetchurl {
