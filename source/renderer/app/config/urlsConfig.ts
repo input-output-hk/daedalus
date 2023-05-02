@@ -1,4 +1,4 @@
-import coingeckoConfig from './currencyConfig.coingecko';
+import { currencyConfig } from './currencyConfig';
 
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'explorer.staging.cardano.org';
@@ -24,6 +24,6 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_NEWS_HASH_URL,
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
-  coingeckoConfig.hostname,
+  currencyConfig.hostname,
   MAINNET_SERVICING_STATION_URL,
 ];

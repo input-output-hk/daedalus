@@ -133,14 +133,16 @@ export default class StakingStore extends Store {
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
     stakingActions.updateDelegatingStake.listen(this._setStake);
     stakingActions.rankStakePools.listen(this._rankStakePools);
-    stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
+    // I had a problem with smash server so had to comment this line in order to proceed
+    // stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
     stakingActions.resetSmashServerError.listen(this._resetSmashServerError);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
     stakingActions.setStakingInfoWasOpen.listen(this._setStakingInfoWasOpen);
-    networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
+    // I had a problem with smash server so had to comment this line in order to proceed
+    // networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
     // ========== MOBX REACTIONS =========== //
     // @ts-ignore ts-migrate(2339) FIXME: Property 'registerReactions' does not exist on typ... Remove this comment to see the full error message
     this.registerReactions([this._pollOnSync]);

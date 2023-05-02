@@ -5,7 +5,7 @@
  */
 import { omit, map } from 'lodash';
 // Available APIS
-import coingeckoConfig from './currencyConfig.coingecko';
+import coinMarketCapConfig from './currencyConfig.coinmarketcap';
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
 import { LOCALES } from '../../../common/types/locales.types';
@@ -21,7 +21,7 @@ export const REQUESTS: Record<string, RequestName> = {
   RATE: 'rate',
 };
 // Definitions
-export const currencyConfig = coingeckoConfig;
+export const currencyConfig = coinMarketCapConfig;
 export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
 export const CURRENCY_DEFAULT_SELECTED = currenciesList.usd;
 export const CURRENCY_REQUEST_RATE_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
