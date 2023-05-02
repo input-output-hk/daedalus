@@ -1,7 +1,6 @@
 dist
 release
 main.js
-.cache-loader
 logs
 node_modules
 translations

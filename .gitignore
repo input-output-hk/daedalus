@@ -77,7 +77,6 @@ tests/@rerun.txt
 
 # Webpack
 .cache
-.cache-loader
 
 # Git data
 build-id
