@@ -23,6 +23,7 @@
       default = package.mainnet;
       makeSignedInstaller = __mapAttrs (_: a: a.makeSignedInstaller) internal;
       buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs targetSystem; };
+      signingTest = import ./nix/signing-test.nix { inherit inputs targetSystem; };
     }) {
       x86_64-linux = ./nix/x86_64-linux.nix;
       x86_64-windows = ./nix/x86_64-windows.nix;
