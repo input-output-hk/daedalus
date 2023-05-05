@@ -10,25 +10,24 @@ let
   }.${target} or target;
   pkgs = inputs.nixpkgs.legacyPackages.${system};
   flake-compat = import inputs.cardano-wallet-unpatched.inputs.flake-compat;
-  walletFlake =
-    if target != "aarch64-darwin"
-    then inputs.cardano-wallet-unpatched
-    else (flake-compat {
-      # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
-      src = pkgs.runCommand "cardano-wallet" {} ''
-        cp -r ${inputs.cardano-wallet-unpatched} $out
-        chmod -R +w $out
-        cd $out
-        patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
-      '';
-    }).defaultNix // {
-      inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
-    };
-  walletPackages = with walletFlake.hydraJobs; {
-    x86_64-windows = linux.windows;
-    x86_64-linux = linux.native;
-    x86_64-darwin = macos.intel;
-    aarch64-darwin = macos.silicon;
+  walletFlake = (flake-compat {
+    # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
+    src = pkgs.runCommand "cardano-wallet" {} ''
+      cp -r ${inputs.cardano-wallet-unpatched} $out
+      chmod -R +w $out
+      cd $out
+      patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
+      patch -p1 -i ${./cardano-wallet--proper-runtimeNodePkgs.patch}
+    '';
+  }).defaultNix // {
+    inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
+  };
+  walletPackages = {
+    x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+    x86_64-linux = walletFlake.packages.x86_64-linux;
+    x86_64-darwin = walletFlake.packages.x86_64-darwin;
+    aarch64-darwin = walletFlake.packages.aarch64-darwin;
   }.${target};
   cardanoWorldFlake = (flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
   crossSystem = {
@@ -50,7 +49,7 @@ let
     cardano-shell = import inputs.cardano-shell { inherit system crossSystem; };
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node = walletPackages.cardano-node;
-    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 self.cardano-node.src.rev;
+    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_4.rev;
     cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
     cardano-cli = walletPackages.cardano-cli;
 

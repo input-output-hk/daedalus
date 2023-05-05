@@ -1,25 +1,5 @@
-diff --git a/flake.nix b/flake.nix
-index e17573394..9afa5b2bd 100644
---- a/flake.nix
-+++ b/flake.nix
-@@ -388,7 +388,14 @@
-     lib.recursiveUpdate (removeAttrs systems [ "systemHydraJobs" "systemHydraJobsPr" "systemHydraJobsBors" ])
-       {
-         inherit overlay nixosModule nixosModules;
--        hydraJobs = mkHydraJobs systems.systemHydraJobs;
-+        # Temporarily fix some merge bug – @michalrus
-+        hydraJobs =
-+          let hj = mkHydraJobs systems.systemHydraJobs; in
-+          hj // {
-+            macos = hj.macos // {
-+              silicon = systems.systemHydraJobs.aarch64-darwin.macos.silicon;
-+            };
-+          };
-         hydraJobsPr = mkHydraJobs systems.systemHydraJobsPr;
-         hydraJobsBors = mkHydraJobs systems.systemHydraJobsBors;
-       }
 diff --git a/nix/supported-systems.nix b/nix/supported-systems.nix
-index 6e3f0d94e..5de7138b3 100644
+index 6e3f0d94e3..5de7138b32 100644
 --- a/nix/supported-systems.nix
 +++ b/nix/supported-systems.nix
 @@ -1,6 +1,5 @@
