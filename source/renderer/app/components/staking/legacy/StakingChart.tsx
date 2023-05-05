@@ -4,6 +4,9 @@ import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
 import StakingChartTooltip from './StakingChartTooltip';
 import styles from './StakingChart.scss';
 
+// TODO: Remove the ts-ignore below
+//  Task related: https://input-output.atlassian.net/browse/DDW-1159
+// @ts-ignore
 class CustomReferenceLine extends ReferenceLine {
   getEndPoints(isX, isY) {
     const endPoints = super.getEndPoints(isX, isY);
