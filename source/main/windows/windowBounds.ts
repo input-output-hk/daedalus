@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es/function';
+import debounce from 'lodash/debounce';
 import {
   STORAGE_KEYS,
   STORAGE_TYPES,
