@@ -1,6 +1,7 @@
 {inputs}: let
+  tullia = (import inputs.flake-compat { src = inputs.tullia.outPath; }).defaultNix;
   # For now, Cicero is building for Darwin on Linux with configured remote builders:
-  x86_64-linux = inputs.tullia.fromSimple "x86_64-linux" (import ./tullia.nix);
+  x86_64-linux = tullia.fromSimple "x86_64-linux" (import ./tullia.nix);
 in {
   tullia.x86_64-linux = x86_64-linux.tullia;
   cicero.x86_64-linux = x86_64-linux.cicero;

@@ -9,8 +9,7 @@ let
     x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   }.${target} or target;
   pkgs = inputs.nixpkgs.legacyPackages.${system};
-  flake-compat = import inputs.cardano-wallet-unpatched.inputs.flake-compat;
-  walletFlake = (flake-compat {
+  walletFlake = (import inputs.flake-compat {
     # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
     src = pkgs.runCommand "cardano-wallet" {} ''
       cp -r ${inputs.cardano-wallet-unpatched} $out
@@ -29,7 +28,7 @@ let
     x86_64-darwin = walletFlake.packages.x86_64-darwin;
     aarch64-darwin = walletFlake.packages.aarch64-darwin;
   }.${target};
-  cardanoWorldFlake = (flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
+  cardanoWorldFlake = (import inputs.flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
   crossSystem = {
     x86_64-windows = pkgs.lib.systems.examples.mingwW64;
   }.${target} or null;
