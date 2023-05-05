@@ -35,6 +35,7 @@ import           Config
 import           RewriteLibs               (chain)
 import           Types
 import           Util                      (exportBuildVars, rewritePackageJson)
+import qualified Control.Foldl             as Fold
 
 data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
@@ -393,6 +394,10 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cptreeL (bridge </> "bin" </> "test" </> "data") (dataDir </> "data")
 
       procs "chmod" ["-R", "+w", tt dir] empty
+
+      dylibs <- Turtle.fold (Turtle.find (Turtle.suffix ".dylib") (bridge </> "bin")) Fold.list
+      forM_ dylibs $ \f ->
+        cp f (dir </> filename f)
 
       rmtree $ dataDir </> "app/installers"
 

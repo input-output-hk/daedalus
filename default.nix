@@ -33,24 +33,23 @@ let
   };
   pkgs = import sources.nixpkgs { inherit system config; };
   sources = localLib.sources // {
-    cardano-wallet =
-      if target != "aarch64-darwin"
-      then localLib.sources.cardano-wallet
-      else pkgs.runCommand "cardano-wallet" {} ''
-        cp -r ${localLib.sources.cardano-wallet} $out
-        chmod -R +w $out
-        cd $out
-        patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
-      '';
+    cardano-wallet = pkgs.runCommand "cardano-wallet" {} ''
+      cp -r ${localLib.sources.cardano-wallet} $out
+      chmod -R +w $out
+      cd $out
+      patch -p1 -i ${./nix/cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${./nix/cardano-wallet--expose-windowsPackages.patch}
+      patch -p1 -i ${./nix/cardano-wallet--proper-runtimeNodePkgs.patch}
+    '';
   };
   haskell-nix = walletFlake.inputs.haskellNix.legacyPackages.${system}.haskell-nix;
   flake-compat = import sources.flake-compat;
   walletFlake = (flake-compat  { src = sources.cardano-wallet; }).defaultNix;
-  walletPackages = with walletFlake.hydraJobs; {
-    x86_64-windows = linux.windows;
-    x86_64-linux = linux.native;
-    x86_64-darwin = macos.intel;
-    aarch64-darwin = macos.silicon;
+  walletPackages = {
+    x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+    x86_64-linux = walletFlake.packages.x86_64-linux;
+    x86_64-darwin = walletFlake.packages.x86_64-darwin;
+    aarch64-darwin = walletFlake.packages.aarch64-darwin;
   }.${target};
   walletPkgs = walletFlake.legacyPackages.${system}.pkgs;
   cardanoWorldFlake = (flake-compat { src = sources.cardano-world; }).defaultNix.outputs;

@@ -226,7 +226,10 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
                     file [] "libsodium-23.dll"
+                    file [] "libsecp256k1-1.dll"
                     file [] "libsecp256k1-0.dll"
+                    file [] "libssl-3-x64.dll"
+                    file [] "libcrypto-3-x64.dll"
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"
                       file [] "delegation.cert"
