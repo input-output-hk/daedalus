@@ -26,24 +26,30 @@ type CurrencyRateGeckoResponse = Array<{
 const id = 'coingecko';
 const name = 'CoinGecko';
 const website = 'https://www.coingecko.com/en/api';
-const hostname = 'api.coingecko.com';
+const hostname = '127.0.0.1';
 const version = 'v3';
 const pathBase = `api/${version}`;
 const requests = {
   list: [
     {
       hostname,
+      port: 8095,
+      protocol: 'http',
       method: 'GET',
       path: `/${pathBase}/coins/list`,
     },
     {
       hostname,
+      port: 8095,
+      protocol: 'http',
       method: 'GET',
       path: `/${pathBase}/simple/supported_vs_currencies`,
     },
   ],
   rate: ({ code }: LocalizedCurrency) => ({
     hostname,
+    port: 8095,
+    protocol: 'http',
     method: 'GET',
     path: `/${pathBase}/coins/markets?ids=cardano&vs_currency=${code}`,
   }),
