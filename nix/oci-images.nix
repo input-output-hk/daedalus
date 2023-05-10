@@ -56,6 +56,14 @@ if targetSystem == "x86_64-linux" then {
               set $coingecko https://api.coingecko.com;
               proxy_pass $coingecko;
             }
+            location = /api/v3/simple/price {
+              if ( $args !~ ^ids=(cardano|bitcoin)&vs_currencies=[a-z0-9,]+(&include_last_updated_at=(true|false))?(&include_24hr_change=(true|false))?$ ) { return 400; }
+              ${proxyConf}
+              proxy_cache_valid 200 400 10m;
+              proxy_cache_valid any 1m;
+              set $coingecko https://api.coingecko.com;
+              proxy_pass $coingecko;
+            }
           }
         }
       '';
@@ -113,6 +121,8 @@ if targetSystem == "x86_64-linux" then {
         '/api/v3/simple/supported_vs_currencies' \
         '/api/v3/coins/markets?ids=cardano&vs_currency=usd' \
         '/api/v3/coins/markets?ids=cardano&vs_currency=jpy' \
+        '/api/v3/simple/price?ids=cardano&vs_currencies=usd&include_last_updated_at=true' \
+        '/api/v3/simple/price?ids=cardano&vs_currencies=usd&include_24hr_change=true' \
         ; do
         sleep 2
         echo "Will pre-populate cache with: ‘$endpoint’…"
@@ -124,7 +134,7 @@ if targetSystem == "x86_64-linux" then {
       exec ${pkgs.lib.escapeShellArgs (nginxCmd { listenPort = 80; })}
     '';
   in pkgs.dockerTools.buildImage rec {
-    name = "daedalus-coingecko-proxy";
+    name = "coingecko-proxy";
     tag = inputs.self.rev or "dirty";
     copyToRoot = with pkgs.dockerTools; [ caCertificates fakeNss ];   # XXX: needed for nginx
     runAsRoot = ''
