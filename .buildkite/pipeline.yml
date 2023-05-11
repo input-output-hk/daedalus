@@ -1,6 +1,10 @@
 env:
+
   ARTIFACT_BUCKET: s3://ci-output-sink
+
 steps:
+
+  # XXX: `</dev/null turns off any interactive questions from Nix (e.g. accept-flake-config)
 
   - input: ':recycle: Trigger ‘x86_64-darwin’'
     key: 'trigger-x86_64-darwin'
@@ -9,33 +13,30 @@ steps:
     key: 'trigger-aarch64-darwin'
 
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline'
     depends_on: 'trigger-x86_64-darwin'
     agents:
       queue: lace
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
-    command: 'scripts/with-nix-unstable.sh scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER'
+    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline'
     depends_on: 'trigger-aarch64-darwin'
+    env:
+      # XXX: avoid Böhm GC segfaults in Nix on aarch64-darwin:
+      GC_DONT_GC: 1
     agents:
       queue: lace
       system: aarch64-darwin
 
-  - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/with-nix-unstable.sh scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
+  - label: 'daedalus-x86_64-linux'
+    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline'
     agents:
       queue: lace
       system: x86_64-linux
 
-  - label: 'daedalus-x86_64-windows-nix'
-    command: 'scripts/with-nix-unstable.sh scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
+  - label: 'daedalus-x86_64-windows'
+    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline'
     agents:
       queue: lace
       system: x86_64-linux
-
-  # TODO: Re-enable once script is fixed
-  # - label: 'release.nix'
-  #   command: 'ci/check-hydra.sh'
-  #   agents:
-  #     system: x86_64-linux

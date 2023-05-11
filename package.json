@@ -13,8 +13,8 @@
     "build:main": "yarn webpack -c source/main/webpack.config.js --progress",
     "build:renderer": "yarn webpack -c source/renderer/webpack.config.js --progress",
     "build:cleanup": "rimraf ./dist",
-    "build:electron": "electron-rebuild --useCache && electron-rebuild -w usb --useCache -s --debug",
-    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn lockfile:check && yarn i18n:manage && yarn storybook:build",
+    "build:electron": "./scripts/rebuild-native-modules.sh",
+    "check:all": "yarn prettier:check && yarn lint && yarn compile && yarn stylelint && yarn i18n:manage && yarn storybook:build",
     "start": "yarn electron ./",
     "start:dev": "nodemon --watch 'dist/main' --exec 'NODE_ENV=development yarn start'",
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:e2e:fail-fast",
@@ -60,11 +60,10 @@
     "themes:copy": "yarn node-swc source/renderer/app/themes/utils/copyTheme.ts && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.ts",
     "clear:cache": "rimraf ./node_modules/.cache",
     "clear:translations": "rimraf ./translations/messages",
-    "nix:mainnet": "./nix/yarn-nix-shell.sh mainnet mainnet",
-    "nix:flight": "./nix/yarn-nix-shell.sh mainnet mainnet_flight",
-    "nix:preview": "./nix/yarn-nix-shell.sh preview preview",
-    "nix:preprod": "./nix/yarn-nix-shell.sh preprod preprod",
-    "nix:selfnode": "./nix/yarn-nix-shell.sh selfnode selfnode",
+    "nix:mainnet": "cross-env GC_DONT_GC=1 nix develop -L .#mainnet",
+    "nix:preview": "cross-env GC_DONT_GC=1 nix develop -L .#preview",
+    "nix:preprod": "cross-env GC_DONT_GC=1 nix develop -L .#preprod",
+    "nix:selfnode": "cross-env GC_DONT_GC=1 nix develop -L .#selfnode",
     "byron:wallet:importer": "yarn node-swc utils/api-importer/byron-wallet-importer.ts",
     "shelley:wallet:importer": "yarn node-swc utils/api-importer/shelley-wallet-importer.ts",
     "mary:wallet:importer": "yarn node-swc utils/api-importer/mary-wallet-importer.ts",
@@ -72,9 +71,6 @@
     "itn:shelley:wallet:importer": "yarn node-swc utils/api-importer/itn-shelley-wallet-importer.ts",
     "yoroi:wallet:importer": "yarn node-swc utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "yarn node-swc utils/create-news-verification-hashes/index.ts",
-    "lockfile:check": "yarn node-swc utils/lockfile-checker/index.ts --check",
-    "lockfile:fix": "yarn node-swc utils/lockfile-checker/index.ts --fix",
-    "postinstall": "./scripts/postinstall.sh",
     "typedef:sass": "typed-scss-modules source/renderer/app"
   },
   "bin": {
@@ -314,6 +310,8 @@
     "**/**/mobx-react-lite": "2.2.2",
     "**/**/usb": "1.7.2",
     "**/**/prismjs": "1.27.0",
+    "**/**/prebuild-install": "^6.1.4",
+    "prebuild-install": "^6.1.4",
     "pbkdf2": "3.1.2"
   }
 }

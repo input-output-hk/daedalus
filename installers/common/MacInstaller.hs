@@ -8,7 +8,6 @@
 
 module MacInstaller
   ( main
-  , readCardanoVersionFile
   ) where
 
 ---
@@ -17,14 +16,12 @@ module MacInstaller
 
 import           Universum                 hiding (FilePath, toText, (<>))
 
-import           Control.Exception         (handle)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Text.RawString.QQ
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
-import           System.IO.Error           (IOError, isDoesNotExistError)
 import qualified System.Info
 import           System.Environment        (getEnv)
 import           System.Posix.Files
@@ -34,7 +31,7 @@ import           Turtle                    hiding (e, prefix, stdout)
 import           Config
 import           RewriteLibs               (chain)
 import           Types
-import           Util                      (exportBuildVars, rewritePackageJson)
+import           Util                      (rewritePackageJson)
 import qualified Control.Foldl             as Fold
 
 data DarwinConfig = DarwinConfig {
@@ -46,7 +43,7 @@ data DarwinConfig = DarwinConfig {
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
-main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oBuildJob,oOutputDir,oTestInstaller} = do
+main opts@Options{oCodeSigningConfigPath,oAppRootOverride,oDontPkgbuild,oSigningConfigPath,oCluster,oBackend,oBuildJob,oBuildCounter,oOutputDir,oTestInstaller} = do
 
   installerConfig <- decodeFileThrow "installer-config.json"
 
@@ -72,48 +69,54 @@ main opts@Options{oCodeSigningConfigPath,oSigningConfigPath,oCluster,oBackend,oB
       }
   print darwinConfig
 
-  ver <- getBackendVersion oBackend
-  exportBuildVars opts ver
+  appRoot <- case oAppRootOverride of
+    Just ar -> pure ar
+    Nothing -> do
+      buildIcons oCluster
+      buildElectronApp darwinConfig installerConfig
 
-  buildIcons oCluster
-  appRoot <- buildElectronApp darwinConfig installerConfig
   makeComponentRoot opts appRoot darwinConfig installerConfig
-  daedalusVer <- getDaedalusVersion "../package.json"
+  daedalusVer <- getAppVersion "../package.json"
 
-  let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
+  let pkg = packageFileName (uglyName installerConfig) Macos64 oCluster daedalusVer oBackend oBuildJob oBuildCounter
       opkg = oOutputDir </> pkg
 
   print "appRoot:"
   print (tt appRoot)
 
-  case mCodeSigningConfig of
-    Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
-    Nothing -> pure ()
+  when oDontPkgbuild $ do
+    codeSignComponent'saveScripts -- for later (impure) use during IOG release
 
-  tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
+  unless oDontPkgbuild $ do
 
-  case mSigningConfig of
-    Just signingConfig -> signInstaller signingConfig tempInstaller opkg
-    Nothing -> cp tempInstaller opkg
+    case mCodeSigningConfig of
+      Just codeSigningConfig -> codeSignComponent codeSigningConfig appRoot
+      Nothing -> pure ()
 
-  run "rm" [tt tempInstaller]
-  printf ("Generated "%fp%"\n") opkg
+    tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  when (oTestInstaller == TestInstaller) $ do
-    echo $ "--test-installer passed, will test the installer for installability"
-    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
+    case mSigningConfig of
+      Just signingConfig -> signInstaller signingConfig tempInstaller opkg
+      Nothing -> cp tempInstaller opkg
 
-  case mSigningConfig of
-    Just _ -> do
-      signed <- checkSignature opkg
-      case signed of
-        SignedOK -> pure ()
-        NotSigned -> rm opkg
-    Nothing -> pure ()
+    run "rm" [tt tempInstaller]
+    printf ("Generated "%fp%"\n") opkg
+
+    when (oTestInstaller == TestInstaller) $ do
+      echo $ "--test-installer passed, will test the installer for installability"
+      procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
+
+    case mSigningConfig of
+      Just _ -> do
+        signed <- checkSignature opkg
+        case signed of
+          SignedOK -> pure ()
+          NotSigned -> rm opkg
+      Nothing -> pure ()
 
 -- | Define the code signing script to be used for code signing
 codeSignScriptContents :: String
-codeSignScriptContents = [r|#!/run/current-system/sw/bin/bash
+codeSignScriptContents = [r|#!/usr/bin/env bash
 set -x
 SIGN_ID="$1"
 KEYCHAIN="$2"
@@ -149,23 +152,6 @@ sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib"
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib"
 sign_cmd "$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib"
-
-# Sign native electron bindings and supplementary binaries
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/usb_bindings.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/HID.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/build/detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-x64/node.napi.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/prebuilds/darwin-arm64/node.napi.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-x64-"*"/blake-hash.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/bin/darwin-arm64-"*"/blake-hash.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/blake-hash/build/Release/addon.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/build/Release/secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-x64-"*"/tiny-secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/tiny-secp256k1/bin/darwin-arm64-"*"/tiny-secp256k1.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/build/Release/detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/usb-detection/bin/darwin-arm64-"*"/usb-detection.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/bin/darwin-x64-"*"/node-hid.node"
-sign_cmd "$ABS_PATH/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
 
 # Sign the whole component deeply
 sign_cmd "$ABS_PATH"
@@ -208,8 +194,8 @@ buildIcons :: Cluster -> IO ()
 buildIcons cluster = do
   let iconset = format ("icons/"%s%".iconset") (lshowText cluster)
   echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
-                   , iconset] mempty
+  procs "/usr/bin/iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                            , iconset] mempty
 
 -- | Builds the electron app with "yarn package" and returns its
 -- component root path.
@@ -342,19 +328,16 @@ npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{dcAppName} = do
   mktree "release"
   echo "Installing nodejs dependencies..."
-  procs "yarn" ["install", "--frozen-lockfile"] empty
+  need "DEVX_FIXME_DONT_YARN_INSTALL" >>= \case
+    Just _ -> echo "   ... skip"
+    Nothing -> procs "yarn" ["install", "--frozen-lockfile"] empty
   echo "Running electron packager script..."
   export "NODE_ENV" "production"
-  homeDir <- home
-  export "TMPDIR" . tt $ homeDir </> "electron-rebuild-tmp-dir" -- else, new `electron-rebuild` fails with EACCESS
+  procs "yarn" ["build:electron"] empty
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
-  procs "node_modules/.bin/electron-rebuild" ["-w", "usb-detection", "--useCache", "-s"] empty -- <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
   procs "find" ["-name", "*.node"] empty
-
-getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
 makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{dcAppName} InstallerConfig{} = do
@@ -474,16 +457,6 @@ makeInstaller Options{oOutputDir} DarwinConfig{dcPkgName} componentRoot pkg = do
   run "rm" [tempPkg1]
   pure tempPkg2
 
--- | cardano-sl.daedalus-bridge should have a file containing its version.
-readCardanoVersionFile :: FilePath -> IO Text
-readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
-  where
-    verFile = bridge </> "version"
-    prefix = fromMaybe "UNKNOWN" . safeHead . T.lines
-    handler :: IOError -> IO Text
-    handler e | isDoesNotExistError e = pure ""
-              | otherwise = throwM e
-
 writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
 writeLauncherFile dir DarwinConfig{dcDataDir} = do
   writeTextFile path $ T.unlines contents
@@ -524,6 +497,12 @@ codeSignComponent CodeSigningConfig{codeSigningIdentity,codeSigningKeyChain} com
                            , codeSigningKeyChain
                            , (tt component)
                            , entitlementsPath ]
+
+codeSignComponent'saveScripts :: IO ()
+codeSignComponent'saveScripts =
+  with makeSigningDir $ \(codesignScriptPath, entitlementsPath) -> do
+    cp (fromText codesignScriptPath) "codesign.sh"
+    cp (fromText entitlementsPath) "entitlements.xml"
 
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()

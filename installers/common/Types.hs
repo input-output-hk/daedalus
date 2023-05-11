@@ -26,7 +26,7 @@ module Types
   , lshowText
   , tt
   , packageFileName
-  , getDaedalusVersion
+  , getAppVersion
   , packageVersion
   , clusterNetwork
   , withDir
@@ -116,11 +116,11 @@ clusterNetwork Vasil_Dev = "vasil_dev"
 clusterNetwork Preprod = "preprod"
 clusterNetwork Preview = "preview"
 
-packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
-packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext
+packageFileName :: Text -> OS -> Cluster -> Version -> Backend -> Maybe BuildJob -> Maybe BuildJob -> FilePath
+packageFileName uglyName _os cluster ver backend buildJob buildCounter = fromText name <.> ext
   where
     name = T.intercalate "-" parts
-    parts = ["daedalus", fromVer ver, lshowText cluster] ++ build' ++ [archOS]
+    parts = [uglyName, fromVer ver <> buildCounter', lshowText cluster] ++ buildJob' ++ [archOS]
     _backend' = case backend of
                  Cardano _ -> "cardano-wallet"
     ext = case _os of
@@ -138,13 +138,14 @@ packageFileName _os cluster ver backend _backendVer build = fromText name <.> ex
               then "aarch64-darwin"
               else "x86_64-darwin"
             Linux64 -> "x86_64-linux"
-    build' = maybe [] (\b -> [fromBuildJob b]) build
+    buildJob' = maybe [] (\b -> [fromBuildJob b]) buildJob
+    buildCounter' = "." <> maybe "0" fromBuildJob buildCounter
 
 instance FromJSON Version where
   parseJSON = withObject "Package" $ \o -> Version <$> o .: "version"
 
-getDaedalusVersion :: FilePath -> IO Version
-getDaedalusVersion packageJSON = L8.readFile (encodeString packageJSON) >>= packageVersion
+getAppVersion :: FilePath -> IO Version
+getAppVersion packageJSON = L8.readFile (encodeString packageJSON) >>= packageVersion
 
 packageVersion :: L8.ByteString -> IO Version
 packageVersion json = case eitherDecode json of
@@ -157,7 +158,8 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
-    , spacedName :: Text
+    , spacedName :: Text -- ^ ‘Daedalus Testnet’, etc.
+    , uglyName :: Text -- ^ `daedalus` or `lace-desktop`, etc.
     , macPackageName :: Text
     , dataDir :: Text
     , configPath :: Maybe Text

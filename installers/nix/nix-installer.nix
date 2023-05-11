@@ -50,7 +50,7 @@ let
     echo PROG 3/6
     NIX_REMOTE=local?root=$UNPACK2 nix-store --load-db < $UNPACK2/nix-path-registration
     NIX_REMOTE=local?root=$UNPACK2 nix-store --verify --check-contents
-    nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
+    nix --extra-experimental-features nix-command copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
     export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
     nix-env -p /nix/var/nix/profiles/profile-${linuxClusterBinName} --set $(readlink $UNPACK2/firstGeneration)
@@ -151,10 +151,10 @@ let
     pwd
     NIX_REMOTE=local?root=$UNPACK nix-store --verify --check-contents -v
     # turn back on some time later?
-    # NIX_REMOTE=local?root=$UNPACK nix copy-sigs --all -s http://cache.nixos.org/
+    # NIX_REMOTE=local?root=$UNPACK nix --extra-experimental-features nix-command copy-sigs --all -s http://cache.nixos.org/
 
     export NIX_REMOTE=local?root=$DIR
-    nix copy --no-check-sigs --from local?root=$UNPACK ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix --extra-experimental-features nix-command copy --no-check-sigs --from local?root=$UNPACK ${builtins.unsafeDiscardStringContext firstGeneration}
     rmrf $UNPACK
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile

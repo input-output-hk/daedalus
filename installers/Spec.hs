@@ -58,15 +58,6 @@ macBuildSpec = do
         -- there should be an installer file at the end
         fold (ls out) Fold.length `shouldReturn` 1
 
-  describe "Cardano version file" $ do
-    it "Reads it" $ runManaged $ do
-      tmp <- getTempDir "test-bridge"
-      liftIO $ writeTextFile (tmp </> "version") "1.2.3"
-      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "1.2.3"
-    it "Handles missing version file" $ runManaged $ do
-      tmp <- getTempDir "test-bridge"
-      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "UNKNOWN"
-
 -- | Set up a temporary source/installers directory with everything
 -- required for the installer builder. This is so that the installer
 -- builder can be tested in a pure environment without any
@@ -116,7 +107,7 @@ utilSpec = do
   describe "Daedalus version loading" $ do
     xit "loads the actual version file" $ do
       -- referring to parent directory won't work in nix-build
-      Version ver <- getDaedalusVersion "../package.json"
+      Version ver <- getAppVersion "../package.json"
       ver `shouldSatisfy` (not . T.null)
 
     it "loads a version file" $ do
@@ -124,7 +115,7 @@ utilSpec = do
 
   describe "Package filename generation" $ do
     it "generates a good filename for windows" $ do
-      let f = packageFileName Win64 Testnet (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
+      let f = packageFileName Win64 Testnet (Version "0.4.2") (Cardano "") (Just "job.id")
       f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-testnet-windows-job.id.exe")
 
 ----------------------------------------------------------------------------
