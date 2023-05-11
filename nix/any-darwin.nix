@@ -77,10 +77,6 @@ in rec {
       find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
-      sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
-
-      # GNU sed is a bit different:
-      sed -r "s#sed -i '''#sed -i#" -i node_modules/lzma-native/liblzma-config.sh
 
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
