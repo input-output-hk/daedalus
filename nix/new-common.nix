@@ -31,10 +31,13 @@ rec {
   #   };
 
   nodejs = pkgs.nodejs-18_x.overrideAttrs (drv: {
-    # XXX: we don’t want `bypass-xcodebuild.diff`, rather we supply
+    # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,
     # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-    patches = [];
+    patches = pkgs.lib.filter (patch: !(
+      pkgs.lib.hasInfix "bypass-xcodebuild" patch ||
+      pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
+    )) drv.patches;
   });
 
   nodePackages = pkgs.nodePackages.override { inherit nodejs; };
