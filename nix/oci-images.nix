@@ -35,6 +35,7 @@ if targetSystem == "x86_64-linux" then {
               root ${nginx}/html;
             }
             location = /api/v3/coins/list {
+              if ( $args != "" ) { return 400; }
               ${proxyConf}
               proxy_cache_valid 200 10m;
               proxy_cache_valid any 1m;
@@ -42,6 +43,7 @@ if targetSystem == "x86_64-linux" then {
               proxy_pass $coingecko;
             }
             location = /api/v3/simple/supported_vs_currencies {
+              if ( $args != "" ) { return 400; }
               ${proxyConf}
               proxy_cache_valid 200 10m;
               proxy_cache_valid any 1m;
