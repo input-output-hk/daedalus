@@ -48,14 +48,13 @@ export const createMainWindow = (
     height: 870,
     ...getSavedWindowBounds(),
     webPreferences: {
-      nodeIntegration: isTest,
+      nodeIntegration: true,
       webviewTag: false,
       // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
       contextIsolation: false,
       // TODO: change to ipc
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
-      nodeIntegration: true,
       additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
     },
   };
