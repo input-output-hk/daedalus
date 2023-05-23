@@ -181,12 +181,20 @@ rec {
   patchElectronRebuild = pkgs.writeShellScriptBin "patch-electron-rebuild" ''
     echo 'Patching electron-rebuild to force our Node.js headers…'
 
+    tarball="''${1:-${commonSources.electronHeaders.src}}"
+    nodedir="''${2:-${commonSources.electronHeaders}}"
+
+    echo "  → tarball=$tarball"
+    echo "  → nodedir=$nodedir"
+
     nodeGypJs="node_modules/@electron/rebuild/lib/module-type/node-gyp/node-gyp.js"
 
     # Patch idempotently (matters in repetitive shell.nix):
-    if ! grep -qF ${commonSources.electronHeaders.src} $nodeGypJs ; then
-      sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${commonSources.electronHeaders.src}", "--nodedir", "${commonSources.electronHeaders}");|' -i $nodeGypJs
+    if ! grep -qF "$tarball" $nodeGypJs ; then
+      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir');|" -i $nodeGypJs
     fi
+
+    echo "  → result=$(grep -F "const extraNodeGypArgs" $nodeGypJs)"
   '';
 
 }
