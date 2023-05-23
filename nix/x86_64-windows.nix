@@ -435,11 +435,6 @@ in rec {
   # a cross-compiled fastlist for the ps-list package
   fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
 
-  dlls = pkgs.fetchurl {
-    url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
-    sha256 = "0p6nrf8sg2wgcaf3b1qkbb98bz2dimb7lnshsa93xnmia9m2vsxa";
-  };
-
   preSigning = let
     installDir = oldCode.launcherConfigs.installerConfig.spacedName;
   in pkgs.runCommand "pre-signing" { buildInputs = [ pkgs.unzip ]; } ''
@@ -458,10 +453,6 @@ in rec {
     cp -v ${fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
     ln -s ${../installers/nsis_plugins} nsis_plugins
 
-    mkdir dlls
-    pushd dlls
-    unzip ${dlls}
-    popd
     cp -vr ${oldCode.daedalus-bridge}/bin/* .
     cp -v ${nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
     cp ${unsignedUninstaller}/uninstall.exe .
