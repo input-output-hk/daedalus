@@ -151,7 +151,7 @@ in rec {
   };
 
   msvc-cache = let
-    version = "16";
+    version = "16";   # There doesn’t seem to be an easy way to specify a more stable full version, 16.11.26
   in pkgs.stdenv.mkDerivation {
     name = "msvc-cache-${version}";
     inherit version;
@@ -216,13 +216,6 @@ in rec {
         unifont winePackages.fonts xorg.fontcursormisc xorg.fontmiscmisc
       ];
     };
-    patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
-      pkgs.lib.recursiveUpdate originalPackageJson {
-        scripts = {
-          "build:electron:windows" = "node.exe .\\node_modules\\@electron\\rebuild\\lib\\cli.js -f -w usb";
-        };
-      }
-    ));
     buildPhase = let
       mkSection = title: ''
         echo ' '
@@ -324,7 +317,15 @@ in rec {
             "$(winepath -w ${electronHeadersWithNodeLib}     | sed -r 's,\\,\\\\\\\\,g')"
 
           ${mkSection "Running @electron/rebuild"}
-          cp $patchedPackageJson package.json
+          # XXX: we need to run the command with the Node.js env set correcty, `npm.cmd` does that:
+          export electron_rebuild_bin="$(winepath -w "$(readlink -f node_modules/.bin/electron-rebuild)")"
+          cp ${pkgs.writeText "package.json" (builtins.toJSON (
+            pkgs.lib.recursiveUpdate originalPackageJson {
+              scripts = {
+                "build:electron:windows" = "node.exe %electron_rebuild_bin% -f -w usb";
+              };
+            }
+          ))} package.json
           wine npm.cmd run build:electron:windows
         ''}
     '';
