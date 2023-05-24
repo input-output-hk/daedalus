@@ -32,7 +32,6 @@ export type VotingRegistrationKeyType = {
   public: (...args: Array<any>) => any;
 };
 export type VotingDataType = {
-  // stakeAddress: string;
   addressHex: string;
   votingKey: string;
   stakeKey: string;
@@ -219,9 +218,6 @@ export default class VotingStore extends Store {
       );
 
       const addressHex = await this._getHexFromBech32(address.id);
-      // const { stakeAddresses } = this.stores.addresses;
-      // const stakeAddress = stakeAddresses[walletId];
-      // const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
@@ -288,7 +284,6 @@ export default class VotingStore extends Store {
         },
       };
       const votingData = {
-        //stakeAddress,
         addressHex,
         votingKey,
         stakeKey,
