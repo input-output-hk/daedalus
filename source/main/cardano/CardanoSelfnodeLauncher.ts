@@ -31,7 +31,8 @@ const CARDANO_WALLET_START_TIMEOUT = 60 * 1000; // 60 seconds | unit: millisecon
 const CARDANO_WALLET_START_CHECK_INTERVAL = 500; // 500 ms | unit: milliseconds
 
 const TOKEN_METADATA_SERVER_PORT = 65432;
-const TOKEN_METADATA_SERVER = `http://localhost:${TOKEN_METADATA_SERVER_PORT}/`;
+// “localhost” breaks under new electron, which prefers ::1 (IPv6)
+const TOKEN_METADATA_SERVER = `http://127.0.0.1:${TOKEN_METADATA_SERVER_PORT}/`;
 const TOKEN_METADATA_SERVER_PROCESS_NAME = environment.isWindows
   ? 'mock-token-metadata-server.exe'
   : 'mock-token-metadata-server';

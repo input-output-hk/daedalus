@@ -1,13 +1,1 @@
-{
-  buildNum ? null
-}:
-
-let
-  mkWindows = cluster: (import ./. { inherit cluster buildNum; target = "x86_64-windows"; HSMServer = "HSM"; }).windows-installer;
-  mkLinux = cluster: (import ./. { inherit cluster buildNum;}).wrappedBundle;
-  pkgs = (import ./. {}).pkgs;
-in pkgs.runCommand "signed-release" {} ''
-  mkdir $out
-  cp -v ${mkLinux "mainnet"}/*bin $out/
-  cp -v ${mkWindows "mainnet"}/*exe $out/
-''
+throw "The release process changed, since we have to use pure flakes now.\nPlease, use ‘nix run -L .#packages.x86_64-windows.makeSignedInstaller.mainnet’ instead."

@@ -8,6 +8,10 @@
 
 ### Chores
 
+- Upgraded Electron to 24.2, and Node.js to 18.× ([PR 3124](https://github.com/input-output-hk/daedalus/pull/3124))
+- Defined a proxy for currency conversions ([PR 3121](https://github.com/input-output-hk/daedalus/pull/3121))
+- Switched Daedalus to be built with Nix flakes ([PR 3008](https://github.com/input-output-hk/daedalus/pull/3008))
+- Update `cardano-wallet` to `v2023-04-14` ([PR 3104](https://github.com/input-output-hk/daedalus/pull/3104))
 - Prepared an official `aarch64-darwin` build ([PR 3116](https://github.com/input-output-hk/daedalus/pull/3116))
 - Added regeneration of dev TLS certificates for cardano-wallet on each nix-shell entry ([PR 3117](https://github.com/input-output-hk/daedalus/pull/3117))
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))

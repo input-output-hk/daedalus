@@ -48,7 +48,7 @@ export const createMainWindow = (
     height: 870,
     ...getSavedWindowBounds(),
     webPreferences: {
-      nodeIntegration: isTest,
+      nodeIntegration: true,
       webviewTag: false,
       // @ts-ignore ts-migrate(2322) FIXME: Type '{ nodeIntegration: boolean; webviewTag: fals... Remove this comment to see the full error message
       contextIsolation: false,
@@ -81,7 +81,7 @@ export const createMainWindow = (
     window.close();
   });
   if (isDev) {
-    window.loadURL(`http://localhost:8080`);
+    window.loadURL(`http://127.0.0.1:8080`);
   } else {
     window.loadURL(`file://${__dirname}/../renderer/index.html`);
   }

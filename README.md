@@ -18,50 +18,33 @@ Daedalus - Cryptocurrency Wallet
 
 #### Nix
 
-[Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
+[Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix develop` shell.
 
-1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS 10.15 and higher)
+1. Install nix: `sh <(curl -L https://nixos.org/nix/install)`
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
    $ sudo vi /etc/nix/nix.conf       # ..or any other editor, if you prefer
    ```
-   and then add the following lines:
+   and then add the following 4 settings are set to:
    ```
-   build-users-group = nixbld
-
-   max-jobs = auto
-   cores = 0
-   sandbox = false
-
-   require-sigs = true
-   trusted-users = root
-   allowed-users = *
-
    substituters = https://cache.iog.io https://cache.nixos.org/
-   trusted-substituters =
+
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-   
-   # Only if using mac 
-   extra-sandbox-paths = /System/Library/Frameworks /System/Library/PrivateFrameworks /usr/lib
 
    experimental-features = nix-command flakes
 
-   # If you are running on Linux x86/64
-   system = x86_64-linux
-   
-   # If you are running on a Mac with Intel chip 
-   system = x86_64-darwin
-   
-   # If you are running on a Mac with M1 chip
-   system = aarch64-darwin
+   # If you are running on a Mac with Apple Silicon chip, but want to also build for Intel:
+   extra-platforms = x86_64-darwin aarch64-darwin
    ```
 
-3. Run `nix-shell` with correct list of arguments or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development.
+3. Run `nix develop` with a correct argument or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development, e.g.:
+    * `nix develop -L .#mainnet`
+    * … which is equivalent to `yarn nix:mainnet`
 
 **Notes:**
 
-If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remote key was not OK) try the next steps:
+If you get SSL error when running `nix develop` (SSL peer certificate or SSH remote key was not OK) try the next steps:
 1. Reinstall nix
    ```bash
    $ nix-env -e *
@@ -74,7 +57,7 @@ If you get SSL error when running `nix-shell` (SSL peer certificate or SSH remot
 ##### Selfnode
 
 1. Run `yarn nix:selfnode` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell` (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
+2. Run `yarn dev` from the subsequent `nix develop` shell (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
 - Byron wallets: `yarn byron:wallet:importer`
 - Shelley wallets: `yarn shelley:wallet:importer`
@@ -103,23 +86,23 @@ List of all funded wallet recovery phrases can be found here: https://github.com
 ##### Mainnet
 
 1. Run `yarn nix:mainnet` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev` from the subsequent shell
 
 ##### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev` from the subsequent shell
 
 ##### Testnet
 
 1. Run `yarn nix:testnet` from `daedalus`.
-2. Run `yarn dev` from the subsequent `nix-shell`
+2. Run `yarn dev` from the subsequent shell
 
 ##### Native token metadata server
 
 Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
 
-It's also possible to use a mock server locally by running the following command in `nix-shell` prior to starting Daedalus:
+It's also possible to use a mock server locally by running the following command in `nix develop` prior to starting Daedalus:
 
 ```
 $ mock-token-metadata-server --port 65432 ./utils/cardano/native-tokens/registry.json
@@ -167,18 +150,13 @@ Most of the commands need `nix` and will run only on Linux or macOS.
 
 #### Updating upstream dependencies (cardano-wallet, cardano-node)
 
-`Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
+Nix flake is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `flake.nix`.
 
-Dependencies are updated with the follow nix commands:
-- Update cardano-wallet to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
-- Update cardano-wallet to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
-- Update cardano-node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
+Dependencies are updated in the `inputs` section of `flake.nix` followed with e.g.:
 
-#### Notes
-
-`nix-shell` also provides a script for updating `yarn.lock` file:
-
-    nix-shell -A fixYarnLock
+```
+nix flake lock --update-input cardano-wallet-unpatched
+```
 
 ### Cardano Wallet Api documentation
 
@@ -246,62 +224,62 @@ So you have to exit any development instances before running tests!
 
 ## Packaging
 
-```bash
-$ yarn run package
-```
+It is possible to build, and run just the Daedalus package, that would be bundled inside an installer, avoiding building of the installer.
 
-To package apps for all platforms:
+### Linux
 
-```bash
-$ yarn run package:all
-```
+Build:
 
-To package apps with options:
+    nix build -L .#package.mainnet
 
-```bash
-$ yarn run package -- --[option]
-```
+Run:
 
-### Options
+    nix run -L .#package.mainnet
 
-- --name, -n: Application name (default: Electron)
-- --version, -v: Electron version (default: latest version)
-- --asar, -a: [asar](https://github.com/atom/asar) support (default: false)
-- --icon, -i: Application icon
-- --all: pack for all platforms
+### macOS (Intel, and Apple Silicon)
 
-Use `electron-packager` to pack your app with `--all` options for macOS, Linux and Windows platform. After build, you will find them in `release` folder. Otherwise, you will only find one for your OS.
+Build:
 
-## Automated builds
+    nix build -L .#package.mainnet
 
-### CI/dev build scripts
+Run:
 
-Platform-specific build scripts facilitate building Daedalus the way it is built by the IOHK CI:
+    nix run -L .#package.mainnet
 
-#### Linux/macOS
+If you want to run an Intel build from an Apple Silicon machine:
 
-This script requires [Nix](https://nixos.org/nix/), (optionally) configured with the [IOHK binary cache][cache].
+    nix run -L .#packages.x86_64-darwin.package.mainnet
 
-    scripts/build-installer-unix.sh [OPTIONS..]
+## Installers
 
-The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
+Platform-specific build commands facilitate building Daedalus installers the way it is built by the IOHK CI:
 
-[cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
+These commands require [Nix](https://nixos.org/nix/), optionally configured with the IOHK binary cache (recommended, see above).
 
-#### Windows
+### Linux/macOS
 
-This batch file requires [Node.js](https://nodejs.org/en/download/) and
-[7zip](https://www.7-zip.org/download.html).
+Run this from a Linux machine:
 
-    scripts/build-installer-win64.bat
+    nix build -L .#installer.mainnet
 
-The result will can be found at `.\daedalus-*.exe`.
+The result can be found at `result/daedalus-*.bin`.
 
-#### Pure Nix installer build
+### Windows
 
-This will use nix to build a Linux installer. Using the [IOHK binary
-cache][cache] will speed things up.
+Run this from a Linux machine (cross-building):
 
-    nix build -f ./release.nix mainnet.installer
+    nix build -L .#packages.x86_64-windows.installer.mainnet
 
-The result can be found at `./result/daedalus-*.bin`.
+The result will can be found at `result/daedalus-*.exe`.
+
+### macOS (Intel, and Apple Silicon)
+
+Run this from a macOS machine:
+
+    nix build -L .#installer.mainnet
+
+If you want to build an Intel version from an Apple Silicon machine:
+
+    nix build -L .#packages.x86_64-darwin.installer.mainnet
+
+The result can be found at `result/daedalus-*.pkg`.
