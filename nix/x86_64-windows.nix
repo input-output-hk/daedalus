@@ -203,7 +203,7 @@ in rec {
     src = newCommon.srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
-      ++ (with pkgs; [ python3 pkgconfig jq file ]);
+      ++ (with pkgs; [ python3 pkgconfig jq file procps ]);
     buildInputs = with pkgs; [ libusb ];
     configurePhase = newCommon.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
@@ -327,6 +327,17 @@ in rec {
             }
           ))} package.json
           wine npm.cmd run build:electron:windows
+
+          # XXX: We’re running in a separate namespace, so this is fine. Otherwise, builds on Cicero hang.
+          while pgrep wine >/dev/null ; do
+            ${mkSection "Wine is still running in the background, will try to kill it"}
+            echo 'All remaining processes:'
+            ps aux | cat
+
+            sleep 1
+            pkill -9 wine || true
+            sleep 4
+          done
         ''}
     '';
     installPhase = ''
