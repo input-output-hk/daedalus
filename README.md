@@ -3,7 +3,6 @@
 </blockquote>
 
 # Daedalus
-
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
 
@@ -23,14 +22,11 @@ Daedalus - Cryptocurrency Wallet
 
 1. Install nix: `sh <(curl -L https://nixos.org/nix/install)`
 2. Employ the signed IOHK binary cache:
-
    ```bash
-   sudo mkdir -p /etc/nix
-   sudo vi /etc/nix/nix.conf       # ..or any other editor, if you prefer
+   $ sudo mkdir -p /etc/nix
+   $ sudo vi /etc/nix/nix.conf       # ..or any other editor, if you prefer
    ```
-
    and then add the following 4 settings are set to:
-
    ```
    substituters = https://cache.iog.io https://cache.nixos.org/
 
@@ -49,15 +45,12 @@ Daedalus - Cryptocurrency Wallet
 **Notes:**
 
 If you get SSL error when running `nix develop` (SSL peer certificate or SSH remote key was not OK) try the next steps:
-
 1. Reinstall nix
-
    ```bash
-   nix-env -e *
-   curl -L https://nixos.org/nix/install | sh
+   $ nix-env -e *
+   $ curl -L https://nixos.org/nix/install | sh
    ```
-
-2. Download certificate from <https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/> and import to your keychain.
+2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
 #### Running Daedalus with Cardano Node
 
@@ -66,25 +59,22 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 1. Run `yarn nix:selfnode` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix develop` shell (use `KEEP_LOCAL_CLUSTER_RUNNING` environment variable to keep the local cluster running after Daedalus exits: `KEEP_LOCAL_CLUSTER_RUNNING=true yarn dev`)
 3. Once Daedalus has started and has gotten past the loading screen run the following commands from a new terminal window if you wish to import funded wallets:
-
-* Byron wallets: `yarn byron:wallet:importer`
-
-* Shelley wallets: `yarn shelley:wallet:importer`
-* Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
-* Yoroi Byron wallets: `yarn yoroi:wallet:importer`
-* _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
-* _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
+- Byron wallets: `yarn byron:wallet:importer`
+- Shelley wallets: `yarn shelley:wallet:importer`
+- Mary wallets: `yarn mary:wallet:importer` (all of which contain native tokens which are visible once selfnode enters Mary era)
+- Yoroi Byron wallets: `yarn yoroi:wallet:importer`
+- _ITN Byron wallets:_ `yarn itn:byron:wallet:importer` **[Deprecated]**
+- _ITN Shelley wallets:_ `yarn itn:shelley:wallet:importer` **[Deprecated]**
 
 These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-List of all funded wallet recovery phrases can be found here: <https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js>
+List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
 
 **Notes:**
-
-* Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
-* Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
-* Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
-* Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
+- Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
+- Stake pool metadata is fetched directly by default (IOHK SMASH server option is not available).
+- Token metadata is fetched from a mock token metadata server which is automatically ran alongside the local cluster (there is no need to run it [manually](https://github.com/input-output-hk/daedalus#native-token-metadata-server))
+- Daedalus will ask you if you wish to keep the local cluster running after it exits - this option is useful if you need to preserve local cluster state between Daedalus restarts.
 
 | Parameter | Value
 | --- | ---
@@ -117,13 +107,13 @@ Mock metadata server running with url http://localhost:65432/
 Then proceed to launch Daedalus and make sure to provide the mock token metadata server port:
 
 ```
-MOCK_TOKEN_METADATA_SERVER_PORT=65432 yarn dev
+$ MOCK_TOKEN_METADATA_SERVER_PORT=65432 yarn dev
 ```
 
 This enables you to modify the metadata directly by modifying the registry file directly:
 
 ```
-vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor, if you prefer
+$ vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor, if you prefer
 ```
 
 Use the following command to check if the mock server is working correctly:
@@ -132,7 +122,6 @@ Use the following command to check if the mock server is working correctly:
 $ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","ticker","unit","logo"]}'
 http://localhost:65432/metadata/query
 ```
-
 ... and expect a "200 OK" response.
 
 ### Windows
@@ -141,22 +130,18 @@ This option is only for troubleshooting windows specific issues with hardware wa
 Most of the commands need `nix` and will run only on Linux or macOS.
 
 #### Requisites
-
-* Windows 10/11
-
-* Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
-* NodeJS 16
-* Python2
-* `yarn global add windows-build-tools` (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
-* Microsoft Build Tools 2015
-* Microsoft Visual Studio 2017 (Include Desktop development with C++)
-* `yarn config set msvsversion 2015 --global`
+- Windows 10/11
+- Daedalus testnet installation (similar version used in branch) in `C:\Program Files\Daedalus Testnet`
+- NodeJS 16
+- Python2
+- `yarn global add windows-build-tools` (if this does not work extract daedalus\nix\windows-usb-libs.zip under daedalus\build folder)
+- Microsoft Build Tools 2015
+- Microsoft Visual Studio 2017 (Include Desktop development with C++)
+- `yarn config set msvsversion 2015 --global`
 
 #### Steps
-
-* `yarn install`
-
-* `yarn dev:windows`
+- `yarn install`
+- `yarn dev:windows`
 
 #### Updating upstream dependencies (cardano-wallet, cardano-node)
 
@@ -170,7 +155,7 @@ nix flake lock --update-input cardano-wallet-unpatched
 
 ### Cardano Wallet Api documentation
 
-Api documentation for edge `cardano-wallet` version: <https://input-output-hk.github.io/cardano-wallet/api/edge/>
+Api documentation for edge `cardano-wallet` version: https://input-output-hk.github.io/cardano-wallet/api/edge/
 
 ### Externals
 
@@ -191,7 +176,6 @@ For a common example, to install Bootstrap, `yarn install --save bootstrap` and 
 ```
 
 Make sure to list bootstrap in externals in `webpack.config.base.js` or the app won't include them in the package:
-
 ```js
 externals: ['bootstrap']
 ```
@@ -199,10 +183,9 @@ externals: ['bootstrap']
 ### Debugging
 
 You can debug the main process by following one of these approaches:
-
-* [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
-* [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
-* [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
+- [VSCode](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_attaching-to-nodejs)
+- [Chrome](https://nodejs.org/en/docs/guides/debugging-getting-started/#inspector-clients)
+- [IntelliJ](https://www.jetbrains.com/help/idea/run-debug-configuration-node-js-remote-debug.html)
 
 The inspector runs on port 9229
 
