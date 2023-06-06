@@ -118,11 +118,294 @@ in rec {
       # TODO: build the distributed ones from source:
       (
         cd $(mktemp -d)
-        unzip ${./windows-usb-libs.zip}
-        mv build/Debug/*.node $out/
+        cp ${nativeModules}/build/Debug/*.node $out/
       )
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
+  };
+
+  fresherPkgs = import (pkgs.fetchFromGitHub {
+    owner = "NixOS"; repo = "nixpkgs";
+    rev = "17a689596b72d1906883484838eb1aaf51ab8001"; # nixos-unstable on 2023-05-15T08:29:41Z
+    hash = "sha256-YPLMeYE+UzxxP0qbkBzv3RBDvyGR5I4d7v2n8dI3+fY=";
+  }) { inherit (pkgs) system; };
+
+  msvc-wine = pkgs.stdenv.mkDerivation {
+    name = "msvc-wine";
+    src = pkgs.fetchFromGitHub {
+      owner = "mstorsjo";
+      repo = "msvc-wine";
+      rev = "c4fd83d53689f30ae6cfd8e9ef1ea01712907b59";  # 2023-05-09T21:52:05Z
+      hash = "sha256-hA11dIOIL9sta+rwGb2EwWrEkRm6nvczpGmLZtr3nHI=";
+    };
+    buildInputs = [
+      (pkgs.python3.withPackages (ps: with ps; [ six ]))
+    ];
+    configurePhase = ":";
+    buildPhase = ":";
+    installPhase = ''
+      sed -r 's,msiextract,${pkgs.msitools}/bin/\0,g' -i vsdownload.py
+      mkdir -p $out/libexec
+      cp -r . $out/libexec/.
+    '';
+  };
+
+  msvc-cache = let
+    version = "16";   # There doesn’t seem to be an easy way to specify a more stable full version, 16.11.26
+  in pkgs.stdenv.mkDerivation {
+    name = "msvc-cache-${version}";
+    inherit version;
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    outputHash = "sha256-7+vNhYbrizqhoIDL6vN7vE+Gq2duoYW5adMgOpJgw2w=";
+    buildInputs = [];
+    dontUnpack = true;
+    dontConfigure = true;
+    NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+    buildPhase = ''
+      mkdir -p $out
+      ${msvc-wine}/libexec/vsdownload.py --accept-license --major ${version} \
+        --save-manifest \
+        --only-download --cache $out --dest ./
+      cp -v *.manifest $out/.
+    '';
+    dontInstall = true;
+  };
+
+  msvc-installed = pkgs.stdenv.mkDerivation {
+    name = "msvc-installed-${msvc-cache.version}";
+    inherit (msvc-cache) version;
+    dontUnpack = true;
+    dontConfigure = true;
+    buildPhase = ''
+      mkdir -p $out
+      ${msvc-wine}/libexec/vsdownload.py --accept-license --major ${msvc-cache.version} \
+        --manifest ${msvc-cache}/*.manifest \
+        --keep-unpack --cache ${msvc-cache} --dest $out/
+      mv $out/unpack/MSBuild $out/
+    '';
+    dontInstall = true;
+  };
+
+  electronHeadersWithNodeLib = pkgs.runCommandLocal "electron-headers" {
+    # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
+    inherit (commonSources.electronHeaders) src;
+  } ''
+    tar -xf $src
+    mv node_headers $out
+    echo 9 >$out/installVersion
+    mkdir -p $out/Release
+    ln -s ${windowsSources.node-lib} $out/Release/node.lib
+  '';
+
+  nativeModules = pkgs.stdenv.mkDerivation {
+    name = "daedalus-native-modules";
+    src = newCommon.srcLockfiles;
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
+      ++ (with pkgs; [ python3 pkgconfig jq file procps ]);
+    buildInputs = with pkgs; [ libusb ];
+    configurePhase = newCommon.setupCacheAndGypDirs + ''
+      # Grab all cached `node_modules` from above:
+      cp -r ${node_modules}/. ./
+      chmod -R +w .
+    '';
+    FONTCONFIG_FILE = fresherPkgs.makeFontsCache {
+      fontDirectories = with fresherPkgs; [
+        dejavu_fonts freefont_ttf gyre-fonts liberation_ttf noto-fonts-emoji
+        unifont winePackages.fonts xorg.fontcursormisc xorg.fontmiscmisc
+      ];
+    };
+    buildPhase = let
+      mkSection = title: ''
+        echo ' '
+        echo ' '
+        echo ' '
+        echo ' '
+        echo ' '
+        echo '===================== '${pkgs.lib.escapeShellArg title}' ====================='
+      '';
+      completeHack = "rebuild-complete-hack-bnlzMmdjbXB5emozNWFndGx1bnd5dnh5";
+    in ''
+      ${pkgs.xvfb-run}/bin/xvfb-run \
+        --server-args="-screen 0 1920x1080x24 +extension GLX +extension RENDER -ac -noreset" \
+        ${pkgs.writeShellScript "wine-setup-inside-xvfb" ''
+          set -euo pipefail
+
+          ${mkSection "Setting Windows system version"}
+          winetricks -q win81
+
+          ${mkSection "Setting up env and symlinks in standard locations"}
+
+          # Symlink Windows SDK in a standard location:
+          lx_program_files="$HOME/.wine/drive_c/Program Files (x86)"
+          mkdir -p "$lx_program_files"
+          ln -svf ${msvc-installed}/kits "$lx_program_files/Windows Kits"
+
+          # Symlink VC in a standard location:
+          vc_versionYear="$(jq -r .info.productLineVersion <${msvc-cache}/*.manifest)"
+          lx_VSINSTALLDIR="$lx_program_files/Microsoft Visual Studio/$vc_versionYear/Community"
+          mkdir -p "$lx_VSINSTALLDIR"
+          ln -svf ${msvc-installed}/VC "$lx_VSINSTALLDIR"/
+          ln -svf ${msvc-installed}/MSBuild "$lx_VSINSTALLDIR"/
+
+          export VCINSTALLDIR="$(winepath -w "$lx_VSINSTALLDIR/VC")\\"
+          export VCToolsVersion="$(ls ${msvc-installed}/VC/Tools/MSVC | head -n1)"
+          export VCToolsInstallDir="$(winepath -w "$lx_VSINSTALLDIR/VC/Tools/MSVC/$VCToolsVersion")\\"
+          export VCToolsRedistDir="$(winepath -w "$lx_VSINSTALLDIR/VC/Redist/MSVC/$VCToolsVersion")\\"
+
+          export ClearDevCommandPromptEnvVars=false
+
+          export VSINSTALLDIR="$(winepath -w "$lx_VSINSTALLDIR")\\"
+
+          lx_WindowsSdkDir=("$lx_program_files/Windows Kits"/*)
+          export WindowsSdkDir="$(winepath -w "$lx_WindowsSdkDir")\\"
+
+          set -x
+
+          # XXX: this can break, as `v10.0` is not determined programmatically;
+          # XXX: the path is taken from `${msvc-installed}/MSBuild/Microsoft/VC/v160/Microsoft.Cpp.WindowsSDK.props`
+          wine reg ADD 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0' \
+            /v 'InstallationFolder' /t 'REG_SZ' /d "$WindowsSdkDir" /f
+
+          # XXX: This path is taken from `${msvc-installed}/unpack/Common7/Tools/vsdevcmd/core/winsdk.bat`
+          wine reg ADD 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots' \
+            /v 'KitsRoot10' /t 'REG_SZ' /d "$WindowsSdkDir" /f
+
+          set +x
+
+          ${mkSection "Preparing the ‘info’ structure"}
+          jq --null-input \
+            --arg msBuild      "$(winepath -w "$lx_VSINSTALLDIR/MSBuild/Current/Bin/MSBuild.exe")" \
+            --arg path         "$VCINSTALLDIR" \
+            --arg sdk          "$(ls ${msvc-installed}/kits/10/Include | head -n1)" \
+            --arg toolset      "$(ls "$lx_VSINSTALLDIR/VC/Redist/MSVC" | grep -E '^v[0-9]+$')" \
+            --arg version      "$(jq -r .info.productDisplayVersion <${msvc-cache}/*.manifest)" \
+            --arg versionMajor "$(jq -r .info.productDisplayVersion <${msvc-cache}/*.manifest | cut -d. -f1)" \
+            --arg versionMinor "$(jq -r .info.productDisplayVersion <${msvc-cache}/*.manifest | cut -d. -f2)" \
+            --arg versionYear  "$(jq -r .info.productLineVersion    <${msvc-cache}/*.manifest)" \
+            '{$msBuild,$path,$sdk,$toolset,$version,$versionMajor,$versionMinor,$versionYear}' \
+            > vs-info.json
+
+          ${mkSection "Stubbing node_modules/node-gyp/lib/find-visualstudio.js"}
+          (
+            cat <<<${pkgs.lib.escapeShellArg ''
+              'use strict'
+              function findVisualStudio (nodeSemver, configMsvsVersion, callback) {
+                process.nextTick(() => callback(null,
+            ''}
+            cat vs-info.json
+            cat <<<${pkgs.lib.escapeShellArg ''
+                ));
+              }
+              module.exports = findVisualStudio
+            ''}
+          ) >node_modules/node-gyp/lib/find-visualstudio.js
+          cat node_modules/node-gyp/lib/find-visualstudio.js
+
+          ${mkSection "Setting WINEPATH"}
+          export WINEPATH="$(winepath -w ${native.nodejs});$(winepath -w ${native.python})"
+
+          ${mkSection "Removing all symlinks to /nix/store (mostly python3)"}
+          find node_modules -type l >all-symlinks.lst
+          paste all-symlinks.lst <(xargs <all-symlinks.lst readlink) | grep -F /nix/store | cut -f1 | xargs rm -v
+          rm all-symlinks.lst
+
+          ${mkSection "Patching node_modules"}
+          # Point electron-rebuild to the correct Node (Electron) headers location:
+          ${newCommon.patchElectronRebuild}/bin/* \
+            "$(winepath -w ${electronHeadersWithNodeLib.src} | sed -r 's,\\,\\\\\\\\,g')" \
+            "$(winepath -w ${electronHeadersWithNodeLib}     | sed -r 's,\\,\\\\\\\\,g')"
+
+          ${mkSection "Running @electron/rebuild"}
+          # XXX: we need to run the command with the Node.js env set correcty, `npm.cmd` does that:
+          lx_electron_rebuild_bin="$(readlink -f node_modules/.bin/electron-rebuild)"
+          export electron_rebuild_bin="$(winepath -w "$lx_electron_rebuild_bin")"
+
+          # XXX: for some reason the build hangs (only on Cicero!) after outputting "Rebuild Complete", so let's hack around that:
+          sed -r '/Rebuild Complete/a require("fs").writeFileSync("${completeHack}", "");' -i "$lx_electron_rebuild_bin"
+
+          # XXX: re-enable this if you need to simulate Cicero hanging locally:
+          # sed -r 's/rebuildSpinner.succeed\(\);/setTimeout(function(){rebuildSpinner.succeed();},10000);/g' -i "$lx_electron_rebuild_bin"
+
+          (
+            while true ; do
+              if [ -e ${completeHack} ] ; then
+                echo "Found ${completeHack}, killing node.exe among:"
+
+                ps aux | cat
+
+                pkill -9 node.exe || true
+                break
+              else
+                sleep 2
+              fi
+            done
+          ) &
+          wine_killer_pid=$!
+
+          cp ${pkgs.writeText "package.json" (builtins.toJSON (
+            pkgs.lib.recursiveUpdate originalPackageJson {
+              scripts = {
+                "build:electron:windows" = "node.exe %electron_rebuild_bin% -f -w usb";
+              };
+            }
+          ))} package.json
+          wine npm.cmd run build:electron:windows || {
+            real_ec=$?
+            if [ -e ${completeHack} ] ; then
+              echo "Wine would return $real_ec, but ${completeHack} exists"
+              return 0
+            else
+              return $real_ec
+            fi
+          }
+          kill $wine_killer_pid || true
+
+          # XXX: We’re running in a separate namespace, so this is fine.
+          while pgrep wine >/dev/null ; do
+            ${mkSection "Wine is still running in the background, will try to kill it"}
+            echo 'All remaining processes:'
+            ps aux | cat
+
+            sleep 1
+            pkill -9 wine || true
+            sleep 4
+          done
+        ''}
+    '';
+    installPhase = ''
+      #find -iname '*.node' | xargs file -L
+
+      mkdir -p $out/build/Release
+      cp node_modules/usb-detection/build/Release/detection.node $out/build/Release/
+      cp node_modules/usb/build/Release/usb_bindings.node        $out/build/Release/
+      cp node_modules/node-hid/build/Release/HID.node            $out/build/Release/
+
+      # make sure they’re for Windows
+      find $out -iname '*.node' | while IFS= read -r ext ; do
+        file "$ext" | grep -F 'MS Windows' || {
+          echo "fatal: $ext is not built for MS Windows (shouldn’t happen)"
+          exit 2
+        }
+      done
+
+      # Is that needed?
+      cp -r $out/build/Release $out/build/Debug
+    '';
+  };
+
+  native = rec {
+    nodejs = pkgs.fetchzip {
+      url = "https://nodejs.org/dist/v${newCommon.nodejs.version}/node-v${newCommon.nodejs.version}-win-x64.zip";
+      hash = "sha256-n8ux67xrq3Rta1nE715y1m040oaLxUI2bIt12RaJdeM=";
+    };
+
+    python = pkgs.fetchzip {
+      url = "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip";
+      hash = "sha256-p83yidrRg5Rz1vQpyRuZCb5F+s3ddgHt+JakPjgFgUc=";
+      stripRoot = false;
+    };
   };
 
   windowsIcons = let
@@ -198,11 +481,6 @@ in rec {
   # a cross-compiled fastlist for the ps-list package
   fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
 
-  dlls = pkgs.fetchurl {
-    url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
-    sha256 = "0p6nrf8sg2wgcaf3b1qkbb98bz2dimb7lnshsa93xnmia9m2vsxa";
-  };
-
   preSigning = let
     installDir = oldCode.launcherConfigs.installerConfig.spacedName;
   in pkgs.runCommand "pre-signing" { buildInputs = [ pkgs.unzip ]; } ''
@@ -221,10 +499,6 @@ in rec {
     cp -v ${fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
     ln -s ${../installers/nsis_plugins} nsis_plugins
 
-    mkdir dlls
-    pushd dlls
-    unzip ${dlls}
-    popd
     cp -vr ${oldCode.daedalus-bridge}/bin/* .
     cp -v ${nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
     cp ${unsignedUninstaller}/uninstall.exe .
@@ -273,7 +547,15 @@ in rec {
   windowsSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-      hash = "sha256-GAhaJQlEf++Iltru6WoS9I+OYKTV7Ez6tE2NWbnYmnI=";
+      hash = "sha256-xYQml960qP3sB/Rp3uEMU7s9aT2Ma4A5VHHzuUx8r9c=";
+    };
+
+    # XXX: normally, node-gyp would download it only for Windows,
+    # XXX: see `resolveLibUrl()` in `node-gyp/lib/process-release.js`
+    node-lib = pkgs.fetchurl {
+      name = "node.lib-${electronVersion}"; # cache invalidation
+      url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
+      hash = "sha256-JhIFzgm+Oig7FsHk1TP85H6PDD3drC7wXpVDfq8hIC4=";
     };
   };
 

@@ -30,14 +30,19 @@ rec {
   #     patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
   #   };
 
-  nodejs = pkgs.nodejs-14_x.overrideAttrs (drv: {
-    # XXX: we don’t want `bypass-xcodebuild.diff`, rather we supply
+  nodejs = let
+    base = pkgs.nodejs-18_x;
+  in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
+    # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,
     # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-    patches = [];
+    patches = pkgs.lib.filter (patch: !(
+      pkgs.lib.hasInfix "bypass-xcodebuild" patch ||
+      pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
+    )) drv.patches;
   });
 
-  nodePackages = pkgs.nodePackages.override { nodejs = nodejs; };
+  nodePackages = pkgs.nodePackages.override { inherit nodejs; };
 
   yarn = (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
     # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
@@ -50,8 +55,8 @@ rec {
     # Nixpkgs master @ 2022-07-18
     # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
     source = pkgs.fetchzip {
-      url = "https://github.com/NixOS/nixpkgs/archive/qe4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
-      sha256 = "0y0c9ybkcfmjgrl93wzzlk7ii95kh2fb4v5ac5w6rmcsq2ff3yaz";
+      url = "https://github.com/NixOS/nixpkgs/archive/e4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
+      hash = "sha256-X/nhnMCa1Wx4YapsspyAs6QYz6T/85FofrI6NpdPDHg=";
     };
     subdir = builtins.path { path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix"; };
     in
@@ -135,7 +140,7 @@ rec {
       # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       src = pkgs.fetchurl {
         url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-        hash = "sha256-+FZ1EYV6tiZZUFulFYtq1pr861EhBaMlHRgP5H9ENmw=";
+        hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
       };
     } ''
       tar -xf $src
@@ -144,16 +149,18 @@ rec {
     '';
 
     electronShaSums = pkgs.fetchurl {
+      name = "electronShaSums-${electronVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      hash = "sha256-NiUplP/dqmynH2ZN97kJVqMkzSLOLi3JR1T/OWHiOiA=";
+      hash = "sha256-75bNqt2c7u/fm0P2Ha6NvkbGThEifIHXl2x5UCdy4fM=";
     };
 
     electronCacheHash = builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronVersion}";
 
     electronChromedriverShaSums = pkgs.fetchurl {
+      name = "electronChromedriverShaSums-${electronChromedriverVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      sha256 = "07xxam8dvn1aixvx39gd5x3yc1bs6i599ywxwi5cbkpf957ilpcx";
+      hash = "sha256-nV0aT0nuzsVK5J37lEo0egXmRy/tpdF3jyrY3VBVvR8=";
     };
 
     electronChromedriverCacheHash = builtins.hashString "sha256"
@@ -176,20 +183,20 @@ rec {
   patchElectronRebuild = pkgs.writeShellScriptBin "patch-electron-rebuild" ''
     echo 'Patching electron-rebuild to force our Node.js headers…'
 
-    nodeGypJs=lib/src/module-type/node-gyp.js
-    if [ ! -e $nodeGypJs ] ; then
-      # makes it work both here, and in shell.nix:
-      nodeGypJs="node_modules/electron-rebuild/$nodeGypJs"
-    fi
-    if [ ! -e $nodeGypJs ] ; then
-      echo >&2 'fatal: shouldn’t happen unless electron-rebuild changes'
-      exit 1
-    fi
+    tarball="''${1:-${commonSources.electronHeaders.src}}"
+    nodedir="''${2:-${commonSources.electronHeaders}}"
+
+    echo "  → tarball=$tarball"
+    echo "  → nodedir=$nodedir"
+
+    nodeGypJs="node_modules/@electron/rebuild/lib/module-type/node-gyp/node-gyp.js"
 
     # Patch idempotently (matters in repetitive shell.nix):
-    if ! grep -qF ${commonSources.electronHeaders.src} $nodeGypJs ; then
-      sed -r 's|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push("--tarball", "${commonSources.electronHeaders.src}", "--nodedir", "${commonSources.electronHeaders}");|' -i $nodeGypJs
+    if ! grep -qF "$tarball" $nodeGypJs ; then
+      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir');|" -i $nodeGypJs
     fi
+
+    echo "  → result=$(grep -F "const extraNodeGypArgs" $nodeGypJs)"
   '';
 
 }

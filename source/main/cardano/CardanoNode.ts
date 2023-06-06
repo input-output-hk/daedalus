@@ -738,14 +738,14 @@ export class CardanoNode {
           ca: '' as any,
           key: '' as any,
           cert: '' as any,
-          hostname: 'localhost',
+          hostname: '127.0.0.1', // “localhost” breaks under new electron, which prefers ::1 (IPv6)
           port,
         }
       : {
           ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
           key: _actions.readFileSync(`${tlsPath}/client/client.key`),
           cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
-          hostname: 'localhost',
+          hostname: '127.0.0.1', // “localhost” breaks under new electron, which prefers ::1 (IPv6)
           port,
         };
 
