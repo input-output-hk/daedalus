@@ -30,7 +30,9 @@ rec {
   #     patches = pkgs.lib.optional pkgs.stdenv.isDarwin (njPath + "/bypass-xcodebuild.diff");
   #   };
 
-  nodejs = pkgs.nodejs-18_x.overrideAttrs (drv: {
+  nodejs = let
+    base = pkgs.nodejs-18_x;
+  in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
     # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,
     # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>

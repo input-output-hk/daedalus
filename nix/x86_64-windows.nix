@@ -203,7 +203,7 @@ in rec {
     src = newCommon.srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
-      ++ (with pkgs; [ python3 pkgconfig jq file ]);
+      ++ (with pkgs; [ python3 pkgconfig jq file procps ]);
     buildInputs = with pkgs; [ libusb ];
     configurePhase = newCommon.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
@@ -225,6 +225,7 @@ in rec {
         echo ' '
         echo '===================== '${pkgs.lib.escapeShellArg title}' ====================='
       '';
+      completeHack = "rebuild-complete-hack-bnlzMmdjbXB5emozNWFndGx1bnd5dnh5";
     in ''
       ${pkgs.xvfb-run}/bin/xvfb-run \
         --server-args="-screen 0 1920x1080x24 +extension GLX +extension RENDER -ac -noreset" \
@@ -318,7 +319,31 @@ in rec {
 
           ${mkSection "Running @electron/rebuild"}
           # XXX: we need to run the command with the Node.js env set correcty, `npm.cmd` does that:
-          export electron_rebuild_bin="$(winepath -w "$(readlink -f node_modules/.bin/electron-rebuild)")"
+          lx_electron_rebuild_bin="$(readlink -f node_modules/.bin/electron-rebuild)"
+          export electron_rebuild_bin="$(winepath -w "$lx_electron_rebuild_bin")"
+
+          # XXX: for some reason the build hangs (only on Cicero!) after outputting "Rebuild Complete", so let's hack around that:
+          sed -r '/Rebuild Complete/a require("fs").writeFileSync("${completeHack}", "");' -i "$lx_electron_rebuild_bin"
+
+          # XXX: re-enable this if you need to simulate Cicero hanging locally:
+          # sed -r 's/rebuildSpinner.succeed\(\);/setTimeout(function(){rebuildSpinner.succeed();},10000);/g' -i "$lx_electron_rebuild_bin"
+
+          (
+            while true ; do
+              if [ -e ${completeHack} ] ; then
+                echo "Found ${completeHack}, killing node.exe among:"
+
+                ps aux | cat
+
+                pkill -9 node.exe || true
+                break
+              else
+                sleep 2
+              fi
+            done
+          ) &
+          wine_killer_pid=$!
+
           cp ${pkgs.writeText "package.json" (builtins.toJSON (
             pkgs.lib.recursiveUpdate originalPackageJson {
               scripts = {
@@ -326,7 +351,27 @@ in rec {
               };
             }
           ))} package.json
-          wine npm.cmd run build:electron:windows
+          wine npm.cmd run build:electron:windows || {
+            real_ec=$?
+            if [ -e ${completeHack} ] ; then
+              echo "Wine would return $real_ec, but ${completeHack} exists"
+              return 0
+            else
+              return $real_ec
+            fi
+          }
+          kill $wine_killer_pid || true
+
+          # XXX: We’re running in a separate namespace, so this is fine.
+          while pgrep wine >/dev/null ; do
+            ${mkSection "Wine is still running in the background, will try to kill it"}
+            echo 'All remaining processes:'
+            ps aux | cat
+
+            sleep 1
+            pkill -9 wine || true
+            sleep 4
+          done
         ''}
     '';
     installPhase = ''

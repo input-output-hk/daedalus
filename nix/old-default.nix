@@ -8,7 +8,19 @@ let
   system = {
     x86_64-windows = "x86_64-linux"; # Windows can only be cross-built from Linux now
   }.${target} or target;
-  pkgs = inputs.nixpkgs.legacyPackages.${system};
+  pkgs =
+    if target != "x86_64-linux"
+    then inputs.nixpkgs.legacyPackages.${system}
+    else import inputs.nixpkgs {
+      inherit system;
+      config.packageOverrides = super: {
+        # XXX: non-root users need to be able to use sd-device/device-monitor.c to detect Ledger:
+        # FIXME: find the correct (minimal) place to override this:
+        systemd = super.systemd.overrideAttrs (oldAttrs: {
+          patches = oldAttrs.patches ++ [./libsystemd--device-monitor.patch];
+        });
+      };
+    };
   walletFlake = (import inputs.flake-compat {
     # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
     src = pkgs.runCommand "cardano-wallet" {} ''
