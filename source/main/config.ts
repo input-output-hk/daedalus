@@ -178,7 +178,8 @@ export const FALLBACK_TOKEN_METADATA_SERVER_URL =
 export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
 
 // Used by mock-token-metadata-server
-export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
+// “localhost” breaks under new electron, which prefers ::1 (IPv6)
+export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://127.0.0.1';
 export const MOCK_TOKEN_METADATA_SERVER_PORT =
   process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
 export const RTS_FLAGS = ['-c'];

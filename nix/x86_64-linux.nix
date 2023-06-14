@@ -57,7 +57,6 @@ in rec {
       find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
-      sed -r 's#/bin/sh#sh#' -i node_modules/lzma-native/node_modules/node-gyp-build/bin.js
 
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
@@ -102,7 +101,7 @@ in rec {
     patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
       pkgs.lib.recursiveUpdate originalPackageJson {
         productName = oldCode.launcherConfigs.installerConfig.spacedName;
-        main = "main/index.js";
+        main = "dist/main/index.js";
       }
     ));
     buildPhase = ''
@@ -118,6 +117,9 @@ in rec {
       mkdir -p $out/bin $out/share/daedalus
       cp -R dist/. $out/share/daedalus/.
       cp $patchedPackageJson $out/share/daedalus/package.json
+
+      chmod +w $out/share/daedalus/package.json
+      sed -r 's,"dist/main/index.js","main/index.js",g' -i $out/share/daedalus/package.json
 
       # XXX: the webpack utils embed the original source paths into map files, which causes the derivation
       # to depend on the original inputs at the nix layer, and double the size of the linux installs.
@@ -309,7 +311,7 @@ in rec {
   linuxSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
-      hash = "sha256-dgdCKkuoDNpL1/77L74vTguac9uS4egtwBASqFtdDSs=";
+      hash = "sha256-jXeA3Sr8/l6Uos9XT0+hCiosaRIndx/KSQUcUkrGdRM=";
     };
 
     electronChromedriver = pkgs.fetchurl {

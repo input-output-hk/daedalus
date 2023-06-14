@@ -241,13 +241,15 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 file [] "cardano-launcher.exe"
                 file [] "libffi-8.dll"
                 file [] "libgmp-10.dll"
+                file [] "libstdc++-6.dll"
+                file [] "mcfgthread-12.dll"
+                file [] "libgcc_s_seh-1.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"
                 --file [] "configuration.yaml"
                 --file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
-                file [Recursive] "dlls\\"
                 file [Recursive] "..\\release\\win32-x64\\$SpacedName-win32-x64\\"
 
                 mapM_ unsafeInject
