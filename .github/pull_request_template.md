@@ -41,7 +41,6 @@ Open a thread on #daedalus-qa on Slack, mention `@daedalusqa` and `@daedalusteam
 - [ ] PR assigned to the PR author(s)
 - [ ] `input-output-hk/daedalus-dev` and `input-output-hk/daedalus-qa` assigned as PR reviewers
 - [ ] If there are UI changes, Alexander Rukin assigned as an additional reviewer
-- [ ] All visual regression testing has been reviewed (assign `run Chromatic` label to PR to trigger the run)
 - [ ] PR has appropriate labels (`release-vNext`, `feature`/`bug`/`chore`, `WIP`)
 - [ ] PR link is added to a Jira ticket, ticket moved to In Review
 - [ ] PR is updated to the most recent version of the target branch (and there are no conflicts)

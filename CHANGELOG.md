@@ -8,6 +8,7 @@
 
 ### Chores
 
+- Removed Chromatic from project ([PR 3126](https://github.com/input-output-hk/daedalus/pull/3126))
 - Upgraded Electron to 24.2, and Node.js to 18.× ([PR 3124](https://github.com/input-output-hk/daedalus/pull/3124))
 - Defined a proxy for currency conversions ([PR 3121](https://github.com/input-output-hk/daedalus/pull/3121))
 - Switched Daedalus to be built with Nix flakes ([PR 3008](https://github.com/input-output-hk/daedalus/pull/3008))
