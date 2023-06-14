@@ -2869,6 +2869,18 @@
     randombytes "2.1.0"
     tslib "2.5.0"
 
+"@trezor/transport@1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.1.12.tgz#ba88abcfc47b2c1b34392fdde7aa8dffce4129b7"
+  integrity sha512-RInOSOmgJ383QOBJbPzjyQW9BoWZ6HTneUmPkdzqydLxn9eyD3Ui13+W9fWFmxoMmljxJKct93twgxgHKUkhCg==
+  dependencies:
+    "@trezor/utils" "9.0.9"
+    bytebuffer "^5.0.1"
+    json-stable-stringify "^1.0.2"
+    long "^4.0.0"
+    prettier "2.8.7"
+    protobufjs "6.11.3"
+
 "@trezor/transport@1.1.9":
   version "1.1.9"
   resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.1.9.tgz#a3a94305f063349e3d66ef0adf5d273fc120a56c"
@@ -2885,6 +2897,11 @@
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/@trezor/utils/-/utils-9.0.7.tgz#502097cb1d16a7738596d48890891e30725332f4"
   integrity sha512-EyjYqufnbtIbeN9A+RKkxh2UoGabxtZWsWubJbcyXNmQUiEFou5PRayEEG5YKav+aiWwDw2tDEJl2w1IQcSzNw==
+
+"@trezor/utils@9.0.9":
+  version "9.0.9"
+  resolved "https://registry.yarnpkg.com/@trezor/utils/-/utils-9.0.9.tgz#2082d0ed4d3bbda83403be43f3cf56ae50b7805f"
+  integrity sha512-+jzHy+YG3zJsnB11YfudT1a5u5lcwNX/tKoW9VmPU+isuW725M6uUOL+MSgW1aHucCJPyBAp0XUUssLE/ifqBw==
 
 "@trezor/utxo-lib@1.0.5":
   version "1.0.5"
