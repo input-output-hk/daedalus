@@ -1,13 +1,18 @@
-import React from 'react';
-import moment from 'moment';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
-import type { Intl } from '../../../types/i18nTypes';
-import NextFund from './NextFund';
-
+import moment from 'moment';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import {
+  formattedDateTime,
+  mapToLongDateTimeFormat,
+} from '../../../utils/formatters';
 import type { Locale } from '../../../../../common/types/locales.types';
+import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
+import votingStyles from './VotingInfo.scss';
 import type { CatalystFund } from '../../../api/voting/types';
 import { logger } from '../../../utils/logging';
 
@@ -20,9 +25,9 @@ type Props = {
   onRegisterToVoteClick: (...args: Array<any>) => any;
 };
 
-const isNextFundDefined = (registrationSnapshotTime: Date): boolean => {
+const isFutureDate = (date: Date): boolean => {
   try {
-    return moment().diff(registrationSnapshotTime) < 0;
+    return moment().diff(date) < 0;
   } catch (error) {
     logger.error('Voting::NextFund::Invalid date', {
       error,
@@ -31,9 +36,7 @@ const isNextFundDefined = (registrationSnapshotTime: Date): boolean => {
   return false;
 };
 
-// const NextFund = React.lazy(() => import('./NextFund'));
-
-export function RegisterToVote({
+function RegisterToVote({
   currentLocale,
   currentDateFormat,
   currentTimeFormat,
@@ -41,7 +44,22 @@ export function RegisterToVote({
   intl,
   onRegisterToVoteClick,
 }: Props) {
-  // const isNextFundDefined = false;
+  const [step1, setStep1] = useState(false);
+  const [step2, setStep2] = useState(false);
+  const canRegister = step1 && step2;
+  const nextSnapshotDateTime = fundInfo.next.registrationSnapshotTime;
+
+  const snapshotDate = isFutureDate(nextSnapshotDateTime)
+    ? formattedDateTime(nextSnapshotDateTime, {
+        currentLocale,
+        ...mapToLongDateTimeFormat({
+          currentLocale,
+          currentDateFormat,
+          currentTimeFormat,
+        }),
+      })
+    : intl.formatMessage(messages.toBeDefined);
+
   return (
     <div className={styles.root}>
       <span className={styles.title}>
@@ -49,25 +67,36 @@ export function RegisterToVote({
           votingFundNumber: fundInfo.next.number,
         })}
       </span>
-      {isNextFundDefined(fundInfo?.next?.registrationSnapshotTime) ? (
-        <NextFund
-          currentLocale={currentLocale}
-          currentDateFormat={currentDateFormat}
-          currentTimeFormat={currentTimeFormat}
-          fundInfo={fundInfo}
-          onRegisterToVoteClick={onRegisterToVoteClick}
+      <span className={styles.dateLabel}>
+        {intl.formatMessage(messages.dateLabel)}
+      </span>
+      <span className={styles.date}>{snapshotDate}</span>
+      <hr className={votingStyles.separator} />
+      <span className={styles.stepsTitle}>
+        {intl.formatMessage(messages.stepsTitle)}
+      </span>
+      <div className={styles.step}>
+        <Checkbox
+          checked={step1}
+          onChange={setStep1}
+          label={intl.formatMessage(messages.step1CheckBoxLabel)}
         />
-      ) : (
-        <React.Fragment>
-          <span className={styles.dateLabel}>
-            {intl.formatMessage(messages.dateLabel)}
-          </span>
-          <span className={styles.date}>
-            {intl.formatMessage(messages.toBeDefined)}
-          </span>
-        </React.Fragment>
-      )}
+      </div>
+      <div className={styles.step}>
+        <Checkbox
+          checked={step2}
+          label={intl.formatMessage(messages.step2CheckBoxLabel)}
+          onChange={setStep2}
+        />
+      </div>
+      <Button
+        className={styles.button}
+        onClick={onRegisterToVoteClick}
+        label={intl.formatMessage(messages.buttonLabel)}
+        disabled={!canRegister}
+      />
     </div>
   );
 }
+
 export default injectIntl(RegisterToVote);

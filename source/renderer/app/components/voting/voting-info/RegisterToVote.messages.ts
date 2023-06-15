@@ -31,6 +31,6 @@ export const messages = defineMessages({
     id: 'voting.resultsPhase.toBeDefined',
     defaultMessage: '!!!To be defined',
     description:
-      'Text to show when catalyst api is returning a past date value',
+      'Text to show when Catalyst API is returning a past date value',
   },
 });
