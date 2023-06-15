@@ -1,10 +1,10 @@
 import { externalRequest } from '../../utils/externalRequest';
-import { MAINNET_SERVICING_STATION_URL } from '../../../config/urlsConfig';
+import { CATALYST_API_URL } from '../../../config/urlsConfig';
 import { GetCatalystFundResponse } from '../types';
 
 export const getCatalystFund = (): Promise<GetCatalystFundResponse> =>
   externalRequest({
-    hostname: MAINNET_SERVICING_STATION_URL,
+    hostname: CATALYST_API_URL,
     path: '/api/v0/fund',
     method: 'GET',
     protocol: 'https',
