@@ -8,6 +8,8 @@
 
 ### Chores
 
+- Updated @trezor/connect to v9.0.8 ([PR 1211](https://github.com/input-output-hk/daedalus/pull/3127))
+- Add members of Cardano Wallet team to the "About Daedalus" screen ([PR 3092](https://github.com/input-output-hk/daedalus/pull/3092))
 - Removed Chromatic from project ([PR 3126](https://github.com/input-output-hk/daedalus/pull/3126))
 - Upgraded Electron to 24.2, and Node.js to 18.× ([PR 3124](https://github.com/input-output-hk/daedalus/pull/3124))
 - Defined a proxy for currency conversions ([PR 3121](https://github.com/input-output-hk/daedalus/pull/3121))
@@ -16,7 +18,6 @@
 - Prepared an official `aarch64-darwin` build ([PR 3116](https://github.com/input-output-hk/daedalus/pull/3116))
 - Added regeneration of dev TLS certificates for cardano-wallet on each nix-shell entry ([PR 3117](https://github.com/input-output-hk/daedalus/pull/3117))
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
-- Updated @trezor/connect to v9.0.8 ([PR 1211](https://github.com/input-output-hk/daedalus/pull/3127))
 
 ## 5.2.0
 
