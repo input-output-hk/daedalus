@@ -8,6 +8,7 @@
 
 ### Chores
 
+- Updated @trezor/connect to v9.0.8 ([PR 3127](https://github.com/input-output-hk/daedalus/pull/3127))
 - Add members of Cardano Wallet team to the "About Daedalus" screen ([PR 3092](https://github.com/input-output-hk/daedalus/pull/3092))
 - Removed Chromatic from project ([PR 3126](https://github.com/input-output-hk/daedalus/pull/3126))
 - Upgraded Electron to 24.2, and Node.js to 18.× ([PR 3124](https://github.com/input-output-hk/daedalus/pull/3124))
