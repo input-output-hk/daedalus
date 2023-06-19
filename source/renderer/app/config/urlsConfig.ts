@@ -25,5 +25,7 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
   coingeckoConfig.hostname,
-  CATALYST_API_URL,
+  environment.catalystApiUrlOverride
+    ? new URL(environment.catalystApiUrlOverride).hostname
+    : CATALYST_API_URL,
 ];

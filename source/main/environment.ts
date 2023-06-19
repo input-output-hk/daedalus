@@ -112,6 +112,8 @@ export const environment: Environment = Object.assign(
     keepLocalClusterRunning,
     hasMetHardwareRequirements,
     analyticsFeatureEnabled,
+    catalystApiUrlOverride: process.env.CATALYST_API_URL_OVERRIDE,
+    votingVisibleOverride: process.env.VOTING_VISIBLE_OVERRIDE === 'true',
   },
   process.env
 );
