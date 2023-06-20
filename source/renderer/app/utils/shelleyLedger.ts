@@ -86,7 +86,10 @@ export type TxAuxiliaryData = {
   votingPubKey: string;
 };
 export type RewardDestinationAddressType = {
-  address: string;
+  address: {
+    id: string;
+    spendingPath: string;
+  };
   // type of "address.id"
   stakingPath: BIP32Path;
 };
