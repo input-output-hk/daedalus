@@ -32,8 +32,7 @@ export type VotingRegistrationKeyType = {
   public: (...args: Array<any>) => any;
 };
 export type VotingDataType = {
-  stakeAddress: string;
-  stakeAddressHex: string;
+  addressHex: string;
   votingKey: string;
   stakeKey: string;
   role: PathRoleIdentityType;
@@ -214,9 +213,10 @@ export default class VotingStore extends Store {
   };
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
-      const { stakeAddresses } = this.stores.addresses;
-      const stakeAddress = stakeAddresses[walletId];
-      const stakeAddressHex = await this._getHexFromBech32(stakeAddress);
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const addressHex = await this._getHexFromBech32(address.id);
       await this._generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
@@ -255,7 +255,7 @@ export default class VotingStore extends Store {
                 int: 3,
               },
               v: {
-                bytes: stakeAddressHex,
+                bytes: addressHex,
               },
             },
             {
@@ -283,8 +283,8 @@ export default class VotingStore extends Store {
         },
       };
       const votingData = {
-        stakeAddress,
-        stakeAddressHex,
+        address,
+        addressHex,
         votingKey,
         stakeKey,
         role: 'mutable_account',
@@ -337,16 +337,10 @@ export default class VotingStore extends Store {
         const votingData = await this.prepareVotingData({
           walletId,
         });
-        const {
-          stakeAddressHex,
-          votingKey,
-          stakeKey,
-          role,
-          index,
-        } = votingData;
+        const { addressHex, votingKey, stakeKey, role, index } = votingData;
         // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
         const signature = await this.signMetadataRequest.execute({
-          addressHex: stakeAddressHex,
+          addressHex,
           walletId,
           passphrase,
           votingKey,
@@ -359,7 +353,7 @@ export default class VotingStore extends Store {
           // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
           await this.createVotingRegistrationTransactionRequest.execute({
             address: address.id,
-            addressHex: stakeAddressHex,
+            addressHex,
             amount,
             passphrase,
             walletId,
