@@ -17,7 +17,7 @@ let
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
-  installerName = "daedalus-${packageVersion}.${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
+  installerName = "daedalus-${packageVersion}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
 
 in rec {
 
