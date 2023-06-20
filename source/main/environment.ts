@@ -23,7 +23,7 @@ import {
   checkIsLinux,
 } from '../common/utils/environmentCheckers';
 
-const version = `${packageJson.version}.${process.env.BUILD_COUNTER || '0'}`;
+const version = `${packageJson.version}`;
 // Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
 // actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
 //

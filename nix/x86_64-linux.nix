@@ -300,7 +300,7 @@ in rec {
 
     wrappedBundle = let
       version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
-      fn = "daedalus-${version}.${toString sourceLib.buildCounter}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
+      fn = "daedalus-${version}-${toString sourceLib.buildCounter}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${newBundle} $out/${fn}
