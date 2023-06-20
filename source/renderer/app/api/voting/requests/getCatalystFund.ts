@@ -3,9 +3,9 @@ import { CATALYST_API_URL } from '../../../config/urlsConfig';
 import { GetCatalystFundResponse } from '../types';
 
 export const getCatalystFund = (): Promise<GetCatalystFundResponse> => {
-  const urlOverride: URL | undefined = new URL(
-    environment.catalystApiUrlOverride
-  );
+  const urlOverride: URL | undefined = environment.catalystApiUrlOverride
+    ? new URL(environment.catalystApiUrlOverride)
+    : undefined;
 
   return externalRequest({
     hostname: urlOverride ? urlOverride.hostname : CATALYST_API_URL,
