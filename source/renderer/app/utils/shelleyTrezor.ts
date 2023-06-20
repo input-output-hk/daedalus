@@ -1,4 +1,5 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { Messages } from '@trezor/transport';
 import { map } from 'lodash';
 import {
   derivationPathToString,
@@ -77,19 +78,20 @@ export type TrezorVotingDataType = {
   votingKey: string;
   nonce: string;
 };
+
 export const prepareTrezorAuxiliaryData = ({
   votingKey,
   nonce,
 }: TrezorVotingDataType) => ({
-  catalystRegistrationParameters: {
-    votingPublicKey: votingKey,
+  cVoteRegistrationParameters: {
+    votePublicKey: votingKey,
     stakingPath: "m/1852'/1815'/0'/2/0",
-    rewardAddressParameters: {
-      addressType: 14,
-      // REWARDS address
+    paymentAddressParameters: {
+      addressType: Messages.CardanoAddressType.REWARD,
       path: "m/1852'/1815'/0'/2/0",
     },
     nonce,
+    format: Messages.CardanoCVoteRegistrationFormat.CIP15, // Catalyst voting format
   },
 });
 // Helper Methods

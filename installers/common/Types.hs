@@ -139,7 +139,7 @@ packageFileName uglyName _os cluster ver backend buildJob buildCounter = fromTex
               else "x86_64-darwin"
             Linux64 -> "x86_64-linux"
     buildJob' = maybe [] (\b -> [fromBuildJob b]) buildJob
-    buildCounter' = "." <> maybe "0" fromBuildJob buildCounter
+    buildCounter' = "-" <> maybe "0" fromBuildJob buildCounter
 
 instance FromJSON Version where
   parseJSON = withObject "Package" $ \o -> Version <$> o .: "version"
