@@ -26,6 +26,7 @@ type CurrencyRateGeckoResponse = Array<{
 const id = 'coingecko';
 const name = 'CoinGecko';
 const website = 'https://www.coingecko.com/en/api';
+// Consumes: https://github.com/input-output-hk/wallet-world/blob/d742bd7bd27deca583d6e5a852e7275e35e760b7/nix/cardano-services/deployments.nix#L43
 const hostname = 'coingecko.live-mainnet.eks.lw.iog.io';
 const version = 'v3';
 const pathBase = `api/${version}`;
