@@ -11,7 +11,7 @@ export const DEVELOPMENT_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const MAINNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const TESTNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const STAGING_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
-export const MAINNET_SERVICING_STATION_URL = 'servicing-station.gov.iog.io';
+export const CATALYST_API_URL = 'core.projectcatalyst.io';
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -25,5 +25,5 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
   coingeckoConfig.hostname,
-  MAINNET_SERVICING_STATION_URL,
+  CATALYST_API_URL,
 ];
