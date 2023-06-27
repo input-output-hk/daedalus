@@ -216,6 +216,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
+      , "@noble"
       , "@protobufjs"
       , "@trezor"
       , "agent-base"
@@ -286,7 +287,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "object-is"
       , "object-keys"
       , "object.values"
-      , "parse-uri"
       , "pdfkit"
       , "png-js"
       , "protobufjs"
