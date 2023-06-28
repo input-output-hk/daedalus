@@ -1,5 +1,8 @@
 import timeMachine from 'timemachine';
 
+// https://github.com/schickling/timemachine/issues/8
+timeMachine.reset();
+
 const TIME_MACHINE_SESSION_STORAGE_KEY = 'time_machine_date';
 
 export class PersistentTimeMachine {
@@ -7,9 +10,11 @@ export class PersistentTimeMachine {
 
   init() {
     const dateString = sessionStorage.getItem(TIME_MACHINE_SESSION_STORAGE_KEY);
-    timeMachine.config({
-      dateString,
-    });
+    if (dateString !== null) {
+      timeMachine.config({
+        dateString,
+      });
+    }
     this._isInitialized = true;
   }
 
@@ -25,6 +30,7 @@ export class PersistentTimeMachine {
   disable() {
     this._ensureIsInitialized();
     timeMachine.reset();
+    sessionStorage.removeItem(TIME_MACHINE_SESSION_STORAGE_KEY);
     window.location.reload();
   }
 
