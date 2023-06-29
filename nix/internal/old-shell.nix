@@ -4,7 +4,7 @@
 }:
 
 let
-  internal = inputs.self.packages.${system}.internal.${cluster};
+  internal = inputs.self.internal.${system}.${cluster};
   pkgs = internal.newCommon.pkgs;
 
   daedalusPkgs = import ./old-default.nix {
@@ -99,7 +99,7 @@ let
 
       source <(cardano-node --bash-completion-script `type -p cardano-node`)
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
       yarn install
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:

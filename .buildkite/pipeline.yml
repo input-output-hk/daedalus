@@ -36,7 +36,7 @@ steps:
       system: x86_64-linux
 
   - label: 'daedalus-x86_64-windows'
-    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-windows.buildkitePipeline'
+    command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline-x86_64-windows'
     agents:
       queue: lace
       system: x86_64-linux

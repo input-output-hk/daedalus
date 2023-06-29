@@ -249,7 +249,7 @@ in rec {
         --install-location /Applications \
         ${lib.escapeShellArg (installerName + ".phase1.pkg")}
       rm -r "$workDir/$appName"
-      /usr/bin/productbuild --product ${../installers/data/plist} \
+      /usr/bin/productbuild --product ${../../installers/data/plist} \
         --package *.phase1.pkg \
         ${lib.escapeShellArg (installerName + ".phase2.pkg")}
       rm *.phase1.pkg

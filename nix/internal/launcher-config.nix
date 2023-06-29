@@ -145,9 +145,9 @@ let
     networkIconExists = __pathExists (../. + "/installers/icons/${network}");
     network' = if networkIconExists then network else "mainnet";
   in {
-    small = ../installers/icons + "/${network'}/64x64.png";
-    large = ../installers/icons + "/${network'}/1024x1024.png";
-    base = ../installers/icons + "/${network'}";
+    small = ../../installers/icons + "/${network'}/64x64.png";
+    large = ../../installers/icons + "/${network'}/1024x1024.png";
+    base = ../../installers/icons + "/${network'}";
   };
 
   dataDir = let

@@ -71,7 +71,7 @@ let
     };
 
     ## TODO: move to installers/nix
-    hsDaedalusPkgs = self.callPackage ../installers {
+    hsDaedalusPkgs = self.callPackage ../../installers {
       inherit (self) daedalus-bridge;
       inherit system;
     };

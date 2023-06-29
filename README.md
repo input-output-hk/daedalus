@@ -230,25 +230,25 @@ It is possible to build, and run just the Daedalus package, that would be bundle
 
 Build:
 
-    nix build -L .#package.mainnet
+    nix build -L .#daedalus-mainnet
 
 Run:
 
-    nix run -L .#package.mainnet
+    nix run -L .#daedalus-mainnet
 
 ### macOS (Intel, and Apple Silicon)
 
 Build:
 
-    nix build -L .#package.mainnet
+    nix build -L .#daedalus-mainnet
 
 Run:
 
-    nix run -L .#package.mainnet
+    nix run -L .#daedalus-mainnet
 
 If you want to run an Intel build from an Apple Silicon machine:
 
-    nix run -L .#packages.x86_64-darwin.package.mainnet
+    nix run -L .#packages.x86_64-darwin.daedalus-mainnet
 
 ## Installers
 
@@ -260,7 +260,7 @@ These commands require [Nix](https://nixos.org/nix/), optionally configured with
 
 Run this from a Linux machine:
 
-    nix build -L .#installer.mainnet
+    nix build -L .#installer-mainnet
 
 The result can be found at `result/daedalus-*.bin`.
 
@@ -268,7 +268,7 @@ The result can be found at `result/daedalus-*.bin`.
 
 Run this from a Linux machine (cross-building):
 
-    nix build -L .#packages.x86_64-windows.installer.mainnet
+    nix build -L .#installer-mainnet-x86_64-windows
 
 The result will can be found at `result/daedalus-*.exe`.
 
@@ -276,10 +276,10 @@ The result will can be found at `result/daedalus-*.exe`.
 
 Run this from a macOS machine:
 
-    nix build -L .#installer.mainnet
+    nix build -L .#installer-mainnet
 
 If you want to build an Intel version from an Apple Silicon machine:
 
-    nix build -L .#packages.x86_64-darwin.installer.mainnet
+    nix build -L .#packages.x86_64-darwin.installer-mainnet
 
 The result can be found at `result/daedalus-*.pkg`.
