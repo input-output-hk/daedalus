@@ -12,6 +12,7 @@
 
 ### Chores
 
+- Switched from Cicero to Hydra ([PR 3135](https://github.com/input-output-hk/daedalus/pull/3135))
 - Updated @trezor/connect to v9.0.8 ([PR 3127](https://github.com/input-output-hk/daedalus/pull/3127))
 - Add members of Cardano Wallet team to the "About Daedalus" screen ([PR 3092](https://github.com/input-output-hk/daedalus/pull/3092))
 - Removed Chromatic from project ([PR 3126](https://github.com/input-output-hk/daedalus/pull/3126))
