@@ -36,7 +36,7 @@ runCommandCC "daedalus-cardano-bridge" {
     '' else abort "Unknown target: ${target}"}
 
     cp -f ${mock-token-metadata-server}/bin/* . || true
-    cp -f ${./../utils/cardano/selfnode}/token-metadata.json .
+    cp -f ${./../../utils/cardano/selfnode}/token-metadata.json .
   ''}
   ${lib.optionalString (target == "x86_64-linux") ''
     chmod +w -R .
