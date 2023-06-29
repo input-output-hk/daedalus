@@ -86,7 +86,10 @@ export type TxAuxiliaryData = {
   votingPubKey: string;
 };
 export type RewardDestinationAddressType = {
-  address: string;
+  address: {
+    id: string;
+    spendingPath: string;
+  };
   // type of "address.id"
   stakingPath: BIP32Path;
 };
@@ -484,9 +487,12 @@ export const prepareLedgerAuxiliaryData = (
         paymentDestination: {
           type: TxOutputDestinationType.DEVICE_OWNED,
           params: {
-            type: AddressType.REWARD_KEY,
+            type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
             params: {
               stakingPath: rewardDestinationAddress.stakingPath,
+              spendingPath: str_to_path(
+                rewardDestinationAddress.address.spendingPath
+              ),
             },
           },
         },
@@ -513,7 +519,7 @@ export const cborizeTxVotingRegistration = ({
     new Map<number, Buffer | number>([
       [1, Buffer.from(votingPubKey, 'hex')],
       [2, Buffer.from(stakePubKey, 'hex')],
-      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
+      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address.id)],
       [4, Number(nonce)],
     ]),
   ];
