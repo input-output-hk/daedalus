@@ -25,8 +25,6 @@
       import ./nix/packages.nix { inherit inputs buildSystem; }
     );
 
-    defaultPackage = __mapAttrs (_: a: a.default) inputs.self.packages;
-
     devShells = lib.genAttrs supportedSystems (
       system: let
         all = lib.genAttrs inputs.self.internal.installerClusters (
@@ -35,7 +33,9 @@
       in all // { default = all.mainnet; }
     );
 
-    devShell = __mapAttrs (_: a: a.default) inputs.self.devShells;
+    # Compatibility with older Nix:
+    defaultPackage = __mapAttrs (_: a: a.default) inputs.self.outputs.packages;
+    devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
     hydraJobs = {
       installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
