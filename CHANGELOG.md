@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Features
+
+- Switched to the new Catalyst API ([PR 3129](https://github.com/input-output-hk/daedalus/pull/3129))
+
 ### Fixes
 
 - Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
