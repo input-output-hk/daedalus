@@ -2251,12 +2251,12 @@ export default class HardwareWalletsStore extends Store {
     let auxiliaryData = null;
 
     if (this.votingData) {
-      const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
+      const { address, stakeKey, votingKey, nonce } = this.votingData;
       unsignedTxAuxiliaryData = {
         nonce,
         // unique increaseable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
         rewardDestinationAddress: {
-          address: stakeAddress,
+          address,
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
         },
         stakePubKey: stakeKey,
@@ -2264,6 +2264,7 @@ export default class HardwareWalletsStore extends Store {
         votingPubKey: votingKey,
       };
       auxiliaryData = prepareTrezorAuxiliaryData({
+        address,
         votingKey,
         nonce: nonce.toString(),
       });
@@ -2575,12 +2576,12 @@ export default class HardwareWalletsStore extends Store {
     let unsignedTxAuxiliaryData = null;
 
     if (this.votingData) {
-      const { stakeAddress, stakeKey, votingKey, nonce } = this.votingData;
+      const { address, stakeKey, votingKey, nonce } = this.votingData;
       unsignedTxAuxiliaryData = {
         nonce,
         // unique increasable number e.g. current epoch number or absolute slot number ( identifies unique tx / vote registration )
         rewardDestinationAddress: {
-          address: stakeAddress,
+          address,
           stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
         },
         stakePubKey: stakeKey,
