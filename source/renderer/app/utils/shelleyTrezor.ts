@@ -75,11 +75,16 @@ export const prepareTrezorWithdrawal = (
   };
 };
 export type TrezorVotingDataType = {
+  address: {
+    id: string;
+    spendingPath: string;
+  };
   votingKey: string;
   nonce: string;
 };
 
 export const prepareTrezorAuxiliaryData = ({
+  address,
   votingKey,
   nonce,
 }: TrezorVotingDataType) => ({
@@ -87,8 +92,9 @@ export const prepareTrezorAuxiliaryData = ({
     votePublicKey: votingKey,
     stakingPath: "m/1852'/1815'/0'/2/0",
     paymentAddressParameters: {
-      addressType: Messages.CardanoAddressType.REWARD,
-      path: "m/1852'/1815'/0'/2/0",
+      addressType: Messages.CardanoAddressType.BASE,
+      path: `m/${address.spendingPath}`,
+      stakingPath: "m/1852'/1815'/0'/2/0",
     },
     nonce,
     format: Messages.CardanoCVoteRegistrationFormat.CIP15, // Catalyst voting format

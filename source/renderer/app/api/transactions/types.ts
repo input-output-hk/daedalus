@@ -272,6 +272,10 @@ export type VotingMetadataType = Record<
   VotingMetaRegistrationType
 >;
 export type VotingDataType = {
+  address: {
+    id: string;
+    spendingPath: string;
+  };
   stakeAddress: string;
   stakeAddressHex: string;
   votingKey: string;
