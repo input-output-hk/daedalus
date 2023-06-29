@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import {
@@ -13,6 +14,7 @@ import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
 import votingStyles from './VotingInfo.scss';
 import type { CatalystFund } from '../../../api/voting/types';
+import { logger } from '../../../utils/logging';
 
 type Props = {
   currentLocale: Locale;
@@ -21,6 +23,17 @@ type Props = {
   fundInfo: CatalystFund;
   intl: Intl;
   onRegisterToVoteClick: (...args: Array<any>) => any;
+};
+
+const isFutureDate = (date: Date): boolean => {
+  try {
+    return moment().diff(date) < 0;
+  } catch (error) {
+    logger.error('Voting::NextFund::Invalid date', {
+      error,
+    });
+  }
+  return false;
 };
 
 function RegisterToVote({
@@ -34,17 +47,19 @@ function RegisterToVote({
   const [step1, setStep1] = useState(false);
   const [step2, setStep2] = useState(false);
   const canRegister = step1 && step2;
-  const snapshotDate = formattedDateTime(
-    fundInfo.next.registrationSnapshotTime,
-    {
-      currentLocale,
-      ...mapToLongDateTimeFormat({
+  const nextSnapshotDateTime = fundInfo.next.registrationSnapshotTime;
+
+  const snapshotDate = isFutureDate(nextSnapshotDateTime)
+    ? formattedDateTime(nextSnapshotDateTime, {
         currentLocale,
-        currentDateFormat,
-        currentTimeFormat,
-      }),
-    }
-  );
+        ...mapToLongDateTimeFormat({
+          currentLocale,
+          currentDateFormat,
+          currentTimeFormat,
+        }),
+      })
+    : intl.formatMessage(messages.toBeDefined);
+
   return (
     <div className={styles.root}>
       <span className={styles.title}>

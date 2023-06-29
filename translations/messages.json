@@ -4475,6 +4475,11 @@
         "defaultMessage": "!!!Register to vote",
         "description": "Button Label for voting registration steps",
         "id": "voting.registerToVote.registerToVoteButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!To be defined",
+        "description": "Text to show when Catalyst API is returning a past date value",
+        "id": "voting.resultsPhase.toBeDefined"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.ts"

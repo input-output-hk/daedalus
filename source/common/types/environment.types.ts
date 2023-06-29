@@ -35,6 +35,8 @@ export type Environment = {
   isBlankScreenFixActive: boolean;
   keepLocalClusterRunning: boolean;
   analyticsFeatureEnabled: boolean;
+  catalystApiUrlOverride?: string;
+  votingVisibleOverride: boolean;
 };
 // constants
 export const PRODUCTION = 'production';

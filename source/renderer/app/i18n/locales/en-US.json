@@ -731,6 +731,7 @@
   "voting.registerToVote.step2CheckBoxLabel": "Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
   "voting.registerToVote.stepsTitle": "Follow these steps to vote:",
   "voting.resultsPhase.endDateLabel": "End of voting:",
+  "voting.resultsPhase.toBeDefined": "To be defined",
   "voting.resultsPhase.viewResultsLinkLabel": "View results",
   "voting.resultsPhase.viewResultsLinkURL": "https://cardano.ideascale.com/a/pages/results",
   "voting.snapshotPhase.snapshotDateLabel": "Snapshot date:",

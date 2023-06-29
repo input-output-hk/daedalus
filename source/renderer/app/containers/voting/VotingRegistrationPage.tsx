@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Layout from '../MainLayout';
 import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';

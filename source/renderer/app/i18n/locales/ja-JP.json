@@ -731,6 +731,7 @@
   "voting.registerToVote.step2CheckBoxLabel": "スナップショット実施の時点で、登録を済ませ、500ADAを保有していてください",
   "voting.registerToVote.stepsTitle": "投票方法:",
   "voting.resultsPhase.endDateLabel": "投票締め切り:",
+  "voting.resultsPhase.toBeDefined": "未定",
   "voting.resultsPhase.viewResultsLinkLabel": "結果を見る",
   "voting.resultsPhase.viewResultsLinkURL": "https://cardano.ideascale.com/a/pages/results",
   "voting.snapshotPhase.snapshotDateLabel": "スナップショット日:",
