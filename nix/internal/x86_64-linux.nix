@@ -307,6 +307,10 @@ in rec {
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${newBundle} $out/${fn}
+
+      # Make it downloadable from Hydra:
+      mkdir -p $out/nix-support
+      echo "file binary-dist \"$(echo $out/*.bin)\"" >$out/nix-support/hydra-build-products
     '';
 
   };

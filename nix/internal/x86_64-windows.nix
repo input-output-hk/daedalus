@@ -25,6 +25,10 @@ in rec {
     ${makeInstaller { signed = false; }}/bin/make-signed-installer
     mkdir $out
     cp -v installers/daedalus-*-*.exe $out/
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$(echo $out/*.exe)\"" >$out/nix-support/hydra-build-products
   '';
 
   # They’re initially the same as Linux when cross-compiling for Windows:
