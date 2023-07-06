@@ -4452,9 +4452,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Snapshot date:",
-        "description": "Voting info snapshot date label",
-        "id": "voting.registerToVote.dateLabel"
+        "defaultMessage": "!!!If you are not registered yet, make sure to register to vote in the current Fund before the Snapshot date.",
+        "description": "Voting instructions",
+        "id": "voting.registerToVote.votingInstructions"
       },
       {
         "defaultMessage": "!!!Follow these steps to vote:",
@@ -4475,11 +4475,6 @@
         "defaultMessage": "!!!Register to vote",
         "description": "Button Label for voting registration steps",
         "id": "voting.registerToVote.registerToVoteButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!To be defined",
-        "description": "Text to show when Catalyst API is returning a past date value",
-        "id": "voting.resultsPhase.toBeDefined"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.ts"
@@ -4540,6 +4535,11 @@
         "defaultMessage": "!!!Fund{votingFundNumber}",
         "description": "Current fund name",
         "id": "voting.fundName"
+      },
+      {
+        "defaultMessage": "Register to vote",
+        "description": "Right hand side section header",
+        "id": "voting.registerToVote.header"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.ts"
