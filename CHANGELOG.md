@@ -4,7 +4,7 @@
 
 ### Features
 
-- Show "To be defined" if date of the next Catalyst fund is in the past ([PR 3105](https://github.com/input-output-hk/daedalus/pull/3105))
+- Apply Catalyst API improvements ([PR 3136](https://github.com/input-output-hk/daedalus/pull/3136))
 - Switched to the new Catalyst API ([PR 3129](https://github.com/input-output-hk/daedalus/pull/3129))
 
 ### Fixes
