@@ -178,7 +178,7 @@ storiesOf('Voting / Voting Registration Wizard', module)
       onClose={action('onClose')}
       onDownloadPDF={action('onDownloadPDF')}
       stepsList={stepsList}
-      activeStep={2}
+      activeStep={5}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
     />
   ));
