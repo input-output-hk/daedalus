@@ -16,7 +16,7 @@ const messages = defineMessages({
   content: {
     id: 'voting.votingRegistration.dialog.confirmation.content',
     defaultMessage:
-      '!!!Are you sure that you want to cancel voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
+      '!!!Are you sure you want to cancel your voting registration? You will lose the registration fee, and you will need to restart the process.',
     description:
       'Content for the voting registration cancellation confirmation dialog.',
   },

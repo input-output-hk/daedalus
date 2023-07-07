@@ -4,7 +4,7 @@ export const messages = defineMessages({
   votingInstructions: {
     id: 'voting.registerToVote.votingInstructions',
     defaultMessage:
-      '!!!If you are not registered yet, make sure to register to vote in the current Fund before the Snapshot date.',
+      '!!!If you are not registered yet, make sure to register to vote in the current fund before the snapshot date.',
     description: 'Voting instructions',
   },
   stepsTitle: {

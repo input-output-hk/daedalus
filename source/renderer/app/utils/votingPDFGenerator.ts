@@ -10,7 +10,7 @@ import globalMessages from '../i18n/global-messages';
 const messages = defineMessages({
   title: {
     id: 'voting.votingRegistration.pdf.title',
-    defaultMessage: '!!!Fund Voting Registration',
+    defaultMessage: '!!!Voting registration',
     description: 'PDF title',
   },
   walletNameLabel: {
