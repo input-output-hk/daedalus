@@ -163,7 +163,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         containerClassName={styles.component}
       >
         <p className={styles.description}>
-          <FormattedHTMLMessage {...messages.description} />
+          {intl.formatMessage(messages.description)}
         </p>
 
         <div className={styles.pinCode}>
