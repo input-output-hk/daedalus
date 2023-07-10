@@ -192,6 +192,10 @@ in rec {
     installPhase = ''
       mkdir -p $out
       cp $(tail -n 1 make-installer.log) $out/
+
+      # Make it downloadable from Hydra:
+      mkdir -p $out/nix-support
+      echo "file binary-dist \"$(echo $out/*.pkg)\"" >$out/nix-support/hydra-build-products
     '';
   };
 
@@ -249,7 +253,7 @@ in rec {
         --install-location /Applications \
         ${lib.escapeShellArg (installerName + ".phase1.pkg")}
       rm -r "$workDir/$appName"
-      /usr/bin/productbuild --product ${../installers/data/plist} \
+      /usr/bin/productbuild --product ${../../installers/data/plist} \
         --package *.phase1.pkg \
         ${lib.escapeShellArg (installerName + ".phase2.pkg")}
       rm *.phase1.pkg

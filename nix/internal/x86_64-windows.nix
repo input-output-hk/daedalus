@@ -25,10 +25,14 @@ in rec {
     ${makeInstaller { signed = false; }}/bin/make-signed-installer
     mkdir $out
     cp -v installers/daedalus-*-*.exe $out/
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$(echo $out/*.exe)\"" >$out/nix-support/hydra-build-products
   '';
 
   # They’re initially the same as Linux when cross-compiling for Windows:
-  node_modules = inputs.self.packages.x86_64-linux.internal.${cluster}.node_modules;
+  node_modules = inputs.self.internal.x86_64-linux.${cluster}.node_modules;
 
   electron-cache = pkgs.runCommand "electron-cache" {} ''
     # newer style
@@ -411,11 +415,11 @@ in rec {
   windowsIcons = let
     buildInputs = with pkgs; [ imagemagick ];
     # Allow fallback to `mainnet` if cluster’s icons don’t exist:
-    srcCluster = if builtins.pathExists (../installers/icons + "/${cluster}") then cluster else "mainnet";
+    srcCluster = if builtins.pathExists (../../installers/icons + "/${cluster}") then cluster else "mainnet";
   in pkgs.runCommand "windows-icons-${cluster}" { inherit buildInputs; } ''
     mkdir -p $out/${cluster} $out
-    cp -r ${../installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
-    cp ${../installers/icons/installBanner.bmp} $out/installBanner.bmp
+    cp -r ${../../installers/icons + "/${srcCluster}"}/. $out/${cluster}/.
+    cp ${../../installers/icons/installBanner.bmp} $out/installBanner.bmp
     cd $out/${cluster}
     rm *.ico *.ICO || true   # XXX: just in case
     for f in *.png ; do
@@ -430,7 +434,7 @@ in rec {
     buildInputs = [ oldCode.daedalus-installer pkgs.glibcLocales ];
   } ''
     mkdir installers
-    cp -vir ${../package.json} package.json
+    cp -vir ${../../package.json} package.json
     cd installers
 
     export LANG=en_US.UTF-8
@@ -468,7 +472,7 @@ in rec {
     mkdir home
     export HOME=$(realpath home)
 
-    ln -sv ${../installers/nsis_plugins} nsis_plugins
+    ln -sv ${../../installers/nsis_plugins} nsis_plugins
     cp ${nsisFiles}/uninstaller.nsi .
 
     makensis uninstaller.nsi -V4
@@ -490,14 +494,14 @@ in rec {
     echo '~~~   Preparing files for installer'
     mkdir installers
     cp -vir ${windowsIcons} installers/icons
-    cp -vir ${../package.json} package.json
+    cp -vir ${../../package.json} package.json
     chmod -R +w installers
     cd installers
     mkdir -pv ../release/win32-x64/
     cp -rv ${daedalusJs} "../release/win32-x64/${installDir}-win32-x64"
     chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
     cp -v ${fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
-    ln -s ${../installers/nsis_plugins} nsis_plugins
+    ln -s ${../../installers/nsis_plugins} nsis_plugins
 
     cp -vr ${oldCode.daedalus-bridge}/bin/* .
     cp -v ${nsisFiles}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .

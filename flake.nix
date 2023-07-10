@@ -16,26 +16,20 @@
   };
 
   outputs = inputs: let
-    sourceLib = import ./nix/source-lib.nix { inherit inputs; };
-    inherit (sourceLib) forEachCluster;
+    supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"];
+    inherit (inputs.nixpkgs) lib;
   in {
+    internal = import ./nix/internal.nix { inherit inputs; };
 
-    packages = __mapAttrs (targetSystem: definition: rec {
-      internal = forEachCluster (cluster: import definition { inherit inputs cluster targetSystem; });
-      package = __mapAttrs (_: a: a.package) internal;
-      installer = __mapAttrs (_: a: a.unsignedInstaller) internal;
-      default = package.mainnet;
-      makeSignedInstaller = __mapAttrs (_: a: a.makeSignedInstaller) internal;
-      buildkitePipeline = import ./nix/buildkite-pipeline.nix { inherit inputs targetSystem; };
-    }) {
-      x86_64-linux = ./nix/x86_64-linux.nix;
-      x86_64-windows = ./nix/x86_64-windows.nix;
-      x86_64-darwin = ./nix/any-darwin.nix;
-      aarch64-darwin = ./nix/any-darwin.nix;
-    };
+    packages = lib.genAttrs supportedSystems (buildSystem:
+      import ./nix/packages.nix { inherit inputs buildSystem; }
+    );
 
-    devShells = sourceLib.forEach [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
-      let all = forEachCluster (cluster: import ./nix/old-shell.nix { inherit inputs system cluster; });
+    devShells = lib.genAttrs supportedSystems (
+      system: let
+        all = lib.genAttrs inputs.self.internal.installerClusters (
+          cluster: import ./nix/internal/old-shell.nix { inherit inputs system cluster; }
+        );
       in all // { default = all.mainnet; }
     );
 
@@ -43,14 +37,26 @@
     defaultPackage = __mapAttrs (_: a: a.default) inputs.self.outputs.packages;
     devShell = __mapAttrs (_: a: a.default) inputs.self.outputs.devShells;
 
-  }
-  // (import ./nix/cicero.nix {inherit inputs;});
+    hydraJobs = {
+      installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
+        targetSystem: lib.genAttrs inputs.self.internal.installerClusters (
+          cluster: inputs.self.internal.${targetSystem}.${cluster}.unsignedInstaller
+        )
+      );
+      devshell = lib.genAttrs supportedSystems (system: inputs.self.devShells.${system}.default);
+      required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
+        name = "github-required";
+        meta.description = "All jobs required to pass CI";
+        constituents =
+          lib.collect lib.isDerivation inputs.self.hydraJobs.installer
+          ++ lib.collect lib.isDerivation inputs.self.hydraJobs.devshell;
+      };
+    };
+  };
 
-  # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
     extra-substituters = ["https://cache.iog.io"];
     extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
     allow-import-from-derivation = "true";
   };
-  # --------------------------------------------------------------
 }

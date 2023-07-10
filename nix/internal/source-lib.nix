@@ -15,13 +15,10 @@ in rec {
 
   installerClusters = readClustersFile (inputs.self + "/installer-clusters.cfg");
 
-  allClusters = installerClusters ++
-    readClustersFile (inputs.self + "/installer-clusters-available.cfg");
-
   forEach = xs: fun: builtins.listToAttrs
     (builtins.map (cluster: { name = cluster; value = fun cluster; }) xs);
 
-  forEachCluster = forEach allClusters;
+  forEachCluster = forEach installerClusters;
 
   # When did the project start? → `git show --no-patch --date=unix $(git rev-list --max-parents=0 HEAD)`
   daedalusEpoch = 1475675335;

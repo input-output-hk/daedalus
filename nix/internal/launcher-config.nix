@@ -98,10 +98,10 @@ let
     networkConfig = import ./selfnode-config.nix;
     nodeConfig = networkConfig // cardanoLib.defaultLogConfig;
     consensusProtocol = networkConfig.Protocol;
-    genesisFile = ../utils/cardano/selfnode/genesis.json;
-    delegationCertificate = ../utils/cardano/selfnode/selfnode.cert;
-    signingKey = ../utils/cardano/selfnode/selfnode.key;
-    topology = ../utils/cardano/selfnode/selfnode-topology.json;
+    genesisFile = ../../utils/cardano/selfnode/genesis.json;
+    delegationCertificate = ../../utils/cardano/selfnode/selfnode.cert;
+    signingKey = ../../utils/cardano/selfnode/selfnode.key;
+    topology = ../../utils/cardano/selfnode/selfnode-topology.json;
   };
 
   # Helper function to make a path to a binary
@@ -145,9 +145,9 @@ let
     networkIconExists = __pathExists (../. + "/installers/icons/${network}");
     network' = if networkIconExists then network else "mainnet";
   in {
-    small = ../installers/icons + "/${network'}/64x64.png";
-    large = ../installers/icons + "/${network'}/1024x1024.png";
-    base = ../installers/icons + "/${network'}";
+    small = ../../installers/icons + "/${network'}/64x64.png";
+    large = ../../installers/icons + "/${network'}/1024x1024.png";
+    base = ../../installers/icons + "/${network'}";
   };
 
   dataDir = let
@@ -249,7 +249,7 @@ let
       AlonzoGenesisFile = "genesis-alonzo.json";
     })));
     genesisFile = let
-      genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
+      genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
     in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
     normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
