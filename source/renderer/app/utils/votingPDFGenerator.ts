@@ -74,7 +74,7 @@ export const votingPDFGenerator = async ({
   const author = intl.formatMessage(messages.author);
   // Generate the filePath
   const localizedFileName = intl.formatMessage(messages.filename);
-  const prefix = `fund-${localizedFileName}-${walletName}`;
+  const prefix = `catalyst-${localizedFileName}-${walletName}`;
   const name = generateFileNameWithTimestamp({
     prefix,
     extension: '',
