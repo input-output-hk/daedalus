@@ -15,7 +15,7 @@ find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 # Let’s patch electron-rebuild to force correct Node.js headers to
 # build native modules against even in `nix-shell`, otherwise, it
 # doesn’t work reliably.
-nix run -L .#internal.mainnet.newCommon.patchElectronRebuild
+nix run -L .#internal."${system:-x86_64-darwin}".mainnet.newCommon.patchElectronRebuild
 
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp

@@ -14,7 +14,7 @@ rec {
 
   inherit (oldCode) pkgs;
 
-  originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
+  originalPackageJson = builtins.fromJSON (builtins.readFile ../../package.json);
 
   # nodejs = let
   #   njPath = pkgs.path + "/pkgs/development/web/nodejs";

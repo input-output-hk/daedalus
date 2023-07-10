@@ -6,7 +6,7 @@
 {
   ##### Locations #####
 
-  GenesisFile = ../utils/cardano/selfnode/selfnode-byron-genesis.json;
+  GenesisFile = ../../utils/cardano/selfnode/selfnode-byron-genesis.json;
 
   ##### Core protocol parameters #####
 

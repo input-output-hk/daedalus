@@ -18,7 +18,10 @@ in rec {
 
   unsignedInstaller = linuxInstaller.wrappedBundle;
 
-  makeSignedInstaller = throw "We don’t sign binary files inside installers for ‘${targetSystem}’, you’re good.";
+  makeSignedInstaller = pkgs.writeShellScriptBin "make-signed-installer-stub" ''
+    echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
+    exit 1
+  '';
 
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
@@ -188,7 +191,7 @@ in rec {
     '';
   };
 
-  mkDaedalus = { sandboxed }: import ../installers/nix/linux.nix {
+  mkDaedalus = { sandboxed }: import ../../installers/nix/linux.nix {
     inherit (pkgs) stdenv runCommand writeText writeScriptBin coreutils
       utillinux procps gsettings-desktop-schemas gtk3 hicolor-icon-theme xfce;
     inherit (oldCode) daedalus-bridge daedalus-installer;
@@ -289,7 +292,7 @@ in rec {
 
     newBundle = let
       daedalus' = mkDaedalus { sandboxed = true; };
-    in (import ../installers/nix/nix-installer.nix {
+    in (import ../../installers/nix/nix-installer.nix {
       inherit postInstall preInstall linuxClusterBinName;
       rawapp = daedalusJs;
       inherit pkgs;
@@ -299,11 +302,15 @@ in rec {
     }).installerBundle;
 
     wrappedBundle = let
-      version = (builtins.fromJSON (builtins.readFile ../package.json)).version;
+      version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
       fn = "daedalus-${version}-${toString sourceLib.buildCounter}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
     in pkgs.runCommand fn {} ''
       mkdir -p $out
       cp ${newBundle} $out/${fn}
+
+      # Make it downloadable from Hydra:
+      mkdir -p $out/nix-support
+      echo "file binary-dist \"$(echo $out/*.bin)\"" >$out/nix-support/hydra-build-products
     '';
 
   };

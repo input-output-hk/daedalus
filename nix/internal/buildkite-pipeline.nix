@@ -2,13 +2,20 @@
 
 let
 
-  inherit (inputs.self.outputs.packages.${targetSystem}.internal.mainnet.oldCode.pkgs)
-    lib writeShellScriptBin;
-  inherit (import ./source-lib.nix { inherit inputs; }) installerClusters;
+  buildSystem = {
+    x86_64-windows = "x86_64-linux";
+  }.${targetSystem} or targetSystem;
+
+  targetSuffix = if buildSystem == targetSystem then "" else "-${targetSystem}";
+
+  pkgs = inputs.nixpkgs.legacyPackages.${buildSystem};
+
+  inherit (pkgs) lib;
+  inherit (inputs.self.internal) installerClusters;
 
 in
 
-writeShellScriptBin "buildkite-pipeline" ''
+pkgs.writeShellScriptBin "buildkite-pipeline" ''
   set -o errexit
   set -o pipefail
 
@@ -61,7 +68,7 @@ writeShellScriptBin "buildkite-pipeline" ''
 
     (
       set -x
-      nix build --no-accept-flake-config -L --out-link "$result" .#packages.${targetSystem}.installer.${cluster}
+      nix build --no-accept-flake-config -L --out-link "$result" .#packages.${buildSystem}.installer-${cluster}${targetSuffix}
     ) 2>&1 | cat
 
     echo "Built: $(readlink "$result")"
@@ -69,7 +76,7 @@ writeShellScriptBin "buildkite-pipeline" ''
     if [ -n "''${BUILDKITE_JOB_ID:-}" ]; then
       ${if targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin" then ''
         echo '~~~ Signing installer for cluster ‘${cluster}’'
-        nix run -L .#packages.${targetSystem}.makeSignedInstaller.${cluster} | tee make-installer.log
+        nix run -L .#packages.${buildSystem}.makeSignedInstaller-${cluster}${targetSuffix} | tee make-installer.log
         rm "$result"
         mkdir -p "$result"
         mv $(tail -n 1 make-installer.log) "$result"/
