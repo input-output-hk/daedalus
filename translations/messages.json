@@ -572,7 +572,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Fund{nextVotingFundNumber} Voting Registration",
+        "defaultMessage": "!!!Voting registration",
         "description": "PDF title",
         "id": "voting.votingRegistration.pdf.title"
       },
@@ -1747,7 +1747,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund{nextVotingFundNumber} is not available as you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "id": "voting.info.noWallets.headLine"
       },
@@ -4452,9 +4452,9 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Snapshot date:",
-        "description": "Voting info snapshot date label",
-        "id": "voting.registerToVote.dateLabel"
+        "defaultMessage": "!!!If you are not registered yet, make sure to register to vote in the current fund before the snapshot date.",
+        "description": "Voting instructions",
+        "id": "voting.registerToVote.votingInstructions"
       },
       {
         "defaultMessage": "!!!Follow these steps to vote:",
@@ -4475,11 +4475,6 @@
         "defaultMessage": "!!!Register to vote",
         "description": "Button Label for voting registration steps",
         "id": "voting.registerToVote.registerToVoteButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!To be defined",
-        "description": "Text to show when Catalyst API is returning a past date value",
-        "id": "voting.resultsPhase.toBeDefined"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/RegisterToVote.messages.ts"
@@ -4540,6 +4535,11 @@
         "defaultMessage": "!!!Fund{votingFundNumber}",
         "description": "Current fund name",
         "id": "voting.fundName"
+      },
+      {
+        "defaultMessage": "Register to vote",
+        "description": "Right hand side section header",
+        "id": "voting.registerToVote.header"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-info/VotingInfo.messages.ts"
@@ -4657,7 +4657,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN for your Fund{nextVotingFundNumber} voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Set a PIN for your voting registration. You will need this PIN and the QR code you will get in the next step to vote in the Catalyst Voting app.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "id": "voting.votingRegistration.enterPinCode.step.description"
       },
@@ -4722,7 +4722,7 @@
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label"
       },
       {
-        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund{nextVotingFundNumber}.",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code to vote.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label"
       },
@@ -4742,7 +4742,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund{nextVotingFundNumber} voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
+        "defaultMessage": "!!!Sign the voting registration transaction to link your wallet balance with your voting registration as proof of your voting power. Funds will not leave your wallet, but registration requires transaction fees.",
         "description": "Description on the voting registration \"sign\" step.",
         "id": "voting.votingRegistration.register.step.description"
       },
@@ -7317,12 +7317,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cancel Fund{nextVotingFundNumber} voting registration?",
+        "defaultMessage": "!!!Cancel voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "id": "voting.votingRegistration.dialog.confirmation.headline"
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to cancel Fund{nextVotingFundNumber} voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
+        "defaultMessage": "!!!Are you sure you want to cancel your voting registration? You will lose the registration fee, and you will need to restart the process.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "id": "voting.votingRegistration.dialog.confirmation.content"
       },
@@ -7342,7 +7342,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register for Fund{nextVotingFundNumber} voting",
+        "defaultMessage": "!!!Register for voting",
         "description": "Tile \"Register to vote\" for voting registration",
         "id": "voting.votingRegistration.dialog.dialogTitle"
       },

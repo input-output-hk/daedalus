@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
@@ -44,7 +44,6 @@ class VotingRegistrationPage extends Component<Props> {
     if (!wallets.allWallets.length) {
       return (
         <VotingNoWallets
-          nextFundNumber={voting.fundInfo?.next?.number}
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
           minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         />

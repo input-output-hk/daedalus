@@ -12,8 +12,9 @@
     line-height: 1.33;
   }
 
-  .dateLabel {
+  .votingInstructions {
     display: block;
+    font-family: var(--font-light);
     margin-top: 11px;
   }
 
@@ -24,6 +25,7 @@
 
   .stepsTitle {
     font-family: var(--font-medium);
+    margin-top: 14px;
   }
 
   .step {

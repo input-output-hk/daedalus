@@ -44,7 +44,7 @@ const messages = defineMessages({
   checkbox2Label: {
     id: 'voting.votingRegistration.qrCode.step.checkbox2Label',
     defaultMessage:
-      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund{nextVotingFundNumber}.',
+      '!!!I acknowledge that I must have the downloaded PDF with the QR code to vote.',
     description:
       'Second checkbox label on the voting registration "qr code" step.',
   },
@@ -67,7 +67,6 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   qrCode: string | null | undefined;
-  nextFundNumber: number;
 };
 type State = {
   isCheckbox1Accepted: boolean;
@@ -96,21 +95,13 @@ class VotingRegistrationStepsQrCode extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
-    const {
-      stepsList,
-      activeStep,
-      qrCode,
-      onDownloadPDF,
-      nextFundNumber,
-    } = this.props;
+    const { stepsList, activeStep, qrCode, onDownloadPDF } = this.props;
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription1 = intl.formatMessage(messages.qrCodeDescription1);
     const qrCodeDescription2 = intl.formatMessage(messages.qrCodeDescription2);
     const qrCodeWarning = <FormattedHTMLMessage {...messages.qrCodeWarning} />;
     const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
-    const checkbox2Label = intl.formatMessage(messages.checkbox2Label, {
-      nextVotingFundNumber: nextFundNumber,
-    });
+    const checkbox2Label = intl.formatMessage(messages.checkbox2Label);
     const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
     const saveAsPdfButtonLabel = intl.formatMessage(
       messages.saveAsPdfButtonLabel
@@ -148,7 +139,6 @@ class VotingRegistrationStepsQrCode extends Component<Props, State> {
         actions={actions}
         containerClassName={styles.component}
         hideCloseButton={!areBothCheckboxesAccepted}
-        nextFundNumber={nextFundNumber}
       >
         <div className={styles.qrCode}>
           {qrCode && (
