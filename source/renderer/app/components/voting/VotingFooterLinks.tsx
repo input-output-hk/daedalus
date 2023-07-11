@@ -38,7 +38,7 @@ export const VotingFooterLinks = injectIntl(
   observer(({ onClickExternalLink, intl }: Props) => {
     const links: FooterLink[] = [
       {
-        url: 'https://bit.ly/3dSZJvx',
+        url: 'https://bit.ly/ProjCatNews',
         label: intl.formatMessage(messages.newsletter),
       },
       {
