@@ -10,7 +10,7 @@ import globalMessages from '../i18n/global-messages';
 const messages = defineMessages({
   title: {
     id: 'voting.votingRegistration.pdf.title',
-    defaultMessage: '!!!Fund{nextVotingFundNumber} Voting Registration',
+    defaultMessage: '!!!Voting registration',
     description: 'PDF title',
   },
   walletNameLabel: {
@@ -36,7 +36,6 @@ const messages = defineMessages({
 });
 
 type Params = {
-  nextVotingFundNumber: number;
   qrCode: string;
   walletName: string;
   currentLocale: string;
@@ -54,7 +53,6 @@ export enum VotingPDFGeneratorResult {
 }
 
 export const votingPDFGenerator = async ({
-  nextVotingFundNumber,
   qrCode,
   walletName,
   currentLocale,
@@ -66,9 +64,7 @@ export const votingPDFGenerator = async ({
   intl,
 }: Params): Promise<VotingPDFGeneratorResult> => {
   // Consolidate data
-  const title = intl.formatMessage(messages.title, {
-    nextVotingFundNumber,
-  });
+  const title = intl.formatMessage(messages.title);
   const creationDate = moment().format(
     `${currentDateFormat} ${currentTimeFormat}`
   );
@@ -78,7 +74,7 @@ export const votingPDFGenerator = async ({
   const author = intl.formatMessage(messages.author);
   // Generate the filePath
   const localizedFileName = intl.formatMessage(messages.filename);
-  const prefix = `fund${nextVotingFundNumber}-${localizedFileName}-${walletName}`;
+  const prefix = `catalyst-${localizedFileName}-${walletName}`;
   const name = generateFileNameWithTimestamp({
     prefix,
     extension: '',

@@ -17,7 +17,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
     defaultMessage:
-      '!!!Please enter a PIN for your Fund{nextVotingFundNumber} voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
+      '!!!Set a PIN for your voting registration. You will need this PIN and the QR code you will get in the next step to vote in the Catalyst Voting app.',
     description:
       'Description on the voting registration "enter pin code" step.',
   },
@@ -62,7 +62,6 @@ type Props = {
   stepsList: Array<string>;
   activeStep: number;
   onSetPinCode: (...args: Array<any>) => any;
-  nextFundNumber: number;
 };
 
 interface FormFields {
@@ -137,7 +136,7 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, stepsList, activeStep, nextFundNumber } = this.props;
+    const { onClose, stepsList, activeStep } = this.props;
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
@@ -162,15 +161,9 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
-        nextFundNumber={nextFundNumber}
       >
         <p className={styles.description}>
-          <FormattedHTMLMessage
-            {...messages.description}
-            values={{
-              nextVotingFundNumber: nextFundNumber,
-            }}
-          />
+          {intl.formatMessage(messages.description)}
         </p>
 
         <div className={styles.pinCode}>

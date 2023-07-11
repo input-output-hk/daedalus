@@ -16,7 +16,7 @@ import type { DialogActions } from '../../../widgets/Dialog';
 const messages = defineMessages({
   dialogTitle: {
     id: 'voting.votingRegistration.dialog.dialogTitle',
-    defaultMessage: '!!!Register for Fund{nextVotingFundNumber} voting',
+    defaultMessage: '!!!Register for voting',
     description: 'Tile "Register to vote" for voting registration',
   },
   subtitle: {
@@ -36,7 +36,6 @@ type Props = {
   contentClassName?: string | null | undefined;
   hideCloseButton?: boolean;
   hideSteps?: boolean;
-  nextFundNumber: number;
 };
 
 @observer
@@ -61,7 +60,6 @@ class VotingRegistrationDialog extends Component<Props> {
       contentClassName,
       hideCloseButton,
       hideSteps,
-      nextFundNumber,
     } = this.props;
     const containerStyles = classnames([styles.container, containerClassName]);
     const contentStyles = classnames([styles.content, contentClassName]);
@@ -77,9 +75,7 @@ class VotingRegistrationDialog extends Component<Props> {
     return (
       <Dialog
         className={styles.component}
-        title={intl.formatMessage(messages.dialogTitle, {
-          nextVotingFundNumber: nextFundNumber,
-        })}
+        title={intl.formatMessage(messages.dialogTitle)}
         subtitle={!hideSteps && stepsIndicatorLabel}
         onClose={onClose}
         closeOnOverlayClick={false}

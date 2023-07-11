@@ -418,12 +418,10 @@ export default class VotingStore extends Store {
       currentDateFormat,
       currentTimeFormat,
     } = this.stores.profile;
-    const nextVotingFundNumber = this.catalystFund?.next?.number;
     const { network, isMainnet } = this.environment;
     const intl = i18nContext(currentLocale);
 
     const result = await votingPDFGenerator({
-      nextVotingFundNumber,
       qrCode,
       walletName,
       currentLocale,

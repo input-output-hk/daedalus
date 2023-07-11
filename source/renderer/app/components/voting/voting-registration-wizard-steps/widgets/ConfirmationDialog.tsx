@@ -9,14 +9,14 @@ import styles from './ConfirmationDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'voting.votingRegistration.dialog.confirmation.headline',
-    defaultMessage: '!!!Cancel Fund{nextVotingFundNumber} voting registration?',
+    defaultMessage: '!!!Cancel voting registration?',
     description:
       'Headline for the voting registration cancellation confirmation dialog.',
   },
   content: {
     id: 'voting.votingRegistration.dialog.confirmation.content',
     defaultMessage:
-      '!!!Are you sure that you want to cancel Fund{nextVotingFundNumber} voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
+      '!!!Are you sure you want to cancel your voting registration? You will lose the registration fee, and you will need to restart the process.',
     description:
       'Content for the voting registration cancellation confirmation dialog.',
   },
@@ -36,7 +36,6 @@ const messages = defineMessages({
   },
 });
 type Props = {
-  nextFundNumber: number;
   onConfirm: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
 };
@@ -49,7 +48,7 @@ class ConfirmationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { nextFundNumber, onConfirm, onCancel } = this.props;
+    const { onConfirm, onCancel } = this.props;
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
     const actions = [
       {
@@ -67,18 +66,12 @@ class ConfirmationDialog extends Component<Props> {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.headline, {
-          nextVotingFundNumber: nextFundNumber,
-        })}
+        title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick={false}
         onClose={onConfirm}
       >
-        <p>
-          {intl.formatMessage(messages.content, {
-            nextVotingFundNumber: nextFundNumber,
-          })}
-        </p>
+        <p>{intl.formatMessage(messages.content)}</p>
       </Dialog>
     );
   }
