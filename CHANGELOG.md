@@ -6,6 +6,7 @@
 
 - Apply Catalyst API improvements ([PR 3136](https://github.com/input-output-hk/daedalus/pull/3136))
 - Switched to the new Catalyst API ([PR 3129](https://github.com/input-output-hk/daedalus/pull/3129))
+- Updated Catalyst links ([PR 3137](https://github.com/input-output-hk/daedalus/pull/3137))
 
 ### Fixes
 
