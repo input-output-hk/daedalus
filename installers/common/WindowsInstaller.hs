@@ -201,7 +201,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                         Development.NSIS.& ")..."
                         )
                     lockfileDeleted @= true
-                    onError (delete [] (str $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
+                    onError (delete [] (fromString $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
                         lockfileDeleted @= false
                     iff_ (not_ lockfileDeleted) $ do
                         sleep 1000 -- milliseconds
