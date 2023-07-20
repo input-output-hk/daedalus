@@ -2,6 +2,8 @@
 
 ## vNext
 
+## 5.3.0
+
 ### Features
 
 - Apply Catalyst API improvements ([PR 3136](https://github.com/input-output-hk/daedalus/pull/3136))
