@@ -1,10 +1,11 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  dateLabel: {
-    id: 'voting.registerToVote.dateLabel',
-    defaultMessage: '!!!Snapshot date:',
-    description: 'Voting info snapshot date label',
+  votingInstructions: {
+    id: 'voting.registerToVote.votingInstructions',
+    defaultMessage:
+      '!!!If you are not registered yet, make sure to register to vote in the current fund before the snapshot date.',
+    description: 'Voting instructions',
   },
   stepsTitle: {
     id: 'voting.registerToVote.stepsTitle',

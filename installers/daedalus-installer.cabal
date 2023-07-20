@@ -29,6 +29,7 @@ library
                      , unordered-containers
                      , containers
                      , directory
+                     , foldl
                      , github
                      , lens-aeson
                      , megaparsec

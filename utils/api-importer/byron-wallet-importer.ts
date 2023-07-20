@@ -26,9 +26,9 @@ const WALLET_COUNT = process.env.WALLET_COUNT || 3;
   try {
     if (IS_HTTPS) {
       const httpsAgent = new https.Agent({
-        cert: fs.readFileSync('tls/client/client.pem'),
-        key: fs.readFileSync('tls/client/client.key'),
-        ca: fs.readFileSync('tls/client/ca.crt')
+        cert: fs.readFileSync(`${process.env.CARDANO_WALLET_TLS_PATH}/client/client.pem`),
+        key: fs.readFileSync(`${process.env.CARDANO_WALLET_TLS_PATH}/client/client.key`),
+        ca: fs.readFileSync(`${process.env.CARDANO_WALLET_TLS_PATH}/client/ca.crt`)
       });
       const request = axios.create({
         httpsAgent

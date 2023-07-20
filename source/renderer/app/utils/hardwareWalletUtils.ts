@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { bech32 } from 'bech32';
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
@@ -73,7 +73,7 @@ export const derivationPathToLedgerPath = (derivationPath: Array<string>) => {
 
   const constructedPath = _.join(transformedPath, '/');
 
-  return utils.str_to_path(constructedPath);
+  return str_to_path(constructedPath);
 };
 export const getParamsFromPath = (derivationPath: Array<string>) => {
   const pathParams = _.takeRight(derivationPath, 2);

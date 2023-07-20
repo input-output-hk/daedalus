@@ -136,9 +136,12 @@ module.exports = {
       )
     ),
     new webpack.EnvironmentPlugin({
-      API_VERSION: 'dev',
+      CARDANO_WALLET_VERSION: 'dev',
+      CARDANO_NODE_VERSION: 'dev',
       NETWORK: 'development',
-      BUILD_NUMBER: 'dev',
+      BUILD_REV: '0000000000000000000000000000000000000000',
+      BUILD_REV_SHORT: 'dev',
+      BUILD_COUNTER: '0',
     }),
     new HtmlWebpackPlugin({
       template: 'source/renderer/index.ejs',

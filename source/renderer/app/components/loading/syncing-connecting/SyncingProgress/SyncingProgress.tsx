@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import { intlShape } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
@@ -13,6 +14,7 @@ import {
   getProgressDescriptionByBlockSyncType,
   getProgressNameByBlockSyncType,
 } from './utils';
+import { logger } from '../../../../utils/logging';
 
 type Props = Record<BlockSyncType, number>;
 
@@ -39,6 +41,17 @@ const makePercentageCellStyles = (loaded: boolean) =>
   cx(styles.cell, styles.cellTextRight, {
     [styles.faded]: loaded,
   });
+
+const getSafePercentage = (value: number): string => {
+  try {
+    return new BigNumber(value).toFixed(2).toString();
+  } catch (error) {
+    logger.error('SyncingProgress::Percentage::Error parsing sync percentage', {
+      error,
+    });
+    return '-';
+  }
+};
 
 function SyncingProgress(props: Props, { intl }: Context) {
   return (
@@ -80,7 +93,7 @@ function SyncingProgress(props: Props, { intl }: Context) {
             key={type}
             className={makePercentageCellStyles(props[type] === 100)}
           >
-            {props[type]}%
+            {getSafePercentage(props[type])}%
           </div>
         ))}
       </div>

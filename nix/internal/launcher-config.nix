@@ -1,5 +1,4 @@
-{ backend ? "cardano"
-, network ? "staging"
+{ network ? "staging"
 , os ? "linux"
 , cardanoLib
 , runCommand
@@ -99,10 +98,10 @@ let
     networkConfig = import ./selfnode-config.nix;
     nodeConfig = networkConfig // cardanoLib.defaultLogConfig;
     consensusProtocol = networkConfig.Protocol;
-    genesisFile = ../utils/cardano/selfnode/genesis.json;
-    delegationCertificate = ../utils/cardano/selfnode/selfnode.cert;
-    signingKey = ../utils/cardano/selfnode/selfnode.key;
-    topology = ../utils/cardano/selfnode/selfnode-topology.json;
+    genesisFile = ../../utils/cardano/selfnode/genesis.json;
+    delegationCertificate = ../../utils/cardano/selfnode/selfnode.cert;
+    signingKey = ../../utils/cardano/selfnode/selfnode.key;
+    topology = ../../utils/cardano/selfnode/selfnode-topology.json;
   };
 
   # Helper function to make a path to a binary
@@ -143,12 +142,12 @@ let
   in if networkSupported then supportedNetworks.${network} else unsupported;
 
   iconPath = let
-    networkIconExists = __pathExists (../. + "/installers/icons/${network}");
+    networkIconExists = __pathExists (../../. + "/installers/icons/${network}");
     network' = if networkIconExists then network else "mainnet";
   in {
-    small = ../installers/icons + "/${network'}/64x64.png";
-    large = ../installers/icons + "/${network'}/1024x1024.png";
-    base = ../installers/icons + "/${network'}";
+    small = ../../installers/icons + "/${network'}/64x64.png";
+    large = ../../installers/icons + "/${network'}/1024x1024.png";
+    base = ../../installers/icons + "/${network'}";
   };
 
   dataDir = let
@@ -218,7 +217,7 @@ let
     networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
-    nodeImplementation = backend;
+    nodeImplementation = "cardano";
   };
 
   mkConfigFiles = nodeConfigFiles: launcherConfig: installerConfig:
@@ -250,7 +249,7 @@ let
       AlonzoGenesisFile = "genesis-alonzo.json";
     })));
     genesisFile = let
-      genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
+      genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
     in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
     normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
@@ -330,6 +329,7 @@ let
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
       inherit spacedName iconPath;
+      uglyName = "daedalus";
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       installerWinBinaries = [
@@ -346,5 +346,4 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
 
-  configs.cardano = mkConfigCardano;
-in configs.${backend}
+in mkConfigCardano

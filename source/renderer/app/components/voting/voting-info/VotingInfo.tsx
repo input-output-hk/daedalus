@@ -55,13 +55,7 @@ function VotingInfo({
                 </div>
               </div>
               <div className={styles.rightContent}>
-                <RegisterToVote
-                  fundInfo={fundInfo}
-                  currentLocale={currentLocale}
-                  currentDateFormat={currentDateFormat}
-                  currentTimeFormat={currentTimeFormat}
-                  onRegisterToVoteClick={onRegisterToVoteClick}
-                />
+                <RegisterToVote onRegisterToVoteClick={onRegisterToVoteClick} />
               </div>
             </>
           )}

@@ -82,8 +82,6 @@ if (isBlankScreenFixActive) {
 // (1/2) this line increases the limit for the main process
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
-app.allowRendererProcessReuse = true;
-
 const safeExit = async () => {
   pauseActiveDownloads();
 
@@ -253,15 +251,16 @@ const onAppReady = async () => {
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
-    contents.on('new-window', (event, url) => {
-      // Prevent creation of new BrowserWindows via links / window.open
-      event.preventDefault();
+    contents.setWindowOpenHandler((details) => {
+      const { url } = details;
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('Prevented creation of new browser window', {
         url,
       });
       // Open these links with the default browser
       shell.openExternal(url);
+      // Prevent creation of new BrowserWindows via links / window.open
+      return { action: 'deny' };
     });
   });
   // Wait for controlled cardano-node shutdown before quitting the app

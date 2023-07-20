@@ -44,7 +44,6 @@ class VotingRegistrationPage extends Component<Props> {
     if (!wallets.allWallets.length) {
       return (
         <VotingNoWallets
-          nextFundNumber={voting.fundInfo?.next?.number}
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
           minVotingFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         />

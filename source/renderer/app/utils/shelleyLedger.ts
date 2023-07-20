@@ -4,7 +4,13 @@ import {
   AddressType,
   TxAuxiliaryDataType, // CHECK THIS
   StakeCredentialParamsType,
+  CIP36VoteRegistrationFormat,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  str_to_path,
+  base58_decode,
+} from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import _ from 'lodash';
@@ -80,7 +86,10 @@ export type TxAuxiliaryData = {
   votingPubKey: string;
 };
 export type RewardDestinationAddressType = {
-  address: string;
+  address: {
+    id: string;
+    spendingPath: string;
+  };
   // type of "address.id"
   stakingPath: BIP32Path;
 };
@@ -173,7 +182,7 @@ export function ShelleyTxOutput(
     const addressBuff =
       addressStyle === AddressStyles.ADDRESS_SHELLEY
         ? utils.bech32_decodeAddress(address)
-        : utils.base58_decode(address);
+        : base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
 
@@ -403,8 +412,7 @@ export const CachedDeriveXpubFactory = (
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
-      // @ts-ignore
-      return utils.hex_to_buf(derivedXpub);
+      return utils.hex_to_buf(derivedXpub as HexString);
     } catch (e) {
       throw e;
     }
@@ -442,7 +450,7 @@ export const prepareLedgerOutput = (
           type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
           params: {
             spendingPath: derivationPathToLedgerPath(output.derivationPath),
-            stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
+            stakingPath: str_to_path("1852'/1815'/0'/2/0"),
           },
         },
       },
@@ -458,7 +466,7 @@ export const prepareLedgerOutput = (
         addressHex:
           addressStyle === AddressStyles.ADDRESS_SHELLEY
             ? utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
-            : utils.buf_to_hex(utils.base58_decode(output.address)),
+            : utils.buf_to_hex(base58_decode(output.address)),
       },
     },
     amount: output.amount.quantity.toString(),
@@ -469,17 +477,23 @@ export const prepareLedgerAuxiliaryData = (
   txAuxiliaryData: TxAuxiliaryData
 ) => {
   const { votingPubKey, rewardDestinationAddress, type } = txAuxiliaryData;
-
   if (type === CATALYST_VOTING_REGISTRATION_TYPE) {
     return {
-      type: TxAuxiliaryDataType.CATALYST_REGISTRATION,
+      type: TxAuxiliaryDataType.CIP36_REGISTRATION,
       params: {
-        votingPublicKeyHex: votingPubKey,
+        format: CIP36VoteRegistrationFormat.CIP_15,
+        voteKeyHex: votingPubKey,
         stakingPath: rewardDestinationAddress.stakingPath,
-        rewardsDestination: {
-          type: AddressType.REWARD_KEY,
+        paymentDestination: {
+          type: TxOutputDestinationType.DEVICE_OWNED,
           params: {
-            stakingPath: rewardDestinationAddress.stakingPath,
+            type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            params: {
+              stakingPath: rewardDestinationAddress.stakingPath,
+              spendingPath: str_to_path(
+                rewardDestinationAddress.address.spendingPath
+              ),
+            },
           },
         },
         nonce: `${txAuxiliaryData.nonce}`,
@@ -505,7 +519,7 @@ export const cborizeTxVotingRegistration = ({
     new Map<number, Buffer | number>([
       [1, Buffer.from(votingPubKey, 'hex')],
       [2, Buffer.from(stakePubKey, 'hex')],
-      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address)],
+      [3, utils.bech32_decodeAddress(rewardDestinationAddress.address.id)],
       [4, Number(nonce)],
     ]),
   ];

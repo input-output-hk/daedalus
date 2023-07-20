@@ -59,9 +59,12 @@ data Command
 data Options = Options
   { oBackend               :: Backend
   , oBuildJob              :: Maybe BuildJob
+  , oBuildCounter         :: Maybe BuildJob
   , oOS                    :: OS
   , oCluster               :: Cluster
   , oAppName               :: AppName
+  , oAppRootOverride       :: Maybe FilePath
+  , oDontPkgbuild          :: Bool
   , oOutputDir             :: FilePath
   , oTestInstaller         :: TestInstaller
   , oCodeSigningConfigPath :: Maybe FilePath
@@ -80,13 +83,17 @@ optionsParser :: OS -> Parser Options
 optionsParser detectedOS = Options
   <$> backendOptionParser
   <*> (optional      $
-      (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
+      (BuildJob     <$> optText "build-rev-short"     'b' "CI Build Job/ID"))
+  <*> (optional      $
+      (BuildJob     <$> optText "build-counter"     'v' "‘inputs.self.sourceInfo.revCount’"))
   <*> (fromMaybe detectedOS <$> (optional $
                    optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 macos64 win64"))
   <*> (fromMaybe Selfnode   <$> (optional $
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet, staging, or testnet"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
+  <*> (optional (optPath        "app-root-override"   'r' "If you built the Electron app outside of MacInstaller.hs"))
+  <*> (switch                   "dont-pkgbuild"       'd' "Stop after preparing the package (content root), don’t create the final *.pkg file")
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")

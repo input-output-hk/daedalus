@@ -17,10 +17,10 @@ export const initTrezorConnect = async () => {
   }
 };
 
-export const reinitTrezorConnect = () => {
+export const reinitTrezorConnect = async () => {
   try {
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.dispose()');
-    TrezorConnect.dispose();
+    await TrezorConnect.dispose();
   } catch (error) {
     // ignore any TrezorConnect instance disposal errors
     logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.dispose()');

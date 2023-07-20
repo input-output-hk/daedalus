@@ -12,7 +12,7 @@ runCommandCC "daedalus-cardano-bridge" {
   cp ${cardano-wallet}/bin/* .
   cp -f ${cardano-address}/bin/cardano-address* .
   cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/* .
-  cp -f ${cardano-node}/bin/cardano-node* .
+  cp -f ${cardano-node}/bin/* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) ''
 
@@ -36,7 +36,7 @@ runCommandCC "daedalus-cardano-bridge" {
     '' else abort "Unknown target: ${target}"}
 
     cp -f ${mock-token-metadata-server}/bin/* . || true
-    cp -f ${./../utils/cardano/selfnode}/token-metadata.json .
+    cp -f ${./../../utils/cardano/selfnode}/token-metadata.json .
   ''}
   ${lib.optionalString (target == "x86_64-linux") ''
     chmod +w -R .

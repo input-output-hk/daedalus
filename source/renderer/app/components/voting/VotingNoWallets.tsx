@@ -11,7 +11,7 @@ const messages = defineMessages({
   headLine: {
     id: 'voting.info.noWallets.headLine',
     defaultMessage:
-      '!!!Voting registration for Fund{nextVotingFundNumber} is not available as you currently do not have any Shelley-compatible wallets.',
+      '!!!Voting registration is not available as you currently do not have any Shelley-compatible wallets.',
     description: '"No wallets" headLine on the voting info page.',
   },
   instructions: {
@@ -30,7 +30,6 @@ const messages = defineMessages({
 type Props = {
   onGoToCreateWalletClick: (...args: Array<any>) => any;
   minVotingFunds: number;
-  nextFundNumber: number;
 };
 export default class VotingNoWallets extends Component<Props> {
   static contextTypes = {
@@ -39,19 +38,11 @@ export default class VotingNoWallets extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onGoToCreateWalletClick,
-      minVotingFunds,
-      nextFundNumber,
-    } = this.props;
+    const { onGoToCreateWalletClick, minVotingFunds } = this.props;
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />
-        <h1>
-          {intl.formatMessage(messages.headLine, {
-            nextVotingFundNumber: nextFundNumber,
-          })}
-        </h1>
+        <h1>{intl.formatMessage(messages.headLine)}</h1>
         <p>
           {intl.formatMessage(messages.instructions, {
             minVotingFunds: new BigNumber(minVotingFunds).toFormat(0),

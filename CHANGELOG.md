@@ -1,5 +1,32 @@
 # Changelog
 
+## 5.3.0
+
+### Features
+
+- Apply Catalyst API improvements ([PR 3136](https://github.com/input-output-hk/daedalus/pull/3136))
+- Switched to the new Catalyst API ([PR 3129](https://github.com/input-output-hk/daedalus/pull/3129))
+- Updated Catalyst links ([PR 3137](https://github.com/input-output-hk/daedalus/pull/3137))
+
+### Fixes
+
+- Fixed decimals for syncing percentage ([PR 3106](https://github.com/input-output-hk/daedalus/pull/3106))
+
+### Chores
+
+- Switched from Cicero to Hydra ([PR 3135](https://github.com/input-output-hk/daedalus/pull/3135))
+- Changed voting reward address to a payment address ([PR 3131](https://github.com/input-output-hk/daedalus/pull/3131))
+- Updated @trezor/connect to v9.0.8 ([PR 3127](https://github.com/input-output-hk/daedalus/pull/3127))
+- Add members of Cardano Wallet team to the "About Daedalus" screen ([PR 3092](https://github.com/input-output-hk/daedalus/pull/3092))
+- Removed Chromatic from project ([PR 3126](https://github.com/input-output-hk/daedalus/pull/3126))
+- Upgraded Electron to 24.2, and Node.js to 18.× ([PR 3124](https://github.com/input-output-hk/daedalus/pull/3124))
+- Defined a proxy for currency conversions ([PR 3121](https://github.com/input-output-hk/daedalus/pull/3121))
+- Switched Daedalus to be built with Nix flakes ([PR 3008](https://github.com/input-output-hk/daedalus/pull/3008))
+- Update `cardano-wallet` to `v2023-04-14` ([PR 3104](https://github.com/input-output-hk/daedalus/pull/3104))
+- Prepared an official `aarch64-darwin` build ([PR 3116](https://github.com/input-output-hk/daedalus/pull/3116))
+- Added regeneration of dev TLS certificates for cardano-wallet on each nix-shell entry ([PR 3117](https://github.com/input-output-hk/daedalus/pull/3117))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `6.0.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
+
 ## 5.2.0
 
 ### Features
