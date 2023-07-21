@@ -209,6 +209,10 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 iff_ (not_ (lockfileDeleted)) $ do
                     unsafeInject $ T.unpack $ "Abort \"" <> installDirectory <> " $(AlreadyRunning)\""
 
+                iff_ (fileExists "$INSTDIR") $ do
+                  detailPrint "Removing previously installed version"
+                  rmdir [Recursive] "$INSTDIR"
+
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
