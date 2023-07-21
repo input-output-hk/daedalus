@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Make Windows installer check if previous Daedalus is running ([PR 3141](https://github.com/input-output-hk/daedalus/pull/3141))
+
 ## 5.3.0
 
 ### Features
