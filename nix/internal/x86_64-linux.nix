@@ -1,27 +1,30 @@
-{ inputs, targetSystem, cluster }:
+{ inputs, targetSystem }:
 
 assert targetSystem == "x86_64-linux";
 
 let
 
-  newCommon = import ./new-common.nix { inherit inputs targetSystem cluster; };
+  newCommon = import ./new-common.nix { inherit inputs targetSystem; };
 
-  inherit (newCommon) sourceLib oldCode pkgs commonSources;
+  inherit (newCommon) sourceLib pkgs commonSources;
+  inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
+
+  genClusters = lib.genAttrs installerClusters;
 
 in rec {
 
-  inherit newCommon oldCode;
+  inherit newCommon;
   inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
-  package = mkDaedalus { sandboxed = false; };
+  package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
-  unsignedInstaller = linuxInstaller.wrappedBundle;
+  unsignedInstaller = genClusters (cluster: linuxInstaller.${cluster}.wrappedBundle);
 
-  makeSignedInstaller = pkgs.writeShellScriptBin "make-signed-installer-stub" ''
+  makeSignedInstaller = genClusters (cluster: pkgs.writeShellScriptBin "make-signed-installer-stub" ''
     echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
     exit 1
-  '';
+  '');
 
   # FIXME: for Tullia/Cicero debugging, remove later:
   inherit (sourceLib) buildRev;
@@ -81,16 +84,16 @@ in rec {
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   };
 
-  daedalusJs = pkgs.stdenv.mkDerivation {
+  daedalusJs = genClusters (cluster: pkgs.stdenv.mkDerivation {
     name = "daedalus-js";
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with pkgs; [ python3 pkgconfig ]);
     buildInputs = with pkgs; [ libusb ];
-    CARDANO_WALLET_VERSION = oldCode.cardanoWalletVersion;
-    CARDANO_NODE_VERSION = oldCode.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = newCommon.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = newCommon.cardanoNodeVersion;
     CI = "nix";
-    NETWORK = oldCode.launcherConfigs.launcherConfig.networkName;
+    NETWORK = newCommon.launcherConfigs.${cluster}.launcherConfig.networkName;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
     BUILD_COUNTER = sourceLib.buildCounter;
@@ -103,7 +106,7 @@ in rec {
     '';
     patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
       pkgs.lib.recursiveUpdate originalPackageJson {
-        productName = oldCode.launcherConfigs.installerConfig.spacedName;
+        productName = newCommon.launcherConfigs.${cluster}.installerConfig.spacedName;
         main = "dist/main/index.js";
       }
     ));
@@ -114,7 +117,7 @@ in rec {
       sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
       yarn build:electron
 
-      yarn run package -- --name ${lib.escapeShellArg oldCode.launcherConfigs.installerConfig.spacedName}
+      yarn run package -- --name ${lib.escapeShellArg newCommon.launcherConfigs.${cluster}.installerConfig.spacedName}
     '';
     installPhase = ''
       mkdir -p $out/bin $out/share/daedalus
@@ -171,7 +174,7 @@ in rec {
       done
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
-  };
+  });
 
   electronBin = pkgs.stdenv.mkDerivation {
     name = "electron-${electronVersion}";
@@ -191,33 +194,35 @@ in rec {
     '';
   };
 
-  mkDaedalus = { sandboxed }: import ../../installers/nix/linux.nix {
+  mkDaedalus = { sandboxed, cluster }: import ../../installers/nix/linux.nix {
     inherit (pkgs) stdenv runCommand writeText writeScriptBin coreutils
       utillinux procps gsettings-desktop-schemas gtk3 hicolor-icon-theme xfce;
-    inherit (oldCode) daedalus-bridge daedalus-installer;
+    inherit (newCommon) daedalus-installer;
+    daedalus-bridge = newCommon.daedalus-bridge.${cluster};
     inherit cluster sandboxed;
 
-    rawapp = daedalusJs;
+    rawapp = daedalusJs.${cluster};
     electron = electronBin;
 
     # FIXME: ???
-    inherit (oldCode) launcherConfigs;
+    launcherConfigs = newCommon.launcherConfigs.${cluster};
     linuxClusterBinName = cluster;
   };
 
-  linuxInstaller = rec {
+  # FIXME: why our own fork?
+  nix-bundle-src = pkgs.fetchFromGitHub {
+    owner = "input-output-hk"; repo = "nix-bundle";
+    rev = "a43e9280628d6e7fcc2f89257106f5262d531bc7";
+    sha256 = "10qgincrs8fjdl16mld6lzd69syhyzwx65lcbz4widnkdvhlwh3i";
+  };
+
+  nix-bundle = import nix-bundle-src { nixpkgs = pkgs; };
+
+  linuxInstaller = genClusters (cluster: rec {
 
     installPath = ".daedalus";
 
-    # FIXME: why our own fork?
-    nix-bundle-src = pkgs.fetchFromGitHub {
-      owner = "input-output-hk"; repo = "nix-bundle";
-      rev = "a43e9280628d6e7fcc2f89257106f5262d531bc7";
-      sha256 = "10qgincrs8fjdl16mld6lzd69syhyzwx65lcbz4widnkdvhlwh3i";
-    };
-
-    nix-bundle = import nix-bundle-src { nixpkgs = pkgs; };
-    iconPath = oldCode.launcherConfigs.installerConfig.iconPath;
+    iconPath = newCommon.launcherConfigs.${cluster}.installerConfig.iconPath;
     linuxClusterBinName = cluster;
 
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
@@ -292,12 +297,13 @@ in rec {
 
     newBundle = let
       daedalus' = mkDaedalus { sandboxed = true; };
+      daedalus-bridge = newCommon.daedalus-bridge.${cluster};
     in (import ../../installers/nix/nix-installer.nix {
       inherit postInstall preInstall linuxClusterBinName;
-      rawapp = daedalusJs;
+      rawapp = daedalusJs.${cluster};
       inherit pkgs;
       installationSlug = installPath;
-      installedPackages = [ daedalus' postInstall namespaceHelper daedalus'.cfg oldCode.daedalus-bridge daedalus'.daedalus-frontend xdg-open ];
+      installedPackages = [ daedalus' postInstall namespaceHelper daedalus'.cfg daedalus-bridge daedalus'.daedalus-frontend xdg-open ];
       nix-bundle = nix-bundle;
     }).installerBundle;
 
@@ -313,7 +319,7 @@ in rec {
       echo "file binary-dist \"$(echo $out/*.bin)\"" >$out/nix-support/hydra-build-products
     '';
 
-  };
+  });
 
   linuxSources = {
     electron = pkgs.fetchurl {

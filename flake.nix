@@ -25,12 +25,8 @@
       import ./nix/packages.nix { inherit inputs buildSystem; }
     );
 
-    devShells = lib.genAttrs supportedSystems (
-      system: let
-        all = lib.genAttrs inputs.self.internal.installerClusters (
-          cluster: import ./nix/internal/old-shell.nix { inherit inputs system cluster; }
-        );
-      in all // { default = all.mainnet; }
+    devShells = lib.genAttrs supportedSystems (targetSystem:
+      import ./nix/devshells.nix { inherit inputs targetSystem; }
     );
 
     # Compatibility with older Nix:
@@ -39,9 +35,7 @@
 
     hydraJobs = {
       installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
-        targetSystem: lib.genAttrs inputs.self.internal.installerClusters (
-          cluster: inputs.self.internal.${targetSystem}.${cluster}.unsignedInstaller
-        )
+        targetSystem: inputs.self.internal.${targetSystem}.unsignedInstaller
       );
       devshell = lib.genAttrs supportedSystems (system: inputs.self.devShells.${system}.default);
       required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
