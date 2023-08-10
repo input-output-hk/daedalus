@@ -296,7 +296,7 @@ in rec {
     '';
 
     newBundle = let
-      daedalus' = mkDaedalus { sandboxed = true; };
+      daedalus' = mkDaedalus { sandboxed = true; inherit cluster; };
       daedalus-bridge = common.daedalus-bridge.${cluster};
     in (import ../../installers/nix/nix-installer.nix {
       inherit postInstall preInstall linuxClusterBinName;
