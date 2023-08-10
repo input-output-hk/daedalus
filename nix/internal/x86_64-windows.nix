@@ -4,9 +4,9 @@ assert targetSystem == "x86_64-windows";
 
 let
 
-  newCommon = import ./new-common.nix { inherit inputs targetSystem; };
+  common = import ./common.nix { inherit inputs targetSystem; };
 
-  inherit (newCommon) sourceLib pkgs srcWithoutNix yarn nodejs originalPackageJson commonSources electronVersion;
+  inherit (common) sourceLib pkgs srcWithoutNix yarn nodejs originalPackageJson commonSources electronVersion;
   inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
 
@@ -14,7 +14,7 @@ let
 
 in rec {
 
-  inherit newCommon;
+  inherit common;
 
   package = preSigning;  # XXX: this is slightly wrong, as not all files are in their final relative paths
 
@@ -50,23 +50,23 @@ in rec {
     nativeBuildInputs = [ yarn nodejs wine64 ]
       ++ (with pkgs; [ python3 pkgconfig unzip ]);
     buildInputs = with pkgs; [ libusb ];
-    CARDANO_WALLET_VERSION = newCommon.cardanoWalletVersion;
-    CARDANO_NODE_VERSION = newCommon.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
     CI = "nix";
-    NETWORK = newCommon.launcherConfigs.${cluster}.launcherConfig.networkName;
+    NETWORK = common.launcherConfigs.${cluster}.launcherConfig.networkName;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
     BUILD_COUNTER = sourceLib.buildCounter;
     NODE_ENV = "production";
     BUILDTYPE = "Release";
-    configurePhase = newCommon.setupCacheAndGypDirs + ''
+    configurePhase = common.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
     '';
     patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
       pkgs.lib.recursiveUpdate originalPackageJson {
-        productName = newCommon.launcherConfigs.${cluster}.installerConfig.spacedName;
+        productName = common.launcherConfigs.${cluster}.installerConfig.spacedName;
       }
     ));
     buildPhase = ''
@@ -206,12 +206,12 @@ in rec {
 
   nativeModules = pkgs.stdenv.mkDerivation {
     name = "daedalus-native-modules";
-    src = newCommon.srcLockfiles;
+    src = common.srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
       ++ (with pkgs; [ python3 pkgconfig jq file procps ]);
     buildInputs = with pkgs; [ libusb ];
-    configurePhase = newCommon.setupCacheAndGypDirs + ''
+    configurePhase = common.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
@@ -319,7 +319,7 @@ in rec {
 
           ${mkSection "Patching node_modules"}
           # Point electron-rebuild to the correct Node (Electron) headers location:
-          ${newCommon.patchElectronRebuild}/bin/* \
+          ${common.patchElectronRebuild}/bin/* \
             "$(winepath -w ${electronHeadersWithNodeLib.src} | sed -r 's,\\,\\\\\\\\,g')" \
             "$(winepath -w ${electronHeadersWithNodeLib}     | sed -r 's,\\,\\\\\\\\,g')"
 
@@ -403,7 +403,7 @@ in rec {
 
   native = rec {
     nodejs = pkgs.fetchzip {
-      url = "https://nodejs.org/dist/v${newCommon.nodejs.version}/node-v${newCommon.nodejs.version}-win-x64.zip";
+      url = "https://nodejs.org/dist/v${common.nodejs.version}/node-v${common.nodejs.version}-win-x64.zip";
       hash = "sha256-n8ux67xrq3Rta1nE715y1m040oaLxUI2bIt12RaJdeM=";
     };
 
@@ -433,14 +433,14 @@ in rec {
   '');
 
   nsisFiles = genClusters (cluster: pkgs.runCommand "nsis-files" {
-    buildInputs = [ newCommon.daedalus-installer pkgs.glibcLocales ];
+    buildInputs = [ common.daedalus-installer pkgs.glibcLocales ];
   } ''
     mkdir installers
     cp -vir ${../../package.json} package.json
     cd installers
 
     export LANG=en_US.UTF-8
-    cp -v ${newCommon.launcherConfigs.${cluster}.configFiles}/* .
+    cp -v ${common.launcherConfigs.${cluster}.configFiles}/* .
     make-installer --cardano dummy \
       --os win64 \
       -o $out \
@@ -451,7 +451,7 @@ in rec {
 
     mkdir $out
     cp -v daedalus.nsi uninstaller.nsi $out/
-    cp -v ${newCommon.launcherConfigs.${cluster}.configFiles}/* $out/
+    cp -v ${common.launcherConfigs.${cluster}.configFiles}/* $out/
     ls -lR $out
   '');
 
@@ -488,7 +488,7 @@ in rec {
   fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
 
   preSigning = genClusters (cluster: let
-    installDir = newCommon.launcherConfigs.${cluster}.installerConfig.spacedName;
+    installDir = common.launcherConfigs.${cluster}.installerConfig.spacedName;
   in pkgs.runCommand "pre-signing" { buildInputs = [ pkgs.unzip ]; } ''
     mkdir $out
     cd $out
@@ -505,7 +505,7 @@ in rec {
     cp -v ${fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
     ln -s ${../../installers/nsis_plugins} nsis_plugins
 
-    cp -vr ${newCommon.daedalus-bridge.${cluster}}/bin/* .
+    cp -vr ${common.daedalus-bridge.${cluster}}/bin/* .
     cp -v ${nsisFiles.${cluster}}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
     cp ${unsignedUninstaller.${cluster}}/uninstall.exe .
     if [ -f ${nsisFiles.${cluster}}/block-0.bin ]; then

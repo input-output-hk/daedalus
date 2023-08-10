@@ -4,16 +4,16 @@ assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin";
 
 let
 
-  newCommon = import ./new-common.nix { inherit inputs targetSystem; };
+  common = import ./common.nix { inherit inputs targetSystem; };
 
-  inherit (newCommon) sourceLib pkgs;
+  inherit (common) sourceLib pkgs;
   inherit (pkgs) lib;
 
-  inherit (newCommon)
+  inherit (common)
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
-  inherit (newCommon) originalPackageJson electronVersion electronChromedriverVersion commonSources;
+  inherit (common) originalPackageJson electronVersion electronChromedriverVersion commonSources;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
@@ -23,8 +23,8 @@ let
 
 in rec {
 
-  inherit newCommon;
-  inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
+  inherit common;
+  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
 
   # The following is used in all `configurePhase`s:
   darwinSpecificCaches = let
@@ -67,7 +67,7 @@ in rec {
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
     ]);
-    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches;
+    configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
@@ -127,7 +127,7 @@ in rec {
     BUILD_COUNTER = sourceLib.buildCounter;
     CARDANO_WALLET_VERSION = cardanoWalletVersion;
     CARDANO_NODE_VERSION = cardanoNodeVersion;
-    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches + ''
+    configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
@@ -135,7 +135,7 @@ in rec {
     outputs = [ "out" "futureInstaller" ];
     buildPhase = ''
       patchShebangs .
-      sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+      sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (

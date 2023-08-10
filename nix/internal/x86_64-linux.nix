@@ -4,9 +4,9 @@ assert targetSystem == "x86_64-linux";
 
 let
 
-  newCommon = import ./new-common.nix { inherit inputs targetSystem; };
+  common = import ./common.nix { inherit inputs targetSystem; };
 
-  inherit (newCommon) sourceLib pkgs commonSources;
+  inherit (common) sourceLib pkgs commonSources;
   inherit (sourceLib) installerClusters;
   inherit (pkgs) lib;
 
@@ -14,8 +14,8 @@ let
 
 in rec {
 
-  inherit newCommon;
-  inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit common;
+  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
   package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
@@ -48,7 +48,7 @@ in rec {
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with pkgs; [ python3 pkgconfig jq ]);
     buildInputs = with pkgs; [ libusb ];
-    configurePhase = newCommon.setupCacheAndGypDirs + linuxSpecificCaches;
+    configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
@@ -90,23 +90,23 @@ in rec {
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with pkgs; [ python3 pkgconfig ]);
     buildInputs = with pkgs; [ libusb ];
-    CARDANO_WALLET_VERSION = newCommon.cardanoWalletVersion;
-    CARDANO_NODE_VERSION = newCommon.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
     CI = "nix";
-    NETWORK = newCommon.launcherConfigs.${cluster}.launcherConfig.networkName;
+    NETWORK = common.launcherConfigs.${cluster}.launcherConfig.networkName;
     BUILD_REV = sourceLib.buildRev;
     BUILD_REV_SHORT = sourceLib.buildRevShort;
     BUILD_COUNTER = sourceLib.buildCounter;
     NODE_ENV = "production";
     BUILDTYPE = "Release";
-    configurePhase = newCommon.setupCacheAndGypDirs + linuxSpecificCaches + ''
+    configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
     '';
     patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
       pkgs.lib.recursiveUpdate originalPackageJson {
-        productName = newCommon.launcherConfigs.${cluster}.installerConfig.spacedName;
+        productName = common.launcherConfigs.${cluster}.installerConfig.spacedName;
         main = "dist/main/index.js";
       }
     ));
@@ -114,10 +114,10 @@ in rec {
       cp -v $patchedPackageJson package.json
 
       patchShebangs .
-      sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+      sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
       yarn build:electron
 
-      yarn run package -- --name ${lib.escapeShellArg newCommon.launcherConfigs.${cluster}.installerConfig.spacedName}
+      yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
     '';
     installPhase = ''
       mkdir -p $out/bin $out/share/daedalus
@@ -197,15 +197,15 @@ in rec {
   mkDaedalus = { sandboxed, cluster }: import ../../installers/nix/linux.nix {
     inherit (pkgs) stdenv runCommand writeText writeScriptBin coreutils
       utillinux procps gsettings-desktop-schemas gtk3 hicolor-icon-theme xfce;
-    inherit (newCommon) daedalus-installer;
-    daedalus-bridge = newCommon.daedalus-bridge.${cluster};
+    inherit (common) daedalus-installer;
+    daedalus-bridge = common.daedalus-bridge.${cluster};
     inherit cluster sandboxed;
 
     rawapp = daedalusJs.${cluster};
     electron = electronBin;
 
     # FIXME: ???
-    launcherConfigs = newCommon.launcherConfigs.${cluster};
+    launcherConfigs = common.launcherConfigs.${cluster};
     linuxClusterBinName = cluster;
   };
 
@@ -222,7 +222,7 @@ in rec {
 
     installPath = ".daedalus";
 
-    iconPath = newCommon.launcherConfigs.${cluster}.installerConfig.iconPath;
+    iconPath = common.launcherConfigs.${cluster}.installerConfig.iconPath;
     linuxClusterBinName = cluster;
 
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
@@ -297,7 +297,7 @@ in rec {
 
     newBundle = let
       daedalus' = mkDaedalus { sandboxed = true; };
-      daedalus-bridge = newCommon.daedalus-bridge.${cluster};
+      daedalus-bridge = common.daedalus-bridge.${cluster};
     in (import ../../installers/nix/nix-installer.nix {
       inherit postInstall preInstall linuxClusterBinName;
       rawapp = daedalusJs.${cluster};

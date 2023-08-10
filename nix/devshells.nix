@@ -4,12 +4,12 @@
 
 let
   internal = inputs.self.internal.${targetSystem};
-  inherit (internal) newCommon;
-  inherit (newCommon) pkgs;
+  inherit (internal) common;
+  inherit (common) pkgs;
 
   devShells = pkgs.lib.genAttrs inputs.self.internal.installerClusters (cluster: let
 
-    launcherConfigs = newCommon.mkLauncherConfigs {
+    launcherConfigs = common.mkLauncherConfigs {
       inherit cluster;
       devShell = true;
     };
@@ -23,16 +23,16 @@ let
       ));
     in
       pkgs.writeShellScriptBin "regenerate-dev-certs" ''
-        ${newCommon.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
+        ${common.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
       '';
 
   in pkgs.stdenv.mkDerivation (rec {
     buildInputs = [
-      internal.newCommon.nodejs
-      internal.newCommon.yarn
-      newCommon.daedalus-bridge.${cluster}
-      newCommon.daedalus-installer
-      newCommon.mock-token-metadata-server
+      internal.common.nodejs
+      internal.common.yarn
+      common.daedalus-bridge.${cluster}
+      common.daedalus-installer
+      common.mock-token-metadata-server
       regenerateDevCerts
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
@@ -54,8 +54,8 @@ let
     name = "daedalus";
     buildCommand = "touch $out";
     LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
-    CARDANO_NODE_VERSION = newCommon.cardanoNodeVersion;
-    CARDANO_WALLET_VERSION = newCommon.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
     DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
       mkdir -pv $out
       cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
@@ -92,7 +92,7 @@ let
 
       source <(cardano-node --bash-completion-script `type -p cardano-node`)
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.common.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
       yarn install
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
