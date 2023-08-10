@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed out-of-memory errors on https://ci.iog.io ([PR 3145](https://github.com/input-output-hk/daedalus/pull/3145))
+
 ## 5.3.0
 
 ### Features
