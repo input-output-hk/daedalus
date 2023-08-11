@@ -24,7 +24,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
 
   # The following is used in all `configurePhase`s:
   darwinSpecificCaches = let
