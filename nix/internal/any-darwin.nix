@@ -1,28 +1,30 @@
-{ inputs, targetSystem, cluster }:
+{ inputs, targetSystem }:
 
 assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin";
 
 let
 
-  newCommon = import ./new-common.nix { inherit inputs targetSystem cluster; };
+  common = import ./common.nix { inherit inputs targetSystem; };
 
-  inherit (newCommon) sourceLib oldCode pkgs;
+  inherit (common) sourceLib pkgs;
   inherit (pkgs) lib;
 
-  inherit (oldCode)
+  inherit (common)
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
-  inherit (newCommon) originalPackageJson electronVersion electronChromedriverVersion commonSources;
+  inherit (common) originalPackageJson electronVersion electronChromedriverVersion commonSources;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
-  installerName = "daedalus-${packageVersion}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
+  installerName = cluster: "daedalus-${packageVersion}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
+
+  genClusters = lib.genAttrs sourceLib.installerClusters;
 
 in rec {
 
-  inherit newCommon oldCode;
-  inherit (newCommon) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
+  inherit common;
+  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
 
   # The following is used in all `configurePhase`s:
   darwinSpecificCaches = let
@@ -65,7 +67,7 @@ in rec {
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
     ]);
-    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches;
+    configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
       ${yarn2nix.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
@@ -103,7 +105,7 @@ in rec {
 
   darwin-launcher = pkgs.callPackage ./darwin-launcher.nix {};
 
-  package = let
+  package = genClusters (cluster: let
     pname = "daedalus";
   in pkgs.stdenv.mkDerivation {
     name = pname;
@@ -115,7 +117,7 @@ in rec {
       apple_sdk.frameworks.AppKit
       libobjc
     ]) ++ [
-      daedalus-bridge
+      daedalus-bridge.${cluster}
       darwin-launcher
       mock-token-metadata-server
     ];
@@ -125,7 +127,7 @@ in rec {
     BUILD_COUNTER = sourceLib.buildCounter;
     CARDANO_WALLET_VERSION = cardanoWalletVersion;
     CARDANO_NODE_VERSION = cardanoNodeVersion;
-    configurePhase = newCommon.setupCacheAndGypDirs + darwinSpecificCaches + ''
+    configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./
       chmod -R +w .
@@ -133,17 +135,17 @@ in rec {
     outputs = [ "out" "futureInstaller" ];
     buildPhase = ''
       patchShebangs .
-      sed -r 's#.*patchElectronRebuild.*#${newCommon.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+      sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
         cd installers/
-        cp -r ${launcherConfigs.configFiles}/. ./.
+        cp -r ${launcherConfigs.${cluster}.configFiles}/. ./.
 
         # make-installer needs to see `bin/nix-store` to break all references to dylibs inside /nix/store:
         export PATH="${lib.makeBinPath [ pkgs.nixUnstable ]}:$PATH"
 
-        make-installer --cardano ${daedalus-bridge} \
+        make-installer --cardano ${daedalus-bridge.${cluster}} \
           --build-rev-short ${sourceLib.buildRevShort} \
           --build-counter ${toString sourceLib.buildCounter} \
           --cluster ${cluster} \
@@ -153,7 +155,7 @@ in rec {
     '';
     installPhase = ''
       mkdir -p $out/Applications/
-      cp -r release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app $out/Applications/
+      cp -r release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app $out/Applications/
 
       # XXX: remove redundant native modules, and point bindings.js to Contents/MacOS/*.node instead:
       echo 'Deleting all redundant ‘*.node’ files under to-be-distributed ‘node_modules/’:'
@@ -169,7 +171,7 @@ in rec {
       mkdir -p $out/bin/
       cat >$out/bin/${pname} << EOF
       #!/bin/sh
-      exec $out/Applications/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app/Contents/MacOS/${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}
+      exec $out/Applications/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app/Contents/MacOS/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}
       EOF
       chmod +x $out/bin/${pname}
 
@@ -181,13 +183,13 @@ in rec {
       ${signAllBinaries} $out
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
-  };
+  });
 
-  unsignedInstaller = pkgs.stdenv.mkDerivation {
+  unsignedInstaller = genClusters (cluster: pkgs.stdenv.mkDerivation {
     name = "daedalus-unsigned-darwin-installer";
     dontUnpack = true;
     buildPhase = ''
-      ${makeSignedInstaller}/bin/* | tee make-installer.log
+      ${makeSignedInstaller.${cluster}}/bin/* | tee make-installer.log
     '';
     installPhase = ''
       mkdir -p $out
@@ -197,9 +199,9 @@ in rec {
       mkdir -p $out/nix-support
       echo "file binary-dist \"$(echo $out/*.pkg)\"" >$out/nix-support/hydra-build-products
     '';
-  };
+  });
 
-  makeSignedInstaller = pkgs.writeShellScriptBin "make-signed-installer" (let
+  makeSignedInstaller = genClusters (cluster: pkgs.writeShellScriptBin "make-signed-installer" (let
 
     # FIXME: in the future this has to be done better, now let’s reuse the Buildkite legacy:
     credentials = "/var/lib/buildkite-agent/signing.sh";
@@ -230,8 +232,8 @@ in rec {
       eval $(${readConfigs})
 
       workDir=$(mktemp -d)
-      appName=${lib.escapeShellArg launcherConfigs.installerConfig.spacedName}.app
-      appDir=${package}/Applications/"$appName"
+      appName=${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+      appDir=${package.${cluster}}/Applications/"$appName"
 
       echo "Info: workDir = $workDir"
       cd "$workDir"
@@ -242,20 +244,20 @@ in rec {
 
       if ${shallSignPredicate} ; then
         echo "Signing code…"
-        ${package.futureInstaller}/codesign.sh "$codeSigningIdentity" "$codeSigningKeyChain" \
-          "$appName" ${package.futureInstaller}/entitlements.xml
+        ${package.${cluster}.futureInstaller}/codesign.sh "$codeSigningIdentity" "$codeSigningKeyChain" \
+          "$appName" ${package.${cluster}.futureInstaller}/entitlements.xml
       fi
 
       echo "Making installer…"
       /usr/bin/pkgbuild \
-        --identifier ${lib.escapeShellArg ("org." + launcherConfigs.installerConfig.macPackageName + ".pkg")} \
+        --identifier ${lib.escapeShellArg ("org." + launcherConfigs.${cluster}.installerConfig.macPackageName + ".pkg")} \
         --component "$workDir/$appName" \
         --install-location /Applications \
-        ${lib.escapeShellArg (installerName + ".phase1.pkg")}
+        ${lib.escapeShellArg ((installerName cluster) + ".phase1.pkg")}
       rm -r "$workDir/$appName"
       /usr/bin/productbuild --product ${../../installers/data/plist} \
         --package *.phase1.pkg \
-        ${lib.escapeShellArg (installerName + ".phase2.pkg")}
+        ${lib.escapeShellArg ((installerName cluster) + ".phase2.pkg")}
       rm *.phase1.pkg
 
       if ${shallSignPredicate} ; then
@@ -269,14 +271,14 @@ in rec {
 
         productsign --sign "$signingIdentity" --keychain "$signingKeyChain" \
           *.phase2.pkg \
-          ${lib.escapeShellArg (installerName + ".pkg")}
+          ${lib.escapeShellArg ((installerName cluster) + ".pkg")}
         rm *.phase2.pkg
       else
-        mv *.phase2.pkg ${lib.escapeShellArg (installerName + ".pkg")}
+        mv *.phase2.pkg ${lib.escapeShellArg ((installerName cluster) + ".pkg")}
       fi
 
       echo "Done, you can submit it for notarization now:"
-      echo "$workDir"/${lib.escapeShellArg (installerName + ".pkg")}
+      echo "$workDir"/${lib.escapeShellArg ((installerName cluster) + ".pkg")}
     '';
 
   in ''
@@ -287,7 +289,7 @@ in rec {
     else
       exec ${packAndSign}
     fi
-  '');
+  ''));
 
   darwinSources = {
     electron = pkgs.fetchurl {

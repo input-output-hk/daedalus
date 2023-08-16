@@ -1,18 +1,100 @@
 # Things common between all OS-es, that build on all platforms.
 
-{ inputs, targetSystem, cluster }:
+{ inputs, targetSystem }:
 
 rec {
 
   sourceLib = import ./source-lib.nix { inherit inputs; };
 
-  oldCode = import ./old-default.nix {
-    target = targetSystem;
-    inherit inputs cluster;
-    devShell = false;
+  pkgs = let
+    # Windows can only be cross-built from Linux now
+    system = if targetSystem == "x86_64-windows" then "x86_64-linux" else targetSystem;
+  in
+    if targetSystem != "x86_64-linux"
+    then inputs.nixpkgs.legacyPackages.${system}
+    else import inputs.nixpkgs {
+      inherit system;
+      config.packageOverrides = super: {
+        # XXX: non-root users need to be able to use sd-device/device-monitor.c to detect Ledger:
+        # FIXME: find the correct (minimal) place to override this:
+        systemd = super.systemd.overrideAttrs (oldAttrs: {
+          patches = oldAttrs.patches ++ [./libsystemd--device-monitor.patch];
+        });
+      };
+    };
+
+  walletFlake = (import inputs.flake-compat {
+    # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
+    src = pkgs.runCommand "cardano-wallet" {} ''
+      cp -r ${inputs.cardano-wallet-unpatched} $out
+      chmod -R +w $out
+      cd $out
+      patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
+      patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
+      patch -p1 -i ${./cardano-wallet--proper-runtimeNodePkgs.patch}
+    '';
+  }).defaultNix // {
+    inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
   };
 
-  inherit (oldCode) pkgs;
+  walletPackages = {
+    x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+    x86_64-linux = walletFlake.packages.x86_64-linux;
+    x86_64-darwin = walletFlake.packages.x86_64-darwin;
+    aarch64-darwin = walletFlake.packages.aarch64-darwin;
+  }.${targetSystem};
+
+  cardanoWorldFlake = (import inputs.flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
+
+  inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
+
+  daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: import ./cardano-bridge.nix {
+    target = targetSystem;
+    inherit (pkgs) lib runCommandCC darwin;
+    inherit cardano-wallet cardano-node cardano-shell cardano-cli cardano-address mock-token-metadata-server;
+    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
+  });
+
+  inherit (walletPackages) cardano-node cardano-cli cardano-wallet cardano-address mock-token-metadata-server;
+
+  cardano-shell = import inputs.cardano-shell {
+    inherit (pkgs) system;
+    crossSystem = {
+      x86_64-windows = pkgs.lib.systems.examples.mingwW64;
+    }.${targetSystem} or null;
+  };
+
+  cardanoNodeVersion = cardano-node.version + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_4.rev;
+  cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
+
+  mkLauncherConfigs = { devShell ? false, cluster }: import ./launcher-config.nix {
+    inherit devShell;
+    inherit cardanoLib cardanoWorldFlake;
+    inherit (pkgs) system runCommand lib;
+    network = cluster;
+    os = {
+      x86_64-windows = "windows";
+      x86_64-linux = "linux";
+      x86_64-darwin = "macos64";
+      aarch64-darwin = "macos64-arm";
+    }.${targetSystem};
+  };
+
+  launcherConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: mkLauncherConfigs {
+    devShell = false;
+    inherit cluster;
+  });
+
+  daedalus-installer = let
+    hsDaedalusPkgs = import ../../installers {
+      inherit pkgs daedalus-bridge;
+      inherit (pkgs) system;
+    };
+  in pkgs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
+
+  tests = {
+    runShellcheck = import ../tests/shellcheck.nix { src = ../.;};
+  };
 
   originalPackageJson = builtins.fromJSON (builtins.readFile ../../package.json);
 
