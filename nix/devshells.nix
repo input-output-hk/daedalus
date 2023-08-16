@@ -1,45 +1,38 @@
-{ system
-, inputs
-, cluster ? "selfnode"
+{ inputs
+, targetSystem
 }:
 
 let
-  internal = inputs.self.internal.${system}.${cluster};
-  pkgs = internal.newCommon.pkgs;
+  internal = inputs.self.internal.${targetSystem};
+  inherit (internal) common;
+  inherit (common) pkgs;
 
-  daedalusPkgs = import ./old-default.nix {
-    inherit inputs cluster;
-    target = system;
-    devShell = true;
-  };
+  devShells = pkgs.lib.genAttrs inputs.self.internal.installerClusters (cluster: let
 
-  regenerateDevCerts = let
-    moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
-      daedalusPkgs.launcherConfigs.launcherConfig
-      // {
-        daedalusBin = "true";
-      }
-    ));
-  in
-    pkgs.writeShellScriptBin "regenerate-dev-certs" ''
-      ${daedalusPkgs.daedalus-bridge}/bin/cardano-launcher --config ${moddedConfig}
-    '';
+    launcherConfigs = common.mkLauncherConfigs {
+      inherit cluster;
+      devShell = true;
+    };
 
-  gcRoot = pkgs.runCommandLocal "gc-root" {
-    inherit daedalusShell;
-    cardanoWalletsHaskellNix = daedalusPkgs.walletFlake.outputs.legacyPackages.${system}.roots;
-    daedalusInstallerInputs = with daedalusPkgs.daedalus-installer; buildInputs ++ nativeBuildInputs;
-    # cardano-bridge inputs are GC’d, and rebuilt too often on Apple M1 CI:
-    cardanoBridgeInputs = builtins.map (attr: if daedalusPkgs ? ${attr} && pkgs.lib.isDerivation daedalusPkgs.${attr} then daedalusPkgs.${attr} else null) (builtins.attrNames (builtins.functionArgs (import ./cardano-bridge.nix)));
-  } "export >$out";
+    regenerateDevCerts = let
+      moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
+        launcherConfigs.launcherConfig
+        // {
+          daedalusBin = "true";
+        }
+      ));
+    in
+      pkgs.writeShellScriptBin "regenerate-dev-certs" ''
+        ${common.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
+      '';
 
-  daedalusShell = pkgs.stdenv.mkDerivation (rec {
+  in pkgs.stdenv.mkDerivation (rec {
     buildInputs = [
-      internal.newCommon.nodejs
-      internal.newCommon.yarn
-      daedalusPkgs.daedalus-bridge
-      daedalusPkgs.daedalus-installer
-      daedalusPkgs.mock-token-metadata-server
+      internal.common.nodejs
+      internal.common.yarn
+      common.daedalus-bridge.${cluster}
+      common.daedalus-installer
+      common.mock-token-metadata-server
       regenerateDevCerts
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
@@ -61,11 +54,11 @@ let
     name = "daedalus";
     buildCommand = "touch $out";
     LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
-    CARDANO_NODE_VERSION = daedalusPkgs.cardanoNodeVersion;
-    CARDANO_WALLET_VERSION = daedalusPkgs.cardanoWalletVersion;
+    CARDANO_NODE_VERSION = common.cardanoNodeVersion;
+    CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
     DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
       mkdir -pv $out
-      cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON daedalusPkgs.launcherConfigs.launcherConfig)} $out/launcher-config.yaml
+      cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
     '';
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
@@ -89,7 +82,7 @@ let
       source <(cardano-address --bash-completion-script cardano-address)
       [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
-      cp -f ${daedalusPkgs.launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
       # These links will only occur to binaries that exist for the
       # specific build config
@@ -99,7 +92,7 @@ let
 
       source <(cardano-node --bash-completion-script `type -p cardano-node`)
 
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.newCommon.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${internal.common.nodejs}/include/node -I${toString ../../.}/node_modules/node-addon-api"
       yarn install
 
       # Rebuild native modules for <https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules>:
@@ -123,7 +116,7 @@ let
 
       echo 'Resolving environment variables to absolute paths…'
       # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
-      export CARDANO_WALLET_TLS_PATH="${daedalusPkgs.launcherConfigs.launcherConfig.tlsPath}"
+      export CARDANO_WALLET_TLS_PATH="${launcherConfigs.launcherConfig.tlsPath}"
 
       echo 'Re-generating dev certificates for ‘cardano-wallet’…'
       mkdir -p "$CARDANO_WALLET_TLS_PATH"
@@ -132,5 +125,6 @@ let
       echo
       echo 'Now, run ‘yarn dev’.'
     '';
-  });
-in daedalusShell // { inherit gcRoot; }
+  }));
+
+in devShells // { default = devShells.mainnet; }
