@@ -1,12 +1,40 @@
+diff --git a/flake.nix b/flake.nix
+index 37ea1cfa12..8d0871d52b 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -217,8 +217,22 @@
+             collectChecks
+             check;
+ 
+-          nodePkgs = cardano-node-runtime.legacyPackages.${system};
+-          nodeProject = cardano-node-runtime.project.${system};
++          cardano-node-runtime-patched =
++            if system != "aarch64-darwin"
++            then cardano-node-runtime
++            else (import ./nix/flake-compat.nix {
++              src = {
++                outPath = toString (pkgs.runCommandLocal "patched-cardano-node" {} ''
++                  cp -r ${cardano-node-runtime} $out
++                  chmod -R +w $out
++                  cat ${./nix/supported-systems.nix} >$out/nix/supported-systems.nix
++                '');
++                inherit (cardano-node-runtime.sourceInfo) rev shortRev lastModified lastModifiedDate;
++              };
++            }).defaultNix;
++
++          nodePkgs = cardano-node-runtime-patched.legacyPackages.${system};
++          nodeProject = cardano-node-runtime-patched.project.${system};
+ 
+           project = (import ./nix/haskell.nix
+               CHaP
 diff --git a/nix/supported-systems.nix b/nix/supported-systems.nix
-index 6e3f0d94e3..5de7138b32 100644
+index 6e3f0d94e3..a0c0ae17dc 100644
 --- a/nix/supported-systems.nix
 +++ b/nix/supported-systems.nix
-@@ -1,6 +1,5 @@
- [
+@@ -2,5 +2,5 @@
    "x86_64-linux"
    "x86_64-darwin"
--  # TODO: Enable aarch64-darwin when there are Hydra builders for it
+   # TODO: Enable aarch64-darwin when there are Hydra builders for it
 -  # "aarch64-darwin"
 +  "aarch64-darwin"
  ]

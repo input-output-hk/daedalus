@@ -19,17 +19,9 @@
 
 
 let
-  clusterOverrides = {
-    mainnet_flight = {
-      cardanoEnv = cardanoLib.environments.mainnet;
-      cluster = "mainnet";
-      networkName = "mainnet";
-    };
-    alonzo_purple = {
-      cardanoEnv = cardanoLib.environments.alonzo-purple;
-      cluster = "alonzo-purple";
-      networkName = "alonzo-purple";
-    };
+  clustersAvailable = rec {
+    mainnet    = fromCardanoWorld "mainnet";
+    mainnet_flight = mainnet;
     shelley_qa = fromCardanoWorld "shelley_qa";
     vasil_dev  = fromCardanoWorld "vasil-dev";
     preprod    = fromCardanoWorld "preprod";
@@ -48,11 +40,12 @@ let
     topology = builtins.fromJSON (builtins.unsafeDiscardStringContext (
       builtins.readFile (originalFiles + "/topology.json")));
 
-    topologyFirstAccessPoint = builtins.head (builtins.head topology.PublicRoots).publicRoots.accessPoints;
+    topologyFirstAccessPoint = builtins.head (builtins.head topology.publicRoots).accessPoints;
 
     isP2P = originalNodeConfig ? EnableP2P && originalNodeConfig.EnableP2P;
 
     nodeConfig = originalNodeConfig // {
+      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
       AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
       ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
       ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
@@ -117,9 +110,7 @@ let
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
   envCfg = let
-    cardanoEnv = if __hasAttr network clusterOverrides
-                 then clusterOverrides.${network}.cardanoEnv
-                 else cardanoLib.environments.${network};
+    cardanoEnv = clustersAvailable.${network}.cardanoEnv;
   in if network == "selfnode" then selfnodeConfig else cardanoEnv;
   kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
@@ -213,8 +204,8 @@ let
     workingDir = dataDir;
     stateDir = dataDir;
     tlsPath = "${dataDir}${dirSep}tls";
-    cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
-    networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
+    cluster = if __hasAttr network clustersAvailable then clustersAvailable.${network}.cluster else network;
+    networkName = if __hasAttr network clustersAvailable then clustersAvailable.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
     nodeImplementation = "cardano";
@@ -233,6 +224,7 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
       ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? ConwayGenesisFile) "cp ${envCfg.nodeConfig.ConwayGenesisFile} $out/genesis-conway.json"}
     '';
 
   mkConfigCardano = let
@@ -247,6 +239,7 @@ let
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
       AlonzoGenesisFile = "genesis-alonzo.json";
+      ConwayGenesisFile = "genesis-conway.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;

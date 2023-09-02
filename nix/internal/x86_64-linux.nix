@@ -15,7 +15,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
   package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
