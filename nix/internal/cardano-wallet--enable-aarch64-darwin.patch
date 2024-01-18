@@ -1,8 +1,8 @@
 diff --git a/flake.nix b/flake.nix
-index 37ea1cfa12..8d0871d52b 100644
+index eba0a14512..e05d417f81 100644
 --- a/flake.nix
 +++ b/flake.nix
-@@ -217,8 +217,22 @@
+@@ -196,8 +196,22 @@
              collectChecks
              check;
  
@@ -25,7 +25,7 @@ index 37ea1cfa12..8d0871d52b 100644
 +          nodePkgs = cardano-node-runtime-patched.legacyPackages.${system};
 +          nodeProject = cardano-node-runtime-patched.project.${system};
  
-           project = (import ./nix/haskell.nix
+           walletProject = (import ./nix/haskell.nix
                CHaP
 diff --git a/nix/supported-systems.nix b/nix/supported-systems.nix
 index 6e3f0d94e3..a0c0ae17dc 100644
