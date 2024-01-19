@@ -373,8 +373,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp "delegation.cert" (dataDir </> "delegation.cert")
         cp (bridge </> "bin" </> "mock-token-metadata-server") (dir </> "mock-token-metadata-server")
         cp (bridge </> "bin" </> "token-metadata.json") (dataDir </> "token-metadata.json")
-        cp (bridge </> "bin" </> "local-cluster--unwrapped") (dir </> "local-cluster")
-        cptreeL (bridge </> "bin" </> "test" </> "data") (dataDir </> "data")
+        cp (bridge </> "bin" </> "local-cluster") (dir </> "local-cluster")
 
       procs "chmod" ["-R", "+w", tt dir] empty
 

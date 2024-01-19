@@ -240,7 +240,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "libgmpxx-4.dll"
                       file [] "libwinpthread-1.dll"
                       file [] "mock-token-metadata-server.exe"
-                      file [Recursive] "test\\"
                       file [] "token-metadata.json"
                 file [] "cardano-launcher.exe"
                 file [] "libffi-8.dll"
