@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cardano-playground": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704761036,
+        "narHash": "sha256-gD/VLpu3O9oHRipD3LHyv9PLSgKGKQd/SLHZ01f6SxM=",
+        "owner": "input-output-hk",
+        "repo": "cardano-playground",
+        "rev": "3195a3a3b6066ec0ef41edfbfc3e7df80e3d7841",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "cardano-playground",
+        "type": "github"
+      }
+    },
     "cardano-shell": {
       "flake": false,
       "locked": {
@@ -31,23 +47,6 @@
         "owner": "cardano-foundation",
         "ref": "rc-latest",
         "repo": "cardano-wallet",
-        "type": "github"
-      }
-    },
-    "cardano-world": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1687558705,
-        "narHash": "sha256-NCpbYQnoJdghO2vPdbllucCcb56GQHBoL4r9tN0oAzQ=",
-        "owner": "input-output-hk",
-        "repo": "cardano-world",
-        "rev": "d751a12be1dd4e5e2bd3bafaf4c254390469292d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "cardano-world",
-        "rev": "d751a12be1dd4e5e2bd3bafaf4c254390469292d",
         "type": "github"
       }
     },
@@ -85,9 +84,9 @@
     },
     "root": {
       "inputs": {
+        "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
-        "cardano-world": "cardano-world",
         "flake-compat": "flake-compat",
         "nixpkgs": "nixpkgs",
         "tullia": "tullia"

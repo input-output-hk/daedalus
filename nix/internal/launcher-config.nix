@@ -7,7 +7,7 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, cardanoWorldFlake
+, cardano-playground
 , system
 }:
 
@@ -20,29 +20,22 @@
 
 let
   clustersAvailable = rec {
-    mainnet    = fromCardanoWorld "mainnet";
+    mainnet    = fromCardanoPlayground "mainnet";
     mainnet_flight = mainnet;
-    shelley_qa = fromCardanoWorld "shelley_qa";
-    vasil_dev  = fromCardanoWorld "vasil-dev";
-    preprod    = fromCardanoWorld "preprod";
-    preview    = fromCardanoWorld "preview";
+    shelley_qa = fromCardanoPlayground "shelley_qa";
+    vasil_dev  = fromCardanoPlayground "vasil-dev";
+    preprod    = fromCardanoPlayground "preprod";
+    preview    = fromCardanoPlayground "preview";
   };
 
-  fromCardanoWorld = envName: let
+  fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
-      name = "cardano-world-config-${envName}";
-      path = cardanoWorldFlake.${system}.cardano.packages.cardano-config-html-internal + "/config/" + envName;
+      name = "cardano-playground-config-${envName}";
+      path = cardano-playground + ("/static/book.play.dev.cardano.org/environments/" + envName);
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
       builtins.readFile (originalFiles + "/config.json")));
-
-    topology = builtins.fromJSON (builtins.unsafeDiscardStringContext (
-      builtins.readFile (originalFiles + "/topology.json")));
-
-    topologyFirstAccessPoint = builtins.head (builtins.head topology.publicRoots).accessPoints;
-
-    isP2P = originalNodeConfig ? EnableP2P && originalNodeConfig.EnableP2P;
 
     nodeConfig = originalNodeConfig // {
       ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
@@ -50,19 +43,14 @@ let
       ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
       ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
       minSeverity = "Info";  # XXX: Needed for sync % updates.
-      EnableP2P = false;  # XXX: Doesn’t work behind NAT? Let’s use the legacy topology.
     };
   in {
     cluster = envName;
     networkName = envName;
     cardanoEnv = {
       inherit nodeConfig;
-    } // (if isP2P then {
-      relaysNew = topologyFirstAccessPoint.address;
-      edgePort  = topologyFirstAccessPoint.port;
-    } else {
       topologyFile = originalFiles + "/topology.json";
-    });
+    };
   };
 
   dirSep = if os == "windows" then "\\" else "/";
@@ -245,10 +233,7 @@ let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
     in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
-    normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
-      inherit (envCfg) edgePort;
-      edgeNodes = [ envCfg.relaysNew ];
-    };
+    normalTopologyFile = if network == "selfnode" then envCfg.topology else throw "no longer supported";
     localTopology = cardanoLib.mkEdgeTopology {
       edgePort = 30001;
       edgeNodes = [ "127.0.0.1" ];

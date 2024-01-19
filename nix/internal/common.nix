@@ -68,8 +68,6 @@ rec {
     aarch64-darwin = nodeFlake.packages.aarch64-darwin;
   }.${targetSystem};
 
-  cardanoWorldFlake = (flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
-
   inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
 
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: import ./cardano-bridge.nix {
@@ -96,8 +94,9 @@ rec {
 
   mkLauncherConfigs = { devShell ? false, cluster }: import ./launcher-config.nix {
     inherit devShell;
-    inherit cardanoLib cardanoWorldFlake;
+    inherit cardanoLib;
     inherit (pkgs) system runCommand lib;
+    inherit (inputs) cardano-playground;
     network = cluster;
     os = {
       x86_64-windows = "windows";
