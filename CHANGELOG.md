@@ -8,7 +8,7 @@
 
 ### Chores
 
-- Updated cardano-node to 8.1.1 (via cardano-wallet) ([PR 3133](https://github.com/input-output-hk/daedalus/pull/3133))
+- Updated cardano-node to 8.7.3 (via cardano-wallet) ([PR 3152](https://github.com/input-output-hk/daedalus/pull/3152))
 
 ## 5.3.0
 
