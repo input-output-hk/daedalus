@@ -52,7 +52,7 @@ let
       winePackages.minimal
     ]));
     name = "daedalus";
-    buildCommand = "touch $out";
+    buildCommand = "export >$out";
     LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
     CARDANO_NODE_VERSION = common.cardanoNodeVersion;
     CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
