@@ -23,9 +23,9 @@ sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 if [ "$(uname)" == "Darwin" ] ; then
   ourArch="$(uname -m)"
   for f in \
-    node_modules/@trezor/transport/node_modules/usb/binding.gyp \
-    node_modules/@trezor/transport/node_modules/usb/libusb.gypi \
-    node_modules/rpc-websockets/node_modules/utf-8-validate/binding.gyp \
+    node_modules/usb/binding.gyp \
+    node_modules/usb/libusb.gypi \
+    node_modules/utf-8-validate/binding.gyp \
   ; do
     sed -r 's,-arch (x86_64|arm64),-arch '"$ourArch"',g' -i "$f"
   done
@@ -73,6 +73,7 @@ tryLink() {
 
 tryLink   "usb"           "usb_bindings.node"
 tryLink   "usb-detection" "detection.node"
+tryLink   "utf-8-validate" "validation.node"
 tryLink   "node-hid"      "HID.node"
 
 if [ "$(uname)" == "Linux" ] ; then
