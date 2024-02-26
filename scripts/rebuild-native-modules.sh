@@ -20,6 +20,17 @@ nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
+if [ "$(uname)" == "Darwin" ] ; then
+  ourArch="$(uname -m)"
+  for f in \
+    node_modules/@trezor/transport/node_modules/usb/binding.gyp \
+    node_modules/@trezor/transport/node_modules/usb/libusb.gypi \
+    node_modules/rpc-websockets/node_modules/utf-8-validate/binding.gyp \
+  ; do
+    sed -r 's,-arch (x86_64|arm64),-arch '"$ourArch"',g' -i "$f"
+  done
+fi
+
 # TODO: do we really need to run `electron-rebuild` 3×?
 
 electron-rebuild --force
