@@ -139,7 +139,7 @@ rec {
   #   };
 
   nodejs = let
-    base = pkgs.nodejs-18_x;
+    base = pkgs.nodejs;
   in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
     # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,

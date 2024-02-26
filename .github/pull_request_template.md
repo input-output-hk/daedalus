@@ -50,7 +50,6 @@ Open a thread on #daedalus-qa on Slack, mention `@daedalusqa` and `@daedalusteam
 - [ ] There are no missing translations (running `yarn manage:translations` produces no changes)
 - [ ] Text changes are proofread and approved (Jane Wild / Amy Reeve)
 - [ ] Japanese text changes are proofread and approved (Junko Oda)
-- [ ] Storybook works and no stories are broken (`yarn storybook`)
 - [ ] In case of dependency changes `yarn.lock` file is updated
 
 ### Code Quality
