@@ -62,7 +62,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools xcbuild perl /* for bufferutil */ ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -79,6 +79,16 @@ in rec {
       find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+
+      # This is building against Node.js, not Electron, but it still will fail, unless:
+      ourArch="$(uname -m)"
+      for f in \
+        node_modules/usb/binding.gyp \
+        node_modules/usb/libusb.gypi \
+        node_modules/utf-8-validate/binding.gyp \
+      ; do
+        sed -r 's,-arch (x86_64|arm64),-arch '"$ourArch"',g' -i "$f"
+      done
 
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
