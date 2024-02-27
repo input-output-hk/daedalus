@@ -121,7 +121,7 @@ in rec {
     name = pname;
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools xcbuild perl /* for bufferutil */ ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
