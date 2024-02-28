@@ -20,8 +20,9 @@ nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
-if [ "$(uname)" == "Darwin" ] ; then
-  ourArch="$(uname -m)"
+
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "darwin" ] ; then
+  ourArch="$(cut -d- -f1 <<<"${system:-x86_64-darwin}" | sed -r 's/aarch64/arm64/')"
   for f in \
     node_modules/usb/binding.gyp \
     node_modules/usb/libusb.gypi \
@@ -37,7 +38,7 @@ electron-rebuild --force
 
 electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
 
-if [ "$(uname)" == "Linux" ] ; then
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "linux" ] ; then
   # We ship debug version because the release one has issues with Ledger Nano S
   electron-rebuild -w usb --force -s --debug
 fi
@@ -76,6 +77,6 @@ tryLink   "usb-detection" "detection.node"
 tryLink   "utf-8-validate" "validation.node"
 tryLink   "node-hid"      "HID.node"
 
-if [ "$(uname)" == "Linux" ] ; then
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "linux" ] ; then
   tryLink "node-hid"      "HID_hidraw.node"
 fi

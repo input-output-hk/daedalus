@@ -81,7 +81,7 @@ in rec {
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
 
       # This is building against Node.js, not Electron, but it still will fail, unless:
-      ourArch="$(uname -m)"
+      ourArch="${__replaceStrings ["aarch64"] ["arm64"] (__head (__split "-" targetSystem))}"
       for f in \
         node_modules/usb/binding.gyp \
         node_modules/usb/libusb.gypi \
