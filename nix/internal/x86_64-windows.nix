@@ -88,6 +88,9 @@ in rec {
 
       sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
 
+      sed -r "s/^const usb =.*/const usb = require(require("path").join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
+        -i node_modules/usb/dist/usb/bindings.js
+
       export DEBUG=electron-packager
       yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
     '';
