@@ -149,7 +149,7 @@ in rec {
 
       sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
 
-      sed -r "s/^const usb =.*/const usb = require(require("path").join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
+      sed -r "s/^const usb =.*/const usb = require(require('path').join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
         -i node_modules/usb/dist/usb/bindings.js
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
