@@ -246,7 +246,7 @@ rec {
       # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       src = pkgs.fetchurl {
         url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-        hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
+        hash = "sha256-WIAwG00msvx2eM+hpeO0VQE4BbEPJoQWBpt5GSFhlWM=";
       };
     } ''
       tar -xf $src
