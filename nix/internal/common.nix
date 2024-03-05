@@ -33,7 +33,6 @@ rec {
         cp -r ${unpatched} $out
         chmod -R +w $out
         cd $out
-        patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
         patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
       '');
       inherit (unpatched) rev shortRev lastModified lastModifiedDate;
