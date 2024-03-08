@@ -10,13 +10,13 @@ export const initTrezorConnect = async () => {
     // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
     // this is useful when you don't know if you are dealing with Trezor user
     manifest,
-    transports: ['BridgeTransport'],
+    transports: ['NodeUsbTransport'],
   })
     .then(() => {
       logger.info('[HW-DEBUG] TrezorConnect is ready!');
     })
     .catch((error) => {
-      logger.info(`[HW-DEBUG] TrezorConnect init error:${error}`);
+      logger.error(`[HW-DEBUG] TrezorConnect init error:`, error);
     });
 };
 
@@ -26,7 +26,10 @@ export const reinitTrezorConnect = async () => {
     await TrezorConnect.dispose();
   } catch (error) {
     // ignore any TrezorConnect instance disposal errors
-    logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.dispose()');
+    logger.error(
+      '[TREZOR-CONNECT] Failed to call TrezorConnect.dispose()',
+      error
+    );
   }
 
   return initTrezorConnect();
