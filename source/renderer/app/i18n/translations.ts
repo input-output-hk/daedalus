@@ -1,9 +1,15 @@
-// This is essentially bulk require
-const req = require.context('./locales', true, /\.json.*$/);
+import defaultMessages from './locales/defaultMessages.json';
+import enUS from './locales/en-US.json';
+import jaJP from './locales/ja-JP.json';
+import whitelist_enUS from './locales/whitelist_en-US.json';
+import whitelist_jaJP from './locales/whitelist_ja-JP.json';
 
-const translations = {};
-req.keys().forEach((file) => {
-  const locale = file.replace('./', '').replace('.json', '');
-  translations[locale] = req(file);
-});
+const translations = {
+  'defaultMessages': defaultMessages,
+  'en-US': enUS,
+  'ja-JP': jaJP,
+  'whitelist_en-US': whitelist_enUS,
+  'whitelist_ja-JP': whitelist_jaJP
+};
+
 export default translations;

@@ -645,7 +645,7 @@ export default class StakingStore extends Store {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { transactions, addresses } = this.stores;
     const rewardsAddress = addresses.stakeAddresses[wallet.id];
-    const syncingProgress = get(wallet.syncState, 'progress.quantity', '');
+    const syncingProgress = wallet.syncState?.progress?.quantity;
     return {
       wallet: wallet.name,
       total: wallet.reward.plus(transactions.withdrawals[wallet.id]),
