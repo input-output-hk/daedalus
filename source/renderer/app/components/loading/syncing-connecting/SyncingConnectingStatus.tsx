@@ -223,7 +223,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
         </h1>
         <div className={styles.description}>
           {connectingDescription && (
-            <FormattedHTMLMessage {...connectingDescription} />
+            <FormattedHTMLMessage {...{ connectingDescription }} />
           )}
         </div>
       </div>

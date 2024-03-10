@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -154,7 +153,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
       blur: () => {},
       focus: () => {},
     };
-    return get(this, 'inputField.inputElement.current', fallbackInput);
+    return this?.inputField?.inputElement?.current || fallbackInput;
   }
 
   inputField: Input;

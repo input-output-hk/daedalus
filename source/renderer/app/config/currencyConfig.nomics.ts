@@ -51,7 +51,7 @@ const responses = {
   },
   rate: (apiResponse: CurrencyRateNomicsResponse): GetCurrencyRateResponse => {
     try {
-      const rate = parseFloat(get(apiResponse, '[0].price', 0));
+      const rate = parseFloat(apiResponse?.[0]?.price || '0');
       logger.debug('Currency::Nomics::Rate success', {
         rate,
       });

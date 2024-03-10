@@ -108,7 +108,7 @@ class LegacyNotification extends Component<Props> {
       activeWalletName,
       ..._values,
     };
-    return <FormattedMessage {...message} values={values} />;
+    return <FormattedMessage {...{ message }} values={values} />;
   };
 
   render() {
