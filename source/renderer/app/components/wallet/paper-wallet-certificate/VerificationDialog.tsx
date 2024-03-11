@@ -241,7 +241,7 @@ class VerificationDialog extends Component<Props, State> {
         onClick: this.submit.bind(this),
       },
     ];
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog

@@ -182,7 +182,7 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         primary: true,
       },
     ];
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog

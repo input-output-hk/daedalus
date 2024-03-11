@@ -380,7 +380,7 @@ class WalletRestoreDialog extends Component<Props, State> {
       'yoroiTab',
       this.isYoroi() ? styles.activeButton : '',
     ]);
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog

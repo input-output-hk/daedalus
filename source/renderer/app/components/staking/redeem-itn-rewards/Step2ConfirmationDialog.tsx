@@ -150,7 +150,6 @@ class Step2ConfirmationDialog extends Component<Props> {
       onContinue,
       onClose,
       onBack,
-      isSubmitting,
       error,
     } = this.props;
     const { amount } = wallet || {};

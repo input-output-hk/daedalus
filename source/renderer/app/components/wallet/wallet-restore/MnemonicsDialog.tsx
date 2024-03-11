@@ -111,7 +111,7 @@ class MnemonicsDialog extends Component<Props> {
       !recoveryPhraseField.error &&
       recoveryPhraseField.value.length === maxWordCount &&
       recoveryPhraseField.value.every((word) => word);
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <WalletRestoreDialog

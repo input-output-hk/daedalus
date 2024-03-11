@@ -61,7 +61,7 @@ export const readLauncherConfig = (
   const parsed = yamljs.parse(inputYaml);
   const finalYaml = recurseReplace(parsed);
 
-  if (!finalYaml || finalYaml.length == 0) {
+  if (!finalYaml || finalYaml.length === 0) {
     throw new Error('Daedalus requires a valid launcher config file to work');
   }
 

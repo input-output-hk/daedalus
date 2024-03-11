@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AnalyticsTracker } from '.';
 
 class NoopAnalyticsTracker implements AnalyticsTracker {

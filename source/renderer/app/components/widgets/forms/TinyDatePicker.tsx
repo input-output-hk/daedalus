@@ -48,13 +48,11 @@ export default class TinyDatePicker extends Component<Props> {
       onChange,
       isValidDate,
       dateFormat,
-      disablePaste,
       value,
       label,
       placeholder,
       innerLabelPrefix,
       innerValue,
-      pickerPanelPosition,
       useReadMode,
       error,
       ...rest

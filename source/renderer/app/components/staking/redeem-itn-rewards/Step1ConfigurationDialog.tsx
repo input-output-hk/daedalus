@@ -332,7 +332,7 @@ class Step1ConfigurationDialog extends Component<Props, State> {
         onClose={onClose}
       />
     );
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog

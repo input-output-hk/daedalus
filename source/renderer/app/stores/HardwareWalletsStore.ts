@@ -2277,7 +2277,6 @@ export default class HardwareWalletsStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'paired' does not exist on type 'Hardware... Remove this comment to see the full error message
       (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
     );
-    const recognizedDevicePath = get(recognizedDevice, 'path', null);
     logger.info('[HW-DEBUG] sign Trezor:: recognizedDevicePath and wallet: ', {
       walletId,
       deviceId,

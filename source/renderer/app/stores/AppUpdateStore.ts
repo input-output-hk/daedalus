@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import NewsDomains from '../domains/News';
 import { logger } from '../utils/logging';
 import {
   requestDownloadChannel,
@@ -29,7 +28,7 @@ import {
   DOWNLOAD_EVENT_TYPES,
   DOWNLOAD_STATES,
 } from '../../../common/config/downloadManagerConfig';
-import type { SoftwareUpdateInfo } from '../api/news/types';
+import { NewsItem, SoftwareUpdateInfo } from '../api/news/types';
 import type {
   DownloadInfo,
   DownloadData,
@@ -37,11 +36,10 @@ import type {
 import type { FormattedDownloadData } from '../utils/formatters';
 
 const { version: currentVersion, platform } = global.environment;
-const { News } = NewsDomains;
 export default class AppUpdateStore extends Store {
   @observable
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
-  availableUpdate: News | null | undefined = null;
+  availableUpdate: NewsItem | null | undefined = null;
   @observable
   availableUpdateVersion = '';
   @observable
