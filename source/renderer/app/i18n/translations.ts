@@ -5,7 +5,7 @@ import whitelist_enUS from './locales/whitelist_en-US.json';
 import whitelist_jaJP from './locales/whitelist_ja-JP.json';
 
 const translations = {
-  defaultMessages: defaultMessages,
+  defaultMessages,
   'en-US': enUS,
   'ja-JP': jaJP,
   'whitelist_en-US': whitelist_enUS,

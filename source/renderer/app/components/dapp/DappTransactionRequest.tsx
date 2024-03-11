@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';

@@ -9,7 +9,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   bigNumberComparator,
   stringComparator,

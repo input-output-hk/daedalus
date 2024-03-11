@@ -1,7 +1,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get, debounce } from 'lodash';
+import { orderBy, find, map, debounce } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';

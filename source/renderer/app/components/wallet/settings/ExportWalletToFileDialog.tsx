@@ -15,7 +15,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ExportWalletToFileDialog.scs... Remove this comment to see the full error message
 import styles from './ExportWalletToFileDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   headline: {

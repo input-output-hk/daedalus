@@ -33,7 +33,7 @@ import {
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
-import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
+import { initTrezorConnect } from '../trezor/connection';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;

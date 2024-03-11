@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map, filter } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';

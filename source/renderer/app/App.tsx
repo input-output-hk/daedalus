@@ -22,8 +22,6 @@ import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFlagsDialogContainer';
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 import { MenuUpdater } from './containers/MenuUpdater';
-import { AnalyticsProvider } from './components/analytics';
-import { AnalyticsTracker } from './analytics';
 
 @observer
 class App extends Component<{

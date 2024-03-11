@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { AnalyticsContext } from './AnalyticsContext';
 import { AnalyticsTracker } from '../../analytics';
 

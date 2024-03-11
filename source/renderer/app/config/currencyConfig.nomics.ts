@@ -7,7 +7,7 @@
  * check `currencyConfig.js` for more info
  *
  */
-import { get, values } from 'lodash';
+import { values } from 'lodash';
 import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes';
 import type {

@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 import { FormattedHTMLMessage, injectIntl, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';

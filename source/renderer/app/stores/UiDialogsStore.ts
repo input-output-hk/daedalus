@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import WalletReceiveDialog from '../components/wallet/receive/WalletReceiveDialog';
