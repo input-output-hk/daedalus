@@ -28,7 +28,7 @@ function getPopOverBgColorForState(state: PasswordInput.STATE): string {
   }
 }
 
-export const PasswordInputSkin = (props: Props) => {
+export function PasswordInputSkin(props: Props) {
   const {
     className,
     error,
@@ -78,7 +78,7 @@ export const PasswordInputSkin = (props: Props) => {
       </div>
     </div>
   );
-};
+}
 
 // Static Properties
 

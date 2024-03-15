@@ -1,65 +1,132 @@
-// @flow
-import { escapeRegExp } from 'lodash/string';
-import React, { Component } from 'react';
-import BigNumber from 'bignumber.js';
-
-// $FlowFixMe
-import type { SyntheticInputEvent, Element, ElementRef } from 'react';
-
-// external libraries
-
-// internal utility functions
-import { withTheme } from './HOC/withTheme';
-
-// import constants
-import { removeCharAtPosition } from '../utils/strings';
-import type { InputEvent } from '../utils/types';
-import { Input } from './Input';
-import type { InputProps } from './Input';
-
-type NumericInputValue = null | number | string | BigNumber.Instance;
-
-export type NumericInputProps = InputProps & {
-  allowSigns?: boolean,
-  allowOnlyIntegers?: boolean,
-  bigNumberFormat?: BigNumber.Format,
-  decimalPlaces?: number,
-  roundingMode?: BigNumber.RoundingMode,
-  value: NumericInputValue,
-};
-
-type State = {
-  composedTheme: Object,
-  inputCaretPosition: number,
-  fallbackInputValue: ?string,
-};
-
-class NumericInputBase extends Component<NumericInputProps, State> {
-  inputElement: { current: null | ElementRef<'input'> };
-  _hasInputBeenChanged: boolean = false;
-
-  static displayName = 'NumericInput';
-
-  static defaultProps = {
-    allowSigns: true,
-    allowOnlyIntegers: false,
-    readOnly: false,
-    roundingMode: BigNumber.ROUND_FLOOR,
-    value: null,
+'use strict';
+var __extends =
+  (this && this.__extends) ||
+  (function () {
+    var extendStatics = function (d, b) {
+      extendStatics =
+        Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array &&
+          function (d, b) {
+            d.__proto__ = b;
+          }) ||
+        function (d, b) {
+          for (var p in b)
+            if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+        };
+      return extendStatics(d, b);
+    };
+    return function (d, b) {
+      if (typeof b !== 'function' && b !== null)
+        throw new TypeError(
+          'Class extends value ' + String(b) + ' is not a constructor or null'
+        );
+      extendStatics(d, b);
+      function __() {
+        this.constructor = d;
+      }
+      d.prototype =
+        b === null
+          ? Object.create(b)
+          : ((__.prototype = b.prototype), new __());
+    };
+  })();
+var __assign =
+  (this && this.__assign) ||
+  function () {
+    __assign =
+      Object.assign ||
+      function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+          s = arguments[i];
+          for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+      };
+    return __assign.apply(this, arguments);
   };
-
-  constructor(props: NumericInputProps) {
-    super(props);
-    this.inputElement = React.createRef();
-    this.state = {
+var __rest =
+  (this && this.__rest) ||
+  function (s, e) {
+    var t = {};
+    for (var p in s)
+      if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === 'function')
+      for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+        if (
+          e.indexOf(p[i]) < 0 &&
+          Object.prototype.propertyIsEnumerable.call(s, p[i])
+        )
+          t[p[i]] = s[p[i]];
+      }
+    return t;
+  };
+exports.__esModule = true;
+exports.NumericInput = void 0;
+// @ts-nocheck
+var string_1 = require('lodash/string');
+var react_1 = require('react');
+var bignumber_js_1 = require('bignumber.js');
+// external libraries
+// internal utility functions
+var withTheme_1 = require('./HOC/withTheme');
+// import constants
+var strings_1 = require('../utils/strings');
+var Input_1 = require('./Input');
+var NumericInputBase = /** @class */ (function (_super) {
+  __extends(NumericInputBase, _super);
+  function NumericInputBase(props) {
+    var _this = _super.call(this, props) || this;
+    _this._hasInputBeenChanged = false;
+    _this.onChange = function (newValue, event) {
+      var _a = _this.props,
+        value = _a.value,
+        onChange = _a.onChange;
+      var result = _this.processValueChange(event.nativeEvent);
+      if (result) {
+        _this._hasInputBeenChanged = true;
+        var hasValueChanged = value !== result.value;
+        if (hasValueChanged && onChange) {
+          onChange(result.value, event);
+        }
+        _this.setState({
+          inputCaretPosition: result.caretPosition,
+          fallbackInputValue: result.fallbackInputValue,
+        });
+      }
+    };
+    _this.setInputCaretPosition = function (position) {
+      var inputElement = _this.inputElement;
+      if (!inputElement.current) return;
+      var input = inputElement.current;
+      input.selectionStart = position;
+      input.selectionEnd = position;
+    };
+    _this.focus = function () {
+      var inputElement = _this.inputElement;
+      if (!inputElement.current) return;
+      inputElement.current.focus();
+    };
+    _this.onBlur = function (event) {
+      var _a, _b;
+      _this.setState({
+        fallbackInputValue: null,
+      });
+      (_b = (_a = _this.props).onBlur) === null || _b === void 0
+        ? void 0
+        : _b.call(_a, event);
+    };
+    _this.inputElement = react_1['default'].createRef();
+    _this.state = {
       inputCaretPosition: 0,
       fallbackInputValue: null,
     };
+    return _this;
   }
-
-  componentDidMount() {
-    const { inputElement } = this;
-    const { autoFocus } = this.props;
+  NumericInputBase.prototype.componentDidMount = function () {
+    var inputElement = this.inputElement;
+    var autoFocus = this.props.autoFocus;
     if (autoFocus) {
       this.focus();
       if (inputElement && inputElement.current) {
@@ -68,13 +135,15 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         });
       }
     }
-  }
-
-  componentDidUpdate(prevProps: NumericInputProps, prevState: State) {
-    const { value } = this.props;
-    const { inputCaretPosition } = this.state;
-    const hasValueBeenChanged = value !== prevProps.value;
-    const hasCaretBeenChanged =
+  };
+  NumericInputBase.prototype.componentDidUpdate = function (
+    prevProps,
+    prevState
+  ) {
+    var value = this.props.value;
+    var inputCaretPosition = this.state.inputCaretPosition;
+    var hasValueBeenChanged = value !== prevProps.value;
+    var hasCaretBeenChanged =
       inputCaretPosition !== prevState.inputCaretPosition;
     if (
       this._hasInputBeenChanged ||
@@ -84,62 +153,45 @@ class NumericInputBase extends Component<NumericInputProps, State> {
       this.setInputCaretPosition(inputCaretPosition);
     }
     this._hasInputBeenChanged = false;
-  }
-
-  onChange = (newValue, event: SyntheticInputEvent<Element<'input'>>) => {
-    const { value, onChange } = this.props;
-    const result = this.processValueChange(event.nativeEvent);
-    if (result) {
-      this._hasInputBeenChanged = true;
-      const hasValueChanged = value !== result.value;
-      if (hasValueChanged && onChange) {
-        onChange(result.value, event);
-      }
-      this.setState({
-        inputCaretPosition: result.caretPosition,
-        fallbackInputValue: result.fallbackInputValue,
-      });
-    }
   };
-
   /**
    * 1. Handle edge cases that don't need further processing
    * 2. Clean the given value
    * 3. Final processing
    */
-  processValueChange(
-    event: InputEvent
-  ): ?{
-    value: NumericInputValue,
-    caretPosition: number,
-    fallbackInputValue?: ?string,
-  } {
-    const { allowSigns, allowOnlyIntegers, decimalPlaces, value } = this.props;
-    const { inputType, target } = event;
-    const { decimalSeparator, groupSeparator } = this.getBigNumberFormat();
-    const changedCaretPosition = target.selectionStart;
-    const valueToProcess = target.value;
-    const fallbackInputValue = this.state.fallbackInputValue;
-    const isBackwardDelete = inputType === 'deleteContentBackward';
-    const isForwardDelete = inputType === 'deleteContentForward';
-    const isDeletion = isForwardDelete || isBackwardDelete;
-    const isInsert = inputType === 'insertText';
-    const deleteCaretCorrection = isBackwardDelete ? 0 : 1;
-    const validInputSignsRegExp = new RegExp(
-      `^([-])?([0-9${decimalSeparator}${groupSeparator}]+)?$`
+  NumericInputBase.prototype.processValueChange = function (event) {
+    var _a = this.props,
+      allowSigns = _a.allowSigns,
+      allowOnlyIntegers = _a.allowOnlyIntegers,
+      decimalPlaces = _a.decimalPlaces,
+      value = _a.value;
+    var inputType = event.inputType,
+      target = event.target;
+    var _b = this.getBigNumberFormat(),
+      decimalSeparator = _b.decimalSeparator,
+      groupSeparator = _b.groupSeparator;
+    var changedCaretPosition = target.selectionStart;
+    var valueToProcess = target.value;
+    var fallbackInputValue = this.state.fallbackInputValue;
+    var isBackwardDelete = inputType === 'deleteContentBackward';
+    var isForwardDelete = inputType === 'deleteContentForward';
+    var isDeletion = isForwardDelete || isBackwardDelete;
+    var isInsert = inputType === 'insertText';
+    var deleteCaretCorrection = isBackwardDelete ? 0 : 1;
+    var validInputSignsRegExp = new RegExp(
+      '^([-])?([0-9'.concat(decimalSeparator).concat(groupSeparator, ']+)?$')
     );
-    const validInputNoSignsRegExp = new RegExp(
-      `^([0-9${decimalSeparator}${groupSeparator}]+)?$`
+    var validInputNoSignsRegExp = new RegExp(
+      '^([0-9'.concat(decimalSeparator).concat(groupSeparator, ']+)?$')
     );
-    const validInputOnlyIntegersRegExp = new RegExp(`^([0-9]+)?$`);
-    let validInputRegex = allowSigns
+    var validInputOnlyIntegersRegExp = new RegExp('^([0-9]+)?$');
+    var validInputRegex = allowSigns
       ? validInputSignsRegExp
       : validInputNoSignsRegExp;
     validInputRegex = allowOnlyIntegers
       ? validInputOnlyIntegersRegExp
       : validInputRegex;
-    const valueHasLeadingZero = /^0[1-9]/.test(valueToProcess);
-
+    var valueHasLeadingZero = /^0[1-9]/.test(valueToProcess);
     /**
      * ========= HANDLE HARD EDGE-CASES =============
      */
@@ -147,11 +199,10 @@ class NumericInputBase extends Component<NumericInputProps, State> {
     if (!validInputRegex.test(valueToProcess)) {
       return {
         caretPosition: changedCaretPosition - 1,
-        fallbackInputValue,
-        value,
+        fallbackInputValue: fallbackInputValue,
+        value: value,
       };
     }
-
     // Case: Everything was deleted -> reset state
     if (valueToProcess === '') {
       return {
@@ -160,10 +211,8 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         fallbackInputValue: null,
       };
     }
-
     // Case: value is the same as the fallback (which is always shown if defined)
     if (valueToProcess === this.state.fallbackInputValue) return null;
-
     // Case: Just minus sign was entered
     if (valueToProcess === '-') {
       return {
@@ -172,7 +221,6 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         fallbackInputValue: '-',
       };
     }
-
     // Case: Just minus sign was entered
     if (valueToProcess === groupSeparator) {
       return {
@@ -181,35 +229,34 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         fallbackInputValue: null,
       };
     }
-
     /**
      * ========= CLEAN THE INPUT =============
      */
-
-    const currentNumber =
-      value == null ? new BigNumber('0') : new BigNumber(value);
-    const currentValue =
-      fallbackInputValue ?? this.valueToFormattedString(currentNumber);
-
-    const currentNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
+    var currentNumber =
+      value == null
+        ? new bignumber_js_1['default']('0')
+        : new bignumber_js_1['default'](value);
+    var currentValue =
+      fallbackInputValue !== null && fallbackInputValue !== void 0
+        ? fallbackInputValue
+        : this.valueToFormattedString(currentNumber);
+    var currentNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
       currentValue
     );
-    const hadDecimalSeparatorBefore = currentNumberOfDecimalSeparators > 0;
-
+    var hadDecimalSeparatorBefore = currentNumberOfDecimalSeparators > 0;
     // New Value
-    let newValue = valueToProcess;
-    let newCaretPosition = changedCaretPosition;
-    const newNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
+    var newValue = valueToProcess;
+    var newCaretPosition = changedCaretPosition;
+    var newNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
       newValue
     );
-
     // Case: A second decimal separator was added somewhere
     if (hadDecimalSeparatorBefore && newNumberOfDecimalSeparators === 2) {
-      const oldFirstIndex = currentValue.indexOf(decimalSeparator);
-      const newFirstIndex = newValue.indexOf(decimalSeparator);
-      const wasSeparatorAddedBeforeOldOne = newFirstIndex < oldFirstIndex;
+      var oldFirstIndex = currentValue.indexOf(decimalSeparator);
+      var newFirstIndex = newValue.indexOf(decimalSeparator);
+      var wasSeparatorAddedBeforeOldOne = newFirstIndex < oldFirstIndex;
       // Remove the second decimal point and set caret position
-      newValue = removeCharAtPosition(
+      newValue = (0, strings_1.removeCharAtPosition)(
         newValue,
         wasSeparatorAddedBeforeOldOne
           ? newValue.lastIndexOf(decimalSeparator)
@@ -217,9 +264,8 @@ class NumericInputBase extends Component<NumericInputProps, State> {
       );
       newCaretPosition = newValue.indexOf(decimalSeparator) + 1;
     }
-
     // Case: Decimal separator was replaced with a number
-    const newValueHasTrailingZeros = new RegExp('^[1-9]+0+$');
+    var newValueHasTrailingZeros = new RegExp('^[1-9]+0+$');
     if (
       !!decimalPlaces &&
       value != null &&
@@ -231,52 +277,48 @@ class NumericInputBase extends Component<NumericInputProps, State> {
     ) {
       return {
         caretPosition: changedCaretPosition - 1,
-        fallbackInputValue,
-        value,
+        fallbackInputValue: fallbackInputValue,
+        value: value,
       };
     }
-
     /**
      * ========= PROCESS CLEANED INPUT =============
      */
-
     // Case: Just a decimal separator was entered
     if (newValue === decimalSeparator) {
       return {
         value: '0',
         caretPosition: 2,
-        fallbackInputValue: decimalPlaces > 0 ? null : `0${decimalSeparator}`,
+        fallbackInputValue:
+          decimalPlaces > 0 ? null : '0'.concat(decimalSeparator),
       };
     }
-
     // Case: Decimal separator was added at the beginning of number
     if (newValue.charAt(0) === decimalSeparator) {
-      const newCaretPos = isInsert ? 2 : 1;
+      var newCaretPos = isInsert ? 2 : 1;
       return {
-        value: this.bigNumberToFixed(new BigNumber(`0.${newValue.substr(1)}`)),
+        value: this.bigNumberToFixed(
+          new bignumber_js_1['default']('0.'.concat(newValue.substr(1)))
+        ),
         caretPosition: newCaretPos,
         fallbackInputValue: null,
       };
     }
-
-    const newNumber =
+    var newNumber =
       newValue === '' ? null : this.formattedValueToBigNumber(newValue);
-
     // Case: Invalid change has been made -> ignore it
     if (newNumber == null) {
-      const deleteAdjustment = isBackwardDelete ? 0 : 1; // special cases when deleting dot
-      const insertAdjustment = -1; // don't move caret if numbers are "inserted"
+      var deleteAdjustment = isBackwardDelete ? 0 : 1; // special cases when deleting dot
+      var insertAdjustment = -1; // don't move caret if numbers are "inserted"
       return {
         caretPosition:
           changedCaretPosition +
           (isDeletion ? deleteAdjustment : insertAdjustment),
-        fallbackInputValue,
+        fallbackInputValue: fallbackInputValue,
         value: this.bigNumberToFixed(currentNumber),
       };
     }
-
-    const formattedNewNumber = this.valueToFormattedString(newNumber);
-
+    var formattedNewNumber = this.valueToFormattedString(newNumber);
     // Case: Dot was added at the end of number
     if (
       !isDeletion &&
@@ -290,20 +332,14 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         minimumFractionDigits: 0,
       };
     }
-
     // Case: Decimal separator was deleted while number of decimal places specified
-    const hasDecimalPlaces = decimalPlaces != null;
-    const wasDecimalSeparatorRemoved =
+    var hasDecimalPlaces = decimalPlaces != null;
+    var wasDecimalSeparatorRemoved =
       hadDecimalSeparatorBefore && !newNumberOfDecimalSeparators;
-    const newValueSlicedAtNewInputtedNumber = newValue.slice(
-      1,
-      newValue.length
-    );
-
-    const newTrailingNumbersAreAllZero = /^0+$/.test(
+    var newValueSlicedAtNewInputtedNumber = newValue.slice(1, newValue.length);
+    var newTrailingNumbersAreAllZero = /^0+$/.test(
       newValueSlicedAtNewInputtedNumber
     );
-
     if (wasDecimalSeparatorRemoved && hasDecimalPlaces && !isInsert) {
       return {
         caretPosition: newCaretPosition + deleteCaretCorrection,
@@ -311,7 +347,6 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         value: this.bigNumberToFixed(currentNumber),
       };
     }
-
     // Edge case for inserts with trailing zeros
     if (
       wasDecimalSeparatorRemoved &&
@@ -326,17 +361,16 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         value: this.bigNumberToFixed(currentNumber),
       };
     }
-
     // Case: Valid change has been made
-    const hasNumberChanged = !this.isSameValue(currentNumber, newNumber);
-    const groupSeparatorsDiff =
+    var hasNumberChanged = !this.isSameValue(currentNumber, newNumber);
+    var groupSeparatorsDiff =
       this.getNumberOfGroupSeparators(formattedNewNumber) -
       this.getNumberOfGroupSeparators(newValue);
-    const hasNumberOfGroupSeparatorsChanged = groupSeparatorsDiff > 0;
-    const onlyNumberOfGroupSeparatorsChanged =
+    var hasNumberOfGroupSeparatorsChanged = groupSeparatorsDiff > 0;
+    var onlyNumberOfGroupSeparatorsChanged =
       !hasNumberChanged && hasNumberOfGroupSeparatorsChanged;
-    const leadingZeroCorrection = valueHasLeadingZero ? -1 : 0;
-    const caretCorrection =
+    var leadingZeroCorrection = valueHasLeadingZero ? -1 : 0;
+    var caretCorrection =
       (onlyNumberOfGroupSeparatorsChanged
         ? deleteCaretCorrection
         : groupSeparatorsDiff) + leadingZeroCorrection;
@@ -345,97 +379,80 @@ class NumericInputBase extends Component<NumericInputProps, State> {
       fallbackInputValue: null,
       value: this.bigNumberToFixed(newNumber),
     };
-  }
-
-  setInputCaretPosition = (position: number) => {
-    const { inputElement } = this;
-    if (!inputElement.current) return;
-    const input = inputElement.current;
-    input.selectionStart = position;
-    input.selectionEnd = position;
   };
-
-  focus = () => {
-    const { inputElement } = this;
-    if (!inputElement.current) return;
-    inputElement.current.focus();
+  NumericInputBase.prototype.getBigNumberFormat = function () {
+    var _a;
+    return (_a = this.props.bigNumberFormat) !== null && _a !== void 0
+      ? _a
+      : bignumber_js_1['default'].config().FORMAT;
   };
-
-  onBlur = (event) => {
-    this.setState({
-      fallbackInputValue: null,
-    });
-    this.props.onBlur?.(event);
-  };
-
-  getBigNumberFormat(): BigNumber.Config {
-    return this.props.bigNumberFormat ?? BigNumber.config().FORMAT;
-  }
-
-  valueToFormattedString(number: NumericInputValue) {
-    const {
-      bigNumberFormat,
-      decimalPlaces,
-      roundingMode,
-      allowOnlyIntegers,
-    } = this.props;
-    const debugSetting = BigNumber.DEBUG;
-    if (BigNumber.isBigNumber(number) && number.isNaN()) return '';
+  NumericInputBase.prototype.valueToFormattedString = function (number) {
+    var _a = this.props,
+      bigNumberFormat = _a.bigNumberFormat,
+      decimalPlaces = _a.decimalPlaces,
+      roundingMode = _a.roundingMode,
+      allowOnlyIntegers = _a.allowOnlyIntegers;
+    var debugSetting = bignumber_js_1['default'].DEBUG;
+    if (bignumber_js_1['default'].isBigNumber(number) && number.isNaN())
+      return '';
     try {
-      BigNumber.DEBUG = true;
+      bignumber_js_1['default'].DEBUG = true;
       return allowOnlyIntegers
-        ? new BigNumber(number).toString()
-        : new BigNumber(number).toFormat(decimalPlaces, roundingMode, {
-            ...BigNumber.config().FORMAT, // defaults
-            ...bigNumberFormat, // custom overrides;
-          });
+        ? new bignumber_js_1['default'](number).toString()
+        : new bignumber_js_1['default'](number).toFormat(
+            decimalPlaces,
+            roundingMode,
+            __assign(
+              __assign({}, bignumber_js_1['default'].config().FORMAT),
+              bigNumberFormat
+            )
+          );
     } catch (e) {
       return '';
     } finally {
-      BigNumber.DEBUG = debugSetting;
+      bignumber_js_1['default'].DEBUG = debugSetting;
     }
-  }
-
-  bigNumberToFixed(number: BigNumber.Instance) {
-    const { decimalPlaces, roundingMode } = this.props;
+  };
+  NumericInputBase.prototype.bigNumberToFixed = function (number) {
+    var _a = this.props,
+      decimalPlaces = _a.decimalPlaces,
+      roundingMode = _a.roundingMode;
     return number.toFixed(decimalPlaces, roundingMode);
-  }
-
-  formattedValueToBigNumber(value: string) {
-    const { decimalSeparator, groupSeparator } = this.getBigNumberFormat();
-    return new BigNumber(
+  };
+  NumericInputBase.prototype.formattedValueToBigNumber = function (value) {
+    var _a = this.getBigNumberFormat(),
+      decimalSeparator = _a.decimalSeparator,
+      groupSeparator = _a.groupSeparator;
+    return new bignumber_js_1['default'](
       value
         .replace(escapedGlobalRegExp(groupSeparator), '')
         .replace(escapedGlobalRegExp(decimalSeparator), '.')
     );
-  }
-
-  getNumberOfGroupSeparators(value: string): number {
-    const { groupSeparator } = this.getBigNumberFormat();
+  };
+  NumericInputBase.prototype.getNumberOfGroupSeparators = function (value) {
+    var groupSeparator = this.getBigNumberFormat().groupSeparator;
     return (value.match(escapedGlobalRegExp(groupSeparator)) || []).length;
-  }
-
-  getNumberOfDecimalSeparators(value: string): number {
-    const { decimalSeparator } = this.getBigNumberFormat();
+  };
+  NumericInputBase.prototype.getNumberOfDecimalSeparators = function (value) {
+    var decimalSeparator = this.getBigNumberFormat().decimalSeparator;
     return (value.match(escapedGlobalRegExp(decimalSeparator)) || []).length;
-  }
-
-  isSameValue(first: ?BigNumber.Instance, second: ?BigNumber.Instance) {
-    return BigNumber.isBigNumber(first)
+  };
+  NumericInputBase.prototype.isSameValue = function (first, second) {
+    return bignumber_js_1['default'].isBigNumber(first)
       ? first.isEqualTo(second)
       : first === second;
-  }
-
-  render() {
+  };
+  NumericInputBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    const { onChange, value, ...rest } = this.props;
-
-    const inputValue = this.state.fallbackInputValue
+    var _a = this.props,
+      onChange = _a.onChange,
+      value = _a.value,
+      rest = __rest(_a, ['onChange', 'value']);
+    var inputValue = this.state.fallbackInputValue
       ? this.state.fallbackInputValue
       : this.valueToFormattedString(value);
-
     return (
-      <Input
+      <Input_1.Input
         inputRef={this.inputElement}
         onChange={this.onChange}
         onBlur={this.onBlur}
@@ -443,11 +460,18 @@ class NumericInputBase extends Component<NumericInputProps, State> {
         {...rest}
       />
     );
-  }
-}
-
-export const NumericInput = withTheme(NumericInputBase);
-
+  };
+  NumericInputBase.displayName = 'NumericInput';
+  NumericInputBase.defaultProps = {
+    allowSigns: true,
+    allowOnlyIntegers: false,
+    readOnly: false,
+    roundingMode: bignumber_js_1['default'].ROUND_FLOOR,
+    value: null,
+  };
+  return NumericInputBase;
+})(react_1.Component);
+exports.NumericInput = (0, withTheme_1.withTheme)(NumericInputBase);
 function escapedGlobalRegExp(regex) {
-  return new RegExp(escapeRegExp(regex), 'g');
+  return new RegExp((0, string_1.escapeRegExp)(regex), 'g');
 }

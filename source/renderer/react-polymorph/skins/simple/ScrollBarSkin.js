@@ -12,7 +12,7 @@ type Props = {
   themeId: string,
 };
 
-export const ScrollBarSkin = (props: Props) => {
+export function ScrollBarSkin(props: Props) {
   const { children, style, themeId } = props;
   const theme = props.theme[themeId];
 
@@ -23,4 +23,4 @@ export const ScrollBarSkin = (props: Props) => {
       </CustomScrollBar>
     </div>
   );
-};
+}

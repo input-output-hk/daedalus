@@ -32,7 +32,7 @@ type Props = {
   optionHeight: ?number,
 };
 
-export const DropdownSkin = (props: Props) => {
+export function DropdownSkin(props: Props) {
   const { theme, themeId, setMouseOverItems, setMouseOverRoot } = props;
   const themeApi = theme[themeId];
   return (
@@ -69,4 +69,4 @@ export const DropdownSkin = (props: Props) => {
       />
     </div>
   );
-};
+}

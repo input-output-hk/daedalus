@@ -6,7 +6,7 @@ import type { ElementRef, Element } from 'react';
 import classnames from 'classnames';
 
 type Props = {
-  className: String,
+  className: string,
   data: Object | Array<{}>,
   error: boolean | string | Element<*>,
   hasMoreData: boolean,
@@ -17,7 +17,7 @@ type Props = {
   themeId: string,
 };
 
-export const InfiniteScrollSkin = ({
+export function InfiniteScrollSkin({
   className,
   data,
   error,
@@ -27,17 +27,19 @@ export const InfiniteScrollSkin = ({
   scrollContainerRef,
   theme,
   themeId,
-}: Props) => (
-  <div
-    ref={scrollContainerRef}
-    className={classnames([className, theme[themeId].root])}
-  >
-    {renderItems({
-      data,
-      error,
-      hasMoreData,
-      isLoading,
-      theme: theme[themeId],
-    })}
-  </div>
-);
+}: Props) {
+  return (
+    <div
+      ref={scrollContainerRef}
+      className={classnames([className, theme[themeId].root])}
+    >
+      {renderItems({
+        data,
+        error,
+        hasMoreData,
+        isLoading,
+        theme: theme[themeId],
+      })}
+    </div>
+  );
+}

@@ -16,7 +16,7 @@ type Props = {
   themeId: string,
 };
 
-export const LinkSkin = (props: Props) => {
+export function LinkSkin(props: Props) {
   const {
     label,
     isUnderlined,
@@ -46,4 +46,4 @@ export const LinkSkin = (props: Props) => {
       {label}
     </span>
   );
-};
+}

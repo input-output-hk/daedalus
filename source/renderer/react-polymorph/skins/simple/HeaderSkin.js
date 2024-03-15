@@ -10,7 +10,7 @@ type Props = {
   theme: Object,
 };
 
-export const HeaderSkin = (props: Props) => {
+export function HeaderSkin(props: Props) {
   const { children, className, inlineStyles, theme } = props;
   const themeClasses = Object.values(theme);
 
@@ -22,4 +22,4 @@ export const HeaderSkin = (props: Props) => {
       {children}
     </header>
   );
-};
+}

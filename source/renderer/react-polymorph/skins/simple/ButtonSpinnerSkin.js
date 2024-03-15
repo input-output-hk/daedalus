@@ -24,7 +24,7 @@ type Props = {
   themeId: string,
 };
 
-export const ButtonSpinnerSkin = (props: Props) => {
+export function ButtonSpinnerSkin(props: Props) {
   const { className, disabled, label, loading, themeId } = props;
   const buttonTheme = props.theme[themeId];
   const spinnerTheme = props.theme[IDENTIFIERS.LOADING_SPINNER];
@@ -45,4 +45,4 @@ export const ButtonSpinnerSkin = (props: Props) => {
       {loading ? renderLoadingSpinner() : label}
     </button>
   );
-};
+}

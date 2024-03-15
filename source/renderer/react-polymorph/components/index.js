@@ -1,5 +1,7 @@
-// @flow
-export const IDENTIFIERS = {
+'use strict';
+exports.__esModule = true;
+exports.IDENTIFIERS = void 0;
+exports.IDENTIFIERS = {
   AUTOCOMPLETE: 'autocomplete',
   BUBBLE: 'bubble',
   BUTTON: 'button',

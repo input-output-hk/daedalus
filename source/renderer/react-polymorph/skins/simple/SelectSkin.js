@@ -51,7 +51,7 @@ type Props = {
   searchHeight: ?number,
 };
 
-export const SelectSkin = (props: Props) => {
+export function SelectSkin(props: Props) {
   const selectedOption = props.getSelectedOption();
   const inputValue = selectedOption ? selectedOption.label : '';
   const { theme, themeId } = props;
@@ -107,4 +107,4 @@ export const SelectSkin = (props: Props) => {
       />
     </div>
   );
-};
+}

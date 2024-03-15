@@ -1,5 +1,7 @@
-// @flow
-export const HEADER_THEME_API = {
+'use strict';
+exports.__esModule = true;
+exports.HEADER_THEME_API = void 0;
+exports.HEADER_THEME_API = {
   header: '',
   h1: '',
   h2: '',

@@ -20,7 +20,7 @@ type Props = {
   themeId: string,
 };
 
-export const RadioSkin = (props: Props) => {
+export function RadioSkin(props: Props) {
   const {
     theme,
     themeId,
@@ -60,4 +60,4 @@ export const RadioSkin = (props: Props) => {
       {label ? <label className={theme[themeId].label}>{label}</label> : null}
     </div>
   );
-};
+}

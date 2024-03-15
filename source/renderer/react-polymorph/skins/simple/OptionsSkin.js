@@ -48,7 +48,7 @@ type Props = {
   themeId: string,
 };
 
-export const OptionsSkin = (props: Props) => {
+export function OptionsSkin(props: Props) {
   const {
     getOptionProps,
     getHighlightedOptionIndex,
@@ -229,4 +229,4 @@ export const OptionsSkin = (props: Props) => {
       </ul>
     </Bubble>
   );
-};
+}

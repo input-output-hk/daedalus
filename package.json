@@ -58,6 +58,7 @@
     "@electron/rebuild": "3.2.13",
     "@faker-js/faker": "6.0.0",
     "@formatjs/cli": "4.8.3",
+    "@khanacademy/flow-to-ts": "^0.5.2",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
     "@swc-node/register": "1.4.2",
     "@swc/core": "1.2.164",
@@ -188,6 +189,7 @@
     "electron": "27.3.3",
     "electron-log-daedalus": "2.2.21",
     "electron-store": "8.1.0",
+    "fast-password-entropy": "1.1.1",
     "es6-error": "4.1.1",
     "find-process": "1.4.7",
     "fireworks-js": "1.0.4",
@@ -256,6 +258,9 @@
     "util": "0.12.4",
     "uuid": "8.3.2",
     "validator": "13.7.0"
+  },
+  "peerDependencies": {
+    "classnames": "2.5.1"
   },
   "devEngines": {
     "node": ">=v14.18.1",

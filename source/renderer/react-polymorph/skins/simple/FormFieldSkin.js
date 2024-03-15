@@ -1,6 +1,6 @@
 // @flow
 import type { ElementRef } from 'react';
-import React, { useState } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import type { FormFieldProps } from '../../components/FormField';
 import { PopOver } from '../../components/PopOver';

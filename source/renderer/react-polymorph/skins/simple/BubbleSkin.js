@@ -17,7 +17,7 @@ type Props = BubbleProps & {
   themeId: string,
 };
 
-export const BubbleSkin = (props: Props) => {
+export function BubbleSkin(props: Props) {
   const { arrowRelativeToTip, noArrow, theme, themeId } = props;
   const autoWidthClass = arrowRelativeToTip
     ? theme[themeId].hasAutoWidth
@@ -64,4 +64,4 @@ export const BubbleSkin = (props: Props) => {
       )}
     </div>
   );
-};
+}

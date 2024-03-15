@@ -12,7 +12,7 @@ type Props = {
   themeId: string,
 };
 
-export const ProgressBarSkin = (props: Props) => {
+export function ProgressBarSkin(props: Props) {
   const { className, label, progress, themeId } = props;
   const theme = props.theme[themeId];
 
@@ -24,4 +24,4 @@ export const ProgressBarSkin = (props: Props) => {
       </div>
     </div>
   );
-};
+}

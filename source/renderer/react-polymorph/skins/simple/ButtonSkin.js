@@ -16,15 +16,17 @@ type Props = {
   themeId: string,
 };
 
-export const ButtonSkin = (props: Props) => (
-  <button
-    {...pickDOMProps(props)}
-    className={classnames([
-      props.className,
-      props.theme[props.themeId].root,
-      props.disabled ? props.theme[props.themeId].disabled : null,
-    ])}
-  >
-    {props.label}
-  </button>
-);
+export function ButtonSkin(props: Props) {
+  return (
+    <button
+      {...pickDOMProps(props)}
+      className={classnames([
+        props.className,
+        props.theme[props.themeId].root,
+        props.disabled ? props.theme[props.themeId].disabled : null,
+      ])}
+    >
+      {props.label}
+    </button>
+  );
+}

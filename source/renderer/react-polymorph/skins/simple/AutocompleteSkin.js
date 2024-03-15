@@ -35,7 +35,7 @@ type Props = AutocompleteProps & {
   optionHeight: ?number,
 };
 
-export const AutocompleteSkin = (props: Props) => {
+export function AutocompleteSkin(props: Props) {
   const theme = props.theme[props.themeId];
 
   const filteredAndLimitedOptions = slice(
@@ -152,4 +152,4 @@ export const AutocompleteSkin = (props: Props) => {
       />
     </div>
   );
-};
+}

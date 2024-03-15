@@ -12,7 +12,7 @@ type Props = {
   visible: boolean,
 };
 
-export const LoadingSpinnerSkin = (props: Props) => {
+export function LoadingSpinnerSkin(props: Props) {
   const { big, className, themeId, visible } = props;
   const theme = props.theme[themeId];
   const size = big ? theme.big : theme.small;
@@ -20,4 +20,4 @@ export const LoadingSpinnerSkin = (props: Props) => {
   return visible ? (
     <div className={classnames([className, theme.root, size])} />
   ) : null;
-};
+}

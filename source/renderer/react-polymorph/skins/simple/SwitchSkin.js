@@ -18,7 +18,7 @@ type Props = {
   themeId: string,
 };
 
-export const SwitchSkin = (props: Props) => {
+export function SwitchSkin(props: Props) {
   const { theme, themeId } = props;
   return (
     <div
@@ -55,4 +55,4 @@ export const SwitchSkin = (props: Props) => {
       ) : null}
     </div>
   );
-};
+}

@@ -18,36 +18,40 @@ type Props = {
   themeId: string,
 };
 
-export const CheckboxSkin = (props: Props) => (
-  <div
-    role="presentation"
-    aria-hidden
-    className={classnames([
-      props.className,
-      props.theme[props.themeId].root,
-      props.disabled ? props.theme[props.themeId].disabled : null,
-      props.checked ? props.theme[props.themeId].checked : null,
-    ])}
-    onClick={(event) => {
-      if (!props.disabled && props.onChange) {
-        props.onChange(!props.checked, event);
-      }
-    }}
-  >
-    <input
-      {...pickDOMProps(omit(props, 'onChange'))}
-      className={props.theme[props.themeId].input}
-      type="checkbox"
-      readOnly
-    />
+export function CheckboxSkin(props: Props) {
+  return (
     <div
+      role="presentation"
+      aria-hidden
       className={classnames([
-        props.theme[props.themeId].check,
+        props.className,
+        props.theme[props.themeId].root,
+        props.disabled ? props.theme[props.themeId].disabled : null,
         props.checked ? props.theme[props.themeId].checked : null,
       ])}
-    />
-    {props.label && (
-      <label className={props.theme[props.themeId].label}>{props.label}</label>
-    )}
-  </div>
-);
+      onClick={(event) => {
+        if (!props.disabled && props.onChange) {
+          props.onChange(!props.checked, event);
+        }
+      }}
+    >
+      <input
+        {...pickDOMProps(omit(props, 'onChange'))}
+        className={props.theme[props.themeId].input}
+        type="checkbox"
+        readOnly
+      />
+      <div
+        className={classnames([
+          props.theme[props.themeId].check,
+          props.checked ? props.theme[props.themeId].checked : null,
+        ])}
+      />
+      {props.label && (
+        <label className={props.theme[props.themeId].label}>
+          {props.label}
+        </label>
+      )}
+    </div>
+  );
+}

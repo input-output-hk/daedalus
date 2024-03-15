@@ -1,5 +1,7 @@
-// @flow
-export const PASSWORD_INPUT_THEME_API = {
+'use strict';
+exports.__esModule = true;
+exports.PASSWORD_INPUT_THEME_API = void 0;
+exports.PASSWORD_INPUT_THEME_API = {
   root: '',
   tooltip: '',
   hint: '',

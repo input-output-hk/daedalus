@@ -18,7 +18,7 @@ type Props = {
   themeId: string,
 };
 
-export const StepperSkin = (props: Props) => {
+export function StepperSkin(props: Props) {
   let label;
   if (!props.steps) return null;
 
@@ -74,4 +74,4 @@ export const StepperSkin = (props: Props) => {
       </div>
     </div>
   );
-};
+}

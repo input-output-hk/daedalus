@@ -17,7 +17,7 @@ type Props = InputProps & {
   themeId: string,
 };
 
-export const InputSkin = (props: Props) => {
+export function InputSkin(props: Props) {
   const renderInput = (setFormFieldRef) => (
     <input
       ref={setFormFieldRef}
@@ -67,4 +67,4 @@ export const InputSkin = (props: Props) => {
       themeVariables={props.themeVariables}
     />
   );
-};
+}

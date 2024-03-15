@@ -19,7 +19,7 @@ type Props = TooltipProps & {
   themeId: string,
 };
 
-export const TooltipSkin = (props: Props) => {
+export function TooltipSkin(props: Props) {
   const { theme, themeId } = props;
   const isEmpty = props.tip == null || props.tip === '';
   return (
@@ -54,4 +54,4 @@ export const TooltipSkin = (props: Props) => {
       {props.children}
     </span>
   );
-};
+}

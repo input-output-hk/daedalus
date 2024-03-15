@@ -19,7 +19,7 @@ type Props = {
   themeId: string,
 };
 
-export const TogglerSkin = (props: Props) => {
+export function TogglerSkin(props: Props) {
   const { theme, themeId } = props;
   return (
     <div
@@ -62,4 +62,4 @@ export const TogglerSkin = (props: Props) => {
       </div>
     </div>
   );
-};
+}

@@ -30,7 +30,7 @@ type Props = {
   value: string,
 };
 
-export const TextAreaSkin = (props: Props) => {
+export function TextAreaSkin(props: Props) {
   const { theme, themeId } = props;
   return (
     <FormField
@@ -53,4 +53,4 @@ export const TextAreaSkin = (props: Props) => {
       )}
     />
   );
-};
+}
