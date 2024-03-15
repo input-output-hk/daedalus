@@ -2182,7 +2182,7 @@ export default class HardwareWalletsStore extends Store {
       certificates,
       withdrawals,
     } = coinSelection;
-    logger.info('[HW-DEBUG] HWStore - sign transaction Trezor: ', {
+    logger.r('[HW-DEBUG] HWStore - sign transaction Trezor: ', {
       walletId,
     });
     const hardwareWalletConnectionData = get(

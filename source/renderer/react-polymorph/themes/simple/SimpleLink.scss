@@ -1,0 +1,81 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+$link-color: var(--rp-link-color, rgb(41, 111, 208)) !default;
+$link-font-family: var(
+  --rp-link-font-family,
+  $theme-font-medium,
+  sans-serif
+) !default;
+$link-icon-color: var(--rp-link-icon-color, $link-color) !default;
+$link-icon-height: var(--rp-link-icon-height, 8px) !default;
+$link-icon-url: var(
+  --rp-link-icon-url,
+  url('#{$theme-assets-path}/link-ic.svg')
+) !default;
+$link-icon-width: var(--rp-link-icon-width, 8px) !default;
+$link-label-size: var(--rp-link-label-size, 16px) !default;
+$link-space-between-icon-and-label: var(
+  --rp-link-space-between-icon-and-label,
+  4px
+) !default;
+$link-underline-color: var(--rp-link-underline-color, $link-color) !default;
+
+.root {
+  color: $link-color;
+  cursor: pointer;
+  font-family: $link-font-family;
+  font-size: $link-label-size;
+  line-height: 1.38;
+  text-decoration: none;
+  word-break: break-all;
+  height: 22px;
+
+  &.underlined {
+    border-bottom: 1px solid $link-underline-color;
+  }
+
+  &.underlinedOnHover {
+    &:hover {
+      border-bottom: 1px solid $link-underline-color;
+    }
+  }
+
+  &.withIconAfter {
+    &:after {
+      -webkit-mask: $link-icon-url;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: $link-icon-width $link-icon-height;
+      mask: $link-icon-url;
+      mask-repeat: no-repeat;
+      mask-size: $link-icon-width $link-icon-height;
+      background-color: $link-icon-color;
+      content: '';
+      display: inline-block;
+      height: $link-icon-height;
+      margin-left: $link-space-between-icon-and-label;
+      vertical-align: baseline;
+      width: $link-icon-width;
+      padding-right: 1px;
+    }
+  }
+
+  &.withIconBefore {
+    &:before {
+      -webkit-mask: $link-icon-url;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: $link-icon-width $link-icon-height;
+      mask: $link-icon-url;
+      mask-repeat: no-repeat;
+      mask-size: $link-icon-width $link-icon-height;
+      background-color: $link-icon-color;
+      content: '';
+      display: inline-block;
+      height: $link-icon-height;
+      margin-right: $link-space-between-icon-and-label;
+      vertical-align: baseline;
+      width: $link-icon-width;
+    }
+  }
+}

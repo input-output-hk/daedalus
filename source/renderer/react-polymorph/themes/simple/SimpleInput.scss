@@ -1,0 +1,132 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// input
+$input-bg-color: var(--rp-input-bg-color, #fafbfc) !default;
+$input-bg-color-disabled: var(--rp-input-bg-color-disabled, #fcfafa) !default;
+$input-border: var(
+  --rp-input-border,
+  1px solid var(--rp-input-border-color, #c6cdd6)
+) !default;
+$input-border-color-disabled: var(
+  --rp-input-border-color-disabled,
+  #cfcfcf
+) !default;
+$input-border-color-errored: var(
+  --rp-input-border-color-errored,
+  $theme-color-error
+) !default;
+$input-border-color-focus: var(--rp-input-border-color-focus, #5e6066) !default;
+$input-border-radius: var(--rp-input-border-radius, 2px) !default;
+$input-font-family: var(
+  --rp-input-font-family,
+  $theme-font-regular,
+  sans-serif
+) !default;
+$input-font-size: var(--rp-input-font-size, 16px) !default;
+$input-line-height: var(--rp-input-line-height, normal) !default;
+$input-outline-focus: var(--rp-input-outline-focus, none) !default;
+$input-padding: var(--rp-input-padding, 14px 20px) !default;
+$input-text-color: var(--rp-input-text-color, #5e6066) !default;
+$input-text-color-disabled: var(
+  --rp-input-text-color-disabled,
+  rgba(#5e6066, 0.5)
+) !default;
+$input-width: var(--rp-input-width, 100%) !default;
+
+// placeholder
+$input-placeholder-color: var(
+  --rp-input-placeholder-color,
+  rgba(#5e6066, 0.5)
+) !default;
+$input-placeholder-color-disabled: var(
+  --rp-input-placeholder-color-disabled,
+  rgba(#5e6066, 0.5)
+) !default;
+$input-placeholder-font-family: var(
+  --rp-input-placeholder-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+
+.input {
+  background-color: $input-bg-color;
+  border: $input-border;
+  border-radius: $input-border-radius;
+  box-sizing: border-box;
+  color: $input-text-color;
+  font-family: $input-font-family;
+  font-size: $input-font-size;
+  line-height: $input-line-height;
+  padding: $input-padding;
+  width: $input-width;
+
+  &:focus {
+    border-color: $input-border-color-focus;
+    outline: $input-outline-focus;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+  }
+
+  &::-webkit-input-placeholder {
+    color: $input-placeholder-color;
+    font-family: $input-placeholder-font-family;
+  }
+
+  &[type='password'] {
+    padding-top: 16px;
+  }
+}
+
+// BEGIN SPECIAL STATES ---------- //
+
+.errored {
+  border-color: $input-border-color-errored;
+
+  &:focus {
+    border-color: $input-border-color-errored;
+  }
+
+  &:hover {
+    border-color: $input-border-color-errored;
+  }
+}
+
+.disabled {
+  background-color: $input-bg-color-disabled;
+  border-color: $input-border-color-disabled;
+  color: $input-text-color-disabled;
+
+  &::-webkit-input-placeholder {
+    color: $input-placeholder-color-disabled;
+  }
+}
+
+// END SPECIAL STATES ---------- //
+
+// BEGIN CUSTOM VALUE RENDERER ---------- //
+
+.customValueWrapper {
+  input:not(.disabled) {
+    background-color: transparent !important;
+  }
+
+  input {
+    color: transparent !important;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .customValueBlock {
+    background-color: $input-bg-color;
+    height: 48px;
+    left: 0;
+    max-height: 48px;
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+}
+
+// END CUSTOM VALUE RENDERER ---------- //

@@ -1,0 +1,160 @@
+@import 'theme';
+@import 'mixins/arrow';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// select-input
+$select-input-bg-color: var(--rp-select-input-bg-color, #fafbfc) !default;
+$select-input-bg-color-disabled: var(
+  --rp-select-input-bg-color-disabled,
+  rgba(45, 45, 45, 0.05)
+) !default;
+$select-input-border: var(
+  --rp-select-input-border,
+  1px solid var(--rp-select-input-border-color, #c6cdd6)
+) !default;
+$select-input-border-color-focus: var(
+  --rp-select-input-border-color-focus,
+  #5e6066
+) !default;
+$select-input-border-color-disabled: var(
+  --rp-select-input-border-color-disabled,
+  transparent
+) !default;
+$select-input-cursor: var(--rp-select-input-cursor, default) !default;
+$select-input-padding: var(--rp-select-input-padding, 14px 20px) !default;
+$select-input-placeholder-color: var(
+  --rp-select-input-placeholder-color,
+  rgba(#5e6066, 0.5)
+) !default;
+$select-input-placeholder-font-family: var(
+  --rp-select-input-placeholder-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+$select-input-text-color: var(--rp-select-input-text-color, #5e6066) !default;
+$select-input-text-color-disabled: var(
+  --rp-select-input-text-color-disabled,
+  rgba(45, 45, 45, 0.5)
+) !default;
+
+// arrow default
+$select-arrow-bg-color: var(--rp-select-arrow-bg-color, #c6cdd6) !default;
+$select-arrow-bg-color-disabled: var(
+  --rp-select-arrow-bg-color-disabled,
+  #c6cdd6
+) !default;
+$select-arrow-bottom: var(--rp-select-arrow-bottom, 20px) !default;
+$select-arrow-height: var(--rp-select-arrow-height, 7px) !default;
+$select-arrow-left: var(--rp-select-arrow-left, calc(100% - 32px)) !default;
+$select-arrow-rtl-left: var(--rp-select-arrow-rtl-left, 19px) !default;
+$select-arrow-url: var(
+  --rp-select-arrow-url,
+  url('#{$theme-assets-path}/select-arrow.svg')
+) !default;
+$select-arrow-width: var(--rp-select-arrow-width, 11px) !default;
+
+// arrow open
+$select-arrow-bg-color-open: var(
+  --rp-select-arrow-bg-color-open,
+  #5e6066
+) !default;
+$select-arrow-bottom-open: var(--rp-select-arrow-bottom-open, 21px) !default;
+$select-arrow-url-open: var(
+  --rp-select-arrow-url-open,
+  url('#{$theme-assets-path}/select-open-arrow.svg')
+) !default;
+
+.select {
+  position: relative;
+}
+
+.selectInput {
+  input {
+    color: $select-input-text-color;
+    background-color: $select-input-bg-color;
+    border: $select-input-border;
+    cursor: $select-input-cursor;
+    padding: $select-input-padding;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &::-webkit-input-placeholder {
+      color: $select-input-placeholder-color;
+      font-family: $select-input-placeholder-font-family;
+    }
+  }
+
+  &:after {
+    background-color: $select-arrow-bg-color;
+    -webkit-mask: $select-arrow-url;
+    mask: $select-arrow-url;
+    bottom: $select-arrow-bottom;
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    left: $select-arrow-left;
+    height: $select-arrow-height;
+    width: $select-arrow-width;
+  }
+}
+
+// BEGIN SPECIAL STATES ---------- //
+
+// ==== STATE: isOpen ====
+.isOpen {
+  .selectInput {
+    input {
+      border-color: $select-input-border-color-focus;
+    }
+  }
+
+  .selectInput:after {
+    -webkit-mask: $select-arrow-url-open;
+    mask: $select-arrow-url-open;
+    background-color: $select-arrow-bg-color-open;
+    bottom: $select-arrow-bottom-open;
+  }
+}
+
+// ==== STATE: openUpward ====
+.openUpward {
+  .selectInput:after {
+    -webkit-mask: $select-arrow-url-open;
+    bottom: $select-arrow-bottom-open;
+  }
+
+  &.isOpen {
+    .selectInput:after {
+      -webkit-mask: $select-arrow-url;
+      mask: $select-arrow-url;
+      bottom: $select-arrow-bottom;
+    }
+  }
+}
+
+// ==== STATE: disabled ====
+.disabled {
+  pointer-events: none;
+
+  .selectInput input {
+    background-color: $select-input-bg-color-disabled;
+    border-color: $select-input-border-color-disabled;
+  }
+
+  .SimpleInput_customValueBlock {
+    color: $select-input-text-color-disabled;
+  }
+}
+// END SPECIAL STATES ---------- //
+
+// right-to-left languages support
+[dir='rtl'] {
+  .selectInput:after {
+    left: $select-arrow-rtl-left;
+  }
+}
