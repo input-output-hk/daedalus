@@ -1,8 +1,7 @@
-'use strict';
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -19,26 +18,25 @@ var __rest =
 exports.__esModule = true;
 exports.PasswordInput = exports.calculatePasswordScore = void 0;
 // @ts-nocheck
-var fast_password_entropy_1 = require('fast-password-entropy');
-var react_1 = require('react');
-var ThemeContext_1 = require('./HOC/ThemeContext');
+const fast_password_entropy_1 = require('fast-password-entropy');
+const react_1 = require('react');
+const ThemeContext_1 = require('./HOC/ThemeContext');
 // internal utility functions
-var themes_1 = require('../utils/themes');
+const themes_1 = require('../utils/themes');
 // import constants
-var _1 = require('.');
-var calculatePasswordScore = function (password, entropyFactor) {
+const _1 = require('.');
+
+const calculatePasswordScore = function (password, entropyFactor) {
   if (entropyFactor === void 0) {
     entropyFactor = 0.01;
   }
   return Math.min(
-    ((0, fast_password_entropy_1['default'])(password) * entropyFactor).toFixed(
-      2
-    ),
+    ((0, fast_password_entropy_1.default)(password) * entropyFactor).toFixed(2),
     1
   );
 };
 exports.calculatePasswordScore = calculatePasswordScore;
-var STATE = {
+const STATE = {
   DEFAULT: 'default',
   ERROR: 'error',
   INSECURE: 'insecure',
@@ -46,54 +44,54 @@ var STATE = {
   STRONG: 'strong',
 };
 // eslint-disable-next-line react/function-component-definition
-var PasswordInput = function (props) {
-  var context = props.context,
-    passwordFeedbacks = props.passwordFeedbacks,
-    entropyFactor = props.entropyFactor,
-    error = props.error,
-    minLength = props.minLength,
-    maxLength = props.maxLength,
-    minStrongScore = props.minStrongScore,
-    isPasswordRepeat = props.isPasswordRepeat,
-    repeatPassword = props.repeatPassword,
-    skin = props.skin,
-    state = props.state,
-    theme = props.theme,
-    tooltip = props.tooltip,
-    rest = __rest(props, [
-      'context',
-      'passwordFeedbacks',
-      'entropyFactor',
-      'error',
-      'minLength',
-      'maxLength',
-      'minStrongScore',
-      'isPasswordRepeat',
-      'repeatPassword',
-      'skin',
-      'state',
-      'theme',
-      'tooltip',
-    ]);
+const PasswordInput = function (props) {
+  const { context } = props;
+  const { passwordFeedbacks } = props;
+  const { entropyFactor } = props;
+  const { error } = props;
+  const { minLength } = props;
+  const { maxLength } = props;
+  const { minStrongScore } = props;
+  const { isPasswordRepeat } = props;
+  const { repeatPassword } = props;
+  const { skin } = props;
+  const { state } = props;
+  const { theme } = props;
+  const { tooltip } = props;
+  const rest = __rest(props, [
+    'context',
+    'passwordFeedbacks',
+    'entropyFactor',
+    'error',
+    'minLength',
+    'maxLength',
+    'minStrongScore',
+    'isPasswordRepeat',
+    'repeatPassword',
+    'skin',
+    'state',
+    'theme',
+    'tooltip',
+  ]);
   // Theme
-  var themeContext =
+  const themeContext =
     context || (0, react_1.useContext)(ThemeContext_1.ThemeContext);
-  var composedTheme = (0, themes_1.composeTheme)(
+  const composedTheme = (0, themes_1.composeTheme)(
     (0, themes_1.addThemeId)(theme || themeContext.theme, props.themeId),
     (0, themes_1.addThemeId)(props.themeOverrides, props.themeId),
     themeContext.ROOT_THEME_API
   );
   // Skin
-  var PasswordInputSkin =
+  const PasswordInputSkin =
     skin || themeContext.skins[_1.IDENTIFIERS.PASSWORD_INPUT];
   // Logic
-  var dynamicState = exports.PasswordInput.STATE.DEFAULT;
-  var passwordFeedback = null;
-  var password = props.value;
-  var score = (0, exports.calculatePasswordScore)(password, entropyFactor);
-  var isValidPassword =
+  let dynamicState = exports.PasswordInput.STATE.DEFAULT;
+  let passwordFeedback = null;
+  const password = props.value;
+  const score = (0, exports.calculatePasswordScore)(password, entropyFactor);
+  const isValidPassword =
     password.length >= minLength && password.length <= maxLength;
-  var isNotEmpty = password.length > 0;
+  const isNotEmpty = password.length > 0;
   if (error) {
     dynamicState = exports.PasswordInput.STATE.ERROR;
     passwordFeedback = error;

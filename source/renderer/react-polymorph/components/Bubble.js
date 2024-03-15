@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -50,24 +49,25 @@ var __rest =
 exports.__esModule = true;
 exports.Bubble = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
-var events_1 = require('../utils/events');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
+const events_1 = require('../utils/events');
 // import constants
-var _1 = require('.');
-var BubbleBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const BubbleBase = /** @class */ (function (_super) {
   __extends(BubbleBase, _super);
   function BubbleBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     _this._hasEventListeners = false;
     // =========== PRIVATE HELPERS ==============
     _this._handleScrollEventListener = function (action) {
       // const rootNode = this.rootElement;
-      var rootElement = _this.rootElement;
+      const { rootElement } = _this;
       if (rootElement) {
-        var scrollableNode = _this._getFirstScrollableParent(rootElement);
+        const scrollableNode = _this._getFirstScrollableParent(rootElement);
         if (scrollableNode) {
           if (action === 'add') {
             scrollableNode.addEventListener('scroll', _this._updatePosition);
@@ -79,8 +79,8 @@ var BubbleBase = /** @class */ (function (_super) {
     };
     _this._getFirstScrollableParent = function (element) {
       if (element == null) return null;
-      var rootElement = _this.rootElement;
-      var node = {}.hasOwnProperty.call(element, 'current')
+      const { rootElement } = _this;
+      const node = {}.hasOwnProperty.call(element, 'current')
         ? element.current
         : element;
       if (rootElement) {
@@ -94,11 +94,11 @@ var BubbleBase = /** @class */ (function (_super) {
       return node;
     };
     _this._updatePosition = function () {
-      var _a = _this.props,
-        isOpeningUpward = _a.isOpeningUpward,
-        targetRef = _a.targetRef;
-      var rootElement = _this.rootElement;
-      var target =
+      const _a = _this.props;
+      const { isOpeningUpward } = _a;
+      const { targetRef } = _a;
+      const { rootElement } = _this;
+      let target =
         targetRef && typeof targetRef !== 'string' ? targetRef.current : null;
       // Without a target, try to fallback to the parent node
       if (!target) {
@@ -106,8 +106,8 @@ var BubbleBase = /** @class */ (function (_super) {
         if (!rootElement || !rootElement.current) return;
         target = rootElement.current.parentElement;
       }
-      var targetRect = target.getBoundingClientRect();
-      var positionY;
+      const targetRect = target.getBoundingClientRect();
+      let positionY;
       if (isOpeningUpward) {
         // Since we don't know the height of the bubble before rendering it we positioning
         // it with { bottom: XYpx } (within the viewport) and need this calculation:
@@ -115,21 +115,21 @@ var BubbleBase = /** @class */ (function (_super) {
       } else {
         positionY = targetRect.bottom;
       }
-      var position = {
+      const position = {
         width: targetRect.width,
         positionX: targetRect.left,
-        positionY: positionY,
+        positionY,
       };
       _this.setState({
-        position: position,
+        position,
       });
     };
     // define ref
-    _this.rootElement = react_1['default'].createRef();
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    _this.rootElement = react_1.default.createRef();
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -141,15 +141,15 @@ var BubbleBase = /** @class */ (function (_super) {
     return _this;
   }
   BubbleBase.prototype.componentDidMount = function () {
-    var _this = this;
-    setTimeout(function () {
+    const _this = this;
+    setTimeout(() => {
       if (_this.props.isFloating) _this._updatePosition();
     }, 0);
   };
   BubbleBase.prototype.componentDidUpdate = function (prevProps) {
-    var isHidden = this.props.isHidden;
-    var didVisibilityChange = isHidden !== prevProps.isHidden;
-    var wasBubbleHidden = !prevProps.isHidden && isHidden;
+    const { isHidden } = this.props;
+    const didVisibilityChange = isHidden !== prevProps.isHidden;
+    const wasBubbleHidden = !prevProps.isHidden && isHidden;
     if (prevProps.isFloating && !isHidden && !this._hasEventListeners) {
       this._handleScrollEventListener('add');
       (0, events_1.addDocumentListeners)(this._getDocumentEvents());
@@ -185,13 +185,13 @@ var BubbleBase = /** @class */ (function (_super) {
   };
   BubbleBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      skin = _a.skin,
-      theme = _a.theme,
-      themeOverrides = _a.themeOverrides,
-      context = _a.context,
-      rest = __rest(_a, ['skin', 'theme', 'themeOverrides', 'context']);
-    var BubbleSkin = skin || context.skins[_1.IDENTIFIERS.BUBBLE];
+    const _a = this.props;
+    const { skin } = _a;
+    const { theme } = _a;
+    const { themeOverrides } = _a;
+    const { context } = _a;
+    const rest = __rest(_a, ['skin', 'theme', 'themeOverrides', 'context']);
+    const BubbleSkin = skin || context.skins[_1.IDENTIFIERS.BUBBLE];
     return (
       <BubbleSkin
         rootRef={this.rootElement}

@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -47,7 +46,7 @@ var __rest =
       }
     return t;
   };
-var __spreadArray =
+const __spreadArray =
   (this && this.__spreadArray) ||
   function (to, from, pack) {
     if (pack || arguments.length === 2)
@@ -62,32 +61,33 @@ var __spreadArray =
 exports.__esModule = true;
 exports.Header = void 0;
 // @ts-nocheck
-var react_1 = require('react');
-var lodash_1 = require('lodash');
+const react_1 = require('react');
+const lodash_1 = require('lodash');
 // utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // constants
-var _1 = require('.');
-var HeaderBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const HeaderBase = /** @class */ (function (_super) {
   __extends(HeaderBase, _super);
   function HeaderBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     _this._assembleInlineStyles = function (_a) {
-      var center = _a.center,
-        lowerCase = _a.lowerCase,
-        left = _a.left,
-        right = _a.right,
-        upperCase = _a.upperCase;
-      var inlineStyles = {};
-      var textAlign = (0, lodash_1.pickBy)({
-        center: center,
-        left: left,
-        right: right,
+      const { center } = _a;
+      const { lowerCase } = _a;
+      const { left } = _a;
+      const { right } = _a;
+      const { upperCase } = _a;
+      const inlineStyles = {};
+      const textAlign = (0, lodash_1.pickBy)({
+        center,
+        left,
+        right,
       });
-      var textTransform = (0, lodash_1.pickBy)({
-        lowerCase: lowerCase,
-        upperCase: upperCase,
+      const textTransform = (0, lodash_1.pickBy)({
+        lowerCase,
+        upperCase,
       });
       if (!(0, lodash_1.isEmpty)(textAlign)) {
         inlineStyles.textAlign = Object.keys(textAlign)[0];
@@ -98,9 +98,9 @@ var HeaderBase = /** @class */ (function (_super) {
       return inlineStyles;
     };
     _this._assembleHeaderTheme = function (styleProps) {
-      var activeClasses = _this._getActiveClasses(styleProps);
-      var theme = _this.state.composedTheme[_this.props.themeId];
-      return activeClasses.reduce(function (reducedTheme, activeClass) {
+      const activeClasses = _this._getActiveClasses(styleProps);
+      const theme = _this.state.composedTheme[_this.props.themeId];
+      return activeClasses.reduce((reducedTheme, activeClass) => {
         if (activeClass && Object.hasOwnProperty.call(theme, activeClass)) {
           reducedTheme[activeClass] = theme[activeClass];
         }
@@ -108,17 +108,17 @@ var HeaderBase = /** @class */ (function (_super) {
       }, {});
     };
     _this._getActiveFont = function (_a) {
-      var light = _a.light,
-        medium = _a.medium,
-        regular = _a.regular,
-        thin = _a.thin,
-        bold = _a.bold;
-      var fontProps = (0, lodash_1.pickBy)({
-        light: light,
-        medium: medium,
-        regular: regular,
-        thin: thin,
-        bold: bold,
+      const { light } = _a;
+      const { medium } = _a;
+      const { regular } = _a;
+      const { thin } = _a;
+      const { bold } = _a;
+      const fontProps = (0, lodash_1.pickBy)({
+        light,
+        medium,
+        regular,
+        thin,
+        bold,
       });
       if ((0, lodash_1.isEmpty)(fontProps)) {
         return;
@@ -127,15 +127,15 @@ var HeaderBase = /** @class */ (function (_super) {
       return Object.keys(fontProps)[0];
     };
     _this._getActiveTheme = function (_a) {
-      var h1 = _a.h1,
-        h2 = _a.h2,
-        h3 = _a.h3,
-        h4 = _a.h4;
-      var themeProps = (0, lodash_1.pickBy)({
-        h1: h1,
-        h2: h2,
-        h3: h3,
-        h4: h4,
+      const { h1 } = _a;
+      const { h2 } = _a;
+      const { h3 } = _a;
+      const { h4 } = _a;
+      const themeProps = (0, lodash_1.pickBy)({
+        h1,
+        h2,
+        h3,
+        h4,
       });
       if ((0, lodash_1.isEmpty)(themeProps)) {
         return;
@@ -144,9 +144,9 @@ var HeaderBase = /** @class */ (function (_super) {
       return Object.keys(themeProps)[0];
     };
     _this._getActiveClasses = function (styleProps) {
-      var activeClasses = ['header'];
-      var activeTheme = _this._getActiveTheme(styleProps);
-      var activeFont = _this._getActiveFont(styleProps);
+      const activeClasses = ['header'];
+      const activeTheme = _this._getActiveTheme(styleProps);
+      const activeFont = _this._getActiveFont(styleProps);
       if (activeTheme) {
         return __spreadArray(
           __spreadArray([], activeClasses, true),
@@ -165,14 +165,14 @@ var HeaderBase = /** @class */ (function (_super) {
         __spreadArray([], activeClasses, true),
         [activeTheme, activeFont],
         false
-      ).filter(function (val) {
+      ).filter((val) => {
         return val;
       });
     };
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -192,15 +192,15 @@ var HeaderBase = /** @class */ (function (_super) {
     }
   };
   HeaderBase.prototype.render = function () {
-    var _a = this.props,
-      children = _a.children,
-      className = _a.className,
-      skin = _a.skin,
-      context = _a.context,
-      styleProps = __rest(_a, ['children', 'className', 'skin', 'context']);
-    var HeaderSkin = skin || context.skins[_1.IDENTIFIERS.HEADER];
-    var reducedTheme = this._assembleHeaderTheme(styleProps);
-    var inlineStyles = this._assembleInlineStyles(styleProps);
+    const _a = this.props;
+    const { children } = _a;
+    const { className } = _a;
+    const { skin } = _a;
+    const { context } = _a;
+    const styleProps = __rest(_a, ['children', 'className', 'skin', 'context']);
+    const HeaderSkin = skin || context.skins[_1.IDENTIFIERS.HEADER];
+    const reducedTheme = this._assembleHeaderTheme(styleProps);
+    const inlineStyles = this._assembleInlineStyles(styleProps);
     return (
       <HeaderSkin
         className={className}

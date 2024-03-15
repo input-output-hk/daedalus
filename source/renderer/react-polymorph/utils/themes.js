@@ -1,15 +1,15 @@
-'use strict';
 exports.__esModule = true;
 exports.didThemePropsChange = exports.composeTheme = exports.addThemeId = exports.composeComponentStyles = exports.appendToProperty = void 0;
-var lodash_1 = require('lodash');
-var props_1 = require('./props');
-var appendToProperty = function (dest, name, value) {
+const lodash_1 = require('lodash');
+const props_1 = require('./props');
+
+const appendToProperty = function (dest, name, value) {
   dest[name] === '' ? (dest[name] = value) : (dest[name] += ' '.concat(value));
 };
 exports.appendToProperty = appendToProperty;
-var composeComponentStyles = function (componentStyles, componentTheme) {
+const composeComponentStyles = function (componentStyles, componentTheme) {
   if (!componentTheme) return;
-  for (var property in componentStyles) {
+  for (const property in componentStyles) {
     if ((0, props_1.hasProperty)(componentStyles, property)) {
       if ((0, props_1.hasProperty)(componentTheme, property)) {
         (0, exports.appendToProperty)(
@@ -26,14 +26,14 @@ exports.composeComponentStyles = composeComponentStyles;
 // that matches the value of themeId (string)
 // if the property exists, also checks the type of
 // theme[themeId] to ensure it's an object
-var addThemeId = function (theme, themeId) {
-  var _a;
+const addThemeId = function (theme, themeId) {
+  let _a;
   if (theme === void 0) {
     theme = {};
   }
   if (theme && !(0, lodash_1.isEmpty)(theme) && themeId) {
-    var themeIdExists = (0, props_1.hasProperty)(theme, themeId);
-    var themeIdIsObj = typeof theme[themeId] === 'object';
+    const themeIdExists = (0, props_1.hasProperty)(theme, themeId);
+    const themeIdIsObj = typeof theme[themeId] === 'object';
     return themeIdExists && themeIdIsObj
       ? theme
       : ((_a = {}), (_a[themeId] = theme), _a);
@@ -50,7 +50,7 @@ exports.addThemeId = addThemeId;
  * @param themeAPI - The theme API schema that should be used for composition
  * @returns {{}} - The composed theme
  */
-var composeTheme = function (theme, themeOverrides, themeAPI) {
+const composeTheme = function (theme, themeOverrides, themeAPI) {
   if (theme === void 0) {
     theme = {};
   }
@@ -63,10 +63,10 @@ var composeTheme = function (theme, themeOverrides, themeAPI) {
   // Return theme if there are no overrides provided
   if ((0, lodash_1.isEmpty)(themeOverrides)) return theme;
   // final object to be returned
-  var composedTheme = (0, lodash_1.cloneDeep)(themeAPI);
-  for (var componentId in themeAPI) {
+  const composedTheme = (0, lodash_1.cloneDeep)(themeAPI);
+  for (const componentId in themeAPI) {
     if ((0, props_1.hasProperty)(composedTheme, componentId)) {
-      var componentStyles = composedTheme[componentId];
+      const componentStyles = composedTheme[componentId];
       (0, exports.composeComponentStyles)(componentStyles, theme[componentId]);
       (0, exports.composeComponentStyles)(
         componentStyles,
@@ -80,22 +80,22 @@ exports.composeTheme = composeTheme;
 // Used in componentDidUpdate, this function compares the current
 // set of theme related props against the next set to see if any have changed.
 // If true, a component's theme is recomposed and local state is updated
-var didThemePropsChange = function (_a, _b, setState) {
-  var context = _a.context,
-    themeId = _a.themeId,
-    theme = _a.theme,
-    themeOverrides = _a.themeOverrides;
-  var nextContext = _b.context,
-    nextThemeId = _b.themeId,
-    nextTheme = _b.theme,
-    nextOverrides = _b.themeOverrides;
+const didThemePropsChange = function (_a, _b, setState) {
+  const { context } = _a;
+  const { themeId } = _a;
+  const { theme } = _a;
+  const { themeOverrides } = _a;
+  const nextContext = _b.context;
+  const nextThemeId = _b.themeId;
+  const nextTheme = _b.theme;
+  const nextOverrides = _b.themeOverrides;
   if (
     !(0, lodash_1.isEqual)(context, nextContext) ||
     !(0, lodash_1.isEqual)(themeId, nextThemeId) ||
     !(0, lodash_1.isEqual)(theme, nextTheme) ||
     !(0, lodash_1.isEqual)(themeOverrides, nextOverrides)
   ) {
-    setState(function () {
+    setState(() => {
       return {
         composedTheme: (0, exports.composeTheme)(
           (0, exports.addThemeId)(nextTheme || nextContext.theme, nextThemeId),

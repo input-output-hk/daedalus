@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -38,17 +37,17 @@ var __assign =
       function (t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
-          for (var p in s)
+          for (const p in s)
             if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
         }
         return t;
       };
     return __assign.apply(this, arguments);
   };
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -65,28 +64,29 @@ var __rest =
 exports.__esModule = true;
 exports.NumericInput = void 0;
 // @ts-nocheck
-var string_1 = require('lodash/string');
-var react_1 = require('react');
-var bignumber_js_1 = require('bignumber.js');
+const string_1 = require('lodash/string');
+const react_1 = require('react');
+const bignumber_js_1 = require('bignumber.js');
 // external libraries
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
+const withTheme_1 = require('./HOC/withTheme');
 // import constants
-var strings_1 = require('../utils/strings');
-var Input_1 = require('./Input');
-var NumericInputBase = /** @class */ (function (_super) {
+const strings_1 = require('../utils/strings');
+const Input_1 = require('./Input');
+
+const NumericInputBase = /** @class */ (function (_super) {
   __extends(NumericInputBase, _super);
   function NumericInputBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     _this._hasInputBeenChanged = false;
     _this.onChange = function (newValue, event) {
-      var _a = _this.props,
-        value = _a.value,
-        onChange = _a.onChange;
-      var result = _this.processValueChange(event.nativeEvent);
+      const _a = _this.props;
+      const { value } = _a;
+      const { onChange } = _a;
+      const result = _this.processValueChange(event.nativeEvent);
       if (result) {
         _this._hasInputBeenChanged = true;
-        var hasValueChanged = value !== result.value;
+        const hasValueChanged = value !== result.value;
         if (hasValueChanged && onChange) {
           onChange(result.value, event);
         }
@@ -97,19 +97,20 @@ var NumericInputBase = /** @class */ (function (_super) {
       }
     };
     _this.setInputCaretPosition = function (position) {
-      var inputElement = _this.inputElement;
+      const { inputElement } = _this;
       if (!inputElement.current) return;
-      var input = inputElement.current;
+      const input = inputElement.current;
       input.selectionStart = position;
       input.selectionEnd = position;
     };
     _this.focus = function () {
-      var inputElement = _this.inputElement;
+      const { inputElement } = _this;
       if (!inputElement.current) return;
       inputElement.current.focus();
     };
     _this.onBlur = function (event) {
-      var _a, _b;
+      let _a;
+      let _b;
       _this.setState({
         fallbackInputValue: null,
       });
@@ -117,7 +118,7 @@ var NumericInputBase = /** @class */ (function (_super) {
         ? void 0
         : _b.call(_a, event);
     };
-    _this.inputElement = react_1['default'].createRef();
+    _this.inputElement = react_1.default.createRef();
     _this.state = {
       inputCaretPosition: 0,
       fallbackInputValue: null,
@@ -125,8 +126,8 @@ var NumericInputBase = /** @class */ (function (_super) {
     return _this;
   }
   NumericInputBase.prototype.componentDidMount = function () {
-    var inputElement = this.inputElement;
-    var autoFocus = this.props.autoFocus;
+    const { inputElement } = this;
+    const { autoFocus } = this.props;
     if (autoFocus) {
       this.focus();
       if (inputElement && inputElement.current) {
@@ -140,10 +141,10 @@ var NumericInputBase = /** @class */ (function (_super) {
     prevProps,
     prevState
   ) {
-    var value = this.props.value;
-    var inputCaretPosition = this.state.inputCaretPosition;
-    var hasValueBeenChanged = value !== prevProps.value;
-    var hasCaretBeenChanged =
+    const { value } = this.props;
+    const { inputCaretPosition } = this.state;
+    const hasValueBeenChanged = value !== prevProps.value;
+    const hasCaretBeenChanged =
       inputCaretPosition !== prevState.inputCaretPosition;
     if (
       this._hasInputBeenChanged ||
@@ -160,38 +161,38 @@ var NumericInputBase = /** @class */ (function (_super) {
    * 3. Final processing
    */
   NumericInputBase.prototype.processValueChange = function (event) {
-    var _a = this.props,
-      allowSigns = _a.allowSigns,
-      allowOnlyIntegers = _a.allowOnlyIntegers,
-      decimalPlaces = _a.decimalPlaces,
-      value = _a.value;
-    var inputType = event.inputType,
-      target = event.target;
-    var _b = this.getBigNumberFormat(),
-      decimalSeparator = _b.decimalSeparator,
-      groupSeparator = _b.groupSeparator;
-    var changedCaretPosition = target.selectionStart;
-    var valueToProcess = target.value;
-    var fallbackInputValue = this.state.fallbackInputValue;
-    var isBackwardDelete = inputType === 'deleteContentBackward';
-    var isForwardDelete = inputType === 'deleteContentForward';
-    var isDeletion = isForwardDelete || isBackwardDelete;
-    var isInsert = inputType === 'insertText';
-    var deleteCaretCorrection = isBackwardDelete ? 0 : 1;
-    var validInputSignsRegExp = new RegExp(
+    const _a = this.props;
+    const { allowSigns } = _a;
+    const { allowOnlyIntegers } = _a;
+    const { decimalPlaces } = _a;
+    const { value } = _a;
+    const { inputType } = event;
+    const { target } = event;
+    const _b = this.getBigNumberFormat();
+    const { decimalSeparator } = _b;
+    const { groupSeparator } = _b;
+    const changedCaretPosition = target.selectionStart;
+    const valueToProcess = target.value;
+    const { fallbackInputValue } = this.state;
+    const isBackwardDelete = inputType === 'deleteContentBackward';
+    const isForwardDelete = inputType === 'deleteContentForward';
+    const isDeletion = isForwardDelete || isBackwardDelete;
+    const isInsert = inputType === 'insertText';
+    const deleteCaretCorrection = isBackwardDelete ? 0 : 1;
+    const validInputSignsRegExp = new RegExp(
       '^([-])?([0-9'.concat(decimalSeparator).concat(groupSeparator, ']+)?$')
     );
-    var validInputNoSignsRegExp = new RegExp(
+    const validInputNoSignsRegExp = new RegExp(
       '^([0-9'.concat(decimalSeparator).concat(groupSeparator, ']+)?$')
     );
-    var validInputOnlyIntegersRegExp = new RegExp('^([0-9]+)?$');
-    var validInputRegex = allowSigns
+    const validInputOnlyIntegersRegExp = new RegExp('^([0-9]+)?$');
+    let validInputRegex = allowSigns
       ? validInputSignsRegExp
       : validInputNoSignsRegExp;
     validInputRegex = allowOnlyIntegers
       ? validInputOnlyIntegersRegExp
       : validInputRegex;
-    var valueHasLeadingZero = /^0[1-9]/.test(valueToProcess);
+    const valueHasLeadingZero = /^0[1-9]/.test(valueToProcess);
     /**
      * ========= HANDLE HARD EDGE-CASES =============
      */
@@ -199,8 +200,8 @@ var NumericInputBase = /** @class */ (function (_super) {
     if (!validInputRegex.test(valueToProcess)) {
       return {
         caretPosition: changedCaretPosition - 1,
-        fallbackInputValue: fallbackInputValue,
-        value: value,
+        fallbackInputValue,
+        value,
       };
     }
     // Case: Everything was deleted -> reset state
@@ -232,29 +233,29 @@ var NumericInputBase = /** @class */ (function (_super) {
     /**
      * ========= CLEAN THE INPUT =============
      */
-    var currentNumber =
+    const currentNumber =
       value == null
-        ? new bignumber_js_1['default']('0')
-        : new bignumber_js_1['default'](value);
-    var currentValue =
+        ? new bignumber_js_1.default('0')
+        : new bignumber_js_1.default(value);
+    const currentValue =
       fallbackInputValue !== null && fallbackInputValue !== void 0
         ? fallbackInputValue
         : this.valueToFormattedString(currentNumber);
-    var currentNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
+    const currentNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
       currentValue
     );
-    var hadDecimalSeparatorBefore = currentNumberOfDecimalSeparators > 0;
+    const hadDecimalSeparatorBefore = currentNumberOfDecimalSeparators > 0;
     // New Value
-    var newValue = valueToProcess;
-    var newCaretPosition = changedCaretPosition;
-    var newNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
+    let newValue = valueToProcess;
+    let newCaretPosition = changedCaretPosition;
+    const newNumberOfDecimalSeparators = this.getNumberOfDecimalSeparators(
       newValue
     );
     // Case: A second decimal separator was added somewhere
     if (hadDecimalSeparatorBefore && newNumberOfDecimalSeparators === 2) {
-      var oldFirstIndex = currentValue.indexOf(decimalSeparator);
-      var newFirstIndex = newValue.indexOf(decimalSeparator);
-      var wasSeparatorAddedBeforeOldOne = newFirstIndex < oldFirstIndex;
+      const oldFirstIndex = currentValue.indexOf(decimalSeparator);
+      const newFirstIndex = newValue.indexOf(decimalSeparator);
+      const wasSeparatorAddedBeforeOldOne = newFirstIndex < oldFirstIndex;
       // Remove the second decimal point and set caret position
       newValue = (0, strings_1.removeCharAtPosition)(
         newValue,
@@ -265,7 +266,7 @@ var NumericInputBase = /** @class */ (function (_super) {
       newCaretPosition = newValue.indexOf(decimalSeparator) + 1;
     }
     // Case: Decimal separator was replaced with a number
-    var newValueHasTrailingZeros = new RegExp('^[1-9]+0+$');
+    const newValueHasTrailingZeros = new RegExp('^[1-9]+0+$');
     if (
       !!decimalPlaces &&
       value != null &&
@@ -277,8 +278,8 @@ var NumericInputBase = /** @class */ (function (_super) {
     ) {
       return {
         caretPosition: changedCaretPosition - 1,
-        fallbackInputValue: fallbackInputValue,
-        value: value,
+        fallbackInputValue,
+        value,
       };
     }
     /**
@@ -295,30 +296,30 @@ var NumericInputBase = /** @class */ (function (_super) {
     }
     // Case: Decimal separator was added at the beginning of number
     if (newValue.charAt(0) === decimalSeparator) {
-      var newCaretPos = isInsert ? 2 : 1;
+      const newCaretPos = isInsert ? 2 : 1;
       return {
         value: this.bigNumberToFixed(
-          new bignumber_js_1['default']('0.'.concat(newValue.substr(1)))
+          new bignumber_js_1.default('0.'.concat(newValue.substr(1)))
         ),
         caretPosition: newCaretPos,
         fallbackInputValue: null,
       };
     }
-    var newNumber =
+    const newNumber =
       newValue === '' ? null : this.formattedValueToBigNumber(newValue);
     // Case: Invalid change has been made -> ignore it
     if (newNumber == null) {
-      var deleteAdjustment = isBackwardDelete ? 0 : 1; // special cases when deleting dot
-      var insertAdjustment = -1; // don't move caret if numbers are "inserted"
+      const deleteAdjustment = isBackwardDelete ? 0 : 1; // special cases when deleting dot
+      const insertAdjustment = -1; // don't move caret if numbers are "inserted"
       return {
         caretPosition:
           changedCaretPosition +
           (isDeletion ? deleteAdjustment : insertAdjustment),
-        fallbackInputValue: fallbackInputValue,
+        fallbackInputValue,
         value: this.bigNumberToFixed(currentNumber),
       };
     }
-    var formattedNewNumber = this.valueToFormattedString(newNumber);
+    const formattedNewNumber = this.valueToFormattedString(newNumber);
     // Case: Dot was added at the end of number
     if (
       !isDeletion &&
@@ -333,11 +334,14 @@ var NumericInputBase = /** @class */ (function (_super) {
       };
     }
     // Case: Decimal separator was deleted while number of decimal places specified
-    var hasDecimalPlaces = decimalPlaces != null;
-    var wasDecimalSeparatorRemoved =
+    const hasDecimalPlaces = decimalPlaces != null;
+    const wasDecimalSeparatorRemoved =
       hadDecimalSeparatorBefore && !newNumberOfDecimalSeparators;
-    var newValueSlicedAtNewInputtedNumber = newValue.slice(1, newValue.length);
-    var newTrailingNumbersAreAllZero = /^0+$/.test(
+    const newValueSlicedAtNewInputtedNumber = newValue.slice(
+      1,
+      newValue.length
+    );
+    const newTrailingNumbersAreAllZero = /^0+$/.test(
       newValueSlicedAtNewInputtedNumber
     );
     if (wasDecimalSeparatorRemoved && hasDecimalPlaces && !isInsert) {
@@ -362,15 +366,15 @@ var NumericInputBase = /** @class */ (function (_super) {
       };
     }
     // Case: Valid change has been made
-    var hasNumberChanged = !this.isSameValue(currentNumber, newNumber);
-    var groupSeparatorsDiff =
+    const hasNumberChanged = !this.isSameValue(currentNumber, newNumber);
+    const groupSeparatorsDiff =
       this.getNumberOfGroupSeparators(formattedNewNumber) -
       this.getNumberOfGroupSeparators(newValue);
-    var hasNumberOfGroupSeparatorsChanged = groupSeparatorsDiff > 0;
-    var onlyNumberOfGroupSeparatorsChanged =
+    const hasNumberOfGroupSeparatorsChanged = groupSeparatorsDiff > 0;
+    const onlyNumberOfGroupSeparatorsChanged =
       !hasNumberChanged && hasNumberOfGroupSeparatorsChanged;
-    var leadingZeroCorrection = valueHasLeadingZero ? -1 : 0;
-    var caretCorrection =
+    const leadingZeroCorrection = valueHasLeadingZero ? -1 : 0;
+    const caretCorrection =
       (onlyNumberOfGroupSeparatorsChanged
         ? deleteCaretCorrection
         : groupSeparatorsDiff) + leadingZeroCorrection;
@@ -381,74 +385,73 @@ var NumericInputBase = /** @class */ (function (_super) {
     };
   };
   NumericInputBase.prototype.getBigNumberFormat = function () {
-    var _a;
+    let _a;
     return (_a = this.props.bigNumberFormat) !== null && _a !== void 0
       ? _a
-      : bignumber_js_1['default'].config().FORMAT;
+      : bignumber_js_1.default.config().FORMAT;
   };
   NumericInputBase.prototype.valueToFormattedString = function (number) {
-    var _a = this.props,
-      bigNumberFormat = _a.bigNumberFormat,
-      decimalPlaces = _a.decimalPlaces,
-      roundingMode = _a.roundingMode,
-      allowOnlyIntegers = _a.allowOnlyIntegers;
-    var debugSetting = bignumber_js_1['default'].DEBUG;
-    if (bignumber_js_1['default'].isBigNumber(number) && number.isNaN())
-      return '';
+    const _a = this.props;
+    const { bigNumberFormat } = _a;
+    const { decimalPlaces } = _a;
+    const { roundingMode } = _a;
+    const { allowOnlyIntegers } = _a;
+    const debugSetting = bignumber_js_1.default.DEBUG;
+    if (bignumber_js_1.default.isBigNumber(number) && number.isNaN()) return '';
     try {
-      bignumber_js_1['default'].DEBUG = true;
+      bignumber_js_1.default.DEBUG = true;
       return allowOnlyIntegers
-        ? new bignumber_js_1['default'](number).toString()
-        : new bignumber_js_1['default'](number).toFormat(
+        ? new bignumber_js_1.default(number).toString()
+        : new bignumber_js_1.default(number).toFormat(
             decimalPlaces,
             roundingMode,
             __assign(
-              __assign({}, bignumber_js_1['default'].config().FORMAT),
+              __assign({}, bignumber_js_1.default.config().FORMAT),
               bigNumberFormat
             )
           );
     } catch (e) {
       return '';
     } finally {
-      bignumber_js_1['default'].DEBUG = debugSetting;
+      bignumber_js_1.default.DEBUG = debugSetting;
     }
   };
   NumericInputBase.prototype.bigNumberToFixed = function (number) {
-    var _a = this.props,
-      decimalPlaces = _a.decimalPlaces,
-      roundingMode = _a.roundingMode;
+    const _a = this.props;
+    const { decimalPlaces } = _a;
+    const { roundingMode } = _a;
     return number.toFixed(decimalPlaces, roundingMode);
   };
   NumericInputBase.prototype.formattedValueToBigNumber = function (value) {
-    var _a = this.getBigNumberFormat(),
-      decimalSeparator = _a.decimalSeparator,
-      groupSeparator = _a.groupSeparator;
-    return new bignumber_js_1['default'](
+    const _a = this.getBigNumberFormat();
+    const { decimalSeparator } = _a;
+    const { groupSeparator } = _a;
+    return new bignumber_js_1.default(
       value
         .replace(escapedGlobalRegExp(groupSeparator), '')
         .replace(escapedGlobalRegExp(decimalSeparator), '.')
     );
   };
   NumericInputBase.prototype.getNumberOfGroupSeparators = function (value) {
-    var groupSeparator = this.getBigNumberFormat().groupSeparator;
+    const { groupSeparator } = this.getBigNumberFormat();
     return (value.match(escapedGlobalRegExp(groupSeparator)) || []).length;
   };
   NumericInputBase.prototype.getNumberOfDecimalSeparators = function (value) {
-    var decimalSeparator = this.getBigNumberFormat().decimalSeparator;
+    const { decimalSeparator } = this.getBigNumberFormat();
     return (value.match(escapedGlobalRegExp(decimalSeparator)) || []).length;
   };
   NumericInputBase.prototype.isSameValue = function (first, second) {
-    return bignumber_js_1['default'].isBigNumber(first)
+    return bignumber_js_1.default.isBigNumber(first)
       ? first.isEqualTo(second)
       : first === second;
   };
   NumericInputBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      onChange = _a.onChange,
-      value = _a.value,
-      rest = __rest(_a, ['onChange', 'value']);
-    var inputValue = this.state.fallbackInputValue
+    const _a = this.props;
+    const { onChange } = _a;
+    const { value } = _a;
+    const rest = __rest(_a, ['onChange', 'value']);
+    const inputValue = this.state.fallbackInputValue
       ? this.state.fallbackInputValue
       : this.valueToFormattedString(value);
     return (
@@ -466,7 +469,7 @@ var NumericInputBase = /** @class */ (function (_super) {
     allowSigns: true,
     allowOnlyIntegers: false,
     readOnly: false,
-    roundingMode: bignumber_js_1['default'].ROUND_FLOOR,
+    roundingMode: bignumber_js_1.default.ROUND_FLOOR,
     value: null,
   };
   return NumericInputBase;

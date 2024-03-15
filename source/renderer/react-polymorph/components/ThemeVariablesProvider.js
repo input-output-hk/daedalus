@@ -1,14 +1,14 @@
-'use strict';
 exports.__esModule = true;
 exports.ThemeVariablesProvider = void 0;
-var react_1 = require('react');
+const react_1 = require('react');
+
 function ThemeVariablesProvider(props) {
-  var isRoot = props.isRoot,
-    variables = props.variables;
-  (0, react_1.useEffect)(function () {
+  const { isRoot } = props;
+  const { variables } = props;
+  (0, react_1.useEffect)(() => {
     if (isRoot) {
       // Set css variables on document root
-      Object.keys(variables).forEach(function (key) {
+      Object.keys(variables).forEach((key) => {
         document.documentElement.style.setProperty(key, variables[key]);
       });
     }

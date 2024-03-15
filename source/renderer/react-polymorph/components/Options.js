@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -38,17 +37,17 @@ var __assign =
       function (t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
-          for (var p in s)
+          for (const p in s)
             if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
         }
         return t;
       };
     return __assign.apply(this, arguments);
   };
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -65,22 +64,23 @@ var __rest =
 exports.__esModule = true;
 exports.Options = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // external libraries
-var lodash_1 = require('lodash');
+const lodash_1 = require('lodash');
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
-var props_1 = require('../utils/props');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
+const props_1 = require('../utils/props');
 // import constants
-var _1 = require('.');
-var OptionsBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const OptionsBase = /** @class */ (function (_super) {
   __extends(OptionsBase, _super);
   function OptionsBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     _this.setupOnOpenListeners = function () {
       document.addEventListener('keydown', _this._handleKeyDown, false);
-      var input = _this.searchInputRef.current;
+      const input = _this.searchInputRef.current;
       if (input) {
         input.focus && input.focus();
         input.select && input.select();
@@ -90,11 +90,11 @@ var OptionsBase = /** @class */ (function (_super) {
       document.removeEventListener('keydown', _this._handleKeyDown, false);
     };
     _this.close = function () {
-      var _a = _this.props,
-        isOpen = _a.isOpen,
-        onClose = _a.onClose,
-        resetOnClose = _a.resetOnClose,
-        toggleOpen = _a.toggleOpen;
+      const _a = _this.props;
+      const { isOpen } = _a;
+      const { onClose } = _a;
+      const { resetOnClose } = _a;
+      const { toggleOpen } = _a;
       if (isOpen && toggleOpen) toggleOpen();
       _this.setState({
         highlightedOptionIndex: resetOnClose
@@ -106,11 +106,11 @@ var OptionsBase = /** @class */ (function (_super) {
     _this.getHighlightedOptionIndex = function () {
       // If nothing is higlighted, highlight selected option
       // In case nothing is selected, highlight first option
-      var _a = _this.props,
-        options = _a.options,
-        isOpeningUpward = _a.isOpeningUpward;
-      var currentIndex = _this.state.highlightedOptionIndex;
-      var index = 0;
+      const _a = _this.props;
+      const { options } = _a;
+      const { isOpeningUpward } = _a;
+      const currentIndex = _this.state.highlightedOptionIndex;
+      let index = 0;
       if (currentIndex !== null) {
         index = currentIndex;
       }
@@ -128,27 +128,27 @@ var OptionsBase = /** @class */ (function (_super) {
       }
     };
     _this.isSelectedOption = function (optionIndex) {
-      var isOpeningUpward = _this.props.isOpeningUpward;
-      var options = _this.getFilteredOptions() || [];
-      var index = isOpeningUpward
+      const { isOpeningUpward } = _this.props;
+      const options = _this.getFilteredOptions() || [];
+      const index = isOpeningUpward
         ? options.length - 1 - optionIndex
         : optionIndex;
-      var option = options[index];
+      const option = options[index];
       return option && _this.props.selectedOption === option;
     };
     _this.isHighlightedOption = function (optionIndex) {
       return _this.state.highlightedOptionIndex === optionIndex;
     };
     _this.isDisabledOption = function (optionIndex) {
-      var options = _this.props.options;
-      var option = options[optionIndex];
+      const { options } = _this.props;
+      const option = options[optionIndex];
       return option && !option.isDisabled;
     };
     _this.handleClickOnOption = function (option, event) {
-      var _a = _this.props,
-        onChange = _a.onChange,
-        onBlur = _a.onBlur,
-        persistSearchValue = _a.persistSearchValue;
+      const _a = _this.props;
+      const { onChange } = _a;
+      const { onBlur } = _a;
+      const { persistSearchValue } = _a;
       if (option) {
         if (option.isDisabled) return;
         if (onChange) onChange(option, event);
@@ -161,7 +161,7 @@ var OptionsBase = /** @class */ (function (_super) {
     };
     _this.handleSearch = function (searchValue) {
       _this.setState({
-        searchValue: searchValue,
+        searchValue,
       });
     };
     _this.handleClearSearchValue = function () {
@@ -170,20 +170,20 @@ var OptionsBase = /** @class */ (function (_super) {
       });
     };
     _this.getFilteredOptions = function () {
-      var _a = _this.props,
-        hasSearch = _a.hasSearch,
-        onSearch = _a.onSearch,
-        options = _a.options;
-      var searchValue = _this.state.searchValue;
+      const _a = _this.props;
+      const { hasSearch } = _a;
+      const { onSearch } = _a;
+      const { options } = _a;
+      const { searchValue } = _this.state;
       if (!hasSearch || !searchValue) {
         return options;
       }
       if (hasSearch && (0, lodash_1.isFunction)(onSearch)) {
         return onSearch(searchValue, options);
       }
-      var filteredOptions = options.filter(function (option) {
-        var label = option.label;
-        var regex = new RegExp((0, lodash_1.escapeRegExp)(searchValue), 'i');
+      const filteredOptions = options.filter((option) => {
+        const { label } = option;
+        const regex = new RegExp((0, lodash_1.escapeRegExp)(searchValue), 'i');
         return regex.test(label);
       });
       return filteredOptions;
@@ -195,29 +195,29 @@ var OptionsBase = /** @class */ (function (_super) {
       if (_a === void 0) {
         _a = {};
       }
-      var onClick = _a.onClick,
-        onMouseEnter = _a.onMouseEnter,
-        rest = __rest(_a, ['onClick', 'onMouseEnter']);
-      var _b = _this.props,
-        isOpen = _b.isOpen,
-        themeId = _b.themeId,
-        options = _b.options,
-        selectedOptions = _b.selectedOptions;
-      var composedTheme = _this.state.composedTheme;
-      var _c = _this,
-        isHighlightedOption = _c.isHighlightedOption,
-        isDisabledOption = _c.isDisabledOption,
-        handleClickOnOption = _c.handleClickOnOption,
-        setHighlightedOptionIndex = _c.setHighlightedOptionIndex;
+      const { onClick } = _a;
+      const { onMouseEnter } = _a;
+      const rest = __rest(_a, ['onClick', 'onMouseEnter']);
+      const _b = _this.props;
+      const { isOpen } = _b;
+      const { themeId } = _b;
+      const { options } = _b;
+      const { selectedOptions } = _b;
+      const { composedTheme } = _this.state;
+      const _c = _this;
+      const { isHighlightedOption } = _c;
+      const { isDisabledOption } = _c;
+      const { handleClickOnOption } = _c;
+      const { setHighlightedOptionIndex } = _c;
       return __assign(
         {
-          options: options,
-          selectedOptions: selectedOptions,
-          isOpen: isOpen,
-          isHighlightedOption: isHighlightedOption,
-          isDisabledOption: isDisabledOption,
+          options,
+          selectedOptions,
+          isOpen,
+          isHighlightedOption,
+          isDisabledOption,
           theme: composedTheme[themeId],
-          onClick: function (
+          onClick(
             option,
             event // the user's custom onClick event handler is composed with
           ) {
@@ -227,7 +227,7 @@ var OptionsBase = /** @class */ (function (_super) {
               event
             );
           },
-          onMouseEnter: function (
+          onMouseEnter(
             index,
             event // user's custom onMouseEnter is composed with this.setHighlightedOptionIndex
           ) {
@@ -241,20 +241,20 @@ var OptionsBase = /** @class */ (function (_super) {
       );
     };
     _this.getNoResults = function () {
-      var _a = _this.props,
-        noResults = _a.noResults,
-        hasSearch = _a.hasSearch;
-      var options = _this.getFilteredOptions();
+      const _a = _this.props;
+      const { noResults } = _a;
+      const { hasSearch } = _a;
+      const options = _this.getFilteredOptions();
       return noResults || (hasSearch && !options.length);
     };
     // ========= PRIVATE HELPERS =========
     _this._handleSelectionOnKeyDown = function (event) {
-      var options = _this.getFilteredOptions();
+      const options = _this.getFilteredOptions();
       if (options.length) {
-        var isOpeningUpward = _this.props.isOpeningUpward;
-        var currentIndex = _this.state.highlightedOptionIndex;
-        var reverseIndex = options.length - 1 - currentIndex;
-        var highlightedOption =
+        const { isOpeningUpward } = _this.props;
+        const currentIndex = _this.state.highlightedOptionIndex;
+        const reverseIndex = options.length - 1 - currentIndex;
+        const highlightedOption =
           options[isOpeningUpward ? reverseIndex : currentIndex];
         _this.handleClickOnOption(highlightedOption, event);
       } else {
@@ -262,11 +262,11 @@ var OptionsBase = /** @class */ (function (_super) {
       }
     };
     _this._handleHighlightMove = function (currentIndex, direction) {
-      var options = _this.props.options;
+      const { options } = _this.props;
       if (options.length) {
-        var lowerIndexBound = 0;
-        var upperIndexBound = options.length - 1;
-        var newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        const lowerIndexBound = 0;
+        const upperIndexBound = options.length - 1;
+        let newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
         // Make sure new index is within options bounds
         newIndex = Math.max(
           lowerIndexBound,
@@ -274,8 +274,8 @@ var OptionsBase = /** @class */ (function (_super) {
         );
         if (options[newIndex].isDisabled) {
           // Try to jump over disabled options
-          var canMoveUp = newIndex > lowerIndexBound;
-          var canMoveDown = newIndex < upperIndexBound;
+          const canMoveUp = newIndex > lowerIndexBound;
+          const canMoveDown = newIndex < upperIndexBound;
           if (
             (direction === 'up' && canMoveUp) ||
             (direction === 'down' && canMoveDown)
@@ -289,8 +289,8 @@ var OptionsBase = /** @class */ (function (_super) {
     };
     // this needs to get passed to OptionsSkin and attached to each Option Li
     _this._handleKeyDown = function (event) {
-      var targetTagName = (0, lodash_1.get)(event, 'target.tagName');
-      var highlightOptionIndex = _this.state.highlightedOptionIndex;
+      const targetTagName = (0, lodash_1.get)(event, 'target.tagName');
+      const highlightOptionIndex = _this.state.highlightedOptionIndex;
       switch (event.keyCode) {
         case 9:
           // Tab key: selects currently highlighted option
@@ -328,9 +328,9 @@ var OptionsBase = /** @class */ (function (_super) {
       }
     };
     _this._setMouseIsOverOptions = function (isMouseOverOptions) {
-      var _a = _this.props,
-        toggleMouseLocation = _a.toggleMouseLocation,
-        setMouseIsOverOptions = _a.setMouseIsOverOptions;
+      const _a = _this.props;
+      const { toggleMouseLocation } = _a;
+      const { setMouseIsOverOptions } = _a;
       if (
         _this.state.isMouseOverOptions !== isMouseOverOptions &&
         toggleMouseLocation
@@ -341,14 +341,14 @@ var OptionsBase = /** @class */ (function (_super) {
         setMouseIsOverOptions(isMouseOverOptions);
       }
       _this.setState({
-        isMouseOverOptions: isMouseOverOptions,
+        isMouseOverOptions,
       });
     };
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
-    _this.searchInputRef = react_1['default'].createRef();
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
+    _this.searchInputRef = react_1.default.createRef();
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -384,26 +384,26 @@ var OptionsBase = /** @class */ (function (_super) {
   };
   OptionsBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      highlightSearch = _a.highlightSearch,
-      skin = _a.skin,
-      targetRef = _a.targetRef,
-      context = _a.context,
-      optionsRef = _a.optionsRef,
-      isOpen = _a.isOpen,
-      rest = __rest(_a, [
-        'highlightSearch',
-        'skin',
-        'targetRef',
-        'context',
-        'optionsRef',
-        'isOpen',
-      ]);
-    var _b = this.state,
-      composedTheme = _b.composedTheme,
-      highlightedOptionIndex = _b.highlightedOptionIndex,
-      searchValue = _b.searchValue;
-    var OptionsSkin = skin || context.skins[_1.IDENTIFIERS.OPTIONS];
+    const _a = this.props;
+    const { highlightSearch } = _a;
+    const { skin } = _a;
+    const { targetRef } = _a;
+    const { context } = _a;
+    const { optionsRef } = _a;
+    const { isOpen } = _a;
+    const rest = __rest(_a, [
+      'highlightSearch',
+      'skin',
+      'targetRef',
+      'context',
+      'optionsRef',
+      'isOpen',
+    ]);
+    const _b = this.state;
+    const { composedTheme } = _b;
+    const { highlightedOptionIndex } = _b;
+    const { searchValue } = _b;
+    const OptionsSkin = skin || context.skins[_1.IDENTIFIERS.OPTIONS];
     return (
       <OptionsSkin
         getHighlightedOptionIndex={this.getHighlightedOptionIndex}
@@ -445,7 +445,7 @@ var OptionsBase = /** @class */ (function (_super) {
     theme: null,
     themeId: _1.IDENTIFIERS.OPTIONS,
     themeOverrides: {},
-    toggleOpen: function () {},
+    toggleOpen() {},
   };
   return OptionsBase;
 })(react_1.Component);

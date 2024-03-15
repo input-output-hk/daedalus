@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -50,39 +49,40 @@ var __rest =
 exports.__esModule = true;
 exports.FormField = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // import constants
-var _1 = require('.');
-var FormFieldBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const FormFieldBase = /** @class */ (function (_super) {
   __extends(FormFieldBase, _super);
   function FormFieldBase(props) {
-    var _this = this;
-    var _a;
+    let _this = this;
+    let _a;
     _this = _super.call(this, props) || this;
     _this.setError = function (error) {
       return _this.setState({
-        error: error,
+        error,
       });
     };
     _this.focusChild = function () {
-      var formFieldRef = _this.formFieldRef;
+      const { formFieldRef } = _this;
       if (formFieldRef && formFieldRef.current) {
         if (typeof formFieldRef.current.focus === 'function') {
           formFieldRef.current.focus();
         }
       }
     };
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.formFieldRef =
       (_a = props.formFieldRef) !== null && _a !== void 0
         ? _a
-        : react_1['default'].createRef();
+        : react_1.default.createRef();
     _this.state = {
       error: '',
       composedTheme: (0, themes_1.composeTheme)(
@@ -104,20 +104,20 @@ var FormFieldBase = /** @class */ (function (_super) {
   };
   FormFieldBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      skin = _a.skin,
-      theme = _a.theme,
-      themeOverrides = _a.themeOverrides,
-      error = _a.error,
-      context = _a.context,
-      rest = __rest(_a, [
-        'skin',
-        'theme',
-        'themeOverrides',
-        'error',
-        'context',
-      ]);
-    var FormFieldSkin = skin || context.skins[_1.IDENTIFIERS.FORM_FIELD];
+    const _a = this.props;
+    const { skin } = _a;
+    const { theme } = _a;
+    const { themeOverrides } = _a;
+    const { error } = _a;
+    const { context } = _a;
+    const rest = __rest(_a, [
+      'skin',
+      'theme',
+      'themeOverrides',
+      'error',
+      'context',
+    ]);
+    const FormFieldSkin = skin || context.skins[_1.IDENTIFIERS.FORM_FIELD];
     return (
       <FormFieldSkin
         error={error || this.state.error}

@@ -1,4 +1,3 @@
-'use strict';
 exports.__esModule = true;
 exports.BUBBLE_THEME_API = void 0;
 exports.BUBBLE_THEME_API = {

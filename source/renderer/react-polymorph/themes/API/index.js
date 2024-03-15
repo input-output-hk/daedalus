@@ -1,36 +1,37 @@
-'use strict';
-var _a;
+let _a;
 exports.__esModule = true;
 exports.IDENTIFIERS = exports.ROOT_THEME_API = void 0;
-var components_1 = require('../../components');
+const components_1 = require('../../components');
+
 exports.IDENTIFIERS = components_1.IDENTIFIERS;
-var autocomplete_1 = require('./autocomplete');
-var bubble_1 = require('./bubble');
-var button_1 = require('./button');
-var checkbox_1 = require('./checkbox');
-var dropdown_1 = require('./dropdown');
-var flex_1 = require('./flex');
-var formfield_1 = require('./formfield');
-var grid_1 = require('./grid');
-var gutter_1 = require('./gutter');
-var header_1 = require('./header');
-var infinitescroll_1 = require('./infinitescroll');
-var input_1 = require('./input');
-var link_1 = require('./link');
-var loadingspinner_1 = require('./loadingspinner');
-var modal_1 = require('./modal');
-var options_1 = require('./options');
-var password_input_1 = require('./password-input');
-var pop_over_1 = require('./pop-over');
-var progressbar_1 = require('./progressbar');
-var radio_1 = require('./radio');
-var scrollbar_1 = require('./scrollbar');
-var select_1 = require('./select');
-var stepper_1 = require('./stepper');
-var switch_1 = require('./switch');
-var textarea_1 = require('./textarea');
-var toggler_1 = require('./toggler');
-var tooltip_1 = require('./tooltip');
+const autocomplete_1 = require('./autocomplete');
+const bubble_1 = require('./bubble');
+const button_1 = require('./button');
+const checkbox_1 = require('./checkbox');
+const dropdown_1 = require('./dropdown');
+const flex_1 = require('./flex');
+const formfield_1 = require('./formfield');
+const grid_1 = require('./grid');
+const gutter_1 = require('./gutter');
+const header_1 = require('./header');
+const infinitescroll_1 = require('./infinitescroll');
+const input_1 = require('./input');
+const link_1 = require('./link');
+const loadingspinner_1 = require('./loadingspinner');
+const modal_1 = require('./modal');
+const options_1 = require('./options');
+const password_input_1 = require('./password-input');
+const pop_over_1 = require('./pop-over');
+const progressbar_1 = require('./progressbar');
+const radio_1 = require('./radio');
+const scrollbar_1 = require('./scrollbar');
+const select_1 = require('./select');
+const stepper_1 = require('./stepper');
+const switch_1 = require('./switch');
+const textarea_1 = require('./textarea');
+const toggler_1 = require('./toggler');
+const tooltip_1 = require('./tooltip');
+
 exports.ROOT_THEME_API =
   ((_a = {}),
   (_a[components_1.IDENTIFIERS.AUTOCOMPLETE] =

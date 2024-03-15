@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -33,22 +32,23 @@ var __extends =
 exports.__esModule = true;
 exports.ThemeProvider = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // external libraries
-var lodash_1 = require('lodash');
+const lodash_1 = require('lodash');
 // contains default theme and context provider
-var ThemeContext_1 = require('./HOC/ThemeContext');
+const ThemeContext_1 = require('./HOC/ThemeContext');
 // imports the Root Theme API object which specifies the shape
 // of a complete theme for every component in this library, used in this.composeLibraryTheme
-var API_1 = require('../themes/API');
+const API_1 = require('../themes/API');
 // internal utility functions
-var themes_1 = require('../utils/themes');
-var props_1 = require('../utils/props');
-var ThemeVariablesProvider_1 = require('./ThemeVariablesProvider');
-var ThemeProvider = /** @class */ (function (_super) {
+const themes_1 = require('../utils/themes');
+const props_1 = require('../utils/props');
+const ThemeVariablesProvider_1 = require('./ThemeVariablesProvider');
+
+const ThemeProvider = /** @class */ (function (_super) {
   __extends(ThemeProvider, _super);
   function ThemeProvider(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     // composeLibraryTheme returns a single obj containing theme definitions
     // for every component in the library. Every key on the returned obj is named
     // in conjunction with a component in the library and each key's value is structured
@@ -66,8 +66,8 @@ var ThemeProvider = /** @class */ (function (_super) {
         return theme;
       }
       // final object to be returned
-      var composedTheme = {};
-      for (var componentName in API_1.ROOT_THEME_API) {
+      const composedTheme = {};
+      for (const componentName in API_1.ROOT_THEME_API) {
         // check if ROOT_THEME_API contains the key of componentName
         if ((0, props_1.hasProperty)(API_1.ROOT_THEME_API, componentName)) {
           // check if theme contains a key of componentName
@@ -98,8 +98,8 @@ var ThemeProvider = /** @class */ (function (_super) {
         return componentTheme;
       }
       // final composed theme obj to be returned at end
-      var composedComponentTheme = (0, lodash_1.cloneDeep)(componentThemeAPI);
-      for (var className in componentThemeAPI) {
+      const composedComponentTheme = (0, lodash_1.cloneDeep)(componentThemeAPI);
+      for (const className in componentThemeAPI) {
         if ((0, props_1.hasProperty)(componentThemeAPI, className)) {
           if ((0, props_1.hasProperty)(componentTheme, className)) {
             (0, themes_1.appendToProperty)(
@@ -119,25 +119,25 @@ var ThemeProvider = /** @class */ (function (_super) {
       }
       return composedComponentTheme;
     };
-    var theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       theme: _this._composeLibraryTheme(theme, themeOverrides),
     };
     return _this;
   }
   ThemeProvider.prototype.componentDidUpdate = function (prevProps) {
-    var _this = this;
-    var prevTheme = prevProps.theme,
-      prevThemeOverrides = prevProps.themeOverrides;
-    var _a = this.props,
-      theme = _a.theme,
-      themeOverrides = _a.themeOverrides;
+    const _this = this;
+    const prevTheme = prevProps.theme;
+    const prevThemeOverrides = prevProps.themeOverrides;
+    const _a = this.props;
+    const { theme } = _a;
+    const { themeOverrides } = _a;
     if (
       !(0, lodash_1.isEqual)(prevTheme, theme) ||
       !(0, lodash_1.isEqual)(prevThemeOverrides, themeOverrides)
     ) {
-      this.setState(function () {
+      this.setState(() => {
         return {
           theme: _this._composeLibraryTheme(theme, themeOverrides),
         };
@@ -145,14 +145,14 @@ var ThemeProvider = /** @class */ (function (_super) {
     }
   };
   ThemeProvider.prototype.render = function () {
-    var theme = this.state.theme;
-    var _a = this.props,
-      isRoot = _a.isRoot,
-      skins = _a.skins,
-      variables = _a.variables;
-    var providerState = {
-      skins: skins,
-      theme: theme,
+    const { theme } = this.state;
+    const _a = this.props;
+    const { isRoot } = _a;
+    const { skins } = _a;
+    const { variables } = _a;
+    const providerState = {
+      skins,
+      theme,
       ROOT_THEME_API: API_1.ROOT_THEME_API,
     };
     return (

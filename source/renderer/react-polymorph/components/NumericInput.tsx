@@ -2,7 +2,6 @@
 import { escapeRegExp } from 'lodash/string';
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
-// @ts-expect-error
 import type { Element, ElementRef } from 'react';
 // external libraries
 // internal utility functions
@@ -433,7 +432,7 @@ class NumericInputBase extends Component<NumericInputProps, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { onChange, value, ...rest } = this.props;
+    const { value, ...rest } = this.props;
     const inputValue = this.state.fallbackInputValue
       ? this.state.fallbackInputValue
       : this.valueToFormattedString(value);

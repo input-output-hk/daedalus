@@ -192,6 +192,7 @@
     "fast-password-entropy": "1.1.1",
     "es6-error": "4.1.1",
     "find-process": "1.4.7",
+    "filter-invalid-dom-props": "3.0.1",
     "fireworks-js": "1.0.4",
     "form-data": "3.0.0",
     "fs-extra": "9.0.1",

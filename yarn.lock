@@ -6302,6 +6302,11 @@ filter-invalid-dom-props@2.1.0:
   dependencies:
     html-attributes "1.1.0"
 
+filter-invalid-dom-props@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/filter-invalid-dom-props/-/filter-invalid-dom-props-3.0.1.tgz#d4a1740c3c56a1acf0442651518682fcb2af5991"
+  integrity sha512-+n6cgQxx6dgZxWCV94pqAO/Jq9G/QwuHw4RPM8bk2INSQLnNVwjw/ljTEtAjL0HGCvAv9dHucOq1tHQ2bMoxDA==
+
 finalhandler@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.2.0.tgz#7d23fe5731b207b4640e4fcd00aec1f9207a7b32"

@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -50,26 +49,27 @@ var __rest =
 exports.__esModule = true;
 exports.Dropdown = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // import constants
-var _1 = require('.');
-var GlobalListeners_1 = require('./HOC/GlobalListeners');
-var DropdownBase = /** @class */ (function (_super) {
+const _1 = require('.');
+const GlobalListeners_1 = require('./HOC/GlobalListeners');
+
+const DropdownBase = /** @class */ (function (_super) {
   __extends(DropdownBase, _super);
   function DropdownBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     // ========= PUBLIC SKIN API =========
     _this.isOpen = function () {
-      var _a = _this.props,
-        clickToOpen = _a.clickToOpen,
-        isOpen = _a.isOpen;
-      var _b = _this.state,
-        isMouseOverItems = _b.isMouseOverItems,
-        isMouseOverRoot = _b.isMouseOverRoot;
-      var isOpenBecauseOfHover = clickToOpen
+      const _a = _this.props;
+      const { clickToOpen } = _a;
+      const { isOpen } = _a;
+      const _b = _this.state;
+      const { isMouseOverItems } = _b;
+      const { isMouseOverRoot } = _b;
+      const isOpenBecauseOfHover = clickToOpen
         ? false
         : isMouseOverItems || isMouseOverRoot;
       return isOpen || _this.state.isOpen || isOpenBecauseOfHover;
@@ -93,16 +93,16 @@ var DropdownBase = /** @class */ (function (_super) {
     // ========= PRIVATE SKIN API =========
     _this._setMouseOverItems = function (isMouseOverItems) {
       _this.setState({
-        isMouseOverItems: isMouseOverItems,
+        isMouseOverItems,
       });
     };
     _this._setMouseOverRoot = function (isMouseOverRoot) {
       _this.setState({
-        isMouseOverRoot: isMouseOverRoot,
+        isMouseOverRoot,
       });
     };
     _this._onItemSelected = function (item) {
-      var onItemSelected = _this.props.onItemSelected;
+      const { onItemSelected } = _this.props;
       _this.close();
       if (onItemSelected) {
         onItemSelected(item);
@@ -114,12 +114,12 @@ var DropdownBase = /** @class */ (function (_super) {
       }
     };
     // define ref
-    _this.rootElement = react_1['default'].createRef();
-    _this.optionsElement = react_1['default'].createRef();
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    _this.rootElement = react_1.default.createRef();
+    _this.optionsElement = react_1.default.createRef();
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -145,30 +145,30 @@ var DropdownBase = /** @class */ (function (_super) {
     this.close();
   };
   DropdownBase.prototype.render = function () {
-    var _this = this;
-    var _a = this.props,
-      clickToOpen = _a.clickToOpen,
-      context = _a.context,
-      isOpen = _a.isOpen,
-      isOpeningUpward = _a.isOpeningUpward,
-      onItemSelected = _a.onItemSelected,
-      skin = _a.skin,
-      theme = _a.theme,
-      themeOverrides = _a.themeOverrides,
-      rest = __rest(_a, [
-        'clickToOpen',
-        'context',
-        'isOpen',
-        'isOpeningUpward',
-        'onItemSelected',
-        'skin',
-        'theme',
-        'themeOverrides',
-      ]);
-    var DropdownSkin = skin || context.skins[_1.IDENTIFIERS.DROPDOWN];
-    var _b = this.state,
-      isMouseOverItems = _b.isMouseOverItems,
-      isMouseOverRoot = _b.isMouseOverRoot;
+    const _this = this;
+    const _a = this.props;
+    const { clickToOpen } = _a;
+    const { context } = _a;
+    const { isOpen } = _a;
+    const { isOpeningUpward } = _a;
+    const { onItemSelected } = _a;
+    const { skin } = _a;
+    const { theme } = _a;
+    const { themeOverrides } = _a;
+    const rest = __rest(_a, [
+      'clickToOpen',
+      'context',
+      'isOpen',
+      'isOpeningUpward',
+      'onItemSelected',
+      'skin',
+      'theme',
+      'themeOverrides',
+    ]);
+    const DropdownSkin = skin || context.skins[_1.IDENTIFIERS.DROPDOWN];
+    const _b = this.state;
+    const { isMouseOverItems } = _b;
+    const { isMouseOverRoot } = _b;
     return (
       <GlobalListeners_1.GlobalListeners
         mouseIsOverOptions={isMouseOverItems}
@@ -180,8 +180,8 @@ var DropdownBase = /** @class */ (function (_super) {
         toggleOpen={this.toggleOpen}
       >
         {function (_a) {
-          var optionsMaxHeight = _a.optionsMaxHeight,
-            optionHeight = _a.optionHeight;
+          const { optionsMaxHeight } = _a;
+          const { optionHeight } = _a;
           return (
             <DropdownSkin
               isOpen={_this.isOpen()}

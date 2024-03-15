@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -50,18 +49,19 @@ var __rest =
 exports.__esModule = true;
 exports.Select = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // internal components
-var GlobalListeners_1 = require('./HOC/GlobalListeners');
+const GlobalListeners_1 = require('./HOC/GlobalListeners');
 // internal utility functions
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // import constants
-var _1 = require('.');
-var SelectBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const SelectBase = /** @class */ (function (_super) {
   __extends(SelectBase, _super);
   function SelectBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     // ========= PUBLIC SKIN API =========
     // applying focus to the input element will
     // toggle options open because Select's input is read only
@@ -89,7 +89,7 @@ var SelectBase = /** @class */ (function (_super) {
     _this.handleInputClick = function (event) {
       event.stopPropagation();
       event.preventDefault();
-      var inputElement = _this.inputElement;
+      const { inputElement } = _this;
       if (
         inputElement.current &&
         document.activeElement === inputElement.current
@@ -105,24 +105,24 @@ var SelectBase = /** @class */ (function (_super) {
       _this.toggleOpen();
     };
     _this.getSelectedOption = function () {
-      var _a = _this.props,
-        options = _a.options,
-        value = _a.value,
-        allowBlank = _a.allowBlank;
-      for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
-        var option = options_1[_i];
+      const _a = _this.props;
+      const { options } = _a;
+      const { value } = _a;
+      const { allowBlank } = _a;
+      for (let _i = 0, options_1 = options; _i < options_1.length; _i++) {
+        const option = options_1[_i];
         if (option.value === value) return option;
       }
       if (!allowBlank) return options[0];
     };
     // define ref
-    _this.rootElement = react_1['default'].createRef();
-    _this.inputElement = react_1['default'].createRef();
-    _this.optionsElement = react_1['default'].createRef();
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    _this.rootElement = react_1.default.createRef();
+    _this.inputElement = react_1.default.createRef();
+    _this.optionsElement = react_1.default.createRef();
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -150,15 +150,20 @@ var SelectBase = /** @class */ (function (_super) {
     }
   };
   SelectBase.prototype.render = function () {
-    var _this = this;
+    const _this = this;
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      skin = _a.skin,
-      context = _a.context,
-      optionHeight = _a.optionHeight,
-      searchHeight = _a.searchHeight,
-      rest = __rest(_a, ['skin', 'context', 'optionHeight', 'searchHeight']);
-    var SelectSkin = skin || context.skins[_1.IDENTIFIERS.SELECT];
+    const _a = this.props;
+    const { skin } = _a;
+    const { context } = _a;
+    const { optionHeight } = _a;
+    const { searchHeight } = _a;
+    const rest = __rest(_a, [
+      'skin',
+      'context',
+      'optionHeight',
+      'searchHeight',
+    ]);
+    const SelectSkin = skin || context.skins[_1.IDENTIFIERS.SELECT];
     return (
       <GlobalListeners_1.GlobalListeners
         mouseIsOverOptions={this.state.mouseIsOverOptions}
@@ -171,7 +176,7 @@ var SelectBase = /** @class */ (function (_super) {
         optionsLength={this.props.options.length}
       >
         {function (_a) {
-          var optionsMaxHeight = _a.optionsMaxHeight;
+          const { optionsMaxHeight } = _a;
           return (
             <SelectSkin
               isOpen={_this.state.isOpen}

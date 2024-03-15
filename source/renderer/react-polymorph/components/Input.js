@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -30,10 +29,10 @@ var __extends =
           : ((__.prototype = b.prototype), new __());
     };
   })();
-var __rest =
+const __rest =
   (this && this.__rest) ||
   function (s, e) {
-    var t = {};
+    const t = {};
     for (var p in s)
       if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
@@ -50,52 +49,53 @@ var __rest =
 exports.__esModule = true;
 exports.Input = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // external libraries
-var lodash_1 = require('lodash');
+const lodash_1 = require('lodash');
 // utilities
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // constants
-var _1 = require('.');
-var InputBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const InputBase = /** @class */ (function (_super) {
   __extends(InputBase, _super);
   function InputBase(props) {
-    var _this = this;
-    var _a;
+    let _this = this;
+    let _a;
     _this = _super.call(this, props) || this;
     _this.onChange = function (event) {
-      var _a = _this.props,
-        onChange = _a.onChange,
-        disabled = _a.disabled,
-        readOnly = _a.readOnly;
+      const _a = _this.props;
+      const { onChange } = _a;
+      const { disabled } = _a;
+      const { readOnly } = _a;
       if (disabled || readOnly) return;
       if (onChange) onChange(_this._processValue(event.target.value), event);
     };
     _this.focus = function () {
-      var inputElement = _this.inputElement;
+      const { inputElement } = _this;
       if (!inputElement.current) return;
       inputElement.current.focus();
     };
     _this._setError = function (error) {
-      var setError = _this.props.setError;
+      const { setError } = _this.props;
       // checks for setError func from FormField component
       // if this Input instance is being used within the render function
       // of a FormField instance, the error field within FormField's local state
       // will be set
       if (setError) setError(error);
       _this.setState({
-        error: error,
+        error,
       });
     };
     _this.inputElement =
       (_a = props.inputRef) !== null && _a !== void 0
         ? _a
-        : react_1['default'].createRef();
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+        : react_1.default.createRef();
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -132,13 +132,13 @@ var InputBase = /** @class */ (function (_super) {
     return value;
   };
   InputBase.prototype._enforceMaxLength = function (value) {
-    var maxLength = this.props.maxLength;
-    var isTooLong = maxLength != null && value.length > maxLength;
+    const { maxLength } = this.props;
+    const isTooLong = maxLength != null && value.length > maxLength;
     return isTooLong ? value.substring(0, maxLength) : value;
   };
   InputBase.prototype._enforceMinLength = function (value) {
-    var minLength = this.props.minLength;
-    var isTooShort = minLength != null && value.length < minLength;
+    const { minLength } = this.props;
+    const isTooShort = minLength != null && value.length < minLength;
     if (isTooShort) {
       this._setError('Please enter a valid input');
     } else if (this.state.error !== '') {
@@ -148,30 +148,30 @@ var InputBase = /** @class */ (function (_super) {
   };
   InputBase.prototype.render = function () {
     // destructuring props ensures only the "...rest" get passed down
-    var _a = this.props,
-      skin = _a.skin,
-      context = _a.context,
-      theme = _a.theme,
-      themeOverrides = _a.themeOverrides,
-      onChange = _a.onChange,
-      error = _a.error,
-      maxLength = _a.maxLength,
-      minLength = _a.minLength,
-      setError = _a.setError,
-      autoFocus = _a.autoFocus,
-      rest = __rest(_a, [
-        'skin',
-        'context',
-        'theme',
-        'themeOverrides',
-        'onChange',
-        'error',
-        'maxLength',
-        'minLength',
-        'setError',
-        'autoFocus',
-      ]);
-    var InputSkin = skin || context.skins[_1.IDENTIFIERS.INPUT];
+    const _a = this.props;
+    const { skin } = _a;
+    const { context } = _a;
+    const { theme } = _a;
+    const { themeOverrides } = _a;
+    const { onChange } = _a;
+    const { error } = _a;
+    const { maxLength } = _a;
+    const { minLength } = _a;
+    const { setError } = _a;
+    const { autoFocus } = _a;
+    const rest = __rest(_a, [
+      'skin',
+      'context',
+      'theme',
+      'themeOverrides',
+      'onChange',
+      'error',
+      'maxLength',
+      'minLength',
+      'setError',
+      'autoFocus',
+    ]);
+    const InputSkin = skin || context.skins[_1.IDENTIFIERS.INPUT];
     return (
       <InputSkin
         error={error || this.state.error}

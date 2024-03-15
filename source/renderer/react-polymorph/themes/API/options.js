@@ -1,4 +1,3 @@
-'use strict';
 exports.__esModule = true;
 exports.OPTIONS_THEME_API = void 0;
 exports.OPTIONS_THEME_API = {

@@ -1,4 +1,3 @@
-'use strict';
 exports.__esModule = true;
 exports.IDENTIFIERS = void 0;
 exports.IDENTIFIERS = {

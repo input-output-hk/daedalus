@@ -1,4 +1,3 @@
-'use strict';
 exports.__esModule = true;
 exports.LINK_THEME_API = void 0;
 exports.LINK_THEME_API = {

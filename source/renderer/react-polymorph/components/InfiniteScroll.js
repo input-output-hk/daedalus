@@ -1,5 +1,4 @@
-'use strict';
-var __extends =
+const __extends =
   (this && this.__extends) ||
   (function () {
     var extendStatics = function (d, b) {
@@ -10,7 +9,7 @@ var __extends =
             d.__proto__ = b;
           }) ||
         function (d, b) {
-          for (var p in b)
+          for (const p in b)
             if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
         };
       return extendStatics(d, b);
@@ -18,7 +17,7 @@ var __extends =
     return function (d, b) {
       if (typeof b !== 'function' && b !== null)
         throw new TypeError(
-          'Class extends value ' + String(b) + ' is not a constructor or null'
+          `Class extends value ${String(b)} is not a constructor or null`
         );
       extendStatics(d, b);
       function __() {
@@ -33,26 +32,27 @@ var __extends =
 exports.__esModule = true;
 exports.InfiniteScroll = void 0;
 // @ts-nocheck
-var react_1 = require('react');
+const react_1 = require('react');
 // utilities
-var withTheme_1 = require('./HOC/withTheme');
-var themes_1 = require('../utils/themes');
+const withTheme_1 = require('./HOC/withTheme');
+const themes_1 = require('../utils/themes');
 // constants
-var _1 = require('.');
-var InfiniteScrollBase = /** @class */ (function (_super) {
+const _1 = require('.');
+
+const InfiniteScrollBase = /** @class */ (function (_super) {
   __extends(InfiniteScrollBase, _super);
   function InfiniteScrollBase(props) {
-    var _this = _super.call(this, props) || this;
+    const _this = _super.call(this, props) || this;
     // calls user's fetchData function from props
     _this._handleFetchData = function () {
       return _this.props.fetchData(_this.setState.bind(_this));
     };
     // scroll event listener attached to scrollContainer element
     _this._handleScroll = function () {
-      var _a = _this.state,
-        error = _a.error,
-        isLoading = _a.isLoading,
-        hasMoreData = _a.hasMoreData;
+      const _a = _this.state;
+      const { error } = _a;
+      const { isLoading } = _a;
+      const { hasMoreData } = _a;
       // return early for error, loading, or lack of future data
       if (error || isLoading || !hasMoreData) {
         return;
@@ -61,14 +61,14 @@ var InfiniteScrollBase = /** @class */ (function (_super) {
     };
     // prevents new data fetch until user has scrolled near bottom of existing data
     _this._checkForScrollBottom = function () {
-      var _a = _this,
-        scrollContainer = _a.scrollContainer,
-        threshold = _a.props.threshold;
+      const _a = _this;
+      const { scrollContainer } = _a;
+      const { threshold } = _a.props;
       if (!scrollContainer.current) return;
-      var _b = scrollContainer.current,
-        offsetHeight = _b.offsetHeight,
-        scrollTop = _b.scrollTop,
-        scrollHeight = _b.scrollHeight;
+      const _b = scrollContainer.current;
+      const { offsetHeight } = _b;
+      const { scrollTop } = _b;
+      const { scrollHeight } = _b;
       if (offsetHeight + scrollTop >= scrollHeight - threshold) {
         return _this._handleFetchData();
       }
@@ -76,12 +76,12 @@ var InfiniteScrollBase = /** @class */ (function (_super) {
     _this._isFunction = function (renderProp) {
       return renderProp && typeof renderProp === 'function';
     };
-    var context = props.context,
-      themeId = props.themeId,
-      theme = props.theme,
-      themeOverrides = props.themeOverrides;
+    const { context } = props;
+    const { themeId } = props;
+    const { theme } = props;
+    const { themeOverrides } = props;
     // refs
-    _this.scrollContainer = react_1['default'].createRef();
+    _this.scrollContainer = react_1.default.createRef();
     _this.state = {
       composedTheme: (0, themes_1.composeTheme)(
         (0, themes_1.addThemeId)(theme || context.theme, themeId),
@@ -96,7 +96,7 @@ var InfiniteScrollBase = /** @class */ (function (_super) {
     return _this;
   }
   InfiniteScrollBase.prototype.componentDidMount = function () {
-    var scrollContainer = this.scrollContainer;
+    const { scrollContainer } = this;
     this._handleFetchData();
     if (!scrollContainer.current) return;
     scrollContainer.current.addEventListener('scroll', this._handleScroll);
@@ -111,24 +111,24 @@ var InfiniteScrollBase = /** @class */ (function (_super) {
     }
   };
   InfiniteScrollBase.prototype.render = function () {
-    var _a = this,
-      _b = _a.props,
-      className = _b.className,
-      context = _b.context,
-      renderItems = _b.renderItems,
-      skin = _b.skin,
-      themeId = _b.themeId,
-      _c = _a.state,
-      composedTheme = _c.composedTheme,
-      data = _c.data,
-      error = _c.error,
-      hasMoreData = _c.hasMoreData,
-      isLoading = _c.isLoading,
-      scrollContainer = _a.scrollContainer;
+    const _a = this;
+    const _b = _a.props;
+    const { className } = _b;
+    const { context } = _b;
+    const { renderItems } = _b;
+    const { skin } = _b;
+    const { themeId } = _b;
+    const _c = _a.state;
+    const { composedTheme } = _c;
+    const { data } = _c;
+    const { error } = _c;
+    const { hasMoreData } = _c;
+    const { isLoading } = _c;
+    const { scrollContainer } = _a;
     if (!this._isFunction(renderItems)) {
       return null;
     }
-    var InfiniteScrollSkin =
+    const InfiniteScrollSkin =
       skin || context.skins[_1.IDENTIFIERS.INFINITE_SCROLL];
     return (
       <InfiniteScrollSkin
@@ -148,7 +148,7 @@ var InfiniteScrollBase = /** @class */ (function (_super) {
   InfiniteScrollBase.displayName = 'InfiniteScroll';
   InfiniteScrollBase.defaultProps = {
     context: (0, withTheme_1.createEmptyContext)(),
-    fetchData: function () {},
+    fetchData() {},
     theme: null,
     themeId: _1.IDENTIFIERS.INFINITE_SCROLL,
     themeOverrides: {},

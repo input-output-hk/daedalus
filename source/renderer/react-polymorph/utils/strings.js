@@ -1,7 +1,6 @@
-'use strict';
 exports.__esModule = true;
 exports.removeCharAtPosition = void 0;
-var removeCharAtPosition = function (str, pos) {
+const removeCharAtPosition = function (str, pos) {
   return str.substring(0, pos) + str.substring(pos + 1, str.length);
 };
 exports.removeCharAtPosition = removeCharAtPosition;
