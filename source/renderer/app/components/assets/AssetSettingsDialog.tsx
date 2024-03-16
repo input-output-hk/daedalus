@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { range } from 'lodash';

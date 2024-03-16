@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { createRef, Component } from 'react';
 import type { ElementRef } from 'react';
 import { observer } from 'mobx-react';

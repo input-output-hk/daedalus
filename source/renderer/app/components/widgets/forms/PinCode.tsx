@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';

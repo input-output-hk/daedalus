@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';

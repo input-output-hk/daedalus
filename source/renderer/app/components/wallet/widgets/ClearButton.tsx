@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';

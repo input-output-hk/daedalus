@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';

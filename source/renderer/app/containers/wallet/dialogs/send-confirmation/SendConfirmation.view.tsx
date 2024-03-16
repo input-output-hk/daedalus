@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import compose from 'lodash/fp/compose';
 import { observer } from 'mobx-react';

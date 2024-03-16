@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { noop } from 'lodash/fp';

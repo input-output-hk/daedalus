@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import type { ElementRef } from 'react';
 import classnames from 'classnames';

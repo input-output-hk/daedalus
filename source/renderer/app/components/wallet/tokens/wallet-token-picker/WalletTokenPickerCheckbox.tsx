@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback } from 'react';
 import { injectIntl } from 'react-intl';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';

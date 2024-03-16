@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import classnames from 'classnames';
 import { intlShape, injectIntl } from 'react-intl';

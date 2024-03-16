@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useRef, useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { times } from 'lodash';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';

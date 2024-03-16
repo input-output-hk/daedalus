@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';

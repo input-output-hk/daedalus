@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';

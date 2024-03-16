@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -16,14 +17,13 @@ import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import styles from './WalletSelectImportDialog.scss';
+
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';

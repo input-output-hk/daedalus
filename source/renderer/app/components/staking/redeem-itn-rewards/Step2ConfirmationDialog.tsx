@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';

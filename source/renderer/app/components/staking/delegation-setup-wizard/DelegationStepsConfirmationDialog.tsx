@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { intlShape, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';

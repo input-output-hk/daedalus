@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';

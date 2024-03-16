@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';

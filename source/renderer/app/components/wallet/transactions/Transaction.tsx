@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';

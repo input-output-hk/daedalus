@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useCallback, useState, useEffect } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';

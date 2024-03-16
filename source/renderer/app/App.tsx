@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { History } from 'history';

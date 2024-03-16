@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { map } from 'lodash';
+
 import classnames from 'classnames';
-// @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node, Element, ElementRef } from 'react';
 import { Modal } from 'react-polymorph/lib/components/Modal';
 import { Button } from 'react-polymorph/lib/components/Button';

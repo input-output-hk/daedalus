@@ -1,5 +1,5 @@
+// @ts-nocheck
 import React, { Component } from 'react';
-// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';

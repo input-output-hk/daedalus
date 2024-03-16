@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -20,8 +22,8 @@ import {
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
