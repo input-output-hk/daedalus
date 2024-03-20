@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { $Values } from 'utility-types';
 import stringEntropy from 'fast-password-entropy';
 import React, { StatelessFunctionalComponent, useContext } from 'react';
 import { ThemeContext } from './HOC/ThemeContext';
@@ -39,7 +40,6 @@ export type PasswordInputProps = InputProps & {
   tooltip?: string | boolean;
   useDebounce?: boolean;
 };
-// eslint-disable-next-line react/function-component-definition
 export const PasswordInput: StatelessFunctionalComponent<PasswordInputProps> = (
   props
 ) => {
@@ -56,6 +56,7 @@ export const PasswordInput: StatelessFunctionalComponent<PasswordInputProps> = (
     skin,
     state,
     theme,
+    themeOverrides,
     tooltip,
     ...rest
   } = props;

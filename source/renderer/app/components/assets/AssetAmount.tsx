@@ -3,7 +3,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer } from 'mobx-react';
 import { discreetWalletTokenAmount } from '../../features/discreet-mode/replacers/discreetWalletTokenAmount';

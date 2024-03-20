@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { pickBy } from 'lodash';
 // components
 import { Base } from './Base';
@@ -18,7 +19,7 @@ type Props = {
   alignItems?: string;
   className?: string;
   center?: boolean;
-  children?: React.ReactNode;
+  children?: Node;
   column?: boolean;
   columnReverse?: boolean;
   context: ThemeContextProp;
@@ -83,19 +84,16 @@ class FlexBase extends Component<Props, State> {
     }, {});
   };
 
-  renderChildren(theme: Record<string, any>): React.ReactNode {
-    return React.Children.map(
-      this.props.children,
-      (child: React.ReactChild) => {
-        if (child.type.displayName === 'FlexItem') {
-          return React.cloneElement(child as React.ReactElement<any>, {
-            theme,
-          });
-        }
-
-        return child;
+  renderChildren(theme: Record<string, any>) {
+    return React.Children.map(this.props.children, (child) => {
+      if (child.type.displayName === 'FlexItem') {
+        return React.cloneElement(child, {
+          theme,
+        });
       }
-    );
+
+      return child;
+    });
   }
 
   render() {

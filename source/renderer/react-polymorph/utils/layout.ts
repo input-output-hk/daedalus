@@ -1,3 +1,4 @@
+// @ts-nocheck
 // the baseStyles obj will be composed with the stylesToAdd obj
 // activeClasses is an array of the classes within stylesToAdd
 // that should be added to baseStyles

@@ -150,7 +150,17 @@ class SelectBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, optionHeight, searchHeight, ...rest } = this.props;
+    const {
+      skin,
+      theme,
+      themeOverrides,
+      autoFocus,
+      context,
+      allowBlank,
+      optionHeight,
+      searchHeight,
+      ...rest
+    } = this.props;
     const SelectSkin = skin || context.skins[IDENTIFIERS.SELECT];
     return (
       <GlobalListeners

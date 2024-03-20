@@ -129,3 +129,5 @@ yalc.lock
 
 # Typescript
 *.scss.d.ts
+/source/renderer/react-polymorph/**/*.js
+/source/renderer/react-polymorph/**/*.jsx

@@ -104,10 +104,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       react: require.resolve('react'), // else, it’s added a few times to index.js ɵ
-      '@react-polymorph': path.resolve(
-        __dirname,
-        'source/renderer/react-polymorph'
-      ),
+      '@react-polymorph': path.resolve(__dirname, './react-polymorph'),
     },
     fallback: {
       process: require.resolve('process/browser'),

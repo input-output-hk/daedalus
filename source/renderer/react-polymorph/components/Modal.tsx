@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { ComponentType, Element } from 'react';
 // internal utility functions
 import { createEmptyContext, withTheme } from './HOC/withTheme';
 import { composeTheme, addThemeId, didThemePropsChange } from '../utils/themes';
@@ -56,7 +57,7 @@ class ModalBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, ...rest } = this.props;
+    const { skin, theme, themeOverrides, context, ...rest } = this.props;
     const ModalSkin = skin || context.skins[IDENTIFIERS.MODAL];
     return <ModalSkin theme={this.state.composedTheme} {...rest} />;
   }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';

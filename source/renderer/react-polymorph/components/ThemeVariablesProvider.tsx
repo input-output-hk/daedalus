@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect } from 'react';
 
 export type ThemeVariables = Record<string, string>;

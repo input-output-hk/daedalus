@@ -5,7 +5,7 @@ import type { ElementRef, Element } from 'react';
 import classnames from 'classnames';
 
 type Props = {
-  className: string;
+  className: String;
   data: Record<string, any> | Array<{}>;
   error: boolean | string | Element<any>;
   hasMoreData: boolean;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import type { ComponentType } from 'react';
 // internal utility functions
@@ -54,7 +55,7 @@ class LoadingSpinnerBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, ...rest } = this.props;
+    const { skin, theme, themeOverrides, context, ...rest } = this.props;
     const LoadingSpinnerSkin =
       skin || context.skins[IDENTIFIERS.LOADING_SPINNER];
     return <LoadingSpinnerSkin theme={this.state.composedTheme} {...rest} />;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Button } from '@react-polymorph/components/Button';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';

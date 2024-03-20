@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { Component, RefObject } from 'react';
+// @ts-expect-error
+import type { ComponentType, Element } from 'react';
 // external libraries
 import { isString, flow } from 'lodash';
 // utilities

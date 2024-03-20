@@ -5,7 +5,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { camelCase } from 'lodash';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { injectIntl } from 'react-intl';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 import styles from './SidebarCategory.scss';

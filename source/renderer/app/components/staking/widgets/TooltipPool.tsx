@@ -9,15 +9,15 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
 import StakePool from '../../../domains/StakePool';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message

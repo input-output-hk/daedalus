@@ -4,12 +4,12 @@ import { map } from 'lodash';
 
 import classnames from 'classnames';
 import type { Node, Element, ElementRef } from 'react';
-import { Modal } from 'react-polymorph/lib/components/Modal';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
+import { Modal } from '@react-polymorph/components/Modal';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
+import { ModalSkin } from '@react-polymorph/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
 import dialogOverrides from './DialogOverride.scss';
 import dialogFullSizeOverride from './DialogFullSizeOverride.scss';

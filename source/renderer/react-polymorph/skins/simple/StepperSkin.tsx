@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+// @ts-expect-error
 // external libraries
 import classnames from 'classnames';
 import { map, isFunction } from 'lodash';

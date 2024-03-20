@@ -170,7 +170,17 @@ class TextAreaBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, error, context, ...rest } = this.props;
+    const {
+      skin,
+      theme,
+      themeOverrides,
+      onChange,
+      error,
+      context,
+      autoFocus,
+      autoResize,
+      ...rest
+    } = this.props;
     const TextAreaSkin = skin || context.skins[IDENTIFIERS.TEXT_AREA];
     return (
       <TextAreaSkin

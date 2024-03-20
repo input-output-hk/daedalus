@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { IDENTIFIERS } from '../../components';
 import { AUTOCOMPLETE_THEME_API } from './autocomplete';
 import { BUBBLE_THEME_API } from './bubble';
@@ -26,7 +27,6 @@ import { SWITCH_THEME_API } from './switch';
 import { TEXT_AREA_THEME_API } from './textarea';
 import { TOGGLER_THEME_API } from './toggler';
 import { TOOLTIP_THEME_API } from './tooltip';
-
 export const ROOT_THEME_API = {
   [IDENTIFIERS.AUTOCOMPLETE]: AUTOCOMPLETE_THEME_API,
   [IDENTIFIERS.BUBBLE]: BUBBLE_THEME_API,

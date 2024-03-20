@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { IDENTIFIERS } from '../../components';
 import { AutocompleteSkin } from './AutocompleteSkin';
 import { BubbleSkin } from './BubbleSkin';
@@ -23,7 +24,6 @@ import { SwitchSkin } from './SwitchSkin';
 import { TextAreaSkin } from './TextAreaSkin';
 import { TogglerSkin } from './TogglerSkin';
 import { TooltipSkin } from './TooltipSkin';
-
 export const SimpleSkins = {
   [IDENTIFIERS.AUTOCOMPLETE]: AutocompleteSkin,
   [IDENTIFIERS.BUBBLE]: BubbleSkin,

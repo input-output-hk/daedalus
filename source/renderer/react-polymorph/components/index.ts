@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const IDENTIFIERS = {
   AUTOCOMPLETE: 'autocomplete',
   BUBBLE: 'bubble',

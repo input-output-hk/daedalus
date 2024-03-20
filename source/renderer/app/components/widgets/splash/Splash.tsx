@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/daedalu... Remove this comment to see the full error message
 import daedalusIcon from '../../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Splash.scss';

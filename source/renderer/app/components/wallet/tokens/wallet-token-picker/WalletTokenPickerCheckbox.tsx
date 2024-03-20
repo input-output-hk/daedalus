@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React, { useCallback } from 'react';
 import { injectIntl } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
 import { messages } from './WalletTokenPicker.messages';
 import { MAX_TOKENS } from './const';
 import type { ItemProps as Props } from './types';

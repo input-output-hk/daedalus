@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const BUBBLE_THEME_API = {
   root: '',
   bubble: '',

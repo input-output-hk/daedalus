@@ -9,8 +9,8 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerSpIcon from '../../assets/images/hardware-wallet/ledgerSP-cropped.inline.svg';

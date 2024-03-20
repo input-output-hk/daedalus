@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { ComponentType, Node } from 'react';
 import { pickBy, isEmpty } from 'lodash';
 // utility functions
 import { createEmptyContext, withTheme } from './HOC/withTheme';

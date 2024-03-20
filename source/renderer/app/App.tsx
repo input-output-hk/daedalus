@@ -3,9 +3,9 @@
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { History } from 'history';
-import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
-import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
-import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
+import { ThemeProvider } from '@react-polymorph/components/ThemeProvider';
+import { SimpleSkins } from '@react-polymorph/skins/simple';
+import { SimpleDefaults } from '@react-polymorph/themes/simple';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';

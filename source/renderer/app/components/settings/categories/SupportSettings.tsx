@@ -7,8 +7,8 @@ import {
   Intl,
 } from 'react-intl';
 import classNames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { messages } from './SupportSettings.messages';

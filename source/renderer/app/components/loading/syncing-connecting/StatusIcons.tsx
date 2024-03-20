@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';

@@ -4,7 +4,7 @@ import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
 import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';

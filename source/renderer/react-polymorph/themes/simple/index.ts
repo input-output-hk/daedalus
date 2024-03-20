@@ -1,3 +1,4 @@
+// @ts-nocheck
 // import theme IDENTIFIERS constants
 import { IDENTIFIERS } from '../../components';
 // css modules plugin converts all imports below into plain objects

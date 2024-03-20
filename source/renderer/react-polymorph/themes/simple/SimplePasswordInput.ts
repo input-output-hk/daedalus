@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const SimplePasswordInputVariables = {
   errorColor: '--rp-password-input-error-color',
   errorColorLight: '--rp-password-input-error-color-light',

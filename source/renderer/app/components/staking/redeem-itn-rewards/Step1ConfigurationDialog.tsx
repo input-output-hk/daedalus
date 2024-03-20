@@ -4,10 +4,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import {
   defineMessages,
   FormattedHTMLMessage,

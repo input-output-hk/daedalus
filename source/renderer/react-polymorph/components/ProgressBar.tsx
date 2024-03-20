@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import type { ComponentType } from 'react';
 // internal utility functions
@@ -53,7 +54,7 @@ class ProgressBarBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, ...rest } = this.props;
+    const { skin, theme, themeOverrides, context, ...rest } = this.props;
     const ProgressBarSkin = skin || context.skins[IDENTIFIERS.PROGRESS_BAR];
     return <ProgressBarSkin theme={this.state.composedTheme} {...rest} />;
   }

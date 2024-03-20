@@ -2,7 +2,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import styles from './DiscreetToggleTopBar.scss';
 import { messages } from './DiscreetToggleTopBar.messages';

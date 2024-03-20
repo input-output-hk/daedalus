@@ -6,8 +6,8 @@ import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import BigNumber from 'bignumber.js';
 import {
   shortNumber,

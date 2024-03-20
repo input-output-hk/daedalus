@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { pickBy, isEmpty } from 'lodash';
 // components
 import { Base } from './Base';

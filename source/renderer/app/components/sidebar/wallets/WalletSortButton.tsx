@@ -1,8 +1,8 @@
 import React from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import type { WalletSortOrderOptions } from '../../../types/sidebarTypes';
 import { WalletSortOrder } from '../../../types/sidebarTypes';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/sort-ar... Remove this comment to see the full error message

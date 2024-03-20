@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { Component } from 'react';
 import type { ComponentType, Node } from 'react';
-
+// @ts-expect-error
 // utilities
 import { createEmptyContext, withTheme } from './HOC/withTheme';
 import { composeTheme, addThemeId, didThemePropsChange } from '../utils/themes';

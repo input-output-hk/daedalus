@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
-import { Select } from 'react-polymorph/lib/components/Select';
+import { Select } from '@react-polymorph/components/Select';
 import Dialog from '../../../widgets/Dialog';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletTokensSearch from '../wallet-tokens-search/WalletTokensSearch';

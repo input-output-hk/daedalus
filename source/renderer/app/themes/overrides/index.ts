@@ -1,4 +1,4 @@
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
 import AutocompleteOverrides from './AutocompleteOverrides.scss';
 import ButtonOverrides from './ButtonOverrides.scss';
 import CheckboxOverrides from './CheckboxOverrides.scss';

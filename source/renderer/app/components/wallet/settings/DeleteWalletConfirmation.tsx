@@ -1,10 +1,10 @@
 // @ts-nocheck
 
 import React from 'react';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import { submitOnEnter } from '../../../utils/form';
 import styles from './DeleteWalletConfirmationDialog.scss';
 

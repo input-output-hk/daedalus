@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import styles from './StakePoolsSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/list-ic... Remove this comment to see the full error message
 import listIcon from '../../../assets/images/list-ic.inline.svg';

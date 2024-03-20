@@ -12,7 +12,7 @@ import React, {
   useState,
 } from 'react';
 import { startsWith } from 'lodash/fp';
-import { GlobalListeners } from 'react-polymorph/lib/components/HOC/GlobalListeners';
+import { GlobalListeners } from '@react-polymorph/components/HOC/GlobalListeners';
 import { MnemonicAutocompleteLayout } from './MnemonicAutocompleteLayout';
 
 interface MnemonicAutocompleteContainerProps {

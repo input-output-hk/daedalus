@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const AUTOCOMPLETE_THEME_API = {
   autocompleteWrapper: '',
   autocompleteContent: '',

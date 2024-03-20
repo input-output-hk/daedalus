@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { intlShape } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ReadOnlyInput.scss';
 

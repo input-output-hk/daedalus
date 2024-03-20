@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Link } from '@react-polymorph/components/Link';
+import { ButtonSpinnerSkin } from '@react-polymorph/skins/simple/ButtonSpinnerSkin';
 import classnames from 'classnames';
 import styles from './AnalyticsConsentForm.scss';
 import { Intl } from '../../../types/i18nTypes';

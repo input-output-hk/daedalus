@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component, Fragment } from 'react';
+// @ts-expect-error
 import type { ElementRef } from 'react';
 import { debounce } from 'lodash';
 import {
@@ -99,7 +100,6 @@ export class GlobalListeners extends Component<Props, State> {
     this._removeGlobalListeners();
 
     // before toggle, ensure options is open and optionsRef exists on DOM
-    // @ts-ignore
     if (!optionsIsOpen || !optionsRef || !optionsRef.current) {
       return;
     }
@@ -144,9 +144,7 @@ export class GlobalListeners extends Component<Props, State> {
       'resize',
       debounce(this._calculateOptionsMaxHeight, 300),
     ];
-    // @ts-ignore
     document.addEventListener(...scrollListener);
-    // @ts-ignore
     window.addEventListener(...resizeListener);
   };
   // calculates max-height for Options, max-height shouldn't be greater than distance

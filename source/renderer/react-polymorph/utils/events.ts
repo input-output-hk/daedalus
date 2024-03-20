@@ -1,6 +1,12 @@
 // @ts-nocheck
-import type { Element, ElementRef } from 'react';
-
+// @ts-expect-error
+import type {
+  SyntheticMouseEvent,
+  SyntheticTouchEvent,
+  SyntheticEvent,
+  Element,
+  ElementRef,
+} from 'react';
 export const getMousePosition = (event: React.MouseEvent) => ({
   x: event.pageX - (window.scrollX || window.pageXOffset),
   y: event.pageY - (window.scrollY || window.pageYOffset),

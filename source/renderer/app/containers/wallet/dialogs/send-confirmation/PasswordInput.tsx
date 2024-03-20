@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import { doTermsNeedAcceptance } from './helpers';
 import { PasswordInputProps as Props } from './types';
 import HardwareWalletStatus from '../../../../components/hardware-wallet/HardwareWalletStatus';

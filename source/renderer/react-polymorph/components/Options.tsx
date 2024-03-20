@@ -1,5 +1,10 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type {
+  ComponentType, // $FlowFixMe // $FlowFixMe
+  Element,
+  ElementRef,
+} from 'react';
 // external libraries
 import { isFunction, get, escapeRegExp } from 'lodash';
 // internal utility functions
@@ -11,7 +16,7 @@ import { IDENTIFIERS } from '.';
 import type { ThemeContextProp } from './HOC/withTheme';
 
 type Props = {
-  className?: string;
+  className?: String;
   context: ThemeContextProp;
   hasSearch?: boolean;
   hideSearchClearButton?: boolean;
@@ -208,7 +213,13 @@ class OptionsBase extends Component<Props, State> {
     });
   };
   getFilteredOptions = () => {
-    const { hasSearch, onSearch, options } = this.props;
+    const {
+      hasSearch,
+      onSearch,
+      options,
+      highlightSearch,
+      optionRenderer,
+    } = this.props;
     const { searchValue } = this.state;
 
     if (!hasSearch || !searchValue) {
@@ -394,6 +405,13 @@ class OptionsBase extends Component<Props, State> {
       highlightSearch,
       skin,
       targetRef,
+      theme,
+      themeOverrides,
+      toggleMouseLocation,
+      noResults,
+      onChange,
+      onSearch,
+      options,
       context,
       optionsRef,
       isOpen,

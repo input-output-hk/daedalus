@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import RcSlider from 'rc-slider';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { shortNumber } from '../../utils/formatters';
 import styles from './Slider.scss';
 

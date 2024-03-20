@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
+import { Dropdown } from '@react-polymorph/components/Dropdown';
 import NavButton from './NavButton';
 import styles from './NavDropdown.scss';
 import { NavDropdownProps } from './Navigation';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const SimpleFormFieldVariables = {
   errorColor: '--rp-form-field-error-color',
 };

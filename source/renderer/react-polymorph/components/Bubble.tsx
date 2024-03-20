@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { ComponentType, Element, ElementRef } from 'react';
 // internal utility functions
 import { createEmptyContext, withTheme } from './HOC/withTheme';
 import { composeTheme, addThemeId, didThemePropsChange } from '../utils/themes';

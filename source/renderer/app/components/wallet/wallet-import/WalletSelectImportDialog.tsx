@@ -7,15 +7,15 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import styles from './WalletSelectImportDialog.scss';
 
 import DialogCloseButton from '../../widgets/DialogCloseButton';

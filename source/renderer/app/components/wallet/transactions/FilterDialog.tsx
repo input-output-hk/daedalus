@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 import moment from 'moment';
 import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import {

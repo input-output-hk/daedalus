@@ -4,9 +4,9 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {

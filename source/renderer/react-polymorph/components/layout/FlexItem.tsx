@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { Node } from 'react';
 // components
 import { Base } from './Base';
 

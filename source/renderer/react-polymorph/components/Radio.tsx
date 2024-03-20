@@ -57,7 +57,7 @@ class RadioBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, ...rest } = this.props;
+    const { skin, theme, themeOverrides, context, ...rest } = this.props;
     const RadioSkin = skin || context.skins[IDENTIFIERS.RADIO];
     return <RadioSkin theme={this.state.composedTheme} {...rest} />;
   }

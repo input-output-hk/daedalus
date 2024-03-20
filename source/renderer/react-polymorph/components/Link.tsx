@@ -61,7 +61,7 @@ class LinkBase extends Component<Props, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { skin, context, ...rest } = this.props;
+    const { skin, theme, themeOverrides, context, ...rest } = this.props;
     const LinkSkin = skin || context.skins[this.props.themeId];
     return <LinkSkin theme={this.state.composedTheme} {...rest} />;
   }

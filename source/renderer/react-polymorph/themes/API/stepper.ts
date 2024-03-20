@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const STEPPER_THEME_API = {
   root: '',
   label: '',

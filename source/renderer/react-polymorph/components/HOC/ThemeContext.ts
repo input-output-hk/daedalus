@@ -1,3 +1,5 @@
+// @ts-nocheck
+import React from 'react';
 import type { Context } from 'create-react-context';
 import createReactContext from 'create-react-context';
 import { ROOT_THEME_API } from '../../themes/API';

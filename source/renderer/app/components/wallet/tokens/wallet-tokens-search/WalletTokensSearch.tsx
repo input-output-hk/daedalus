@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from '@react-polymorph/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import styles from './WalletTokensSearch.scss';

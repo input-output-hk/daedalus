@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 // external libraries
 import classnames from 'classnames';

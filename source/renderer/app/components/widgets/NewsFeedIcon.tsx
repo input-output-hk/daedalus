@@ -2,7 +2,7 @@
 import React from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { defineMessages, injectIntl } from 'react-intl';
 import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './NewsFeedIcon.scss';

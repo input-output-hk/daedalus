@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const OPTIONS_THEME_API = {
   active: '',
   disabledOption: '',

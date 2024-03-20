@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
 // @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { Element } from 'react';
 import styles from './TinyButton.scss';

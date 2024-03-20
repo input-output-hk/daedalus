@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import type { ComponentType, Element } from 'react';
 // external libraries
 import _ from 'lodash';
 // interal components
@@ -296,7 +297,18 @@ class AutocompleteBase extends Component<AutocompleteProps, State> {
 
   render() {
     // destructuring props ensures only the "...rest" get passed down
-    const { context, skin, error, ...rest } = this.props;
+    const {
+      context,
+      invalidCharsRegex,
+      multipleSameSelections,
+      sortAlphabetically,
+      skin,
+      theme,
+      themeOverrides,
+      onChange,
+      error,
+      ...rest
+    } = this.props;
     const AutocompleteSkin = skin || context.skins[IDENTIFIERS.AUTOCOMPLETE];
     return (
       <GlobalListeners

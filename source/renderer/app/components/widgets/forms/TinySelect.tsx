@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+import { Select } from '@react-polymorph/components/Select';
+import { SelectSkin } from '@react-polymorph/skins/simple/SelectSkin';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
 import styles from './TinySelect.scss';
 
 type Props = {

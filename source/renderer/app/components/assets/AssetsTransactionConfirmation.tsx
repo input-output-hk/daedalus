@@ -3,7 +3,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { intlShape, injectIntl } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import styles from './AssetsTransactionConfirmation.scss';

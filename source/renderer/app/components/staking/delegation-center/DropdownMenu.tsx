@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
+import { Dropdown } from '@react-polymorph/components/Dropdown';
 import styles from './DropdownMenu.scss';
 
 type Props = {

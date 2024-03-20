@@ -1,4 +1,6 @@
+// @ts-nocheck
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import classnames from 'classnames';
 // styles
 import baseStyles from '../../themes/helpers/Base.scss';

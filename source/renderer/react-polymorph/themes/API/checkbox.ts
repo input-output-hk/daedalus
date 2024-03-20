@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const CHECKBOX_THEME_API = {
   root: '',
   disabled: '',

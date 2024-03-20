@@ -1,3 +1,4 @@
+// @ts-nocheck
 import filterInvalidDOMProps from 'filter-invalid-dom-props';
 import type { ComponentType } from 'react';
 // filters out / prevents invalid props from being rendered to the dom

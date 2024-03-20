@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import styles from './AmountInputSkin.scss';
 
 export const messages = defineMessages({

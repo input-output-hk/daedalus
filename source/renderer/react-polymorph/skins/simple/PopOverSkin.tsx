@@ -31,6 +31,7 @@ export function PopOverSkin(props: PopOverProps) {
     popperOptions,
     theme,
     themeId,
+    themeOverrides,
     themeVariables,
     visible,
     ...tippyProps
