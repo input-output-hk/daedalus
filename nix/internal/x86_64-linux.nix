@@ -15,7 +15,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion originalPackageJson;
 
   package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
@@ -36,10 +36,6 @@ in rec {
     mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
     ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
     ln -sf ${linuxSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-linux-x64.zip
-
-    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
-    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
-    ln -sf ${linuxSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip
   '';
 
   node_modules = pkgs.stdenv.mkDerivation {
@@ -335,11 +331,6 @@ in rec {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
       hash = "sha256-bTCdzqsn2QgvuUWBq9XXofiCzgw4x4tEdo92xiBobvs=";
-    };
-
-    electronChromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip";
-      hash = "sha256-bkeA1l1cBppdsbLISwu8MdC/2E5sjVJx6e+KhLgQ5yA=";
     };
   };
 

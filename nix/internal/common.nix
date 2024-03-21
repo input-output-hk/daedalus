@@ -239,8 +239,6 @@ rec {
       ls ${offlineCache} | grep -F ${pkgs.lib.escapeShellArg (safeName + "___" + safeName)} | grep -Po '\d+(\.\d+)*' | tr -d '\n' >$out
     ''));
 
-  electronChromedriverVersion = versionInOfflineCache "electron_chromedriver";
-
   commonSources = {
     electronHeaders = pkgs.runCommandLocal "electron-headers" {
       # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
@@ -262,15 +260,6 @@ rec {
 
     electronCacheHash = builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronVersion}";
-
-    electronChromedriverShaSums = pkgs.fetchurl {
-      name = "electronChromedriverShaSums-${electronChromedriverVersion}"; # cache invalidation
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      hash = "sha256-nV0aT0nuzsVK5J37lEo0egXmRy/tpdF3jyrY3VBVvR8=";
-    };
-
-    electronChromedriverCacheHash = builtins.hashString "sha256"
-      "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}";
   };
 
   # We patch `node_modules/electron-rebuild` to force specific Node.js
