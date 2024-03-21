@@ -1,0 +1,1 @@
+{"version":3,"file":"deleteLegacyWallet.js","sourceRoot":"","sources":["deleteLegacyWallet.ts"],"names":[],"mappings":";;;AACA,iDAA8C;AAC9C,uCAA6C;AAEtC,MAAM,kBAAkB,GAAG,CAChC,MAAqB,EACrB,EACE,QAAQ,GAGT,EACa,EAAE,CAChB,IAAA,iBAAO,EAAC;IACN,MAAM,EAAE,QAAQ;IAChB,IAAI,EAAE,qBAAqB,IAAA,sBAAc,EAAC,QAAQ,CAAC,EAAE;IACrD,GAAG,MAAM;CACV,CAAC,CAAC;AAZQ,QAAA,kBAAkB,sBAY1B"}

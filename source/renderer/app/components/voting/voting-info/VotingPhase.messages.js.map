@@ -1,0 +1,1 @@
+{"version":3,"file":"VotingPhase.messages.js","sourceRoot":"","sources":["VotingPhase.messages.ts"],"names":[],"mappings":";;;AAAA,2CAA4C;AAE/B,QAAA,QAAQ,GAAG,IAAA,2BAAc,EAAC;IACrC,SAAS,EAAE;QACT,EAAE,EAAE,kCAAkC;QACtC,cAAc,EAAE,gCAAgC;QAChD,WAAW,EAAE,mBAAmB;KACjC;IACD,WAAW,EAAE;QACX,EAAE,EAAE,oCAAoC;QACxC,cAAc,EAAE,2BAA2B;QAC3C,WAAW,EAAE,oBAAoB;KAClC;CACF,CAAC,CAAC"}

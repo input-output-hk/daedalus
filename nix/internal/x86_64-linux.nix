@@ -334,7 +334,7 @@ in rec {
   linuxSources = {
     electron = pkgs.fetchurl {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
-      hash = "sha256-doXolmAbVhHeoqrCQ0JeD74yRNfVw0gKqOHj69A+ow8=";
+      hash = "sha256-bTCdzqsn2QgvuUWBq9XXofiCzgw4x4tEdo92xiBobvs=";
     };
 
     electronChromedriver = pkgs.fetchurl {

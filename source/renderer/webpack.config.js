@@ -114,6 +114,7 @@ module.exports = {
       http: require.resolve('stream-http'),
       https: require.resolve('https-browserify'),
       url: require.resolve('url'),
+      vm: false,
       buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
     },
   },
