@@ -308,8 +308,8 @@ in rec {
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
-        then ""
-        else "";
+        then "sha256-2iCH4N/5PbT7cTL2yIWUCwr4O7HuaSiZsC1GmBfJuPg="
+        else "sha256-4UjzGbdqJE37GzpQA0TD1McRg7qwAhPLUQ9Anb4iops=";
     };
   };
 }
