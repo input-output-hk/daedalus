@@ -240,9 +240,10 @@ rec {
     ''));
 
   commonSources = {
-    electronHeaders = pkgs.runCommandLocal "electron-headers" {
+    electronHeaders = pkgs.runCommandLocal "electron-headers-${electronVersion}" {
       # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       src = pkgs.fetchurl {
+        name = "node-v${electronVersion}-headers.tar.gz";
         url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
         hash = "sha256-/AqDBJIEk8zHqP6atq4lFGvXjzww/o9x7KA+WRW/0DE=";
       };
@@ -255,7 +256,7 @@ rec {
     electronShaSums = pkgs.fetchurl {
       name = "electronShaSums-${electronVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      hash = "sha256-75bNqt2c7u/fm0P2Ha6NvkbGThEifIHXl2x5UCdy4fM=";
+      hash = "sha256-Np56814pncRldaiuG5i1tHELzcrjW0J48V07czWD3vE=";
     };
 
     electronCacheHash = builtins.hashString "sha256"

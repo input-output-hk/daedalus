@@ -304,11 +304,12 @@ in rec {
 
   darwinSources = {
     electron = pkgs.fetchurl {
+      name = "electron-v${electronVersion}-darwin-${archSuffix}.zip";
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
-        then "sha256-I/d/vecsrYMV59Nw2SnNzrVAj1UzSUJB/F3VA9itDNw="
-        else "sha256-Up0HRemSeMZvYxyB7b7yKlrYhxMyNmAC7dNxtAmFCyQ=";
+        then ""
+        else "";
     };
   };
 }

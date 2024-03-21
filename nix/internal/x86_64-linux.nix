@@ -329,6 +329,7 @@ in rec {
 
   linuxSources = {
     electron = pkgs.fetchurl {
+      name = "electron-v${electronVersion}-linux-x64.zip";
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
       hash = "sha256-bTCdzqsn2QgvuUWBq9XXofiCzgw4x4tEdo92xiBobvs=";
     };
