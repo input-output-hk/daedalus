@@ -123,7 +123,7 @@ class NumericInputBase extends Component<NumericInputProps, State> {
     const { decimalSeparator, groupSeparator } = this.getBigNumberFormat();
     const changedCaretPosition = target.selectionStart;
     const valueToProcess = target.value;
-    const fallbackInputValue = this.state.fallbackInputValue;
+    const { fallbackInputValue } = this.state;
     const isBackwardDelete = inputType === 'deleteContentBackward';
     const isForwardDelete = inputType === 'deleteContentForward';
     const isDeletion = isForwardDelete || isBackwardDelete;
