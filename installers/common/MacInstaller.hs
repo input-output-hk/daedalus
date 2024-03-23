@@ -308,6 +308,7 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "tiny-secp256k1"
       , "tslib"
       , "typeforce"
+      , "ua-parser-js"
       , "unicode-properties"
       , "unicode-trie"
       , "usb-detection"
