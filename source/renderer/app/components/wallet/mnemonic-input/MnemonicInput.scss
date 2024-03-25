@@ -42,7 +42,7 @@ $header-vertical-padding: 10px;
 }
 
 .inputList {
-  width: calc(#{percentage(1 / $columns)} - 30px);
+  width: calc(#{percentage(calc(1 / $columns))} - 30px);
 }
 
 .inputWrapper {
