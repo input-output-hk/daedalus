@@ -2,8 +2,9 @@
 import { cloneDeep, isEmpty, isEqual } from 'lodash';
 import { hasProperty } from './props';
 import type { ThemeContextProp } from '../components/HOC/withTheme';
+
 export const appendToProperty = (dest: {}, name: string, value: string) => {
-  dest[name] === '' ? (dest[name] = value) : (dest[name] += ' ' + value);
+  dest[name] === '' ? (dest[name] = value) : (dest[name] += ` ${value}`);
 };
 export const composeComponentStyles = (
   componentStyles: {},

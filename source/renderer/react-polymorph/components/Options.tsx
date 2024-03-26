@@ -16,7 +16,7 @@ import { IDENTIFIERS } from '.';
 import type { ThemeContextProp } from './HOC/withTheme';
 
 type Props = {
-  className?: String;
+  className?: string;
   context: ThemeContextProp;
   hasSearch?: boolean;
   hideSearchClearButton?: boolean;
