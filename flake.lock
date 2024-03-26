@@ -36,16 +36,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1711445628,
-        "narHash": "sha256-XPHjBrqlmGiJKDxHeMTTBHPWrGFJS0YdKxxobGmoIyY=",
+        "lastModified": 1711466874,
+        "narHash": "sha256-q5aIBKz9gKKw3fKvYvVpZVXhoEIgclUaWDkfPaM3wp8=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "52cb559024c47e8a25abeed1873b8d798144e93f",
+        "rev": "78a0e635ad167e39b7d0ca45aeed7b6d2a6cddf9",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "pull/4507/head",
+        "ref": "pull/4510/head",
         "repo": "cardano-wallet",
         "type": "github"
       }
