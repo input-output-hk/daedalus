@@ -3,11 +3,11 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1704761036,
-        "narHash": "sha256-gD/VLpu3O9oHRipD3LHyv9PLSgKGKQd/SLHZ01f6SxM=",
+        "lastModified": 1710374728,
+        "narHash": "sha256-nk79ZQLHGHPLXEYeJhZLWQWsa+wzOxxu4SuY9sKVG5c=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "3195a3a3b6066ec0ef41edfbfc3e7df80e3d7841",
+        "rev": "aa1d456c5e926cc07094a26f2c480773f206e4e8",
         "type": "github"
       },
       "original": {
@@ -36,16 +36,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1709323258,
-        "narHash": "sha256-O5u0V7XHY/9umFV6/R4JBk8Zu3sBnmuMCK++XGVwQ2Q=",
+        "lastModified": 1711445628,
+        "narHash": "sha256-XPHjBrqlmGiJKDxHeMTTBHPWrGFJS0YdKxxobGmoIyY=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "e69616ba776f4a52173ead423141d234e03d468f",
+        "rev": "52cb559024c47e8a25abeed1873b8d798144e93f",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "v2024-03-01",
+        "ref": "pull/4507/head",
         "repo": "cardano-wallet",
         "type": "github"
       }
