@@ -4,7 +4,7 @@ import { logger } from '../../../../utils/logging';
 import { DeviceTracker } from './deviceTracker';
 import { detectDevices as useEventDrivenDetection } from './eventDrivenDetection';
 import { detectDevices as usePollingDrivenDetection } from './pollingDrivenDetection';
-import { Detector, TrackedDevice, DectorUnsubscriber } from './types';
+import { TrackedDevice, DectorUnsubscriber } from './types';
 
 export type DeviceDetectionPayload = {
   type: 'add' | 'remove';

@@ -1,0 +1,1 @@
+{"version":3,"file":"TallyingPhase.messages.js","sourceRoot":"","sources":["TallyingPhase.messages.ts"],"names":[],"mappings":";;;AAAA,2CAA4C;AAE/B,QAAA,QAAQ,GAAG,IAAA,2BAAc,EAAC;IACrC,YAAY,EAAE;QACZ,EAAE,EAAE,mCAAmC;QACvC,cAAc,EAAE,kBAAkB;QAClC,WAAW,EAAE,uBAAuB;KACrC;IACD,YAAY,EAAE;QACZ,EAAE,EAAE,mCAAmC;QACvC,cAAc,EAAE,+BAA+B;QAC/C,WAAW,EAAE,oBAAoB;KAClC;CACF,CAAC,CAAC"}

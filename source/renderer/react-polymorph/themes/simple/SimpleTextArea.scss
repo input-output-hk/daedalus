@@ -1,0 +1,80 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+$textarea-bg-color: var(--rp-textarea-bg-color, #fafbfc) !default;
+$textarea-bg-color-disabled: var(
+  --rp-textarea-bg-color-disabled,
+  #fcfafa
+) !default;
+$textarea-border: var(--rp-textarea-border, 1px solid #c6cdd6) !default;
+$textarea-border-color-disabled: var(
+  --rp-textarea-border-color-disabled,
+  #cfcfcf
+) !default;
+$textarea-border-color-errored: var(
+  --rp-textarea-border-color-errored,
+  $theme-color-error
+) !default;
+$textarea-border-color-errored-focus: var(
+  --rp-textarea-border-color-errored-focus,
+  $textarea-border-color-errored
+) !default;
+$textarea-border-color-focus: var(
+  --rp-textarea-border-color-focus,
+  #5e6066
+) !default;
+$textarea-border-radius: var(--rp-textarea-border-radius, 2px) !default;
+$textarea-font-family: var(
+  --rp-textarea-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+$textarea-font-size: var(--rp-textarea-font-size, 16px) !default;
+$textarea-line-height: var(--rp-textarea-line-height, normal) !default;
+$textarea-outline-focus: var(--rp-textarea-outline-focus, none) !default;
+$textarea-padding: var(--rp-textarea-padding, 14px 20px) !default;
+$textarea-placeholder-color: var(
+  --rp-textarea-placeholder-color,
+  rgba(#5e6066, 0.5)
+) !default;
+$textarea-resize: var(--rp-textarea-resize, none) !default;
+$textarea-text-color: var(--rp-textarea-text-color, #5e6066) !default;
+$textarea-width: var(--rp-textarea-width, 100%) !default;
+
+.textarea {
+  background-color: $textarea-bg-color;
+  border: $textarea-border;
+  border-radius: $textarea-border-radius;
+  box-sizing: border-box;
+  color: $textarea-text-color;
+  display: block;
+  font-family: $textarea-font-family;
+  font-size: $textarea-font-size;
+  line-height: $textarea-line-height;
+  padding: $textarea-padding;
+  resize: $textarea-resize;
+  width: $textarea-width;
+
+  &:focus {
+    border-color: $textarea-border-color-focus;
+    outline: $textarea-outline-focus;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+  }
+
+  &::-webkit-input-placeholder {
+    color: $textarea-placeholder-color;
+  }
+}
+
+.disabled {
+  background-color: $textarea-bg-color-disabled;
+  border-color: $textarea-border-color-disabled;
+}
+
+.errored {
+  border-color: $textarea-border-color-errored;
+  &:focus {
+    border-color: $textarea-border-color-errored-focus;
+  }
+}

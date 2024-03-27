@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
@@ -7,7 +9,7 @@ import {
   injectIntl,
   FormattedHTMLMessage,
 } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';

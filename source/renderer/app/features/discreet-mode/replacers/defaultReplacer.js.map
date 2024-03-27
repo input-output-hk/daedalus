@@ -1,0 +1,1 @@
+{"version":3,"file":"defaultReplacer.js","sourceRoot":"","sources":["defaultReplacer.ts"],"names":[],"mappings":";;;AAGO,MAAM,eAAe,GAAoB,GAAG,EAAE;IACnD,OAAO,CAAC,cAAc,EAAE,MAAM,EAAE,KAAK,EAAE,EAAE;QACvC,OAAO,cAAc,CAAC,CAAC,CAAC,MAAM,CAAC,CAAC,CAAC,KAAK,CAAC;IACzC,CAAC,CAAC;AACJ,CAAC,CAAC;AAJW,QAAA,eAAe,mBAI1B"}

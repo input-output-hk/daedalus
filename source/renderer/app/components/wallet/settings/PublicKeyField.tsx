@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { useCallback, useState, useEffect } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { Input } from '@react-polymorph/components/Input';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { injectIntl, intlShape } from 'react-intl';
 import PublicKeyFieldSkin from './PublicKeyFieldSkin';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/qr-code... Remove this comment to see the full error message

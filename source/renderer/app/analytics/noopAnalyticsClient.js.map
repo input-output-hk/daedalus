@@ -1,0 +1,1 @@
+{"version":3,"file":"noopAnalyticsClient.js","sourceRoot":"","sources":["noopAnalyticsClient.ts"],"names":[],"mappings":";;;AAEA,MAAM,mBAAmB,GAAoB;IAC3C,uBAAuB,EAAE,GAAG,EAAE,CAAC,OAAO,CAAC,OAAO,EAAE;IAChD,SAAS,EAAE,GAAG,EAAE,CAAC,OAAO,CAAC,OAAO,EAAE;CACnC,CAAC;AAEO,kDAAmB"}

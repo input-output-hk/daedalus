@@ -152,7 +152,6 @@ import {
 // Wallets Types
 import {
   AdaWallet,
-  AdaWallets,
   CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
@@ -205,7 +204,6 @@ import type {
 import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
-  GetCatalystFundResponse,
   CatalystFund,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';

@@ -1,0 +1,236 @@
+@import 'theme';
+@import 'mixins/arrow';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// bubble
+$bubble-bg-color: var(--rp-bubble-bg-color, #fafbfc) !default;
+$bubble-bg-color-transparent: var(
+  --rp-bubble-bg-color-transparent,
+  rgba(94, 96, 102, 0.9)
+) !default;
+$bubble-border: var(
+  --rp-bubble-border,
+  1px solid var(--rp-bubble-border-color, #c6cdd6)
+) !default;
+$bubble-border-color: var(--rp-bubble-border-color, #c6cdd6) !default;
+$bubble-border-color-transparent: var(
+  --rp-bubble-border-color-transparent,
+  transparent
+) !default;
+$bubble-border-radius: var(--rp-bubble-border-radius, 4px) !default;
+$bubble-border-transparent: var(
+  --rp-bubble-border-transparent,
+  0px solid transparent
+) !default;
+$bubble-border-width: var(--rp-bubble-border-width, -1px) !default;
+$bubble-border-width-transparent: var(
+  --rp-bubble-border-width-transparent,
+  0px
+) !default;
+$bubble-box-shadow: var(
+  --rp-bubble-box-shadow,
+  0 1.5px 5px 0 rgba(0, 0, 0, 0.18)
+) !default;
+$bubble-distance: var(--rp-bubble-distance, 14px) !default;
+$bubble-no-arrow-distance: var(--rp-bubble-no-arrow-distance, 0px) !default;
+$bubble-min-width: var(--rp-bubble-min-width, 100%) !default;
+$bubble-padding: var(--rp-bubble-padding, 6px 12px) !default;
+$bubble-text-color: var(--rp-bubble-text-color, #5e6066) !default;
+$bubble-text-color-transparent: var(
+  --rp-bubble-text-color-transparent,
+  white
+) !default;
+$bubble-shadow: var(--rp-bubble-shadow, none) !default;
+
+// arrow
+$bubble-arrow: var(--rp-bubble-arrow, true) !default;
+$bubble-arrow-size: var(--rp-bubble-arrow-size, 10px) !default;
+$bubble-arrow-width: var(
+  --rp-bubble-arrow-width,
+  calc(2 *#{$bubble-arrow-size})
+) !default;
+$bubble-arrow-height: var(
+  --rp-bubble-arrow-height,
+  $bubble-arrow-size
+) !default;
+
+.root {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+
+  // ==== ARROW ====
+  // The arrow is referred to as [data-bubble-arrow] so that the component doesn't have a high
+  // specificity internally, allowing it to be overwritten externally
+  @if ($bubble-arrow) {
+    &.isFloating {
+      [data-bubble-arrow] {
+        display: block;
+        position: absolute;
+        width: 100%;
+      }
+      &.openUpward [data-bubble-arrow] {
+        bottom: $bubble-distance;
+      }
+      &:not(.openUpward) [data-bubble-arrow] {
+        top: $bubble-distance;
+      }
+    }
+
+    &.transparent [data-bubble-arrow] {
+      @include arrow(
+        up,
+        $bubble-bg-color-transparent,
+        $bubble-border-color-transparent,
+        $bubble-arrow-width,
+        $bubble-arrow-height
+      );
+    }
+
+    &.transparent.openUpward [data-bubble-arrow] {
+      @include arrow(
+        down,
+        $bubble-bg-color-transparent,
+        $bubble-border-color-transparent,
+        $bubble-arrow-width,
+        $bubble-arrow-height
+      );
+    }
+
+    &:not(.transparent) [data-bubble-arrow] {
+      @include arrow(
+        up,
+        $bubble-bg-color,
+        $bubble-border-color,
+        $bubble-arrow-width,
+        $bubble-arrow-height
+      );
+    }
+
+    &:not(.transparent).openUpward [data-bubble-arrow] {
+      @include arrow(
+        down,
+        $bubble-bg-color,
+        $bubble-border-color,
+        $bubble-arrow-width,
+        $bubble-arrow-height
+      );
+    }
+
+    // Make sure the arrow overlaps any borders on the bubble
+    &.transparent.openUpward .bubble {
+      margin-bottom: $bubble-border-width-transparent;
+    }
+
+    &.transparent:not(.openUpward) .bubble {
+      margin-top: $bubble-border-width-transparent;
+    }
+
+    &:not(.transparent).openUpward .bubble {
+      margin-bottom: $bubble-border-width;
+    }
+
+    &:not(.transparent):not(.openUpward) .bubble {
+      margin-top: $bubble-border-width;
+    }
+  }
+}
+
+.bubble {
+  border-radius: $bubble-border-radius;
+  box-shadow: $bubble-box-shadow;
+  padding: $bubble-padding;
+  position: absolute;
+  min-width: $bubble-min-width;
+  box-sizing: border-box;
+}
+
+// ==== STATE: isTransparent ===
+
+.transparent .bubble {
+  background-color: $bubble-bg-color-transparent;
+  color: $bubble-text-color-transparent;
+  border: $bubble-border-transparent;
+}
+
+.root:not(.transparent) .bubble {
+  background-color: $bubble-bg-color;
+  color: $bubble-text-color;
+  border: $bubble-border;
+}
+
+// ==== STATE: openUpward ====
+
+.openUpward {
+  bottom: calc(100% + #{$bubble-distance});
+  .bubble {
+    bottom: 100%;
+  }
+}
+
+.root:not(.openUpward) {
+  top: calc(100% + #{$bubble-distance});
+  .bubble {
+    top: 100%;
+  }
+}
+
+// ==== STATE: isHidden ====
+
+.isHidden {
+  display: none;
+}
+
+// ==== STATE: isFloating ====
+
+.isFloating {
+  overflow: visible;
+  width: 100%;
+  position: fixed;
+  z-index: 99;
+  left: inherit;
+  right: inherit;
+
+  &.openUpward {
+    padding-bottom: $bubble-distance;
+    &.noArrow {
+      padding-bottom: $bubble-no-arrow-distance;
+    }
+  }
+
+  &:not(.openUpward) {
+    padding-top: $bubble-distance;
+    &.noArrow {
+      padding-top: $bubble-no-arrow-distance;
+    }
+  }
+}
+
+// ===== STATE: noArrow =====
+.root.noArrow {
+  &.openUpward {
+    bottom: calc(100% + #{$bubble-no-arrow-distance});
+  }
+  &:not(.openUpward) {
+    top: calc(100% + #{$bubble-no-arrow-distance});
+  }
+}
+
+// ======== STATE: autoWidth =======
+
+.hasAutoWidth {
+  min-width: auto;
+}
+
+// ======== STATE: isCentered =======
+
+.isCentered {
+  text-align: center;
+  .bubble {
+    display: inline-block;
+    position: unset;
+    min-width: unset;
+  }
+}

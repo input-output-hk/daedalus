@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
+import { Button } from '@react-polymorph/components/Button';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';

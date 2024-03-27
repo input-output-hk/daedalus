@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { set } from 'lodash';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
 import RadioSet from '../../widgets/RadioSet';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import globalMessages from '../../../i18n/global-messages';

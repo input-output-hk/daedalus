@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
+import { Button } from '@react-polymorph/components/Button';
 import styles from './UndelegateWalletButton.scss';
 
 const messages = defineMessages({

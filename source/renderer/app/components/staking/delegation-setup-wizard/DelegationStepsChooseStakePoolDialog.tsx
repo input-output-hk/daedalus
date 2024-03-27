@@ -13,8 +13,8 @@ import {
   intlShape,
 } from 'react-intl';
 import classNames from 'classnames';
-import { Stepper } from 'react-polymorph/lib/components/Stepper';
-import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
+import { Stepper } from '@react-polymorph/components/Stepper';
+import { StepperSkin } from '@react-polymorph/skins/simple/StepperSkin';
 import { find } from 'lodash';
 import { observer } from 'mobx-react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';

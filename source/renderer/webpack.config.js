@@ -103,7 +103,8 @@ module.exports = {
     symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      react: require.resolve('react'), // else, it’s added a few times to index.js 🙄
+      react: require.resolve('react'), // else, it’s added a few times to index.js ɵ
+      '@react-polymorph': path.resolve(__dirname, './react-polymorph'),
     },
     fallback: {
       process: require.resolve('process/browser'),
@@ -113,6 +114,7 @@ module.exports = {
       http: require.resolve('stream-http'),
       https: require.resolve('https-browserify'),
       url: require.resolve('url'),
+      vm: false,
       buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
     },
   },

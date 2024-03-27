@@ -1,0 +1,67 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// track
+$scrollbar-track-bg: var(--rp-scrollbar-track-bg, transparent) !default;
+$scrollbar-track-width: var(--rp-scrollbar-track-width, 10px) !default;
+
+// thumb
+$scrollbar-thumb-bg-color: var(
+  --rp-scrollbar-thumb-bg-color,
+  rgba(0, 0, 0, 0.3)
+) !default;
+$scrollbar-thumb-bg-color-active: var(
+  --rp-scrollbar-thumb-bg-color-active,
+  rgba(0, 0, 0, 0.6)
+) !default;
+$scrollbar-thumb-bg-color-hover: var(
+  --rp-scrollbar-thumb-bg-color-hover,
+  rgba(0, 0, 0, 0.6)
+) !default;
+$scrollbar-thumb-border-radius: var(
+  --rp-scrollbar-thumb-border-radius,
+  3px
+) !default;
+$scrollbar-thumb-width: var(--rp-scrollbar-thumb-width, 6px) !default;
+$scrollbar-thumb-left-position: var(
+  --rp-scrollbar-thumb-left-position,
+  calc((#{$scrollbar-track-width} - #{$scrollbar-thumb-width}) / 2)
+) !default;
+
+.root {
+  :global {
+    .ScrollbarsCustom-Wrapper {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    .ScrollbarsCustom-Track {
+      position: absolute;
+      overflow: hidden;
+      user-select: none;
+      width: $scrollbar-track-width;
+      height: 100%;
+      right: 0;
+      background: $scrollbar-track-bg;
+    }
+
+    .ScrollbarsCustom-Thumb {
+      width: $scrollbar-thumb-width;
+      position: relative;
+      left: $scrollbar-thumb-left-position;
+      background-color: $scrollbar-thumb-bg-color;
+      border-radius: $scrollbar-thumb-border-radius;
+
+      &:active {
+        background-color: $scrollbar-thumb-bg-color-active;
+      }
+
+      &:hover {
+        background-color: $scrollbar-thumb-bg-color-hover;
+      }
+    }
+  }
+}

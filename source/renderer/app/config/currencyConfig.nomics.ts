@@ -7,7 +7,7 @@
  * check `currencyConfig.js` for more info
  *
  */
-import { get, values } from 'lodash';
+import { values } from 'lodash';
 import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes';
 import type {
@@ -51,7 +51,7 @@ const responses = {
   },
   rate: (apiResponse: CurrencyRateNomicsResponse): GetCurrencyRateResponse => {
     try {
-      const rate = parseFloat(get(apiResponse, '[0].price', 0));
+      const rate = parseFloat(apiResponse?.[0]?.price || '0');
       logger.debug('Currency::Nomics::Rate success', {
         rate,
       });

@@ -1,0 +1,11 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+$gutter-padding-left: var(--rp-gutter-padding-left, 30px);
+$gutter-padding-right: var(--rp-gutter-padding-right, 30px);
+
+.gutter {
+  padding-left: $gutter-padding-left;
+  padding-right: $gutter-padding-right;
+}

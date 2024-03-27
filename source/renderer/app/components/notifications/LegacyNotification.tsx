@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './LegacyNotification.scss';
 
@@ -108,7 +108,7 @@ class LegacyNotification extends Component<Props> {
       activeWalletName,
       ..._values,
     };
-    return <FormattedMessage {...message} values={values} />;
+    return <FormattedMessage {...{ message }} values={values} />;
   };
 
   render() {

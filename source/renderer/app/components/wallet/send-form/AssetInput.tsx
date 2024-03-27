@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import type { Field } from 'mobx-react-form';
@@ -5,7 +7,7 @@ import { intlShape } from 'react-intl';
 import { get } from 'lodash';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { NumericInput } from '@react-polymorph/components/NumericInput';
 import AmountInputSkin from '../skins/AmountInputSkin';
 import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';

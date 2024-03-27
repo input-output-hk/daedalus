@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Stepper } from 'react-polymorph/lib/components/Stepper';
-import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
+import { Stepper } from '@react-polymorph/components/Stepper';
+import { StepperSkin } from '@react-polymorph/skins/simple/StepperSkin';
 import styles from './WalletRestoreSteps.scss';
 import { RESTORE_WALLET_STEPS } from '../../../../config/walletRestoreConfig';
 import type { RestoreWalletStep } from '../../../../types/walletRestoreTypes';

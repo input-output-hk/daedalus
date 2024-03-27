@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { get } from 'lodash';
 import styles from './WalletUtxoTooltip.scss';
 import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 
@@ -48,7 +47,7 @@ class WalletUtxoTooltip extends Component<Props> {
 
   render() {
     const { label: walletAmount = '', payload } = this.props;
-    const { walletUtxosAmount } = get(payload, '[0].payload', {});
+    const { walletUtxosAmount } = payload?.[0]?.payload || {};
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
     let message = messages.tooltip;
     if (!previousWalletAmount) message = messages.tooltipFirst;

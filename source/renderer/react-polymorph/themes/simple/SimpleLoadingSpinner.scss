@@ -1,0 +1,30 @@
+@import 'theme';
+@import 'mixins/loading-spinner';
+
+$loading-spinner-color: var(
+  --rp-loading-spinner-color,
+  $theme-color-light-grey
+) !default;
+$loading-spinner-size-big: var(--rp-loading-spinner-size-big, 44px) !default;
+$loading-spinner-size-small: var(
+  --rp-loading-spinner-size-small,
+  30px
+) !default;
+$loading-spinner-speed: var(--rp-loading-spinner-speed, 1.5s) !default;
+$loading-spinner-margin: var(--rp-loading-spinner-margin, auto) !default;
+
+.root {
+  margin: $loading-spinner-margin;
+  pointer-events: none;
+  @include loading-spinner($loading-spinner-color, $loading-spinner-speed);
+}
+
+.big {
+  height: $loading-spinner-size-big;
+  width: $loading-spinner-size-big;
+}
+
+.small {
+  height: $loading-spinner-size-small;
+  width: $loading-spinner-size-small;
+}

@@ -5,7 +5,6 @@ import type {
   WalletSyncState,
   SyncStateStatus,
   DelegationStatus,
-  WalletUnit,
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';

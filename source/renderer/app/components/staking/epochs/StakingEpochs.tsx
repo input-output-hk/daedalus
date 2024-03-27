@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { Select } from '@react-polymorph/components/Select';
+import { SelectSkin } from '@react-polymorph/skins/simple/SelectSkin';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import StakingEpochsCurrentEpochData from './StakingEpochsCurrentEpochData';

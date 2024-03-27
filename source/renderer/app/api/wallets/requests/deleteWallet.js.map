@@ -1,0 +1,1 @@
+{"version":3,"file":"deleteWallet.js","sourceRoot":"","sources":["deleteWallet.ts"],"names":[],"mappings":";;;AACA,iDAA8C;AAEvC,MAAM,YAAY,GAAG,CAC1B,MAAqB,EACrB,EACE,QAAQ,GAGT,EACa,EAAE,CAChB,IAAA,iBAAO,EAAC;IACN,MAAM,EAAE,QAAQ;IAChB,IAAI,EAAE,eAAe,QAAQ,EAAE;IAC/B,GAAG,MAAM;CACV,CAAC,CAAC;AAZQ,QAAA,YAAY,gBAYpB"}

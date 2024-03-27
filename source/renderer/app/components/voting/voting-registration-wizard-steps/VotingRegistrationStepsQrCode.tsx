@@ -3,7 +3,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
 import { set } from 'lodash';
 import { observer } from 'mobx-react';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './VotingRegistrationStepsQrCod... Remove this comment to see the full error message
 import styles from './VotingRegistrationStepsQrCode.scss';

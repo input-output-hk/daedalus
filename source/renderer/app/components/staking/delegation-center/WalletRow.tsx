@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
 import type { WalletNextDelegation } from '../../../api/wallets/types';
 import StakePool from '../../../domains/StakePool';

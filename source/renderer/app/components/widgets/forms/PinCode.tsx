@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { map } from 'lodash';
-import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { NumericInput } from '@react-polymorph/components/NumericInput';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classNames from 'classnames';
 import styles from './PinCode.scss';
 

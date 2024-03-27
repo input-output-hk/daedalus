@@ -1,0 +1,108 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// toggler
+$toggler-bg-color: var(--rp-toggler-bg-color, #445b7c) !default;
+$toggler-bg-color-disabled: var(
+  --rp-toggler-bg-color-disabled,
+  $theme-color-light-grey
+) !default;
+$toggler-border-radius: var(--rp-toggler-border-radius, 3px) !default;
+$toggler-height: var(--rp-toggler-height, 25px) !default;
+$toggler-padding: var(--rp-toggler-padding, 2px) !default;
+
+// label
+$toggler-label-bg-color-on: var(
+  --rp-toggler-label-bg-color-on,
+  #fafbfc
+) !default;
+$toggler-label-bg-color-off: var(
+  --rp-toggler-label-bg-color-off,
+  transparent
+) !default;
+$toggler-label-border-radius: var(
+  --rp-toggler-label-border-radius,
+  3px
+) !default;
+$toggler-label-font-family: var(
+  --rp-toggler-label-font-family,
+  $theme-font-regular,
+  sans-serif
+) !default;
+$toggler-label-font-size: var(--rp-toggler-label-font-size, 14px) !default;
+$toggler-label-padding: var(--rp-toggler-label-padding, 1px 8px) !default;
+$toggler-label-text-color-off: var(
+  --rp-toggler-label-text-color-off,
+  #fafbfc
+) !default;
+$toggler-label-text-color-on: var(
+  --rp-toggler-label-text-color-on,
+  #445b7c
+) !default;
+
+.root {
+  display: inline-block;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.disabled {
+  .root:hover,
+  .label:hover,
+  .toggler:hover {
+    cursor: default;
+  }
+
+  .toggler {
+    background-color: $toggler-bg-color-disabled;
+
+    .label.checked {
+      color: $toggler-bg-color-disabled;
+    }
+  }
+}
+
+.checked {
+  background-color: $toggler-label-bg-color-on;
+  color: $toggler-label-text-color-on;
+}
+
+.input {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+
+.toggler {
+  align-self: center;
+  background-color: $toggler-bg-color;
+  border-radius: $toggler-border-radius;
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  height: calc(#{$toggler-height} + #{$toggler-padding} * 2);
+  padding: $toggler-padding;
+  transition: background-color 200ms ease-in-out;
+}
+
+.label {
+  border-radius: $toggler-label-border-radius;
+  flex: 50%;
+  font-family: $toggler-label-font-family;
+  font-size: $toggler-label-font-size;
+  line-height: $toggler-height;
+  padding: $toggler-label-padding;
+  text-align: center;
+  transition: background-color 200ms ease-in-out;
+  white-space: nowrap;
+
+  &:not(.checked) {
+    background-color: $toggler-label-bg-color-off;
+    color: $toggler-label-text-color-off;
+  }
+}

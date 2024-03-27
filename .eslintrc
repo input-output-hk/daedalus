@@ -19,6 +19,17 @@
     "jest": true
   },
   "rules": {
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "arrow-body-style": 0,
     "class-methods-use-this": 0,
     "consistent-return": "warn",
@@ -87,13 +98,12 @@
     "react/static-property-placement": 0,
     "react/jsx-no-useless-fragment": 0,
     "prefer-regex-literals": 0,
-    "no-unused-vars": "warn",
     "react/no-unused-class-component-methods": "warn",
     "react/no-unstable-nested-components": "warn",
     "no-promise-executor-return": "warn",
     "default-param-last": "warn"
   },
-  "plugins": ["@typescript-eslint", "import", "promise", "react", "jest"],
+  "plugins": ["@typescript-eslint", "import", "promise", "react", "jest", "unused-imports"],
   "globals": {
     "API": true,
     "CARDANO_WALLET_VERSION": true,

@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
+import { Button } from '@react-polymorph/components/Button';
 import SVGInline from 'react-svg-inline';
 import externalLinkIcon from '../../assets/images/external-link-ic.inline.svg';
 import styles from './ExternalLinkButton.scss';

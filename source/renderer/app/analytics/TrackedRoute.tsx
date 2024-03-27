@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { matchPath, Route, RouteProps } from 'react-router';
 import { useAnalytics } from '../components/analytics';
 

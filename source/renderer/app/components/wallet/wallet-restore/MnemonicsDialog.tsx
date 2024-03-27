@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -112,7 +111,7 @@ class MnemonicsDialog extends Component<Props> {
       !recoveryPhraseField.error &&
       recoveryPhraseField.value.length === maxWordCount &&
       recoveryPhraseField.value.every((word) => word);
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <WalletRestoreDialog

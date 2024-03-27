@@ -1,0 +1,1 @@
+{"version":3,"file":"updateSmashSettings.js","sourceRoot":"","sources":["updateSmashSettings.ts"],"names":[],"mappings":";;;AAEA,iDAA8C;AAEvC,MAAM,mBAAmB,GAAG,CACjC,MAAqB,EACrB,kBAAsC,EACxB,EAAE,CAChB,IAAA,iBAAO,EACL;IACE,MAAM,EAAE,KAAK;IACb,IAAI,EAAE,cAAc;IACpB,GAAG,MAAM;CACV,EACD,EAAE,EACF;IACE,QAAQ,EAAE;QACR,oBAAoB,EAAE,kBAAkB;KACzC;CACF,CACF,CAAC;AAhBS,QAAA,mBAAmB,uBAgB5B"}

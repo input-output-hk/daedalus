@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Link } from '@react-polymorph/components/Link';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import styles from './VotingFooterLinks.scss';

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { map, omit } from 'lodash';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Select } from '@react-polymorph/components/Select';
+import { Link } from '@react-polymorph/components/Link';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import {

@@ -1,0 +1,44 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+$modal-bg-color: var(--rp-modal-bg-color, white) !default;
+$modal-border-radius: var(--rp-modal-border-radius, 10px) !default;
+$modal-box-shadow: var(
+  --rp-modal-box-shadow,
+  0 5px 20px 0 rgba(0, 0, 0, 0.25)
+) !default;
+$modal-max-height: var(--rp-modal-max-height, none) !default;
+$modal-max-width: var(--rp-modal-max-width, 640px) !default;
+$modal-min-width: var(--rp-modal-min-width, 500px) !default;
+$modal-outline-focus: var(--rp-modal-outline-focus, none) !default;
+$modal-overlay-bg-color: var(
+  --rp-modal-overlay-bg-color,
+  rgba(black, 0.6)
+) !default;
+$modal-padding: var(--rp-modal-padding, 20px 30px) !default;
+
+.overlay {
+  align-items: center;
+  background-color: $modal-overlay-bg-color;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.modal {
+  background: $modal-bg-color;
+  border-radius: $modal-border-radius;
+  box-shadow: $modal-box-shadow;
+  max-height: $modal-max-height;
+  max-width: $modal-max-width;
+  min-width: $modal-min-width;
+  padding: $modal-padding;
+  &:focus {
+    outline: $modal-outline-focus;
+  }
+}

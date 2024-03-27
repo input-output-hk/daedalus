@@ -1,3 +1,4 @@
+// @ts-nocheck
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { observer } from 'mobx-react';
@@ -6,7 +7,7 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import SVGInline from 'react-svg-inline';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/question... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';

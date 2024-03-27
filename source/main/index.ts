@@ -281,7 +281,7 @@ const onAppReady = async () => {
         return safeExitWithCode(0);
       }
 
-      const exitSelfnodeDialogOptions = {
+      const exitSelfnodeDialogOptions: Electron.MessageBoxOptions = {
         buttons: ['Yes', 'No'],
         type: 'warning',
         title: 'Daedalus is about to close',

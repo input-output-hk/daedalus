@@ -1,7 +1,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get, debounce } from 'lodash';
+import { orderBy, find, map, debounce } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -645,7 +645,7 @@ export default class StakingStore extends Store {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { transactions, addresses } = this.stores;
     const rewardsAddress = addresses.stakeAddresses[wallet.id];
-    const syncingProgress = get(wallet.syncState, 'progress.quantity', '');
+    const syncingProgress = wallet.syncState?.progress?.quantity;
     return {
       wallet: wallet.name,
       total: wallet.reward.plus(transactions.withdrawals[wallet.id]),

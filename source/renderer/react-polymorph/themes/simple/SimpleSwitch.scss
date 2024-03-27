@@ -1,0 +1,154 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// root
+$switch-root-margin: var(--rp-switch-root-margin, 0) !default;
+
+// switch
+$switch-bg-color-off: var(--rp-switch-bg-color-off, #b4bdca) !default;
+$switch-bg-color-on: var(--rp-switch-bg-color-on, #2f496e) !default;
+$switch-border-radius: var(--rp-switch-border-radius, 3px) !default;
+$switch-height: var(--rp-switch-height, 23px) !default;
+$switch-opacity-off: var(--rp-switch-opacity-off, 1) !default;
+$switch-opacity-on: var(--rp-switch-opacity-on, 1) !default;
+$switch-width: var(--rp-switch-width, 50px) !default;
+
+// label
+$switch-label-cursor: var(--rp-switch-label-cursor, pointer) !default;
+$switch-label-cursor-disabled: var(
+  --rp-switch-label-cursor-disabled,
+  default
+) !default;
+$switch-label-font-family: var(
+  --rp-switch-label-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+$switch-label-font-size: var(--rp-switch-label-font-size, 16px) !default;
+$switch-label-margin: var(--rp-switch-label-margin, 0 0 0 20px) !default;
+$switch-label-opacity: var(--rp-switch-label-opacity, 1) !default;
+$switch-label-text-color: var(--rp-switch-label-text-color, #5e6066) !default;
+$switch-label-text-color-disabled: var(
+  --rp-switch-label-text-color-disabled,
+  $theme-color-light-grey
+) !default;
+$switch-label-width: var(--rp-switch-label-width, auto) !default;
+
+// thumb
+$switch-thumb-bg-color: var(--rp-switch-thumb-bg-color, #ffffff) !default;
+$switch-thumb-border-radius: var(--rp-switch-thumb-border-radius, 3px) !default;
+$switch-thumb-cursor: var(--rp-switch-thumb-cursor, pointer) !default;
+$switch-thumb-cursor-disabled: var(
+  --rp-switch-thumb-cursor-disabled,
+  default
+) !default;
+$switch-thumb-height: var(--rp-switch-thumb-height, $switch-height) !default;
+$switch-thumb-width: var(--rp-switch-thumb-width, $switch-width) !default;
+
+@mixin thumbBoxShadow($color) {
+  box-shadow: -1.5px -1.5px 0 $color inset, 1.5px 1.5px 0 $color inset,
+    1.5px -1.5px 0 $color inset, -1.5px 1.5px 0 $color inset;
+}
+
+.root {
+  display: flex;
+  margin: $switch-root-margin;
+  position: relative;
+}
+
+%switch {
+  border-radius: $switch-border-radius;
+  height: $switch-height;
+  margin-top: 0;
+  width: $switch-width;
+}
+
+.switch {
+  align-self: center;
+  border-radius: $switch-border-radius;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: $switch-height;
+  position: relative;
+  transition: background-color 200ms ease-in-out;
+  width: $switch-width;
+
+  &:not(.checked) {
+    @extend %switch;
+    background-color: $switch-bg-color-off;
+    opacity: $switch-opacity-off;
+    .thumb {
+      left: 0;
+      @include thumbBoxShadow($switch-bg-color-off);
+      background-color: $switch-thumb-bg-color;
+    }
+  }
+
+  &:hover {
+    cursor: $switch-thumb-cursor;
+  }
+}
+
+.thumb {
+  border-radius: $switch-thumb-border-radius;
+  height: $switch-thumb-height;
+  position: absolute;
+  top: 0;
+  transition: left 200ms ease-in-out;
+  width: $switch-thumb-height;
+  &:hover {
+    cursor: $switch-thumb-cursor;
+  }
+}
+
+.label {
+  color: $switch-label-text-color;
+  font-family: $switch-label-font-family;
+  font-size: $switch-label-font-size;
+  line-height: $switch-height;
+  margin: $switch-label-margin;
+  opacity: $switch-label-opacity;
+  white-space: normal;
+  width: $switch-label-width;
+  &:hover {
+    cursor: $switch-label-cursor;
+  }
+  strong {
+    font-family: $theme-font-bold;
+  }
+}
+
+.input {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+
+.disabled {
+  .label {
+    color: $switch-label-text-color-disabled;
+  }
+  .label:hover {
+    cursor: $switch-label-cursor-disabled;
+  }
+  .switch:hover,
+  .thumb:hover {
+    cursor: $switch-thumb-cursor-disabled;
+  }
+}
+
+.checked {
+  .switch {
+    @extend %switch;
+    background-color: $switch-bg-color-on;
+    opacity: $switch-opacity-on;
+    .thumb {
+      left: calc(#{$switch-width} - #{$switch-height});
+      @include thumbBoxShadow($switch-bg-color-on);
+      background-color: $switch-thumb-bg-color;
+    }
+  }
+}

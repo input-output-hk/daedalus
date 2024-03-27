@@ -1,0 +1,123 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// h1
+$header-h1-font-family: var(
+  --rp-header-h1-font-family,
+  $theme-font-bold,
+  sans-serif
+) !default;
+$header-h1-font-size: var(--rp-header-h1-font-size, 21px) !default;
+$header-h1-letter-spacing: var(--rp-header-h1-letter-spacing, 1px) !default;
+$header-h1-line-height: var(--rp-header-h1-line-height, 1.39) !default;
+$header-h1-text-align: var(--rp-header-h1-text-align, center) !default;
+$header-h1-text-color: var(--rp-header-h1-text-color, #5e6066) !default;
+$header-h1-text-transform: var(
+  --rp-header-h1-text-transform,
+  uppercase
+) !default;
+
+// h2
+$header-h2-font-family: var(
+  --rp-header-h2-font-family,
+  $theme-font-medium,
+  sans-serif
+) !default;
+$header-h2-font-size: var(--rp-header-h2-font-size, 18px) !default;
+$header-h2-letter-spacing: var(--rp-header-h2-letter-spacing, 1px) !default;
+$header-h2-line-height: var(--rp-header-h2-line-height, 1.39) !default;
+$header-h2-text-align: var(--rp-header-h2-text-align, center) !default;
+$header-h2-text-color: var(--rp-header-h2-text-color, #5e6066) !default;
+$header-h2-text-transform: var(--rp-header-h2-text-transform, none) !default;
+
+//h3
+$header-h3-font-family: var(
+  --rp-header-h3-font-family,
+  $theme-font-regular,
+  sans-serif
+) !default;
+$header-h3-font-size: var(--rp-header-h3-font-size, 16px) !default;
+$header-h3-letter-spacing: var(--rp-header-h3-letter-spacing, 1px) !default;
+$header-h3-line-height: var(--rp-header-h3-line-height, 1.39) !default;
+$header-h3-text-align: var(--rp-header-h3-text-align, center) !default;
+$header-h3-text-color: var(--rp-header-h3-text-color, #5e6066) !default;
+$header-h3-text-transform: var(--rp-header-h3-text-transform, none) !default;
+
+// h4
+$header-h4-font-family: var(
+  --rp-header-h4-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+$header-h4-font-size: var(--rp-header-h4-font-size, 14px) !default;
+$header-h4-letter-spacing: var(--rp-header-h4-letter-spacing, 1px) !default;
+$header-h4-line-height: var(--rp-header-h4-line-height, 1.39) !default;
+$header-h4-text-align: var(--rp-header-h4-text-align, center) !default;
+$header-h4-text-color: var(--rp-header-h4-text-color, #5e6066) !default;
+$header-h4-text-transform: var(--rp-header-h4-text-transform, none) !default;
+
+.header {
+  // styles shared between all variations
+  // useful when themeOverrides is passed to ThemeProvider
+}
+
+.h1 {
+  font-family: $header-h1-font-family;
+  font-size: $header-h1-font-size;
+  letter-spacing: $header-h1-letter-spacing;
+  line-height: $header-h1-line-height;
+  text-align: $header-h1-text-align;
+  text-transform: $header-h1-text-transform;
+  color: $header-h1-text-color;
+}
+
+.h2 {
+  font-family: $header-h2-font-family;
+  font-size: $header-h2-font-size;
+  letter-spacing: $header-h2-letter-spacing;
+  line-height: $header-h2-line-height;
+  text-align: $header-h2-text-align;
+  text-transform: $header-h2-text-transform;
+  color: $header-h2-text-color;
+}
+
+.h3 {
+  font-family: $header-h3-font-family;
+  font-size: $header-h3-font-size;
+  letter-spacing: $header-h3-letter-spacing;
+  line-height: $header-h3-line-height;
+  text-align: $header-h3-text-align;
+  text-transform: $header-h3-text-transform;
+  color: $header-h3-text-color;
+}
+
+.h4 {
+  font-family: $header-h4-font-family;
+  font-size: $header-h4-font-size;
+  letter-spacing: $header-h4-letter-spacing;
+  line-height: $header-h4-line-height;
+  text-align: $header-h4-text-align;
+  text-transform: $header-h4-text-transform;
+  color: $header-h4-text-color;
+}
+
+.thin {
+  font-family: $theme-font-thin;
+}
+
+.light {
+  font-family: $theme-font-light;
+}
+
+.regular {
+  font-family: $theme-font-regular;
+}
+
+.medium {
+  font-family: $theme-font-medium;
+}
+
+.bold {
+  font-family: $theme-font-bold;
+}

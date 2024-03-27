@@ -4,7 +4,6 @@
 # But not the following folders
 !source/
 !features/
-!storybook/
 !hardware-wallet-tests/
 !tests/
 

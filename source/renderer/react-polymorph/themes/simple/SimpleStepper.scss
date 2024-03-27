@@ -1,0 +1,168 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// main-color
+$stepper-main-color: var(
+  --rp-stepper-main-color,
+  rgba(68, 91, 124, 1)
+) !default;
+$stepper-main-color-light: var(
+  --rp-stepper-main-color-light,
+  rgba(68, 91, 124, 0.1)
+) !default;
+
+// label-color
+$stepper-label-color: var(
+  --rp-stepper-label-color,
+  rgba(94, 96, 102, 1)
+) !default;
+$stepper-label-color-light: var(
+  --rp-stepper-label-color-light,
+  rgba(94, 96, 102, 0.3)
+) !default;
+
+// label
+$stepper-label-font-family: var(
+  --rp-stepper-label-font-family,
+  $theme-font-medium,
+  sans-serif
+) !default;
+$stepper-label-font-size: var(--rp-stepper-label-font-size, 12px) !default;
+$stepper-label-margin: var(--rp-stepper-label-margin, 0) !default;
+$stepper-label-text-align: var(--rp-stepper-label-text-align, center) !default;
+$stepper-label-text-color: var(
+  --rp-stepper-label-text-color,
+  $stepper-label-color
+) !default;
+
+// bullet
+$stepper-bullet-background-color-active: var(
+  --rp-stepper-bullet-background-color-active,
+  $stepper-main-color
+) !default;
+$stepper-bullet-background-color-disabled: var(
+  --rp-stepper-bullet-background-color-disabled,
+  #fff
+) !default;
+$stepper-bullet-border: var(
+  --rp-stepper-bullet-border,
+  2px solid var(--rp-stepper-bullet-border-color, $stepper-main-color-light)
+) !default;
+$stepper-bullet-border-color-active: var(
+  --rp-stepper-bullet-border-color-active,
+  $stepper-main-color
+) !default;
+$stepper-bullet-border-color-disabled: var(
+  --rp-stepper-bullet-border-color-disabled,
+  $stepper-main-color-light
+) !default;
+$stepper-bullet-border-radius: var(
+  --rp-stepper-bullet-border-radius,
+  50%
+) !default;
+$stepper-bullet-height: var(--rpstepper-bullet-height, 16px) !default;
+$stepper-bullet-width: var(--rpstepper-bullet-width, 16px) !default;
+
+// steps-bar
+$stepper-steps-bar-color-active: var(
+  --rpstepper-steps-bar-color-active,
+  $stepper-main-color
+) !default;
+$stepper-steps-bar-color-disabled: var(
+  --rpstepper-steps-bar-color-disabled,
+  $stepper-main-color-light
+) !default;
+$stepper-steps-bar-height: var(--rpstepper-steps-bar-height, 4px) !default;
+$stepper-steps-bar-top-position: var(
+  --rpstepper-steps-bar-top-position,
+  8px
+) !default;
+
+// step-label
+$stepper-step-label-bottom-margin: var(
+  --rpstepper-stepper-step-label-bottom-margin,
+  10px
+) !default;
+$stepper-step-label-color: var(
+  --rp-stepper-step-label-color,
+  $stepper-label-color
+) !default;
+$stepper-step-label-color-light: var(
+  --rp-stepper-step-label-color-light,
+  $stepper-label-color-light
+) !default;
+$stepper-step-label-font-family: var(
+  --rpstepper-step-label-font-family,
+  $theme-font-medium
+) !default;
+
+.wrapper {
+  width: 100%;
+
+  .label {
+    color: $stepper-label-text-color;
+    font-family: $stepper-label-font-family;
+    font-size: $stepper-label-font-size;
+    line-height: 1.83;
+    margin: $stepper-label-margin;
+    text-align: $stepper-label-text-align;
+  }
+
+  .stepsWrapper {
+    li {
+      color: $stepper-step-label-color-light;
+      float: left;
+      font-family: $stepper-step-label-font-family;
+      list-style-type: none;
+      position: relative;
+      text-align: center;
+
+      &:before {
+        background-color: $stepper-bullet-background-color-disabled;
+        content: ' ';
+        display: block;
+        border: $stepper-bullet-border;
+        border-radius: $stepper-bullet-border-radius;
+        height: $stepper-bullet-height;
+        margin: 0 auto $stepper-step-label-bottom-margin;
+        width: $stepper-bullet-width;
+      }
+
+      &:after {
+        background-color: $stepper-steps-bar-color-disabled;
+        content: '';
+        height: $stepper-steps-bar-height;
+        left: -50%;
+        position: absolute;
+        top: $stepper-steps-bar-top-position;
+        width: 100%;
+        z-index: -1;
+      }
+
+      &:first-child:after {
+        content: none;
+      }
+
+      &.active,
+      &.finished {
+        color: $stepper-step-label-color;
+
+        &:before {
+          border-color: $stepper-bullet-border-color-active;
+        }
+
+        &:after {
+          background-color: $stepper-bullet-background-color-active;
+          border-color: $stepper-bullet-border-color-active;
+        }
+      }
+
+      &.finished {
+        &:before {
+          background-color: $stepper-bullet-background-color-active;
+        }
+      }
+    }
+  }
+}

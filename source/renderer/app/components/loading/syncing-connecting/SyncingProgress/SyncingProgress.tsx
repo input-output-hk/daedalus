@@ -2,7 +2,7 @@ import cx from 'classnames';
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { intlShape } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import spinnerIcon from '../../../../assets/images/spinner-universal.inline.svg';
 import checkMarkIcon from '../../../../assets/images/check-mark-universal.inline.svg';

@@ -1,0 +1,68 @@
+@import 'theme';
+@import 'mixins/arrow';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+$tooltip-font-family: var(--rp-tooltip-font-family, $theme-font-light),
+  sans-serif !default;
+$tooltip-text-color: var(--rp-tooltip-text-color, white) !default;
+
+.root {
+  position: relative;
+
+  // ======= SPECIAL STATES =======
+  &.isShowingOnHover:hover {
+    .bubble {
+      opacity: 1;
+      visibility: inherit;
+    }
+  }
+}
+
+.bubble {
+  font-family: $tooltip-font-family;
+  font-size: 12px;
+  color: $tooltip-text-color;
+  display: inline-block;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 400ms ease;
+}
+
+.alignRight [data-bubble-container] {
+  right: 0;
+}
+
+.alignLeft [data-bubble-container] {
+  left: 0;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.isCentered {
+  display: block;
+
+  &.isShowingOnHover:hover .bubble {
+    display: inline-block;
+  }
+
+  .bubble {
+    text-align: center;
+  }
+}
+
+.isVisible {
+  .bubble {
+    opacity: 1;
+    visibility: inherit;
+  }
+}
+
+.isEmpty {
+  .bubble {
+    transition: none;
+    display: none;
+  }
+}

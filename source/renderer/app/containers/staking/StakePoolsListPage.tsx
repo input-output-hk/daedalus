@@ -59,7 +59,6 @@ class StakePoolsListPage extends Component<Props> {
       networkStatus,
       profile,
       wallets,
-      analytics,
     } = this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;

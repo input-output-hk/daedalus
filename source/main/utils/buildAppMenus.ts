@@ -80,7 +80,7 @@ export const buildAppMenus = async (
 
   const toggleBlankScreenFix = async (item) => {
     const translation = getTranslation(translations, 'menu');
-    const blankScreenFixDialogOptions = {
+    const blankScreenFixDialogOptions: Electron.MessageBoxOptions = {
       buttons: [
         translation('helpSupport.blankScreenFixDialogConfirm'),
         translation('helpSupport.blankScreenFixDialogCancel'),

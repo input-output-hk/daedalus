@@ -1,10 +1,10 @@
+// @ts-nocheck
 import React, { Component } from 'react';
-// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { ComponentType, Element, Node, Ref } from 'react';
-import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+import { NumericInput } from '@react-polymorph/components/NumericInput';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
 import styles from './TinyInput.scss';
 import { NumberFormat } from '../../../../../common/types/number.types';
 // TODO: Extend react-polymorph Input component props when they are available

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { get } from 'lodash';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import styles from './ButtonLink.scss';
 
 type LinkPropsTypes = {

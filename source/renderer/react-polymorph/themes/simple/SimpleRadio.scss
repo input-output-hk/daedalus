@@ -1,0 +1,117 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// radio
+$radio-bg-color: var(--rp-radio-color, white) !default;
+$radio-border-color: var(--rp-radio-border-color, #294b70) !default;
+$radio-border-color-disabled: var(
+  --rp-radio-border-color-disabled,
+  $theme-color-disabled
+) !default;
+$radio-border-width: var(--rp-radio-border-width, 1px) !default;
+$radio-cursor: var(--rp-radio-cursor, pointer) !default;
+$radio-cursor-disabled: var(--rp-radio-cursor-disabled, default) !default;
+$radio-size: var(--rp-radio-size, 30px) !default;
+
+// label
+$radio-label-cursor: var(--rp-radio-label-cursor, pointer) !default;
+$radio-label-font-family: var(
+  --rp-radio-label-font-family,
+  $theme-font-light,
+  sans-serif
+) !default;
+$radio-label-font-size: var(--rp-radio-label-font-size, 16px) !default;
+$radio-label-line-height: var(--rp-radio-label-line-height, 30px) !default;
+$radio-label-text-color: var(--rp-radio-label-text-color, #5e6066) !default;
+$radio-label-text-color-disabled: var(
+  --rp-radio-label-text-color-disabled,
+  $theme-color-light-grey
+) !default;
+$radio-label-margin: var(--rp-radio-label-margin, 0 0 0 20px) !default;
+
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  &.disabled {
+    &:hover,
+    .label:hover {
+      cursor: $radio-cursor-disabled;
+    }
+  }
+}
+
+.input {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+
+.circle {
+  align-self: center;
+  border: $radio-border-width solid $radio-border-color;
+  margin-top: calc(0px - #{$radio-border-width});
+  border-radius: $radio-size;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: $radio-size;
+  width: $radio-size;
+  &:hover {
+    cursor: $radio-cursor;
+  }
+}
+
+.label {
+  color: $radio-label-text-color;
+  font-family: $radio-label-font-family;
+  font-size: $radio-label-font-size;
+  line-height: $radio-label-line-height;
+  margin: $radio-label-margin;
+  white-space: normal;
+  display: inline-block;
+  vertical-align: middle;
+  &:hover {
+    cursor: $radio-label-cursor;
+  }
+  strong {
+    font-weight: 800;
+  }
+}
+
+// BEGIN SPECIAL STATES ---------- //
+
+.disabled {
+  .label {
+    color: $radio-label-text-color-disabled;
+  }
+  .circle {
+    border: $radio-border-width solid $radio-border-color-disabled;
+  }
+  .circle:hover {
+    cursor: $radio-cursor-disabled;
+  }
+}
+
+.selected {
+  .circle {
+    background-color: $radio-border-color;
+    border-width: 0;
+    position: relative;
+    &:after {
+      background-color: $radio-bg-color;
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      height: 30%;
+      width: 30%;
+      left: 35%;
+      top: 35%;
+    }
+  }
+}
+
+// END SPECIAL STATES ---------- //

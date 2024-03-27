@@ -1,0 +1,30 @@
+$theme-assets-path: './assets' !default;
+
+// FONTS
+
+$theme-font-thin: var(
+  --rp-theme-font-thin,
+  'NotoSans-Thin, NotoSansCJKjp-Thin'
+) !default;
+$theme-font-light: var(
+  --rp-theme-font-light,
+  'NotoSans-Light, NotoSansCJKjp-Light'
+) !default;
+$theme-font-regular: var(
+  --rp-theme-font-regular,
+  'NotoSans-Regular, NotoSansCJKjp-Regular'
+) !default;
+$theme-font-medium: var(
+  --rp-theme-font-medium,
+  'NotoSans-Medium, NotoSansCJKjp-Medium'
+) !default;
+$theme-font-bold: var(
+  --rp-theme-font-bold,
+  'NotoSans-Bold, NotoSansCJKjp-Bold'
+) !default;
+
+// COLORS
+
+$theme-color-error: var(--rp-theme-color-error, #de3226) !default;
+$theme-color-disabled: #b6b6b6 !default;
+$theme-color-light-grey: #c6cdd6 !default;

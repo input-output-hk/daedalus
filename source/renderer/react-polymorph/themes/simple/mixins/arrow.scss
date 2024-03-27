@@ -1,0 +1,38 @@
+// CSS arrow box inspired from http://apps.eky.hk/css-triangle-generator/
+
+@mixin arrow($direction, $bg-color, $border-color, $width, $height) {
+  &:before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    @include arrow_internal($direction, $border-color, $width, $height);
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    @include arrow_internal(
+      $direction,
+      $bg-color,
+      calc(#{$width} - 2px),
+      calc(#{$height} - 2px)
+    );
+  }
+}
+
+@mixin arrow_internal($direction, $color, $width, $height) {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  left: calc(50% - #{$width/2} - 1px);
+  @if $direction == up {
+    border-width: 0 calc(#{$width/2}) $height calc(#{$width/2});
+    border-color: transparent transparent $color transparent;
+    bottom: 100%;
+  }
+  @if $direction == down {
+    border-width: $height calc(#{$width/2}) 0 calc(#{$width/2});
+    border-color: $color transparent transparent transparent;
+    top: 100%;
+  }
+}

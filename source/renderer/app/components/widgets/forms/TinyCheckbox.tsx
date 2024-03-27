@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { IDENTIFIERS } from '@react-polymorph/themes/API';
 import styles from './TinyCheckbox.scss';
 
 type Props = {

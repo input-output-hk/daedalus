@@ -1,13 +1,15 @@
+// @ts-nocheck
+
 import React, { Component, Fragment } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Autocomplete } from '@react-polymorph/components/Autocomplete';
+import { Input } from '@react-polymorph/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
@@ -380,7 +382,7 @@ class WalletRestoreDialog extends Component<Props, State> {
       'yoroiTab',
       this.isYoroi() ? styles.activeButton : '',
     ]);
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog

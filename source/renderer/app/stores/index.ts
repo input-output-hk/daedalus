@@ -128,8 +128,9 @@ export const setUpStores = action(
     });
     // Configure and initialize all stores
     executeOnEveryStore((store) => {
-      if (stores) store.configure(stores);
+      !!stores && store?.configure(stores);
     });
+
     executeOnEveryStore((store) => store.initialize());
     return stores;
   }

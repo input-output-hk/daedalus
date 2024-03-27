@@ -1,11 +1,9 @@
 import { merge } from 'lodash';
 import path from 'path';
-import * as fs from 'fs-extra';
 import type { WriteStream } from 'fs';
 import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
-import { environment } from '../environment';
 import {
   FALLBACK_TOKEN_METADATA_SERVER_URL,
   MOCK_TOKEN_METADATA_SERVER_URL,

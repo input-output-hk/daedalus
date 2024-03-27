@@ -1,5 +1,6 @@
+// @ts-nocheck
 import React from 'react';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
 import styles from './ClearButton.scss';

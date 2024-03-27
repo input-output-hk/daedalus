@@ -1,0 +1,1 @@
+{"version":3,"file":"csvGenerator.js","sourceRoot":"","sources":["csvGenerator.ts"],"names":[],"mappings":";;;AAAA,kEAA+D;AAOxD,MAAM,WAAW,GAAG,KAAK,EAAE,EAAE,WAAW,EAAE,QAAQ,EAAU,EAAE,EAAE;IACrE,MAAM,uCAAkB,CAAC,IAAI,CAAC;QAC5B,WAAW;QACX,QAAQ;KACT,CAAC,CAAC;AACL,CAAC,CAAC;AALW,QAAA,WAAW,eAKtB"}

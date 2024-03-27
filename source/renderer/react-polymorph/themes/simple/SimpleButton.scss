@@ -1,0 +1,69 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+$button-bg-color: var(--rp-button-bg-color, #243e62) !default;
+$button-bg-color-active: var(--rp-button-bg-color-active, #1e304a) !default;
+$button-bg-color-disabled: var(--rp-button-bg-color-disabled, #b9c2cc) !default;
+$button-bg-color-hover: var(--rp-button-bg-color-hover, #2f496e) !default;
+$button-border: var(--rp-button-border, none) !default;
+$button-border-outline-focus: var(
+  --rp-button-border-outline-focus,
+  none
+) !default;
+$button-border-radius: var(--rp-button-border-radius, 5px) !default;
+$button-cursor: var(--rp-button-cursor, pointer) !default;
+$button-cursor-disabled: var(--rp-button-cursor-disabled, default) !default;
+$button-font-family: var(
+  --rp-button-font-family,
+  $theme-font-medium,
+  sans-serif
+) !default;
+$button-font-size: var(--rp-button-font-size, 14px) !default;
+$button-height: var(--rp-button-height, auto) !default;
+$button-line-height: var(--rp-button-line-height, normal) !default;
+$button-padding: var(--rp-button-padding, 15px 20px) !default;
+$button-text-color: var(--rp-button-text-color, #fff) !default;
+$button-text-color-disabled: var(--rp-button-text-color-disabled, #fff);
+$button-text-transform: var(--rp-button-text-transform, none) !default;
+$button-width: var(--rp-button-width, 100%) !default;
+
+.root {
+  background-color: $button-bg-color;
+  border: $button-border;
+  border-radius: $button-border-radius;
+  box-sizing: border-box;
+  color: $button-text-color;
+  font-family: $button-font-family;
+  font-size: $button-font-size;
+  height: $button-height;
+  line-height: $button-line-height;
+  text-transform: $button-text-transform;
+  padding: $button-padding;
+  width: $button-width;
+
+  &:not(.disabled) {
+    &:hover {
+      background-color: $button-bg-color-hover;
+      cursor: $button-cursor;
+    }
+
+    &:active {
+      background-color: $button-bg-color-active;
+    }
+  }
+
+  &:focus {
+    outline: $button-border-outline-focus;
+  }
+}
+
+// BEGIN SPECIAL STATES ---------- //
+
+.disabled {
+  background-color: $button-bg-color-disabled;
+  color: $button-text-color-disabled;
+  cursor: $button-cursor-disabled;
+}
+
+// END SPECIAL STATES ---------- //

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component, Fragment } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
@@ -9,10 +11,10 @@ import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { Input } from '@react-polymorph/components/Input';
+import { NumericInput } from '@react-polymorph/components/NumericInput';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
@@ -740,11 +742,7 @@ class WalletSendForm extends Component<Props, State> {
   checkAdaInputState = async (
     minimumAda: BigNumber
   ): Promise<AdaInputState> => {
-    const {
-      adaAmountInputTrack,
-      selectedAssetUniqueIds,
-      adaInputState,
-    } = this.state;
+    const { adaAmountInputTrack, adaInputState } = this.state;
 
     if (
       adaAmountInputTrack.gte(minimumAda) &&

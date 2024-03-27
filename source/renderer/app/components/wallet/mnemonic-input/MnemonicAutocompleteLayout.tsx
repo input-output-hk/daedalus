@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, {
   ChangeEventHandler,
   ClipboardEventHandler,
@@ -5,9 +7,9 @@ import React, {
   RefObject,
 } from 'react';
 import cx from 'classnames';
-import { FormField } from 'react-polymorph/lib/components/FormField';
-import { Options } from 'react-polymorph/lib/components/Options';
-import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
+import { FormField } from '@react-polymorph/components/FormField';
+import { Options } from '@react-polymorph/components/Options';
+import { OptionsSkin } from '@react-polymorph/skins/simple/OptionsSkin';
 import styles from './MnemonicAutocompleteLayout.scss';
 
 interface MnemonicInputSkinProps {

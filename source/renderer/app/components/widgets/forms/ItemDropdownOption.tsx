@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { intlShape, defineMessages } from 'react-intl';
 import classnames from 'classnames';
 import styles from './ItemDropdownOption.scss';

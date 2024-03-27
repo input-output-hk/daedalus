@@ -1,8 +1,8 @@
 import classnames from 'classnames';
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
-import { PasswordInput as RPPasswordInput } from 'react-polymorph/lib/components/PasswordInput';
-import type { PasswordInputProps } from 'react-polymorph/lib/components/PasswordInput';
+import { PasswordInput as RPPasswordInput } from '@react-polymorph/components/PasswordInput';
+import type { PasswordInputProps } from '@react-polymorph/components/PasswordInput';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './PasswordInput.scss';
 

@@ -1,8 +1,8 @@
 import Reaction from './Reaction';
-import type { ActionsMap } from '../../actions/index';
 import type { StoresMap } from '../index';
-import type { Api } from '../../api/index';
 import type { Environment } from '../../../../common/types/environment.types';
+import { Api } from '../../api';
+import { ActionsMap } from '../../actions';
 import { AnalyticsTracker } from '../../analytics';
 
 export default class Store {
@@ -13,7 +13,7 @@ export default class Store {
   constructor(
     protected api: Api,
     protected actions: ActionsMap,
-    protected analytics: AnalyticsTracker
+    protected analytics: AnalyticsTracker // eslint-disable-next-line no-empty-function
   ) {}
 
   registerReactions(reactions: Array<(...args: Array<any>) => any>) {
