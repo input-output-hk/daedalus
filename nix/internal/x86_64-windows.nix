@@ -407,6 +407,21 @@ in rec {
     '';
   };
 
+  nativeModulesZip = pkgs.runCommand "win64-native-modules" {
+    buildInputs = with pkgs; [ zip ];
+  } ''
+    mkdir -p $out
+
+    (
+      cd ${nativeModules}
+      zip -ry $out/native-modules-${sourceLib.buildRevShort}-${targetSystem}.zip .
+    )
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$(echo $out/*.zip)\"" >$out/nix-support/hydra-build-products
+  '';
+
   native = rec {
     nodejs = pkgs.fetchzip {
       name = "node-v${common.nodejs.version}-win-x64.zip";

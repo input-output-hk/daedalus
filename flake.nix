@@ -38,6 +38,8 @@
         targetSystem: inputs.self.internal.${targetSystem}.unsignedInstaller
       );
       devshell = lib.genAttrs supportedSystems (system: inputs.self.devShells.${system}.default);
+      # Exposing these DLLs for easier development/debugging on Windows:
+      nativeModules.x86_64-windows = inputs.self.internal.x86_64-windows.nativeModulesZip;
       required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
         name = "github-required";
         meta.description = "All jobs required to pass CI";
