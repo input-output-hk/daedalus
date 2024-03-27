@@ -137,7 +137,7 @@ in rec {
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
-      sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+      ${common.temporaryNodeModulesPatches}
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (

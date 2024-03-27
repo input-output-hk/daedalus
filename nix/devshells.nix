@@ -122,7 +122,7 @@ let
       mkdir -p "$CARDANO_WALLET_TLS_PATH"
       regenerate-dev-certs >/dev/null
 
-      sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+      ${common.temporaryNodeModulesPatches}
 
       echo
       echo 'Now, run ‘yarn dev’.'

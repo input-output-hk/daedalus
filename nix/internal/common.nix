@@ -231,6 +231,11 @@ rec {
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
   '';
 
+  # FIXME: this has to be done better…
+  temporaryNodeModulesPatches = ''
+    sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+  '';
+
   electronVersion = originalPackageJson.dependencies.electron;
 
   versionInOfflineCache = safeName:
