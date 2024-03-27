@@ -234,6 +234,16 @@ rec {
   # FIXME: this has to be done better…
   temporaryNodeModulesPatches = ''
     sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoWallet.js ; then
+      sed -r "s/'serve'/\0, '+RTS', '-N', '-RTS'/g" -i node_modules/cardano-launcher/dist/src/cardanoWallet.js
+    fi
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoNode.js ; then
+      sed -r "s/config.rtsOpts/(\0 || []).concat(['-N'])/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+    fi
   '';
 
   electronVersion = originalPackageJson.dependencies.electron;
