@@ -15,7 +15,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
   package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
@@ -116,6 +116,8 @@ in rec {
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
       yarn build:electron
+
+      ${common.temporaryNodeModulesPatches}
 
       yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
     '';

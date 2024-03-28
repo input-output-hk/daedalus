@@ -6,6 +6,10 @@
 
 - Fixed out-of-memory errors on https://ci.iog.io ([PR 3145](https://github.com/input-output-hk/daedalus/pull/3145))
 
+### Chores
+
+- Updated cardano-node to 8.7.3 (via cardano-wallet) ([PR 3152](https://github.com/input-output-hk/daedalus/pull/3152))
+
 ## 5.3.0
 
 ### Features

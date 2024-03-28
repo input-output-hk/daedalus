@@ -24,7 +24,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs nodePackages yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix;
 
   # The following is used in all `configurePhase`s:
   darwinSpecificCaches = let
@@ -136,6 +136,8 @@ in rec {
     buildPhase = ''
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
+
+      ${common.temporaryNodeModulesPatches}
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (

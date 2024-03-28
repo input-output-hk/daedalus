@@ -23,19 +23,35 @@ rec {
       };
     };
 
-  walletFlake = (import inputs.flake-compat {
-    # FIXME: add patches in `flake.nix` after <https://github.com/NixOS/nix/issues/3920>
-    src = pkgs.runCommand "cardano-wallet" {} ''
-      cp -r ${inputs.cardano-wallet-unpatched} $out
-      chmod -R +w $out
-      cd $out
-      patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
-      patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
-      patch -p1 -i ${./cardano-wallet--proper-runtimeNodePkgs.patch}
-    '';
-  }).defaultNix // {
-    inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
-  };
+  flake-compat = import inputs.flake-compat;
+
+  walletFlake = let
+    unpatched = inputs.cardano-wallet-unpatched;
+  in (flake-compat {
+    src = {
+      outPath = toString (pkgs.runCommand "source" {} ''
+        cp -r ${unpatched} $out
+        chmod -R +w $out
+        cd $out
+        patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
+      '');
+      inherit (unpatched) rev shortRev lastModified lastModifiedDate;
+    };
+  }).defaultNix;
+
+  nodeFlake = let
+    unpatched = walletFlake.inputs.cardano-node-runtime;
+  in (flake-compat {
+    src = {
+      outPath = toString (pkgs.runCommand "source" {} ''
+        cp -r ${unpatched} $out
+        chmod -R +w $out
+        cd $out
+        cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
+      '');
+      inherit (unpatched.sourceInfo) rev shortRev lastModified lastModifiedDate;
+    };
+  }).defaultNix;
 
   walletPackages = {
     x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
@@ -44,7 +60,12 @@ rec {
     aarch64-darwin = walletFlake.packages.aarch64-darwin;
   }.${targetSystem};
 
-  cardanoWorldFlake = (import inputs.flake-compat { src = inputs.cardano-world; }).defaultNix.outputs;
+  nodePackages = {
+    x86_64-windows = nodeFlake.legacyPackages.x86_64-linux.hydraJobs.windows; # a bug in ${cardano-node}/flake.nix
+    x86_64-linux = nodeFlake.packages.x86_64-linux;
+    x86_64-darwin = nodeFlake.packages.x86_64-darwin;
+    aarch64-darwin = nodeFlake.packages.aarch64-darwin;
+  }.${targetSystem};
 
   inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
 
@@ -55,7 +76,9 @@ rec {
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
   });
 
-  inherit (walletPackages) cardano-node cardano-cli cardano-wallet cardano-address mock-token-metadata-server;
+  inherit (walletPackages) cardano-wallet cardano-address mock-token-metadata-server;
+
+  inherit (nodePackages) cardano-node cardano-cli;
 
   cardano-shell = import inputs.cardano-shell {
     inherit (pkgs) system;
@@ -64,13 +87,15 @@ rec {
     }.${targetSystem} or null;
   };
 
-  cardanoNodeVersion = cardano-node.version + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_4.rev;
+  cardanoNodeVersion = cardano-node.identifier.version + "-" + builtins.substring 0 9 nodeFlake.rev;
+
   cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
 
   mkLauncherConfigs = { devShell ? false, cluster }: import ./launcher-config.nix {
     inherit devShell;
-    inherit cardanoLib cardanoWorldFlake;
+    inherit cardanoLib;
     inherit (pkgs) system runCommand lib;
+    inherit (inputs) cardano-playground;
     network = cluster;
     os = {
       x86_64-windows = "windows";
@@ -123,8 +148,6 @@ rec {
       pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
     )) drv.patches;
   });
-
-  nodePackages = pkgs.nodePackages.override { inherit nodejs; };
 
   yarn = (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
     # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
@@ -206,6 +229,21 @@ rec {
     # export NODE_OPTIONS='--trace-warnings'
     # export DEBUG='*'
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
+  '';
+
+  # FIXME: this has to be done better…
+  temporaryNodeModulesPatches = ''
+    sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoWallet.js ; then
+      sed -r "s/'serve'/\0, '+RTS', '-N', '-RTS'/g" -i node_modules/cardano-launcher/dist/src/cardanoWallet.js
+    fi
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoNode.js ; then
+      sed -r "s/config.rtsOpts/(\0 || []).concat(['-N'])/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+    fi
   '';
 
   electronVersion = originalPackageJson.dependencies.electron;

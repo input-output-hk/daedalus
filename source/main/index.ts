@@ -156,8 +156,8 @@ const onAppReady = async () => {
   // We need DAEDALUS_INSTALL_DIRECTORY in PATH in order for the
   // cardano-launcher to find cardano-wallet and cardano-node executables
   process.env.PATH = [
-    process.env.PATH,
     process.env.DAEDALUS_INSTALL_DIRECTORY,
+    process.env.PATH,
   ].join(path.delimiter);
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info(`Daedalus is starting at ${startTime}`, {

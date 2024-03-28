@@ -3,10 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
-    cardano-wallet-unpatched.url = "github:input-output-hk/cardano-wallet/v2023-04-14";
+    cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2024-03-27";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
-    cardano-world.url = "github:input-output-hk/cardano-world/a0a315100ee320395be97fcc83f46678d5a7fb6e";
-    cardano-world.flake = false; # otherwise, +19k quadratic dependencies in flake.lock…
+    cardano-playground.url = "github:input-output-hk/cardano-playground";
+    cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/0d1d5f036c73d18e641412d2c58d4acda592d493";
     cardano-shell.flake = false;
     tullia.url = "github:input-output-hk/tullia";
@@ -38,6 +38,8 @@
         targetSystem: inputs.self.internal.${targetSystem}.unsignedInstaller
       );
       devshell = lib.genAttrs supportedSystems (system: inputs.self.devShells.${system}.default);
+      # Exposing these DLLs for easier development/debugging on Windows:
+      nativeModules.x86_64-windows = inputs.self.internal.x86_64-windows.nativeModulesZip;
       required = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
         name = "github-required";
         meta.description = "All jobs required to pass CI";
