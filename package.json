@@ -82,7 +82,7 @@
   },
   "devDependencies": {
     "@dump247/storybook-state": "1.6.1",
-    "@faker-js/faker": "6.0.0",
+    "@faker-js/faker": "8.4.1",
     "@formatjs/cli": "4.8.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
     "@storybook/addon-actions": "6.5.12",
