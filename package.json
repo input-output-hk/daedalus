@@ -244,7 +244,7 @@
     "lodash-es": "4.17.21",
     "matomo-tracker": "2.2.4",
     "mime-types": "2.1.27",
-    "mkdirp": "1.0.4",
+    "mkdirp": "3.0.1",
     "mobx": "5.15.7",
     "mobx-react": "6.3.1",
     "mobx-react-form": "2.0.8",
