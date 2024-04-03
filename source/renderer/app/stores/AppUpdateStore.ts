@@ -306,7 +306,7 @@ export default class AppUpdateStore extends Store {
     data,
     error,
   }: DownloadMainResponse) => {
-    runInAction('updates the download information', () => {
+    runInAction(() => {
       if (eventType === DOWNLOAD_EVENT_TYPES.PAUSE) {
         this.availableUpdate = null;
         this.isUpdateDownloaded = true;

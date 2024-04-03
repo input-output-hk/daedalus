@@ -104,6 +104,7 @@ import {
   HardwareWalletsLocalData,
   UnpairedHardwareWalletData,
 } from '../types/localDataTypes';
+import { Environment } from '../../../common/types/environment.types';
 
 export type TxSignRequestTypes = {
   coinSelection: CoinSelectionsResponse;
@@ -188,7 +189,7 @@ interface IdentifyAndHandleAssociatedWalletArgs {
   expectedWalletId?: string;
 }
 
-const { network, isDev } = global.environment;
+const { network, isDev }: Environment = global.environment;
 const hardwareWalletsNetworkConfig = getHardwareWalletsNetworkConfig(network);
 
 interface CardanoAdaAppPoller {
@@ -542,7 +543,7 @@ export default class HardwareWalletsStore extends Store {
       return transaction;
     } catch (e) {
       this.setTransactionPendingState(false);
-      runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
+      runInAction(() => {
         this.txBody = null;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
@@ -628,7 +629,7 @@ export default class HardwareWalletsStore extends Store {
   };
   @action
   setTransactionPendingState = (isTransactionPending: boolean) => {
-    runInAction('HardwareWalletsStore:: set transaction state', () => {
+    runInAction(() => {
       this.isTransactionPending = isTransactionPending;
     });
   };
@@ -671,7 +672,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   updateTxSignRequest = (coinSelection: CoinSelectionsResponse) => {
-    runInAction('HardwareWalletsStore:: set coin selections', () => {
+    runInAction(() => {
       this.txSignRequest = {
         coinSelection,
       };
@@ -699,7 +700,7 @@ export default class HardwareWalletsStore extends Store {
           delegationAction,
         },
       });
-      runInAction('HardwareWalletsStore:: set coin selections', () => {
+      runInAction(() => {
         this.txSignRequest = {
           coinSelection,
         };
@@ -717,7 +718,7 @@ export default class HardwareWalletsStore extends Store {
   };
   @action
   establishHardwareWalletConnection = async () => {
-    runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
+    runInAction(() => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
     const { hardwareWalletDevices, hardwareWalletsConnectionData } = this;
@@ -799,7 +800,7 @@ export default class HardwareWalletsStore extends Store {
               recognizedPairedHardwareWallet
             ),
           });
-          runInAction('HardwareWalletsStore:: Set transport device', () => {
+          runInAction(() => {
             this.transportDevice = recognizedPairedHardwareWallet;
           });
           // Special case when Pub key export rejected by the user and then device reconnected
@@ -851,7 +852,7 @@ export default class HardwareWalletsStore extends Store {
           logger.info('[HW-DEBUG] HWStore - Set transport device 2', {
             lastDeviceTransport: toJS(lastDeviceTransport),
           });
-          runInAction('HardwareWalletsStore:: Set transport device', () => {
+          runInAction(() => {
             this.transportDevice = lastDeviceTransport;
           });
 
@@ -929,7 +930,7 @@ export default class HardwareWalletsStore extends Store {
         logger.info(
           '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: Set device listener'
         );
-        runInAction('HardwareWalletsStore:: set device listener', () => {
+        runInAction(() => {
           this.isListeningForDevice = true;
         });
         return null;
@@ -990,7 +991,7 @@ export default class HardwareWalletsStore extends Store {
         logger.info('[HW-DEBUG] HWStore - Set transport device 3', {
           transportDevice: toJS(transportDevice),
         });
-        runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
+        runInAction(() => {
           this.transportDevice = transportDevice;
         });
 
@@ -1279,7 +1280,7 @@ export default class HardwareWalletsStore extends Store {
       address: toJS(address),
       path,
     });
-    runInAction('HardwareWalletsStore:: Initiate Address Verification', () => {
+    runInAction(() => {
       this.isAddressVerificationInitiated = true;
       this.unfinishedWalletAddressVerification = address;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
@@ -1537,7 +1538,7 @@ export default class HardwareWalletsStore extends Store {
           }
         );
       } else {
-        runInAction('HardwareWalletsStore:: Cannot Verify Address', () => {
+        runInAction(() => {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
           this.isAddressDerived = false;
           this.isAddressChecked = false;
@@ -1598,7 +1599,7 @@ export default class HardwareWalletsStore extends Store {
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] HWStore - Show address error');
-      runInAction('HardwareWalletsStore:: Showing address failed', () => {
+      runInAction(() => {
         this.isAddressChecked = false;
         this.isAddressCorrect = false;
         this.isListeningForDevice = true;
@@ -1658,7 +1659,7 @@ export default class HardwareWalletsStore extends Store {
       }
     );
 
-    runInAction('HardwareWalletsStore:: set HW transportDevice', () => {
+    runInAction(() => {
       this.transportDevice = ledgerDevice;
     });
 
@@ -1667,7 +1668,7 @@ export default class HardwareWalletsStore extends Store {
 
   @action
   _resetInitiatedConnection = ({ isAborted }: ResetInitiatedConnectionArgs) => {
-    runInAction('HardwareWalletsStore:: Re-run initiated connection', () => {
+    runInAction(() => {
       this.hwDeviceStatus = isAborted
         ? HwDeviceStatuses.CONNECTING
         : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
@@ -1845,7 +1846,7 @@ export default class HardwareWalletsStore extends Store {
       walletId,
     });
     logger.info('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
-    runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+    runInAction(() => {
       this.isTransactionInitiated = false;
       this.unfinishedWalletTxSigning = null;
       this.isExportKeyAborted = false;
@@ -1891,7 +1892,7 @@ export default class HardwareWalletsStore extends Store {
       walletId,
     });
     logger.info('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
-    runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+    runInAction(() => {
       this.isAddressVerificationInitiated = false;
       this.unfinishedWalletAddressVerification = null;
       this.isExportKeyAborted = false;
@@ -2157,7 +2158,7 @@ export default class HardwareWalletsStore extends Store {
     deviceId?: string | null | undefined
   ) => {
     const { coinSelection } = this.txSignRequest;
-    runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
+    runInAction(() => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -2311,7 +2312,7 @@ export default class HardwareWalletsStore extends Store {
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         walletId
       );
-      runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+      runInAction(() => {
         this.isTransactionInitiated = false;
         this.unfinishedWalletTxSigning = null;
       });
@@ -2398,7 +2399,7 @@ export default class HardwareWalletsStore extends Store {
         txWitnesses,
         txAuxiliaryData
       );
-      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+      runInAction(() => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.txBody = txBody;
         this.activeDevicePath = null;
@@ -2493,7 +2494,7 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     devicePath: string | null | undefined
   ) => {
-    runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
+    runInAction(() => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     const { coinSelection } = this.txSignRequest;
@@ -2660,7 +2661,7 @@ export default class HardwareWalletsStore extends Store {
         txWitnesses,
         txAuxiliaryData
       );
-      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+      runInAction(() => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.txBody = txBody;
         this.activeDevicePath = null;
@@ -2681,7 +2682,7 @@ export default class HardwareWalletsStore extends Store {
     votingData?: VotingDataType;
   }) => {
     const { walletId, votingData } = params;
-    runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
+    runInAction(() => {
       this.isTransactionInitiated = true;
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       this.activeDelegationWalletId = walletId;
@@ -2753,7 +2754,7 @@ export default class HardwareWalletsStore extends Store {
         logger.info(
           '[HW-DEBUG] HWStore - initiateTransaction - DISCONNECTED - ERROR'
         );
-        runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+        runInAction(() => {
           this.isTransactionInitiated = false;
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
         });
@@ -2848,7 +2849,7 @@ export default class HardwareWalletsStore extends Store {
     if (isHardwareWalletSupportEnabled) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] RESET TX');
-      runInAction('HardwareWalletsStore:: Reset initiated transaction', () => {
+      runInAction(() => {
         this.isTransactionInitiated = false;
       });
       this.stopCardanoAdaAppFetchPoller();
@@ -2862,7 +2863,7 @@ export default class HardwareWalletsStore extends Store {
       this.selectCoinsRequest.reset();
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
-      runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
+      runInAction(() => {
         this.hwDeviceStatus = HwDeviceStatuses.READY;
         this.txBody = null;
         this.activeDevicePath = null;
@@ -3089,7 +3090,7 @@ export default class HardwareWalletsStore extends Store {
       !disconnected &&
       (!eventType || eventType === DeviceEvents.CONNECT)
     ) {
-      runInAction('HardwareWalletsStore:: remove device listener', () => {
+      runInAction(() => {
         this.isListeningForDevice = false;
       });
 
@@ -3116,7 +3117,7 @@ export default class HardwareWalletsStore extends Store {
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         HwDeviceStatuses.CONNECTING
       );
-      runInAction('HardwareWalletsStore:: Change status to Connecting', () => {
+      runInAction(() => {
         this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       });
       logger.info(
@@ -3140,7 +3141,7 @@ export default class HardwareWalletsStore extends Store {
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         HwDeviceStatuses.CONNECTING
       );
-      runInAction('HardwareWalletsStore:: Change status to Connecting', () => {
+      runInAction(() => {
         this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       });
       logger.info(

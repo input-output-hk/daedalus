@@ -56,13 +56,13 @@ export default class AddressesStore extends Store {
       if (address != null) {
         this._refreshAddresses();
 
-        runInAction('set last generated address and reset error', () => {
+        runInAction(() => {
           this.lastGeneratedAddress = address;
           this.error = null;
         });
       }
     } catch (error) {
-      runInAction('set error', () => {
+      runInAction(() => {
         this.error = error;
       });
     }
@@ -150,7 +150,7 @@ export default class AddressesStore extends Store {
           index: '0',
         });
         const stakeAddress = getStakeAddressFromStakeKey(stakeKeyBech32);
-        runInAction('set stake address', () => {
+        runInAction(() => {
           this.stakeAddresses[walletId] = stakeAddress;
         });
       }

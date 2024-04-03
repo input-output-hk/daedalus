@@ -97,7 +97,7 @@ export default class VotingStore extends Store {
     await this.getCatalystFundRequest.execute().promise;
     this._initializeFundPhaseInterval();
 
-    runInAction('Initialize fund', () => {
+    runInAction(() => {
       this.catalystFund = this.getCatalystFundRequest.result;
       this._checkFundPhase(new Date());
     });

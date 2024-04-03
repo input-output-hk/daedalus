@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { History } from 'history';
@@ -59,7 +57,7 @@ class App extends Component<{
     }
 
     return (
-      <Fragment>
+      <>
         {/* @ts-ignore ts-migrate(2769) FIXME: No overload matches this call. */}
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
@@ -77,7 +75,7 @@ class App extends Component<{
                 messages: translations[locale],
               }}
             >
-              <Fragment>
+              <>
                 <Router history={history}>
                   <Routes />
                 </Router>
@@ -99,11 +97,11 @@ class App extends Component<{
                   <NewsFeedContainer key="newsFeedList" />,
                   <NewsOverlayContainer key="newsFeedOverlay" />,
                 ]}
-              </Fragment>
+              </>
             </IntlProvider>
           </ThemeProvider>
         </Provider>
-      </Fragment>
+      </>
     );
   }
 }

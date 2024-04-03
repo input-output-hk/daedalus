@@ -41,7 +41,7 @@ export class DiscreetMode extends Feature {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDiscreetModeSettingsRequest.execute();
     const isDiscreetModeEnabled = this.getDiscreetModeSettingsRequest.result;
-    runInAction('Initialize discreet mode variables', () => {
+    runInAction(() => {
       // @ts-ignore ts-migrate(2322) FIXME: Type 'Promise<boolean>' is not assignable to type ... Remove this comment to see the full error message
       this.openInDiscreetMode = isDiscreetModeEnabled;
       // @ts-ignore ts-migrate(2322) FIXME: Type 'Promise<boolean>' is not assignable to type ... Remove this comment to see the full error message
@@ -61,7 +61,7 @@ export class DiscreetMode extends Feature {
     const nextSetting = !this.openInDiscreetMode;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDiscreetModeSettingsRequest.execute(nextSetting);
-    runInAction('Update open in discreet mode settings', () => {
+    runInAction(() => {
       this.openInDiscreetMode = nextSetting;
     });
     this.analyticsTracker.sendEvent(

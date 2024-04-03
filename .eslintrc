@@ -38,6 +38,7 @@
     "jsx-a11y/alt-text": 0,
     "lines-between-class-members": 0,
     "global-require": 0,
+    "react/function-component-definition": 0,
     "import/extensions": 0,
     "import/no-cycle": 0,
     "import/no-dynamic-require": 0,

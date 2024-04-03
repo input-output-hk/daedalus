@@ -180,7 +180,7 @@ export default class NewsFeedStore extends Store {
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
-      runInAction('set news data', () => {
+      runInAction(() => {
         this.rawNews = get(rawNews, 'items', []);
         this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });

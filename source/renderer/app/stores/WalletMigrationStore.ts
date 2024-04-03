@@ -151,7 +151,7 @@ export default class WalletMigrationStore extends Store {
     }
 
     const filePath = filePaths[0];
-    runInAction('update exportSourcePath', () => {
+    runInAction(() => {
       this.exportSourcePath = filePath;
       this.exportErrors = '';
     });
@@ -167,7 +167,7 @@ export default class WalletMigrationStore extends Store {
       await this._exportWallets();
 
       if (this.exportedWalletsCount) {
-        runInAction('update walletMigrationStep', () => {
+        runInAction(() => {
           this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
         });
       }
@@ -240,7 +240,7 @@ export default class WalletMigrationStore extends Store {
       exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
       locale: this.stores.profile.currentLocale,
     });
-    runInAction('update exportedWallets and exportErrors', () => {
+    runInAction(() => {
       this.exportedWallets = orderBy(
         wallets.map((wallet) => {
           const hasName = wallet.name !== null;
@@ -278,7 +278,7 @@ export default class WalletMigrationStore extends Store {
         exportErrors: this.exportErrors,
       }
     );
-    runInAction('update isExportRunning', () => {
+    runInAction(() => {
       this.isExportRunning = false;
     });
   };
@@ -309,7 +309,7 @@ export default class WalletMigrationStore extends Store {
     logger.debug(
       `WalletMigrationStore: Restored ${this.restoredWalletsCount} of ${this.pendingImportWalletsCount} selected wallets`
     );
-    runInAction('update isRestorationRunning', () => {
+    runInAction(() => {
       this.isRestorationRunning = false;
     });
 
@@ -332,7 +332,7 @@ export default class WalletMigrationStore extends Store {
       ).promise;
       if (!restoredWallet)
         throw new Error('Restored wallet was not received correctly');
-      runInAction('update restoredWallets', () => {
+      runInAction(() => {
         this._updateWalletImportStatus(index, WalletImportStatuses.COMPLETED);
 
         const walletDuplicates = this.getExportedWalletDuplicatesById(
@@ -353,7 +353,7 @@ export default class WalletMigrationStore extends Store {
     } catch (error) {
       const errorStr =
         error.defaultMessage || error.message || error.toString();
-      runInAction('update restorationErrors', () => {
+      runInAction(() => {
         const { name, isEmptyPassphrase } = exportedWallet;
 
         this._updateWalletImportStatus(
@@ -435,7 +435,7 @@ export default class WalletMigrationStore extends Store {
 
         if (this.exportedWalletsCount) {
           // Wallets successfully exported - ask the user to select the ones to import
-          runInAction('update walletMigrationStep', () => {
+          runInAction(() => {
             this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
           });
           this.actions.dialogs.open.trigger({

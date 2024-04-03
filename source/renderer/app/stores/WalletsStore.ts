@@ -364,7 +364,7 @@ export default class WalletsStore extends Store {
         passphrase,
         extended,
       }).promise;
-      runInAction('update account public key', () => {
+      runInAction(() => {
         this.activePublicKey = accountPublicKey;
       });
       this.analytics.sendEvent(
@@ -400,7 +400,7 @@ export default class WalletsStore extends Store {
           purpose,
         },
       }).promise;
-      runInAction('update ICO public key', () => {
+      runInAction(() => {
         this.icoPublicKey = icoPublicKey;
       });
       this.analytics.sendEvent(
@@ -666,14 +666,14 @@ export default class WalletsStore extends Store {
   };
   _deleteWallet = async (params: { walletId: string; isLegacy: boolean }) => {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
-    runInAction('AdaWalletsStore::isDeleting set', () => {
+    runInAction(() => {
       this.isDeleting = true;
     });
     await this._pausePolling();
     const walletToDelete = this.getWalletById(params.walletId);
 
     if (!walletToDelete) {
-      runInAction('AdaWalletsStore::isDeleting reset', () => {
+      runInAction(() => {
         this.isDeleting = false;
       });
       return;
@@ -689,7 +689,7 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
     });
-    runInAction('AdaWalletsStore::_deleteWallet', () => {
+    runInAction(() => {
       this.isDeleting = false;
 
       if (this.hasAnyWallets) {
@@ -796,12 +796,12 @@ export default class WalletsStore extends Store {
       const restoredWallet = await request.execute(data).promise;
       if (!restoredWallet)
         throw new Error('Restored wallet was not received correctly');
-      runInAction('set restoredWallet', () => {
+      runInAction(() => {
         this.restoredWallet = restoredWallet;
         this.restoreWalletStep = 3;
       });
     } finally {
-      runInAction('end wallet restore', () => {
+      runInAction(() => {
         this.isRestoring = false;
       });
     }
@@ -881,7 +881,7 @@ export default class WalletsStore extends Store {
       nextStep = 2;
     }
 
-    runInAction('update transfer funds step', () => {
+    runInAction(() => {
       this.transferFundsStep = nextStep;
     });
   };
@@ -964,7 +964,7 @@ export default class WalletsStore extends Store {
     } = await this.transferFundsCalculateFeeRequest.execute({
       sourceWalletId,
     }).promise;
-    runInAction('set migration fee and leftovers', () => {
+    runInAction(() => {
       this.transferFundsFee = fee;
       this.transferFundsLeftovers = leftovers;
     });
@@ -1133,7 +1133,7 @@ export default class WalletsStore extends Store {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
-    runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
+    runInAction(() => {
       // There are not wallets loaded (yet) -> unset active and return
       if (isWalletAddPage || !hasAnyWalletLoaded)
         return this._unsetActiveWallet();
@@ -1195,7 +1195,7 @@ export default class WalletsStore extends Store {
         return false;
       }
 
-      runInAction('check if address is from the same wallet', () => {
+      runInAction(() => {
         const walletAddresses = this.stores.addresses.all
           .slice()
           .map((addr) => addr.id);
@@ -1231,14 +1231,14 @@ export default class WalletsStore extends Store {
         )
         .map((wallet: Wallet) => wallet.id);
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
-      runInAction('refresh active wallet', () => {
+      runInAction(() => {
         if (this.active) {
           this._setActiveWallet({
             walletId: this.active.id,
           });
         }
       });
-      runInAction('refresh address data', () => {
+      runInAction(() => {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
         this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
           walletId,
@@ -1247,7 +1247,7 @@ export default class WalletsStore extends Store {
 
         this.stores.addresses._refreshAddresses();
       });
-      runInAction('refresh transaction data', () => {
+      runInAction(() => {
         // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'WalletsS... Remove this comment to see the full error message
         this.stores.transactions.transactionsRequests = walletIds.map(
           (walletId) => ({
@@ -1384,7 +1384,7 @@ export default class WalletsStore extends Store {
   _pausePolling = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     if (this.walletsRequest.isExecuting) await this.walletsRequest;
-    runInAction('AdaWalletsStore::_pausePolling', () => {
+    runInAction(() => {
       this._pollingBlocked = true;
     });
   };
@@ -1496,7 +1496,7 @@ export default class WalletsStore extends Store {
         buildLabel,
         timestamp,
       });
-      runInAction('handle successful certificate download', () => {
+      runInAction(() => {
         // Reset progress
         this._updateCertificateCreationState(false);
 
@@ -1504,7 +1504,7 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
-      runInAction('handle failed certificate download', () => {
+      runInAction(() => {
         // Reset progress
         this._updateCertificateCreationState(false, error);
       });
@@ -1635,11 +1635,11 @@ export default class WalletsStore extends Store {
         fileContent,
         filePath,
       });
-      runInAction('handle successful rewards csv download', () => {
+      runInAction(() => {
         this._updateRewardsCsvCreationState(false);
       });
     } catch (error) {
-      runInAction('handle failed rewards csv download', () => {
+      runInAction(() => {
         this._updateRewardsCsvCreationState(false, error);
       });
     }

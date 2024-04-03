@@ -13,7 +13,7 @@ class SplashNetworkPage extends Component<Props> {
     stores: {},
   };
 
-  render() {
+  render(): React.ReactNode {
     const { networkStatus: networkStatusActions } = this.props.actions;
     const { openExternalLink } = this.props.stores.app;
 

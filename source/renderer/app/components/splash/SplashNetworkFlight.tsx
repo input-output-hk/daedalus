@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import React from 'react';
+import { defineMessages, injectIntl, FormattedHTMLMessage } from 'react-intl';
 import Splash from '../widgets/splash/Splash';
 
 const messages = defineMessages({
@@ -64,47 +64,51 @@ const messages = defineMessages({
     description: '"Learn more" link URL on the network splash screen',
   },
 });
+
 type Props = {
   onClose: (...args: Array<any>) => any;
   openExternalLink: (...args: Array<any>) => any;
+  intl: any; // Add the intl prop type
 };
-export default class SplashNetworkFlight extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
 
-  render() {
-    const { intl } = this.context;
-    const { onClose, openExternalLink } = this.props;
-    const title = intl.formatMessage(messages.title);
-    const subTitle1 = intl.formatMessage(messages.versionName);
-    const subTitle2 = intl.formatMessage(messages.networkName);
-    const description = (
-      <>
-        <p>{intl.formatMessage(messages.flightDescription1)}</p>
-        <FormattedHTMLMessage tagName="p" {...messages.flightDescription2} />
-        <p>{intl.formatMessage(messages.flightDescription3)}</p>
-        <p>{intl.formatMessage(messages.flightDescription4)}</p>
-        <p>{intl.formatMessage(messages.flightDescription5)}</p>
-      </>
-    );
-    const buttonLabel = intl.formatMessage(messages.buttonLabel);
-    const linkLabel = intl.formatMessage(messages.linkLabel);
+const SplashNetworkFlightBase: React.FC<Props> = ({
+  onClose,
+  openExternalLink,
+  intl,
+}) => {
+  // Use intl from props instead of useIntl hook
+  const title = intl.formatMessage(messages.title);
+  const subTitle1 = intl.formatMessage(messages.versionName);
+  const subTitle2 = intl.formatMessage(messages.networkName);
+  const description = (
+    <>
+      <p>{intl.formatMessage(messages.flightDescription1)}</p>
+      <FormattedHTMLMessage tagName="p" {...messages.flightDescription2} />
+      <p>{intl.formatMessage(messages.flightDescription3)}</p>
+      <p>{intl.formatMessage(messages.flightDescription4)}</p>
+      <p>{intl.formatMessage(messages.flightDescription5)}</p>
+    </>
+  );
+  const buttonLabel = intl.formatMessage(messages.buttonLabel);
+  const linkLabel = intl.formatMessage(messages.linkLabel);
 
-    const onLinkClick = () =>
-      openExternalLink(intl.formatMessage(messages.linkUrl));
+  const onLinkClick = () =>
+    openExternalLink(intl.formatMessage(messages.linkUrl));
 
-    return (
-      <Splash
-        onButtonClick={onClose}
-        onLinkClick={onLinkClick}
-        title={title}
-        subTitle1={subTitle1}
-        subTitle2={subTitle2}
-        description={description}
-        buttonLabel={buttonLabel}
-        linkLabel={linkLabel}
-      />
-    );
-  }
-}
+  return (
+    <Splash
+      onButtonClick={onClose}
+      onLinkClick={onLinkClick}
+      title={title}
+      subTitle1={subTitle1}
+      subTitle2={subTitle2}
+      description={description}
+      buttonLabel={buttonLabel}
+      linkLabel={linkLabel}
+    />
+  );
+};
+
+const SplashNetworkFlight = injectIntl(SplashNetworkFlightBase);
+
+export default SplashNetworkFlight;

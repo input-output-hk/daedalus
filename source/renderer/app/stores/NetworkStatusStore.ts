@@ -328,8 +328,7 @@ export default class NetworkStatusStore extends Store {
       logger.info('NetworkStatusStore: received cached node status', {
         status,
       });
-      if (status)
-        runInAction('assigning node status', () => Object.assign(this, status));
+      if (status) runInAction(() => Object.assign(this, status));
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.error('NetworkStatusStore: error while requesting node state', {
@@ -359,7 +358,7 @@ export default class NetworkStatusStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    runInAction('updating tlsConfig', () => {
+    runInAction(() => {
       this.tlsConfig = config;
     });
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
@@ -386,7 +385,7 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('updating tlsConfig', () => {
+        runInAction(() => {
           this.tlsConfig = null;
         });
 
@@ -400,7 +399,7 @@ export default class NetworkStatusStore extends Store {
         this._setDisconnected(wasConnected);
     }
 
-    runInAction('setting cardanoNodeState', () => {
+    runInAction(() => {
       this.cardanoNodeState = state;
       this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
       this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
@@ -521,7 +520,7 @@ export default class NetworkStatusStore extends Store {
         }
       ).promise;
       // System time is correct if local time difference is below allowed threshold
-      runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
+      runInAction(() => {
         // Update localTimeDifference only in case NTP check status is not still pending
         if (networkClock.status !== 'pending') {
           this.localTimeDifference = networkClock.offset;
@@ -578,7 +577,7 @@ export default class NetworkStatusStore extends Store {
       }
 
       // We got response which means node is responding
-      runInAction('update isNodeResponding', () => {
+      runInAction(() => {
         this.isNodeResponding = true;
       });
       runInAction(
@@ -605,13 +604,13 @@ export default class NetworkStatusStore extends Store {
 
       // Update sync progress
       const lastSyncProgress = this.syncProgress;
-      runInAction('update syncProgress', () => {
+      runInAction(() => {
         this.syncProgress = syncProgress;
       });
-      runInAction('update isNodeInSync', () => {
+      runInAction(() => {
         this.isNodeInSync = this.syncProgress === 100;
       });
-      runInAction('update isSyncProgressStalling', () => {
+      runInAction(() => {
         // Check if sync progress is stalling
         const hasSyncProgressChanged = this.syncProgress !== lastSyncProgress;
 
@@ -631,7 +630,7 @@ export default class NetworkStatusStore extends Store {
         this.isSyncProgressStalling =
           lastSyncProgressChangeStall > MAX_ALLOWED_STALL_DURATION;
       });
-      runInAction('update isNodeSyncing', () => {
+      runInAction(() => {
         this.isNodeSyncing = !this.isSyncProgressStalling;
       });
 
@@ -652,7 +651,7 @@ export default class NetworkStatusStore extends Store {
       if (wasConnected !== this.isConnected) {
         if (!this.isConnected) {
           if (!this.hasBeenConnected) {
-            runInAction('update hasBeenConnected', () => {
+            runInAction(() => {
               this.hasBeenConnected = true;
             });
           }
@@ -667,7 +666,7 @@ export default class NetworkStatusStore extends Store {
         }
 
         if (this.isTlsCertInvalid) {
-          runInAction('set isTlsCertInvalid = false', () => {
+          runInAction(() => {
             this.isTlsCertInvalid = false;
           });
         }
@@ -682,7 +681,7 @@ export default class NetworkStatusStore extends Store {
       this._setDisconnected(wasConnected);
 
       if (error instanceof TlsCertificateNotValidError) {
-        runInAction('set isTlsCertInvalid = true', () => {
+        runInAction(() => {
           this.isTlsCertInvalid = true;
         });
       }
@@ -698,7 +697,7 @@ export default class NetworkStatusStore extends Store {
 
     if (wasConnected) {
       if (!this.hasBeenConnected) {
-        runInAction('update hasBeenConnected', () => {
+        runInAction(() => {
           this.hasBeenConnected = true;
         });
       }
@@ -754,7 +753,7 @@ export default class NetworkStatusStore extends Store {
         }
       }
 
-      runInAction('Update Decentralization Progress', () => {
+      runInAction(() => {
         this.decentralizationProgress = decentralizationLevel.quantity;
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
@@ -763,16 +762,16 @@ export default class NetworkStatusStore extends Store {
         this.isAlonzoPending = isAlonzoPending;
         this.alonzoActivationTime = alonzoActivationTime;
       });
-      runInAction('Update Desired Pool Number', () => {
+      runInAction(() => {
         this.desiredPoolNumber =
           desiredPoolNumber || INITIAL_DESIRED_POOLS_NUMBER;
       });
-      runInAction('Update Epoch Config', () => {
+      runInAction(() => {
         this.slotLength = slotLength.quantity;
         this.epochLength = epochLength.quantity;
       });
     } catch (e) {
-      runInAction('Clear Decentralization Progress', () => {
+      runInAction(() => {
         this.decentralizationProgress = 0;
       });
     }
@@ -821,12 +820,12 @@ export default class NetworkStatusStore extends Store {
   };
   @action
   _toggleSplash = () => {
-    runInAction('Toggle splash visibility', () => {
+    runInAction(() => {
       this.isSplashShown = !this.isSplashShown;
     });
   };
   _resetSystemTime = () => {
-    runInAction('Reset system time', () => {
+    runInAction(() => {
       this.getNetworkClockRequest.reset();
       this.localTimeDifference = null;
       this.isNodeTimeCorrect = true;

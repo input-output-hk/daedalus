@@ -468,7 +468,7 @@ export default class TransactionsStore extends Store {
 
     if (!options) {
       // Setup options for active wallet
-      runInAction('setFilterOptionsForActiveWallet', () => {
+      runInAction(() => {
         extendObservable(this._filterOptionsForWallets, {
           [wallet.id]: emptyTransactionFilterOptions,
         });

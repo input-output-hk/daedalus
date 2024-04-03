@@ -438,7 +438,7 @@ export default class ProfileStore extends Store {
       (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) ||
       this.isInitialScreen
     ) {
-      runInAction('Set `isInitialScreen` true', () => {
+      runInAction(() => {
         this.isInitialScreen = true;
       });
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Profile... Remove this comment to see the full error message
@@ -555,7 +555,7 @@ export default class ProfileStore extends Store {
         logs: toJS(logs),
         compressedFileName: fileName,
       });
-      runInAction('ProfileStore::_compressLogs:success', () => {
+      runInAction(() => {
         this.compressedLogsFilePath = outputPath;
         const { isDownloading, destination } = this.compressedLogsStatus;
 
@@ -568,7 +568,7 @@ export default class ProfileStore extends Store {
         }
       });
     } catch (error) {
-      runInAction('ProfileStore::_compressLogs:error', () => {
+      runInAction(() => {
         this.isSubmittingBugReport = false;
         this.error = new WalletSupportRequestLogsCompressError();
       });

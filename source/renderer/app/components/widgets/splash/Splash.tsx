@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { Component } from 'react';
+import React from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
@@ -22,56 +22,56 @@ type Props = {
   linkLabel: boolean | string;
   backgroundImage?: string;
 };
-export default class SplashNetwork extends Component<Props> {
-  render() {
-    const {
-      onButtonClick,
-      onLinkClick,
-      title,
-      subTitle1,
-      subTitle2,
-      description,
-      buttonLabel,
-      linkLabel,
-      backgroundImage,
-    } = this.props;
-    return (
-      <div className={styles.component}>
-        <div className={styles.backgroundContainer}>
-          {backgroundImage && (
-            <>
-              <div className={styles.backgroundOverlay} />
-              <SVGInline
-                svg={backgroundImage}
-                className={styles.backgroundImage}
-              />
-            </>
-          )}
-        </div>
-        <div className={styles.content}>
-          <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
-          <div className={styles.title}>{title}</div>
-          <div className={styles.subTitle1}>{subTitle1}</div>
-          {subTitle2 && <div className={styles.subTitle2}>{subTitle2}</div>}
-          <div className={styles.description}>{description}</div>
-          <div className={styles.action}>
-            <Button
-              className={styles.actionButton}
-              label={buttonLabel}
-              onClick={onButtonClick}
-              skin={ButtonSkin}
+
+const SplashNetwork: React.FC<Props> = ({
+  onButtonClick,
+  onLinkClick,
+  title,
+  subTitle1,
+  subTitle2,
+  description,
+  buttonLabel,
+  linkLabel,
+  backgroundImage,
+}) => {
+  return (
+    <div className={styles.component}>
+      <div className={styles.backgroundContainer}>
+        {backgroundImage && (
+          <>
+            <div className={styles.backgroundOverlay} />
+            <SVGInline
+              svg={backgroundImage}
+              className={styles.backgroundImage}
             />
-          </div>
-          {linkLabel && (
-            <Link
-              className={styles.learnMoreLink}
-              onClick={onLinkClick}
-              label={linkLabel}
-              skin={LinkSkin}
-            />
-          )}
-        </div>
+          </>
+        )}
       </div>
-    );
-  }
-}
+      <div className={styles.content}>
+        <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
+        <div className={styles.title}>{title}</div>
+        <div className={styles.subTitle1}>{subTitle1}</div>
+        {subTitle2 && <div className={styles.subTitle2}>{subTitle2}</div>}
+        <div className={styles.description}>{description}</div>
+        <div className={styles.action}>
+          <Button
+            className={styles.actionButton}
+            label={buttonLabel}
+            onClick={onButtonClick}
+            skin={ButtonSkin}
+          />
+        </div>
+        {linkLabel && (
+          <Link
+            className={styles.learnMoreLink}
+            onClick={onLinkClick}
+            label={linkLabel}
+            skin={LinkSkin}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SplashNetwork;

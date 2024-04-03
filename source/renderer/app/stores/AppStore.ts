@@ -202,7 +202,7 @@ export default class AppStore extends Store {
   // ===================== PRIVATE ======================= //
   _getGpuStatus = async () => {
     const gpuStatus = await getGPUStatusChannel.request();
-    runInAction('get gpu status', () => {
+    runInAction(() => {
       this.gpuStatus = gpuStatus;
     });
   };
