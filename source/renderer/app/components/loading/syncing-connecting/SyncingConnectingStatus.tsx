@@ -37,6 +37,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano node stopped',
     description: 'Message "Cardano node stopped" on the loading screen.',
   },
+  syncingMessage: {
+    id: 'loading.screen.syncingMessage',
+    defaultMessage: '!!!Backend syncing',
+    description: 'Message "Syncing" on the loading screen.',
+  },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
     defaultMessage: '!!!Updating Cardano node',
