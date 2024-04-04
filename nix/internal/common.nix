@@ -33,7 +33,6 @@ rec {
         cp -r ${unpatched} $out
         chmod -R +w $out
         cd $out
-        patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
         patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
       '');
       inherit (unpatched) rev shortRev lastModified lastModifiedDate;
@@ -230,6 +229,21 @@ rec {
     # export NODE_OPTIONS='--trace-warnings'
     # export DEBUG='*'
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
+  '';
+
+  # FIXME: this has to be done better…
+  temporaryNodeModulesPatches = ''
+    sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoWallet.js ; then
+      sed -r "s/'serve'/\0, '+RTS', '-N', '-RTS'/g" -i node_modules/cardano-launcher/dist/src/cardanoWallet.js
+    fi
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoNode.js ; then
+      sed -r "s/config.rtsOpts/(\0 || []).concat(['-N'])/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+    fi
   '';
 
   electronVersion = originalPackageJson.dependencies.electron;

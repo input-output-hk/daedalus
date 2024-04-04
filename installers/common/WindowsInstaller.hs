@@ -201,7 +201,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                         Development.NSIS.& ")..."
                         )
                     lockfileDeleted @= true
-                    onError (delete [] (str $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
+                    onError (delete [] (fromString $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
                         lockfileDeleted @= false
                     iff_ (not_ lockfileDeleted) $ do
                         sleep 1000 -- milliseconds
@@ -247,6 +247,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 file [] "libstdc++-6.dll"
                 file [] "mcfgthread-12.dll"
                 file [] "libgcc_s_seh-1.dll"
+                file [] "zlib1.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"
