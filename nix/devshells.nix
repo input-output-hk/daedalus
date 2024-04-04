@@ -36,7 +36,7 @@ let
       regenerateDevCerts
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
-      git python27 curl jq
+      git python3 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       pkgconfig
@@ -121,6 +121,8 @@ let
       echo 'Re-generating dev certificates for ‘cardano-wallet’…'
       mkdir -p "$CARDANO_WALLET_TLS_PATH"
       regenerate-dev-certs >/dev/null
+
+      ${common.temporaryNodeModulesPatches}
 
       echo
       echo 'Now, run ‘yarn dev’.'

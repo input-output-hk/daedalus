@@ -7,7 +7,7 @@
 , topologyOverride ? null
 , configOverride ? null
 , genesisOverride ? null
-, cardanoWorldFlake
+, cardano-playground
 , system
 }:
 
@@ -19,57 +19,38 @@
 
 
 let
-  clusterOverrides = {
-    mainnet_flight = {
-      cardanoEnv = cardanoLib.environments.mainnet;
-      cluster = "mainnet";
-      networkName = "mainnet";
-    };
-    alonzo_purple = {
-      cardanoEnv = cardanoLib.environments.alonzo-purple;
-      cluster = "alonzo-purple";
-      networkName = "alonzo-purple";
-    };
-    shelley_qa = fromCardanoWorld "shelley_qa";
-    vasil_dev  = fromCardanoWorld "vasil-dev";
-    preprod    = fromCardanoWorld "preprod";
-    preview    = fromCardanoWorld "preview";
+  clustersAvailable = rec {
+    mainnet    = fromCardanoPlayground "mainnet";
+    mainnet_flight = mainnet;
+    shelley_qa = fromCardanoPlayground "shelley_qa";
+    vasil_dev  = fromCardanoPlayground "vasil-dev";
+    preprod    = fromCardanoPlayground "preprod";
+    preview    = fromCardanoPlayground "preview";
   };
 
-  fromCardanoWorld = envName: let
+  fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
-      name = "cardano-world-config-${envName}";
-      path = cardanoWorldFlake.${system}.cardano.packages.cardano-config-html-internal + "/config/" + envName;
+      name = "cardano-playground-config-${envName}";
+      path = cardano-playground + ("/static/book.play.dev.cardano.org/environments/" + envName);
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
       builtins.readFile (originalFiles + "/config.json")));
 
-    topology = builtins.fromJSON (builtins.unsafeDiscardStringContext (
-      builtins.readFile (originalFiles + "/topology.json")));
-
-    topologyFirstAccessPoint = builtins.head (builtins.head topology.PublicRoots).publicRoots.accessPoints;
-
-    isP2P = originalNodeConfig ? EnableP2P && originalNodeConfig.EnableP2P;
-
     nodeConfig = originalNodeConfig // {
+      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
       AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
       ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
       ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
       minSeverity = "Info";  # XXX: Needed for sync % updates.
-      EnableP2P = false;  # XXX: Doesn’t work behind NAT? Let’s use the legacy topology.
     };
   in {
     cluster = envName;
     networkName = envName;
     cardanoEnv = {
       inherit nodeConfig;
-    } // (if isP2P then {
-      relaysNew = topologyFirstAccessPoint.address;
-      edgePort  = topologyFirstAccessPoint.port;
-    } else {
       topologyFile = originalFiles + "/topology.json";
-    });
+    };
   };
 
   dirSep = if os == "windows" then "\\" else "/";
@@ -117,9 +98,7 @@ let
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
   envCfg = let
-    cardanoEnv = if __hasAttr network clusterOverrides
-                 then clusterOverrides.${network}.cardanoEnv
-                 else cardanoLib.environments.${network};
+    cardanoEnv = clustersAvailable.${network}.cardanoEnv;
   in if network == "selfnode" then selfnodeConfig else cardanoEnv;
   kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
@@ -213,8 +192,8 @@ let
     workingDir = dataDir;
     stateDir = dataDir;
     tlsPath = "${dataDir}${dirSep}tls";
-    cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
-    networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
+    cluster = if __hasAttr network clustersAvailable then clustersAvailable.${network}.cluster else network;
+    networkName = if __hasAttr network clustersAvailable then clustersAvailable.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
     nodeImplementation = "cardano";
@@ -233,6 +212,7 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
       ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? ConwayGenesisFile) "cp ${envCfg.nodeConfig.ConwayGenesisFile} $out/genesis-conway.json"}
     '';
 
   mkConfigCardano = let
@@ -247,15 +227,13 @@ let
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
       AlonzoGenesisFile = "genesis-alonzo.json";
+      ConwayGenesisFile = "genesis-conway.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
     in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
-    normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
-      inherit (envCfg) edgePort;
-      edgeNodes = [ envCfg.relaysNew ];
-    };
+    normalTopologyFile = if network == "selfnode" then envCfg.topology else throw "no longer supported";
     localTopology = cardanoLib.mkEdgeTopology {
       edgePort = 30001;
       edgeNodes = [ "127.0.0.1" ];

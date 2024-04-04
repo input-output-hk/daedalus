@@ -24,14 +24,7 @@ runCommandCC "daedalus-cardano-bridge" {
       cp -f ${local-cluster}/bin/local-cluster .
 
     '' else if target == "x86_64-darwin" || target == "aarch64-darwin" then ''
-      # For nix-shell:
       cp -f ${local-cluster}/bin/local-cluster .
-
-      # For selfnode installer:
-      cp -f ${local-cluster}/bin/.local-cluster-wrapped local-cluster--unwrapped
-      mkdir -p test/data
-      test_data_dir=$(cat local-cluster | grep -oP "SHELLEY_TEST_DATA='\K[^']+")
-      cp -rf $test_data_dir test/data/
 
     '' else abort "Unknown target: ${target}"}
 

@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cardano-playground": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1710374728,
+        "narHash": "sha256-nk79ZQLHGHPLXEYeJhZLWQWsa+wzOxxu4SuY9sKVG5c=",
+        "owner": "input-output-hk",
+        "repo": "cardano-playground",
+        "rev": "aa1d456c5e926cc07094a26f2c480773f206e4e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "cardano-playground",
+        "type": "github"
+      }
+    },
     "cardano-shell": {
       "flake": false,
       "locked": {
@@ -20,34 +36,17 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1681468877,
-        "narHash": "sha256-d66foWDBKsSgL6f7lCwGBAS4Iu6MJCG7wyl1N7wctxw=",
-        "owner": "input-output-hk",
+        "lastModified": 1711569646,
+        "narHash": "sha256-rxMPopa3nxQaM0yOxUCq5oj3+XSL68jkuuFVhj/SY+w=",
+        "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "3f9055373c272a4d7b1f9f6bacc1df3b6dc906af",
+        "rev": "08ab303b0e111ba8a96ab3d2634adcee230766e4",
         "type": "github"
       },
       "original": {
-        "owner": "input-output-hk",
-        "ref": "v2023-04-14",
+        "owner": "cardano-foundation",
+        "ref": "v2024-03-27",
         "repo": "cardano-wallet",
-        "type": "github"
-      }
-    },
-    "cardano-world": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1669223728,
-        "narHash": "sha256-Zo6YeS+43AsJy7TKVfe42O/hR+JOwhalLkH3KFGRTCM=",
-        "owner": "input-output-hk",
-        "repo": "cardano-world",
-        "rev": "a0a315100ee320395be97fcc83f46678d5a7fb6e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "cardano-world",
-        "rev": "a0a315100ee320395be97fcc83f46678d5a7fb6e",
         "type": "github"
       }
     },
@@ -85,9 +84,9 @@
     },
     "root": {
       "inputs": {
+        "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
-        "cardano-world": "cardano-world",
         "flake-compat": "flake-compat",
         "nixpkgs": "nixpkgs",
         "tullia": "tullia"

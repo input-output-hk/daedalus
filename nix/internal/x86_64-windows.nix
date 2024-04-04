@@ -86,6 +86,8 @@ in rec {
       mkdir -p installers/icons/${cluster}/${cluster}
       cp ${windowsIcons.${cluster}}/${cluster}/* installers/icons/${cluster}/${cluster}/
 
+      ${common.temporaryNodeModulesPatches}
+
       export DEBUG=electron-packager
       yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
     '';
@@ -400,6 +402,21 @@ in rec {
       cp -r $out/build/Release $out/build/Debug
     '';
   };
+
+  nativeModulesZip = pkgs.runCommand "win64-native-modules" {
+    buildInputs = with pkgs; [ zip ];
+  } ''
+    mkdir -p $out
+
+    (
+      cd ${nativeModules}
+      zip -ry $out/native-modules-${sourceLib.buildRevShort}-${targetSystem}.zip .
+    )
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$(echo $out/*.zip)\"" >$out/nix-support/hydra-build-products
+  '';
 
   native = rec {
     nodejs = pkgs.fetchzip {
