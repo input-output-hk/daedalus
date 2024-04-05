@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Language and Environment */
     "target": "es2022",
-    "lib": ["dom"],
+    "lib": ["es2022", "dom", "esnext.asynciterable", "node"],
     "jsx": "react",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

@@ -2,7 +2,7 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import type { Launcher } from 'cardano-launcher';
+import type { Launcher } from '../cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
