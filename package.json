@@ -6,7 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "dev": "concurrently --names renderer,main \"yarn dev:renderer\" \"wait-on http://localhost:8080 && yarn dev:main\"",
-    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Preview\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Preview\\launcher-config.yaml\" yarn dev",
+    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Preview\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Preview\\launcher-config.yaml\" DATA_DIR=\"C:\\Users\\daniel\\AppData\\Roaming\\Daedalus Mainnet\" yarn dev",
     "dev:main": "cross-env NODE_ENV=development yarn build:main --watch",
     "dev:renderer": "concurrently \"yarn typedef:sass --watch\" \"cross-env NODE_ENV=development yarn webpack serve -c source/renderer/webpack.config.js --progress\"",
     "build": "yarn build:cleanup && yarn build:main && yarn build:renderer",
