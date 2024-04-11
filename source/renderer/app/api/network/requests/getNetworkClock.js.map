@@ -1,1 +1,0 @@
-{"version":3,"file":"getNetworkClock.js","sourceRoot":"","sources":["getNetworkClock.ts"],"names":[],"mappings":";;;AAEA,iDAA8C;AAEvC,MAAM,eAAe,GAAG,CAC7B,MAAqB,EACrB,YAAqB,EACU,EAAE,CACjC,IAAA,iBAAO,EACL;IACE,MAAM,EAAE,KAAK;IACb,IAAI,EAAE,mBAAmB;IACzB,GAAG,MAAM;CACV,EACD;IACE,aAAa,EAAE,YAAY;CAC5B,CACF,CAAC;AAbS,QAAA,eAAe,mBAaxB"}

@@ -1,1 +1,0 @@
-{"version":3,"file":"deleteTransaction.js","sourceRoot":"","sources":["deleteTransaction.ts"],"names":[],"mappings":";;;AACA,iDAA8C;AAEvC,MAAM,iBAAiB,GAAG,CAC/B,MAAqB,EACrB,EACE,QAAQ,EACR,aAAa,GAId,EACa,EAAE,CAChB,IAAA,iBAAO,EAAC;IACN,MAAM,EAAE,QAAQ;IAChB,IAAI,EAAE,eAAe,QAAQ,iBAAiB,aAAa,EAAE;IAC7D,GAAG,MAAM;CACV,CAAC,CAAC;AAdQ,QAAA,iBAAiB,qBAczB"}

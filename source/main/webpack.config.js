@@ -7,7 +7,7 @@ class ManageElectronProcessPlugin {
   _process = null;
   _shouldRestart = false;
   start() {
-    this._process = spawn('yarn', ['electron', '.'], {
+    this._process = spawn('yarn', ['electron', '--trace-deprecation', '.'], {
       stdio: 'inherit',
       shell: true,
     });

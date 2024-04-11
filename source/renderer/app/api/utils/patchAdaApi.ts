@@ -1,6 +1,6 @@
 import { get, map } from 'lodash';
 import { action } from 'mobx';
-import BigNumber from 'bignumber.js/bignumber';
+import { BigNumber } from 'bignumber.js';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
 import { logger } from '../../utils/logging';

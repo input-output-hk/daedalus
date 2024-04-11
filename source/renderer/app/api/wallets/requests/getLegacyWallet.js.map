@@ -1,1 +1,0 @@
-{"version":3,"file":"getLegacyWallet.js","sourceRoot":"","sources":["getLegacyWallet.ts"],"names":[],"mappings":";;;AAEA,iDAA8C;AAC9C,uCAA6C;AAEtC,MAAM,eAAe,GAAG,CAC7B,MAAqB,EACrB,EACE,QAAQ,GAGT,EACyB,EAAE,CAC5B,IAAA,iBAAO,EAAC;IACN,MAAM,EAAE,KAAK;IACb,IAAI,EAAE,qBAAqB,IAAA,sBAAc,EAAC,QAAQ,CAAC,EAAE;IACrD,GAAG,MAAM;CACV,CAAC,CAAC;AAZQ,QAAA,eAAe,mBAYvB"}

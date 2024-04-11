@@ -1,1 +1,0 @@
-{"version":3,"file":"checkSmashServerHealth.js","sourceRoot":"","sources":["checkSmashServerHealth.ts"],"names":[],"mappings":";;;AAEA,iDAA8C;AAEvC,MAAM,sBAAsB,GAAG,CACpC,MAAqB,EACrB,GAAY,EACgC,EAAE,CAC9C,IAAA,iBAAO,EACL;IACE,MAAM,EAAE,KAAK;IACb,IAAI,EAAE,kBAAkB;IACxB,GAAG,MAAM;CACV,EACD;IACE,GAAG;CACJ,CACF,CAAC;AAbS,QAAA,sBAAsB,0BAa/B"}

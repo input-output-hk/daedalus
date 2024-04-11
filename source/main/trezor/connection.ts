@@ -10,7 +10,7 @@ export const initTrezorConnect = async () => {
     // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
     // this is useful when you don't know if you are dealing with Trezor user
     manifest,
-    transports: ['NodeUsbTransport'],
+    transports: ['BridgeTransport'],
   })
     .then(() => {
       logger.info('[HW-DEBUG] TrezorConnect is ready!');

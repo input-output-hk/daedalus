@@ -1,1 +1,0 @@
-{"version":3,"file":"get-gpu-status.js","sourceRoot":"","sources":["get-gpu-status.ts"],"names":[],"mappings":";;;AAAA,uCAA+B;AAC/B,yDAAsD;AAKtD,8CAA8D;AAEjD,QAAA,mBAAmB,GAG5B,IAAI,+BAAc,CAAC,4BAAsB,CAAC,CAAC;AAC/C,kBAAe,GAAG,EAAE;IAClB,2BAAmB,CAAC,SAAS,CAAC,GAAG,EAAE,CACjC,OAAO,CAAC,OAAO,CAAC,cAAG,CAAC,mBAAmB,EAAE,CAAC,CAC3C,CAAC;AACJ,CAAC,CAAC"}

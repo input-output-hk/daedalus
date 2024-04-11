@@ -1,1 +1,0 @@
-{"version":3,"file":"createWallet.js","sourceRoot":"","sources":["createWallet.ts"],"names":[],"mappings":";;;AAEA,iDAA8C;AAEvC,MAAM,YAAY,GAAG,CAC1B,MAAqB,EACrB,EACE,cAAc,GAGf,EACmB,EAAE,CACtB,IAAA,iBAAO,EACL;IACE,MAAM,EAAE,MAAM;IACd,IAAI,EAAE,aAAa;IACnB,GAAG,MAAM;CACV,EACD,EAAE,EACF,cAAc,CACf,CAAC;AAhBS,QAAA,YAAY,gBAgBrB"}

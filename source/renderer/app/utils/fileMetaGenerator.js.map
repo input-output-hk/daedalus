@@ -1,1 +1,0 @@
-{"version":3,"file":"fileMetaGenerator.js","sourceRoot":"","sources":["fileMetaGenerator.ts"],"names":[],"mappings":";;;AAAA,4EAAyE;AAKlE,MAAM,gBAAgB,GAAG,KAAK,EAAE,EAAE,QAAQ,EAAU,EAAE,EAAE;IAC7D,MAAM,QAAQ,GAAG,MAAM,iDAAuB,CAAC,IAAI,CAAC;QAClD,QAAQ;KACT,CAAC,CAAC;IACH,OAAO,QAAQ,CAAC;AAClB,CAAC,CAAC;AALW,QAAA,gBAAgB,oBAK3B"}

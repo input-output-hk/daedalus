@@ -1,1 +1,0 @@
-{"version":3,"file":"SnapshotPhase.messages.js","sourceRoot":"","sources":["SnapshotPhase.messages.ts"],"names":[],"mappings":";;;AAAA,2CAA4C;AAE/B,QAAA,QAAQ,GAAG,IAAA,2BAAc,EAAC;IACrC,iBAAiB,EAAE;QACjB,EAAE,EAAE,wCAAwC;QAC5C,cAAc,EAAE,mBAAmB;QACnC,WAAW,EAAE,qBAAqB;KACnC;IACD,eAAe,EAAE;QACf,EAAE,EAAE,sCAAsC;QAC1C,cAAc,EAAE,wBAAwB;QACxC,WAAW,EAAE,wBAAwB;KACtC;CACF,CAAC,CAAC"}

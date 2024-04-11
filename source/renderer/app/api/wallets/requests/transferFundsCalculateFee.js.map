@@ -1,1 +1,0 @@
-{"version":3,"file":"transferFundsCalculateFee.js","sourceRoot":"","sources":["transferFundsCalculateFee.ts"],"names":[],"mappings":";;;AAKA,iDAA8C;AAC9C,uCAA6C;AAEtC,MAAM,yBAAyB,GAAG,CACvC,MAAqB,EACrB,EAAE,cAAc,EAAoC,EACL,EAAE,CACjD,IAAA,iBAAO,EAAC;IACN,MAAM,EAAE,KAAK;IACb,IAAI,EAAE,qBAAqB,IAAA,sBAAc,EAAC,cAAc,CAAC,aAAa;IACtE,GAAG,MAAM;CACV,CAAC,CAAC;AARQ,QAAA,yBAAyB,6BAQjC"}
