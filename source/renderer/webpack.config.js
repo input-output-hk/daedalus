@@ -86,7 +86,12 @@ module.exports = {
       },
       {
         test: /\.inline\.svg$/,
-        use: 'svg-inline-loader',
+        use: {
+          loader: 'raw-loader',
+          options: {
+            esModule: false,
+          },
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
