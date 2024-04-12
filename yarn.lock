@@ -3244,9 +3244,9 @@
     "@types/history" "^4.7.11"
     "@types/react" "*"
 
-"@types/react-svg-inline@2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@types/react-svg-inline/-/react-svg-inline-2.1.3.tgz#e76f2141de6a92c66597b81475255d86efd99d76"
+"@types/react-svg-inline@2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@types/react-svg-inline/-/react-svg-inline-2.1.6.tgz#33f26ffc5491139056c1dd1f24d306678a40bc32"
   dependencies:
     "@types/react" "*"
 
