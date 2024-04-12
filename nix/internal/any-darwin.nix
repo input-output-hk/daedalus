@@ -143,8 +143,6 @@ in rec {
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
-      ${common.temporaryNodeModulesPatches}
-
       sed -r "s/^const usb =.*/const usb = require(require('path').join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
         -i node_modules/usb/dist/usb/bindings.js
 

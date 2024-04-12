@@ -53,13 +53,14 @@
     "electron": "./node_modules/.bin/electron"
   },
   "devDependencies": {
-    "@electron/asar": "3.2.9",
     "@electron/rebuild": "3.2.13",
     "@faker-js/faker": "8.4.1",
     "@khanacademy/flow-to-ts": "^0.5.2",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.11",
     "@swc-node/register": "1.9.0",
     "@swc/core": "1.4.12",
+    "@testing-library/react": "",
+    "@testing-library/jest-dom": "",
     "@types/aes-js": "3.1.4",
     "@types/fs-extra": "11.0.4",
     "@types/lodash": "4.17.0",
@@ -76,7 +77,6 @@
     "@typescript-eslint/parser": "7.2.0",
     "@xarc/run": "1.1.1",
     "archiver": "^7.0.1",
-    "autodll-webpack-plugin": "1.0.0",
     "axios": "1.6.8",
     "cache-loader": "4.1.0",
     "chalk": "5.3.0",
@@ -85,6 +85,7 @@
     "crypto-browserify": "3.12.0",
     "css-loader": "6.2.0",
     "del": "7.1.0",
+    "depcheck": "^1.4.7",
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "3.2.0",
     "electron-mock-ipc": "0.3.12",
@@ -124,6 +125,7 @@
     "prettier": "3.2.5",
     "pretty-quick": "4.0.0",
     "prettysize": "2.0.0",
+    "prompts": "2.4.2",
     "react-intl-translations-manager": "5.0.3",
     "react-refresh": "0.14.0",
     "react-syntax-highlighter": "15.5.0",
@@ -151,13 +153,12 @@
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "4.15.2",
     "ws": "8.16.0",
-    "yamljs": "0.3.0",
-    "yarn-audit-fix": "^10.0.7",
-    "yarn-audit-html": "^7.3.2"
+    "yamljs": "0.3.0"
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "6.0.1",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
+    "@ledgerhq/devices": "^8.2.2",
     "@ledgerhq/hw-transport-node-hid": "6.28.5",
     "@tippyjs/react": "4.2.6",
     "@trezor/connect": "9.1.12",
@@ -214,10 +215,11 @@
     "omit-deep-lodash": "1.1.7",
     "pbkdf2": "3.1.2",
     "pdfkit": "0.15.0",
+    "popper.js": "^1.16.1",
     "process": "0.11.10",
     "prop-types": "15.8.1",
     "qr-image": "3.2.0",
-    "qrcode.react": "3.1.0",
+    "qrcode.react": "1.0.0",
     "querystring": "^0.2.1",
     "rc-slider": "9.7.2",
     "react": "18.2.0",
@@ -247,6 +249,7 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.21",
     "tail": "2.2.6",
+    "tippy.js": "6.3.7",
     "tcp-port-used": "1.0.2",
     "tsee": "1.3.4",
     "unorm": "1.6.0",
@@ -254,8 +257,10 @@
     "usb-detection": "4.14.2",
     "util": "0.12.5",
     "uuid": "9.0.1",
+    "utility-types": "^3.11.0",
     "validator": "13.7.0",
-    "vm-browserify": "^1.1.2"
+    "vm-browserify": "^1.1.2",
+    "which": "^4.0.0"
   },
   "peerDependencies": {
     "classnames": "2.5.1"
@@ -288,6 +293,7 @@
     "**/**/usb": "^2.11.0",
     "**/**/bufferutil": "^4.0.1",
     "**/**/utf-8-validate": "^5.0.2",
+    "node.extend": "1.1.7",
     "prebuild-install": "^6.1.4"
   }
 }

@@ -113,8 +113,6 @@ in rec {
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
       yarn build:electron
 
-      ${common.temporaryNodeModulesPatches}
-
       yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
     '';
     installPhase = ''

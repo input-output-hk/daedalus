@@ -86,8 +86,6 @@ in rec {
       mkdir -p installers/icons/${cluster}/${cluster}
       cp ${windowsIcons.${cluster}}/${cluster}/* installers/icons/${cluster}/${cluster}/
 
-      ${common.temporaryNodeModulesPatches}
-
       sed -r "s/^const usb =.*/const usb = require(require('path').join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
         -i node_modules/usb/dist/usb/bindings.js
 
@@ -110,7 +108,7 @@ in rec {
         done
       )
 
-      rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
+      rm -rf $out/resources/app/{installers,launcher-config.yaml,home}
 
       mkdir -pv $out/resources/app/node_modules
       cp -r node_modules/{\@babel,\@noble,\@protobufjs,\@emurgo\/cardano-serialization-lib-nodejs,\@fivebinaries\/coin-selection,ua-parser-js,regenerator-runtime,node-fetch,\@trezor,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib,whatwg-url,tr46,usb,node-gyp-build,\@sinclair,ts-mixer,core-js} $out/resources/app/node_modules

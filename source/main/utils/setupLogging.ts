@@ -21,14 +21,8 @@ import type {
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 export const setupLogging = () => {
-  console.log('\n\n\n\n pubLogsFolderPath =====>>>>', pubLogsFolderPath);
-  console.log('\n\n\n\n path =====>>>>', path);
-
   const logFilePath = path?.join(pubLogsFolderPath, 'Daedalus.json');
-  console.log('\n\n\n\n logFilePath =====>>>>', logFilePath);
-
   ensureDirectoryExists(pubLogsFolderPath);
-
   rimraf.sync(path.join(pubLogsFolderPath, './Daedalus.*'));
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
