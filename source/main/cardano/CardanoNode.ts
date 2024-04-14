@@ -2,10 +2,10 @@ import Store from 'electron-store';
 import { spawn, exec } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import type { Launcher } from '../cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
+import type { Launcher } from '../cardano-launcher/cardanoLauncher';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -1002,9 +1002,8 @@ export class CardanoNode {
   };
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log } = this;
-    const previousPID: number | null | undefined = await this._retrieveData(
-      PREVIOUS_CARDANO_PID
-    );
+    const previousPID: number | null | undefined =
+      await this._retrieveData(PREVIOUS_CARDANO_PID);
 
     _log.info(
       'CardanoNode: checking if previous cardano-node process is still running',

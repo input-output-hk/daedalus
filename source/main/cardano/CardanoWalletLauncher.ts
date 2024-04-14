@@ -1,8 +1,7 @@
 import { merge } from 'lodash';
 import path from 'path';
 import type { WriteStream } from 'fs';
-import * as cardanoLauncher from '../cardano-launcher';
-import type { Launcher } from '../cardano-launcher';
+import type { Launcher } from '../cardano-launcher/cardanoLauncher';
 import type { NodeConfig } from '../config';
 import {
   FALLBACK_TOKEN_METADATA_SERVER_URL,
@@ -167,5 +166,5 @@ export async function CardanoWalletLauncher(
     launcherConfig,
   });
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ networkName: string; stateDir:... Remove this comment to see the full error message
-  return new cardanoLauncher.Launcher(launcherConfig, logger);
+  return new Launcher(launcherConfig, logger);
 }
