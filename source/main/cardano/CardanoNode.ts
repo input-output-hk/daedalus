@@ -5,7 +5,7 @@ import type { WriteStream } from 'fs';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
-import type { Launcher } from '../cardano-launcher/cardanoLauncher';
+import { Launcher } from '../cardano-launcher/cardanoLauncher';
 import { environment } from '../environment';
 import {
   deriveProcessNames,

@@ -39,17 +39,9 @@ import {
 
 import { startCardanoNode } from './cardanoNode';
 
-export {
-  ServiceStatus,
-  ServiceExitStatus,
-  serviceExitStatusMessage,
-  Service,
-} from './service';
-export { LaunchConfig } from './cardanoWallet';
-
-/*******************************************************************************
+/** *****************************************************************************
  * Api
- ******************************************************************************/
+ ***************************************************************************** */
 
 export interface RequestParams {
   port: number;
@@ -90,9 +82,9 @@ class V2Api implements Api {
   }
 }
 
-/*******************************************************************************
+/** *****************************************************************************
  * Exit status types
- ******************************************************************************/
+ ***************************************************************************** */
 
 /**
  * The result after the launched wallet backend has finished.
@@ -126,9 +118,9 @@ function noop(): void {
   /* empty */
 }
 
-/*******************************************************************************
+/** *****************************************************************************
  * Launching
- ******************************************************************************/
+ ***************************************************************************** */
 
 /**
  * This is the main object which controls the launched wallet backend
@@ -190,10 +182,8 @@ export class Launcher {
    */
   constructor(config: LaunchConfig, logger: Logger = console) {
     logger.debug('Launcher init');
-    const {
-      childProcessLogWriteStreams,
-      installSignalHandlers = true,
-    } = config;
+    const { childProcessLogWriteStreams, installSignalHandlers = true } =
+      config;
     this.logger = logger;
 
     const start = Launcher.makeServiceCommands(config, logger);

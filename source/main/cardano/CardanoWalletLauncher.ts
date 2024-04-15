@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import path from 'path';
 import type { WriteStream } from 'fs';
-import type { Launcher } from '../cardano-launcher/cardanoLauncher';
+import { Launcher } from '../cardano-launcher/cardanoLauncher';
 import type { NodeConfig } from '../config';
 import {
   FALLBACK_TOKEN_METADATA_SERVER_URL,
