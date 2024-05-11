@@ -16,7 +16,6 @@ type Props = {
   total: number;
 };
 
-@observer
 class FilterResultInfo extends Component<Props> {
   render() {
     const { filtered, total } = this.props;
@@ -35,4 +34,4 @@ class FilterResultInfo extends Component<Props> {
   }
 }
 
-export default FilterResultInfo;
+export default observer(FilterResultInfo);

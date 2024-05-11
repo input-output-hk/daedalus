@@ -29,7 +29,6 @@ type Props = {
   syncPercentage: number;
 };
 
-@observer
 class RedemptionUnavailableDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -77,4 +76,4 @@ class RedemptionUnavailableDialog extends Component<Props> {
   }
 }
 
-export default RedemptionUnavailableDialog;
+export default observer(RedemptionUnavailableDialog);

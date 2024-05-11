@@ -6,8 +6,6 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class VerificationDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -21,10 +19,8 @@ class VerificationDialogContainer extends Component<Props> {
 
   render() {
     const { wallets } = this.props.stores;
-    const {
-      walletCertificateRecoveryPhrase,
-      additionalMnemonicWords,
-    } = wallets;
+    const { walletCertificateRecoveryPhrase, additionalMnemonicWords } =
+      wallets;
 
     if (!walletCertificateRecoveryPhrase || !additionalMnemonicWords) {
       throw new Error(
@@ -44,4 +40,7 @@ class VerificationDialogContainer extends Component<Props> {
   }
 }
 
-export default VerificationDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(VerificationDialogContainer));

@@ -9,7 +9,6 @@ type Props = {
   instructionsText: string | Element<any>;
 };
 
-@observer
 class WalletRecoveryInstructions extends Component<Props> {
   render() {
     const { instructionsText } = this.props;
@@ -17,4 +16,4 @@ class WalletRecoveryInstructions extends Component<Props> {
   }
 }
 
-export default WalletRecoveryInstructions;
+export default observer(WalletRecoveryInstructions);

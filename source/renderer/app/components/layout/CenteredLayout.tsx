@@ -8,7 +8,6 @@ type Props = {
   children: Node;
 };
 
-@observer
 class CenteredLayout extends Component<Props> {
   static defaultProps = {
     children: null,
@@ -20,4 +19,4 @@ class CenteredLayout extends Component<Props> {
   }
 }
 
-export default CenteredLayout;
+export default observer(CenteredLayout);

@@ -149,7 +149,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class Step1ConfigurationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -401,4 +400,4 @@ class Step1ConfigurationDialog extends Component<Props, State> {
   }
 }
 
-export default Step1ConfigurationDialog;
+export default observer(Step1ConfigurationDialog);

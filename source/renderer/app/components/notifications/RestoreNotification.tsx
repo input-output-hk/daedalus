@@ -20,7 +20,6 @@ type Props = {
   restoreProgress: number;
 };
 
-@observer
 class RestoreNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -46,4 +45,4 @@ class RestoreNotification extends Component<Props> {
   }
 }
 
-export default RestoreNotification;
+export default observer(RestoreNotification);

@@ -17,7 +17,6 @@ type Props = {
   currentDateFormat: string;
 };
 
-@observer
 class IncidentOverlay extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
@@ -86,4 +85,4 @@ class IncidentOverlay extends Component<Props> {
   }
 }
 
-export default IncidentOverlay;
+export default observer(IncidentOverlay);

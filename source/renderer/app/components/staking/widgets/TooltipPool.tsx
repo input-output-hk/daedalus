@@ -175,7 +175,6 @@ type State = {
   idCopyFeedback: boolean;
 };
 
-@observer
 class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -530,4 +529,4 @@ class TooltipPool extends Component<Props, State> {
   }
 }
 
-export default TooltipPool;
+export default observer(TooltipPool);

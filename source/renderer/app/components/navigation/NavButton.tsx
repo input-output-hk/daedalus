@@ -13,7 +13,6 @@ type Props = {
   hasNotification?: boolean;
 };
 
-@observer
 class NavButton extends Component<Props> {
   render() {
     const { isActive, icon, onClick, className, hasNotification } = this.props;
@@ -38,4 +37,4 @@ class NavButton extends Component<Props> {
   }
 }
 
-export default NavButton;
+export default observer(NavButton);

@@ -1,10 +1,22 @@
-import { action } from 'mobx';
+import { action, makeObservable } from 'mobx';
 import Store from './lib/Store';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 // TODO: refactor all parts that rely on this to ipc channels!
 // @ts-ignore ts-migrate(2339) FIXME: Property 'ipcRenderer' does not exist on type 'typ... Remove this comment to see the full error message
 const { ipcRenderer } = global;
 export default class WindowStore extends Store {
   _isTest = false;
+
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+    makeObservable(this);
+  }
 
   setup() {
     this.actions.window.resizeWindow.listen(this._resizeWindow);

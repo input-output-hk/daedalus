@@ -11,8 +11,6 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
 import type { WalletSortConfig } from '../types/sidebarTypes';
 
-@inject('stores', 'actions')
-@observer
 class MainLayout extends Component<InjectedContainerProps> {
   static defaultProps = {
     actions: null,
@@ -123,4 +121,4 @@ class MainLayout extends Component<InjectedContainerProps> {
   }
 }
 
-export default MainLayout;
+export default inject('stores', 'actions')(observer(MainLayout));

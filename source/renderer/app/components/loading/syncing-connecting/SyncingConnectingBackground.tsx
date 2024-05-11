@@ -9,7 +9,6 @@ type Props = {
   isSyncing: boolean;
 };
 
-@observer
 class SyncingConnectingBackground extends Component<Props> {
   render() {
     const { isConnecting, isSyncing, hasLoadedCurrentTheme } = this.props;
@@ -23,4 +22,4 @@ class SyncingConnectingBackground extends Component<Props> {
   }
 }
 
-export default SyncingConnectingBackground;
+export default observer(SyncingConnectingBackground);

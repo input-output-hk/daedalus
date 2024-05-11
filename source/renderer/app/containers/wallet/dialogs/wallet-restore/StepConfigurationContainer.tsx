@@ -7,8 +7,6 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores', 'actions')
-@observer
 class ConfigurationDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
   handleContinue = () => {
@@ -25,15 +23,10 @@ class ConfigurationDialogContainer extends Component<Props> {
     const { wallets, profile } = stores;
     const { currentLocale } = profile;
     const { error } = wallets.restoreRequest;
-    const {
-      walletName,
-      spendingPassword,
-      repeatPassword,
-      isRestoring,
-    } = wallets;
-    const {
-      error: certificateError,
-    } = stores.wallets.getWalletRecoveryPhraseFromCertificateRequest;
+    const { walletName, spendingPassword, repeatPassword, isRestoring } =
+      wallets;
+    const { error: certificateError } =
+      stores.wallets.getWalletRecoveryPhraseFromCertificateRequest;
     return (
       <ConfigurationDialog
         isSubmitting={isRestoring}
@@ -51,4 +44,7 @@ class ConfigurationDialogContainer extends Component<Props> {
   }
 }
 
-export default ConfigurationDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(ConfigurationDialogContainer));

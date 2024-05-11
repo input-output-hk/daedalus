@@ -155,7 +155,6 @@ interface RequestToken {
   release: () => void;
 }
 
-@observer
 class WalletSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -653,11 +652,8 @@ class WalletSendForm extends Component<Props, State> {
     }
 
     try {
-      const {
-        fee,
-        minimumAda,
-        coinSelection,
-      } = await this.props.calculateTransactionFee(receiver, adaAmount, assets);
+      const { fee, minimumAda, coinSelection } =
+        await this.props.calculateTransactionFee(receiver, adaAmount, assets);
 
       if (this._isMounted && !requestToken.aborted) {
         const minimumAdaValue = minimumAda || new BigNumber(0);
@@ -705,9 +701,8 @@ class WalletSendForm extends Component<Props, State> {
 
             if (shouldUpdateMinimumAdaAmount) {
               const minimumAdaValue = new BigNumber(minimumAda);
-              const adaInputState = await this.checkAdaInputState(
-                minimumAdaValue
-              );
+              const adaInputState =
+                await this.checkAdaInputState(minimumAdaValue);
               this.trySetMinimumAdaAmount(adaInputState, minimumAdaValue);
               this.setState({
                 ...nextState,
@@ -1390,4 +1385,4 @@ class WalletSendForm extends Component<Props, State> {
   }
 }
 
-export default WalletSendForm;
+export default observer(WalletSendForm);

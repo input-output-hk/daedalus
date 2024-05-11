@@ -24,7 +24,6 @@ interface SupportSettingsProps {
   analyticsAccepted: boolean;
 }
 
-@observer
 class SupportSettings extends Component<SupportSettingsProps> {
   render() {
     const {
@@ -145,4 +144,4 @@ class SupportSettings extends Component<SupportSettingsProps> {
   }
 }
 
-export default injectIntl(SupportSettings);
+export default injectIntl(observer(SupportSettings));

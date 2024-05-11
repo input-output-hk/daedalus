@@ -41,8 +41,7 @@ const messages = defineMessages({
     description: 'Disable RTS flags button label',
   },
   manualRelaunchConfirmationCheckboxLabel: {
-    id:
-      'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
+    id: 'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
     defaultMessage:
       '!!!I understand that I will need to launch Daedalus manually',
     description: 'Manual relaunch confirmation checkbox label',
@@ -57,7 +56,6 @@ type State = {
   isConfirmationCheckboxChecked: boolean;
 };
 
-@observer
 class ToggleRTSFlagsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -123,4 +121,4 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
   }
 }
 
-export default ToggleRTSFlagsDialog;
+export default observer(ToggleRTSFlagsDialog);

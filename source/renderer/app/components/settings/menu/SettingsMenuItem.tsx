@@ -11,7 +11,6 @@ type Props = {
   disabled?: boolean;
 };
 
-@observer
 class SettingsMenuItem extends Component<Props> {
   render() {
     const { label, active, disabled, onClick, className } = this.props;
@@ -32,4 +31,4 @@ class SettingsMenuItem extends Component<Props> {
   }
 }
 
-export default SettingsMenuItem;
+export default observer(SettingsMenuItem);

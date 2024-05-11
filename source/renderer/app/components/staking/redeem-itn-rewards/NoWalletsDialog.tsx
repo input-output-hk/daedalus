@@ -29,7 +29,6 @@ type Props = {
   onAddWallet: (...args: Array<any>) => any;
 };
 
-@observer
 class NoWalletsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -70,4 +69,4 @@ class NoWalletsDialog extends Component<Props> {
   }
 }
 
-export default NoWalletsDialog;
+export default observer(NoWalletsDialog);

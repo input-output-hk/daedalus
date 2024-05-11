@@ -44,7 +44,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class WalletPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -147,4 +146,4 @@ class WalletPublicKeyDialog extends Component<Props> {
   }
 }
 
-export default WalletPublicKeyDialog;
+export default observer(WalletPublicKeyDialog);

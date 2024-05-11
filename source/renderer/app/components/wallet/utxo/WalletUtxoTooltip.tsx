@@ -33,7 +33,6 @@ type Props = {
   }>;
 };
 
-@observer
 class WalletUtxoTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -69,4 +68,4 @@ class WalletUtxoTooltip extends Component<Props> {
   }
 }
 
-export default WalletUtxoTooltip;
+export default observer(WalletUtxoTooltip);

@@ -122,7 +122,6 @@ interface FormFields {
   passphrase: string;
 }
 
-@observer
 class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -413,4 +412,4 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   }
 }
 
-export default UndelegateWalletConfirmationDialog;
+export default observer(UndelegateWalletConfirmationDialog);

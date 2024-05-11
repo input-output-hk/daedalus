@@ -14,8 +14,6 @@ import { VotingFooterLinks } from '../../components/voting/VotingFooterLinks';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class VotingRegistrationPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -91,4 +89,4 @@ class VotingRegistrationPage extends Component<Props> {
   }
 }
 
-export default VotingRegistrationPage;
+export default inject('stores', 'actions')(observer(VotingRegistrationPage));

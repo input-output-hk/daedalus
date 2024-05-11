@@ -24,7 +24,6 @@ type Props = {
   isGridRewardsView?: boolean;
 };
 
-@observer
 class ThumbPoolContent extends Component<Props> {
   formattedRewards = (potentialRewards: BigNumber) => {
     const potentialRewardsAsString = formattedWalletAmount(potentialRewards);
@@ -46,11 +45,8 @@ class ThumbPoolContent extends Component<Props> {
   };
 
   render() {
-    const {
-      stakePool,
-      numberOfRankedStakePools,
-      isGridRewardsView,
-    } = this.props;
+    const { stakePool, numberOfRankedStakePools, isGridRewardsView } =
+      this.props;
     const {
       ranking,
       nonMyopicMemberRewards,
@@ -136,4 +132,4 @@ class ThumbPoolContent extends Component<Props> {
   }
 }
 
-export default ThumbPoolContent;
+export default observer(ThumbPoolContent);

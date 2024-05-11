@@ -27,8 +27,6 @@ type State = {
   addressToShare?: WalletAddress | null | undefined;
 };
 
-@inject('stores', 'actions')
-@observer
 class WalletReceivePage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
@@ -180,13 +178,8 @@ class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const {
-      uiDialogs,
-      addresses,
-      sidebar,
-      hardwareWallets,
-      walletSettings,
-    } = stores;
+    const { uiDialogs, addresses, sidebar, hardwareWallets, walletSettings } =
+      stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
@@ -199,10 +192,8 @@ class WalletReceivePage extends Component<Props, State> {
       checkIsTrezorByWalletId,
     } = hardwareWallets;
     const { getLocalWalletDataById } = walletSettings;
-    const localWalletData:
-      | WalletLocalData
-      | null
-      | undefined = getLocalWalletDataById(activeWallet ? activeWallet.id : '');
+    const localWalletData: WalletLocalData | null | undefined =
+      getLocalWalletDataById(activeWallet ? activeWallet.id : '');
     const { showUsedAddresses } = localWalletData || {};
     // Guard against potential null values
     if (!activeWallet)
@@ -272,4 +263,4 @@ class WalletReceivePage extends Component<Props, State> {
   }
 }
 
-export default WalletReceivePage;
+export default inject('stores', 'actions')(observer(WalletReceivePage));

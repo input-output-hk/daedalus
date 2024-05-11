@@ -42,7 +42,6 @@ type State = {
 };
 const { CURRENT_EPOCH, PREVIOUS_EPOCH } = SELECTED_EPOCH_OPTIONS;
 
-@observer
 class StakingEpochs extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -164,4 +163,4 @@ class StakingEpochs extends Component<Props, State> {
   }
 }
 
-export default StakingEpochs;
+export default observer(StakingEpochs);

@@ -5,8 +5,6 @@ import TopBarLayout from '../../components/layout/TopBarLayout';
 import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class TermsOfUsePage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -44,4 +42,4 @@ class TermsOfUsePage extends Component<InjectedProps> {
   }
 }
 
-export default TermsOfUsePage;
+export default inject('stores', 'actions')(observer(TermsOfUsePage));

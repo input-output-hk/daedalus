@@ -41,7 +41,6 @@ interface FormFields {
   inputField: string;
 }
 
-@observer
 class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
@@ -301,4 +300,4 @@ class InlineEditingSmallInput extends Component<Props, State> {
   }
 }
 
-export default InlineEditingSmallInput;
+export default observer(InlineEditingSmallInput);

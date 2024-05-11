@@ -18,7 +18,6 @@ type Props = {
   onChange: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletTransactionsSearch extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -41,4 +40,4 @@ class WalletTransactionsSearch extends Component<Props> {
   }
 }
 
-export default WalletTransactionsSearch;
+export default observer(WalletTransactionsSearch);

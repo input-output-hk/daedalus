@@ -27,7 +27,6 @@ type State = {
   newsItemCollapsible: boolean;
 };
 
-@observer
 class NewsItem extends Component<Props, State> {
   static defaultProps = {
     onNewsItemActionClick: null,
@@ -173,4 +172,4 @@ class NewsItem extends Component<Props, State> {
   }
 }
 
-export default NewsItem;
+export default observer(NewsItem);

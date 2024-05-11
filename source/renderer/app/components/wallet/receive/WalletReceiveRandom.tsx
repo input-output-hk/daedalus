@@ -87,7 +87,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -304,4 +303,4 @@ class WalletReceiveRandom extends Component<Props> {
   }
 }
 
-export default WalletReceiveRandom;
+export default observer(WalletReceiveRandom);

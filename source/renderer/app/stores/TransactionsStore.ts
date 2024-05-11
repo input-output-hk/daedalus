@@ -4,6 +4,7 @@ import {
   action,
   extendObservable,
   runInAction,
+  makeObservable,
 } from 'mobx';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
@@ -28,7 +29,9 @@ import {
   isTransactionInFilterRange,
 } from '../utils/transaction';
 import type { ApiTokens } from '../api/assets/types';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
@@ -82,7 +85,6 @@ type TransactionFeeRequest = {
   assets?: ApiTokens;
 };
 export default class TransactionsStore extends Store {
-  @observable
   transactionsRequests: Array<{
     walletId: string;
     isLegacy: boolean;
@@ -90,20 +92,50 @@ export default class TransactionsStore extends Store {
     allRequest: Request<GetTransactionsResponse>;
     withdrawalsRequest: Request<GetWithdrawalsResponse>;
   }> = [];
-  @observable
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
   );
-  @observable
-  createExternalTransactionRequest: Request<
-    CreateExternalTransactionRequest
-  > = new Request(this.api.ada.createExternalTransaction);
-  @observable
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> =
+    new Request(this.api.ada.createExternalTransaction);
   _filterOptionsForWallets = {};
-  @observable
-  calculateTransactionFeeRequest: Request<
-    GetTransactionFeeRequest
-  > = new Request(this.api.ada.calculateTransactionFee);
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> =
+    new Request(this.api.ada.calculateTransactionFee);
+
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      transactionsRequests: observable,
+      deleteTransactionRequest: observable,
+      createExternalTransactionRequest: observable,
+      _filterOptionsForWallets: observable,
+      calculateTransactionFeeRequest: observable,
+      recentTransactionsRequest: computed,
+      searchRequest: computed,
+      filterOptions: computed,
+      withdrawals: computed,
+      all: computed,
+      allFiltered: computed,
+      defaultFilterOptions: computed,
+      populatedFilterOptions: computed,
+      recent: computed,
+      recentFiltered: computed,
+      hasAnyFiltered: computed,
+      hasAny: computed,
+      totalAvailable: computed,
+      totalFilteredAvailable: computed,
+      pendingTransactionsCount: computed,
+      _refreshTransactionData: action,
+      _updateFilterOptions: action,
+      _clearFilterOptions: action,
+      _requestCSVFile: action,
+      _createExternalTransaction: action,
+    });
+  }
 
   setup() {
     const {
@@ -117,7 +149,6 @@ export default class TransactionsStore extends Store {
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
-  @computed
   get recentTransactionsRequest(): Request<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
@@ -125,7 +156,6 @@ export default class TransactionsStore extends Store {
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
-  @computed
   get searchRequest(): Request<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
@@ -133,14 +163,12 @@ export default class TransactionsStore extends Store {
     return this._getTransactionsAllRequest(wallet.id);
   }
 
-  @computed
   get filterOptions(): TransactionFilterOptionsType | null | undefined {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
   }
 
-  @computed
   get withdrawals(): Record<string, BigNumber> {
     const withdrawals = {};
     const { allWallets: wallets } = this.stores.wallets;
@@ -157,7 +185,6 @@ export default class TransactionsStore extends Store {
     return withdrawals;
   }
 
-  @computed
   get all(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
@@ -171,7 +198,6 @@ export default class TransactionsStore extends Store {
     return request.result.transactions || [];
   }
 
-  @computed
   get allFiltered(): Array<WalletTransaction> {
     const { recentFiltered } = this;
     const allFiltered = this.all.filter((transaction) =>
@@ -183,19 +209,16 @@ export default class TransactionsStore extends Store {
       : allFiltered;
   }
 
-  @computed
   get defaultFilterOptions(): TransactionFilterOptionsType {
     // @ts-ignore ts-migrate(2322) FIXME: Type '{ dateRange: string; fromDate: string; toDat... Remove this comment to see the full error message
     return generateFilterOptions(this.all);
   }
 
-  @computed
   get populatedFilterOptions(): TransactionFilterOptionsType {
     // @ts-ignore ts-migrate(2322) FIXME: Type 'TransactionFilterOptionsType | { searchTerm:... Remove this comment to see the full error message
     return this.filterOptions || emptyTransactionFilterOptions;
   }
 
-  @computed
   get recent(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
@@ -205,14 +228,12 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions : [];
   }
 
-  @computed
   get recentFiltered(): Array<WalletTransaction> {
     return this.recent.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );
   }
 
-  @computed
   get hasAnyFiltered(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
@@ -222,7 +243,6 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions.length > 0 : false;
   }
 
-  @computed
   get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
@@ -232,7 +252,6 @@ export default class TransactionsStore extends Store {
     return results ? results.total > 0 : false;
   }
 
-  @computed
   get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
@@ -242,7 +261,6 @@ export default class TransactionsStore extends Store {
     return results ? results.total : 0;
   }
 
-  @computed
   get totalFilteredAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
@@ -252,12 +270,10 @@ export default class TransactionsStore extends Store {
     return results ? results.transactions.length : 0;
   }
 
-  @computed
   get pendingTransactionsCount(): number {
     return this.recent.filter(({ state }) => state === 'pending').length;
   }
 
-  @action
   _refreshTransactionData = async () => {
     if (this.stores.networkStatus.isConnected) {
       const { all: wallets } = this.stores.wallets;
@@ -359,7 +375,6 @@ export default class TransactionsStore extends Store {
   validateAssetAmount = (amountInNaturalUnits: string): Promise<boolean> =>
     Promise.resolve(isValidAssetAmountInNaturalUnits(amountInNaturalUnits));
   // ======================= PRIVATE ========================== //
-  @action
   _updateFilterOptions = (filterOptions: TransactionFilterOptionsType) => {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
@@ -375,7 +390,6 @@ export default class TransactionsStore extends Store {
     );
     return true;
   };
-  @action
   _clearFilterOptions = () => {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
@@ -385,7 +399,6 @@ export default class TransactionsStore extends Store {
 
     return true;
   };
-  @action
   _requestCSVFile = async () => {
     const {
       stores: { profile },
@@ -417,7 +430,6 @@ export default class TransactionsStore extends Store {
       );
     }
   };
-  @action
   _createExternalTransaction = async (signedTransactionBlob: Buffer) => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.createExternalTransactionRequest.execute({

@@ -127,7 +127,6 @@ interface FormFields {
   toAmount: string;
 }
 
-@observer
 class FilterDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -586,4 +585,6 @@ class FilterDialog extends Component<Props> {
   }
 }
 
-export default withDiscreetMode<Config<Props, InjectedProps>>(FilterDialog);
+export default withDiscreetMode<Config<Props, InjectedProps>>(
+  observer(FilterDialog)
+);

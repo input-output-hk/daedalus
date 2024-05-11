@@ -140,7 +140,6 @@ type State = {
   areTermsOfUseAccepted: boolean;
 };
 
-@observer
 class AppUpdateOverlay extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -382,4 +381,4 @@ class AppUpdateOverlay extends Component<Props, State> {
   }
 }
 
-export default AppUpdateOverlay;
+export default observer(AppUpdateOverlay);

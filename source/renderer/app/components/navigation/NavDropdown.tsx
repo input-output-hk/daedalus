@@ -21,7 +21,6 @@ type Props = {
   hasNotification?: boolean;
 };
 
-@observer
 class NavDropdown extends Component<Props> {
   render() {
     const {
@@ -74,4 +73,4 @@ class NavDropdown extends Component<Props> {
   }
 }
 
-export default NavDropdown;
+export default observer(NavDropdown);

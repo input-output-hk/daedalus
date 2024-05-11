@@ -43,7 +43,6 @@ type State = {
   safetyAgreement: boolean;
 };
 
-@observer
 class WalletRecoveryPhraseStep3Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -95,4 +94,4 @@ class WalletRecoveryPhraseStep3Dialog extends Component<Props, State> {
   }
 }
 
-export default WalletRecoveryPhraseStep3Dialog;
+export default observer(WalletRecoveryPhraseStep3Dialog);

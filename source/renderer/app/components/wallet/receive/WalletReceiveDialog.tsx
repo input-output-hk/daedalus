@@ -159,7 +159,6 @@ interface FormFields {
   noteInput: string;
 }
 
-@observer
 class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -196,9 +195,8 @@ class WalletReceiveDialog extends Component<Props, State> {
   };
   constructPaths = (address: WalletAddress) => {
     const hardenedSpendingPath = str_to_path(address.spendingPath);
-    const derivationSpendingPath = hardenedPathToDerivationPath(
-      hardenedSpendingPath
-    );
+    const derivationSpendingPath =
+      hardenedPathToDerivationPath(hardenedSpendingPath);
     const spendingPath = map(
       derivationSpendingPath.constructed,
       (constructeSpendingPathChunk, index) => {
@@ -524,4 +522,4 @@ class WalletReceiveDialog extends Component<Props, State> {
   }
 }
 
-export default WalletReceiveDialog;
+export default observer(WalletReceiveDialog);

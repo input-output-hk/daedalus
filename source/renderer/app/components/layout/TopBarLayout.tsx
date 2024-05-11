@@ -10,7 +10,6 @@ type Props = {
   notification?: Node | null | undefined;
 };
 
-@observer
 class TopBarLayout extends Component<Props> {
   render() {
     const { children, topbar, notification } = this.props;
@@ -24,4 +23,4 @@ class TopBarLayout extends Component<Props> {
   }
 }
 
-export default TopBarLayout;
+export default observer(TopBarLayout);

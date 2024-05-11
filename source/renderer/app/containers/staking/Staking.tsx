@@ -14,8 +14,6 @@ import { IS_STAKING_INFO_PAGE_AVAILABLE } from '../../config/stakingConfig';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class Staking extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -82,12 +80,8 @@ class Staking extends Component<Props> {
       stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
-    const {
-      isSynced,
-      syncPercentage,
-      isAlonzoPending,
-      isAlonzoActivated,
-    } = networkStatus;
+    const { isSynced, syncPercentage, isAlonzoPending, isAlonzoActivated } =
+      networkStatus;
     const { isStakingDelegationCountdown } = staking;
     const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
     const isDelegationWizardOpen = uiDialogs.isOpen(
@@ -126,4 +120,4 @@ class Staking extends Component<Props> {
   }
 }
 
-export default Staking;
+export default inject('stores', 'actions')(observer(Staking));

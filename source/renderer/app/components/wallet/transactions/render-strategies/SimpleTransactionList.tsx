@@ -12,46 +12,49 @@ type Props = {
   rows: Row[];
 };
 
-@observer
-class SimpleTransactionList extends Component<Props> {
-  static defaultProps = {
-    onOpenExternalLink: () => {},
-  };
-  onListScroll = (
-    context: ScrollContextType,
-    evt: React.SyntheticEvent<HTMLElement>
-  ) => {
-    const { scrollTop } = evt.currentTarget;
+const SimpleTransactionList = observer(
+  class SimpleTransactionList extends Component<Props> {
+    static defaultProps = {
+      onOpenExternalLink: () => {},
+    };
+    onListScroll = (
+      context: ScrollContextType,
+      evt: React.SyntheticEvent<HTMLElement>
+    ) => {
+      const { scrollTop } = evt.currentTarget;
 
-    if (scrollTop > 10) {
-      context.setIsScrolling(true);
-    } else {
-      context.setIsScrolling(false);
+      if (scrollTop > 10) {
+        context.setIsScrolling(true);
+      } else {
+        context.setIsScrolling(false);
+      }
+    };
+
+    render() {
+      const { rows, renderRow } = this.props;
+      return (
+        <WalletTransactionsListScrollContext.Consumer>
+          {(context) => (
+            <div
+              className={styles.component}
+              onScroll={(evt) => this.onListScroll(context, evt)}
+            >
+              {rows.map(
+                (
+                  row,
+                  index // eslint-disable-next-line react/no-array-index-key
+                ) => (
+                  <div key={`simple-transaction-list-row-${index}`}>
+                    {renderRow(row)}
+                  </div>
+                )
+              )}
+            </div>
+          )}
+        </WalletTransactionsListScrollContext.Consumer>
+      );
     }
-  };
-
-  render() {
-    const { rows, renderRow } = this.props;
-    return (
-      <WalletTransactionsListScrollContext.Consumer>
-        {(context) => (
-          <div
-            className={styles.component}
-            onScroll={(evt) => this.onListScroll(context, evt)}
-          >
-            {rows.map((
-              row,
-              index // eslint-disable-next-line react/no-array-index-key
-            ) => (
-              <div key={`simple-transaction-list-row-${index}`}>
-                {renderRow(row)}
-              </div>
-            ))}
-          </div>
-        )}
-      </WalletTransactionsListScrollContext.Consumer>
-    );
   }
-}
+);
 
 export { SimpleTransactionList };

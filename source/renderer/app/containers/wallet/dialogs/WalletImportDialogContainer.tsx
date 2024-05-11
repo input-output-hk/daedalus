@@ -6,8 +6,6 @@ import WalletSelectImportStepContainer from './wallet-import/WalletSelectImportS
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletImportDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -49,4 +47,7 @@ class WalletImportDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletImportDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletImportDialogContainer));

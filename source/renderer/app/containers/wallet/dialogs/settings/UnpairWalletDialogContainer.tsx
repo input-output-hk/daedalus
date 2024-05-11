@@ -26,8 +26,6 @@ const messages: WalletSettingRemoveMessages = defineMessages({
   },
 });
 
-@inject('actions', 'stores')
-@observer
 class UnpairWalletDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -89,4 +87,7 @@ class UnpairWalletDialogContainer extends Component<Props> {
   }
 }
 
-export default UnpairWalletDialogContainer;
+export default inject(
+  'actions',
+  'stores'
+)(observer(UnpairWalletDialogContainer));

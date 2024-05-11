@@ -33,7 +33,6 @@ type Props = {
   onSetWalletPassword: (...args: Array<any>) => any;
 };
 
-@observer
 class SetWalletPassword extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -75,4 +74,4 @@ class SetWalletPassword extends Component<Props> {
   }
 }
 
-export default SetWalletPassword;
+export default observer(SetWalletPassword);

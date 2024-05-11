@@ -55,7 +55,6 @@ export type ProfileSettingsFormProps = {
   error?: LocalizableError | null | undefined;
 };
 
-@observer
 class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     onChangeItem: () => {},
@@ -142,4 +141,4 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default ProfileSettingsForm;
+export default observer(ProfileSettingsForm);

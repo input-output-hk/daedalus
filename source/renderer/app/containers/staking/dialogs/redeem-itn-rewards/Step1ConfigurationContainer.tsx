@@ -31,8 +31,6 @@ const messages = defineMessages({
   },
 });
 
-@inject('stores', 'actions')
-@observer
 class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
   hasEnoughAdaToCoverFees = (walletAmount?: BigNumber) => {
@@ -63,16 +61,11 @@ class Step1ConfigurationContainer extends Component<Props> {
     const { actions, stores, onClose } = this.props;
     const { app, staking, wallets } = stores;
     const { allWallets } = wallets;
-    const {
-      redeemWallet,
-      isCalculatingReedemFees,
-      redeemRecoveryPhrase,
-    } = staking;
+    const { redeemWallet, isCalculatingReedemFees, redeemRecoveryPhrase } =
+      staking;
     const { openExternalLink } = app;
-    const {
-      onConfigurationContinue,
-      onCalculateRedeemWalletFees,
-    } = actions.staking;
+    const { onConfigurationContinue, onCalculateRedeemWalletFees } =
+      actions.staking;
     const selectedWalletId = get(redeemWallet, 'id', null);
     const selectedWallet: Wallet | null | undefined = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId
@@ -102,4 +95,7 @@ class Step1ConfigurationContainer extends Component<Props> {
   }
 }
 
-export default Step1ConfigurationContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(Step1ConfigurationContainer));

@@ -12,7 +12,6 @@ type Props = {
   onMenuItemClick: (...args: Array<any>) => any;
 };
 
-@observer
 class DropdownMenu extends Component<Props> {
   optionRenderer = (option: any) => (
     <span className={option.className}>{option.label}</span>
@@ -39,4 +38,4 @@ class DropdownMenu extends Component<Props> {
   }
 }
 
-export default DropdownMenu;
+export default observer(DropdownMenu);

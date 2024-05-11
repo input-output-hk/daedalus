@@ -12,7 +12,6 @@ type Props = {
   onShareAddress: (...args: Array<any>) => any;
 };
 
-@observer
 class AddressRandom extends Component<Props> {
   render() {
     const { address, onCopyAddress, onShareAddress, index } = this.props;
@@ -37,4 +36,4 @@ class AddressRandom extends Component<Props> {
   }
 }
 
-export default AddressRandom;
+export default observer(AddressRandom);

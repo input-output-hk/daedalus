@@ -46,7 +46,6 @@ type Props = {
   onBack: (...args: Array<any>) => any;
 };
 
-@observer
 class Step3FailureDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -97,4 +96,4 @@ class Step3FailureDialog extends Component<Props> {
   }
 }
 
-export default Step3FailureDialog;
+export default observer(Step3FailureDialog);

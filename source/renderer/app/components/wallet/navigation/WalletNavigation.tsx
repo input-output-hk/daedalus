@@ -65,7 +65,6 @@ type Props = {
   hasNotification?: boolean;
 };
 
-@observer
 class WalletNavigation extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -134,4 +133,4 @@ class WalletNavigation extends Component<Props> {
   }
 }
 
-export default WalletNavigation;
+export default observer(WalletNavigation);

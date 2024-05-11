@@ -6,8 +6,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('actions', 'stores')
-@observer
 class TransferFundsPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -18,11 +16,8 @@ class TransferFundsPage extends Component<Props> {
     const { actions, stores } = this.props;
     const { wallets: walletsActions } = actions;
     const { wallets: walletsStore } = stores;
-    const {
-      transferFundsNextStep,
-      transferFundsPrevStep,
-      transferFundsClose,
-    } = walletsActions;
+    const { transferFundsNextStep, transferFundsPrevStep, transferFundsClose } =
+      walletsActions;
     const { transferFundsStep } = walletsStore;
     if (!transferFundsStep) return null;
     let Container;
@@ -43,4 +38,4 @@ class TransferFundsPage extends Component<Props> {
   }
 }
 
-export default TransferFundsPage;
+export default inject('actions', 'stores')(observer(TransferFundsPage));

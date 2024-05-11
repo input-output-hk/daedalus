@@ -22,8 +22,7 @@ const messages = defineMessages({
     description: 'Placeholder for the mnemonics autocomplete.',
   },
   autocompleteMultiLengthPhrase: {
-    id:
-      'wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder',
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.multiLengthPhrase.placeholder',
     defaultMessage: '!!!Enter your 12, 18 or 24-word recovery phrase',
     description: 'Placeholder for the multi-length mnemonics autocomplete.',
   },
@@ -39,8 +38,7 @@ const messages = defineMessages({
     description: 'Label for the mnemonics Continue button.',
   },
   invalidRecoveryPhrase: {
-    id:
-      'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
+    id: 'wallet.restore.dialog.step.mnemonics.autocomplete.invalidRecoveryPhrase',
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Label for invalid recovery phrase',
   },
@@ -64,7 +62,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class MnemonicsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -144,4 +141,4 @@ class MnemonicsDialog extends Component<Props> {
   }
 }
 
-export default MnemonicsDialog;
+export default observer(MnemonicsDialog);

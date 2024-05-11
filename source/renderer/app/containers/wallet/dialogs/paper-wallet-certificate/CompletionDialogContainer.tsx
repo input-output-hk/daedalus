@@ -6,8 +6,6 @@ import { ADDRESS_COPY_NOTIFICATION_SMALL_DURATION } from '../../../../config/tim
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores')
-@observer
 class CompletionDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -43,4 +41,4 @@ class CompletionDialogContainer extends Component<Props> {
   }
 }
 
-export default CompletionDialogContainer;
+export default inject('stores')(observer(CompletionDialogContainer));

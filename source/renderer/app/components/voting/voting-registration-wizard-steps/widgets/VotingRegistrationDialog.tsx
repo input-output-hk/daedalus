@@ -38,7 +38,6 @@ type Props = {
   hideSteps?: boolean;
 };
 
-@observer
 class VotingRegistrationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -101,4 +100,4 @@ class VotingRegistrationDialog extends Component<Props> {
   }
 }
 
-export default VotingRegistrationDialog;
+export default observer(VotingRegistrationDialog);

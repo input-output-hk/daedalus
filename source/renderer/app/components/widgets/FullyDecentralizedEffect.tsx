@@ -9,7 +9,6 @@ type Props = {
   className?: string;
 };
 
-@observer
 class FullyDecentralizedEffect extends Component<Props> {
   constructor(props: Props) {
     super(props);
@@ -70,4 +69,4 @@ class FullyDecentralizedEffect extends Component<Props> {
   }
 }
 
-export default FullyDecentralizedEffect;
+export default observer(FullyDecentralizedEffect);

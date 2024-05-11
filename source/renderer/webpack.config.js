@@ -42,7 +42,6 @@ module.exports = {
             parser: {
               syntax: 'typescript',
               tsx: true,
-              decorators: true,
             },
             transform: {
               react: {

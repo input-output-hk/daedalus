@@ -1,4 +1,10 @@
-import { observable, action, runInAction, computed } from 'mobx';
+import {
+  observable,
+  action,
+  runInAction,
+  computed,
+  makeObservable,
+} from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -10,40 +16,68 @@ import { getRawWalletId } from '../api/utils';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
 import { WalletLocalData } from '../types/localDataTypes';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export default class WalletSettingsStore extends Store {
-  @observable
   updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
-  @observable
   updateSpendingPasswordRequest: Request<boolean> = new Request(
     this.api.ada.updateSpendingPassword
   );
-  @observable
   exportWalletToFileRequest: Request<Promise<[]>> = new Request(
     this.api.ada.exportWalletToFile
   );
-  @observable
   getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
-  @observable
   walletFieldBeingEdited = null;
-  @observable
   lastUpdatedWalletField = null;
-  @observable
   walletUtxos: WalletUtxos | null | undefined = null;
-  @observable
   recoveryPhraseStep = 0;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingApiInterval: IntervalID | null | undefined = null;
 
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      updateWalletRequest: observable,
+      updateSpendingPasswordRequest: observable,
+      exportWalletToFileRequest: observable,
+      getWalletUtxosRequest: observable,
+      walletFieldBeingEdited: observable,
+      lastUpdatedWalletField: observable,
+      walletUtxos: observable,
+      recoveryPhraseStep: observable,
+      walletsRecoveryPhraseVerificationData: computed,
+      _startEditingWalletField: action,
+      _stopEditingWalletField: action,
+      _cancelEditingWalletField: action,
+      _updateSpendingPassword: action,
+      _updateWalletField: action,
+      _exportToFile: action,
+      _startWalletUtxoPolling: action,
+      _stopWalletUtxoPolling: action,
+      _clearWalletUtxoPollingInterval: action,
+      _getWalletUtxoApiData: action,
+      _updateWalletUtxos: action,
+      _onWalletSelected: action,
+      _recoveryPhraseVerificationContinue: action,
+      _recoveryPhraseVerificationClose: action,
+      _recoveryPhraseVerificationCheck: action,
+      _toggleShowUsedAddressesStatuses: action,
+    });
+  }
+
   setup() {
-    const {
-      walletSettings: walletSettingsActions,
-      sidebar: sidebarActions,
-    } = this.actions;
+    const { walletSettings: walletSettingsActions, sidebar: sidebarActions } =
+      this.actions;
     walletSettingsActions.startEditingWalletField.listen(
       this._startEditingWalletField
     );
@@ -88,7 +122,6 @@ export default class WalletSettingsStore extends Store {
     return walletsLocalData[id];
   };
 
-  @computed
   get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
     return Object.keys(walletsLocalData)
@@ -117,11 +150,9 @@ export default class WalletSettingsStore extends Store {
   }
 
   // =================== PRIVATE API ==================== //
-  @action
   _startEditingWalletField = ({ field }: { field: string }) => {
     this.walletFieldBeingEdited = field;
   };
-  @action
   _stopEditingWalletField = () => {
     if (this.walletFieldBeingEdited) {
       this.lastUpdatedWalletField = this.walletFieldBeingEdited;
@@ -129,12 +160,10 @@ export default class WalletSettingsStore extends Store {
 
     this.walletFieldBeingEdited = null;
   };
-  @action
   _cancelEditingWalletField = () => {
     this.lastUpdatedWalletField = null;
     this.walletFieldBeingEdited = null;
   };
-  @action
   _updateSpendingPassword = async ({
     walletId,
     oldPassword,
@@ -163,7 +192,6 @@ export default class WalletSettingsStore extends Store {
       'password'
     );
   };
-  @action
   _updateWalletField = async ({
     field,
     value,
@@ -201,7 +229,6 @@ export default class WalletSettingsStore extends Store {
       field
     );
   };
-  @action
   _exportToFile = async (params: WalletExportToFileParams) => {
     const { walletId, filePath, password } = params;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -213,7 +240,6 @@ export default class WalletSettingsStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.actions.dialogs.closeActiveDialog.trigger();
   };
-  @action
   _startWalletUtxoPolling = () => {
     this._clearWalletUtxoPollingInterval();
 
@@ -224,20 +250,17 @@ export default class WalletSettingsStore extends Store {
       WALLET_UTXO_API_REQUEST_INTERVAL
     );
   };
-  @action
   _stopWalletUtxoPolling = () => {
     this._clearWalletUtxoPollingInterval();
 
     this.getWalletUtxosRequest.reset();
   };
-  @action
   _clearWalletUtxoPollingInterval = () => {
     if (this.pollingApiInterval) {
       clearInterval(this.pollingApiInterval);
       this.pollingApiInterval = null;
     }
   };
-  @action
   _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
@@ -250,11 +273,9 @@ export default class WalletSettingsStore extends Store {
 
     this._updateWalletUtxos(walletUtxos);
   };
-  @action
   _updateWalletUtxos = (walletUtxos: WalletUtxos | null | undefined) => {
     this.walletUtxos = walletUtxos;
   };
-  @action
   _onWalletSelected = () => {
     this._updateWalletUtxos(null);
   };
@@ -262,17 +283,14 @@ export default class WalletSettingsStore extends Store {
   /* ==========================================================
   =            Wallet Recovery Phrase Verification            =
   ========================================================== */
-  @action
   _recoveryPhraseVerificationContinue = async () => {
     const step = this.recoveryPhraseStep;
     if (step === 4) this.recoveryPhraseStep = 2;
     else this.recoveryPhraseStep = step + 1;
   };
-  @action
   _recoveryPhraseVerificationClose = async () => {
     this.recoveryPhraseStep = 0;
   };
-  @action
   _recoveryPhraseVerificationCheck = async ({
     recoveryPhrase,
   }: {
@@ -305,28 +323,20 @@ export default class WalletSettingsStore extends Store {
       });
     }
 
-    runInAction(
-      'AdaWalletBackupStore::_recoveryPhraseVerificationCheck',
-      () => {
-        this.recoveryPhraseStep = nextStep;
-      }
-    );
+    runInAction(() => {
+      this.recoveryPhraseStep = nextStep;
+    });
   };
 
   /* ====  End of Wallet Recovery Phrase Verification  ===== */
-  @action
   _toggleShowUsedAddressesStatuses = async () => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
         'Active wallet required before checking show used addresses statuses.'
       );
-    const localWalletData:
-      | WalletLocalData
-      | null
-      | undefined = this.getLocalWalletDataById(
-      activeWallet ? activeWallet.id : ''
-    );
+    const localWalletData: WalletLocalData | null | undefined =
+      this.getLocalWalletDataById(activeWallet ? activeWallet.id : '');
     const { showUsedAddresses } = localWalletData || {};
     await this.actions.walletsLocal.setWalletLocalData.trigger({
       walletId: activeWallet.id,

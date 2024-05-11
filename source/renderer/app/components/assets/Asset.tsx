@@ -90,7 +90,6 @@ type State = {
   isHoveringSettingsIcon: boolean;
 };
 
-@observer
 class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -173,13 +172,8 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const {
-      fingerprint,
-      metadata,
-      decimals,
-      recommendedDecimals,
-      assetName,
-    } = asset;
+    const { fingerprint, metadata, decimals, recommendedDecimals, assetName } =
+      asset;
     const hasMetadataName = !!metadata?.name;
     const name =
       metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';
@@ -344,4 +338,4 @@ class Asset extends Component<Props, State> {
   }
 }
 
-export default Asset;
+export default observer(Asset);

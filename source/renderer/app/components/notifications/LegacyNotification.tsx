@@ -85,7 +85,6 @@ type Props = {
   onWalletAdd?: (...args: Array<any>) => any;
 };
 
-@observer
 class LegacyNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -173,4 +172,4 @@ class LegacyNotification extends Component<Props> {
   }
 }
 
-export default LegacyNotification;
+export default observer(LegacyNotification);

@@ -10,7 +10,6 @@ type Props = {
   activePage: string;
 };
 
-@observer
 class SettingsLayout extends Component<Props> {
   scrollableDomElement: HTMLElement | null | undefined = null;
 
@@ -44,4 +43,4 @@ class SettingsLayout extends Component<Props> {
   }
 }
 
-export default SettingsLayout;
+export default observer(SettingsLayout);

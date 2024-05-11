@@ -39,19 +39,14 @@ type Props = {
   isActiveNavItem: (...args: Array<any>) => any;
 };
 
-@observer
 class StakingNavigation extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const {
-      onNavItemClick,
-      activeItem,
-      isActiveNavItem,
-      showInfoTab,
-    } = this.props;
+    const { onNavItemClick, activeItem, isActiveNavItem, showInfoTab } =
+      this.props;
     const { intl } = this.context;
     const navigationItems = [
       {
@@ -89,4 +84,4 @@ class StakingNavigation extends Component<Props> {
   }
 }
 
-export default StakingNavigation;
+export default observer(StakingNavigation);

@@ -19,8 +19,6 @@ type State = {
   showConfirmationDialog: boolean;
 };
 
-@inject('actions', 'stores')
-@observer
 class PaperWalletCreateCertificatePage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
@@ -175,4 +173,7 @@ class PaperWalletCreateCertificatePage extends Component<Props, State> {
   };
 }
 
-export default PaperWalletCreateCertificatePage;
+export default inject(
+  'actions',
+  'stores'
+)(observer(PaperWalletCreateCertificatePage));

@@ -9,7 +9,6 @@ type Props = {
   onOpenExternalLink: (...args: Array<any>) => any;
 };
 
-@observer
 class TermsOfUseText extends Component<Props> {
   termsOfUseClickHandler = (event: React.MouseEvent<HTMLElement>) => {
     const linkUrl = get(event, ['target', 'href']);
@@ -36,4 +35,4 @@ class TermsOfUseText extends Component<Props> {
   }
 }
 
-export default TermsOfUseText;
+export default observer(TermsOfUseText);

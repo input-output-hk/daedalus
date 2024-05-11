@@ -6,8 +6,6 @@ import type { AssetToken } from '../../api/assets/types';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class AssetSettingsDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -42,4 +40,7 @@ class AssetSettingsDialogContainer extends Component<Props> {
   }
 }
 
-export default AssetSettingsDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(AssetSettingsDialogContainer));

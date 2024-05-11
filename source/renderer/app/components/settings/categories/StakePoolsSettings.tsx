@@ -151,7 +151,6 @@ type State = {
 };
 const { isSelfnode } = global.environment;
 
-@observer
 class StakePoolsSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -402,4 +401,4 @@ class StakePoolsSettings extends Component<Props, State> {
   }
 }
 
-export default StakePoolsSettings;
+export default observer(StakePoolsSettings);

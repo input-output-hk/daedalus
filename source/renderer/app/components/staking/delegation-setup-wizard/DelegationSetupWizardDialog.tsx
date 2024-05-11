@@ -64,7 +64,6 @@ const getOversaturationPercentage = (
   return selectedPool.saturation + percentageIncrease - 100;
 };
 
-@observer
 class DelegationSetupWizardDialog extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     // On confirm delegation step, wait for API stake pool "join" endpoint response
@@ -214,4 +213,4 @@ class DelegationSetupWizardDialog extends Component<Props> {
   }
 }
 
-export default DelegationSetupWizardDialog;
+export default observer(DelegationSetupWizardDialog);

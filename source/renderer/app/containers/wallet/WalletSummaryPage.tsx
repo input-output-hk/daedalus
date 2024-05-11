@@ -33,8 +33,6 @@ type OpenAssetSettingsDialogArgs = {
   asset: AssetToken;
 };
 
-@inject('stores', 'actions')
-@observer
 class WalletSummaryPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -95,11 +93,8 @@ class WalletSummaryPage extends Component<Props> {
     } = stores;
     const { all, getAsset, favorites } = assets;
     const { isInternalAddress } = addresses;
-    const {
-      onOpenAssetSend,
-      onCopyAssetParam,
-      onToggleFavorite,
-    } = actions.assets;
+    const { onOpenAssetSend, onCopyAssetParam, onToggleFavorite } =
+      actions.assets;
     const {
       openExternalLink,
       environment: { network },
@@ -208,4 +203,6 @@ class WalletSummaryPage extends Component<Props> {
   }
 }
 
-export default withAnalytics(WalletSummaryPage);
+export default withAnalytics(
+  inject('stores', 'actions')(observer(WalletSummaryPage))
+);

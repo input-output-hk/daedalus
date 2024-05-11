@@ -91,7 +91,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -255,4 +254,4 @@ class VotingRegistrationStepsRegister extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsRegister;
+export default observer(VotingRegistrationStepsRegister);

@@ -74,7 +74,6 @@ type Props = {
   isCheckingSystemTime: boolean;
 };
 
-@observer
 class SystemTimeError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -187,4 +186,4 @@ class SystemTimeError extends Component<Props> {
   }
 }
 
-export default SystemTimeError;
+export default observer(SystemTimeError);

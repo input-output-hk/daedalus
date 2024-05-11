@@ -86,7 +86,6 @@ interface FormFields {
   repeatPassword: string;
 }
 
-@observer
 class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -268,4 +267,4 @@ class WalletFileImportDialog extends Component<Props> {
   }
 }
 
-export default WalletFileImportDialog;
+export default observer(WalletFileImportDialog);

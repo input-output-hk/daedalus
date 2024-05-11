@@ -27,7 +27,6 @@ type Props = {
   items: Array<NavButtonProps | NavDropdownProps>;
 };
 
-@observer
 class Navigation extends Component<Props> {
   isActiveNavItem = (
     id: string,
@@ -82,4 +81,4 @@ class Navigation extends Component<Props> {
   }
 }
 
-export default Navigation;
+export default observer(Navigation);

@@ -45,11 +45,10 @@ const messages = defineMessages({
 export type ScrollContextType = {
   setIsScrolling: (...args: Array<any>) => any;
 };
-export const WalletTransactionsListScrollContext = React.createContext<
-  ScrollContextType
->({
-  setIsScrolling: () => null,
-});
+export const WalletTransactionsListScrollContext =
+  React.createContext<ScrollContextType>({
+    setIsScrolling: () => null,
+  });
 type Props = {
   deletePendingTransaction: (...args: Array<any>) => any;
   formattedWalletAmount: (...args: Array<any>) => any;
@@ -77,7 +76,6 @@ type State = {
 };
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-@observer
 class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -378,4 +376,4 @@ class WalletTransactionsList extends Component<Props, State> {
   }
 }
 
-export default WalletTransactionsList;
+export default observer(WalletTransactionsList);

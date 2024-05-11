@@ -13,7 +13,7 @@ export default class Store {
   constructor(
     protected api: Api,
     protected actions: ActionsMap,
-    protected analytics: AnalyticsTracker // eslint-disable-next-line no-empty-function
+    protected analytics: AnalyticsTracker
   ) {}
 
   registerReactions(reactions: Array<(...args: Array<any>) => any>) {

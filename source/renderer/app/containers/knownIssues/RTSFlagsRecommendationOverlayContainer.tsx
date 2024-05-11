@@ -5,8 +5,6 @@ import RTSFlagsRecommendationOverlay from '../../components/knownIssues/RTSFlags
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -53,4 +51,7 @@ class RTSFlagsRecommendationOverlayContainer extends Component<Props> {
   }
 }
 
-export default RTSFlagsRecommendationOverlayContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(RTSFlagsRecommendationOverlayContainer));

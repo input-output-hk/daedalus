@@ -50,7 +50,6 @@ type Props = {
   onLearnMoreClick: (...args: Array<any>) => any;
 };
 
-@observer
 class StakingInfoCountdown extends Component<Props> {
   static defaultProps = {
     percentage: 0,
@@ -68,11 +67,8 @@ class StakingInfoCountdown extends Component<Props> {
   }
 
   checkIfShouldSetStakingInfoWasOpen = () => {
-    const {
-      onSetStakingInfoWasOpen,
-      isAlonzoActivated,
-      stakingInfoWasOpen,
-    } = this.props;
+    const { onSetStakingInfoWasOpen, isAlonzoActivated, stakingInfoWasOpen } =
+      this.props;
 
     if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();
@@ -122,4 +118,4 @@ class StakingInfoCountdown extends Component<Props> {
   }
 }
 
-export default StakingInfoCountdown;
+export default observer(StakingInfoCountdown);

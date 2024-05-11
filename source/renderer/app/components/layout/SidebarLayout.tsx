@@ -12,20 +12,14 @@ type Props = {
   contentDialogs?: Array<Node> | null | undefined;
 };
 
-@observer
 class SidebarLayout extends Component<Props> {
   static defaultProps = {
     children: null,
   };
 
   render() {
-    const {
-      children,
-      sidebar,
-      topbar,
-      notification,
-      contentDialogs,
-    } = this.props;
+    const { children, sidebar, topbar, notification, contentDialogs } =
+      this.props;
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>{sidebar}</div>
@@ -42,4 +36,4 @@ class SidebarLayout extends Component<Props> {
   }
 }
 
-export default SidebarLayout;
+export default observer(SidebarLayout);

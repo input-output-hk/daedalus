@@ -49,7 +49,6 @@ type Props = {
   shares: string;
 };
 
-@observer
 class StakingChartTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -104,4 +103,4 @@ class StakingChartTooltip extends Component<Props> {
   }
 }
 
-export default StakingChartTooltip;
+export default observer(StakingChartTooltip);

@@ -80,7 +80,6 @@ type State = {
   decimals: number | null | undefined;
 };
 
-@observer
 class AssetSettingsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -235,4 +234,4 @@ class AssetSettingsDialog extends Component<Props, State> {
   }
 }
 
-export default AssetSettingsDialog;
+export default observer(AssetSettingsDialog);

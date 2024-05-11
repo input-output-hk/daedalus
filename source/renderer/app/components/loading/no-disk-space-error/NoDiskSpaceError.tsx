@@ -25,7 +25,6 @@ type Props = {
   diskSpaceRecommended: string;
 };
 
-@observer
 class NoDiskSpaceError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -33,11 +32,8 @@ class NoDiskSpaceError extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
-    } = this.props;
+    const { diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended } =
+      this.props;
     return (
       <div className={styles.component}>
         <SVGInline svg={attentionIcon} className={styles.icon} />
@@ -59,4 +55,4 @@ class NoDiskSpaceError extends Component<Props> {
   }
 }
 
-export default NoDiskSpaceError;
+export default observer(NoDiskSpaceError);

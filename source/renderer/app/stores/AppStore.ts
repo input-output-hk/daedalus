@@ -1,4 +1,10 @@
-import { observable, computed, action, runInAction } from 'mobx';
+import {
+  observable,
+  computed,
+  action,
+  runInAction,
+  makeObservable,
+} from 'mobx';
 import path from 'path';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
@@ -15,19 +21,38 @@ import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export default class AppStore extends Store {
-  @observable
   error: LocalizableError | null | undefined = null;
-  @observable
   isDownloadNotificationVisible = false;
-  @observable
   gpuStatus: GpuStatus | null | undefined = null;
-  @observable
   activeDialog: ApplicationDialog = null;
-  @observable
   newsFeedIsOpen = false;
+
+  constructor(api: Api, actions: ActionsMap, analytics: AnalyticsTracker) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      error: observable,
+      isDownloadNotificationVisible: observable,
+      gpuStatus: observable,
+      activeDialog: observable,
+      newsFeedIsOpen: observable,
+      currentRoute: computed,
+      currentPage: computed,
+      _toggleNewsFeed: action,
+      _closeNewsFeed: action,
+      isSetupPage: computed,
+      _updateRouteLocation: action,
+      _updateActiveDialog: action,
+      _closeActiveDialog: action,
+      _downloadLogs: action,
+      _setIsDownloadingLogs: action,
+    });
+  }
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -66,13 +91,11 @@ export default class AppStore extends Store {
     showUiPartChannel.onReceive(this.showUiPart);
   }
 
-  @computed
   get currentRoute(): string {
     const { location } = this.stores.router;
     return location ? location.pathname : '';
   }
 
-  @computed
   get currentPage(): string {
     return this.currentRoute.split('/').pop();
   }
@@ -85,7 +108,6 @@ export default class AppStore extends Store {
   isActiveDialog = (dialog: ApplicationDialog): boolean => {
     return this.activeDialog === dialog;
   };
-  @action
   _toggleNewsFeed = () => {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;
 
@@ -93,7 +115,6 @@ export default class AppStore extends Store {
       this.analytics.sendEvent(EventCategories.LAYOUT, 'Opened newsfeed');
     }
   };
-  @action
   _closeNewsFeed = () => {
     this.newsFeedIsOpen = false;
   };
@@ -190,7 +211,6 @@ export default class AppStore extends Store {
     return Promise.resolve();
   };
 
-  @computed
   get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.INITIAL_SETTINGS ||
@@ -206,7 +226,6 @@ export default class AppStore extends Store {
       this.gpuStatus = gpuStatus;
     });
   };
-  @action
   _updateRouteLocation = (options: {
     route: string;
     params?: Record<string, any> | null | undefined;
@@ -217,18 +236,15 @@ export default class AppStore extends Store {
       this.stores.router.push(newRoutePath);
     }
   };
-  @action
   _updateActiveDialog = (currentDialog: ApplicationDialog) => {
     if (this.newsFeedIsOpen) {
       this.newsFeedIsOpen = false;
     }
     if (this.activeDialog !== currentDialog) this.activeDialog = currentDialog;
   };
-  @action
   _closeActiveDialog = () => {
     if (this.activeDialog !== null) this.activeDialog = null;
   };
-  @action
   _downloadLogs = async () => {
     if (this.isDownloadNotificationVisible) {
       return;
@@ -253,7 +269,6 @@ export default class AppStore extends Store {
       this.actions.app.setIsDownloadingLogs.trigger(false);
     }
   };
-  @action
   _setIsDownloadingLogs = (isDownloadNotificationVisible: boolean) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };

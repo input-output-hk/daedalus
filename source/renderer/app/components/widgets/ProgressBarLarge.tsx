@@ -13,7 +13,6 @@ type Props = {
   loading?: boolean;
 };
 
-@observer
 class ProgressBarLarge extends Component<Props> {
   static defaultProps = {
     progress: 0,
@@ -67,4 +66,4 @@ class ProgressBarLarge extends Component<Props> {
   }
 }
 
-export default ProgressBarLarge;
+export default observer(ProgressBarLarge);

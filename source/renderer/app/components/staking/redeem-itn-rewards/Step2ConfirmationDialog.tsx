@@ -82,7 +82,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -146,14 +145,8 @@ class Step2ConfirmationDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const {
-      wallet,
-      transactionFees,
-      onContinue,
-      onClose,
-      onBack,
-      error,
-    } = this.props;
+    const { wallet, transactionFees, onContinue, onClose, onBack, error } =
+      this.props;
     const { amount } = wallet || {};
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
@@ -237,4 +230,4 @@ class Step2ConfirmationDialog extends Component<Props> {
   }
 }
 
-export default Step2ConfirmationDialog;
+export default observer(Step2ConfirmationDialog);

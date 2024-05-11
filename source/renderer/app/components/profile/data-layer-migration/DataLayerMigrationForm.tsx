@@ -41,7 +41,6 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
-@observer
 class DataLayerMigrationForm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -81,4 +80,4 @@ class DataLayerMigrationForm extends Component<Props> {
   }
 }
 
-export default DataLayerMigrationForm;
+export default observer(DataLayerMigrationForm);

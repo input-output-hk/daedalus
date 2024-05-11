@@ -73,7 +73,6 @@ type State = {
   isCheckbox2Accepted: boolean;
 };
 
-@observer
 class VotingRegistrationStepsQrCode extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -176,4 +175,4 @@ class VotingRegistrationStepsQrCode extends Component<Props, State> {
   }
 }
 
-export default VotingRegistrationStepsQrCode;
+export default observer(VotingRegistrationStepsQrCode);

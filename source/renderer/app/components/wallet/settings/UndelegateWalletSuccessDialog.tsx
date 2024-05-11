@@ -40,7 +40,6 @@ type State = {
   timeUntilNextEpochStart: number;
 };
 
-@observer
 class UndelegateWalletSuccessDialog extends Component<Props, State> {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
@@ -126,4 +125,4 @@ class UndelegateWalletSuccessDialog extends Component<Props, State> {
   }
 }
 
-export default UndelegateWalletSuccessDialog;
+export default observer(UndelegateWalletSuccessDialog);

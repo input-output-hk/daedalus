@@ -29,7 +29,6 @@ type Props = {
   onRestartBackup: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletBackupDialog extends Component<Props> {
   render() {
     const {
@@ -103,4 +102,4 @@ class WalletBackupDialog extends Component<Props> {
   }
 }
 
-export default WalletBackupDialog;
+export default observer(WalletBackupDialog);

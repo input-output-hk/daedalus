@@ -1,4 +1,4 @@
-import { observable, computed, runInAction } from 'mobx';
+import { observable, computed, runInAction, makeObservable } from 'mobx';
 import { get, filter, orderBy, includes } from 'lodash';
 import semver from 'semver';
 import type { NewsTarget, NewsType } from '../api/news/types';
@@ -39,25 +39,15 @@ export type NewsTypesStateType = {
 };
 
 class News {
-  @observable
   id: number;
-  @observable
   title: string;
-  @observable
   content: string;
-  @observable
   target: NewsTarget;
-  @observable
   action: NewsAction;
-  @observable
   date: number;
-  @observable
   type: NewsType;
-  @observable
   read: boolean;
-  @observable
   color: IncidentColor | null | undefined;
-  @observable
   repeatOnStartup: boolean | null | undefined;
 
   constructor(data: {
@@ -72,17 +62,40 @@ class News {
     color?: IncidentColor | null | undefined;
     repeatOnStartup?: boolean | null | undefined;
   }) {
+    makeObservable(this, {
+      id: observable,
+      title: observable,
+      content: observable,
+      target: observable,
+      action: observable,
+      date: observable,
+      type: observable,
+      read: observable,
+      color: observable,
+      repeatOnStartup: observable,
+    });
+
     Object.assign(this, data);
   }
 }
 
 class NewsCollection {
-  @observable
   all: Array<News> = [];
-  @observable
   allWithAppUpdates: Array<News> = [];
 
   constructor(data: Array<News>) {
+    makeObservable(this, {
+      all: observable,
+      allWithAppUpdates: observable,
+      incident: computed,
+      alerts: computed,
+      announcements: computed,
+      infos: computed,
+      unread: computed,
+      read: computed,
+      update: computed,
+    });
+
     const { version, platform } = global.environment;
     // Filter news by platform and versions
     const filteredNewsWithAppUpdates = filter(data, (newsItem) => {
@@ -132,7 +145,6 @@ class NewsCollection {
     });
   }
 
-  @computed
   get incident(): News | null | undefined {
     const incidents = filter(
       this.all,
@@ -148,7 +160,6 @@ class NewsCollection {
     return null;
   }
 
-  @computed
   get alerts(): NewsTypesStateType {
     const alerts = filter(this.all, (item) => item.type === NewsTypes.ALERT);
     // Order alerts from newest to oldest
@@ -161,7 +172,6 @@ class NewsCollection {
     };
   }
 
-  @computed
   get announcements(): NewsTypesStateType {
     const announcements = filter(
       this.all,
@@ -175,7 +185,6 @@ class NewsCollection {
     };
   }
 
-  @computed
   get infos(): NewsTypesStateType {
     const infos = filter(
       this.all,
@@ -189,21 +198,18 @@ class NewsCollection {
     };
   }
 
-  @computed
   get unread(): Array<News> {
     const unread = filter(this.all, (item) => !item.read);
     // Order unread from newest to oldest
     return orderBy(unread, 'date', 'asc');
   }
 
-  @computed
   get read(): Array<News> {
     const read = filter(this.all, (item) => item.read);
     // Order read from newest to oldest
     return orderBy(read, 'date', 'asc');
   }
 
-  @computed
   get update(): News | null {
     return this.allWithAppUpdates.filter(
       (item) => item.type === NewsTypes.UPDATE

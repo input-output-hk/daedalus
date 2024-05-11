@@ -84,7 +84,6 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -227,4 +226,4 @@ class WalletConnectDialog extends Component<Props> {
   }
 }
 
-export default WalletConnectDialog;
+export default observer(WalletConnectDialog);

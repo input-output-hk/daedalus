@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeObservable } from 'mobx';
 import { omit } from 'lodash';
 import Store from './lib/Store';
 import { NOTIFICATION_DEFAULT_DURATION } from '../config/timingConfig';
@@ -6,9 +6,11 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../types/notificationTypes';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 
 export default class UiNotificationsStore extends Store {
-  @observable
   // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   activeNotifications: Record<
     NotificationId,
@@ -20,6 +22,21 @@ export default class UiNotificationsStore extends Store {
   // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   activeNotificationsTimeouts: Record<NotificationId, TimeoutID> = {};
 
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      activeNotifications: observable,
+      _registerNotification: action,
+      _openNotification: action,
+      _onClose: action,
+    });
+  }
+
   setup() {
     this.actions.notifications.registerNotification.listen(
       this._registerNotification
@@ -28,13 +45,9 @@ export default class UiNotificationsStore extends Store {
   }
 
   isOpen = (id: NotificationId): boolean => !!this.activeNotifications[id];
-  @action
   _registerNotification = (notificationConfig: NotificationConfig) => {
-    const {
-      id,
-      actionToListenAndOpen,
-      actionToListenAndClose,
-    } = notificationConfig;
+    const { id, actionToListenAndOpen, actionToListenAndClose } =
+      notificationConfig;
     actionToListenAndOpen.listen((labelValues?: Record<string, any>) =>
       this._openNotification(notificationConfig, labelValues)
     );
@@ -47,7 +60,6 @@ export default class UiNotificationsStore extends Store {
       );
     }
   };
-  @action
   _openNotification = (
     notificationConfig: NotificationConfig,
     labelValues?: Record<string, any>
@@ -67,7 +79,6 @@ export default class UiNotificationsStore extends Store {
       duration
     );
   };
-  @action
   _onClose = ({ id }: { id: NotificationId }) => {
     if (id in this.activeNotifications) {
       // @ts-ignore ts-migrate(2740) FIXME: Type 'Pick<Record<NotificationId, { labelValues?: ... Remove this comment to see the full error message

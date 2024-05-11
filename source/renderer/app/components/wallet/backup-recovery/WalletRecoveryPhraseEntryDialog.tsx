@@ -39,8 +39,7 @@ const messages = defineMessages({
     description: 'Placeholder hint for the mnemonics autocomplete.',
   },
   recoveryPhraseInvalidMnemonics: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics',
+    id: 'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics',
     defaultMessage: '!!!Invalid recovery phrase',
     description:
       'Error message shown when invalid recovery phrase was entered.',
@@ -51,15 +50,13 @@ const messages = defineMessages({
     description: 'Label for button "Confirm" on wallet backup dialog',
   },
   termOffline: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline',
+    id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline',
     defaultMessage:
       '!!!I understand that the simplest way to keep my wallet recovery phrase secure is to never store it digitally or online. If I decide to use an online service, such as a password manager with an encrypted database, it is my responsibility to make sure that I use it correctly.',
     description: 'Term on wallet creation to store recovery phrase offline',
   },
   termRecovery: {
-    id:
-      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
+    id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
     defaultMessage:
       '!!!I understand that the only way to recover my wallet if my computer is lost, broken, stolen, or stops working is to use my wallet recovery phrase.',
     description:
@@ -86,7 +83,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -250,4 +246,4 @@ class WalletRecoveryPhraseEntryDialog extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseEntryDialog;
+export default observer(WalletRecoveryPhraseEntryDialog);

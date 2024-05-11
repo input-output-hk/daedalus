@@ -55,7 +55,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -293,4 +292,4 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
   }
 }
 
-export default DelegationStepsConfirmationDialog;
+export default observer(DelegationStepsConfirmationDialog);

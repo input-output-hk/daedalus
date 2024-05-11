@@ -9,7 +9,6 @@ type Props = {
   active: boolean;
 };
 
-@observer
 class StakingSwitch extends Component<Props> {
   handleChange = () => {};
 
@@ -29,4 +28,4 @@ class StakingSwitch extends Component<Props> {
   }
 }
 
-export default StakingSwitch;
+export default observer(StakingSwitch);

@@ -57,7 +57,6 @@ type State = {
   timeUntilFutureEpoch: number;
 };
 
-@observer
 class DelegationCenterHeader extends Component<Props, State> {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
@@ -179,4 +178,4 @@ class DelegationCenterHeader extends Component<Props, State> {
   }
 }
 
-export default DelegationCenterHeader;
+export default observer(DelegationCenterHeader);

@@ -45,8 +45,7 @@ const messages = defineMessages({
     description: 'Error message shown when repeat pin code is invalid.',
   },
   invalidRepeatPinCode: {
-    id:
-      'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
+    id: 'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
     defaultMessage: '!!!PIN doesn’t match',
     description: 'Error message shown when repeat pin code is invalid.',
   },
@@ -69,7 +68,6 @@ interface FormFields {
   repeatPinCode: string[];
 }
 
-@observer
 class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -191,4 +189,4 @@ class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsEnterPinCode;
+export default observer(VotingRegistrationStepsEnterPinCode);

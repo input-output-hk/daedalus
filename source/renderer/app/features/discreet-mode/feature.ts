@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, makeObservable } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
 import { DiscreetModeApi } from './api';
@@ -13,6 +13,16 @@ export class DiscreetMode extends Feature {
     private analyticsTracker: AnalyticsTracker
   ) {
     super();
+
+    makeObservable(this, {
+      isDiscreetMode: observable,
+      openInDiscreetMode: observable,
+      getDiscreetModeSettingsRequest: observable,
+      setDiscreetModeSettingsRequest: observable,
+      toggleDiscreetMode: action,
+      toggleOpenInDiscreetMode: action,
+    });
+
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
         this.api.getDiscreetModeSettings
@@ -23,13 +33,9 @@ export class DiscreetMode extends Feature {
     });
   }
 
-  @observable
   isDiscreetMode = false;
-  @observable
   openInDiscreetMode = false;
-  @observable
   getDiscreetModeSettingsRequest: Request<Promise<boolean>>;
-  @observable
   setDiscreetModeSettingsRequest: Request<Promise<boolean>>;
 
   async start() {
@@ -48,7 +54,6 @@ export class DiscreetMode extends Feature {
       this.isDiscreetMode = isDiscreetModeEnabled;
     });
   };
-  @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
     this.analyticsTracker.sendEvent(
@@ -56,7 +61,6 @@ export class DiscreetMode extends Feature {
       `Turned ${this.isDiscreetMode ? 'on' : 'off'} discreet mode`
     );
   };
-  @action
   toggleOpenInDiscreetMode = async () => {
     const nextSetting = !this.openInDiscreetMode;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message

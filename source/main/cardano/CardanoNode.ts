@@ -875,7 +875,6 @@ export class CardanoNode {
     });
 
     this._state = state;
-
     this._actions.broadcastStateChange(state);
 
     switch (state) {

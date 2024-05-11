@@ -5,8 +5,6 @@ import SplashNetworkFlight from '../../components/splash/SplashNetworkFlight';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class SplashNetworkPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -30,4 +28,4 @@ class SplashNetworkPage extends Component<Props> {
   }
 }
 
-export default SplashNetworkPage;
+export default inject('stores', 'actions')(observer(SplashNetworkPage));

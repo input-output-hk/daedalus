@@ -33,8 +33,7 @@ const messages = defineMessages({
     description: 'You may write the remaining words here:',
   },
   securingPasswordConfirmation: {
-    id:
-      'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
+    id: 'paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation',
     defaultMessage:
       '!!!I have written the remaining {paperWalletWrittenWordsCount} words on the certificate.',
     description:
@@ -50,7 +49,6 @@ type Props = {
   onClose: (...args: Array<any>) => any;
 };
 
-@observer
 class SecuringPasswordDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -119,4 +117,4 @@ class SecuringPasswordDialog extends Component<Props, State> {
   }
 }
 
-export default SecuringPasswordDialog;
+export default observer(SecuringPasswordDialog);

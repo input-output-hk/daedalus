@@ -39,7 +39,6 @@ const messages = defineMessages({
   },
 });
 
-@observer
 class RTSFlagsRecommendationOverlay extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -82,4 +81,4 @@ class RTSFlagsRecommendationOverlay extends Component<Props> {
   }
 }
 
-export default RTSFlagsRecommendationOverlay;
+export default observer(RTSFlagsRecommendationOverlay);

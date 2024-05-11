@@ -12,8 +12,6 @@ import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class Wallet extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -70,11 +68,8 @@ class Wallet extends Component<Props> {
       );
     }
 
-    const {
-      hasNotification,
-    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
-      activeWallet.id
-    );
+    const { hasNotification } =
+      walletSettings.getWalletsRecoveryPhraseVerificationData(activeWallet.id);
     const {
       isRestoring,
       isLegacy,
@@ -117,4 +112,4 @@ class Wallet extends Component<Props> {
   }
 }
 
-export default Wallet;
+export default inject('stores', 'actions')(observer(Wallet));

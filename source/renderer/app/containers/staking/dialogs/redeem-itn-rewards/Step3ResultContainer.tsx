@@ -8,19 +8,13 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores', 'actions')
-@observer
 class Step3ResultContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
     const { onBack, onClose, stores, actions } = this.props;
-    const {
-      redeemWallet,
-      transactionFees,
-      redeemedRewards,
-      redeemSuccess,
-    } = stores.staking;
+    const { redeemWallet, transactionFees, redeemedRewards, redeemSuccess } =
+      stores.staking;
     const { onResultContinue } = actions.staking;
     if (!redeemWallet) throw new Error('Redeem wallet required');
 
@@ -42,4 +36,4 @@ class Step3ResultContainer extends Component<Props> {
   }
 }
 
-export default Step3ResultContainer;
+export default inject('stores', 'actions')(observer(Step3ResultContainer));

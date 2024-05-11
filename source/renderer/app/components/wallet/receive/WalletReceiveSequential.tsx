@@ -55,7 +55,6 @@ type State = {
   charWidth: number;
 };
 
-@observer
 class WalletReceiveSequential extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -194,4 +193,4 @@ class WalletReceiveSequential extends Component<Props, State> {
   }
 }
 
-export default WalletReceiveSequential;
+export default observer(WalletReceiveSequential);

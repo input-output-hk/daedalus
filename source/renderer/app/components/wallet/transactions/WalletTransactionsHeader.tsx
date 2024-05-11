@@ -32,7 +32,6 @@ type Props = {
   onRequestCSVFile: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletTransactionsHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -100,4 +99,4 @@ class WalletTransactionsHeader extends Component<Props> {
   }
 }
 
-export default WalletTransactionsHeader;
+export default observer(WalletTransactionsHeader);

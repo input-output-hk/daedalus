@@ -4,7 +4,6 @@ import styles from './InitialSettings.scss';
 import ProfileSettingsForm from '../../widgets/forms/ProfileSettingsForm';
 import type { ProfileSettingsFormProps } from '../../widgets/forms/ProfileSettingsForm';
 
-@observer
 class InitialSettings extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     error: null,
@@ -38,4 +37,4 @@ class InitialSettings extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default InitialSettings;
+export default observer(InitialSettings);

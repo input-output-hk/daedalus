@@ -1,4 +1,10 @@
-import { observable, action, runInAction, computed } from 'mobx';
+import {
+  observable,
+  action,
+  runInAction,
+  computed,
+  makeObservable,
+} from 'mobx';
 import { get, map, find, includes, last, sortBy, filter } from 'lodash';
 import semver from 'semver';
 import {
@@ -97,7 +103,7 @@ import type {
   TrezorWitness,
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
 import {
   HardwareWalletDevicesType,
   HardwareWalletLocalData,
@@ -105,6 +111,8 @@ import {
   UnpairedHardwareWalletData,
 } from '../types/localDataTypes';
 import { Environment } from '../../../common/types/environment.types';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export type TxSignRequestTypes = {
   coinSelection: CoinSelectionsResponse;
@@ -198,11 +206,85 @@ interface CardanoAdaAppPoller {
 }
 
 export default class HardwareWalletsStore extends Store {
-  @observable
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      selectCoinsRequest: observable,
+      sendMoneyRequest: observable,
+      hardwareWalletsLocalDataRequest: observable,
+      setHardwareWalletLocalDataRequest: observable,
+      unsetHardwareWalletLocalDataRequest: observable,
+      hardwareWalletDevicesRequest: observable,
+      setHardwareWalletDeviceRequest: observable,
+      overrideHardwareWalletDevicesRequest: observable,
+      unsetHardwareWalletDeviceRequest: observable,
+      unsetHardwareWalletDevicesAllRequest: observable,
+      unsetHardwareWalletLocalDataAllRequest: observable,
+      hwDeviceStatus: observable,
+      extendedPublicKey: observable,
+      txSignRequest: observable,
+      transportDevice: observable,
+      txBody: observable,
+      isTransactionPending: observable,
+      isTrezorBridgeInstalled: observable,
+      isTransactionInitiated: observable,
+      activeDevicePath: observable,
+      unfinishedWalletTxSigning: observable,
+      isListeningForDevice: observable,
+      isConnectInitiated: observable,
+      isAddressVerificationInitiated: observable,
+      isWalletPairingInitiated: observable,
+      unfinishedWalletAddressVerification: observable,
+      isAddressDerived: observable,
+      isAddressChecked: observable,
+      isAddressCorrect: observable,
+      tempAddressToVerify: observable,
+      isExportKeyAborted: observable,
+      activeDelegationWalletId: observable,
+      activeVotingWalletId: observable,
+      votingData: observable,
+      checkTransaction: action,
+      resetStakePoolTransactionChecker: action,
+      setTransactionPendingState: action,
+      establishHardwareWalletConnection: action,
+      getCardanoAdaApp: action,
+      verifyAddress: action,
+      initiateWalletPairing: action,
+      resetWalletPairing: action,
+      showAddress: action,
+      setAddressVerificationCheckStatus: action,
+      _resetInitiatedConnection: action,
+      _requestExtendedPublicKey: action,
+      _findAssociatedWalletByExtendedPublicKey: action,
+      _deletePendingDeviceWithGivenPath: action,
+      _discardConnectedDeviceAndReInitiateTransaction: action,
+      _proceedWithTransactionAfterConnectingDevice: action,
+      _discardConnectedDeviceAndReInitiateAddressVerification: action,
+      _proceedWithAddressVerificationAfterConnectingDevice: action,
+      _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting:
+        action,
+      _createNewWalletForRecognizedPendingDevice: action,
+      _identifyAndHandleAssociatedWallet: action,
+      _signTransactionTrezor: action,
+      _signTransactionLedger: action,
+      _changeHardwareWalletConnectionStatus: action,
+      resetInitializedConnection: action,
+      resetInitializedAddressVerification: action,
+      _refreshHardwareWalletsLocalData: action,
+      _refreshHardwareWalletDevices: action,
+      hardwareWalletsConnectionData: computed,
+      hardwareWalletDevices: computed,
+    });
+  }
+
   selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
   );
-  @observable
   sendMoneyRequest: Request<CreateExternalTransactionResponse> = new Request(
     this.api.ada.createExternalTransaction
   );
@@ -212,92 +294,54 @@ export default class HardwareWalletsStore extends Store {
   constructAddressRequest: Request<any> = new Request(
     this.api.ada.constructAddress
   );
-  @observable
-  hardwareWalletsLocalDataRequest: Request<
-    HardwareWalletsLocalData
-  > = new Request(this.api.localStorage.getHardwareWalletsLocalData);
-  @observable
-  setHardwareWalletLocalDataRequest: Request<
-    HardwareWalletLocalData
-  > = new Request(this.api.localStorage.setHardwareWalletLocalData);
-  @observable
+  hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> =
+    new Request(this.api.localStorage.getHardwareWalletsLocalData);
+  setHardwareWalletLocalDataRequest: Request<HardwareWalletLocalData> =
+    new Request(this.api.localStorage.setHardwareWalletLocalData);
   unsetHardwareWalletLocalDataRequest: Request<void> = new Request(
     this.api.localStorage.unsetHardwareWalletLocalData
   );
-  @observable
   hardwareWalletDevicesRequest: Request<HardwareWalletsLocalData> = new Request(
     this.api.localStorage.getHardwareWalletDevices
   );
-  @observable
-  setHardwareWalletDeviceRequest: Request<
-    HardwareWalletLocalData
-  > = new Request(this.api.localStorage.setHardwareWalletDevice);
-  @observable
-  overrideHardwareWalletDevicesRequest: Request<
-    HardwareWalletDevicesType
-  > = new Request(this.api.localStorage.overrideHardwareWalletDevices);
-  @observable
-  unsetHardwareWalletDeviceRequest: Request<
-    HardwareWalletLocalData
-  > = new Request(this.api.localStorage.unsetHardwareWalletDevice);
-  @observable
+  setHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> =
+    new Request(this.api.localStorage.setHardwareWalletDevice);
+  overrideHardwareWalletDevicesRequest: Request<HardwareWalletDevicesType> =
+    new Request(this.api.localStorage.overrideHardwareWalletDevices);
+  unsetHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> =
+    new Request(this.api.localStorage.unsetHardwareWalletDevice);
   unsetHardwareWalletDevicesAllRequest: Request<void> = new Request(
     this.api.localStorage.unsetHardwareWalletDevicesAll
   );
-  @observable
-  unsetHardwareWalletLocalDataAllRequest: Request<
-    HardwareWalletLocalData
-  > = new Request(this.api.localStorage.unsetHardwareWalletLocalDataAll);
-  @observable
+  unsetHardwareWalletLocalDataAllRequest: Request<HardwareWalletLocalData> =
+    new Request(this.api.localStorage.unsetHardwareWalletLocalDataAll);
   hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
-  @observable
   extendedPublicKey:
     | HardwareWalletExtendedPublicKeyResponse
     | null
     | undefined = null;
-  @observable
   // @ts-ignore ts-migrate(2741) FIXME: Property 'coinSelection' is missing in type '{}' b... Remove this comment to see the full error message
   txSignRequest: TxSignRequestTypes = {};
-  @observable
   transportDevice: TransportDevice | null | undefined = null;
-  @observable
   txBody: string | null | undefined = null;
-  @observable
   isTransactionPending = false;
-  @observable
   isTrezorBridgeInstalled = false;
-  @observable
   isTransactionInitiated = false;
-  @observable
   activeDevicePath: string | null | undefined = null;
-  @observable
   unfinishedWalletTxSigning: string | null | undefined = null;
-  @observable
   isListeningForDevice = false;
-  @observable
   isConnectInitiated = false;
-  @observable
   isAddressVerificationInitiated = false;
-  @observable
   isWalletPairingInitiated = false;
-  @observable
   unfinishedWalletAddressVerification: WalletAddress | null | undefined = null;
-  @observable
   isAddressDerived = false;
-  @observable
   isAddressChecked = false;
-  @observable
   isAddressCorrect: boolean | null | undefined = null;
-  @observable
   // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   tempAddressToVerify: TempAddressToVerify = {};
-  @observable
   isExportKeyAborted = false;
-  @observable
   activeDelegationWalletId: string | null | undefined = null;
-  @observable
   activeVotingWalletId: string | null | undefined = null;
-  @observable
   votingData: VotingDataType | null | undefined = null;
   cardanoAdaAppPoller: CardanoAdaAppPoller | null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
@@ -391,9 +435,8 @@ export default class HardwareWalletsStore extends Store {
       let canRun = true;
       let isRunning = false;
 
-      const connectedDevice = this.connectedHardwareWalletsDevices.get(
-        devicePath
-      );
+      const connectedDevice =
+        this.connectedHardwareWalletsDevices.get(devicePath);
 
       const product =
         connectedDevice?.deviceType === 'ledger'
@@ -553,21 +596,16 @@ export default class HardwareWalletsStore extends Store {
     }
   };
   // Check stake pool transaction state and reset pending state when transaction is "in_ledger"
-  @action
   checkTransaction = (request: {
     transactionId: string;
     walletId: string;
     isVotingRegistrationTransaction: boolean;
   }) => {
-    const {
-      transactionId,
-      walletId,
-      isVotingRegistrationTransaction,
-    } = request;
+    const { transactionId, walletId, isVotingRegistrationTransaction } =
+      request;
 
-    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
-      walletId
-    ).result;
+    const recentTransactionsResponse =
+      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -610,7 +648,6 @@ export default class HardwareWalletsStore extends Store {
       }
     }
   };
-  @action
   resetStakePoolTransactionChecker = (walletId: string) => {
     if (this.checkTransactionTimeInterval) {
       clearInterval(this.checkTransactionTimeInterval);
@@ -627,7 +664,6 @@ export default class HardwareWalletsStore extends Store {
 
     this.stores.wallets.goToWalletRoute(walletId);
   };
-  @action
   setTransactionPendingState = (isTransactionPending: boolean) => {
     runInAction(() => {
       this.isTransactionPending = isTransactionPending;
@@ -643,9 +679,9 @@ export default class HardwareWalletsStore extends Store {
 
     try {
       this.selectCoinsRequest.reset();
-      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const coinSelection: CoinSelectionsResponse = await this.selectCoinsRequest.execute(
-        {
+      const coinSelection: CoinSelectionsResponse =
+        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+        await this.selectCoinsRequest.execute({
           walletId,
           walletBalance: totalAmount,
           availableBalance: availableAmount.plus(reward),
@@ -656,17 +692,13 @@ export default class HardwareWalletsStore extends Store {
             assets,
           },
           metadata,
-        }
-      );
+        });
 
       return coinSelection;
     } catch (e) {
-      runInAction(
-        'HardwareWalletsStore:: set Transaction verifying failed',
-        () => {
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
-        }
-      );
+      runInAction(() => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      });
       throw e;
     }
   };
@@ -707,16 +739,12 @@ export default class HardwareWalletsStore extends Store {
       });
       return coinSelection;
     } catch (e) {
-      runInAction(
-        'HardwareWalletsStore:: set Transaction verifying failed',
-        () => {
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
-        }
-      );
+      runInAction(() => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      });
       throw e;
     }
   };
-  @action
   establishHardwareWalletConnection = async () => {
     runInAction(() => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
@@ -953,12 +981,9 @@ export default class HardwareWalletsStore extends Store {
             !DeviceModels.LEDGER_NANO_S_PLUS &&
             !DeviceModels.LEDGER_NANO_X)
         ) {
-          runInAction(
-            'HardwareWalletsStore:: set HW device CONNECTING FAILED - device not supported',
-            () => {
-              this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
-            }
-          );
+          runInAction(() => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
+          });
           throw new Error('Device not Supported!');
         }
 
@@ -975,12 +1000,9 @@ export default class HardwareWalletsStore extends Store {
           );
 
           if (!isFirmwareVersionValid) {
-            runInAction(
-              'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',
-              () => {
-                this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
-              }
-            );
+            runInAction(() => {
+              this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
+            });
             throw new Error(
               `Firmware must be ${minFirmwareVersion} or greater!`
             );
@@ -1020,12 +1042,9 @@ export default class HardwareWalletsStore extends Store {
           this.useCardanoAppInterval(devicePath);
         }
       } else {
-        runInAction(
-          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+        });
         throw new Error('Device not found');
       }
 
@@ -1040,12 +1059,9 @@ export default class HardwareWalletsStore extends Store {
       }
 
       if (e.code === 'Transport_Missing' && !this.isTrezorBridgeInstalled) {
-        runInAction(
-          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.TREZOR_BRIDGE_FAILURE;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.TREZOR_BRIDGE_FAILURE;
+        });
         throw new Error('Trezor Bridge not installed!');
       }
 
@@ -1053,7 +1069,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
   // Ledger method only
-  @action
   getCardanoAdaApp = async (params: {
     path: string | null | undefined;
     walletId?: string;
@@ -1094,12 +1109,9 @@ export default class HardwareWalletsStore extends Store {
         );
 
         if (!isValidAppVersion) {
-          runInAction(
-            'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',
-            () => {
-              this.hwDeviceStatus = HwDeviceStatuses.WRONG_CARDANO_APP_VERSION;
-            }
-          );
+          runInAction(() => {
+            this.hwDeviceStatus = HwDeviceStatuses.WRONG_CARDANO_APP_VERSION;
+          });
           throw new Error(
             `Cardano app must be ${MINIMAL_CARDANO_APP_VERSION} or greater!`
           );
@@ -1128,20 +1140,17 @@ export default class HardwareWalletsStore extends Store {
           isTransactionInitiated: this.isTransactionInitiated,
           isAddressVerificationInitiated: this.isAddressVerificationInitiated,
         });
-        runInAction(
-          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
-            this.activeDevicePath = null;
-            this.unfinishedWalletTxSigning = this.isTransactionInitiated
-              ? walletId
-              : null;
-            this.unfinishedWalletAddressVerification = this
-              .isAddressVerificationInitiated
-              ? address
-              : null;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+          this.activeDevicePath = null;
+          this.unfinishedWalletTxSigning = this.isTransactionInitiated
+            ? walletId
+            : null;
+          this.unfinishedWalletAddressVerification = this
+            .isAddressVerificationInitiated
+            ? address
+            : null;
+        });
       }
 
       if (
@@ -1156,13 +1165,10 @@ export default class HardwareWalletsStore extends Store {
           '[HW-DEBUG] HW Store::getCardanoAdaApp::DEVICE_NOT_CONNECTED'
         );
         this.stopCardanoAdaAppFetchPoller();
-        runInAction(
-          'HardwareWalletsStore:: Re-run initiated connection',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
-            this.isListeningForDevice = true;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+          this.isListeningForDevice = true;
+        });
       } else if (error.code === 'DEVICE_PATH_CHANGED' && error.path) {
         // Special case on Windows where device path changes after opening Cardano app
         // Stop poller and re-initiate connecting state / don't kill devices listener
@@ -1245,12 +1251,9 @@ export default class HardwareWalletsStore extends Store {
           logger.info(
             '[HW-DEBUG] Update connected wallet data with new path - Set to LC'
           );
-          runInAction(
-            'HardwareWalletsStore:: Change active device path for Transaction send',
-            () => {
-              this.activeDevicePath = error.path;
-            }
-          );
+          runInAction(() => {
+            this.activeDevicePath = error.path;
+          });
         }
 
         this.useCardanoAppInterval(error.path, walletId, address);
@@ -1334,12 +1337,9 @@ export default class HardwareWalletsStore extends Store {
           logger.info('[HW-DEBUG] HWStore - Set transport device 4', {
             transportDevice: toJS(transportDevice),
           });
-          runInAction(
-            'HardwareWalletsStore:: Set transport device for tx init',
-            () => {
-              this.transportDevice = transportDevice;
-            }
-          );
+          runInAction(() => {
+            this.transportDevice = transportDevice;
+          });
         }
       } catch (e) {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -1359,12 +1359,9 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      runInAction(
-        'HardwareWalletsStore:: Set transport device from tx init',
-        () => {
-          this.transportDevice = transportDevice;
-        }
-      );
+      runInAction(() => {
+        this.transportDevice = transportDevice;
+      });
     }
 
     if (deviceType === DeviceTypes.TREZOR) {
@@ -1379,12 +1376,9 @@ export default class HardwareWalletsStore extends Store {
         });
       }
 
-      runInAction(
-        'HardwareWalletsStore:: Set transport device from tx init',
-        () => {
-          this.transportDevice = transportDevice;
-        }
-      );
+      runInAction(() => {
+        this.transportDevice = transportDevice;
+      });
       const newConnectionData = get(
         this.hardwareWalletsConnectionData,
         walletId
@@ -1403,9 +1397,10 @@ export default class HardwareWalletsStore extends Store {
         walletId,
         address
       );
-      const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-        { extendedPublicKey }
-      );
+      const associatedWallet =
+        await this._findAssociatedWalletByExtendedPublicKey({
+          extendedPublicKey,
+        });
 
       if (associatedWallet) {
         await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
@@ -1435,7 +1430,6 @@ export default class HardwareWalletsStore extends Store {
       this.useCardanoAppInterval(devicePath, walletId, address);
     }
   };
-  @action
   verifyAddress = async (params: {
     address: WalletAddress;
     path: string | null | undefined;
@@ -1464,23 +1458,17 @@ export default class HardwareWalletsStore extends Store {
         });
 
         if (isTrezor) {
-          runInAction(
-            'HardwareWalletsStore:: Address Verified and is correct - Trezor',
-            () => {
-              this.isAddressDerived = true;
-              this.isAddressChecked = true;
-              this.isListeningForDevice = false;
-              this.hwDeviceStatus =
-                HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
-            }
-          );
+          runInAction(() => {
+            this.isAddressDerived = true;
+            this.isAddressChecked = true;
+            this.isListeningForDevice = false;
+            this.hwDeviceStatus =
+              HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
+          });
         } else {
-          runInAction(
-            'HardwareWalletsStore:: Address Verified and is correct - Ledger',
-            () => {
-              this.isAddressDerived = true;
-            }
-          );
+          runInAction(() => {
+            this.isAddressDerived = true;
+          });
           this.showAddress(params);
         }
 
@@ -1489,15 +1477,12 @@ export default class HardwareWalletsStore extends Store {
           'Verified wallet address with hardware wallet'
         );
       } else {
-        runInAction(
-          'HardwareWalletsStore:: Address Verified but not correct',
-          () => {
-            this.isAddressDerived = false;
-            this.isAddressChecked = false;
-            this.isAddressCorrect = false;
-            this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
-          }
-        );
+        runInAction(() => {
+          this.isAddressDerived = false;
+          this.isAddressChecked = false;
+          this.isAddressCorrect = false;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+        });
       }
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -1527,16 +1512,13 @@ export default class HardwareWalletsStore extends Store {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
         this.stopCardanoAdaAppFetchPoller();
-        runInAction(
-          'HardwareWalletsStore:: Re-run initiated connection',
-          () => {
-            this.isAddressDerived = false;
-            this.isAddressChecked = false;
-            this.isAddressCorrect = false;
-            this.isListeningForDevice = true;
-            this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
-          }
-        );
+        runInAction(() => {
+          this.isAddressDerived = false;
+          this.isAddressChecked = false;
+          this.isAddressCorrect = false;
+          this.isListeningForDevice = true;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
+        });
       } else {
         runInAction(() => {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
@@ -1550,7 +1532,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action
   initiateWalletPairing = () => {
     logger.info('[HW-DEBUG] HWStore::initiateWalletPairing');
 
@@ -1559,7 +1540,6 @@ export default class HardwareWalletsStore extends Store {
     this.establishHardwareWalletConnection();
   };
 
-  @action
   resetWalletPairing = async () => {
     this.stopCardanoAdaAppFetchPoller();
 
@@ -1568,7 +1548,6 @@ export default class HardwareWalletsStore extends Store {
     return this.cleanUpPendingDevices();
   };
 
-  @action
   showAddress = async (params: {
     address: WalletAddress;
     path: string | null | undefined;
@@ -1588,14 +1567,11 @@ export default class HardwareWalletsStore extends Store {
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
-      runInAction(
-        'HardwareWalletsStore:: Address show process finished',
-        () => {
-          this.isAddressChecked = true;
-          this.isListeningForDevice = true;
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
-        }
-      );
+      runInAction(() => {
+        this.isAddressChecked = true;
+        this.isListeningForDevice = true;
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
+      });
     } catch (error) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info('[HW-DEBUG] HWStore - Show address error');
@@ -1608,43 +1584,33 @@ export default class HardwareWalletsStore extends Store {
       throw error;
     }
   };
-  @action
   setAddressVerificationCheckStatus = (
     checkStatus: AddressVerificationCheckStatus
   ) => {
     // Yes / No - Reverify / No - Invalid
     if (checkStatus === AddressVerificationCheckStatuses.VALID) {
-      runInAction(
-        'HardwareWalletsStore:: Set address verification status CORRECT',
-        () => {
-          this.isAddressCorrect = true;
-          this.isListeningForDevice = true;
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
-        }
-      );
+      runInAction(() => {
+        this.isAddressCorrect = true;
+        this.isListeningForDevice = true;
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
+      });
     }
 
     if (checkStatus === AddressVerificationCheckStatuses.INVALID) {
-      runInAction(
-        'HardwareWalletsStore:: Set address verification status CORRECT',
-        () => {
-          this.isAddressCorrect = false;
-          this.isListeningForDevice = true;
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
-        }
-      );
+      runInAction(() => {
+        this.isAddressCorrect = false;
+        this.isListeningForDevice = true;
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
+      });
     }
 
     if (checkStatus === AddressVerificationCheckStatuses.REVERIFY) {
-      runInAction(
-        'HardwareWalletsStore:: Set address verification status CORRECT',
-        () => {
-          this.isAddressDerived = false;
-          this.isAddressChecked = false;
-          this.isAddressCorrect = null;
-          this.isListeningForDevice = true;
-        }
-      );
+      runInAction(() => {
+        this.isAddressDerived = false;
+        this.isAddressChecked = false;
+        this.isAddressCorrect = null;
+        this.isListeningForDevice = true;
+      });
       this.verifyAddress(this.tempAddressToVerify);
     }
   };
@@ -1666,7 +1632,6 @@ export default class HardwareWalletsStore extends Store {
     return ledgerDevice;
   };
 
-  @action
   _resetInitiatedConnection = ({ isAborted }: ResetInitiatedConnectionArgs) => {
     runInAction(() => {
       this.hwDeviceStatus = isAborted
@@ -1677,7 +1642,6 @@ export default class HardwareWalletsStore extends Store {
     });
   };
 
-  @action
   _requestExtendedPublicKey = async (
     forcedPath?: string | null,
     walletId?: string,
@@ -1752,12 +1716,9 @@ export default class HardwareWalletsStore extends Store {
           this._resetInitiatedConnection({ isAborted });
         }
       } else {
-        runInAction(
-          'HardwareWalletsStore:: Cannot export extended public key',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
+        });
       }
 
       // Pass other errors to caller (establishHardwareWalletConnection() in this case) and handle additional actions if needed
@@ -1765,7 +1726,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action
   _findAssociatedWalletByExtendedPublicKey = async ({
     extendedPublicKey,
   }: FindAssociatedWalletByExtendedPublicKeyArgs): Promise<Wallet | null> => {
@@ -1790,7 +1750,6 @@ export default class HardwareWalletsStore extends Store {
   };
 
   // Delete initiated (pending) device with this path since now is paired to wallet
-  @action
   _deletePendingDeviceWithGivenPath = async ({
     path,
   }: DeletePendingDeviceWithGivenPathArgs) => {
@@ -1813,7 +1772,6 @@ export default class HardwareWalletsStore extends Store {
     });
   };
 
-  @action
   _discardConnectedDeviceAndReInitiateTransaction = ({
     walletId,
   }: DiscardConnectedDeviceAndReInitiateTransactionArgs = {}) => {
@@ -1824,18 +1782,14 @@ export default class HardwareWalletsStore extends Store {
       // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
       walletId
     );
-    runInAction(
-      'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
-      () => {
-        this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
-        this.activeDevicePath = null;
-        this.unfinishedWalletTxSigning = walletId;
-        this.isExportKeyAborted = false;
-      }
-    );
+    runInAction(() => {
+      this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+      this.activeDevicePath = null;
+      this.unfinishedWalletTxSigning = walletId;
+      this.isExportKeyAborted = false;
+    });
   };
 
-  @action
   _proceedWithTransactionAfterConnectingDevice = ({
     isTrezor,
     walletId,
@@ -1859,7 +1813,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action
   _discardConnectedDeviceAndReInitiateAddressVerification = ({
     address,
     walletId,
@@ -1869,19 +1822,15 @@ export default class HardwareWalletsStore extends Store {
     logger.info('[HW-DEBUG] unfinishedWalletAddressVerification SET: ', {
       walletId,
     });
-    runInAction(
-      'HardwareWalletsStore:: set HW device UNRECOGNIZED_WALLET',
-      () => {
-        this.isAddressVerificationInitiated = false;
-        this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
-        this.activeDevicePath = null;
-        this.unfinishedWalletAddressVerification = address;
-        this.isExportKeyAborted = false;
-      }
-    );
+    runInAction(() => {
+      this.isAddressVerificationInitiated = false;
+      this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+      this.activeDevicePath = null;
+      this.unfinishedWalletAddressVerification = address;
+      this.isExportKeyAborted = false;
+    });
   };
 
-  @action
   _proceedWithAddressVerificationAfterConnectingDevice = ({
     address,
     devicePath,
@@ -1905,135 +1854,134 @@ export default class HardwareWalletsStore extends Store {
     });
   };
 
-  @action
-  _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting = async ({
-    address,
-    associatedWallet,
-    expectedWalletId,
-    extendedPublicKey,
-    path,
-  }: HandleAssociatedWalletArgs) => {
-    const { deviceType, deviceName, deviceModel } = this.transportDevice;
-    const isTrezor = deviceType === DeviceTypes.TREZOR;
-    const devicePath = path || this.transportDevice.path;
-    const deviceId =
-      extendedPublicKey.deviceId || this.transportDevice.deviceId;
+  _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting =
+    async ({
+      address,
+      associatedWallet,
+      expectedWalletId,
+      extendedPublicKey,
+      path,
+    }: HandleAssociatedWalletArgs) => {
+      const { deviceType, deviceName, deviceModel } = this.transportDevice;
+      const isTrezor = deviceType === DeviceTypes.TREZOR;
+      const devicePath = path || this.transportDevice.path;
+      const deviceId =
+        extendedPublicKey.deviceId || this.transportDevice.deviceId;
 
-    // Check if public key matches already restored hardware wallet public key
-    // Update LC data and redirect to paired wallet
-    logger.info('[HW-DEBUG] HWStore - I have recognized wallet: ', {
-      recognizedWallet: associatedWallet.id,
-    });
-
-    this._setHardwareWalletLocalData({
-      walletId: associatedWallet.id,
-      data: {
-        disconnected: false,
-        // @ts-ignore ts-migrate(2322) FIXME: Type '{ disconnected: false; data: { deviceType: D... Remove this comment to see the full error message
-        data: {
-          deviceType,
-          deviceModel,
-          deviceName,
-          path: devicePath,
-          paired: associatedWallet.id,
-          // device paired with software wallet
-          disconnected: false, // device physically disconnected
-        },
-      },
-    });
-
-    await this._deletePendingDeviceWithGivenPath({ path });
-
-    if (deviceId) {
-      logger.info('[HW-DEBUG] HWStore - SET device from key export: ', {
-        deviceId,
+      // Check if public key matches already restored hardware wallet public key
+      // Update LC data and redirect to paired wallet
+      logger.info('[HW-DEBUG] HWStore - I have recognized wallet: ', {
+        recognizedWallet: associatedWallet.id,
       });
 
-      this._setHardwareWalletDevice({
-        deviceId,
+      this._setHardwareWalletLocalData({
+        walletId: associatedWallet.id,
         data: {
-          // @ts-ignore ts-migrate(2322) FIXME: Type '{ deviceId: string; deviceType: DeviceType; ... Remove this comment to see the full error message
-          deviceId,
-          deviceType,
-          deviceModel,
-          deviceName,
-          path: devicePath,
-          paired: associatedWallet.id,
-          // device paired with software wallet
           disconnected: false,
-          // device physically disconnected
-          isPending: false,
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ disconnected: false; data: { deviceType: D... Remove this comment to see the full error message
+          data: {
+            deviceType,
+            deviceModel,
+            deviceName,
+            path: devicePath,
+            paired: associatedWallet.id,
+            // device paired with software wallet
+            disconnected: false, // device physically disconnected
+          },
         },
       });
-    }
 
-    // Prevent redirect / check if device is valid / proceed with tx
-    if (this.isTransactionInitiated) {
-      logger.info(
-        '[HW-DEBUG] HWStore - Re-initiate tx from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
-        {
-          expectedWalletId,
-          recognizedWalletId: associatedWallet.id,
+      await this._deletePendingDeviceWithGivenPath({ path });
+
+      if (deviceId) {
+        logger.info('[HW-DEBUG] HWStore - SET device from key export: ', {
           deviceId,
-          devicePath,
-        }
-      );
-
-      // Check if sender wallet match transaction initialization
-      if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
-        logger.info('[HW-DEBUG] HWStore - Device not belongs to this wallet');
-        this._discardConnectedDeviceAndReInitiateTransaction({
-          walletId: expectedWalletId,
         });
-      } else {
-        this._proceedWithTransactionAfterConnectingDevice({
-          isTrezor,
+
+        this._setHardwareWalletDevice({
           deviceId,
-          devicePath,
-          walletId: expectedWalletId,
+          data: {
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ deviceId: string; deviceType: DeviceType; ... Remove this comment to see the full error message
+            deviceId,
+            deviceType,
+            deviceModel,
+            deviceName,
+            path: devicePath,
+            paired: associatedWallet.id,
+            // device paired with software wallet
+            disconnected: false,
+            // device physically disconnected
+            isPending: false,
+          },
         });
       }
 
-      return;
-    }
+      // Prevent redirect / check if device is valid / proceed with tx
+      if (this.isTransactionInitiated) {
+        logger.info(
+          '[HW-DEBUG] HWStore - Re-initiate tx from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
+          {
+            expectedWalletId,
+            recognizedWalletId: associatedWallet.id,
+            deviceId,
+            devicePath,
+          }
+        );
 
-    // Prevent redirect / check if device is valid / proceed with address verification
-    if (this.isAddressVerificationInitiated && address) {
-      logger.info(
-        '[HW-DEBUG] HWStore - Re-initiate Address verification from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
-        {
-          address: toJS(address),
-          devicePath,
-          expectedWalletId,
-          recognizedWalletId: associatedWallet.id,
-          deviceId,
+        // Check if sender wallet match transaction initialization
+        if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
+          logger.info('[HW-DEBUG] HWStore - Device not belongs to this wallet');
+          this._discardConnectedDeviceAndReInitiateTransaction({
+            walletId: expectedWalletId,
+          });
+        } else {
+          this._proceedWithTransactionAfterConnectingDevice({
+            isTrezor,
+            deviceId,
+            devicePath,
+            walletId: expectedWalletId,
+          });
         }
-      );
 
-      if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
-        logger.info('[HW-DEBUG] HWStore - Device not belongs to this wallet');
-        this._discardConnectedDeviceAndReInitiateAddressVerification({
-          address,
-          walletId: expectedWalletId,
-        });
-      } else {
-        this._proceedWithAddressVerificationAfterConnectingDevice({
-          address,
-          devicePath,
-          isTrezor,
-          walletId: expectedWalletId,
-        });
+        return;
       }
 
-      return;
-    }
+      // Prevent redirect / check if device is valid / proceed with address verification
+      if (this.isAddressVerificationInitiated && address) {
+        logger.info(
+          '[HW-DEBUG] HWStore - Re-initiate Address verification from _storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting: ',
+          {
+            address: toJS(address),
+            devicePath,
+            expectedWalletId,
+            recognizedWalletId: associatedWallet.id,
+            deviceId,
+          }
+        );
 
-    // --> Else
-    this.stores.wallets.goToWalletRoute(associatedWallet.id);
-    this.actions.dialogs.closeActiveDialog.trigger();
-  };
+        if (!expectedWalletId || associatedWallet.id !== expectedWalletId) {
+          logger.info('[HW-DEBUG] HWStore - Device not belongs to this wallet');
+          this._discardConnectedDeviceAndReInitiateAddressVerification({
+            address,
+            walletId: expectedWalletId,
+          });
+        } else {
+          this._proceedWithAddressVerificationAfterConnectingDevice({
+            address,
+            devicePath,
+            isTrezor,
+            walletId: expectedWalletId,
+          });
+        }
 
-  @action
+        return;
+      }
+
+      // --> Else
+      this.stores.wallets.goToWalletRoute(associatedWallet.id);
+      this.actions.dialogs.closeActiveDialog.trigger();
+    };
+
   _createNewWalletForRecognizedPendingDevice = async ({
     extendedPublicKey,
     path,
@@ -2096,7 +2044,6 @@ export default class HardwareWalletsStore extends Store {
     await this.resetWalletPairing();
   };
 
-  @action
   _identifyAndHandleAssociatedWallet = async ({
     address,
     path,
@@ -2109,9 +2056,10 @@ export default class HardwareWalletsStore extends Store {
         expectedWalletId,
         address
       );
-      const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-        { extendedPublicKey }
-      );
+      const associatedWallet =
+        await this._findAssociatedWalletByExtendedPublicKey({
+          extendedPublicKey,
+        });
 
       if (associatedWallet) {
         await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
@@ -2152,7 +2100,6 @@ export default class HardwareWalletsStore extends Store {
   };
 
   // Trezor - Shelley only
-  @action
   _signTransactionTrezor = async (
     walletId: string,
     deviceId?: string | null | undefined
@@ -2167,12 +2114,9 @@ export default class HardwareWalletsStore extends Store {
     // @TODO - remove once signing delegation transaction will call coins selection
     // This case is covered in coins selection action
     if (!coinSelection) {
-      runInAction(
-        'HardwareWalletsStore:: set Transaction verifying failed',
-        () => {
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
-        }
-      );
+      runInAction(() => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      });
       throw new Error(`Missing Coins Selection for wallet: ${walletId}`);
     }
 
@@ -2212,11 +2156,10 @@ export default class HardwareWalletsStore extends Store {
     const outputsData = [];
 
     for (const output of outputs) {
-      const {
-        address_style: addressStyle,
-      } = await this.stores.addresses._inspectAddress({
-        addressId: output.address,
-      });
+      const { address_style: addressStyle } =
+        await this.stores.addresses._inspectAddress({
+          addressId: output.address,
+        });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareTrezorOutput(output);
@@ -2296,14 +2239,11 @@ export default class HardwareWalletsStore extends Store {
         // Show message to reconnect proper software wallet device pair
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
         logger.info('[HW-DEBUG] unfinishedWalletTxSigning SET: ', walletId);
-        runInAction(
-          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
-            this.activeDevicePath = null;
-            this.unfinishedWalletTxSigning = walletId;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+          this.activeDevicePath = null;
+          this.unfinishedWalletTxSigning = walletId;
+        });
         return;
       }
 
@@ -2343,14 +2283,11 @@ export default class HardwareWalletsStore extends Store {
       const serializedTx = get(signedTransaction, ['payload', 'serializedTx']);
 
       if (serializedTx) {
-        runInAction(
-          'HardwareWalletsStore:: transaction successfully signed',
-          () => {
-            this.txBody = serializedTx;
-            this.hwDeviceStatus =
-              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
-          }
-        );
+        runInAction(() => {
+          this.txBody = serializedTx;
+          this.hwDeviceStatus =
+            HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        });
         return;
       }
 
@@ -2405,23 +2342,17 @@ export default class HardwareWalletsStore extends Store {
         this.activeDevicePath = null;
       });
     } catch (error) {
-      runInAction(
-        'HardwareWalletsStore:: set Transaction verifying failed',
-        () => {
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
-          this.isTransactionInitiated = false;
-        }
-      );
+      runInAction(() => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        this.isTransactionInitiated = false;
+      });
 
       if (error.code === 'Device_CallInProgress') {
         throw new Error('Device is busy - reconnect device and try again');
       } else if (error.code === 'Device_InvalidState') {
-        runInAction(
-          'HardwareWalletsStore:: Unrecognized wallet (wrong passphrase)',
-          () => {
-            this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
-          }
-        );
+        runInAction(() => {
+          this.hwDeviceStatus = HwDeviceStatuses.UNRECOGNIZED_WALLET;
+        });
       }
 
       throw error;
@@ -2489,7 +2420,6 @@ export default class HardwareWalletsStore extends Store {
     });
     return constructedAddress.address;
   };
-  @action
   _signTransactionLedger = async (
     walletId: string,
     devicePath: string | null | undefined
@@ -2534,11 +2464,10 @@ export default class HardwareWalletsStore extends Store {
     const outputsData = [];
 
     for (const output of outputs) {
-      const {
-        address_style: addressStyle,
-      } = await this.stores.addresses._inspectAddress({
-        addressId: output.address,
-      });
+      const { address_style: addressStyle } =
+        await this.stores.addresses._inspectAddress({
+          addressId: output.address,
+        });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       const ledgerOutput = prepareLedgerOutput(output, addressStyle);
@@ -2668,12 +2597,9 @@ export default class HardwareWalletsStore extends Store {
       });
     } catch (error) {
       logger.info('[HW-DEBUG] HWStore:: sign Transaction Ledger', { error });
-      runInAction(
-        'HardwareWalletsStore:: set Transaction verifying failed',
-        () => {
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
-        }
-      );
+      runInAction(() => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      });
       throw error;
     }
   };
@@ -2768,12 +2694,9 @@ export default class HardwareWalletsStore extends Store {
       devicePath = ledgerDevice.path;
     }
 
-    runInAction(
-      'HardwareWalletsStore:: Set active device path for Transaction send',
-      () => {
-        this.activeDevicePath = devicePath;
-      }
-    );
+    runInAction(() => {
+      this.activeDevicePath = devicePath;
+    });
 
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR && walletId) {
@@ -2786,20 +2709,18 @@ export default class HardwareWalletsStore extends Store {
         logger.info('[HW-DEBUG] HWStore - Set transport device 4', {
           transportDevice: toJS(transportDevice),
         });
-        runInAction(
-          'HardwareWalletsStore:: Set transport device for tx init',
-          () => {
-            this.transportDevice = transportDevice;
-          }
-        );
+        runInAction(() => {
+          this.transportDevice = transportDevice;
+        });
 
         const extendedPublicKey = await this._requestExtendedPublicKey(
           transportDevice.path,
           walletId
         );
-        const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-          { extendedPublicKey }
-        );
+        const associatedWallet =
+          await this._findAssociatedWalletByExtendedPublicKey({
+            extendedPublicKey,
+          });
 
         if (associatedWallet) {
           await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
@@ -2874,7 +2795,6 @@ export default class HardwareWalletsStore extends Store {
       });
     }
   };
-  @action
   _changeHardwareWalletConnectionStatus = async (
     params: HardwareWalletConnectionRequest
   ) => {
@@ -2926,12 +2846,9 @@ export default class HardwareWalletsStore extends Store {
         error.payload &&
         error.payload.code === 'ECONNREFUSED'
       ) {
-        runInAction(
-          'HardwareWalletsStore:: Mark Trezor Bridge as not installed',
-          () => {
-            this.isTrezorBridgeInstalled = false;
-          }
-        );
+        runInAction(() => {
+          this.isTrezorBridgeInstalled = false;
+        });
       }
 
       return;
@@ -2939,12 +2856,9 @@ export default class HardwareWalletsStore extends Store {
 
     // Unset Trezor Bridge instance checker
     if (deviceType === DeviceTypes.TREZOR && !this.isTrezorBridgeInstalled) {
-      runInAction(
-        'HardwareWalletsStore:: Mark Trezor Bridge as installed',
-        () => {
-          this.isTrezorBridgeInstalled = true;
-        }
-      );
+      runInAction(() => {
+        this.isTrezorBridgeInstalled = true;
+      });
     }
 
     const { hardwareWalletsConnectionData, hardwareWalletDevices } = this;
@@ -3203,7 +3117,6 @@ export default class HardwareWalletsStore extends Store {
     return Promise.all(unsetHardwareWalletDeviceRequests);
   };
 
-  @action
   resetInitializedConnection = async (
     params:
       | {
@@ -3227,7 +3140,6 @@ export default class HardwareWalletsStore extends Store {
     this.isListeningForDevice = false;
     this.isExportKeyAborted = false;
   };
-  @action
   resetInitializedAddressVerification = async (
     params:
       | {
@@ -3257,23 +3169,19 @@ export default class HardwareWalletsStore extends Store {
     this.isExportKeyAborted = false;
     this.activeDevicePath = null;
   };
-  @action
   _refreshHardwareWalletsLocalData = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.hardwareWalletsLocalDataRequest.execute();
   };
-  @action
   _refreshHardwareWalletDevices = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.hardwareWalletDevicesRequest.execute();
   };
 
-  @computed
   get hardwareWalletsConnectionData(): HardwareWalletsLocalData {
     return this.hardwareWalletsLocalDataRequest.result;
   }
 
-  @computed
   get hardwareWalletDevices(): HardwareWalletsLocalData {
     return this.hardwareWalletDevicesRequest.result;
   }

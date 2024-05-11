@@ -7,7 +7,6 @@ type Props = {
   label: string;
 };
 
-@observer
 class StakingSystemState extends Component<Props> {
   render() {
     const { value, label } = this.props;
@@ -19,4 +18,4 @@ class StakingSystemState extends Component<Props> {
   }
 }
 
-export default StakingSystemState;
+export default observer(StakingSystemState);

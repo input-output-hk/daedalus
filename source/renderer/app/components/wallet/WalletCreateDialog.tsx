@@ -102,7 +102,6 @@ interface FormFields {
   walletName: string;
 }
 
-@observer
 class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -306,4 +305,4 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 }
 
-export default WalletCreateDialog;
+export default observer(WalletCreateDialog);

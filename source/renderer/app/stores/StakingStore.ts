@@ -1,4 +1,10 @@
-import { computed, action, observable, runInAction } from 'mobx';
+import {
+  computed,
+  action,
+  observable,
+  runInAction,
+  makeObservable,
+} from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
 import { orderBy, find, map, debounce } from 'lodash';
@@ -36,60 +42,38 @@ import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export default class StakingStore extends Store {
-  @observable
   isDelegationTransactionPending = false;
-  @observable
   fetchingStakePoolsFailed = false;
-  @observable
   selectedDelegationWalletId = null;
-  @observable
   stake = INITIAL_DELEGATION_FUNDS;
-  @observable
   isRanking = false;
-  @observable
   smashServerUrl: string | null | undefined = null;
-  @observable
   smashServerUrlError: LocalizableError | null | undefined = null;
-  @observable
   smashServerLoading = false;
-  @observable
   stakePoolsListViewTooltipVisible = true;
 
   /* ----------  Redeem ITN Rewards  ---------- */
-  @observable
   redeemStep: RedeemItnRewardsStep | null | undefined = null;
-  @observable
   redeemRecoveryPhrase: Array<string> | null | undefined = null;
-  @observable
   redeemWallet: Wallet | null | undefined = null;
-  @observable
   walletName: string | null | undefined = null;
-  @observable
   transactionFees: BigNumber | null | undefined = null;
-  @observable
   redeemedRewards: BigNumber | null | undefined = null;
-  @observable
   isSubmittingReedem = false;
-  @observable
   isCalculatingReedemFees = false;
-  @observable
   redeemSuccess: boolean | null | undefined = null;
-  @observable
   configurationStepError: LocalizableError | null | undefined = null;
-  @observable
   confirmationStepError: LocalizableError | null | undefined = null;
 
   /* ----------  Stake Pools Fetching Tracker  ---------- */
-  @observable
   isFetchingStakePools = false;
-  @observable
   numberOfStakePoolsFetched = 0;
-  @observable
   cyclesWithoutIncreasingStakePools = 0;
-  @observable
   stakingInfoWasOpen = false;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingStakePoolsInterval: IntervalID | null | undefined = null;
@@ -102,6 +86,90 @@ export default class StakingStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   stakePoolsFetchTrackerInterval: IntervalID | null | undefined = null;
   _delegationFeeCalculationWalletId: string | null | undefined = null;
+
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      isDelegationTransactionPending: observable,
+      fetchingStakePoolsFailed: observable,
+      selectedDelegationWalletId: observable,
+      stake: observable,
+      isRanking: observable,
+      smashServerUrl: observable,
+      smashServerUrlError: observable,
+      smashServerLoading: observable,
+      stakePoolsListViewTooltipVisible: observable,
+      redeemStep: observable,
+      redeemRecoveryPhrase: observable,
+      redeemWallet: observable,
+      walletName: observable,
+      transactionFees: observable,
+      redeemedRewards: observable,
+      isSubmittingReedem: observable,
+      isCalculatingReedemFees: observable,
+      redeemSuccess: observable,
+      configurationStepError: observable,
+      confirmationStepError: observable,
+      isFetchingStakePools: observable,
+      numberOfStakePoolsFetched: observable,
+      cyclesWithoutIncreasingStakePools: observable,
+      stakingInfoWasOpen: observable,
+      joinStakePoolRequest: observable,
+      quitStakePoolRequest: observable,
+      stakePoolsRequest: observable,
+      calculateDelegationFeeRequest: observable,
+      getRedeemItnRewardsFeeRequest: observable,
+      requestRedeemItnRewardsRequest: observable,
+      getSmashSettingsRequest: observable,
+      updateSmashSettingsRequest: observable,
+      _getSmashSettingsRequest: action,
+      _setSelectedDelegationWalletId: action,
+      _setStake: action,
+      _rankStakePools: action,
+      _selectSmashServerUrl: action,
+      _startStakePoolsFetchTracker: action,
+      _getStakingInfoWasOpen: action,
+      _setStakingInfoWasOpen: action,
+      _getStakePoolsListViewTooltip: action,
+      hideStakePoolsListViewTooltip: action,
+      _stakePoolsFetchTracker: action,
+      _stopStakePoolsFetchTracker: action,
+      _resetSmashServerError: action,
+      _joinStakePool: action,
+      _quitStakePool: action,
+      checkDelegationTransaction: action,
+      resetStakePoolTransactionChecker: action,
+      _requestCSVFile: action,
+      currentRoute: computed,
+      isStakingPage: computed,
+      maxDelegationFunds: computed,
+      stakePools: computed,
+      recentStakePools: computed,
+      isStakingDelegationCountdown: computed,
+      rewards: computed,
+      showCountdown: action,
+      getStakePoolsData: action,
+      _resetPolling: action,
+      _resetIsRanking: action,
+      _setFakePoller: action,
+      _setFakedStakePools: action,
+      _goToConfigurationStep: action,
+      _goToConfirmationStep: action,
+      _goToResultStep: action,
+      _onCalculateRedeemWalletFees: action,
+      _onRedeemStart: action,
+      _onConfigurationContinue: action,
+      _onConfirmationContinue: action,
+      _onResultContinue: action,
+      _resetRedeemItnRewards: action,
+      _closeRedeemDialog: action,
+    });
+  }
 
   setup() {
     const {
@@ -152,51 +220,41 @@ export default class StakingStore extends Store {
   }
 
   // REQUESTS
-  @observable
   joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.joinStakePool
   );
-  @observable
   quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.quitStakePool
   );
-  @observable
   stakePoolsRequest: Request<Array<StakePool>> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getStakePools
   );
-  @observable
-  calculateDelegationFeeRequest: Request<
-    DelegationCalculateFeeResponse
-  > = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    this.api.ada.calculateDelegationFee
-  );
+  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> =
+    new Request(
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
+      this.api.ada.calculateDelegationFee
+    );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable
   getRedeemItnRewardsFeeRequest: Request<any> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getRedeemItnRewardsFee
   );
-  @observable
   requestRedeemItnRewardsRequest: Request<any> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.requestRedeemItnRewards
   );
-  @observable
   getSmashSettingsRequest: Request<any> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.getSmashSettings
   );
-  @observable
   updateSmashSettingsRequest: Request<PoolMetadataSource> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.updateSmashSettings
   );
   // =================== PUBLIC API ==================== //
-  @action
   _getSmashSettingsRequest = async () => {
     this.smashServerLoading = true;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -224,7 +282,6 @@ export default class StakingStore extends Store {
       this.smashServerLoading = false;
     });
   };
-  @action
   _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
   };
@@ -236,18 +293,15 @@ export default class StakingStore extends Store {
     );
   }, 5000);
 
-  @action
   _setStake = (stake: number) => {
     this.stake = stake;
     this._sendStakePoolsSliderUsedAnalyticsEvent();
   };
 
-  @action
   _rankStakePools = () => {
     this.isRanking = true;
     this.getStakePoolsData();
   };
-  @action
   _selectSmashServerUrl = async ({
     smashServerUrl,
   }: {
@@ -290,7 +344,6 @@ export default class StakingStore extends Store {
       }
     }
   };
-  @action
   _startStakePoolsFetchTracker = () => {
     this._stopStakePoolsFetchTracker();
 
@@ -301,35 +354,32 @@ export default class StakingStore extends Store {
     );
     this.getStakePoolsData(true);
   };
-  @action
   _getStakingInfoWasOpen = async () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    const stakingInfoWasOpen =
+      await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
   };
-  @action
   _setStakingInfoWasOpen = () => {
     this.stakingInfoWasOpen = true;
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.localStorage.setStakingInfoWasOpen();
   };
-  @action
   _getStakePoolsListViewTooltip = async () => {
-    const tooltipShown = await this.api.localStorage.getStakePoolsListViewTooltip();
+    const tooltipShown =
+      await this.api.localStorage.getStakePoolsListViewTooltip();
     runInAction(() => {
       this.stakePoolsListViewTooltipVisible = tooltipShown;
     });
   };
-  @action
   hideStakePoolsListViewTooltip = () => {
     this.stakePoolsListViewTooltipVisible = false;
     this.api.localStorage.setStakePoolsListViewTooltip(
       this.stakePoolsListViewTooltipVisible
     );
   };
-  @action
   _stakePoolsFetchTracker = () => {
     const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
     this.numberOfStakePoolsFetched = this.stakePools.length;
@@ -349,7 +399,6 @@ export default class StakingStore extends Store {
       this._stopStakePoolsFetchTracker();
     }
   };
-  @action
   _stopStakePoolsFetchTracker = () => {
     clearInterval(this.stakePoolsFetchTrackerInterval);
     this.numberOfStakePoolsFetched = 0;
@@ -357,12 +406,10 @@ export default class StakingStore extends Store {
     this.isFetchingStakePools = false;
     this.getStakePoolsData();
   };
-  @action
   _resetSmashServerError = () => {
     this.smashServerUrlError = null;
     this.smashServerLoading = false;
   };
-  @action
   _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
     // Set join transaction in "PENDING" state
@@ -411,7 +458,6 @@ export default class StakingStore extends Store {
       throw error;
     }
   };
-  @action
   _quitStakePool = async (request: QuitStakePoolRequest) => {
     const { walletId, passphrase, isHardwareWallet } = request;
     // Set quit transaction in "PENDING" state
@@ -453,7 +499,6 @@ export default class StakingStore extends Store {
     }
   };
   // Check stake pool transaction state and reset pending state when transction is "in_ledger"
-  @action
   checkDelegationTransaction = (request: {
     transactionId: string;
     walletId: string;
@@ -461,9 +506,8 @@ export default class StakingStore extends Store {
     const { transactionId, walletId } = request;
 
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
-      walletId
-    ).result;
+    const recentTransactionsResponse =
+      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -481,7 +525,6 @@ export default class StakingStore extends Store {
     }
   };
   // Reset "PENDING" state, transaction state check poller and refresh wallets data
-  @action
   resetStakePoolTransactionChecker = () => {
     if (this.delegationCheckTimeInterval) {
       clearInterval(this.delegationCheckTimeInterval);
@@ -493,7 +536,6 @@ export default class StakingStore extends Store {
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };
-  @action
   _requestCSVFile = async ({
     fileContent,
     filenamePrefix: prefix,
@@ -555,11 +597,10 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
-        {
+      const delegationFee: DelegationCalculateFeeResponse =
+        await this.calculateDelegationFeeRequest.execute({
           ...delegationFeeRequest,
-        }
-      ).promise;
+        }).promise;
 
       if (this._delegationFeeCalculationWalletId !== walletId) {
         return null;
@@ -572,30 +613,25 @@ export default class StakingStore extends Store {
   };
 
   // GETTERS
-  @computed
   get currentRoute(): string {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     return this.stores.router.location.pathname;
   }
 
-  @computed
   get isStakingPage(): boolean {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
-  @computed
   get maxDelegationFunds(): number {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { desiredPoolNumber } = this.stores.networkStatus;
     return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
   }
 
-  @computed
   get stakePools(): Array<StakePool> {
     return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
   }
 
-  @computed
   get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
@@ -629,12 +665,10 @@ export default class StakingStore extends Store {
     return orderedStakePools;
   }
 
-  @computed
   get isStakingDelegationCountdown(): boolean {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
 
-  @computed
   get rewards(): Array<Reward> {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { wallets } = this.stores;
@@ -656,14 +690,12 @@ export default class StakingStore extends Store {
     };
   }
 
-  @action
   showCountdown(): boolean {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { isShelleyPending } = this.stores.networkStatus;
     return isShelleyPending;
   }
 
-  @action
   getStakePoolsData = async (isSmash?: boolean) => {
     const {
       isConnected,
@@ -694,7 +726,6 @@ export default class StakingStore extends Store {
 
     this._resetIsRanking();
   };
-  @action
   _resetPolling = (type?: 'regular' | 'failed' | 'kill' | 'smash') => {
     if (type === 'kill') {
       this.fetchingStakePoolsFailed = true;
@@ -741,12 +772,10 @@ export default class StakingStore extends Store {
       );
     }
   };
-  @action
   _resetIsRanking = () => {
     this.isRanking = false;
   };
   // For testing only
-  @action
   _setFakePoller = (forceLoading: boolean) => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { stores, environment } = this;
@@ -789,7 +818,6 @@ export default class StakingStore extends Store {
     }
   };
   // For testing only
-  @action
   _setFakedStakePools = () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Sta... Remove this comment to see the full error message
     if (this.environment.isDev) {
@@ -839,19 +867,15 @@ export default class StakingStore extends Store {
     };
   }
 
-  @action
   _goToConfigurationStep = () => {
     this.redeemStep = steps.CONFIGURATION;
   };
-  @action
   _goToConfirmationStep = () => {
     this.redeemStep = steps.CONFIRMATION;
   };
-  @action
   _goToResultStep = () => {
     this.redeemStep = steps.RESULT;
   };
-  @action
   _onCalculateRedeemWalletFees = async ({
     walletId,
     recoveryPhrase,
@@ -866,9 +890,8 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
-        walletId
-      );
+      const [address] =
+        await this.stores.addresses.getAddressesByWalletId(walletId);
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
@@ -888,13 +911,11 @@ export default class StakingStore extends Store {
       });
     }
   };
-  @action
   _onRedeemStart = () => {
     this.configurationStepError = null;
     this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
   };
-  @action
   _onConfigurationContinue = () => {
     if (this.transactionFees && this.redeemRecoveryPhrase) {
       this.redeemStep = steps.CONFIRMATION;
@@ -905,7 +926,6 @@ export default class StakingStore extends Store {
       this.redeemStep = steps.RESULT;
     }
   };
-  @action
   _onConfirmationContinue = async ({
     spendingPassword,
   }: {
@@ -919,9 +939,8 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
-        walletId
-      );
+      const [address] =
+        await this.stores.addresses.getAddressesByWalletId(walletId);
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {
@@ -950,7 +969,6 @@ export default class StakingStore extends Store {
       });
     }
   };
-  @action
   _onResultContinue = () => {
     if (!this.redeemWallet) throw new Error('Redeem wallet require');
     const { id } = this.redeemWallet;
@@ -960,7 +978,6 @@ export default class StakingStore extends Store {
 
     this._resetRedeemItnRewards();
   };
-  @action
   _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
     this.isCalculatingReedemFees = false;
@@ -972,7 +989,6 @@ export default class StakingStore extends Store {
     this.configurationStepError = null;
     this.confirmationStepError = null;
   };
-  @action
   _closeRedeemDialog = () => {
     this._resetRedeemItnRewards();
 

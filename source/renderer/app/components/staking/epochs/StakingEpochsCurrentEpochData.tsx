@@ -34,7 +34,6 @@ type State = {
   currentEpochDataSortBy: string;
 };
 
-@observer
 class StakingEpochsCurrentEpochData extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -128,4 +127,4 @@ class StakingEpochsCurrentEpochData extends Component<Props, State> {
   }
 }
 
-export default StakingEpochsCurrentEpochData;
+export default observer(StakingEpochsCurrentEpochData);

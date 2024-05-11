@@ -99,7 +99,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -271,4 +270,4 @@ class TransferFundsStep2Dialog extends Component<Props> {
   }
 }
 
-export default TransferFundsStep2Dialog;
+export default observer(TransferFundsStep2Dialog);

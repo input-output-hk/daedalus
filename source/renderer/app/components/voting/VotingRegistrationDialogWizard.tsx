@@ -44,7 +44,6 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus;
 };
 
-@observer
 class VotingRegistrationDialogWizard extends Component<Props> {
   render() {
     const {
@@ -165,4 +164,4 @@ class VotingRegistrationDialogWizard extends Component<Props> {
   }
 }
 
-export default VotingRegistrationDialogWizard;
+export default observer(VotingRegistrationDialogWizard);

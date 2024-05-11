@@ -26,7 +26,6 @@ type RadioProps = {
   themeOverrides: Record<string, any>;
 };
 
-@observer
 class RadioSet extends Component<Props> {
   render() {
     const { label, items, verticallyAligned } = this.props;
@@ -52,4 +51,4 @@ class RadioSet extends Component<Props> {
   }
 }
 
-export default RadioSet;
+export default observer(RadioSet);

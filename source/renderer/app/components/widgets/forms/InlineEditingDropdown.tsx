@@ -37,7 +37,6 @@ type Props = {
   successfullyUpdated: boolean;
 };
 
-@observer
 class InlineEditingDropdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -96,4 +95,4 @@ class InlineEditingDropdown extends Component<Props> {
   }
 }
 
-export default InlineEditingDropdown;
+export default observer(InlineEditingDropdown);

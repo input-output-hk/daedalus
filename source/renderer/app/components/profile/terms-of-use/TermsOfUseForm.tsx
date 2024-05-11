@@ -40,7 +40,6 @@ type State = {
   areTermsOfUseAccepted: boolean;
 };
 
-@observer
 class TermsOfUseForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -59,12 +58,8 @@ class TermsOfUseForm extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const {
-      isSubmitting,
-      error,
-      localizedTermsOfUse,
-      onOpenExternalLink,
-    } = this.props;
+    const { isSubmitting, error, localizedTermsOfUse, onOpenExternalLink } =
+      this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonClasses = classnames([
       'primary',
@@ -102,4 +97,4 @@ class TermsOfUseForm extends Component<Props, State> {
   }
 }
 
-export default TermsOfUseForm;
+export default observer(TermsOfUseForm);

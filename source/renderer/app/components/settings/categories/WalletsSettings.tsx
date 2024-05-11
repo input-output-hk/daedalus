@@ -54,7 +54,6 @@ type Props = {
   onOpenExternalLink: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -125,4 +124,4 @@ class WalletSettings extends Component<Props> {
   }
 }
 
-export default WalletSettings;
+export default observer(WalletSettings);

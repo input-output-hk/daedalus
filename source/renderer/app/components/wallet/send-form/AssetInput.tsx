@@ -31,7 +31,6 @@ type Props = {
 };
 const INPUT_FIELD_PADDING_DELTA = 10;
 
-@observer
 class AssetInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -174,4 +173,4 @@ class AssetInput extends Component<Props> {
   }
 }
 
-export default AssetInput;
+export default observer(AssetInput);

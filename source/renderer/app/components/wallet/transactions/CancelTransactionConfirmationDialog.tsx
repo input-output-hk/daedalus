@@ -45,7 +45,6 @@ type Props = {
   onCancel: (...args: Array<any>) => any;
 };
 
-@observer
 class CancelTransactionConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -92,4 +91,4 @@ class CancelTransactionConfirmationDialog extends Component<Props> {
   }
 }
 
-export default CancelTransactionConfirmationDialog;
+export default observer(CancelTransactionConfirmationDialog);

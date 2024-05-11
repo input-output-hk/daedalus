@@ -78,7 +78,6 @@ type State = {
   showCopyNotification: boolean;
 };
 
-@observer
 class CompletionDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -109,12 +108,8 @@ class CompletionDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const {
-      onClose,
-      walletCertificateAddress,
-      onOpenExternalLink,
-      network,
-    } = this.props;
+    const { onClose, walletCertificateAddress, onOpenExternalLink, network } =
+      this.props;
     const { showCopyNotification } = this.state;
     const actions = [
       {
@@ -200,4 +195,4 @@ class CompletionDialog extends Component<Props, State> {
   }
 }
 
-export default CompletionDialog;
+export default observer(CompletionDialog);

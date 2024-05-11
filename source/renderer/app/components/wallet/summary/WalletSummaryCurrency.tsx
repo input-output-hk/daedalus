@@ -41,7 +41,6 @@ type Props = {
   onCurrencySettingClick: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletSummaryCurrency extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -115,4 +114,4 @@ class WalletSummaryCurrency extends Component<Props> {
   }
 }
 
-export default WalletSummaryCurrency;
+export default observer(WalletSummaryCurrency);

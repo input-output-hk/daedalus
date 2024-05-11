@@ -33,7 +33,6 @@ type State = {
     | undefined;
 };
 
-@observer
 class StakingChart extends Component<Props, State> {
   state = {
     isHovered: false,
@@ -140,4 +139,4 @@ class StakingChart extends Component<Props, State> {
   }
 }
 
-export default StakingChart;
+export default observer(StakingChart);

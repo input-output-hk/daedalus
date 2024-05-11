@@ -106,7 +106,6 @@ interface FormFields {
   repeatPassword: string;
 }
 
-@observer
 class ChangeSpendingPasswordDialog extends Component<Props> {
   static defaultProps = {
     currentPasswordValue: '',
@@ -341,4 +340,4 @@ class ChangeSpendingPasswordDialog extends Component<Props> {
   }
 }
 
-export default ChangeSpendingPasswordDialog;
+export default observer(ChangeSpendingPasswordDialog);

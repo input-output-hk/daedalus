@@ -25,7 +25,6 @@ type Props = {
   currentDateFormat: string;
 };
 
-@observer
 class AlertsOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -136,4 +135,4 @@ class AlertsOverlay extends Component<Props, State> {
   }
 }
 
-export default AlertsOverlay;
+export default observer(AlertsOverlay);

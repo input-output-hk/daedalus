@@ -24,7 +24,6 @@ type Props = {
   isShelleyActivated: boolean;
 };
 
-@observer
 class TopBar extends Component<Props> {
   render() {
     const {
@@ -108,4 +107,4 @@ class TopBar extends Component<Props> {
   }
 }
 
-export default TopBar;
+export default observer(TopBar);

@@ -5,8 +5,6 @@ import ToggleRTSFlagsDialog from '../../components/knownIssues/ToggleRTSFlagsDia
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class ToggleRTSFlagsDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -34,4 +32,7 @@ class ToggleRTSFlagsDialogContainer extends Component<Props> {
   }
 }
 
-export default ToggleRTSFlagsDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(ToggleRTSFlagsDialogContainer));

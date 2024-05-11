@@ -1,50 +1,43 @@
-import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import React, { FC, useState, useEffect } from 'react';
+import { observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import NoDiskSpaceErrorPage from './NoDiskSpaceErrorPage';
 import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
-class LoadingPage extends Component<InjectedProps> {
-  static defaultProps = {
-    stores: null,
-    actions: null,
-  };
+interface LoadingPageProps extends InjectedProps {}
 
-  get activeOverlay() {
-    if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
-    if (this.isSystemTimeError) return <SystemTimeErrorPage />;
-    return null;
-  }
+const LoadingPage: FC<LoadingPageProps> = ({ stores, actions }) => {
+  const { networkStatus } = stores;
 
-  get isNotEnoughDiskSpace() {
-    return this.networkStatus.isNotEnoughDiskSpace;
-  }
+  const [activeOverlay, setActiveOverlay] = useState<JSX.Element | null>(null);
 
-  get isSystemTimeError() {
-    const {
-      isSystemTimeCorrect,
-      isNodeStopping,
-      isNodeStopped,
-    } = this.networkStatus;
-    return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
-  }
+  useEffect(() => {
+    if (networkStatus.isNotEnoughDiskSpace) {
+      setActiveOverlay(<NoDiskSpaceErrorPage />);
+    } else if (
+      !networkStatus.isSystemTimeCorrect &&
+      !networkStatus.isNodeStopping &&
+      !networkStatus.isNodeStopped
+    ) {
+      setActiveOverlay(<SystemTimeErrorPage />);
+    } else {
+      setActiveOverlay(null);
+    }
+  }, [
+    networkStatus.isNotEnoughDiskSpace,
+    networkStatus.isSystemTimeCorrect,
+    networkStatus.isNodeStopping,
+    networkStatus.isNodeStopped,
+  ]);
 
-  get networkStatus() {
-    return this.props.stores.networkStatus;
-  }
+  return (
+    <CenteredLayout>
+      <SyncingConnectingPage stores={stores} actions={actions} />
+      {activeOverlay}
+    </CenteredLayout>
+  );
+};
 
-  render() {
-    return (
-      <CenteredLayout>
-        <SyncingConnectingPage />
-        {this.activeOverlay}
-      </CenteredLayout>
-    );
-  }
-}
-
-export default LoadingPage;
+export default observer(LoadingPage);

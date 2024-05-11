@@ -11,7 +11,6 @@ const messages = defineMessages({
   },
 });
 
-@observer
 class StakingEpochsNoData extends Component<any> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -27,4 +26,4 @@ class StakingEpochsNoData extends Component<any> {
   }
 }
 
-export default StakingEpochsNoData;
+export default observer(StakingEpochsNoData);

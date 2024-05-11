@@ -74,7 +74,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -205,4 +204,4 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   }
 }
 
-export default WalletRecoveryPhraseStep2Dialog;
+export default observer(WalletRecoveryPhraseStep2Dialog);

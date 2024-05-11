@@ -63,8 +63,7 @@ const messages = defineMessages({
       'Label for the "Repeat password" input in the wallet restore dialog.',
   },
   passwordFieldsPlaceholder: {
-    id:
-      'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
+    id: 'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
     defaultMessage: '!!!Password',
     description:
       'Placeholder for the "Password" inputs in the wallet restore dialog.',
@@ -100,7 +99,6 @@ interface FormFields {
   repeatPassword: string;
 }
 
-@observer
 class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -309,4 +307,4 @@ class ConfigurationDialog extends Component<Props> {
   }
 }
 
-export default ConfigurationDialog;
+export default observer(ConfigurationDialog);

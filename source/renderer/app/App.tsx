@@ -23,7 +23,6 @@ import ToggleRTSFlagsDialogContainer from './containers/knownIssues/ToggleRTSFla
 import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTSFlagsRecommendationOverlayContainer';
 import { MenuUpdater } from './containers/MenuUpdater';
 
-@observer
 class App extends Component<{
   stores: StoresMap;
   actions: ActionsMap;
@@ -106,4 +105,4 @@ class App extends Component<{
   }
 }
 
-export default App;
+export default observer(App);

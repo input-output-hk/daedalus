@@ -8,7 +8,6 @@ type Props = {
   onOpenExternalLink: (...args: Array<any>) => any;
 };
 
-@observer
 class TermsOfUseSettings extends Component<Props> {
   render() {
     const { localizedTermsOfUse, onOpenExternalLink } = this.props;
@@ -23,4 +22,4 @@ class TermsOfUseSettings extends Component<Props> {
   }
 }
 
-export default TermsOfUseSettings;
+export default observer(TermsOfUseSettings);

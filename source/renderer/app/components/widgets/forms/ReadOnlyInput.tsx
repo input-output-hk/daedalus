@@ -16,7 +16,6 @@ type Props = {
   withButton?: boolean;
 };
 
-@observer
 class ReadOnlyInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -53,4 +52,4 @@ class ReadOnlyInput extends Component<Props> {
   }
 }
 
-export default ReadOnlyInput;
+export default observer(ReadOnlyInput);

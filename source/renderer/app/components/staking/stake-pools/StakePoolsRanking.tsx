@@ -135,7 +135,6 @@ type State = {
   displayValue: string;
 };
 
-@observer
 class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -221,11 +220,8 @@ class StakePoolsRanking extends Component<Props, State> {
     rankStakePools();
   };
   onSliderChange = (sliderValue: number) => {
-    const {
-      updateDelegatingStake,
-      maxDelegationFunds,
-      maxDelegationFundsLog,
-    } = this.props;
+    const { updateDelegatingStake, maxDelegationFunds, maxDelegationFundsLog } =
+      this.props;
     let amountValue = null;
 
     if (
@@ -443,5 +439,5 @@ class StakePoolsRanking extends Component<Props, State> {
 }
 
 export default withDiscreetMode<Config<Props, InjectedProps>>(
-  StakePoolsRanking
+  observer(StakePoolsRanking)
 );

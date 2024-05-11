@@ -22,8 +22,6 @@ const initialState = {
   selectedList: null,
 };
 
-@inject('actions', 'stores')
-@observer
 class DelegationCenterPage extends Component<Props, State> {
   static defaultProps = {
     stores: null,
@@ -128,4 +126,4 @@ class DelegationCenterPage extends Component<Props, State> {
   }
 }
 
-export default DelegationCenterPage;
+export default inject('actions', 'stores')(observer(DelegationCenterPage));

@@ -105,7 +105,6 @@ type Props = {
   isProduction: boolean;
 };
 
-@observer
 class WalletAdd extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -196,4 +195,4 @@ class WalletAdd extends Component<Props> {
   }
 }
 
-export default WalletAdd;
+export default observer(WalletAdd);

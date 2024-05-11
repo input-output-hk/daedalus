@@ -5,7 +5,6 @@ import StakingSwitch from './StakingSwitch';
 import StakingSystemState from './StakingSystemState';
 import styles from './Staking.scss';
 
-@observer
 class Settings extends Component<any> {
   render() {
     return (
@@ -24,4 +23,4 @@ class Settings extends Component<any> {
   }
 }
 
-export default Settings;
+export default observer(Settings);

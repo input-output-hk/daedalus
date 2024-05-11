@@ -171,7 +171,6 @@ class SyncingConnectingStatus extends Component<Props> {
           ? messages.reconnecting
           : messages.connecting;
     }
-
     const isConnectingMessage =
       connectingMessage === messages.connecting ||
       connectingMessage === messages.reconnecting;
@@ -198,6 +197,7 @@ class SyncingConnectingStatus extends Component<Props> {
       cardanoNodeState,
       intl,
     } = this.props;
+
     if (!hasLoadedCurrentLocale) return null;
 
     const { connectingMessage, connectingDescription } =

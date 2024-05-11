@@ -18,7 +18,7 @@ export const SMASH_SERVERS_LIST: Record<
 > = {
   iohk: {
     name: 'IOHK',
-    url: smashUrl,
+    url: !!smashUrl ? smashUrl : 'https://smash.cardano-mainnet.iohk.io',
   },
   // Metadata is fetched directly in URLs registered on chain,
   direct: {

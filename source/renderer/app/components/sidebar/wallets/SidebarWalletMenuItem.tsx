@@ -30,7 +30,6 @@ type Props = {
   searchValue: string;
 };
 
-@observer
 class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const {
@@ -112,4 +111,4 @@ class SidebarWalletMenuItem extends Component<Props> {
   }
 }
 
-export default SidebarWalletMenuItem;
+export default observer(SidebarWalletMenuItem);

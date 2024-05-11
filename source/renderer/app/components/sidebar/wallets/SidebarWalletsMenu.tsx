@@ -76,7 +76,6 @@ type Props = {
   onSearch?: (term: string) => void;
 };
 
-@observer
 class SidebarWalletsMenu extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -85,10 +84,8 @@ class SidebarWalletsMenu extends Component<Props> {
     <div {...props} className={styles.scrollbarThumb} />
   );
   walletSort = (sortBy: WalletSortByOptions) => {
-    const {
-      sortOrder = WalletSortOrder.asc,
-      onWalletSortBy = noop,
-    } = this.props;
+    const { sortOrder = WalletSortOrder.asc, onWalletSortBy = noop } =
+      this.props;
     return onWalletSortBy({
       sortBy,
       sortOrder,
@@ -214,4 +211,4 @@ class SidebarWalletsMenu extends Component<Props> {
   }
 }
 
-export default SidebarWalletsMenu;
+export default observer(SidebarWalletsMenu);

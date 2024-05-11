@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
   TransactionAddresses,
@@ -24,39 +24,24 @@ export const TransactionTypes: EnumMap<string, TransactionType> = {
 };
 export const TransactionWithdrawal: TransactionWithdrawalType = 'self';
 export class WalletTransaction {
-  @observable
   id = '';
-  @observable
   type: TransactionType;
-  @observable
   title = '';
-  @observable
   amount: BigNumber;
-  @observable
   fee: BigNumber;
-  @observable
   deposit: BigNumber;
-  @observable
   assets: Tokens;
-  @observable
   date: Date | null | undefined;
-  @observable
   description = '';
-  @observable
   addresses: TransactionAddresses = {
     from: [],
     to: [],
     withdrawals: [],
   };
-  @observable
   state: TransactionState;
-  @observable
   confirmations: number;
-  @observable
   slotNumber: number | null | undefined;
-  @observable
   epochNumber: number | null | undefined;
-  @observable
   metadata: TransactionMetadata | null | undefined;
 
   constructor(data: {
@@ -76,6 +61,24 @@ export class WalletTransaction {
     epochNumber: number | null | undefined;
     metadata: TransactionMetadata | null | undefined;
   }) {
+    makeObservable(this, {
+      id: observable,
+      type: observable,
+      title: observable,
+      amount: observable,
+      fee: observable,
+      deposit: observable,
+      assets: observable,
+      date: observable,
+      description: observable,
+      addresses: observable,
+      state: observable,
+      confirmations: observable,
+      slotNumber: observable,
+      epochNumber: observable,
+      metadata: observable,
+    });
+
     Object.assign(this, data);
   }
 }

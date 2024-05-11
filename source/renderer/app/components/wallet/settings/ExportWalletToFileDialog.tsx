@@ -68,7 +68,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class ExportWalletToFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -204,4 +203,4 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   }
 }
 
-export default ExportWalletToFileDialog;
+export default observer(ExportWalletToFileDialog);

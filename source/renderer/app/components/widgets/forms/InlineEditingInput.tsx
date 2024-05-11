@@ -65,7 +65,6 @@ interface FormFields {
   inputField: string;
 }
 
-@observer
 class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
     validateOnChange: true,
@@ -364,4 +363,4 @@ class InlineEditingInput extends Component<Props, State> {
   }
 }
 
-export default InlineEditingInput;
+export default observer(InlineEditingInput);
