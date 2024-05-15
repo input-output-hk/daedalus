@@ -30,6 +30,7 @@ let
       patch -p1 -i ${./cardano-wallet--enable-aarch64-darwin.patch}
       patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
       patch -p1 -i ${./cardano-wallet--proper-runtimeNodePkgs.patch}
+      patch -p1 -i ${./cardano-wallet--bump-cardano-node-1-35-5.patch}
     '';
   }).defaultNix // {
     inherit (inputs.cardano-wallet-unpatched) rev shortRev sourceInfo;
@@ -60,7 +61,7 @@ let
     cardano-shell = import inputs.cardano-shell { inherit system crossSystem; };
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
     cardano-node = walletPackages.cardano-node;
-    cardanoNodeVersion = self.cardano-node.version + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_4.rev;
+    cardanoNodeVersion = /*self.cardano-node.version I DON’T KNOW WHY */ "1.35.5" + "-" + builtins.substring 0 9 walletFlake.inputs.cardano-node-1_35_5.rev;
     cardanoWalletVersion = self.daedalus-bridge.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
     cardano-cli = walletPackages.cardano-cli;
 
