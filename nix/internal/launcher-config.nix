@@ -28,6 +28,12 @@ let
     preview    = fromCardanoPlayground "preview";
   };
 
+  smashServers = {
+    mainnet = "https://smash.cardano-mainnet.iohk.io";
+    preprod = "https://preprod-smash.world.dev.cardano.org";
+    preview = "https://preview-smash.world.dev.cardano.org";
+  };
+
   fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
       name = "cardano-playground-config-${envName}";
@@ -298,8 +304,8 @@ let
     } // (lib.optionalAttrs (network == "selfnode") {
       selfnodeBin = mkBinPath "local-cluster";
       mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
-    }) // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
-      smashUrl = envCfg.smashUrl;
+    }) // (lib.optionalAttrs (__hasAttr network smashServers) {
+      smashUrl = smashServers.${network};
     }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {
       metadataUrl = envCfg.metadataUrl;
     });
