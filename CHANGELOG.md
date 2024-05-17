@@ -12,6 +12,12 @@
 - Updated cardano-node to 8.9.2 (via cardano-wallet) ([PR 3176](https://github.com/input-output-hk/daedalus/pull/3176))
 - Updated cardano-node to 8.9.1 (via cardano-wallet) ([PR 3152](https://github.com/input-output-hk/daedalus/pull/3152))
 
+## 5.3.1
+
+### Fixes
+
+- Update `cardano-node` from 1.35.4 to 1.35.5 to mitigate a ledger bug
+
 ## 5.3.0
 
 ### Features
