@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.1
+
+### Fixes
+
+- Update `cardano-node` from 1.35.4 to 1.35.5 to mitigate a ledger bug
+
 ## 5.3.0
 
 ### Features

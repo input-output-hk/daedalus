@@ -1,0 +1,1036 @@
+diff --git a/flake.lock b/flake.lock
+index 2758faebf7..3f65da6dad 100644
+--- a/flake.lock
++++ b/flake.lock
+@@ -20,11 +20,11 @@
+     "CHaP_2": {
+       "flake": false,
+       "locked": {
+-        "lastModified": 1666726035,
+-        "narHash": "sha256-EBodp9DJb8Z+aVbuezVwLJ9Q9XIJUXFd/n2skay3FeU=",
++        "lastModified": 1674756171,
++        "narHash": "sha256-edcHqVXXg11ueHMYhUzA4Cp9FgrhV/IbvA4XCB8DwFU=",
+         "owner": "input-output-hk",
+         "repo": "cardano-haskell-packages",
+-        "rev": "b074321c4c8cbf2c3789436ab11eaa43e1c441a7",
++        "rev": "bedbed3bcca19ef64b8a776bceeea052c2b69ea5",
+         "type": "github"
+       },
+       "original": {
+@@ -1482,7 +1482,7 @@
+         "type": "github"
+       }
+     },
+-    "cardano-node-1_35_4": {
++    "cardano-node-1_35_5": {
+       "inputs": {
+         "CHaP": "CHaP_2",
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror",
+@@ -1492,13 +1492,13 @@
+         "hackageNix": "hackageNix",
+         "haskellNix": "haskellNix_2",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "nixpkgs"
+         ],
+         "iohkNix": "iohkNix_2",
+         "nixTools": "nixTools",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "haskellNix",
+           "nixpkgs-unstable"
+         ],
+@@ -1509,16 +1509,16 @@
+         "utils": "utils_18"
+       },
+       "locked": {
+-        "lastModified": 1667644902,
+-        "narHash": "sha256-WRRzfpDc+YVmTNbN9LNYY4dS8o21p/6NoKxtcZmoAcg=",
++        "lastModified": 1674789032,
++        "narHash": "sha256-LwoQejDDA9P7dbl8z3nFbEJDDim0Y7oHUOgf4EH2Xig=",
+         "owner": "input-output-hk",
+         "repo": "cardano-node",
+-        "rev": "ebc7be471b30e5931b35f9bbc236d21c375b91bb",
++        "rev": "8762a10efe3f9f97939e3cb05edaf04250456702",
+         "type": "github"
+       },
+       "original": {
+         "owner": "input-output-hk",
+-        "ref": "1.35.4",
++        "ref": "1.35.5",
+         "repo": "cardano-node",
+         "type": "github"
+       }
+@@ -1530,7 +1530,7 @@
+         "iohkNix": "iohkNix_6",
+         "membench": "membench_4",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -1563,7 +1563,7 @@
+         "iohkNix": "iohkNix_7",
+         "membench": "membench_5",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -1597,7 +1597,7 @@
+         "iohkNix": "iohkNix_10",
+         "membench": "membench_7",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -1630,7 +1630,7 @@
+         "iohkNix": "iohkNix_11",
+         "membench": "membench_8",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -1664,7 +1664,7 @@
+         "iohkNix": "iohkNix_14",
+         "membench": "membench_10",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+@@ -1696,7 +1696,7 @@
+         "iohkNix": "iohkNix_17",
+         "membench": "membench_12",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot",
+@@ -1727,14 +1727,14 @@
+         "flake-compat": "flake-compat",
+         "haskellNix": "haskellNix",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "cardano-node-workbench",
+           "nixpkgs"
+         ],
+         "iohkNix": "iohkNix",
+         "membench": "membench",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "cardano-node-workbench",
+           "haskellNix",
+           "nixpkgs-2105"
+@@ -1781,7 +1781,7 @@
+         "flake-compat": "flake-compat_4",
+         "haskellNix": "haskellNix_3",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "cardano-node-workbench",
+           "nixpkgs"
+@@ -1789,7 +1789,7 @@
+         "iohkNix": "iohkNix_3",
+         "membench": "membench_2",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "cardano-node-workbench",
+           "haskellNix",
+@@ -3838,7 +3838,7 @@
+         "hydra": "hydra",
+         "nix-tools": "nix-tools",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "cardano-node-workbench",
+           "nixpkgs"
+         ],
+@@ -3876,7 +3876,7 @@
+         "hpc-coveralls": "hpc-coveralls_10",
+         "nix-tools": "nix-tools_9",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -3917,7 +3917,7 @@
+         "hpc-coveralls": "hpc-coveralls_11",
+         "nix-tools": "nix-tools_10",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -3959,7 +3959,7 @@
+         "hpc-coveralls": "hpc-coveralls_12",
+         "nix-tools": "nix-tools_11",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -4001,7 +4001,7 @@
+         "hpc-coveralls": "hpc-coveralls_13",
+         "nix-tools": "nix-tools_12",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "nixpkgs"
+@@ -4040,7 +4040,7 @@
+         "hpc-coveralls": "hpc-coveralls_14",
+         "nix-tools": "nix-tools_13",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+@@ -4080,7 +4080,7 @@
+         "hpc-coveralls": "hpc-coveralls_15",
+         "nix-tools": "nix-tools_14",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "plutus-example",
+@@ -4120,7 +4120,7 @@
+         "hpc-coveralls": "hpc-coveralls_16",
+         "nix-tools": "nix-tools_15",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "nixpkgs"
+         ],
+@@ -4158,7 +4158,7 @@
+         "hpc-coveralls": "hpc-coveralls_17",
+         "nix-tools": "nix-tools_16",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot",
+@@ -4197,7 +4197,7 @@
+         "hpc-coveralls": "hpc-coveralls_18",
+         "nix-tools": "nix-tools_17",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "plutus-example",
+           "nixpkgs"
+@@ -4277,13 +4277,13 @@
+         "flake-utils": "flake-utils_2",
+         "ghc-8.6.5-iohk": "ghc-8.6.5-iohk_2",
+         "hackage": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "hackageNix"
+         ],
+         "hpc-coveralls": "hpc-coveralls_2",
+         "hydra": "hydra_2",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "nixpkgs"
+         ],
+         "nixpkgs-2003": "nixpkgs-2003_2",
+@@ -4322,7 +4322,7 @@
+         "hydra": "hydra_3",
+         "nix-tools": "nix-tools_2",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "cardano-node-workbench",
+           "nixpkgs"
+@@ -4361,7 +4361,7 @@
+         "hpc-coveralls": "hpc-coveralls_4",
+         "nix-tools": "nix-tools_3",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "nixpkgs"
+         ],
+@@ -4399,7 +4399,7 @@
+         "hpc-coveralls": "hpc-coveralls_5",
+         "nix-tools": "nix-tools_4",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "nixpkgs"
+@@ -4438,7 +4438,7 @@
+         "hpc-coveralls": "hpc-coveralls_6",
+         "nix-tools": "nix-tools_5",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -4479,7 +4479,7 @@
+         "hpc-coveralls": "hpc-coveralls_7",
+         "nix-tools": "nix-tools_6",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -4521,7 +4521,7 @@
+         "hpc-coveralls": "hpc-coveralls_8",
+         "nix-tools": "nix-tools_7",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -4563,7 +4563,7 @@
+         "hpc-coveralls": "hpc-coveralls_9",
+         "nix-tools": "nix-tools_8",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "nixpkgs"
+@@ -4897,7 +4897,7 @@
+       "inputs": {
+         "nix": "nix",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "cardano-node-workbench",
+           "haskellNix",
+           "hydra",
+@@ -4922,7 +4922,7 @@
+       "inputs": {
+         "nix": "nix_2",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "haskellNix",
+           "hydra",
+           "nix",
+@@ -4946,7 +4946,7 @@
+       "inputs": {
+         "nix": "nix_3",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "cardano-node-workbench",
+           "haskellNix",
+@@ -5017,7 +5017,7 @@
+     "iohkNix": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "cardano-node-workbench",
+           "nixpkgs"
+         ]
+@@ -5039,7 +5039,7 @@
+     "iohkNix_10": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5064,7 +5064,7 @@
+     "iohkNix_11": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5091,7 +5091,7 @@
+     "iohkNix_12": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5117,7 +5117,7 @@
+     "iohkNix_13": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "nixpkgs"
+@@ -5140,7 +5140,7 @@
+     "iohkNix_14": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+@@ -5165,7 +5165,7 @@
+     "iohkNix_15": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "plutus-example",
+@@ -5189,7 +5189,7 @@
+     "iohkNix_16": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "nixpkgs"
+         ]
+@@ -5211,7 +5211,7 @@
+     "iohkNix_17": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot",
+@@ -5235,7 +5235,7 @@
+     "iohkNix_18": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "plutus-example",
+           "nixpkgs"
+@@ -5278,16 +5278,16 @@
+     "iohkNix_2": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "nixpkgs"
+         ]
+       },
+       "locked": {
+-        "lastModified": 1667394105,
+-        "narHash": "sha256-YhS7zGd6jK/QM/+wWyj0zUBZmE3HOXAL/kpJptGYIWg=",
++        "lastModified": 1672846257,
++        "narHash": "sha256-khuzjVfyNCVcsV5cHRyyb2OgWLbYLKSJlrVDNmc2Tv4=",
+         "owner": "input-output-hk",
+         "repo": "iohk-nix",
+-        "rev": "7fc7625a9ab2ba137bc70ddbc89a13d3fdb78c8b",
++        "rev": "ca3d466ed36011bcc14290c6d36c503eb03eb71b",
+         "type": "github"
+       },
+       "original": {
+@@ -5299,7 +5299,7 @@
+     "iohkNix_3": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "cardano-node-workbench",
+           "nixpkgs"
+@@ -5322,7 +5322,7 @@
+     "iohkNix_4": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "nixpkgs"
+         ]
+@@ -5344,7 +5344,7 @@
+     "iohkNix_5": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "nixpkgs"
+@@ -5367,7 +5367,7 @@
+     "iohkNix_6": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5392,7 +5392,7 @@
+     "iohkNix_7": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5419,7 +5419,7 @@
+     "iohkNix_8": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5445,7 +5445,7 @@
+     "iohkNix_9": {
+       "inputs": {
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "nixpkgs"
+@@ -5565,28 +5565,28 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_10",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-snapshot": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "membench",
+@@ -5613,16 +5613,16 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_11",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot"
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot_6",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "nixpkgs"
+         ],
+@@ -5646,25 +5646,25 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_12",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-snapshot": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "membench",
+           "cardano-node-snapshot",
+@@ -5705,18 +5705,18 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_3",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured"
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "nixpkgs"
+@@ -5741,14 +5741,14 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_4",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5756,7 +5756,7 @@
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot_2",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5783,7 +5783,7 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_5",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5792,7 +5792,7 @@
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5801,7 +5801,7 @@
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-snapshot": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5810,7 +5810,7 @@
+           "cardano-node-snapshot"
+         ],
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -5839,18 +5839,18 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_6",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process"
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot_3",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "nixpkgs"
+@@ -5875,14 +5875,14 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_7",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5890,7 +5890,7 @@
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot_4",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5917,7 +5917,7 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_8",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5926,7 +5926,7 @@
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5935,7 +5935,7 @@
+           "cardano-node-snapshot"
+         ],
+         "cardano-node-snapshot": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5944,7 +5944,7 @@
+           "cardano-node-snapshot"
+         ],
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -5973,18 +5973,18 @@
+       "inputs": {
+         "cardano-mainnet-mirror": "cardano-mainnet-mirror_9",
+         "cardano-node-measured": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot"
+         ],
+         "cardano-node-process": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot"
+         ],
+         "cardano-node-snapshot": "cardano-node-snapshot_5",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "nixpkgs"
+@@ -8227,13 +8227,13 @@
+         "flake-compat": "flake-compat_5",
+         "haskellNix": "haskellNix_4",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "nixpkgs"
+         ],
+         "iohkNix": "iohkNix_4",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "haskellNix",
+           "nixpkgs-2105"
+@@ -8265,7 +8265,7 @@
+         "flake-compat": "flake-compat_6",
+         "haskellNix": "haskellNix_5",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "nixpkgs"
+@@ -8273,7 +8273,7 @@
+         "iohkNix": "iohkNix_5",
+         "membench": "membench_3",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "haskellNix",
+@@ -8303,7 +8303,7 @@
+         "flake-compat": "flake-compat_7",
+         "haskellNix": "haskellNix_9",
+         "hostNixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "nixpkgs"
+@@ -8311,7 +8311,7 @@
+         "iohkNix": "iohkNix_9",
+         "membench": "membench_6",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "haskellNix",
+@@ -8357,7 +8357,7 @@
+         "iohkNix": "iohkNix_13",
+         "membench": "membench_9",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "haskellNix",
+@@ -8388,7 +8388,7 @@
+         "iohkNix": "iohkNix_16",
+         "membench": "membench_11",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "haskellNix",
+           "nixpkgs-2105"
+@@ -8960,11 +8960,11 @@
+     "plutus-apps_4": {
+       "flake": false,
+       "locked": {
+-        "lastModified": 1647347289,
+-        "narHash": "sha256-dxKZ1Zvflyt6igYm39POV6X/0giKbfb4U7D1TvevQls=",
++        "lastModified": 1668055541,
++        "narHash": "sha256-c0XuranD91kZ7uR0gemZQOFDNRv3pFXunJC4j064mtc=",
+         "owner": "input-output-hk",
+         "repo": "plutus-apps",
+-        "rev": "2a40552f4654d695f21783c86e8ae59243ce9dfa",
++        "rev": "1651d36a0f6458e7d2326d57dbc1baa00034d70d",
+         "type": "github"
+       },
+       "original": {
+@@ -8979,7 +8979,7 @@
+         "haskellNix": "haskellNix_8",
+         "iohkNix": "iohkNix_8",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-measured",
+           "membench",
+@@ -9028,7 +9028,7 @@
+         "haskellNix": "haskellNix_12",
+         "iohkNix": "iohkNix_12",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-process",
+           "membench",
+@@ -9077,7 +9077,7 @@
+         "haskellNix": "haskellNix_15",
+         "iohkNix": "iohkNix_15",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-measured",
+           "node-snapshot",
+           "plutus-example",
+@@ -9107,7 +9107,7 @@
+         "haskellNix": "haskellNix_18",
+         "iohkNix": "iohkNix_18",
+         "nixpkgs": [
+-          "cardano-node-1_35_4",
++          "cardano-node-1_35_5",
+           "node-snapshot",
+           "plutus-example",
+           "haskellNix",
+@@ -9152,7 +9152,7 @@
+     "root": {
+       "inputs": {
+         "CHaP": "CHaP",
+-        "cardano-node-1_35_4": "cardano-node-1_35_4",
++        "cardano-node-1_35_5": "cardano-node-1_35_5",
+         "customConfig": "customConfig_19",
+         "ema": "ema",
+         "emanote": "emanote",
+diff --git a/flake.nix b/flake.nix
+index ae10c4017f..8bdf4242d4 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -149,13 +149,13 @@
+       flake = false;
+     };
+     customConfig.url = "github:input-output-hk/empty-flake";
+-    cardano-node-1_35_4.url = "github:input-output-hk/cardano-node?ref=1.35.4";
++    cardano-node-1_35_5.url = "github:input-output-hk/cardano-node?ref=1.35.5";
+     emanote.url = "github:srid/emanote";
+     ema.url = "github:srid/ema";
+   };
+ 
+   outputs = { self, nixpkgs, nixpkgs-unstable, hostNixpkgs, flake-utils,
+-              haskellNix, iohkNix, CHaP, customConfig, emanote, cardano-node-1_35_4,
++              haskellNix, iohkNix, CHaP, customConfig, emanote, cardano-node-1_35_5,
+               ... }:
+     let
+       inherit (nixpkgs) lib;
+@@ -217,15 +217,15 @@
+             collectChecks
+             check;
+ 
+-          cardano-node-1_35_4-patched = (import ./nix/flake-compat.nix {
++          cardano-node-1_35_5-patched = (import ./nix/flake-compat.nix {
+             src = pkgs.runCommandLocal "patched-cardano-node" {} ''
+-              cp -r ${cardano-node-1_35_4.outPath} $out
++              cp -r ${cardano-node-1_35_5.outPath} $out
+               chmod -R +w $out
+               cat ${./nix/supported-systems.nix} >$out/nix/supported-systems.nix
+             '';
+           }).defaultNix;
+ 
+-          nodePkgs = cardano-node-1_35_4-patched.packages.${system};
++          nodePkgs = cardano-node-1_35_5-patched.packages.${system};
+ 
+           project = (import ./nix/haskell.nix
+               CHaP
+@@ -244,10 +244,10 @@
+             let
+               coveredProject = project.appendModule { coverage = true; };
+               runtimeNodePkgs = {
+-                x86_64-linux   = cardano-node-1_35_4-patched.hydraJobs.linux.native;
+-                x86_64-windows = cardano-node-1_35_4-patched.hydraJobs.linux.windows;
+-                x86_64-darwin  = cardano-node-1_35_4-patched.packages.x86_64-darwin;
+-                aarch64-darwin = cardano-node-1_35_4-patched.packages.aarch64-darwin;
++                x86_64-linux   = cardano-node-1_35_5-patched.legacyPackages.x86_64-linux.hydraJobs.native;
++                x86_64-windows = cardano-node-1_35_5-patched.legacyPackages.x86_64-linux.hydraJobs.windows;
++                x86_64-darwin  = cardano-node-1_35_5-patched.packages.x86_64-darwin;
++                aarch64-darwin = cardano-node-1_35_5-patched.packages.aarch64-darwin;
+               }.${project.pkgs.system};
+               self = {
+                 # Cardano wallet
+@@ -345,8 +345,8 @@
+                   linuxPackages.cardano-wallet
+                   linuxPackages.bech32
+                   linuxPackages.cardano-address
+-                  cardano-node-1_35_4.hydraJobs.linux.musl.cardano-cli
+-                  cardano-node-1_35_4.hydraJobs.linux.musl.cardano-node
++                  cardano-node-1_35_5.hydraJobs.linux.musl.cardano-cli
++                  cardano-node-1_35_5.hydraJobs.linux.musl.cardano-node
+                 ];
+                 # Which exes should be put in the release archives.
+                 checkReleaseContents = jobs: map (exe: jobs.${exe}) [
+@@ -375,8 +375,8 @@
+                       windowsPackages.cardano-wallet
+                       windowsPackages.bech32
+                       windowsPackages.cardano-address
+-                      cardano-node-1_35_4.hydraJobs.linux.windows.cardano-cli
+-                      cardano-node-1_35_4.hydraJobs.linux.windows.cardano-node
++                      cardano-node-1_35_5.hydraJobs.linux.windows.cardano-cli
++                      cardano-node-1_35_5.hydraJobs.linux.windows.cardano-node
+                     ];
+                     platform = "win64";
+                     format = "zip";
+@@ -385,8 +385,8 @@
+                   tests = import ./nix/windows-testing-bundle.nix {
+                     inherit pkgs;
+                     cardano-wallet = windowsPackages.cardano-wallet;
+-                    cardano-node = cardano-node-1_35_4.hydraJobs.linux.windows.cardano-node;
+-                    cardano-cli = cardano-node-1_35_4.hydraJobs.linux.windows.cardano-cli;
++                    cardano-node = cardano-node-1_35_5.hydraJobs.linux.windows.cardano-node;
++                    cardano-cli = cardano-node-1_35_5.hydraJobs.linux.windows.cardano-cli;
+                     tests = lib.collect lib.isDerivation windowsPackages.tests;
+                     benchmarks = lib.collect lib.isDerivation windowsPackages.benchmarks;
+                   };
+@@ -401,8 +401,8 @@
+                     macOsPkgs.cardano-wallet
+                     macOsPkgs.bech32
+                     macOsPkgs.cardano-address
+-                    cardano-node-1_35_4.hydraJobs.macos.cardano-cli
+-                    cardano-node-1_35_4.hydraJobs.macos.cardano-node
++                    cardano-node-1_35_5.hydraJobs.macos.cardano-cli
++                    cardano-node-1_35_5.hydraJobs.macos.cardano-node
+                   ];
+                   platform = "macos-intel";
+                   format = "tar.gz";
+@@ -415,8 +415,8 @@
+                     macOsPkgs.cardano-wallet
+                     macOsPkgs.bech32
+                     macOsPkgs.cardano-address
+-                    cardano-node-1_35_4.hydraJobs.macos.cardano-cli
+-                    cardano-node-1_35_4.hydraJobs.macos.cardano-node
++                    cardano-node-1_35_5.hydraJobs.macos.cardano-cli
++                    cardano-node-1_35_5.hydraJobs.macos.cardano-node
+                   ];
+                   platform = "macos-silicon";
+                   format = "tar.gz";
