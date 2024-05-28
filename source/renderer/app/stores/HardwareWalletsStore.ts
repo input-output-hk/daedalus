@@ -263,7 +263,7 @@ export default class HardwareWalletsStore extends Store {
   @observable
   transportDevice: TransportDevice | null | undefined = null;
   @observable
-  signedTransaction: string | null | undefined = null;
+  signedTx: string | null | undefined = null;
   @observable
   isTransactionPending = false;
   @observable
@@ -2652,7 +2652,7 @@ export default class HardwareWalletsStore extends Store {
       const signedTx = await getTxCBOR(txBody, txWitnesses, txAuxiliaryData);
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
-        this.signedTx = signedTx; // TODO - change flag name
+        this.signedTx = signedTx;
         this.activeDevicePath = null;
       });
     } catch (error) {

@@ -1,5 +1,4 @@
-// addr_test1qrujg5s2ws0ntmrgykm8ecfwx5n3xgt4zc0hzpg5ek5l78u8558mf5hyh6j38p9zmdmrdphndlls6p3jq3f702ms2awsj5gd95
-
+import { map } from 'lodash';
 import blakejs from 'blakejs';
 import { encode } from 'borc';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
@@ -10,6 +9,7 @@ import {
   groupTokensByPolicyId,
 } from './hardwareWalletUtils';
 
+import type { AddressStyle } from '../api/addresses/types';
 import type {
   CoinSelectionInput,
   CoinSelectionWithdrawal,
@@ -167,7 +167,7 @@ export const toTxOutputAssets = (assets: CoinSelectionAssetsType) => {
     const assetMap = new Map<Buffer, number>();
 
     // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-    _.map(tokens, (token) => {
+    map(tokens, (token) => {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'assetName' does not exist on type 'unkno... Remove this comment to see the full error message
       assetMap.set(Buffer.from(token.assetName, 'hex'), token.quantity);
     });
@@ -217,7 +217,7 @@ export const toTxWithdrawal = (withdrawals: Array<CoinSelectionWithdrawal>) => {
   function encodeCBOR(encoder: any) {
     const withdrawalMap = new Map();
 
-    _.map(withdrawals, (withdrawal) => {
+    map(withdrawals, (withdrawal) => {
       const rewardAccount = utils.bech32_decodeAddress(withdrawal.stakeAddress);
       const coin = withdrawal.amount.quantity;
       withdrawalMap.set(rewardAccount, coin);
@@ -340,7 +340,16 @@ export const toTxBody = ({
   withdrawals,
   txAuxiliaryData,
   txAuxiliaryDataHash,
-}: TxBodyType) => {
+}: {
+  txInputs: Array<TxInputType>;
+  txOutputs: Array<TxOutputType>;
+  txAuxiliaryData?: TxAuxiliaryData;
+  txAuxiliaryDataHash?: string;
+  fee: number;
+  ttl: number;
+  certificates: Array<Certificate | null | undefined>;
+  withdrawals: TxWithdrawalsType | null | undefined;
+}) => {
   const txFee = toTxFee(fee);
   const txTtl = toTxTtl(ttl);
   const txCerts = certificates;

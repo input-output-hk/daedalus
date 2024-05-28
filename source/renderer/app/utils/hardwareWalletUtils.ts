@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { bech32 } from 'bech32';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { HARDENED } from '../config/hardwareWalletsConfig';

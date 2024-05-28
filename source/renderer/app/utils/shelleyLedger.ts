@@ -26,6 +26,7 @@ import type {
   CoinSelectionWithdrawal,
   CoinSelectionAssetsType,
 } from '../api/transactions/types';
+import { TxAuxiliaryData } from './dataSerialization';
 
 export const toTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
