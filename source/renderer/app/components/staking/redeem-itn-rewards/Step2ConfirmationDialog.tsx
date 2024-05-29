@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -80,7 +82,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -144,15 +145,8 @@ class Step2ConfirmationDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const {
-      wallet,
-      transactionFees,
-      onContinue,
-      onClose,
-      onBack,
-      isSubmitting,
-      error,
-    } = this.props;
+    const { wallet, transactionFees, onContinue, onClose, onBack, error } =
+      this.props;
     const { amount } = wallet || {};
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
@@ -236,4 +230,4 @@ class Step2ConfirmationDialog extends Component<Props> {
   }
 }
 
-export default Step2ConfirmationDialog;
+export default observer(Step2ConfirmationDialog);

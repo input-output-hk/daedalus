@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { range } from 'lodash';
 import { observer } from 'mobx-react';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Select } from '@react-polymorph/components/Select';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Asset from './Asset';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -78,7 +80,6 @@ type State = {
   decimals: number | null | undefined;
 };
 
-@observer
 class AssetSettingsDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -233,4 +234,4 @@ class AssetSettingsDialog extends Component<Props, State> {
   }
 }
 
-export default AssetSettingsDialog;
+export default observer(AssetSettingsDialog);

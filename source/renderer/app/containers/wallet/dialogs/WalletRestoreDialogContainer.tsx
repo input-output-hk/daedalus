@@ -10,8 +10,6 @@ import ConfirmationDialog from '../../../components/wallet/wallet-restore/widget
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletRestoreContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -29,10 +27,8 @@ class WalletRestoreContainer extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const {
-      restoreWalletStep,
-      restoreWalletShowAbortConfirmation,
-    } = stores.wallets;
+    const { restoreWalletStep, restoreWalletShowAbortConfirmation } =
+      stores.wallets;
     const {
       restoreWalletClose,
       restoreWalletCancelClose,
@@ -63,4 +59,4 @@ class WalletRestoreContainer extends Component<Props> {
   }
 }
 
-export default WalletRestoreContainer;
+export default inject('stores', 'actions')(observer(WalletRestoreContainer));

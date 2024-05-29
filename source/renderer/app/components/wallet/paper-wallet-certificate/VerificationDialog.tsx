@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -41,8 +41,7 @@ const messages = defineMessages({
       '"Paper wallet create certificate verification dialog" subtitle.',
   },
   recoveryPhraseLabel: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label',
+    id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label',
     defaultMessage: '!!!Paper wallet recovery phrase',
     description:
       '"Paper wallet create certificate verification dialog" recovery phrase label.',
@@ -54,16 +53,14 @@ const messages = defineMessages({
       '"Paper wallet create certificate verification dialog" button clear label.',
   },
   storingUnderstandanceLabel: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel',
+    id: 'paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel',
     defaultMessage:
       '!!!I understand that the paper wallet I create will not be stored in Daedalus.',
     description:
       '"Paper wallet create certificate verification dialog" storing understandance confirmation.',
   },
   recoveringUnderstandanceLabel: {
-    id:
-      'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
+    id: 'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
     defaultMessage:
       '!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.',
     description:
@@ -88,7 +85,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class VerificationDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -212,11 +208,8 @@ class VerificationDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form, resetForm } = this;
     const { suggestedMnemonics, onClose } = this.props;
-    const {
-      storingConfirmed,
-      recoveringConfirmed,
-      isRecoveryPhraseValid,
-    } = this.state;
+    const { storingConfirmed, recoveringConfirmed, isRecoveryPhraseValid } =
+      this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
     const storingUnderstandanceCheckboxClasses = classnames([
@@ -241,7 +234,7 @@ class VerificationDialog extends Component<Props, State> {
         onClick: this.submit.bind(this),
       },
     ];
-    const { reset, ...mnemonicInputProps } = recoveryPhraseField.bind();
+    const { ...mnemonicInputProps } = recoveryPhraseField.bind();
 
     return (
       <Dialog
@@ -297,4 +290,4 @@ class VerificationDialog extends Component<Props, State> {
   }
 }
 
-export default VerificationDialog;
+export default observer(VerificationDialog);

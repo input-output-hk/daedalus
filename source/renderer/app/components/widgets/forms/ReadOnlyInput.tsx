@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { intlShape } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ReadOnlyInput.scss';
 
@@ -15,7 +16,6 @@ type Props = {
   withButton?: boolean;
 };
 
-@observer
 class ReadOnlyInput extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -52,4 +52,4 @@ class ReadOnlyInput extends Component<Props> {
   }
 }
 
-export default ReadOnlyInput;
+export default observer(ReadOnlyInput);

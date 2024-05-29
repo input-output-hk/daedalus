@@ -4,12 +4,11 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import {
   bigNumberComparator,
   stringComparator,
@@ -121,355 +120,369 @@ type State = {
   contentScrollTop: number;
 };
 
-@observer
-export class StakingRewards extends Component<Props, State> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-  static defaultProps = {
-    isLoading: false,
-    isExporting: false,
-  };
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      rewardsOrder: REWARD_ORDERS.DESCENDING,
-      rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
-      contentScrollTop: 0,
+export const StakingRewards = observer(
+  class StakingRewards extends Component<Props, State> {
+    static contextTypes = {
+      intl: intlShape.isRequired,
     };
-  }
+    static defaultProps = {
+      isLoading: false,
+      isExporting: false,
+    };
 
-  handleExportCsv = (
-    availableTableHeaders: Array<any>,
-    sortedRewards: Array<Reward>
-  ) => {
-    const { onExportCsv } = this.props;
-    const { intl } = this.context;
-    const exportedHeader = availableTableHeaders.map((header) => header.title);
-    const exportedBody = sortedRewards.map((reward) => {
-      const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
-      const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-      const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL)?.toFixed(
-        DECIMAL_PLACES_IN_ADA
+    constructor(props: Props) {
+      super(props);
+      this.state = {
+        rewardsOrder: REWARD_ORDERS.DESCENDING,
+        rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
+        contentScrollTop: 0,
+      };
+    }
+
+    handleExportCsv = (
+      availableTableHeaders: Array<any>,
+      sortedRewards: Array<Reward>
+    ) => {
+      const { onExportCsv } = this.props;
+      const { intl } = this.context;
+      const exportedHeader = availableTableHeaders.map(
+        (header) => header.title
       );
-      const rewardUnspent = get(reward, REWARD_FIELDS.REWARD_UNSPENT)?.toFixed(
-        DECIMAL_PLACES_IN_ADA
-      );
-      const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
-      return [
-        rewardWallet,
-        rewardsAddress,
-        isRestoring ? '-' : rewardTotal,
-        isRestoring ? '-' : rewardUnspent,
+      const exportedBody = sortedRewards.map((reward) => {
+        const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
+        const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
+        const rewardTotal = get(reward, REWARD_FIELDS.REWARD_TOTAL)?.toFixed(
+          DECIMAL_PLACES_IN_ADA
+        );
+        const rewardUnspent = get(
+          reward,
+          REWARD_FIELDS.REWARD_UNSPENT
+        )?.toFixed(DECIMAL_PLACES_IN_ADA);
+        const rewardsAddress = get(reward, REWARD_FIELDS.REWARDS_ADDRESS);
+        return [
+          rewardWallet,
+          rewardsAddress,
+          isRestoring ? '-' : rewardTotal,
+          isRestoring ? '-' : rewardUnspent,
+        ];
+      });
+      const exportedContent = [exportedHeader, ...exportedBody];
+      onExportCsv({
+        fileContent: exportedContent,
+        filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
+      });
+    };
+    getSortedRewards = (): Array<Reward> => {
+      const { rewards } = this.props;
+      const { rewardsOrder, rewardsSortBy } = this.state;
+      return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
+        const totalCompareResult = bigNumberComparator(
+          rewardA.total,
+          rewardB.total,
+          rewardsOrder === REWARD_ORDERS.ASCENDING
+        );
+        const unspentCompareResult = bigNumberComparator(
+          rewardA.unspent,
+          rewardB.unspent,
+          rewardsOrder === REWARD_ORDERS.ASCENDING
+        );
+        const walletNameCompareResult = stringComparator(
+          rewardA.wallet,
+          rewardB.wallet,
+          rewardsOrder === REWARD_ORDERS.ASCENDING
+        );
+        const walletAddressCompareResult = stringComparator(
+          rewardA.rewardsAddress,
+          rewardB.rewardsAddress,
+          rewardsOrder === REWARD_ORDERS.ASCENDING
+        );
+
+        if (rewardsSortBy === REWARD_FIELDS.REWARD_TOTAL) {
+          if (totalCompareResult !== 0) return totalCompareResult;
+          if (walletNameCompareResult !== 0) return walletNameCompareResult;
+          return walletAddressCompareResult;
+        }
+
+        if (rewardsSortBy === REWARD_FIELDS.REWARD_UNSPENT) {
+          if (unspentCompareResult !== 0) return unspentCompareResult;
+          if (walletNameCompareResult !== 0) return walletNameCompareResult;
+          return walletAddressCompareResult;
+        }
+
+        if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
+          if (walletNameCompareResult !== 0) return walletNameCompareResult;
+          if (totalCompareResult !== 0) return totalCompareResult;
+          return walletAddressCompareResult;
+        }
+
+        if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
+          if (walletAddressCompareResult !== 0)
+            return walletAddressCompareResult;
+          if (walletNameCompareResult !== 0) return walletNameCompareResult;
+          return totalCompareResult;
+        }
+
+        return 0;
+      });
+    };
+    handleContentScroll = (evt: React.SyntheticEvent<HTMLElement>) => {
+      this.setState({
+        contentScrollTop: evt.currentTarget.scrollTop,
+      });
+    };
+
+    render() {
+      const {
+        rewards,
+        isLoading,
+        isExporting,
+        onCopyAddress,
+        onOpenExternalLink,
+      } = this.props;
+      const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
+      const { intl } = this.context;
+      const noRewards =
+        !isLoading && ((rewards && !rewards.length) || !rewards);
+      const showRewards = rewards && rewards.length > 0 && !isLoading;
+      const sortedRewards = showRewards ? this.getSortedRewards() : [];
+      const availableTableHeaders = [
+        {
+          name: REWARD_FIELDS.WALLET_NAME,
+          title: intl.formatMessage(messages.tableHeaderWallet),
+        },
+        {
+          name: REWARD_FIELDS.REWARDS_ADDRESS,
+          title: intl.formatMessage(messages.tableHeaderRewardsAddress),
+        },
+        {
+          name: REWARD_FIELDS.REWARD_TOTAL,
+          title: `${intl.formatMessage(
+            messages.tableHeaderRewardTotal
+          )} (${intl.formatMessage(globalMessages.adaUnit)})`,
+        },
+        {
+          name: REWARD_FIELDS.REWARD_UNSPENT,
+          title: `${intl.formatMessage(
+            messages.tableHeaderRewardUnspent
+          )} (${intl.formatMessage(globalMessages.adaUnit)})`,
+        },
       ];
-    });
-    const exportedContent = [exportedHeader, ...exportedBody];
-    onExportCsv({
-      fileContent: exportedContent,
-      filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
-    });
-  };
-  getSortedRewards = (): Array<Reward> => {
-    const { rewards } = this.props;
-    const { rewardsOrder, rewardsSortBy } = this.state;
-    return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
-      const totalCompareResult = bigNumberComparator(
-        rewardA.total,
-        rewardB.total,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const unspentCompareResult = bigNumberComparator(
-        rewardA.unspent,
-        rewardB.unspent,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const walletNameCompareResult = stringComparator(
-        rewardA.wallet,
-        rewardB.wallet,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-      const walletAddressCompareResult = stringComparator(
-        rewardA.rewardsAddress,
-        rewardB.rewardsAddress,
-        rewardsOrder === REWARD_ORDERS.ASCENDING
-      );
-
-      if (rewardsSortBy === REWARD_FIELDS.REWARD_TOTAL) {
-        if (totalCompareResult !== 0) return totalCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return walletAddressCompareResult;
-      }
-
-      if (rewardsSortBy === REWARD_FIELDS.REWARD_UNSPENT) {
-        if (unspentCompareResult !== 0) return unspentCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return walletAddressCompareResult;
-      }
-
-      if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        if (totalCompareResult !== 0) return totalCompareResult;
-        return walletAddressCompareResult;
-      }
-
-      if (rewardsSortBy === REWARD_FIELDS.REWARDS_ADDRESS) {
-        if (walletAddressCompareResult !== 0) return walletAddressCompareResult;
-        if (walletNameCompareResult !== 0) return walletNameCompareResult;
-        return totalCompareResult;
-      }
-
-      return 0;
-    });
-  };
-  handleContentScroll = (evt: React.SyntheticEvent<HTMLElement>) => {
-    this.setState({
-      contentScrollTop: evt.currentTarget.scrollTop,
-    });
-  };
-
-  render() {
-    const {
-      rewards,
-      isLoading,
-      isExporting,
-      onCopyAddress,
-      onOpenExternalLink,
-    } = this.props;
-    const { rewardsOrder, rewardsSortBy, contentScrollTop } = this.state;
-    const { intl } = this.context;
-    const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
-    const showRewards = rewards && rewards.length > 0 && !isLoading;
-    const sortedRewards = showRewards ? this.getSortedRewards() : [];
-    const availableTableHeaders = [
-      {
-        name: REWARD_FIELDS.WALLET_NAME,
-        title: intl.formatMessage(messages.tableHeaderWallet),
-      },
-      {
-        name: REWARD_FIELDS.REWARDS_ADDRESS,
-        title: intl.formatMessage(messages.tableHeaderRewardsAddress),
-      },
-      {
-        name: REWARD_FIELDS.REWARD_TOTAL,
-        title: `${intl.formatMessage(
-          messages.tableHeaderRewardTotal
-        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
-      },
-      {
-        name: REWARD_FIELDS.REWARD_UNSPENT,
-        title: `${intl.formatMessage(
-          messages.tableHeaderRewardUnspent
-        )} (${intl.formatMessage(globalMessages.adaUnit)})`,
-      },
-    ];
-    const exportCsvButtonLabel = isExporting ? (
-      <div className={styles.exportingSpinnerWrapper}>
-        <LoadingSpinner />
-      </div>
-    ) : (
-      <>
-        <div className={styles.actionLabel}>
-          {intl.formatMessage(messages.exportButtonLabel)}
+      const exportCsvButtonLabel = isExporting ? (
+        <div className={styles.exportingSpinnerWrapper}>
+          <LoadingSpinner />
         </div>
-        <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
-      </>
-    );
-    const exportCsvButtonClasses = classNames(['flat', styles.actionButton]);
-    const explorerButtonClasses = classNames([
-      'flat',
-      styles.actionExplorerLink,
-    ]);
-    const headerWrapperClasses = classNames([
-      styles.headerWrapper,
-      contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
-    ]);
-    return (
-      <div className={styles.component}>
-        <div className={headerWrapperClasses}>
-          <div className={styles.title}>
-            {intl.formatMessage(messages.title)}
+      ) : (
+        <>
+          <div className={styles.actionLabel}>
+            {intl.formatMessage(messages.exportButtonLabel)}
           </div>
-          {!noRewards && (
-            <Button
-              className={exportCsvButtonClasses}
-              label={exportCsvButtonLabel}
-              onClick={() =>
-                this.handleExportCsv(availableTableHeaders, sortedRewards)
-              }
-              skin={ButtonSkin}
-            />
-          )}
-        </div>
-        <div
-          className={styles.contentWrapper}
-          onScroll={this.handleContentScroll}
-        >
-          <BorderedBox>
-            {noRewards && (
-              <div className={styles.noRewardsLabel}>
-                {intl.formatMessage(messages.noRewards)}
-              </div>
+          <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
+        </>
+      );
+      const exportCsvButtonClasses = classNames(['flat', styles.actionButton]);
+      const explorerButtonClasses = classNames([
+        'flat',
+        styles.actionExplorerLink,
+      ]);
+      const headerWrapperClasses = classNames([
+        styles.headerWrapper,
+        contentScrollTop > 10 ? styles.headerWrapperWithShadow : null,
+      ]);
+      return (
+        <div className={styles.component}>
+          <div className={headerWrapperClasses}>
+            <div className={styles.title}>
+              {intl.formatMessage(messages.title)}
+            </div>
+            {!noRewards && (
+              <Button
+                className={exportCsvButtonClasses}
+                label={exportCsvButtonLabel}
+                onClick={() =>
+                  this.handleExportCsv(availableTableHeaders, sortedRewards)
+                }
+                skin={ButtonSkin}
+              />
             )}
+          </div>
+          <div
+            className={styles.contentWrapper}
+            onScroll={this.handleContentScroll}
+          >
+            <BorderedBox>
+              {noRewards && (
+                <div className={styles.noRewardsLabel}>
+                  {intl.formatMessage(messages.noRewards)}
+                </div>
+              )}
 
-            {sortedRewards.length > 0 && (
-              <table>
-                <thead>
-                  <tr>
-                    {map(availableTableHeaders, (tableHeader) => {
-                      const isSorted = tableHeader.name === rewardsSortBy;
-                      const sortIconClasses = classNames([
-                        styles.sortIcon,
-                        isSorted ? styles.sorted : null,
-                        isSorted && rewardsOrder === 'asc'
-                          ? styles.ascending
-                          : null,
-                      ]);
+              {sortedRewards.length > 0 && (
+                <table>
+                  <thead>
+                    <tr>
+                      {map(availableTableHeaders, (tableHeader) => {
+                        const isSorted = tableHeader.name === rewardsSortBy;
+                        const sortIconClasses = classNames([
+                          styles.sortIcon,
+                          isSorted ? styles.sorted : null,
+                          isSorted && rewardsOrder === 'asc'
+                            ? styles.ascending
+                            : null,
+                        ]);
+                        return (
+                          <th
+                            className={styles[tableHeader.name]}
+                            key={tableHeader.name}
+                            onClick={() =>
+                              this.handleRewardsSort(tableHeader.name)
+                            }
+                          >
+                            {tableHeader.title}
+                            <SVGInline
+                              svg={sortIcon}
+                              className={sortIconClasses}
+                            />
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {map(sortedRewards, (reward, key) => {
+                      const rewardWallet = get(
+                        reward,
+                        REWARD_FIELDS.WALLET_NAME
+                      );
+                      const isRestoring = get(
+                        reward,
+                        REWARD_FIELDS.IS_RESTORING
+                      );
+                      const syncingProgress = get(
+                        reward,
+                        REWARD_FIELDS.SYNCING_PROGRESS
+                      );
+                      const rewardTotal = get(
+                        reward,
+                        REWARD_FIELDS.REWARD_TOTAL
+                      ).toFormat(DECIMAL_PLACES_IN_ADA);
+                      const rewardUnspent = get(
+                        reward,
+                        REWARD_FIELDS.REWARD_UNSPENT
+                      ).toFormat(DECIMAL_PLACES_IN_ADA);
+                      const rewardsAddress = get(
+                        reward,
+                        REWARD_FIELDS.REWARDS_ADDRESS
+                      );
                       return (
-                        <th
-                          className={styles[tableHeader.name]}
-                          key={tableHeader.name}
-                          onClick={() =>
-                            this.handleRewardsSort(tableHeader.name)
-                          }
-                        >
-                          {tableHeader.title}
-                          <SVGInline
-                            svg={sortIcon}
-                            className={sortIconClasses}
-                          />
-                        </th>
+                        <tr key={key}>
+                          <td className={styles.rewardWallet}>
+                            {rewardWallet}
+                          </td>
+                          <td className={styles.rewardsAddress}>
+                            {rewardsAddress && (
+                              <div>
+                                <CopyToClipboard
+                                  text={rewardsAddress}
+                                  onCopy={() => onCopyAddress(rewardsAddress)}
+                                >
+                                  <div className={styles.addressContainer}>
+                                    <span className={styles.address}>
+                                      {rewardsAddress}
+                                    </span>
+                                    <span className={styles.copyAddress}>
+                                      <SVGInline
+                                        svg={iconCopy}
+                                        className={styles.copyIcon}
+                                      />
+                                    </span>
+                                  </div>
+                                </CopyToClipboard>
+                                {IS_EXPLORER_LINK_BUTTON_ENABLED && (
+                                  <ButtonLink
+                                    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+                                    className={explorerButtonClasses}
+                                    onClick={() =>
+                                      onOpenExternalLink(rewardsAddress)
+                                    }
+                                    skin={ButtonSkin}
+                                    label={intl.formatMessage(
+                                      messages.actionViewInExplorer
+                                    )}
+                                    linkProps={{
+                                      className: styles.externalLink,
+                                      hasIconBefore: false,
+                                      hasIconAfter: true,
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            )}
+                          </td>
+                          <td className={styles.rewardTotal}>
+                            {!isRestoring && (
+                              <RewardAmount amount={rewardTotal} />
+                            )}
+                            {isRestoring && (
+                              <div className={styles.syncingProgress}>
+                                <PopOver
+                                  content={intl.formatMessage(
+                                    messages.syncingTooltipLabel,
+                                    {
+                                      syncingProgress,
+                                    }
+                                  )}
+                                >
+                                  <LoadingSpinner medium />
+                                </PopOver>
+                              </div>
+                            )}
+                          </td>
+                          <td className={styles.rewardUnspent}>
+                            {isRestoring ? (
+                              '-'
+                            ) : (
+                              <RewardAmount amount={rewardUnspent} />
+                            )}
+                          </td>
+                        </tr>
                       );
                     })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {map(sortedRewards, (reward, key) => {
-                    const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
-                    const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
-                    const syncingProgress = get(
-                      reward,
-                      REWARD_FIELDS.SYNCING_PROGRESS
-                    );
-                    const rewardTotal = get(
-                      reward,
-                      REWARD_FIELDS.REWARD_TOTAL
-                    ).toFormat(DECIMAL_PLACES_IN_ADA);
-                    const rewardUnspent = get(
-                      reward,
-                      REWARD_FIELDS.REWARD_UNSPENT
-                    ).toFormat(DECIMAL_PLACES_IN_ADA);
-                    const rewardsAddress = get(
-                      reward,
-                      REWARD_FIELDS.REWARDS_ADDRESS
-                    );
-                    return (
-                      <tr key={key}>
-                        <td className={styles.rewardWallet}>{rewardWallet}</td>
-                        <td className={styles.rewardsAddress}>
-                          {rewardsAddress && (
-                            <div>
-                              <CopyToClipboard
-                                text={rewardsAddress}
-                                onCopy={() => onCopyAddress(rewardsAddress)}
-                              >
-                                <div className={styles.addressContainer}>
-                                  <span className={styles.address}>
-                                    {rewardsAddress}
-                                  </span>
-                                  <span className={styles.copyAddress}>
-                                    <SVGInline
-                                      svg={iconCopy}
-                                      className={styles.copyIcon}
-                                    />
-                                  </span>
-                                </div>
-                              </CopyToClipboard>
-                              {IS_EXPLORER_LINK_BUTTON_ENABLED && (
-                                <ButtonLink
-                                  // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-                                  className={explorerButtonClasses}
-                                  onClick={() =>
-                                    onOpenExternalLink(rewardsAddress)
-                                  }
-                                  skin={ButtonSkin}
-                                  label={intl.formatMessage(
-                                    messages.actionViewInExplorer
-                                  )}
-                                  linkProps={{
-                                    className: styles.externalLink,
-                                    hasIconBefore: false,
-                                    hasIconAfter: true,
-                                  }}
-                                />
-                              )}
-                            </div>
-                          )}
-                        </td>
-                        <td className={styles.rewardTotal}>
-                          {!isRestoring && (
-                            <RewardAmount amount={rewardTotal} />
-                          )}
-                          {isRestoring && (
-                            <div className={styles.syncingProgress}>
-                              <PopOver
-                                content={intl.formatMessage(
-                                  messages.syncingTooltipLabel,
-                                  {
-                                    syncingProgress,
-                                  }
-                                )}
-                              >
-                                <LoadingSpinner medium />
-                              </PopOver>
-                            </div>
-                          )}
-                        </td>
-                        <td className={styles.rewardUnspent}>
-                          {isRestoring ? (
-                            '-'
-                          ) : (
-                            <RewardAmount amount={rewardUnspent} />
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+                  </tbody>
+                </table>
+              )}
 
-            {isLoading && (
-              <div className={styles.loadingSpinnerWrapper}>
-                <LoadingSpinner />
+              {isLoading && (
+                <div className={styles.loadingSpinnerWrapper}>
+                  <LoadingSpinner />
+                </div>
+              )}
+            </BorderedBox>
+            <div className={styles.note}>
+              <div>
+                <FormattedHTMLMessage {...messages.note} />
               </div>
-            )}
-          </BorderedBox>
-          <div className={styles.note}>
-            <div>
-              <FormattedHTMLMessage {...messages.note} />
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  handleRewardsSort = (newSortBy: string) => {
-    const { rewardsOrder, rewardsSortBy } = this.state;
-    let newRewardsOrder;
-
-    if (rewardsSortBy === newSortBy) {
-      // on same sort change order
-      newRewardsOrder = rewardsOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      // on new sort instance, order by initial value 'descending'
-      newRewardsOrder = 'desc';
+      );
     }
 
-    this.setState({
-      rewardsSortBy: newSortBy,
-      rewardsOrder: newRewardsOrder,
-    });
-  };
-}
+    handleRewardsSort = (newSortBy: string) => {
+      const { rewardsOrder, rewardsSortBy } = this.state;
+      let newRewardsOrder;
+
+      if (rewardsSortBy === newSortBy) {
+        // on same sort change order
+        newRewardsOrder = rewardsOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        // on new sort instance, order by initial value 'descending'
+        newRewardsOrder = 'desc';
+      }
+
+      this.setState({
+        rewardsSortBy: newSortBy,
+        rewardsOrder: newRewardsOrder,
+      });
+    };
+  }
+);

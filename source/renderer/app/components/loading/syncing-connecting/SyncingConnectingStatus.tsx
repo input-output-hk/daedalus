@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import React, { Component } from 'react';
-import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
+import {
+  defineMessages,
+  FormattedHTMLMessage,
+  intlShape,
+  injectIntl,
+} from 'react-intl';
 import {
   BlockSyncType,
   CardanoNodeState,
@@ -36,6 +41,11 @@ const messages = defineMessages({
     id: 'loading.screen.stoppedCardanoMessage',
     defaultMessage: '!!!Cardano node stopped',
     description: 'Message "Cardano node stopped" on the loading screen.',
+  },
+  syncingMessage: {
+    id: 'loading.screen.syncingMessage',
+    defaultMessage: '!!!Backend syncing',
+    description: 'Message "Syncing" on the loading screen.',
   },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
@@ -92,9 +102,10 @@ interface Props {
   isNodeStopping: boolean;
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
+  intl: intlShape.isRequired;
 }
 
-export default class SyncingConnectingStatus extends Component<Props> {
+class SyncingConnectingStatus extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -160,7 +171,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
           ? messages.reconnecting
           : messages.connecting;
     }
-
     const isConnectingMessage =
       connectingMessage === messages.connecting ||
       connectingMessage === messages.reconnecting;
@@ -176,7 +186,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
   };
 
   render() {
-    const { intl } = this.context;
     const {
       isConnected,
       isNodeStopping,
@@ -186,13 +195,13 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasLoadedCurrentLocale,
       blockSyncProgress,
       cardanoNodeState,
+      intl,
     } = this.props;
+
     if (!hasLoadedCurrentLocale) return null;
 
-    const {
-      connectingMessage,
-      connectingDescription,
-    } = this._getConnectingMessage();
+    const { connectingMessage, connectingDescription } =
+      this._getConnectingMessage();
 
     if (
       cardanoNodeState === CardanoNodeStates.RUNNING &&
@@ -223,10 +232,12 @@ export default class SyncingConnectingStatus extends Component<Props> {
         </h1>
         <div className={styles.description}>
           {connectingDescription && (
-            <FormattedHTMLMessage {...connectingDescription} />
+            <FormattedHTMLMessage {...{ connectingDescription }} />
           )}
         </div>
       </div>
     );
   }
 }
+
+export default injectIntl(SyncingConnectingStatus);

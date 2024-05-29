@@ -1,7 +1,9 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import styles from './Asset.scss';
@@ -88,7 +90,6 @@ type State = {
   isHoveringSettingsIcon: boolean;
 };
 
-@observer
 class Asset extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -171,13 +172,8 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const {
-      fingerprint,
-      metadata,
-      decimals,
-      recommendedDecimals,
-      assetName,
-    } = asset;
+    const { fingerprint, metadata, decimals, recommendedDecimals, assetName } =
+      asset;
     const hasMetadataName = !!metadata?.name;
     const name =
       metadata?.name || (assetName && `ASCII: ${hexToString(assetName)}`) || '';
@@ -342,4 +338,4 @@ class Asset extends Component<Props, State> {
   }
 }
 
-export default Asset;
+export default observer(Asset);

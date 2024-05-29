@@ -14,7 +14,6 @@ type Props = {
   addressSlice: number;
 };
 
-@observer
 class AddressSequential extends Component<Props> {
   addressElement: HTMLElement | null | undefined;
   addressContainerElement: HTMLElement | null | undefined;
@@ -92,4 +91,4 @@ class AddressSequential extends Component<Props> {
   }
 }
 
-export default AddressSequential;
+export default observer(AddressSequential);

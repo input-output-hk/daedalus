@@ -45,7 +45,6 @@ type Props = {
   onPDFDownload?: (...args: Array<any>) => any;
 };
 
-@observer
 class Step3SuccessDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -107,4 +106,4 @@ class Step3SuccessDialog extends Component<Props> {
   }
 }
 
-export default Step3SuccessDialog;
+export default observer(Step3SuccessDialog);

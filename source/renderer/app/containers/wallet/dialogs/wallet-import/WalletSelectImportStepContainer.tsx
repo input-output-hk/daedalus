@@ -14,8 +14,6 @@ type State = {
   existingWalletsCount: number;
 };
 
-@inject('stores', 'actions')
-@observer
 class WalletSelectImportStepContainer extends Component<Props, State> {
   static defaultProps = DefaultProps;
   state = {
@@ -33,11 +31,8 @@ class WalletSelectImportStepContainer extends Component<Props, State> {
   render() {
     const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
-    const {
-      exportedWallets,
-      pendingImportWalletsCount,
-      isRestorationRunning,
-    } = walletMigration;
+    const { exportedWallets, pendingImportWalletsCount, isRestorationRunning } =
+      walletMigration;
     const { openExternalLink } = app;
     let walletsCount =
       this.state.existingWalletsCount + pendingImportWalletsCount;
@@ -67,4 +62,7 @@ class WalletSelectImportStepContainer extends Component<Props, State> {
   }
 }
 
-export default WalletSelectImportStepContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletSelectImportStepContainer));

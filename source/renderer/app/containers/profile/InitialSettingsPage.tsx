@@ -5,8 +5,6 @@ import TopBarLayout from '../../components/layout/TopBarLayout';
 import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -63,4 +61,4 @@ class InitialSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default InitialSettingsPage;
+export default inject('stores', 'actions')(observer(InitialSettingsPage));

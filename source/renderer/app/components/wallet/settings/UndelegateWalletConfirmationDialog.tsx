@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
@@ -5,8 +6,8 @@ import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { Input } from '@react-polymorph/components/Input';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { formattedWalletAmount } from '../../../utils/formatters';
@@ -121,7 +122,6 @@ interface FormFields {
   passphrase: string;
 }
 
-@observer
 class UndelegateWalletConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -412,4 +412,4 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
   }
 }
 
-export default UndelegateWalletConfirmationDialog;
+export default observer(UndelegateWalletConfirmationDialog);

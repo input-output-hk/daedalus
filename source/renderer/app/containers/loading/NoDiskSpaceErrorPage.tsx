@@ -5,8 +5,6 @@ import NoDiskSpaceError from '../../components/loading/no-disk-space-error/NoDis
 
 type Props = InjectedStoresProps;
 
-@inject('stores')
-@observer
 class NoDiskSpaceErrorPage extends Component<Props> {
   static defaultProps = {
     stores: null,
@@ -14,11 +12,8 @@ class NoDiskSpaceErrorPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const {
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
-    } = stores.networkStatus;
+    const { diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended } =
+      stores.networkStatus;
     return (
       <NoDiskSpaceError
         diskSpaceRequired={diskSpaceRequired}
@@ -29,4 +24,4 @@ class NoDiskSpaceErrorPage extends Component<Props> {
   }
 }
 
-export default NoDiskSpaceErrorPage;
+export default inject('stores')(observer(NoDiskSpaceErrorPage));

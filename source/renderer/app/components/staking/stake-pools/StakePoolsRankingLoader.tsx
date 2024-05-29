@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsRankingLoader.scss';
 
-@observer
 class StakePoolsRankingLoader extends Component<any> {
   render() {
     return (
@@ -14,4 +13,4 @@ class StakePoolsRankingLoader extends Component<any> {
   }
 }
 
-export default StakePoolsRankingLoader;
+export default observer(StakePoolsRankingLoader);

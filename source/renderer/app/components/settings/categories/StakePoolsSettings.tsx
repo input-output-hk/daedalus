@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { map, omit } from 'lodash';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Select } from '@react-polymorph/components/Select';
+import { Link } from '@react-polymorph/components/Link';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import {
@@ -151,7 +151,6 @@ type State = {
 };
 const { isSelfnode } = global.environment;
 
-@observer
 class StakePoolsSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -402,4 +401,4 @@ class StakePoolsSettings extends Component<Props, State> {
   }
 }
 
-export default StakePoolsSettings;
+export default observer(StakePoolsSettings);

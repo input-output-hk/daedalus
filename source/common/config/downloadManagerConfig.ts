@@ -1,7 +1,5 @@
 // https://www.npmjs.com/package/node-downloader-helper
 import type {
-  AllowedDownloadDirectoriesValues,
-  AllowedDownloadDirectoriesKeys,
   AllowedDownloadDirectoriesMap,
   DownloadState,
   DownloadEventType,

@@ -138,7 +138,7 @@ rec {
   #   };
 
   nodejs = let
-    base = pkgs.nodejs-18_x;
+    base = pkgs.nodejs;
   in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
     # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,
@@ -231,21 +231,6 @@ rec {
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
   '';
 
-  # FIXME: this has to be done better…
-  temporaryNodeModulesPatches = ''
-    sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
-
-    # Has to be idempotent:
-    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoWallet.js ; then
-      sed -r "s/'serve'/\0, '+RTS', '-N', '-RTS'/g" -i node_modules/cardano-launcher/dist/src/cardanoWallet.js
-    fi
-
-    # Has to be idempotent:
-    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoNode.js ; then
-      sed -r "s/config.rtsOpts/(\0 || []).concat(['-N'])/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
-    fi
-  '';
-
   electronVersion = originalPackageJson.dependencies.electron;
 
   versionInOfflineCache = safeName:
@@ -253,14 +238,13 @@ rec {
       ls ${offlineCache} | grep -F ${pkgs.lib.escapeShellArg (safeName + "___" + safeName)} | grep -Po '\d+(\.\d+)*' | tr -d '\n' >$out
     ''));
 
-  electronChromedriverVersion = versionInOfflineCache "electron_chromedriver";
-
   commonSources = {
-    electronHeaders = pkgs.runCommandLocal "electron-headers" {
+    electronHeaders = pkgs.runCommandLocal "electron-headers-${electronVersion}" {
       # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
       src = pkgs.fetchurl {
+        name = "node-v${electronVersion}-headers.tar.gz";
         url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-        hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
+        hash = "sha256-/AqDBJIEk8zHqP6atq4lFGvXjzww/o9x7KA+WRW/0DE=";
       };
     } ''
       tar -xf $src
@@ -271,20 +255,11 @@ rec {
     electronShaSums = pkgs.fetchurl {
       name = "electronShaSums-${electronVersion}"; # cache invalidation
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-      hash = "sha256-75bNqt2c7u/fm0P2Ha6NvkbGThEifIHXl2x5UCdy4fM=";
+      hash = "sha256-Np56814pncRldaiuG5i1tHELzcrjW0J48V07czWD3vE=";
     };
 
     electronCacheHash = builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronVersion}";
-
-    electronChromedriverShaSums = pkgs.fetchurl {
-      name = "electronChromedriverShaSums-${electronChromedriverVersion}"; # cache invalidation
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-      hash = "sha256-nV0aT0nuzsVK5J37lEo0egXmRy/tpdF3jyrY3VBVvR8=";
-    };
-
-    electronChromedriverCacheHash = builtins.hashString "sha256"
-      "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}";
   };
 
   # We patch `node_modules/electron-rebuild` to force specific Node.js

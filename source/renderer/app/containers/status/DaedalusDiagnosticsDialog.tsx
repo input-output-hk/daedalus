@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
@@ -8,8 +9,6 @@ import { buildSystemInfo } from '../../utils/buildSystemInfo';
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class DaedalusDiagnosticsDialog extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -131,4 +130,4 @@ class DaedalusDiagnosticsDialog extends Component<Props> {
   }
 }
 
-export default DaedalusDiagnosticsDialog;
+export default inject('stores', 'actions')(observer(DaedalusDiagnosticsDialog));

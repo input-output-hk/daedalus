@@ -1,13 +1,16 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import Profile from './Profile';
 
 export default class User {
-  @observable
   id: string;
-  @observable
   profile: Profile;
 
   constructor(id: string, profile: Profile) {
+    makeObservable(this, {
+      id: observable,
+      profile: observable,
+    });
+
     this.id = id;
     this.profile = profile;
   }

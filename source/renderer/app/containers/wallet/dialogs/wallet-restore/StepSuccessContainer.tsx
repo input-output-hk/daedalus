@@ -7,8 +7,6 @@ import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injec
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores', 'actions')
-@observer
 class SuccessDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
@@ -26,4 +24,4 @@ class SuccessDialogContainer extends Component<Props> {
   }
 }
 
-export default SuccessDialogContainer;
+export default inject('stores', 'actions')(observer(SuccessDialogContainer));

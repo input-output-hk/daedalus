@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
@@ -45,11 +45,10 @@ const messages = defineMessages({
 export type ScrollContextType = {
   setIsScrolling: (...args: Array<any>) => any;
 };
-export const WalletTransactionsListScrollContext = React.createContext<
-  ScrollContextType
->({
-  setIsScrolling: () => null,
-});
+export const WalletTransactionsListScrollContext =
+  React.createContext<ScrollContextType>({
+    setIsScrolling: () => null,
+  });
 type Props = {
   deletePendingTransaction: (...args: Array<any>) => any;
   formattedWalletAmount: (...args: Array<any>) => any;
@@ -77,7 +76,6 @@ type State = {
 };
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-@observer
 class WalletTransactionsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -378,4 +376,4 @@ class WalletTransactionsList extends Component<Props, State> {
   }
 }
 
-export default WalletTransactionsList;
+export default observer(WalletTransactionsList);

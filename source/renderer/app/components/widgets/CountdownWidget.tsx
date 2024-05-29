@@ -39,7 +39,6 @@ type State = {
   timeLeft: number | null | undefined;
 };
 
-@observer
 class CountdownWidget extends Component<Props, State> {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
@@ -184,4 +183,4 @@ class CountdownWidget extends Component<Props, State> {
   }
 }
 
-export default CountdownWidget;
+export default observer(CountdownWidget);

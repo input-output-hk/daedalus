@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { DelegationAction } from '../api/staking/types';
 
@@ -31,38 +31,41 @@ export type StakePoolProps = {
 };
 export default class StakePool {
   id: string;
-  @observable
   ticker: string;
-  @observable
   homepage: string;
-  @observable
   producedBlocks: number;
-  @observable
   potentialRewards: BigNumber;
-  @observable
   nonMyopicMemberRewards: number;
-  @observable
   relativeStake: BigNumber;
-  @observable
   pledge: BigNumber;
-  @observable
   cost: BigNumber;
-  @observable
   description = '';
-  @observable
   isCharity: boolean;
-  @observable
   name = '';
-  @observable
   profitMargin: number;
-  @observable
   ranking: number;
-  @observable
   retiring: Date | null | undefined;
-  @observable
   saturation: number;
 
   constructor(data: StakePoolProps) {
+    makeObservable(this, {
+      ticker: observable,
+      homepage: observable,
+      producedBlocks: observable,
+      potentialRewards: observable,
+      nonMyopicMemberRewards: observable,
+      relativeStake: observable,
+      pledge: observable,
+      cost: observable,
+      description: observable,
+      isCharity: observable,
+      name: observable,
+      profitMargin: observable,
+      ranking: observable,
+      retiring: observable,
+      saturation: observable,
+    });
+
     Object.assign(this, data);
   }
 }

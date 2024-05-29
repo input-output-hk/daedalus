@@ -13,8 +13,6 @@ import {
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
 
-@inject('stores', 'actions')
-@observer
 class StakePoolsListPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -52,15 +50,8 @@ class StakePoolsListPage extends Component<Props> {
   };
 
   render() {
-    const {
-      uiDialogs,
-      staking,
-      app,
-      networkStatus,
-      profile,
-      wallets,
-      analytics,
-    } = this.props.stores;
+    const { uiDialogs, staking, app, networkStatus, profile, wallets } =
+      this.props.stores;
     const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
     const {
@@ -113,4 +104,6 @@ class StakePoolsListPage extends Component<Props> {
   }
 }
 
-export default withAnalytics(StakePoolsListPage);
+export default withAnalytics(
+  inject('stores', 'actions')(observer(StakePoolsListPage))
+);

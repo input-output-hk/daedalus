@@ -3,7 +3,7 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -25,7 +25,6 @@ type Props = {
   currentDateFormat: string;
 };
 
-@observer
 class AlertsOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -136,4 +135,4 @@ class AlertsOverlay extends Component<Props, State> {
   }
 }
 
-export default AlertsOverlay;
+export default observer(AlertsOverlay);

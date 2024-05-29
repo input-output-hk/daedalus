@@ -13,16 +13,10 @@ type Props = {
   onMouseLeave?: (...args: Array<any>) => any;
 };
 
-@observer
 class BorderedBox extends Component<Props> {
   render() {
-    const {
-      children,
-      className,
-      fullHeight,
-      onMouseEnter,
-      onMouseLeave,
-    } = this.props;
+    const { children, className, fullHeight, onMouseEnter, onMouseLeave } =
+      this.props;
     const componentClasses = classnames([
       styles.component,
       fullHeight ? styles.fullHeight : null,
@@ -40,4 +34,4 @@ class BorderedBox extends Component<Props> {
   }
 }
 
-export default BorderedBox;
+export default observer(BorderedBox);

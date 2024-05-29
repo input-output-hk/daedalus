@@ -20,13 +20,25 @@ nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
+
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "darwin" ] ; then
+  ourArch="$(cut -d- -f1 <<<"${system:-x86_64-darwin}" | sed -r 's/aarch64/arm64/')"
+  for f in \
+    node_modules/usb/binding.gyp \
+    node_modules/usb/libusb.gypi \
+    node_modules/utf-8-validate/binding.gyp \
+  ; do
+    sed -r 's,-arch (x86_64|arm64),-arch '"$ourArch"',g' -i "$f"
+  done
+fi
+
 # TODO: do we really need to run `electron-rebuild` 3×?
 
 electron-rebuild --force
 
 electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
 
-if [ "$(uname)" == "Linux" ] ; then
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "linux" ] ; then
   # We ship debug version because the release one has issues with Ledger Nano S
   electron-rebuild -w usb --force -s --debug
 fi
@@ -62,8 +74,9 @@ tryLink() {
 
 tryLink   "usb"           "usb_bindings.node"
 tryLink   "usb-detection" "detection.node"
+tryLink   "utf-8-validate" "validation.node"
 tryLink   "node-hid"      "HID.node"
 
-if [ "$(uname)" == "Linux" ] ; then
+if [ "$(cut -d- -f2 <<<"${system:-x86_64-darwin}")" == "linux" ] ; then
   tryLink "node-hid"      "HID_hidraw.node"
 fi

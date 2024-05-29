@@ -1,32 +1,58 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, makeObservable } from 'mobx';
 import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 import type { walletBackupStep } from '../types/walletBackupTypes';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 
 export default class WalletBackupStore extends Store {
-  @observable
   inProgress = false;
-  @observable
   currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;
-  @observable
   recoveryPhrase = [];
-  @observable
   completed = false;
-  @observable
   enteredPhrase = [];
-  @observable
   isPrivacyNoticeAccepted = false;
-  @observable
   isEntering = false;
-  @observable
   isTermOfflineAccepted = false;
-  @observable
   isTermRecoveryAccepted = false;
-  @observable
   countdownRemaining = 0;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   countdownTimerInterval: IntervalID | null | undefined = null;
+
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      inProgress: observable,
+      currentStep: observable,
+      recoveryPhrase: observable,
+      completed: observable,
+      enteredPhrase: observable,
+      isPrivacyNoticeAccepted: observable,
+      isEntering: observable,
+      isTermOfflineAccepted: observable,
+      isTermRecoveryAccepted: observable,
+      countdownRemaining: observable,
+      _initiateWalletBackup: action,
+      _acceptPrivacyNoticeForWalletBackup: action,
+      _continueToRecoveryPhraseForWalletBackup: action,
+      _startWalletBackup: action,
+      _updateWalletBackupVerificationPhrase: action,
+      _clearEnteredRecoveryPhrase: action,
+      isRecoveryPhraseValid: computed,
+      _acceptWalletBackupTermOffline: action,
+      _acceptWalletBackupTermRecovery: action,
+      _restartWalletBackup: action,
+      _cancelWalletBackup: action,
+      _finishWalletBackup: action,
+    });
+  }
 
   setup() {
     const a = this.actions.walletBackup;
@@ -51,7 +77,6 @@ export default class WalletBackupStore extends Store {
     this.actions.app.initAppEnvironment.listen(() => {});
   }
 
-  @action
   _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
@@ -77,59 +102,48 @@ export default class WalletBackupStore extends Store {
       dialog: WalletBackupDialog,
     });
   };
-  @action
   _acceptPrivacyNoticeForWalletBackup = () => {
     this.isPrivacyNoticeAccepted = true;
   };
-  @action
   _continueToRecoveryPhraseForWalletBackup = () => {
     // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
-  @action
   _startWalletBackup = () => {
     // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY;
   };
-  @action
   _updateWalletBackupVerificationPhrase = (params: {
     verificationPhrase: Array<string>;
   }) => {
     const { verificationPhrase } = params;
     this.enteredPhrase = verificationPhrase;
   };
-  @action
   _clearEnteredRecoveryPhrase = () => {
     this.enteredPhrase = [];
   };
 
-  @computed
   get isRecoveryPhraseValid(): boolean {
     return this.recoveryPhrase.join(' ') === this.enteredPhrase.join(' ');
   }
 
-  @action
   _acceptWalletBackupTermOffline = () => {
     this.isTermOfflineAccepted = true;
   };
-  @action
   _acceptWalletBackupTermRecovery = () => {
     this.isTermRecoveryAccepted = true;
   };
-  @action
   _restartWalletBackup = () => {
     this._clearEnteredRecoveryPhrase();
 
     // @ts-ignore ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'walletBac... Remove this comment to see the full error message
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
-  @action
   _cancelWalletBackup = () => {
     this.inProgress = false;
 
     this._clearEnteredRecoveryPhrase();
   };
-  @action
   _finishWalletBackup = () => {
     this.inProgress = false;
   };

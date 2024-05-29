@@ -1,0 +1,1 @@
+{"version":3,"file":"translation-runner.js","sourceRoot":"","sources":["translation-runner.ts"],"names":[],"mappings":";;;;;AAAA,sGAAiE;AACjE,oEAAuC;AAEvC,IAAA,yCAAkB,EAAC;IACjB,iBAAiB,EAAE,uBAAuB;IAC1C,qBAAqB,EAAE,kCAAkC;IACzD,kBAAkB,EAAE,IAAI;IACxB,SAAS,EAAE,CAAC,OAAO,EAAE,OAAO,CAAC;IAC7B,mBAAmB,EAAE;QACnB,mDAAmD;QACnD,wBAAwB,EAAE,GAAG,EAAE,CAAC,uBAAQ;KACzC;CACF,CAAC,CAAC"}

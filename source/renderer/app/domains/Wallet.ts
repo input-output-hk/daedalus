@@ -1,11 +1,10 @@
 import { get, pick } from 'lodash';
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, makeObservable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
   WalletSyncState,
   SyncStateStatus,
   DelegationStatus,
-  WalletUnit,
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';
@@ -128,48 +127,60 @@ export type WalletProps = {
 };
 export default class Wallet {
   id = '';
-  @observable
   addressPoolGap: number;
-  @observable
   name = '';
-  @observable
   amount: BigNumber;
-  @observable
   availableAmount: BigNumber;
-  @observable
   reward: BigNumber;
-  @observable
   assets: WalletTokens;
-  @observable
   passwordUpdateDate: Date | null | undefined;
-  @observable
   syncState: WalletSyncState;
-  @observable
   isLegacy: boolean;
-  @observable
   delegatedStakePoolId: string | null | undefined;
-  @observable
   delegationStakePoolStatus: string | null | undefined;
-  @observable
   lastDelegatedStakePoolId: string | null | undefined;
-  @observable
   lastDelegationStakePoolStatus: string | null | undefined;
-  @observable
   pendingDelegations: WalletPendingDelegations;
-  @observable
   discovery: Discovery;
-  @observable
   hasPassword: boolean;
-  @observable
   walletNotConnected: boolean;
-  @observable
   isHardwareWallet: boolean;
 
   constructor(data: WalletProps) {
+    makeObservable(this, {
+      addressPoolGap: observable,
+      name: observable,
+      amount: observable,
+      availableAmount: observable,
+      reward: observable,
+      assets: observable,
+      passwordUpdateDate: observable,
+      syncState: observable,
+      isLegacy: observable,
+      delegatedStakePoolId: observable,
+      delegationStakePoolStatus: observable,
+      lastDelegatedStakePoolId: observable,
+      lastDelegationStakePoolStatus: observable,
+      pendingDelegations: observable,
+      discovery: observable,
+      hasPassword: observable,
+      walletNotConnected: observable,
+      isHardwareWallet: observable,
+      update: action,
+      hasFunds: computed,
+      hasAssets: computed,
+      isRestoring: computed,
+      isSyncing: computed,
+      isNotResponding: computed,
+      isRandom: computed,
+      isDelegating: computed,
+      isSequential: computed,
+      restorationProgress: computed,
+    });
+
     Object.assign(this, data);
   }
 
-  @action
   update(other: Wallet) {
     Object.assign(
       this,
@@ -197,17 +208,14 @@ export default class Wallet {
     );
   }
 
-  @computed
   get hasFunds(): boolean {
     return this.amount.gt(0);
   }
 
-  @computed
   get hasAssets(): boolean {
     return get(this, 'assets.total', []).length > 0;
   }
 
-  @computed
   get isRestoring(): boolean {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING &&
@@ -215,24 +223,20 @@ export default class Wallet {
     );
   }
 
-  @computed
   get isSyncing(): boolean {
     return get(this, 'syncState.status') === WalletSyncStateStatuses.SYNCING;
   }
 
-  @computed
   get isNotResponding(): boolean {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING
     );
   }
 
-  @computed
   get isRandom(): boolean {
     return this.discovery === WalletDiscovery.RANDOM;
   }
 
-  @computed
   get isDelegating(): boolean {
     return this.lastDelegationStakePoolStatus
       ? this.lastDelegationStakePoolStatus ===
@@ -240,12 +244,10 @@ export default class Wallet {
       : this.delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
   }
 
-  @computed
   get isSequential(): boolean {
     return this.discovery !== WalletDiscovery.RANDOM;
   }
 
-  @computed
   get restorationProgress(): number {
     return get(this, 'syncState.progress.quantity', 0);
   }

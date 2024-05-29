@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 import WalletsSettings from '../../../components/settings/categories/WalletsSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -44,4 +42,4 @@ class WalletsSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default WalletsSettingsPage;
+export default inject('stores', 'actions')(observer(WalletsSettingsPage));

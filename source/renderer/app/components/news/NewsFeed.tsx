@@ -50,7 +50,6 @@ type State = {
 };
 const SCROLLABLE_DOM_ELEMENT_SELECTOR = '.NewsFeed_newsFeedList';
 
-@observer
 class NewsFeed extends Component<Props, State> {
   static defaultProps = {
     onClose: null,
@@ -249,4 +248,4 @@ class NewsFeed extends Component<Props, State> {
   }
 }
 
-export default NewsFeed;
+export default observer(NewsFeed);

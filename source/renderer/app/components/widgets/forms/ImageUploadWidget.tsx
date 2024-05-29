@@ -19,7 +19,6 @@ type Props = {
   label: string;
 };
 
-@observer
 class ImageUploadWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -46,4 +45,4 @@ class ImageUploadWidget extends Component<Props> {
   }
 }
 
-export default ImageUploadWidget;
+export default observer(ImageUploadWidget);

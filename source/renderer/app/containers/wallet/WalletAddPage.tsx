@@ -19,8 +19,6 @@ import WalletImportDialogContainer from './dialogs/WalletImportDialogContainer';
 
 type Props = InjectedProps;
 
-@inject('actions', 'stores')
-@observer
 class WalletAddPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -111,4 +109,4 @@ class WalletAddPage extends Component<Props> {
   }
 }
 
-export default WalletAddPage;
+export default inject('actions', 'stores')(observer(WalletAddPage));

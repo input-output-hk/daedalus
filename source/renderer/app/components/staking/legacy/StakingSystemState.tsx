@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import StakingSystemStateElement from './StakingSystemStateElement';
 import styles from './StakingSystemState.scss';
 
-@observer
 class StakingSystemState extends Component<any> {
   render() {
     return (
@@ -21,4 +20,4 @@ class StakingSystemState extends Component<any> {
   }
 }
 
-export default StakingSystemState;
+export default observer(StakingSystemState);

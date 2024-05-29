@@ -109,7 +109,6 @@ const initialState = {
   isTableHeaderHovered: false,
 };
 
-@observer
 class StakePools extends Component<Props, State> {
   loadingSpinner: LoadingSpinner | null | undefined;
   static contextTypes = {
@@ -432,4 +431,4 @@ class StakePools extends Component<Props, State> {
   }
 }
 
-export default StakePools;
+export default observer(StakePools);

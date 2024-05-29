@@ -1,0 +1,56 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// formfield
+$formfield-bg-color: var(--rp-formfield-bg-color, none) !default;
+$formfield-bg-color-disabled: var(
+  --rp-formfield-bg-color-disabled,
+  none
+) !default;
+
+// label
+$formfield-label-font-family: var(
+  --rp-formfield-label-font-family,
+  $theme-font-medium,
+  sans-serif
+) !default;
+$formfield-label-font-size: var(--rp-formfield-label-font-size, 16px) !default;
+$formfield-label-text-color: var(
+  --rp-formfield-label-text-color,
+  #5e6066
+) !default;
+$formfield-label-text-color-disabled: var(
+  --rp-formfield-label-text-color-disabled,
+  $theme-color-disabled
+) !default;
+$formfield-label-margin: var(--rp-formfield-label-margin, 0 0 10px 0) !default;
+
+.root {
+  background-color: $formfield-bg-color;
+  position: relative;
+}
+
+.label {
+  color: $formfield-label-text-color;
+  display: block;
+  font-family: $formfield-label-font-family, sans-serif;
+  font-size: $formfield-label-font-size;
+  line-height: 1.38;
+  margin: $formfield-label-margin;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+// BEGIN SPECIAL STATES ---------- //
+
+.disabled {
+  background-color: $formfield-bg-color-disabled;
+  .label {
+    color: $formfield-label-text-color-disabled;
+  }
+}
+
+// END SPECIAL STATES ---------- //

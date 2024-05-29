@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './DataLayerMigrationForm.scss';
@@ -41,7 +41,6 @@ type Props = {
   error?: LocalizableError | null | undefined;
 };
 
-@observer
 class DataLayerMigrationForm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -81,4 +80,4 @@ class DataLayerMigrationForm extends Component<Props> {
   }
 }
 
-export default DataLayerMigrationForm;
+export default observer(DataLayerMigrationForm);

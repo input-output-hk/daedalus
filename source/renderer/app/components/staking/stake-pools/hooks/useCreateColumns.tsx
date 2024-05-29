@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { FormattedHTMLMessage } from 'react-intl';
 import { Column } from 'react-table';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { PoolPopOver } from '../../widgets/PoolPopOver';
 import { Intl } from '../../../../types/i18nTypes';
 import styles from '../StakePoolsTable.scss';

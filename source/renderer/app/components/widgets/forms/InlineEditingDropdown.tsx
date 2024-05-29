@@ -1,13 +1,14 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { Select } from '@react-polymorph/components/Select';
+import { SelectSkin } from '@react-polymorph/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/questio... Remove this comment to see the full error message
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
@@ -36,7 +37,6 @@ type Props = {
   successfullyUpdated: boolean;
 };
 
-@observer
 class InlineEditingDropdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -95,4 +95,4 @@ class InlineEditingDropdown extends Component<Props> {
   }
 }
 
-export default InlineEditingDropdown;
+export default observer(InlineEditingDropdown);

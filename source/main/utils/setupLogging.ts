@@ -21,7 +21,7 @@ import type {
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
+  const logFilePath = path?.join(pubLogsFolderPath, 'Daedalus.json');
   ensureDirectoryExists(pubLogsFolderPath);
   rimraf.sync(path.join(pubLogsFolderPath, './Daedalus.*'));
   log.transports.console.level = isTest ? 'error' : 'info';
@@ -122,13 +122,8 @@ export const logStateSnapshot = (
 ): MessageBody => {
   const { ...data } = props;
   const { currentTime: at, systemInfo, coreInfo } = data;
-  const {
-    platform,
-    platformVersion,
-    cpu,
-    ram,
-    availableDiskSpace,
-  } = systemInfo;
+  const { platform, platformVersion, cpu, ram, availableDiskSpace } =
+    systemInfo;
   const {
     daedalusVersion,
     daedalusProcessID,

@@ -33,7 +33,7 @@ import {
 import { HardwareWalletChannels } from './createHardwareWalletIPCChannels';
 import { Device } from './hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from './hardwareWallets/ledger/deviceDetection/deviceDetection';
-import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
+import { initTrezorConnect } from '../trezor/connection';
 
 type ListenerType = {
   unsubscribe: (...args: Array<any>) => any;
@@ -181,7 +181,7 @@ export const handleHardwareWalletRequests = async (
     TrezorConnect.removeAllListeners();
     // Initialize new device listeners
     TrezorConnect.on(UI_EVENT, (event) => {
-      logger.info('[TREZOR-CONNECT] Received UI_EVENT: ' + event.type);
+      logger.info(`[TREZOR-CONNECT] Received UI_EVENT: ${event.type}`);
 
       if (event.type === UI.REQUEST_PASSPHRASE) {
         // ui-request_passphrase
@@ -202,12 +202,11 @@ export const handleHardwareWalletRequests = async (
       }
     });
     TrezorConnect.on(TRANSPORT_EVENT, (event) => {
+      logger.info(
+        '[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error',
+        event.payload
+      );
       if (event.type === TRANSPORT.ERROR) {
-        logger.info(
-          '[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error',
-          event.payload
-        );
-
         // Send Transport error to Renderer
         getHardwareWalletConnectionChannel.send(
           {
@@ -222,7 +221,7 @@ export const handleHardwareWalletRequests = async (
       }
     });
     TrezorConnect.on(DEVICE_EVENT, (event) => {
-      logger.info('[TREZOR-CONNECT] Received DEVICE_EVENT: ' + event.type);
+      logger.info(`[TREZOR-CONNECT] Received DEVICE_EVENT: ${event.type}`);
 
       const connectionChanged =
         event.type === DEVICE.CONNECT ||
@@ -755,12 +754,14 @@ export const handleHardwareWalletRequests = async (
     const { path, isTrezor, devicePath } = params;
 
     try {
+      logger.info(`[TREZOR-CONNECT] isTrezor=${isTrezor}`);
+
       if (isTrezor) {
         // We re-initialize the Trezor Connect session to give the user the chance to provide
         // a different passphrase, in case they want to switch to a different
         // hidden wallet or just if they provided a wrong one.
-        await reinitTrezorConnect();
-        resetTrezorListeners();
+        // await reinitTrezorConnect();
+        // resetTrezorListeners();
 
         logger.info('[TREZOR-CONNECT] Calling TrezorConnect.getFeatures()');
         const deviceFeatures = await TrezorConnect.getFeatures();

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Select } from '@react-polymorph/components/Select';
+import { Link } from '@react-polymorph/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
@@ -54,7 +54,6 @@ type Props = {
   onOpenExternalLink: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -125,4 +124,4 @@ class WalletSettings extends Component<Props> {
   }
 }
 
-export default WalletSettings;
+export default observer(WalletSettings);

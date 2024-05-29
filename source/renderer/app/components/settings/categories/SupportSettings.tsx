@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import {
   FormattedMessage,
   FormattedHTMLMessage,
@@ -7,8 +7,8 @@ import {
   Intl,
 } from 'react-intl';
 import classNames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { messages } from './SupportSettings.messages';
@@ -24,7 +24,6 @@ interface SupportSettingsProps {
   analyticsAccepted: boolean;
 }
 
-@observer
 class SupportSettings extends Component<SupportSettingsProps> {
   render() {
     const {
@@ -145,4 +144,4 @@ class SupportSettings extends Component<SupportSettingsProps> {
   }
 }
 
-export default injectIntl(SupportSettings);
+export default injectIntl(observer(SupportSettings));

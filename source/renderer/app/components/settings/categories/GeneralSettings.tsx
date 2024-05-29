@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import ProfileSettingsForm from '../../widgets/forms/ProfileSettingsForm';
 import type { ProfileSettingsFormProps } from '../../widgets/forms/ProfileSettingsForm';
 
-@observer
 class GeneralSettings extends Component<ProfileSettingsFormProps> {
   render() {
     const {
@@ -27,4 +26,4 @@ class GeneralSettings extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default GeneralSettings;
+export default observer(GeneralSettings);

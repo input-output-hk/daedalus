@@ -1,9 +1,14 @@
-import { action, computed, observable, runInAction } from 'mobx';
+import {
+  action,
+  computed,
+  observable,
+  runInAction,
+  makeObservable,
+} from 'mobx';
 import { get } from 'lodash';
 import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import NewsDomains from '../domains/News';
 import { logger } from '../utils/logging';
 import {
   requestDownloadChannel,
@@ -29,65 +34,85 @@ import {
   DOWNLOAD_EVENT_TYPES,
   DOWNLOAD_STATES,
 } from '../../../common/config/downloadManagerConfig';
-import type { SoftwareUpdateInfo } from '../api/news/types';
+import { NewsItem, SoftwareUpdateInfo } from '../api/news/types';
 import type {
   DownloadInfo,
   DownloadData,
 } from '../../../common/types/downloadManager.types';
 import type { FormattedDownloadData } from '../utils/formatters';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 
 const { version: currentVersion, platform } = global.environment;
-const { News } = NewsDomains;
 export default class AppUpdateStore extends Store {
-  @observable
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
-  availableUpdate: News | null | undefined = null;
-  @observable
+  availableUpdate: NewsItem | null | undefined = null;
   availableUpdateVersion = '';
-  @observable
   isUpdateDownloading = false;
-  @observable
   isUpdateDownloaded = false;
-  @observable
   isUpdateProgressOpen = false;
-  @observable
   isAutomaticUpdateFailed = false;
-  @observable
   isUpdatePostponed = false;
-  @observable
   isWaitingToQuitDaedalus = false;
-  @observable
   installationProgress = 0;
-  @observable
   downloadInfo: DownloadInfo | null | undefined = null;
-  @observable
   downloadData: DownloadData | null | undefined = null;
-  @observable
   availableAppVersion: string | null | undefined = null;
-  @observable
   getAppAutomaticUpdateFailedRequest: Request<Promise<boolean>> = new Request(
     this.api.localStorage.getAppAutomaticUpdateFailed
   );
-  @observable
   setAppAutomaticUpdateFailedRequest: Request<Promise<void>> = new Request(
     this.api.localStorage.setAppAutomaticUpdateFailed
   );
-  @observable
   unsetAppAutomaticUpdateFailedRequest: Request<Promise<void>> = new Request(
     this.api.localStorage.unsetAppAutomaticUpdateFailed
   );
-  @observable
   getAppUpdateCompletedRequest: Request<Promise<boolean>> = new Request(
     this.api.localStorage.getAppUpdateCompleted
   );
-  @observable
   setAppUpdateCompletedRequest: Request<Promise<void>> = new Request(
     this.api.localStorage.setAppUpdateCompleted
   );
-  @observable
   unsetAppUpdateCompletedRequest: Request<Promise<void>> = new Request(
     this.api.localStorage.unsetAppUpdateCompleted
   );
+
+  constructor(api: Api, actions: ActionsMap, analytics: AnalyticsTracker) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      availableUpdate: observable,
+      availableUpdateVersion: observable,
+      isUpdateDownloading: observable,
+      isUpdateDownloaded: observable,
+      isUpdateProgressOpen: observable,
+      isAutomaticUpdateFailed: observable,
+      isUpdatePostponed: observable,
+      isWaitingToQuitDaedalus: observable,
+      installationProgress: observable,
+      downloadInfo: observable,
+      downloadData: observable,
+      availableAppVersion: observable,
+      getAppAutomaticUpdateFailedRequest: observable,
+      setAppAutomaticUpdateFailedRequest: observable,
+      unsetAppAutomaticUpdateFailedRequest: observable,
+      getAppUpdateCompletedRequest: observable,
+      setAppUpdateCompletedRequest: observable,
+      unsetAppUpdateCompletedRequest: observable,
+      displayAppUpdateOverlay: computed,
+      displayAppUpdateNewsItem: computed,
+      formattedDownloadData: computed,
+      downloadTimeLeft: computed,
+      totalDownloaded: computed,
+      totalDownloadSize: computed,
+      downloadProgress: computed,
+      showManualUpdate: computed,
+      _openAppUpdateOverlay: action,
+      _closeAppUpdateOverlay: action,
+      _postponeUpdate: action,
+    });
+  }
 
   setup() {
     const actions = this.actions.appUpdate;
@@ -120,7 +145,6 @@ export default class AppUpdateStore extends Store {
   };
 
   // ==================== PUBLIC ==================
-  @computed
   get displayAppUpdateOverlay(): boolean {
     return (
       !!this.availableUpdate &&
@@ -131,12 +155,10 @@ export default class AppUpdateStore extends Store {
     );
   }
 
-  @computed
   get displayAppUpdateNewsItem(): boolean {
     return this.isUpdateDownloading || this.isUpdatePostponed;
   }
 
-  @computed
   get formattedDownloadData(): FormattedDownloadData {
     return formattedDownloadData(
       this.downloadData,
@@ -144,27 +166,22 @@ export default class AppUpdateStore extends Store {
     );
   }
 
-  @computed
   get downloadTimeLeft(): string {
     return this.formattedDownloadData.timeLeft;
   }
 
-  @computed
   get totalDownloaded(): string {
     return this.formattedDownloadData.downloaded;
   }
 
-  @computed
   get totalDownloadSize(): string {
     return this.formattedDownloadData.total;
   }
 
-  @computed
   get downloadProgress(): number {
     return this.formattedDownloadData.progress;
   }
 
-  @computed
   get showManualUpdate(): boolean {
     return this.isAutomaticUpdateFailed;
   }
@@ -290,12 +307,11 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _getUpdateDownloadLocalData = async (): Promise<
-    DownloadLocalDataMainResponse
-  > =>
-    getDownloadLocalDataChannel.request({
-      id: APP_UPDATE_DOWNLOAD_ID,
-    });
+  _getUpdateDownloadLocalData =
+    async (): Promise<DownloadLocalDataMainResponse> =>
+      getDownloadLocalDataChannel.request({
+        id: APP_UPDATE_DOWNLOAD_ID,
+      });
 
   _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
     checkFileExistsChannel.request({
@@ -308,7 +324,7 @@ export default class AppUpdateStore extends Store {
     data,
     error,
   }: DownloadMainResponse) => {
-    runInAction('updates the download information', () => {
+    runInAction(() => {
       if (eventType === DOWNLOAD_EVENT_TYPES.PAUSE) {
         this.availableUpdate = null;
         this.isUpdateDownloaded = true;
@@ -446,18 +462,15 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  @action
   _openAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = true;
     this.isUpdatePostponed = false;
   };
 
-  @action
   _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
   };
 
-  @action
   _postponeUpdate = () => {
     this.isUpdatePostponed = true;
   };

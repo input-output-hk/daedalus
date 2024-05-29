@@ -399,7 +399,7 @@ const showExportWalletsWarning = (
   const translations = require(`../locales/${locale}`);
 
   const translation = getTranslation(translations, 'dialog');
-  const exportWalletsDialogOptions = {
+  const exportWalletsDialogOptions: Electron.MessageBoxOptions = {
     buttons: [
       translation('exportWalletsWarning.confirm'),
       translation('exportWalletsWarning.cancel'),

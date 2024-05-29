@@ -4,8 +4,6 @@ import AlertsOverlay from '../../components/news/AlertsOverlay';
 import IncidentOverlay from '../../components/news/IncidentOverlay';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -74,4 +72,4 @@ class NewsOverlayContainer extends Component<InjectedProps> {
   }
 }
 
-export default NewsOverlayContainer;
+export default inject('stores', 'actions')(observer(NewsOverlayContainer));

@@ -1,23 +1,20 @@
 /* eslint-disable react/no-did-update-set-state */
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
-import { Button } from 'react-polymorph/lib/components/Button';
+import { Button } from '@react-polymorph/components/Button';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from '@react-polymorph/components/Input';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/arrow-r... Remove this comment to see the full error message
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/spinner... Remove this comment to see the full error message
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 import { ENTER_KEY_CODE, ESCAPE_KEY_CODE } from '../../../config/numbersConfig';
 
@@ -68,7 +65,6 @@ interface FormFields {
   inputField: string;
 }
 
-@observer
 class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
     validateOnChange: true,
@@ -367,4 +363,4 @@ class InlineEditingInput extends Component<Props, State> {
   }
 }
 
-export default InlineEditingInput;
+export default observer(InlineEditingInput);

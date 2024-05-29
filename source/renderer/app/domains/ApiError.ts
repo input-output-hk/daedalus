@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, makeObservable } from 'mobx';
 import { camelCase, get, includes, keys, map, omit, snakeCase } from 'lodash';
 import { GenericApiError } from '../api/common/errors';
 import { messages } from '../api/errors';
@@ -58,13 +58,9 @@ export type ErrorType = {
   message?: string;
 };
 export default class ApiError {
-  @observable
   tempError = '';
-  @observable
   clause: boolean;
-  @observable
   forceSet = false;
-  @observable
   additionalValues: Record<string, any> = {};
   isFinalError = false;
   id: string;
@@ -73,6 +69,17 @@ export default class ApiError {
   code: string;
 
   constructor(error: ErrorType = {}, logging?: LoggingType) {
+    makeObservable(this, {
+      tempError: observable,
+      clause: observable,
+      forceSet: observable,
+      additionalValues: observable,
+      set: action,
+      where: action,
+      inc: action,
+      result: action,
+    });
+
     // Construct Localizable Error
     const errorCode = error.code ? camelCase(error.code) : null;
     const localizableError = get(messages, errorCode);
@@ -103,7 +110,6 @@ export default class ApiError {
     this._logError(logging);
   }
 
-  @action
   set(
     predefinedError: string,
     // @ts-ignore ts-migrate(1015) FIXME: Parameter cannot have question mark and initialize... Remove this comment to see the full error message
@@ -142,7 +148,6 @@ export default class ApiError {
     return this;
   }
 
-  @action
   where(type: string, declaration: string) {
     if (
       this.clause &&
@@ -168,7 +173,6 @@ export default class ApiError {
     return this;
   }
 
-  @action
   inc(type: string, declaration: string) {
     const fullMessage = get(this.values, type, '');
 
@@ -183,7 +187,6 @@ export default class ApiError {
     return this;
   }
 
-  @action
   result(fallbackError?: string) {
     if (this.isFinalError && !this.forceSet) return this;
 

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component, Fragment } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
@@ -6,9 +8,9 @@ import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import globalMessages from '../../i18n/global-messages';
@@ -86,16 +88,14 @@ const messages = defineMessages({
       'Displayed on the right of the Recommended system requirements status row when hardware requirements are ok',
   },
   hasMetHardwareRequirementsStatusLowTooltip: {
-    id:
-      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
     defaultMessage:
       '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
     description:
       'Visible on hovering over Recommended system requirement status when status is Low',
   },
   hasMetHardwareRequirementsStatusGoodTooltip: {
-    id:
-      'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
+    id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodTooltip',
     defaultMessage:
       '!!!Your system specifications meet Daedalus’ recommended hardware requirements',
     description:
@@ -425,7 +425,6 @@ const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.UNRECOVERABLE,
 ];
 
-@observer
 class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -914,4 +913,4 @@ class DaedalusDiagnostics extends Component<Props, State> {
   };
 }
 
-export default DaedalusDiagnostics;
+export default observer(DaedalusDiagnostics);

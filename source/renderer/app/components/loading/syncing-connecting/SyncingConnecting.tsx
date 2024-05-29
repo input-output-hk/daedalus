@@ -51,7 +51,6 @@ export type Props = {
   onToggleNewsFeedIconClick: (...args: Array<any>) => any;
 };
 
-@observer
 class SyncingConnecting extends Component<Props, State> {
   state = {
     connectingTime: 0,
@@ -173,6 +172,7 @@ class SyncingConnecting extends Component<Props, State> {
       isConnecting ? 'connectingScreen' : null,
       isSyncing || isSynced ? 'syncingScreen' : null,
     ]);
+
     return (
       <div className={styles.component}>
         <SyncingConnectingBackground
@@ -214,9 +214,7 @@ class SyncingConnecting extends Component<Props, State> {
           onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
-          isNodeTimeCorrect={
-            isCheckingSystemTime ? undefined : isNodeTimeCorrect
-          }
+          isNodeTimeCorrect={isCheckingSystemTime && isNodeTimeCorrect}
           isNodeSyncing={isNodeSyncing}
         />
       </div>
@@ -224,4 +222,4 @@ class SyncingConnecting extends Component<Props, State> {
   }
 }
 
-export default SyncingConnecting;
+export default observer(SyncingConnecting);

@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import type { AddressStyle } from '../api/addresses/types';
 
 type WalletAddressProps = {
@@ -16,14 +16,17 @@ export const AddressStyles: {
   ADDRESS_ICARUS: 'Icarus',
 };
 export default class WalletAddress {
-  @observable
   id = '';
-  @observable
   used = false;
-  @observable
   spendingPath = "1852'/1815'/0'";
 
   constructor(data: WalletAddressProps) {
+    makeObservable(this, {
+      id: observable,
+      used: observable,
+      spendingPath: observable,
+    });
+
     Object.assign(this, data);
   }
 }

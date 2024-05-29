@@ -26,8 +26,6 @@ type State = {
   confirmationDialogData: ConfirmationDialogData;
 };
 
-@inject('stores', 'actions')
-@observer
 class WalletSendPage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
@@ -45,38 +43,30 @@ class WalletSendPage extends Component<Props, State> {
     isHardwareWallet: boolean;
     selectedAssets?: ApiTokens;
   }) => {
-    const {
-      walletId,
-      address,
-      amount,
-      isHardwareWallet,
-      selectedAssets,
-    } = params;
+    const { walletId, address, amount, isHardwareWallet, selectedAssets } =
+      params;
 
     if (isHardwareWallet) {
-      const coinSelection: CoinSelectionsResponse = await this.props.stores.hardwareWallets.selectCoins(
-        {
+      const coinSelection: CoinSelectionsResponse =
+        await this.props.stores.hardwareWallets.selectCoins({
           walletId,
           address,
           amount,
           assets: selectedAssets,
-        }
-      );
+        });
       return {
         fee: coinSelection.fee,
         coinSelection,
       };
     }
 
-    const {
-      fee,
-      minimumAda,
-    } = await this.props.stores.transactions.calculateTransactionFee({
-      walletId,
-      address,
-      amount,
-      assets: selectedAssets,
-    });
+    const { fee, minimumAda } =
+      await this.props.stores.transactions.calculateTransactionFee({
+        walletId,
+        address,
+        amount,
+        assets: selectedAssets,
+      });
 
     return {
       fee,
@@ -197,4 +187,6 @@ class WalletSendPage extends Component<Props, State> {
   }
 }
 
-export default withAnalytics(WalletSendPage);
+export default withAnalytics(
+  inject('stores', 'actions')(observer(WalletSendPage))
+);

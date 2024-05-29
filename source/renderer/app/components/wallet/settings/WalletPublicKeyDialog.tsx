@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from '@react-polymorph/components/Input';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import styles from './PublicKeyDialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -43,7 +44,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class WalletPublicKeyDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -146,4 +146,4 @@ class WalletPublicKeyDialog extends Component<Props> {
   }
 }
 
-export default WalletPublicKeyDialog;
+export default observer(WalletPublicKeyDialog);

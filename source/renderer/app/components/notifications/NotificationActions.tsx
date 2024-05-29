@@ -1,8 +1,10 @@
+// @ts-nocheck
+
 import React from 'react';
 import classnames from 'classnames';
 import { map } from 'lodash';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Button } from '@react-polymorph/components/Button';
+import { Link } from '@react-polymorph/components/Link';
 import { observer } from 'mobx-react';
 import styles from './NotificationActions.scss';
 

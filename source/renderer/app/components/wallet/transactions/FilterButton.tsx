@@ -15,7 +15,6 @@ type Props = {
   onClick?: (...args: Array<any>) => any;
 };
 
-@observer
 class FilterButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -52,4 +51,4 @@ class FilterButton extends Component<Props> {
   }
 }
 
-export default FilterButton;
+export default observer(FilterButton);

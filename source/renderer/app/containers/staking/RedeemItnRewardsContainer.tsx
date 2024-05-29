@@ -11,8 +11,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class RedeemItnRewardsContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -39,11 +37,8 @@ class RedeemItnRewardsContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const {
-      redeemStep,
-      isSubmittingReedem,
-      isCalculatingReedemFees,
-    } = stores.staking;
+    const { redeemStep, isSubmittingReedem, isCalculatingReedemFees } =
+      stores.staking;
     const { isSynced } = stores.networkStatus;
     const { onRedeemStart, closeRedeemDialog } = actions.staking;
     if (!redeemStep) return null;
@@ -66,4 +61,4 @@ class RedeemItnRewardsContainer extends Component<Props> {
   }
 }
 
-export default RedeemItnRewardsContainer;
+export default inject('stores', 'actions')(observer(RedeemItnRewardsContainer));

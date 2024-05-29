@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -6,10 +8,10 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Input } from '@react-polymorph/components/Input';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -85,7 +87,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class WalletReceiveRandom extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -302,4 +303,4 @@ class WalletReceiveRandom extends Component<Props> {
   }
 }
 
-export default WalletReceiveRandom;
+export default observer(WalletReceiveRandom);

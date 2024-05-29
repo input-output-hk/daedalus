@@ -1,5 +1,11 @@
 import { has, find, last, filter, findIndex } from 'lodash';
-import { observable, computed, action, runInAction } from 'mobx';
+import {
+  observable,
+  computed,
+  action,
+  runInAction,
+  makeObservable,
+} from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
@@ -7,29 +13,47 @@ import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
 import { getStakeAddressFromStakeKey } from '../utils/crypto';
 import type { Address, InspectAddressResponse } from '../api/addresses/types';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 
 export default class AddressesStore extends Store {
-  @observable
   lastGeneratedAddress: WalletAddress | null | undefined = null;
-  @observable
   addressesRequests: Array<{
     walletId: string;
     isLegacy: boolean;
     allRequest: CachedRequest<Array<WalletAddress>>;
   }> = [];
-  @observable
   stakeAddresses: Record<string, string> = {};
-  @observable
   error: LocalizableError | null | undefined = null;
   // REQUESTS
-  @observable
   createByronWalletAddressRequest: Request<Address> = new Request(
     this.api.ada.createAddress
   );
-  @observable
   inspectAddressRequest: Request<InspectAddressResponse> = new Request(
     this.api.ada.inspectAddress
   );
+
+  constructor(api: Api, actions: ActionsMap, analytics: AnalyticsTracker) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      lastGeneratedAddress: observable,
+      addressesRequests: observable,
+      stakeAddresses: observable,
+      error: observable,
+      createByronWalletAddressRequest: observable,
+      inspectAddressRequest: observable,
+      all: computed,
+      hasAny: computed,
+      active: computed,
+      totalAvailable: computed,
+      stakeAddress: computed,
+      _getStakeAddress: action,
+      _refreshAddresses: action,
+      _resetErrors: action,
+    });
+  }
 
   setup() {
     const actions = this.actions.addresses;
@@ -45,24 +69,23 @@ export default class AddressesStore extends Store {
       const { walletId, passphrase } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
       // @ts-ignore ts-migrate(2739) FIXME: Type 'Address' is missing the following properties... Remove this comment to see the full error message
-      const address: WalletAddress = await this.createByronWalletAddressRequest.execute(
-        {
+      const address: WalletAddress =
+        await this.createByronWalletAddressRequest.execute({
           addressIndex: accountIndex,
           passphrase,
           walletId,
-        }
-      ).promise;
+        }).promise;
 
       if (address != null) {
         this._refreshAddresses();
 
-        runInAction('set last generated address and reset error', () => {
+        runInAction(() => {
           this.lastGeneratedAddress = address;
           this.error = null;
         });
       }
     } catch (error) {
-      runInAction('set error', () => {
+      runInAction(() => {
         this.error = error;
       });
     }
@@ -76,7 +99,6 @@ export default class AddressesStore extends Store {
     return addressDetails;
   };
 
-  @computed
   get all(): Array<WalletAddress> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
@@ -86,7 +108,6 @@ export default class AddressesStore extends Store {
     return addresses || [];
   }
 
-  @computed
   get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
@@ -96,7 +117,6 @@ export default class AddressesStore extends Store {
     return addresses ? addresses.length > 0 : false;
   }
 
-  @computed
   get active(): WalletAddress | null | undefined {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
@@ -115,7 +135,6 @@ export default class AddressesStore extends Store {
     return last(addresses);
   }
 
-  @computed
   get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
@@ -125,14 +144,12 @@ export default class AddressesStore extends Store {
     return addresses ? addresses.length : 0;
   }
 
-  @computed
   get stakeAddress(): string {
     const wallet = this.stores.wallets.active;
     if (!wallet) return '';
     return this.stakeAddresses[wallet.id] || '';
   }
 
-  @action
   _getStakeAddress = async (walletId: string, isLegacy: boolean) => {
     const hasStakeAddress = has(this.stakeAddresses, walletId);
 
@@ -150,13 +167,12 @@ export default class AddressesStore extends Store {
           index: '0',
         });
         const stakeAddress = getStakeAddressFromStakeKey(stakeKeyBech32);
-        runInAction('set stake address', () => {
+        runInAction(() => {
           this.stakeAddresses[walletId] = stakeAddress;
         });
       }
     }
   };
-  @action
   _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
@@ -178,7 +194,6 @@ export default class AddressesStore extends Store {
       }
     }
   };
-  @action
   _resetErrors = () => {
     this.error = null;
   };

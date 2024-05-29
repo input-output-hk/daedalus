@@ -5,8 +5,6 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class SecuringPasswordDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -36,4 +34,7 @@ class SecuringPasswordDialogContainer extends Component<Props> {
   }
 }
 
-export default SecuringPasswordDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(SecuringPasswordDialogContainer));

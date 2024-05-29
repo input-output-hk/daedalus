@@ -7,8 +7,6 @@ import Layout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class Settings extends Component<InjectedContainerProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -58,4 +56,4 @@ class Settings extends Component<InjectedContainerProps> {
   }
 }
 
-export default Settings;
+export default inject('stores', 'actions')(observer(Settings));

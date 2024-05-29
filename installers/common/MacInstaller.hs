@@ -216,6 +216,8 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
+      , "@emurgo/cardano-serialization-lib-nodejs"
+      , "@fivebinaries/coin-selection"
       , "@noble"
       , "@protobufjs"
       , "@trezor"
@@ -239,7 +241,6 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "bs58"
       , "bs58check"
       , "buffer"
-      , "bytebuffer"
       , "call-bind"
       , "cashaddrjs"
       , "clone"
@@ -309,18 +310,27 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
       , "tiny-secp256k1"
       , "tslib"
       , "typeforce"
+      , "ua-parser-js"
       , "unicode-properties"
       , "unicode-trie"
       , "usb-detection"
       , "util-deprecate"
       , "varuint-bitcoin"
       , "wif"
+      , "whatwg-url"
+      , "tr46"
+      , "usb"
+      , "node-gyp-build"
+      , "@sinclair"
+      , "ts-mixer"
+      , "core-js"
       ]
   mapM_ (\lib -> do
       cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
     ) externalYarn
   mktree ((fromText pathtoapp) </> "Contents/Resources/app/build")
-  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node"), ("usb-detection/build/Release", "detection.node") ]
+  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node"), ("usb-detection/build/Release", "detection.node"), ( "utf-8-validate/build/Release", "validation.node") ]
+
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 

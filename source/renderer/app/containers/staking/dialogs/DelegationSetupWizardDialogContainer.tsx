@@ -44,8 +44,6 @@ type State = {
 };
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -165,20 +163,10 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   };
 
   render() {
-    const {
-      activeStep,
-      selectedWalletId,
-      selectedPoolId,
-      stakePoolJoinFee,
-    } = this.state;
-    const {
-      app,
-      staking,
-      wallets,
-      profile,
-      networkStatus,
-      hardwareWallets,
-    } = this.props.stores;
+    const { activeStep, selectedWalletId, selectedPoolId, stakePoolJoinFee } =
+      this.state;
+    const { app, staking, wallets, profile, networkStatus, hardwareWallets } =
+      this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const {
@@ -301,4 +289,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   }
 }
 
-export default DelegationSetupWizardDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(DelegationSetupWizardDialogContainer));

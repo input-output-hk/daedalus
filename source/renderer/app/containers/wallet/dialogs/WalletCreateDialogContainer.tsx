@@ -15,8 +15,6 @@ function CreateWalletAbortConfirmation() {
   return <div>Are you sure</div>;
 }
 
-@inject('stores', 'actions')
-@observer
 class WalletCreateDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -46,10 +44,8 @@ class WalletCreateDialogContainer extends Component<Props> {
   }
 
   onContinue = () => {
-    const {
-      createWalletChangeStep,
-      createWalletClose,
-    } = this.props.actions.wallets;
+    const { createWalletChangeStep, createWalletClose } =
+      this.props.actions.wallets;
 
     if (this.currentStep !== null) {
       if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
@@ -74,10 +70,8 @@ class WalletCreateDialogContainer extends Component<Props> {
   onAbort = () => this.props.actions.wallets.createWalletAbort.trigger();
 
   render() {
-    const {
-      createWalletStep,
-      createWalletShowAbortConfirmation,
-    } = this.props.stores.wallets;
+    const { createWalletStep, createWalletShowAbortConfirmation } =
+      this.props.stores.wallets;
 
     if (createWalletStep === null) {
       return null;
@@ -101,4 +95,7 @@ class WalletCreateDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletCreateDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletCreateDialogContainer));

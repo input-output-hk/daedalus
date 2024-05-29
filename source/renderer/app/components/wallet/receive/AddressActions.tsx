@@ -52,7 +52,6 @@ type Props = {
   type?: 'share' | 'copy';
 };
 
-@observer
 class AddressActions extends Component<Props> {
   static defaultProps = {
     type: 'copy',
@@ -105,4 +104,4 @@ class AddressActions extends Component<Props> {
   }
 }
 
-export default AddressActions;
+export default observer(AddressActions);

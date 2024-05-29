@@ -9,7 +9,6 @@ type Props = {
   showText?: boolean;
 };
 
-@observer
 class DonutRing extends Component<Props> {
   static defaultProps = {
     showText: false,
@@ -62,4 +61,4 @@ class DonutRing extends Component<Props> {
   }
 }
 
-export default DonutRing;
+export default observer(DonutRing);

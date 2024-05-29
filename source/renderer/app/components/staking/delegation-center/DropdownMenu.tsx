@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
+import { Dropdown } from '@react-polymorph/components/Dropdown';
 import styles from './DropdownMenu.scss';
 
 type Props = {
@@ -12,7 +12,6 @@ type Props = {
   onMenuItemClick: (...args: Array<any>) => any;
 };
 
-@observer
 class DropdownMenu extends Component<Props> {
   optionRenderer = (option: any) => (
     <span className={option.className}>{option.label}</span>
@@ -39,4 +38,4 @@ class DropdownMenu extends Component<Props> {
   }
 }
 
-export default DropdownMenu;
+export default observer(DropdownMenu);

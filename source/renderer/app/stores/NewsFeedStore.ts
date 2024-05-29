@@ -1,4 +1,10 @@
-import { observable, action, runInAction, computed } from 'mobx';
+import {
+  observable,
+  action,
+  runInAction,
+  computed,
+  makeObservable,
+} from 'mobx';
 import { map, get, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -14,6 +20,9 @@ import type {
   NewsItem,
   MarkNewsAsReadResponse,
 } from '../api/news/types';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
+import { AnalyticsTracker } from '../analytics';
 
 const { isTest, version, isDev } = global.environment;
 const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
@@ -21,32 +30,22 @@ const AVAILABLE_NEWSFEED_EVENT_ACTIONS = [
   'OPEN_DIAGNOSTIC_DIALOG',
 ];
 export default class NewsFeedStore extends Store {
-  @observable
   rawNews: Array<NewsItem> | null | undefined = null;
-  @observable
   newsUpdatedAt: Date | null | undefined = null;
-  @observable
   fetchingNewsFailed = false;
-  @observable
   getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
-  @observable
   getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
     this.api.localStorage.getReadNews
   );
-  @observable
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
-  @observable
   markNewsAsUnreadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsUnread
   );
-  @observable
   // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   openedAlert: News.News | null | undefined = null;
-  @observable
   fetchLocalNews = false;
-  @observable
   rawNewsJsonQA: GetNewsResponse | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingNewsIntervalId: IntervalID | null | undefined = null;
@@ -54,6 +53,36 @@ export default class NewsFeedStore extends Store {
   pollingNewsOnErrorIntervalId: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingNewsOnIncidentIntervalId: IntervalID | null | undefined = null;
+
+  constructor(
+    protected api: Api,
+    protected actions: ActionsMap,
+    protected analytics: AnalyticsTracker
+  ) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      rawNews: observable,
+      newsUpdatedAt: observable,
+      fetchingNewsFailed: observable,
+      getNewsRequest: observable,
+      getReadNewsRequest: observable,
+      markNewsAsReadRequest: observable,
+      markNewsAsUnreadRequest: observable,
+      openedAlert: observable,
+      fetchLocalNews: observable,
+      rawNewsJsonQA: observable,
+      getNews: action,
+      markNewsAsRead: action,
+      openAlert: action,
+      closeOpenedAlert: action,
+      _setFetchingNewsFailed: action,
+      proceedNewsAction: action,
+      setFakedNewsfeed: action,
+      newsFeedData: computed,
+      isLoadingNews: computed,
+    });
+  }
 
   setup() {
     // Fetch news on app start
@@ -70,7 +99,6 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action
   getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
 
@@ -180,13 +208,12 @@ export default class NewsFeedStore extends Store {
     await this.getReadNewsRequest.execute();
 
     if (rawNews) {
-      runInAction('set news data', () => {
+      runInAction(() => {
         this.rawNews = get(rawNews, 'items', []);
         this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });
     }
   };
-  @action
   markNewsAsRead = async (newsId: number[]) => {
     // Set news timestamp to LC
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -195,7 +222,6 @@ export default class NewsFeedStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getReadNewsRequest.execute();
   };
-  @action
   openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
@@ -207,15 +233,12 @@ export default class NewsFeedStore extends Store {
       }
     }
   };
-  @action
   closeOpenedAlert = () => {
     this.openedAlert = null;
   };
-  @action
   _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
-  @action
   // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   proceedNewsAction = (newsItem: News.News, e: MouseEvent) => {
     const { url, route, event } = newsItem.action;
@@ -249,7 +272,6 @@ export default class NewsFeedStore extends Store {
       }
     }
   };
-  @action
   setFakedNewsfeed = (params: {
     isAutomaticUpdateTest: boolean | null | undefined;
     appVersion?: string;
@@ -279,8 +301,6 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  @computed
-  // @ts-ignore ts-migrate(2503) FIXME: Cannot find namespace 'News'.
   get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
@@ -332,7 +352,6 @@ export default class NewsFeedStore extends Store {
     return new News.NewsCollection(news);
   }
 
-  @computed
   get isLoadingNews() {
     return this.fetchingNewsFailed || !this.rawNews;
   }

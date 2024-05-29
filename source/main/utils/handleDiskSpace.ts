@@ -171,7 +171,9 @@ export const handleDiskSpace = (
               '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
             );
             if (cardanoNode._startupTries > 0) await cardanoNode.restart();
-            else await cardanoNode.start();
+            else {
+              await cardanoNode.start();
+            }
             response.hadNotEnoughSpaceLeft = false;
           } catch (error) {
             logger.error(

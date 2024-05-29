@@ -10,7 +10,6 @@ type Props = {
   visible: boolean;
 };
 
-@observer
 class SidebarMenu extends Component<Props> {
   render() {
     const { children, visible } = this.props;
@@ -22,4 +21,4 @@ class SidebarMenu extends Component<Props> {
   }
 }
 
-export default SidebarMenu;
+export default observer(SidebarMenu);

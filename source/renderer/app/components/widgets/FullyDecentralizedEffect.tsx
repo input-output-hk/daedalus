@@ -1,5 +1,4 @@
 import React, { Component, createRef } from 'react';
-import { get } from 'lodash';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { Fireworks } from 'fireworks-js';
@@ -10,7 +9,6 @@ type Props = {
   className?: string;
 };
 
-@observer
 class FullyDecentralizedEffect extends Component<Props> {
   constructor(props: Props) {
     super(props);
@@ -22,7 +20,7 @@ class FullyDecentralizedEffect extends Component<Props> {
 
   componentDidMount() {
     const { isActive } = this.props;
-    const container = get(this, 'container.current');
+    const container = this.container?.current;
 
     if (container instanceof HTMLElement) {
       const fireworks = new Fireworks({
@@ -71,4 +69,4 @@ class FullyDecentralizedEffect extends Component<Props> {
   }
 }
 
-export default FullyDecentralizedEffect;
+export default observer(FullyDecentralizedEffect);

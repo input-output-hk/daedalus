@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
@@ -54,7 +54,6 @@ type Props = {
   walletName: string;
 };
 
-@observer
 class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -104,4 +103,4 @@ class WalletRecoveryPhraseStep4Dialog extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseStep4Dialog;
+export default observer(WalletRecoveryPhraseStep4Dialog);

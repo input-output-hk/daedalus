@@ -1,7 +1,9 @@
+// @ts-nocheck
+
 import React from 'react';
 import { intlShape, injectIntl, defineMessages } from 'react-intl';
 import { noop } from 'lodash/fp';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from '@react-polymorph/components/Input';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message

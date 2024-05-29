@@ -31,8 +31,6 @@ const walletMessages: Record<string, ReactIntlMessage> = defineMessages({
 });
 type Props = InjectedProps;
 
-@inject('actions', 'stores')
-@observer
 class PublicKeyQRCodeDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -111,4 +109,7 @@ class PublicKeyQRCodeDialogContainer extends Component<Props> {
   }
 }
 
-export default PublicKeyQRCodeDialogContainer;
+export default inject(
+  'actions',
+  'stores'
+)(observer(PublicKeyQRCodeDialogContainer));

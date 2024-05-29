@@ -1,11 +1,12 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { camelCase } from 'lodash';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Button } from '@react-polymorph/components/Button';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/recover... Remove this comment to see the full error message
@@ -118,8 +119,7 @@ export const messages = defineMessages({
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
   },
   timeUntilWarningReplacement: {
-    id:
-      'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
+    id: 'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
     defaultMessage: '!!!ヶ月,か月',
     description:
       'Label for the recoveryPhraseVerificationButton on wallet settings.',
@@ -134,7 +134,6 @@ export type Props = {
   isLegacy: boolean;
 };
 
-@observer
 class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -226,12 +225,8 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
       recoveryPhraseVerificationDate,
       isLegacy,
     } = this.props;
-    const {
-      icon,
-      message,
-      timeAgo,
-      timeUntilWarning,
-    } = this.recoveryPhraseStatus;
+    const { icon, message, timeAgo, timeUntilWarning } =
+      this.recoveryPhraseStatus;
     const { recoveryPhraseVerificationStatus } = getStatusFromWalletData({
       creationDate,
       recoveryPhraseVerificationDate,
@@ -294,4 +289,4 @@ class WalletRecoveryPhraseVerificationWidget extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseVerificationWidget;
+export default observer(WalletRecoveryPhraseVerificationWidget);

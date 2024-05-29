@@ -21,16 +21,10 @@ type Props = {
   handleDataSort: (...args: Array<any>) => any;
 };
 
-@observer
 class StakingEpochsDataTable extends Component<Props> {
   render() {
-    const {
-      tableHeaders,
-      tableBody,
-      order,
-      sortBy,
-      handleDataSort,
-    } = this.props;
+    const { tableHeaders, tableBody, order, sortBy, handleDataSort } =
+      this.props;
     return (
       <table>
         <thead>
@@ -64,4 +58,4 @@ class StakingEpochsDataTable extends Component<Props> {
   }
 }
 
-export default StakingEpochsDataTable;
+export default observer(StakingEpochsDataTable);

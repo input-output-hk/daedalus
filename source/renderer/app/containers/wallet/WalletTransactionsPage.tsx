@@ -7,8 +7,6 @@ import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletTransactionsPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
@@ -80,4 +78,4 @@ class WalletTransactionsPage extends Component<Props> {
   }
 }
 
-export default WalletTransactionsPage;
+export default inject('stores', 'actions')(observer(WalletTransactionsPage));

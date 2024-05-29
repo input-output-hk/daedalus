@@ -22,8 +22,6 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletSettingsPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -194,4 +192,4 @@ class WalletSettingsPage extends Component<Props> {
   }
 }
 
-export default WalletSettingsPage;
+export default inject('stores', 'actions')(observer(WalletSettingsPage));

@@ -10,8 +10,6 @@ import type { FileDialogRequestParams } from '../../../../../../common/types/fil
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class InstructionsDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -20,10 +18,8 @@ class InstructionsDialogContainer extends Component<Props> {
     onClose: () => {},
   };
   onPrint = async () => {
-    const {
-      currentDateFormat,
-      currentTimeFormatShort,
-    } = this.props.stores.profile;
+    const { currentDateFormat, currentTimeFormatShort } =
+      this.props.stores.profile;
     const date = moment();
     const formattedDate = date.format(currentDateFormat);
     const formattedTime = date.format(currentTimeFormatShort);
@@ -76,4 +72,7 @@ class InstructionsDialogContainer extends Component<Props> {
   }
 }
 
-export default InstructionsDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(InstructionsDialogContainer));

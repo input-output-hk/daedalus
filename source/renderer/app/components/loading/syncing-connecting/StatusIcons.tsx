@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import React from 'react';
+import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
@@ -152,15 +152,7 @@ const messages = defineMessages({
       'Message "Checking if Cardano node is syncing" on the status icon tooltip',
   },
 });
-type Props = {
-  onIconClick: (...args: Array<any>) => any;
-  nodeState: CardanoNodeState | null | undefined;
-  isNodeResponding?: boolean;
-  isNodeSubscribed?: boolean;
-  isNodeTimeCorrect?: boolean;
-  isNodeSyncing?: boolean;
-};
-type TipParamValue = true | false | null | string;
+
 const STATUS_CLASSNAMES: Record<string, any> = {
   [CardanoNodeStates.STARTING]: 'unloaded',
   [CardanoNodeStates.RUNNING]: 'on',
@@ -194,11 +186,19 @@ const VARIABLE_VALUES = {
   undefined: 'Loading',
   null: 'IsStarting',
 };
-export default class StatusIcons extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-  getTip = (paramName: string, paramValue: TipParamValue) => {
+
+type Props = {
+  onIconClick: (...args: Array<any>) => any;
+  nodeState: CardanoNodeState | null | undefined;
+  isNodeResponding?: boolean;
+  isNodeSubscribed?: boolean;
+  isNodeTimeCorrect?: boolean;
+  isNodeSyncing?: boolean;
+};
+type TipParamValue = true | false | null | string;
+
+const StatusIcons: React.FC<Props> = (props) => {
+  const getTip = (paramName: string, paramValue: TipParamValue) => {
     let message;
 
     if (paramName === 'nodeState' && paramValue) {
@@ -209,14 +209,15 @@ export default class StatusIcons extends Component<Props> {
 
     return message && <FormattedHTMLMessage {...message} />;
   };
-  getClassName = (paramName: string) => {
+
+  const getClassName = (paramName: string) => {
     // If node is not running, it displays the icons with opacity
     // Whether {isNodeSyncing} it displays the icons for syncing or loading screen
-    const { isNodeSyncing } = this.props;
-    const paramValue = this.props[paramName];
+    const { isNodeSyncing } = props;
+    const paramValue = props[paramName];
     let status = STATUS_CLASSNAMES[paramValue];
 
-    if (this.isDisabled(paramName)) {
+    if (isDisabled(paramName)) {
       status = 'unknown';
     }
 
@@ -234,18 +235,19 @@ export default class StatusIcons extends Component<Props> {
       isNodeSyncing ? styles.syncing : styles.loading,
     ]);
   };
-  getTooltipClassname = (paramName: string) => {
-    const paramValue = this.props[paramName];
+
+  const getTooltipClassname = (paramName: string) => {
+    const paramValue = props[paramName];
     return classNames([
       styles.tooltip,
       typeof paramValue === 'undefined' ? styles.ellipsis : null,
-      this.isDisabled(paramName) ? styles.disabled : null,
+      isDisabled(paramName) ? styles.disabled : null,
     ]);
   };
-  isDisabled = (paramName: string) =>
-    paramName !== 'nodeState' &&
-    this.props.nodeState !== CardanoNodeStates.RUNNING;
-  getIconWithPopover = (icon: string, paramName: string) => (
+
+  const isDisabled = (paramName: string) =>
+    paramName !== 'nodeState' && props.nodeState !== CardanoNodeStates.RUNNING;
+  const getIconWithPopover = (icon: string, paramName: string) => (
     <PopOver
       themeVariables={{
         '--rp-pop-over-bg-color':
@@ -253,26 +255,26 @@ export default class StatusIcons extends Component<Props> {
         '--rp-pop-over-border-radius': '5px',
         '--rp-bubble-padding': '6px 12px 7px',
       }}
-      contentClassName={this.getTooltipClassname(paramName)}
+      contentClassName={getTooltipClassname(paramName)}
       key={paramName}
-      content={this.getTip(paramName, this.props[paramName])}
+      content={getTip(paramName, props[paramName])}
     >
-      <button className={styles.iconButton} onClick={this.props.onIconClick}>
-        <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      <button className={styles.iconButton} onClick={props.onIconClick}>
+        <SVGInline svg={icon} className={getClassName(paramName)} />
       </button>
     </PopOver>
   );
 
-  render() {
-    return (
-      <div className={styles.component}>
-        {[
-          this.getIconWithPopover(nodeStateIcon, 'nodeState'),
-          this.getIconWithPopover(isNodeRespondingIcon, 'isNodeResponding'), // this.getIconWithPopover(isNodeSubscribedIcon, 'isNodeSubscribed'),
-          this.getIconWithPopover(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
-          this.getIconWithPopover(isNodeSyncingIcon, 'isNodeSyncing'),
-        ]}
-      </div>
-    );
-  }
-}
+  return (
+    <div className={styles.component}>
+      {[
+        getIconWithPopover(nodeStateIcon, 'nodeState'),
+        getIconWithPopover(isNodeRespondingIcon, 'isNodeResponding'), // getIconWithPopover(isNodeSubscribedIcon, 'isNodeSubscribed'),
+        getIconWithPopover(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
+        getIconWithPopover(isNodeSyncingIcon, 'isNodeSyncing'),
+      ]}
+    </div>
+  );
+};
+
+export default StatusIcons;

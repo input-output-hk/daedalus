@@ -43,7 +43,6 @@ type Props = {
   tokenFavorites: Record<string, any>;
 };
 
-@observer
 class WalletSummary extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -122,4 +121,4 @@ class WalletSummary extends Component<Props> {
   }
 }
 
-export default WalletSummary;
+export default observer(WalletSummary);

@@ -13,8 +13,6 @@ const messages = defineMessages({
 });
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class StakingCountdownPage extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -47,4 +45,4 @@ class StakingCountdownPage extends Component<Props> {
   }
 }
 
-export default StakingCountdownPage;
+export default inject('stores', 'actions')(observer(StakingCountdownPage));

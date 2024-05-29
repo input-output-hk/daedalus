@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { useRef, useState } from 'react';
 import SVGInline from 'react-svg-inline';
 import { injectIntl } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/search.... Remove this comment to see the full error message

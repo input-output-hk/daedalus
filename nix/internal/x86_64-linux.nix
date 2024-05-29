@@ -15,7 +15,7 @@ let
 in rec {
 
   inherit common;
-  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
+  inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion originalPackageJson;
 
   package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
 
@@ -36,10 +36,6 @@ in rec {
     mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
     ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
     ln -sf ${linuxSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-linux-x64.zip
-
-    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
-    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
-    ln -sf ${linuxSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip
   '';
 
   node_modules = pkgs.stdenv.mkDerivation {
@@ -117,8 +113,6 @@ in rec {
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
       yarn build:electron
 
-      ${common.temporaryNodeModulesPatches}
-
       yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
     '';
     installPhase = ''
@@ -143,7 +137,7 @@ in rec {
       ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
 
       mkdir -pv $out/share/daedalus/node_modules
-      cp -r node_modules/{\@babel,\@noble,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib} $out/share/daedalus/node_modules/
+      cp -r node_modules/{\@babel,\@noble,\@protobufjs,\@emurgo\/cardano-serialization-lib-nodejs,\@fivebinaries\/coin-selection,ua-parser-js,regenerator-runtime,node-fetch,\@trezor,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib,whatwg-url,tr46,usb,node-gyp-build,\@sinclair,ts-mixer,core-js} $out/share/daedalus/node_modules/
 
       chmod -R +w $out
 
@@ -170,7 +164,15 @@ in rec {
       # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
       cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
 
-      for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
+      mkdir -p $out/share/daedalus/node_modules/utf-8-validate/build
+      cp node_modules/utf-8-validate/build/Debug/validation.node $out/share/daedalus/node_modules/utf-8-validate/build
+
+      for file in \
+        $out/share/daedalus/node_modules/usb/build/usb_bindings.node \
+        $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node \
+        $out/share/daedalus/node_modules/usb-detection/build/detection.node \
+        $out/share/daedalus/node_modules/utf-8-validate/build/validation.node \
+      ; do
         $STRIP $file
         patchelf --shrink-rpath $file
       done
@@ -325,13 +327,9 @@ in rec {
 
   linuxSources = {
     electron = pkgs.fetchurl {
+      name = "electron-v${electronVersion}-linux-x64.zip";
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-linux-x64.zip";
-      hash = "sha256-jXeA3Sr8/l6Uos9XT0+hCiosaRIndx/KSQUcUkrGdRM=";
-    };
-
-    electronChromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-linux-x64.zip";
-      hash = "sha256-bkeA1l1cBppdsbLISwu8MdC/2E5sjVJx6e+KhLgQ5yA=";
+      hash = "sha256-bTCdzqsn2QgvuUWBq9XXofiCzgw4x4tEdo92xiBobvs=";
     };
   };
 

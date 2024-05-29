@@ -262,6 +262,7 @@
   "loading.screen.reportIssue.connecting.text": "Having trouble connecting to network?",
   "loading.screen.reportIssue.downloadLogsLinkLabel": "Download logs",
   "loading.screen.reportIssue.reportIssueButtonUrl": "https://iohk.zendesk.com/hc/en-us/requests/new/",
+  "loading.screen.syncingMessage": "Syncing blockchain data.",
   "loading.screen.startingCardanoDescription": "This process validates the integrity of local blockchain data.",
   "loading.screen.startingCardanoMessage": "Starting Cardano node",
   "loading.screen.stoppedCardanoMessage": "Cardano node stopped",

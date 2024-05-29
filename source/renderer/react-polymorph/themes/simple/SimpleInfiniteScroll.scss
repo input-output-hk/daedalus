@@ -1,0 +1,59 @@
+@import 'theme';
+
+// OVERRIDABLE CONFIGURATION VARIABLES
+
+// infinite-scroll
+$infinite-scroll-height: var(--rp-infinite-scroll-height, 100%) !default;
+$infinite-scroll-width: var(--rp-infinite-scroll-width, auto) !default;
+
+// scrollbar
+$infinite-scroll-scrollbar-thumb-bg-color: var(
+  --rp-infinite-scroll-scrollbar-thumb-bg-color,
+  #c8ccce
+) !default;
+$infinite-scroll-scrollbar-thumb-border: var(
+  --rp-infinite-scroll-scrollbar-thumb-border,
+  7px solid transparent
+) !default;
+$infinite-scroll-scrollbar-thumb-border-radius: var(
+  --rp-infinite-scroll-scrollbar-thumb-border-radius,
+  12px
+) !default;
+$infinite-scroll-scrollbar-track-bg-color: var(
+  --rp-infinite-scroll-scrollbar-track-bg-color,
+  transparent
+) !default;
+$infinite-scroll-scrollbar-width: var(
+  --rp-infinite-scroll-scrollbar-width,
+  20px
+) !default;
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: $infinite-scroll-height;
+  width: $infinite-scroll-width;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: $infinite-scroll-scrollbar-width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $infinite-scroll-scrollbar-track-bg-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $infinite-scroll-scrollbar-thumb-bg-color;
+    border: $infinite-scroll-scrollbar-thumb-border;
+    border-radius: $infinite-scroll-scrollbar-thumb-border-radius;
+    background-clip: content-box;
+  }
+}
+
+.item {
+  flex: auto;
+}

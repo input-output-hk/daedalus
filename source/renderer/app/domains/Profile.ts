@@ -1,17 +1,11 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 
 export default class Profile {
-  @observable
   name: string;
-  @observable
   email: string;
-  @observable
   phoneNumber: string;
-  @observable
   passwordHash: string;
-  @observable
   passwordUpdateDate: Date;
-  @observable
   languageLocale: string;
 
   constructor(data: {
@@ -22,6 +16,15 @@ export default class Profile {
     passwordUpdateDate: Date;
     languageLocale: string;
   }) {
+    makeObservable(this, {
+      name: observable,
+      email: observable,
+      phoneNumber: observable,
+      passwordHash: observable,
+      passwordUpdateDate: observable,
+      languageLocale: observable,
+    });
+
     Object.assign(this, data);
   }
 }

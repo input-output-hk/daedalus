@@ -8,8 +8,6 @@ import type { ImportFromOption } from '../../../../types/walletExportTypes';
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletFileImportStepContainer extends Component<Props> {
   static defaultProps = DefaultProps;
   onSelectExportSourcePath = (params: { importFrom: ImportFromOption }) => {
@@ -53,4 +51,7 @@ class WalletFileImportStepContainer extends Component<Props> {
   }
 }
 
-export default WalletFileImportStepContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletFileImportStepContainer));

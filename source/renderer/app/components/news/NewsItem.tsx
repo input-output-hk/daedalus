@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 import { get } from 'lodash';
 import AnimateHeight from 'react-animate-height';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import News, { NewsTypes } from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './NewsItem.scss';
@@ -27,7 +27,6 @@ type State = {
   newsItemCollapsible: boolean;
 };
 
-@observer
 class NewsItem extends Component<Props, State> {
   static defaultProps = {
     onNewsItemActionClick: null,
@@ -173,4 +172,4 @@ class NewsItem extends Component<Props, State> {
   }
 }
 
-export default NewsItem;
+export default observer(NewsItem);

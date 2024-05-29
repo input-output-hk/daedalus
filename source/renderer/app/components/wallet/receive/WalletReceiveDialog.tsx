@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map, filter } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
-import { TextArea } from 'react-polymorph/lib/components/TextArea';
-import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { TextArea } from '@react-polymorph/components/TextArea';
+import { TextAreaSkin } from '@react-polymorph/skins/simple/TextAreaSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import QRCode from 'qrcode.react';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import RadioSet from '../../widgets/RadioSet';
 import Dialog from '../../widgets/Dialog';
@@ -160,7 +159,6 @@ interface FormFields {
   noteInput: string;
 }
 
-@observer
 class WalletReceiveDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -197,9 +195,8 @@ class WalletReceiveDialog extends Component<Props, State> {
   };
   constructPaths = (address: WalletAddress) => {
     const hardenedSpendingPath = str_to_path(address.spendingPath);
-    const derivationSpendingPath = hardenedPathToDerivationPath(
-      hardenedSpendingPath
-    );
+    const derivationSpendingPath =
+      hardenedPathToDerivationPath(hardenedSpendingPath);
     const spendingPath = map(
       derivationSpendingPath.constructed,
       (constructeSpendingPathChunk, index) => {
@@ -525,4 +522,4 @@ class WalletReceiveDialog extends Component<Props, State> {
   }
 }
 
-export default WalletReceiveDialog;
+export default observer(WalletReceiveDialog);

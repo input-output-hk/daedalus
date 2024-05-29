@@ -1,4 +1,10 @@
-import { action, observable, computed, runInAction } from 'mobx';
+import {
+  action,
+  observable,
+  computed,
+  runInAction,
+  makeObservable,
+} from 'mobx';
 import Store from './lib/Store';
 import {
   CURRENCY_REQUEST_RATE_INTERVAL,
@@ -7,25 +13,41 @@ import {
   getCurrencyFromCode,
 } from '../config/currencyConfig';
 import type { Currency, LocalizedCurrency } from '../types/currencyTypes';
-import { EventCategories } from '../analytics';
+import { AnalyticsTracker, EventCategories } from '../analytics';
+import { Api } from '../api';
+import { ActionsMap } from '../actions';
 
 export default class CurrencyStore extends Store {
-  @observable
   isFetchingList = false;
-  @observable
   isFetchingRate = false;
-  @observable
   isActive = false;
-  @observable
   list: Array<Currency> = [];
-  @observable
   selected: Currency | null | undefined = null;
-  @observable
   rate: number | null | undefined = null;
-  @observable
   lastFetched: Date | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _getCurrencyRateInterval: IntervalID | null | undefined = null;
+
+  constructor(api: Api, actions: ActionsMap, analytics: AnalyticsTracker) {
+    super(api, actions, analytics);
+
+    makeObservable(this, {
+      isFetchingList: observable,
+      isFetchingRate: observable,
+      isActive: observable,
+      list: observable,
+      selected: observable,
+      rate: observable,
+      lastFetched: observable,
+      localizedCurrencyList: computed,
+      localizedCurrency: computed,
+      getCurrencyList: action,
+      getCurrencyRate: action,
+      _setupCurrency: action,
+      _setCurrencySelected: action,
+      _toggleCurrencyIsActive: action,
+    });
+  }
 
   setup() {
     const { currency: currencyActions } = this.actions;
@@ -36,14 +58,12 @@ export default class CurrencyStore extends Store {
   }
 
   // PUBLIC
-  @computed
   get localizedCurrencyList(): Array<LocalizedCurrency> {
     const { list, stores } = this;
     const { currentLocale } = stores.profile;
     return getLocalizedCurrenciesList(list, currentLocale);
   }
 
-  @computed
   get localizedCurrency(): LocalizedCurrency | null | undefined {
     const { selected, stores } = this;
     const { currentLocale } = stores.profile;
@@ -51,7 +71,6 @@ export default class CurrencyStore extends Store {
     return getLocalizedCurrency(selected, currentLocale);
   }
 
-  @action
   getCurrencyList = async () => {
     this.isFetchingList = true;
     const list = await this.api.ada.getCurrencyList();
@@ -60,7 +79,6 @@ export default class CurrencyStore extends Store {
       this.isFetchingList = false;
     });
   };
-  @action
   getCurrencyRate = async () => {
     const { localizedCurrency, list } = this;
 
@@ -96,7 +114,6 @@ export default class CurrencyStore extends Store {
     }
   };
   // PRIVATE
-  @action
   _setupCurrency = async () => {
     // Check if the user has enabled currencies
     // Otherwise applies the default config
@@ -118,7 +135,6 @@ export default class CurrencyStore extends Store {
     this.getCurrencyList();
     this.getCurrencyRate();
   };
-  @action
   _setCurrencySelected = async ({ code }: { code: string }) => {
     const { list } = this;
     const selected = list.find((item) => item.code === code);
@@ -135,7 +151,6 @@ export default class CurrencyStore extends Store {
       code
     );
   };
-  @action
   _toggleCurrencyIsActive = () => {
     this.isActive = !this.isActive;
     this.api.localStorage.setCurrencyIsActive(this.isActive);

@@ -10,8 +10,6 @@ import {
 } from '../../../../config/cryptoConfig';
 import type { InjectedProps as Props } from '../../../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class WalletRecoveryPhraseContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -65,4 +63,7 @@ class WalletRecoveryPhraseContainer extends Component<Props> {
   }
 }
 
-export default WalletRecoveryPhraseContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletRecoveryPhraseContainer));

@@ -30,7 +30,6 @@ type Props = {
   currency?: Node;
 };
 
-@observer
 class WalletSummaryHeader extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -111,4 +110,4 @@ class WalletSummaryHeader extends Component<Props> {
   }
 }
 
-export default WalletSummaryHeader;
+export default observer(WalletSummaryHeader);

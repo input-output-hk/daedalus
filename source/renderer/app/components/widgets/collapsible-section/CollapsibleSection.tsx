@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import classnames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Link } from '@react-polymorph/components/Link';
 import styles from './CollapsibleSection.scss';
 import { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';

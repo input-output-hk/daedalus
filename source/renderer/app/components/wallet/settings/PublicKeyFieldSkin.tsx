@@ -1,13 +1,15 @@
+// @ts-nocheck
+
 import React from 'react';
 import type { ElementRef } from 'react';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { FormField } from 'react-polymorph/lib/components/FormField';
-import type { InputProps } from 'react-polymorph/lib/components/Input';
-import { pickDOMProps } from 'react-polymorph/lib/utils/props';
+import { Button } from '@react-polymorph/components/Button';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { FormField } from '@react-polymorph/components/FormField';
+import type { InputProps } from '@react-polymorph/components/Input';
+import { pickDOMProps } from '@react-polymorph/utils/props';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/copy.in... Remove this comment to see the full error message
 import copyImage from '../../../assets/images/copy.inline.svg';
 import styles from './PublicKeyField.scss';

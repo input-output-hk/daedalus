@@ -1,4 +1,4 @@
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import fs from 'fs';
 
 export default (filepath: string) => {

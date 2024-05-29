@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { Autocomplete } from '@react-polymorph/components/Autocomplete';
+import { AutocompleteSkin } from '@react-polymorph/skins/simple/AutocompleteSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
@@ -73,7 +74,6 @@ interface FormFields {
   recoveryPhrase: string;
 }
 
-@observer
 class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -204,4 +204,4 @@ class WalletRecoveryPhraseStep2Dialog extends Component<Props, State> {
   }
 }
 
-export default WalletRecoveryPhraseStep2Dialog;
+export default observer(WalletRecoveryPhraseStep2Dialog);

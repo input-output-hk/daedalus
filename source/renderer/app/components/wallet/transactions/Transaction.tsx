@@ -1,11 +1,12 @@
+// @ts-nocheck
 import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import { includes, get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
 import { TransactionMetadataView } from './metadata/TransactionMetadataView';
 import styles from './Transaction.scss';

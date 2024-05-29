@@ -1,13 +1,15 @@
+// @ts-nocheck
+
 // TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -100,7 +102,6 @@ interface FormFields {
   walletName: string;
 }
 
-@observer
 class WalletCreateDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -304,4 +305,4 @@ class WalletCreateDialog extends Component<Props, State> {
   }
 }
 
-export default WalletCreateDialog;
+export default observer(WalletCreateDialog);

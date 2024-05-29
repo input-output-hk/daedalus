@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Select } from '@react-polymorph/components/Select';
+import { ButtonSpinnerSkin } from '@react-polymorph/skins/simple/ButtonSpinnerSkin';
+import { SelectSkin } from '@react-polymorph/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ProfileSettingsForm.scss';
@@ -55,7 +55,6 @@ export type ProfileSettingsFormProps = {
   error?: LocalizableError | null | undefined;
 };
 
-@observer
 class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   static defaultProps = {
     onChangeItem: () => {},
@@ -142,4 +141,4 @@ class ProfileSettingsForm extends Component<ProfileSettingsFormProps> {
   }
 }
 
-export default ProfileSettingsForm;
+export default observer(ProfileSettingsForm);

@@ -7,8 +7,6 @@ import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions')
-@observer
 class WalletRestoreDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -73,4 +71,7 @@ class WalletRestoreDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletRestoreDialogContainer;
+export default inject(
+  'stores',
+  'actions'
+)(observer(WalletRestoreDialogContainer));

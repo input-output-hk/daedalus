@@ -42,7 +42,6 @@ module.exports = {
             parser: {
               syntax: 'typescript',
               tsx: true,
-              decorators: true,
             },
             transform: {
               react: {
@@ -86,7 +85,12 @@ module.exports = {
       },
       {
         test: /\.inline\.svg$/,
-        use: 'svg-inline-loader',
+        use: {
+          loader: 'raw-loader',
+          options: {
+            esModule: false,
+          },
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
@@ -103,7 +107,8 @@ module.exports = {
     symlinks: true, // for native libraries
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      react: require.resolve('react'), // else, it’s added a few times to index.js 🙄
+      react: require.resolve('react'), // else, it’s added a few times to index.js ɵ
+      '@react-polymorph': path.resolve(__dirname, './react-polymorph'),
     },
     fallback: {
       process: require.resolve('process/browser'),
@@ -113,6 +118,7 @@ module.exports = {
       http: require.resolve('stream-http'),
       https: require.resolve('https-browserify'),
       url: require.resolve('url'),
+      vm: false,
       buffer: require.resolve('buffer/'), // https://www.npmjs.com/package/buffer#usage
     },
   },

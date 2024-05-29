@@ -6,8 +6,6 @@ import ICOPublicKeyDialog from '../../../../components/wallet/settings/ICOPublic
 
 type Props = InjectedProps;
 
-@inject('actions', 'stores')
-@observer
 class PublicKeyDialogContainer extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -52,4 +50,4 @@ class PublicKeyDialogContainer extends Component<Props> {
   }
 }
 
-export default PublicKeyDialogContainer;
+export default inject('actions', 'stores')(observer(PublicKeyDialogContainer));

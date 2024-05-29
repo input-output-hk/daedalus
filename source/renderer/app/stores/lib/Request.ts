@@ -1,4 +1,10 @@
-import { observable, action, computed, isObservableArray } from 'mobx';
+import {
+  observable,
+  action,
+  computed,
+  isObservableArray,
+  makeObservable,
+} from 'mobx';
 import { isEqual } from 'lodash/fp';
 import ExtendableError from 'es6-error';
 
@@ -12,15 +18,10 @@ export type ApiCallType = {
   result: any;
 };
 export default class Request<Result, Error> {
-  @observable
   result: Result | null | undefined = null;
-  @observable
   error: Error | null | undefined = null;
-  @observable
   isExecuting = false;
-  @observable
   isError = false;
-  @observable
   wasExecuted = false;
   promise: Promise<Result> | null | undefined = null;
   _method: (...args: Array<any>) => any;
@@ -28,6 +29,16 @@ export default class Request<Result, Error> {
   _currentApiCall: ApiCallType | null | undefined = null;
 
   constructor(method: (...args: Array<any>) => any) {
+    makeObservable(this, {
+      result: observable,
+      error: observable,
+      isExecuting: observable,
+      isError: observable,
+      wasExecuted: observable,
+      isExecutingFirstTime: computed,
+      reset: action,
+    });
+
     this._method = method;
   }
 
@@ -104,7 +115,6 @@ export default class Request<Result, Error> {
     );
   }
 
-  @computed
   get isExecutingFirstTime(): boolean {
     return !this.wasExecuted && this.isExecuting;
   }
@@ -144,7 +154,6 @@ export default class Request<Result, Error> {
     });
   }
 
-  @action
   reset(): Request<Result, Error> {
     this.result = null;
     this.error = null;

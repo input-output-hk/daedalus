@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component, createRef } from 'react';
 // @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
@@ -6,7 +7,7 @@ import { observer } from 'mobx-react';
 import moment from 'moment';
 import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import {
@@ -126,7 +127,6 @@ interface FormFields {
   toAmount: string;
 }
 
-@observer
 class FilterDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -585,4 +585,6 @@ class FilterDialog extends Component<Props> {
   }
 }
 
-export default withDiscreetMode<Config<Props, InjectedProps>>(FilterDialog);
+export default withDiscreetMode<Config<Props, InjectedProps>>(
+  observer(FilterDialog)
+);

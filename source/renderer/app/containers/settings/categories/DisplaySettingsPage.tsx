@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 import DisplaySettings from '../../../components/settings/categories/DisplaySettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class DisplaySettingsPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -22,4 +20,4 @@ class DisplaySettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default DisplaySettingsPage;
+export default inject('stores', 'actions')(observer(DisplaySettingsPage));

@@ -16,7 +16,6 @@ type Props = {
   acceptedFileTypes: Array<string>;
 };
 
-@observer
 class FileUploadWidget extends Component<Props> {
   onOpen = async () => {
     const params: FileDialogRequestParams = {
@@ -78,4 +77,4 @@ class FileUploadWidget extends Component<Props> {
   }
 }
 
-export default FileUploadWidget;
+export default observer(FileUploadWidget);

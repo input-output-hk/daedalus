@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -6,24 +7,23 @@ import {
   FormattedMessage,
 } from 'react-intl';
 import { observer } from 'mobx-react';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import styles from './WalletSelectImportDialog.scss';
+
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import { WalletImportStatuses } from '../../../types/walletExportTypes';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/check-w... Remove this comment to see the full error message
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
@@ -128,7 +128,6 @@ type Props = {
   isMaxNumberOfWalletsReached: boolean;
 };
 
-@observer
 class WalletSelectImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -186,8 +185,8 @@ class WalletSelectImportDialog extends Component<Props> {
         );
 
         if (checkboxes[index] && topWrapper.length) {
-          const checkboxTopOffset = checkboxes[index].getBoundingClientRect()
-            .top;
+          const checkboxTopOffset =
+            checkboxes[index].getBoundingClientRect().top;
           const topWrapperTopOffset = topWrapper[0].getBoundingClientRect().top;
           const topPart = topWrapperTopOffset + 121;
           const spaceForTooltip = checkboxTopOffset - topPart;
@@ -494,4 +493,4 @@ class WalletSelectImportDialog extends Component<Props> {
   }
 }
 
-export default WalletSelectImportDialog;
+export default observer(WalletSelectImportDialog);

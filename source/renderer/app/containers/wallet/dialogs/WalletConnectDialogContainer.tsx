@@ -7,8 +7,6 @@ type Props = InjectedStoresProps & {
   onClose: (...args: Array<any>) => any;
 };
 
-@inject('stores')
-@observer
 class WalletConnectDialogContainer extends Component<Props> {
   static defaultProps = {
     stores: null,
@@ -40,4 +38,4 @@ class WalletConnectDialogContainer extends Component<Props> {
   }
 }
 
-export default WalletConnectDialogContainer;
+export default inject('stores')(observer(WalletConnectDialogContainer));

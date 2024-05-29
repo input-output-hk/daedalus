@@ -263,6 +263,7 @@
   "loading.screen.reportIssue.downloadLogsLinkLabel": "ログをダウンロードする",
   "loading.screen.reportIssue.reportIssueButtonUrl": "https://iohk.zendesk.com/hc/ja/requests/new/",
   "loading.screen.startingCardanoDescription": "このプロセスは、ローカルブロックチェーンデータの整合性を検証します。",
+  "loading.screen.syncingMessage": "ブロックチェーンデータの同期中",
   "loading.screen.startingCardanoMessage": "Cardanoノードを起動しています",
   "loading.screen.stoppedCardanoMessage": "Cardanoノードは停止しました",
   "loading.screen.stoppingCardanoDescription": "このプロセスはデータベースを更新するもので、数分間かかる場合があります。<br />データの完全性を保つために、このプロセスが完了するまでお待ちください。",

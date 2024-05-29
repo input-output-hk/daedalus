@@ -13,7 +13,7 @@ let
     daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
-  inherit (common) originalPackageJson electronVersion electronChromedriverVersion commonSources;
+  inherit (common) originalPackageJson electronVersion commonSources;
 
   archSuffix = if pkgs.system == "aarch64-darwin" then "arm64" else "x64";
   packageVersion = originalPackageJson.version;
@@ -33,10 +33,6 @@ in rec {
     mkdir -p ${cacheDir}/electron/${commonSources.electronCacheHash}/
     ln -sf ${commonSources.electronShaSums} ${cacheDir}/electron/${commonSources.electronCacheHash}/SHASUMS256.txt
     ln -sf ${darwinSources.electron} ${cacheDir}/electron/${commonSources.electronCacheHash}/electron-v${electronVersion}-darwin-${archSuffix}.zip
-
-    mkdir -p ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/
-    ln -sf ${commonSources.electronChromedriverShaSums} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/SHASUMS256.txt
-    ln -sf ${darwinSources.electronChromedriver} ${cacheDir}/electron/${commonSources.electronChromedriverCacheHash}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip
   '';
 
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
@@ -62,7 +58,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools xcbuild perl /* for bufferutil */ ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -79,6 +75,16 @@ in rec {
       find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+
+      # This is building against Node.js, not Electron, but it still will fail, unless:
+      ourArch="${__replaceStrings ["aarch64"] ["arm64"] (__head (__split "-" targetSystem))}"
+      for f in \
+        node_modules/usb/binding.gyp \
+        node_modules/usb/libusb.gypi \
+        node_modules/utf-8-validate/binding.gyp \
+      ; do
+        sed -r 's,-arch (x86_64|arm64),-arch '"$ourArch"',g' -i "$f"
+      done
 
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
@@ -111,7 +117,7 @@ in rec {
     name = pname;
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 pkgconfig darwin.cctools xcbuild perl /* for bufferutil */ ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -137,7 +143,8 @@ in rec {
       patchShebangs .
       sed -r 's#.*patchElectronRebuild.*#${common.patchElectronRebuild}/bin/*#' -i scripts/rebuild-native-modules.sh
 
-      ${common.temporaryNodeModulesPatches}
+      sed -r "s/^const usb =.*/const usb = require(require('path').join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
+        -i node_modules/usb/dist/usb/bindings.js
 
       export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
@@ -295,19 +302,12 @@ in rec {
 
   darwinSources = {
     electron = pkgs.fetchurl {
+      name = "electron-v${electronVersion}-darwin-${archSuffix}.zip";
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
       hash =
         if archSuffix == "x64"
-        then "sha256-I/d/vecsrYMV59Nw2SnNzrVAj1UzSUJB/F3VA9itDNw="
-        else "sha256-Up0HRemSeMZvYxyB7b7yKlrYhxMyNmAC7dNxtAmFCyQ=";
-    };
-
-    electronChromedriver = pkgs.fetchurl {
-      url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
-      hash =
-        if archSuffix == "x64"
-        then "sha256-avLZdXPkcZx5SirO2RVjxXN2oRfbUHs5gEymUwne3HI="
-        else "sha256-jehYm1nMlHjQha7AFzMUvKZxfSbedghODhBUXk1qKB4=";
+        then "sha256-2iCH4N/5PbT7cTL2yIWUCwr4O7HuaSiZsC1GmBfJuPg="
+        else "sha256-4UjzGbdqJE37GzpQA0TD1McRg7qwAhPLUQ9Anb4iops=";
     };
   };
 }

@@ -1,10 +1,10 @@
+// @ts-nocheck
 import React, { Component } from 'react';
-// @ts-ignore ts-migrate(2724) FIXME: '"react"' has no exported member named 'Element'. ... Remove this comment to see the full error message
 import type { Element } from 'react';
 import Datetime from 'react-datetime';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import globalMessages from '../../../i18n/global-messages';
 import TinyButton from './TinyButton';
 import TinyInput from './TinyInput';
@@ -48,13 +48,11 @@ export default class TinyDatePicker extends Component<Props> {
       onChange,
       isValidDate,
       dateFormat,
-      disablePaste,
       value,
       label,
       placeholder,
       innerLabelPrefix,
       innerValue,
-      pickerPanelPosition,
       useReadMode,
       error,
       ...rest

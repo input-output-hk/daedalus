@@ -10,7 +10,6 @@ import {
 } from '../../common/types/cardano-node.types';
 import { isItFreshLog } from './blockSyncProgressHelpers';
 import { environment } from '../environment';
-import { logger } from './logging';
 
 const blockKeyword = 'Replayed block';
 const validatingChunkKeyword = 'Validating chunk';

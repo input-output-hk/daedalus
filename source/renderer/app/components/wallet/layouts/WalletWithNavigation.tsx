@@ -24,7 +24,6 @@ type Props = {
   onWalletNavItemClick: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletWithNavigation extends Component<Props> {
   render() {
     const {
@@ -76,4 +75,4 @@ class WalletWithNavigation extends Component<Props> {
   }
 }
 
-export default WalletWithNavigation;
+export default observer(WalletWithNavigation);

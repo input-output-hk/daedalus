@@ -54,7 +54,6 @@ type State = {
   timeUntilNextEpochStart: number;
 };
 
-@observer
 class DelegationStepsSuccessDialog extends Component<Props, State> {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   intervalHandler: IntervalID | null | undefined = null;
@@ -95,12 +94,8 @@ class DelegationStepsSuccessDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const {
-      delegatedWallet,
-      delegatedStakePool,
-      currentLocale,
-      onClose,
-    } = this.props;
+    const { delegatedWallet, delegatedStakePool, currentLocale, onClose } =
+      this.props;
     const actions = [
       {
         className: 'closeButton',
@@ -156,4 +151,4 @@ class DelegationStepsSuccessDialog extends Component<Props, State> {
   }
 }
 
-export default DelegationStepsSuccessDialog;
+export default observer(DelegationStepsSuccessDialog);

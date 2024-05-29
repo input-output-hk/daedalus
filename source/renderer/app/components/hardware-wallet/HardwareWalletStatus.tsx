@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
 import checkIcon from '../../assets/images/hardware-wallet/check.inline.svg';
 import clearIcon from '../../assets/images/hardware-wallet/close-cross-red.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -218,7 +218,6 @@ type State = {
   hwDeviceStatus: HwDeviceStatus;
 };
 
-@observer
 class HardwareWalletStatus extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -258,9 +257,8 @@ class HardwareWalletStatus extends Component<Props, State> {
     const isLoading = hwDeviceLoadingStatuses.includes(hwDeviceStatus);
     const isReady = hwDeviceReadyStatuses.includes(hwDeviceStatus);
     const isError = hwDeviceErrorStatuses.includes(hwDeviceStatus);
-    const hasInstructionsLink = hwDeviceInstructionsLinkRelatedStatuses.includes(
-      hwDeviceStatus
-    );
+    const hasInstructionsLink =
+      hwDeviceInstructionsLinkRelatedStatuses.includes(hwDeviceStatus);
 
     const passphraseLabelVisible =
       isTrezor && hwDevicePassphraseRelatedStatuses.includes(hwDeviceStatus);
@@ -351,4 +349,4 @@ class HardwareWalletStatus extends Component<Props, State> {
   }
 }
 
-export default HardwareWalletStatus;
+export default observer(HardwareWalletStatus);

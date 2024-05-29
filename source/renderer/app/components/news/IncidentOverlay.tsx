@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { get, camelCase } from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import classnames from 'classnames';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import News from '../../domains/News';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './IncidentOverlay.scss';
@@ -17,7 +17,6 @@ type Props = {
   currentDateFormat: string;
 };
 
-@observer
 class IncidentOverlay extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
@@ -86,4 +85,4 @@ class IncidentOverlay extends Component<Props> {
   }
 }
 
-export default IncidentOverlay;
+export default observer(IncidentOverlay);

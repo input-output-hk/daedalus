@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-// import { Input } from 'react-polymorph/lib/components/Input';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { Input } from '@react-polymorph/components/Input';
+// import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -86,7 +86,6 @@ interface FormFields {
   repeatPassword: string;
 }
 
-@observer
 class WalletFileImportDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -268,4 +267,4 @@ class WalletFileImportDialog extends Component<Props> {
   }
 }
 
-export default WalletFileImportDialog;
+export default observer(WalletFileImportDialog);

@@ -14,7 +14,6 @@ type Props = {
   isUpdatePostponed: boolean;
 };
 
-@observer
 class UpdateItem extends Component<Props> {
   static defaultProps = {
     onupdateItemActionClick: null,
@@ -77,4 +76,4 @@ class UpdateItem extends Component<Props> {
   }
 }
 
-export default UpdateItem;
+export default observer(UpdateItem);

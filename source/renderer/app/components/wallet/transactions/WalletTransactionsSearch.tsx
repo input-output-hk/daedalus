@@ -1,8 +1,9 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import styles from './WalletTransactionsSearch.scss';
 
 const messages = defineMessages({
@@ -17,7 +18,6 @@ type Props = {
   onChange: (...args: Array<any>) => any;
 };
 
-@observer
 class WalletTransactionsSearch extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -40,4 +40,4 @@ class WalletTransactionsSearch extends Component<Props> {
   }
 }
 
-export default WalletTransactionsSearch;
+export default observer(WalletTransactionsSearch);

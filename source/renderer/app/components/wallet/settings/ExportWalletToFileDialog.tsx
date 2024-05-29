@@ -5,8 +5,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-// import { Input } from 'react-polymorph/lib/components/Input';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { Input } from '@react-polymorph/components/Input';
+// import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -15,7 +15,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module './ExportWalletToFileDialog.scs... Remove this comment to see the full error message
 import styles from './ExportWalletToFileDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   headline: {
@@ -69,7 +68,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class ExportWalletToFileDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -205,4 +203,4 @@ class ExportWalletToFileDialog extends Component<Props, State> {
   }
 }
 
-export default ExportWalletToFileDialog;
+export default observer(ExportWalletToFileDialog);

@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, makeObservable } from 'mobx';
 import { Feature } from '../../utils/mobx-features/feature';
 import Request from '../../stores/lib/LocalizedRequest';
 import { DiscreetModeApi } from './api';
@@ -13,6 +13,16 @@ export class DiscreetMode extends Feature {
     private analyticsTracker: AnalyticsTracker
   ) {
     super();
+
+    makeObservable(this, {
+      isDiscreetMode: observable,
+      openInDiscreetMode: observable,
+      getDiscreetModeSettingsRequest: observable,
+      setDiscreetModeSettingsRequest: observable,
+      toggleDiscreetMode: action,
+      toggleOpenInDiscreetMode: action,
+    });
+
     runInAction(() => {
       this.getDiscreetModeSettingsRequest = new Request(
         this.api.getDiscreetModeSettings
@@ -23,13 +33,9 @@ export class DiscreetMode extends Feature {
     });
   }
 
-  @observable
   isDiscreetMode = false;
-  @observable
   openInDiscreetMode = false;
-  @observable
   getDiscreetModeSettingsRequest: Request<Promise<boolean>>;
-  @observable
   setDiscreetModeSettingsRequest: Request<Promise<boolean>>;
 
   async start() {
@@ -41,14 +47,13 @@ export class DiscreetMode extends Feature {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.getDiscreetModeSettingsRequest.execute();
     const isDiscreetModeEnabled = this.getDiscreetModeSettingsRequest.result;
-    runInAction('Initialize discreet mode variables', () => {
+    runInAction(() => {
       // @ts-ignore ts-migrate(2322) FIXME: Type 'Promise<boolean>' is not assignable to type ... Remove this comment to see the full error message
       this.openInDiscreetMode = isDiscreetModeEnabled;
       // @ts-ignore ts-migrate(2322) FIXME: Type 'Promise<boolean>' is not assignable to type ... Remove this comment to see the full error message
       this.isDiscreetMode = isDiscreetModeEnabled;
     });
   };
-  @action
   toggleDiscreetMode = () => {
     this.isDiscreetMode = !this.isDiscreetMode;
     this.analyticsTracker.sendEvent(
@@ -56,12 +61,11 @@ export class DiscreetMode extends Feature {
       `Turned ${this.isDiscreetMode ? 'on' : 'off'} discreet mode`
     );
   };
-  @action
   toggleOpenInDiscreetMode = async () => {
     const nextSetting = !this.openInDiscreetMode;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.setDiscreetModeSettingsRequest.execute(nextSetting);
-    runInAction('Update open in discreet mode settings', () => {
+    runInAction(() => {
       this.openInDiscreetMode = nextSetting;
     });
     this.analyticsTracker.sendEvent(

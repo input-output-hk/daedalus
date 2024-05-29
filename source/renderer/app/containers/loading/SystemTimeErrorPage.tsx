@@ -5,8 +5,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class SystemTimeErrorPage extends Component<Props> {
   static defaultProps = {
     stores: null,
@@ -15,10 +13,8 @@ class SystemTimeErrorPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const {
-      localTimeDifference,
-      ignoreSystemTimeChecks,
-    } = stores.networkStatus;
+    const { localTimeDifference, ignoreSystemTimeChecks } =
+      stores.networkStatus;
     const { forceCheckNetworkClock } = actions.networkStatus;
     const { app, networkStatus, profile } = stores;
     const { openExternalLink } = app;
@@ -39,4 +35,4 @@ class SystemTimeErrorPage extends Component<Props> {
   }
 }
 
-export default SystemTimeErrorPage;
+export default inject('stores', 'actions')(observer(SystemTimeErrorPage));

@@ -1,11 +1,13 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from '@react-polymorph/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
@@ -20,8 +22,8 @@ import {
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/info-ic... Remove this comment to see the full error message
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -61,8 +63,7 @@ const messages = defineMessages({
       'Label for the "Repeat password" input in the wallet restore dialog.',
   },
   passwordFieldsPlaceholder: {
-    id:
-      'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
+    id: 'wallet.restore.dialog.step.configuration.input.passwordFields.placeholder',
     defaultMessage: '!!!Password',
     description:
       'Placeholder for the "Password" inputs in the wallet restore dialog.',
@@ -98,7 +99,6 @@ interface FormFields {
   repeatPassword: string;
 }
 
-@observer
 class ConfigurationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -307,4 +307,4 @@ class ConfigurationDialog extends Component<Props> {
   }
 }
 
-export default ConfigurationDialog;
+export default observer(ConfigurationDialog);

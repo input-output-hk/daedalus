@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 import NewsFeed from '../../components/news/NewsFeed';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class NewsFeedContainer extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -21,11 +19,8 @@ class NewsFeedContainer extends Component<InjectedProps> {
     const { app, profile, appUpdate, newsFeed } = stores;
     const { newsFeedData, isLoadingNews, proceedNewsAction } = newsFeed;
     const { openAppUpdateOverlay } = actions.appUpdate;
-    const {
-      downloadProgress,
-      displayAppUpdateNewsItem,
-      isUpdatePostponed,
-    } = appUpdate;
+    const { downloadProgress, displayAppUpdateNewsItem, isUpdatePostponed } =
+      appUpdate;
     const { toggleNewsFeed } = actions.app;
     const { openExternalLink, newsFeedIsOpen } = app;
     const { currentDateFormat } = profile;
@@ -50,4 +45,4 @@ class NewsFeedContainer extends Component<InjectedProps> {
   }
 }
 
-export default NewsFeedContainer;
+export default inject('stores', 'actions')(observer(NewsFeedContainer));

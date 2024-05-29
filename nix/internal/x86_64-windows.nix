@@ -86,7 +86,8 @@ in rec {
       mkdir -p installers/icons/${cluster}/${cluster}
       cp ${windowsIcons.${cluster}}/${cluster}/* installers/icons/${cluster}/${cluster}/
 
-      ${common.temporaryNodeModulesPatches}
+      sed -r "s/^const usb =.*/const usb = require(require('path').join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'usb_bindings.node'));/g" \
+        -i node_modules/usb/dist/usb/bindings.js
 
       export DEBUG=electron-packager
       yarn --verbose --offline package --win64 --dir $(pwd) --icon installers/icons/${cluster}/${cluster}
@@ -107,10 +108,10 @@ in rec {
         done
       )
 
-      rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
+      rm -rf $out/resources/app/{installers,launcher-config.yaml,home}
 
       mkdir -pv $out/resources/app/node_modules
-      cp -r node_modules/{\@babel,\@noble,\@protobufjs,regenerator-runtime,node-fetch,\@trezor,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,bytebuffer,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib} $out/resources/app/node_modules
+      cp -r node_modules/{\@babel,\@noble,\@protobufjs,\@emurgo\/cardano-serialization-lib-nodejs,\@fivebinaries\/coin-selection,ua-parser-js,regenerator-runtime,node-fetch,\@trezor,randombytes,safe-buffer,bip66,pushdata-bitcoin,bitcoin-ops,typeforce,varuint-bitcoin,create-hash,blake2b,blakejs,nanoassert,blake2b-wasm,bs58check,bs58,base-x,create-hmac,wif,ms,semver-compare,long,define-properties,object-keys,has,function-bind,es-abstract,has-symbols,json-stable-stringify,cashaddrjs,big-integer,inherits,bchaddrjs,cross-fetch,js-chain-libs-node,bignumber.js,call-bind,get-intrinsic,base64-js,ieee754,util-deprecate,bech32,blake-hash,tiny-secp256k1,bn.js,elliptic,minimalistic-assert,minimalistic-crypto-utils,brorand,hash.js,hmac-drbg,int64-buffer,object.values,protobufjs,usb-detection,babel-runtime,bindings,brotli,clone,deep-equal,dfa,eventemitter2,file-uri-to-path,fontkit,functions-have-names,has-property-descriptors,has-tostringtag,is-arguments,is-date-object,is-regex,linebreak,node-hid,object-is,pdfkit,png-js,regexp.prototype.flags,restructure,tiny-inflate,unicode-properties,unicode-trie,socks,socks-proxy-agent,ip,smart-buffer,ripple-lib,lodash,jsonschema,ripple-address-codec,ripple-keypairs,ripple-lib-transactionparser,ripple-binary-codec,buffer,decimal.js,debug,agent-base,tslib,whatwg-url,tr46,usb,node-gyp-build,\@sinclair,ts-mixer,core-js} $out/resources/app/node_modules
 
       chmod -R +w $out
 
@@ -389,6 +390,7 @@ in rec {
       cp node_modules/usb-detection/build/Release/detection.node $out/build/Release/
       cp node_modules/usb/build/Release/usb_bindings.node        $out/build/Release/
       cp node_modules/node-hid/build/Release/HID.node            $out/build/Release/
+      cp node_modules/utf-8-validate/build/Release/validation.node $out/build/Release/
 
       # make sure they’re for Windows
       find $out -iname '*.node' | while IFS= read -r ext ; do
@@ -420,6 +422,7 @@ in rec {
 
   native = rec {
     nodejs = pkgs.fetchzip {
+      name = "node-v${common.nodejs.version}-win-x64.zip";
       url = "https://nodejs.org/dist/v${common.nodejs.version}/node-v${common.nodejs.version}-win-x64.zip";
       hash = "sha256-n8ux67xrq3Rta1nE715y1m040oaLxUI2bIt12RaJdeM=";
     };
@@ -569,8 +572,9 @@ in rec {
 
   windowsSources = {
     electron = pkgs.fetchurl {
+      name = "electron-v${electronVersion}-win32-x64.zip";
       url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-      hash = "sha256-xYQml960qP3sB/Rp3uEMU7s9aT2Ma4A5VHHzuUx8r9c=";
+      hash = "sha256-R8jxX41cduvqFb+/fA+UvixHQ45+alePS1gyScSZTEc=";
     };
 
     # XXX: normally, node-gyp would download it only for Windows,
@@ -578,7 +582,7 @@ in rec {
     node-lib = pkgs.fetchurl {
       name = "node.lib-${electronVersion}"; # cache invalidation
       url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-      hash = "sha256-JhIFzgm+Oig7FsHk1TP85H6PDD3drC7wXpVDfq8hIC4=";
+      hash = "sha256-5lKdTXZDXu/3o7mTbdEArU8+ZQHVkEQGoVO4V0XUlKQ=";
     };
   };
 

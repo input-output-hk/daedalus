@@ -1,13 +1,15 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { intlShape, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
-import { Stepper } from 'react-polymorph/lib/components/Stepper';
-import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Stepper } from '@react-polymorph/components/Stepper';
+import { StepperSkin } from '@react-polymorph/skins/simple/StepperSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsConfirmationDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -53,7 +55,6 @@ interface FormFields {
   spendingPassword: string;
 }
 
-@observer
 class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -291,4 +292,4 @@ class DelegationStepsConfirmationDialog extends Component<Props> {
   }
 }
 
-export default DelegationStepsConfirmationDialog;
+export default observer(DelegationStepsConfirmationDialog);

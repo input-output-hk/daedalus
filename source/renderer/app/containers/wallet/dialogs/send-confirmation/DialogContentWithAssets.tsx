@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import compose from 'lodash/fp/compose';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import questionMarkIcon from '../../../../assets/images/question-mark.inline.svg';
 import Asset from '../../../../components/assets/Asset';

@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { PopOver } from '@react-polymorph/components/PopOver';
 import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
 import type { WalletNextDelegation } from '../../../api/wallets/types';
 import StakePool from '../../../domains/StakePool';
@@ -102,7 +102,6 @@ const initialWalletRowState = {
   highlightedPoolId: false,
 };
 
-@observer
 class WalletRow extends Component<Props, WalletRowState> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -236,10 +235,11 @@ class WalletRow extends Component<Props, WalletRowState> {
     const nextPendingDelegatedStakePool = nextPendingDelegatedStakePoolId
       ? getStakePoolById(nextPendingDelegatedStakePoolId)
       : null;
-    const futurePendingDelegatedStakePoolId = this.getPendingDelegatedStakePoolId(
-      futureEpochNumber,
-      nextPendingDelegatedStakePoolId
-    );
+    const futurePendingDelegatedStakePoolId =
+      this.getPendingDelegatedStakePoolId(
+        futureEpochNumber,
+        nextPendingDelegatedStakePoolId
+      );
     const futurePendingDelegatedStakePool = futurePendingDelegatedStakePoolId
       ? getStakePoolById(futurePendingDelegatedStakePoolId)
       : null;
@@ -474,4 +474,4 @@ class WalletRow extends Component<Props, WalletRowState> {
   }
 }
 
-export default WalletRow;
+export default observer(WalletRow);

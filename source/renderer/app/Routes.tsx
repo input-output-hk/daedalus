@@ -1,5 +1,11 @@
 import React from 'react';
-import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  Switch,
+  withRouter,
+} from 'react-router-dom';
 import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
@@ -37,7 +43,7 @@ import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import TrackedRoute from './analytics/TrackedRoute';
 
-export const Routes = withRouter(() => (
+const RoutesComponent: React.FC<RouteComponentProps> = () => (
   <Route path={ROUTES.ROOT}>
     <Root>
       <Switch>
@@ -213,4 +219,7 @@ export const Routes = withRouter(() => (
       </Switch>
     </Root>
   </Route>
-));
+);
+
+// Wrap your component with withRouter
+export const Routes = withRouter(RoutesComponent as any);

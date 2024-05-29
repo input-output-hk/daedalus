@@ -85,7 +85,6 @@ type Props = {
   selectTheme: (...args: Array<any>) => any;
 };
 
-@observer
 class DisplaySettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -283,4 +282,4 @@ class DisplaySettings extends Component<Props> {
   }
 }
 
-export default DisplaySettings;
+export default observer(DisplaySettings);

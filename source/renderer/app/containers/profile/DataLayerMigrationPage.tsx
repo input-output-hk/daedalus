@@ -4,8 +4,6 @@ import CenteredLayout from '../../components/layout/CenteredLayout';
 import DataLayerMigrationForm from '../../components/profile/data-layer-migration/DataLayerMigrationForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions')
-@observer
 class DataLayerMigrationPage extends Component<InjectedProps> {
   static defaultProps = {
     actions: null,
@@ -16,9 +14,8 @@ class DataLayerMigrationPage extends Component<InjectedProps> {
   };
 
   render() {
-    const {
-      setDataLayerMigrationAcceptanceRequest,
-    } = this.props.stores.profile;
+    const { setDataLayerMigrationAcceptanceRequest } =
+      this.props.stores.profile;
     return (
       <CenteredLayout>
         <DataLayerMigrationForm
@@ -30,4 +27,4 @@ class DataLayerMigrationPage extends Component<InjectedProps> {
   }
 }
 
-export default DataLayerMigrationPage;
+export default inject('stores', 'actions')(observer(DataLayerMigrationPage));

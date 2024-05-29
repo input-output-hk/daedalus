@@ -5,15 +5,13 @@ import SplashNetworkFlight from '../../components/splash/SplashNetworkFlight';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class SplashNetworkPage extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: {},
   };
 
-  render() {
+  render(): React.ReactNode {
     const { networkStatus: networkStatusActions } = this.props.actions;
     const { openExternalLink } = this.props.stores.app;
 
@@ -30,4 +28,4 @@ class SplashNetworkPage extends Component<Props> {
   }
 }
 
-export default SplashNetworkPage;
+export default inject('stores', 'actions')(observer(SplashNetworkPage));

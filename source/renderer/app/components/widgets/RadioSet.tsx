@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
-import { Radio } from 'react-polymorph/lib/components/Radio';
-import { RadioSkin } from 'react-polymorph/lib/skins/simple/RadioSkin';
+import { Radio } from '@react-polymorph/components/Radio';
+import { RadioSkin } from '@react-polymorph/skins/simple/RadioSkin';
 import { observer } from 'mobx-react';
 import styles from './RadioSet.scss';
 import stylesOverride from './RadioOverride.scss';
@@ -26,7 +26,6 @@ type RadioProps = {
   themeOverrides: Record<string, any>;
 };
 
-@observer
 class RadioSet extends Component<Props> {
   render() {
     const { label, items, verticallyAligned } = this.props;
@@ -52,4 +51,4 @@ class RadioSet extends Component<Props> {
   }
 }
 
-export default RadioSet;
+export default observer(RadioSet);

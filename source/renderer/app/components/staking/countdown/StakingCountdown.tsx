@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import styles from './StakingCountdown.scss';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -35,18 +35,14 @@ type Props = {
   onLearnMoreClick: (...args: Array<any>) => any;
 };
 
-@observer
 class StakingCountdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const {
-      redirectToStakingInfo,
-      startDateTime,
-      onLearnMoreClick,
-    } = this.props;
+    const { redirectToStakingInfo, startDateTime, onLearnMoreClick } =
+      this.props;
     const { intl } = this.context;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
@@ -81,4 +77,4 @@ class StakingCountdown extends Component<Props> {
   }
 }
 
-export default StakingCountdown;
+export default observer(StakingCountdown);

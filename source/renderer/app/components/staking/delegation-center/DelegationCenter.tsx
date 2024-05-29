@@ -31,7 +31,6 @@ type Props = {
   listName?: string;
 };
 
-@observer
 class DelegationCenter extends Component<Props> {
   render() {
     const {
@@ -88,4 +87,4 @@ class DelegationCenter extends Component<Props> {
   }
 }
 
-export default DelegationCenter;
+export default observer(DelegationCenter);

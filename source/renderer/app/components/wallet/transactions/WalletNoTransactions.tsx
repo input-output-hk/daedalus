@@ -6,7 +6,6 @@ type Props = {
   label: string;
 };
 
-@observer
 class WalletNoTransactions extends Component<Props> {
   render() {
     const { label } = this.props;
@@ -18,4 +17,4 @@ class WalletNoTransactions extends Component<Props> {
   }
 }
 
-export default WalletNoTransactions;
+export default observer(WalletNoTransactions);

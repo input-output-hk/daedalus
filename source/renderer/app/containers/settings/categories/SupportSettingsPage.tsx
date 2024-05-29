@@ -16,8 +16,6 @@ const messages = defineMessages({
   },
 });
 
-@inject('stores', 'actions')
-@observer
 class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -79,4 +77,4 @@ class SupportSettingsPage extends Component<InjectedProps> {
   }
 }
 
-export default SupportSettingsPage;
+export default inject('stores', 'actions')(observer(SupportSettingsPage));

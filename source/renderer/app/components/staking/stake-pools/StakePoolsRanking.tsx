@@ -1,11 +1,13 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Config'.
 import type { Config } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
-import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { PopOver } from '@react-polymorph/components/PopOver';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import BigNumber from 'bignumber.js';
 import {
   shortNumber,
@@ -133,7 +135,6 @@ type State = {
   displayValue: string;
 };
 
-@observer
 class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -219,11 +220,8 @@ class StakePoolsRanking extends Component<Props, State> {
     rankStakePools();
   };
   onSliderChange = (sliderValue: number) => {
-    const {
-      updateDelegatingStake,
-      maxDelegationFunds,
-      maxDelegationFundsLog,
-    } = this.props;
+    const { updateDelegatingStake, maxDelegationFunds, maxDelegationFundsLog } =
+      this.props;
     let amountValue = null;
 
     if (
@@ -441,5 +439,5 @@ class StakePoolsRanking extends Component<Props, State> {
 }
 
 export default withDiscreetMode<Config<Props, InjectedProps>>(
-  StakePoolsRanking
+  observer(StakePoolsRanking)
 );

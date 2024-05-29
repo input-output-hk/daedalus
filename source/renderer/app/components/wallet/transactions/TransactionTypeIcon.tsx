@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
-import { LoadingSpinner } from 'react-polymorph/lib/components/LoadingSpinner';
-import { LoadingSpinnerSkin } from 'react-polymorph/lib/skins/simple/LoadingSpinnerSkin';
+import { LoadingSpinner } from '@react-polymorph/components/LoadingSpinner';
+import { LoadingSpinnerSkin } from '@react-polymorph/skins/simple/LoadingSpinnerSkin';
 import styles from './TransactionTypeIcon.scss';
 import spinnerOverrides from './SpinnerOverrides.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/wallet-... Remove this comment to see the full error message

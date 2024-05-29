@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
+import { Button } from '@react-polymorph/components/Button';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
+import { Link } from '@react-polymorph/components/Link';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
@@ -37,7 +39,6 @@ const messages = defineMessages({
   },
 });
 
-@observer
 class RTSFlagsRecommendationOverlay extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -80,4 +81,4 @@ class RTSFlagsRecommendationOverlay extends Component<Props> {
   }
 }
 
-export default RTSFlagsRecommendationOverlay;
+export default observer(RTSFlagsRecommendationOverlay);

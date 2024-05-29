@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
 import ButtonLink from '../../widgets/ButtonLink';
 import styles from './StakingInfo.scss';
 
@@ -44,7 +44,6 @@ type State = {
   progressLabelClassName: string;
 };
 
-@observer
 class StakingInfo extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
@@ -140,4 +139,4 @@ class StakingInfo extends Component<Props, State> {
   }
 }
 
-export default StakingInfo;
+export default observer(StakingInfo);

@@ -7,8 +7,6 @@ import CURRENT_EPOCHS from '../../config/stakingCurrentEpoch.dummy.json';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions')
-@observer
 class StakingEpochsPage extends Component<Props> {
   static defaultProps = {
     actions: null,
@@ -32,4 +30,4 @@ class StakingEpochsPage extends Component<Props> {
   }
 }
 
-export default StakingEpochsPage;
+export default inject('stores', 'actions')(observer(StakingEpochsPage));

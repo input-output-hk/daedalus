@@ -82,7 +82,6 @@ type Props = {
   onRestart: (...args: Array<any>) => any;
 };
 
-@observer
 class VotingRegistrationStepsConfirm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -185,4 +184,4 @@ class VotingRegistrationStepsConfirm extends Component<Props> {
   }
 }
 
-export default VotingRegistrationStepsConfirm;
+export default observer(VotingRegistrationStepsConfirm);

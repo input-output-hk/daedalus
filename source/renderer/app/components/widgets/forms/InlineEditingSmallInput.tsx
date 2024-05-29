@@ -1,21 +1,19 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
+import { InputSkin } from '@react-polymorph/skins/simple/InputSkin';
+import { Input } from '@react-polymorph/components/Input';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { Button } from '@react-polymorph/components/Button';
 import classnames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingSmallInput.scss';
+
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/pen.inl... Remove this comment to see the full error message
 import penIcon from '../../../assets/images/pen.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/close-c... Remove this comment to see the full error message
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
-// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/arrow-r... Remove this comment to see the full error message
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
 
 type Props = {
@@ -43,7 +41,6 @@ interface FormFields {
   inputField: string;
 }
 
-@observer
 class InlineEditingSmallInput extends Component<Props, State> {
   state = {
     isActive: false,
@@ -154,7 +151,7 @@ class InlineEditingSmallInput extends Component<Props, State> {
       blur: () => {},
       focus: () => {},
     };
-    return get(this, 'inputField.inputElement.current', fallbackInput);
+    return this?.inputField?.inputElement?.current || fallbackInput;
   }
 
   inputField: Input;
@@ -303,4 +300,4 @@ class InlineEditingSmallInput extends Component<Props, State> {
   }
 }
 
-export default InlineEditingSmallInput;
+export default observer(InlineEditingSmallInput);

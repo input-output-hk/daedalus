@@ -50,7 +50,6 @@ type State = {
   isScrolling: boolean;
 };
 
-@observer
 class WalletTransactions extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -100,9 +99,8 @@ class WalletTransactions extends Component<Props, State> {
     if (!filterOptions || !activeWallet) return null;
     let walletTransactions = null;
     // const { searchLimit } = filterOptions;
-    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
-      filterOptions
-    );
+    const numberOfFilterDimensionsApplied =
+      getNumberOfFilterDimensionsApplied(filterOptions);
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const isRestoreActive = activeWallet && activeWallet.isRestoring;
     const isFilterDisabled =
@@ -168,4 +166,4 @@ class WalletTransactions extends Component<Props, State> {
   }
 }
 
-export default WalletTransactions;
+export default observer(WalletTransactions);

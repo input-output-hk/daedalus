@@ -13,7 +13,6 @@ export type TickProps = {
   vertical?: boolean;
 };
 
-@observer
 class WalletUtxoTick extends Component<TickProps> {
   render() {
     const {
@@ -35,4 +34,4 @@ class WalletUtxoTick extends Component<TickProps> {
   }
 }
 
-export default WalletUtxoTick;
+export default observer(WalletUtxoTick);

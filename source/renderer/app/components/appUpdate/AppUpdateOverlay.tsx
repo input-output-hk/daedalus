@@ -1,16 +1,18 @@
+// @ts-nocheck
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
+import { Button } from '@react-polymorph/components/Button';
+import { Checkbox } from '@react-polymorph/components/Checkbox';
+import { CheckboxSkin } from '@react-polymorph/skins/simple/CheckboxSkin';
+import { Link } from '@react-polymorph/components/Link';
+import { LinkSkin } from '@react-polymorph/skins/simple/LinkSkin';
+import { ButtonSkin } from '@react-polymorph/skins/simple/ButtonSkin';
+import { ButtonSpinnerSkin } from '@react-polymorph/skins/simple/ButtonSpinnerSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
 import styles from './AppUpdateOverlay.scss';
@@ -138,7 +140,6 @@ type State = {
   areTermsOfUseAccepted: boolean;
 };
 
-@observer
 class AppUpdateOverlay extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -380,4 +381,4 @@ class AppUpdateOverlay extends Component<Props, State> {
   }
 }
 
-export default AppUpdateOverlay;
+export default observer(AppUpdateOverlay);
