@@ -203,17 +203,26 @@ describe('wallet/Wallet Send Form', () => {
   }
 
   function createTransactionFeeMock(times: number, minimumAda: number) {
-    const mock = jest.fn().mockResolvedValue({
-      fee: new BigNumber(1),
-      minimumAda: new BigNumber(1),
+    const mock = jest.fn().mockImplementation(() => {
+      // eslint-disable-next-line no-console
+      console.log('Default call');
+
+      return Promise.resolve({
+        fee: new BigNumber(1),
+        minimumAda: new BigNumber(1),
+      });
     });
     Array.from({
       length: times,
-    }).forEach(() => {
-      // @ts-ignore
-      mock.mockResolvedValueOnce({
-        fee: new BigNumber(1),
-        minimumAda: new BigNumber(minimumAda),
+    }).forEach((_, index) => {
+      mock.mockImplementationOnce(() => {
+        // eslint-disable-next-line no-console
+        console.log(`Call ${index + 1}`);
+
+        return Promise.resolve({
+          fee: new BigNumber(1),
+          minimumAda: new BigNumber(minimumAda),
+        });
       });
     });
     return mock;
@@ -431,7 +440,8 @@ describe('wallet/Wallet Send Form', () => {
     expect(adaInput).toHaveValue(`${minimumAda},000000`);
   });
 
-  test('should calculate transaction fee even when one of the assets are empty', async () => {
+  // eslint-disable-next-line
+  test.only('should calculate transaction fee even when one of the assets are empty', async () => {
     expect.assertions(2);
     const minimumAda = 2;
     const calculateTransactionFeeMock = createTransactionFeeMock(4, minimumAda);
@@ -440,10 +450,25 @@ describe('wallet/Wallet Send Form', () => {
     );
     enterReceiverAddress();
     await addToken(0);
+    // eslint-disable-next-line no-console
+    console.log(
+      'calculateTransactionFeeMock call count:',
+      calculateTransactionFeeMock.mock.calls.length
+    );
     await waitForMinimumAdaRequiredMsg(1);
     expect(getInput('Ada')).toHaveValue('');
     await addToken(minimumAda, 1);
+    // eslint-disable-next-line no-console
+    console.log(
+      'calculateTransactionFeeMock call count:',
+      calculateTransactionFeeMock.mock.calls.length
+    );
     await waitForMinimumAdaRequiredMsg();
+    // eslint-disable-next-line no-console
+    console.log(
+      'calculateTransactionFeeMock call count:',
+      calculateTransactionFeeMock.mock.calls.length
+    );
     assertAdaInput(minimumAda);
   });
 
