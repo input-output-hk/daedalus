@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import { bech32 } from 'bech32';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
+import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
@@ -47,6 +50,14 @@ const receiverAddressTypes: Set<AddressType> = new Set([
   7,
   8,
 ]);
+export const CATALYST_VOTING_REGISTRATION_TYPE = 'CATALYST_VOTING';
+export const HARDENED_THRESHOLD = 0x80000000;
+export const derivationScheme = {
+  type: 'v2',
+  ed25519Mode: 2,
+  keyfileVersion: '2.0.0',
+};
+
 export const isReceiverAddressType = (addressType: AddressType) =>
   receiverAddressTypes.has(addressType);
 // [1852H, 1815H, 0H] => m/1852'/1815'/0'
@@ -158,3 +169,61 @@ export const groupTokensByPolicyId = (assets: CoinSelectionAssetsType) => {
 
   return groupedAssets;
 };
+
+export const indexIsHardened = (index: number) => {
+  return index >= HARDENED_THRESHOLD;
+};
+
+export const CachedDeriveXpubFactory = (
+  deriveXpubHardenedFn: (...args: Array<any>) => any
+) => {
+  const derivedXpubs = {};
+  let xpubMemo;
+
+  const deriveXpub = async (
+    absDerivationPath: Array<number>,
+    xpubHex: string | null | undefined
+  ) => {
+    if (xpubHex) xpubMemo = xpubHex;
+    const memoKey = JSON.stringify(absDerivationPath);
+    let derivedXpubsMemo = await derivedXpubs[memoKey];
+
+    if (!derivedXpubsMemo) {
+      const deriveHardened =
+        absDerivationPath.length === 0 ||
+        indexIsHardened(absDerivationPath.slice(-1)[0]);
+      derivedXpubsMemo = deriveHardened
+        ? await deriveXpubHardenedFn(xpubMemo)
+        : await deriveXpubNonhardenedFn(absDerivationPath);
+    }
+
+    /*
+     * the derivedXpubs map stores promises instead of direct results
+     * to deal with concurrent requests to derive the same xpub
+     */
+    return derivedXpubsMemo;
+  };
+
+  const deriveXpubNonhardenedFn = async (derivationPath) => {
+    const lastIndex = derivationPath.slice(-1)[0];
+    const parentXpub = await deriveXpub(derivationPath.slice(0, -1), null);
+
+    try {
+      const parentXpubHex = utils.buf_to_hex(parentXpub);
+      const derivedXpub = await deriveXpubChannel.request({
+        parentXpubHex,
+        lastIndex,
+        derivationScheme: derivationScheme.ed25519Mode,
+      });
+      return utils.hex_to_buf(derivedXpub as HexString);
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  return deriveXpub;
+};
+
+export const deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
+  return Buffer.from(xpubHex, 'hex');
+});

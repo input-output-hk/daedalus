@@ -18,18 +18,18 @@ export const TrezorTransactionSigningMode = {
   ORDINARY_TRANSACTION: 0,
   POOL_REGISTRATION_AS_OWNER: 1,
 };
-export const prepareTrezorInput = (input: CoinSelectionInput) => {
+export const toTrezorInput = (input: CoinSelectionInput) => {
   return {
     path: derivationPathToString(input.derivationPath),
     prev_hash: input.id,
     prev_index: input.index,
   };
 };
-export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
+export const toTrezorOutput = (output: CoinSelectionOutput) => {
   let tokenBundle = [];
 
   if (output.assets) {
-    tokenBundle = prepareTokenBundle(output.assets);
+    tokenBundle = toTokenBundle(output.assets);
   }
 
   if (output.derivationPath) {
@@ -52,7 +52,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
     tokenBundle,
   };
 };
-export const prepareTrezorCertificate = (cert: CoinSelectionCertificate) => {
+export const toTrezorCertificate = (cert: CoinSelectionCertificate) => {
   if (cert.pool) {
     return {
       type: CERTIFICATE_TYPE[cert.certificateType],
@@ -66,9 +66,7 @@ export const prepareTrezorCertificate = (cert: CoinSelectionCertificate) => {
     path: derivationPathToString(cert.rewardAccountPath),
   };
 };
-export const prepareTrezorWithdrawal = (
-  withdrawal: CoinSelectionWithdrawal
-) => {
+export const toTrezorWithdrawal = (withdrawal: CoinSelectionWithdrawal) => {
   return {
     path: derivationPathToString(withdrawal.derivationPath),
     amount: withdrawal.amount.quantity.toString(),
@@ -83,7 +81,7 @@ export type TrezorVotingDataType = {
   nonce: string;
 };
 
-export const prepareTrezorAuxiliaryData = ({
+export const toTrezorAuxiliaryData = ({
   address,
   votingKey,
   nonce,
@@ -101,7 +99,7 @@ export const prepareTrezorAuxiliaryData = ({
   },
 });
 // Helper Methods
-export const prepareTokenBundle = (assets: CoinSelectionAssetsType) => {
+export const toTokenBundle = (assets: CoinSelectionAssetsType) => {
   const tokenObject = groupTokensByPolicyId(assets);
   const tokenObjectEntries = Object.entries(tokenObject);
   const tokenBundle = map(tokenObjectEntries, ([policyId, tokens]) => {
