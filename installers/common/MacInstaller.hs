@@ -365,7 +365,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
       when (oCluster /= Selfnode) $ do
-        forM_ ["genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json" ] $ \f ->
+        forM_ ["genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "genesis-conway.json" ] $ \f ->
           cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
@@ -373,8 +373,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
         cp "delegation.cert" (dataDir </> "delegation.cert")
         cp (bridge </> "bin" </> "mock-token-metadata-server") (dir </> "mock-token-metadata-server")
         cp (bridge </> "bin" </> "token-metadata.json") (dataDir </> "token-metadata.json")
-        cp (bridge </> "bin" </> "local-cluster--unwrapped") (dir </> "local-cluster")
-        cptreeL (bridge </> "bin" </> "test" </> "data") (dataDir </> "data")
+        cp (bridge </> "bin" </> "local-cluster") (dir </> "local-cluster")
 
       procs "chmod" ["-R", "+w", tt dir] empty
 

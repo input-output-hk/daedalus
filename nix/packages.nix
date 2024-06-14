@@ -10,18 +10,18 @@ let
   in (lib.listToAttrs (lib.concatMap (cluster: [
     {
       name = "daedalus-${cluster}${suffix}";
-      value = internal.${cluster}.package;
+      value = internal.package.${cluster};
     }
     {
       name = "installer-${cluster}${suffix}";
-      value = internal.${cluster}.unsignedInstaller;
+      value = internal.unsignedInstaller.${cluster};
     }
     {
       name = "makeSignedInstaller-${cluster}${suffix}";
-      value = internal.${cluster}.makeSignedInstaller;
+      value = internal.makeSignedInstaller.${cluster};
     }
   ]) inputs.self.internal.installerClusters)) // {
-    default = internal.mainnet.package;
+    default = internal.package.mainnet;
     "buildkitePipeline${suffix}" = import ./internal/buildkite-pipeline.nix { inherit inputs targetSystem; };
   };
 

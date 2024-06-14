@@ -201,7 +201,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                         Development.NSIS.& ")..."
                         )
                     lockfileDeleted @= true
-                    onError (delete [] (str $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
+                    onError (delete [] (fromString $ "$APPDATA\\$InstallDir\\" ++ T.unpack uglyName ++ "_lockfile")) $ do
                         lockfileDeleted @= false
                     iff_ (not_ lockfileDeleted) $ do
                         sleep 1000 -- milliseconds
@@ -225,12 +225,12 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "topology.yaml"
                     file [] "genesis.json"
                     when (clusterName /= Selfnode) $ do
+                      file [] "genesis-conway.json"
                       file [] "genesis-byron.json"
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
                     file [] "libsodium-23.dll"
-                    file [] "libsecp256k1-1.dll"
-                    file [] "libsecp256k1-0.dll"
+                    file [] "libsecp256k1-2.dll"
                     file [] "libssl-3-x64.dll"
                     file [] "libcrypto-3-x64.dll"
                     when (clusterName == Selfnode) $ do
@@ -240,7 +240,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "libgmpxx-4.dll"
                       file [] "libwinpthread-1.dll"
                       file [] "mock-token-metadata-server.exe"
-                      file [Recursive] "test\\"
                       file [] "token-metadata.json"
                 file [] "cardano-launcher.exe"
                 file [] "libffi-8.dll"
@@ -248,6 +247,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                 file [] "libstdc++-6.dll"
                 file [] "mcfgthread-12.dll"
                 file [] "libgcc_s_seh-1.dll"
+                file [] "zlib1.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"

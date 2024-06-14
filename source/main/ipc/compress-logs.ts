@@ -44,7 +44,7 @@ export default () => {
         const logFiles = get(logs, ['files'], []);
 
         for (let i = 0; i < logFiles.length; i++) {
-          const stream = fs.readFileSync(
+          const stream = fs.createReadStream(
             path.join(pubLogsFolderPath, logFiles[i])
           );
           archive.append(stream, {
