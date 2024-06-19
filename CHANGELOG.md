@@ -2,8 +2,12 @@
 
 ## vNext
 
+## 5.4.0
+
 ### Fixes
 
+- Fixed logs download ([PR 3197](https://github.com/input-output-hk/daedalus/pull/3197))
+- Fixed hardware wallets transaction logic ([PR 3195](https://github.com/input-output-hk/daedalus/pull/3195))
 - Make Windows installer check if previous Daedalus is running ([PR 3141](https://github.com/input-output-hk/daedalus/pull/3141))
 - Fixed out-of-memory errors on https://ci.iog.io ([PR 3145](https://github.com/input-output-hk/daedalus/pull/3145))
 
