@@ -38,28 +38,28 @@ import {
   waitForLedgerDevicesToConnectChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
-  prepareLedgerInput,
-  prepareLedgerOutput,
-  prepareTxAux,
-  prepareBody,
-  prepareLedgerCertificate,
-  prepareLedgerWithdrawal,
-  CachedDeriveXpubFactory,
-  ShelleyTxWitnessShelley,
-  ShelleyTxInputFromUtxo,
-  ShelleyTxOutput,
-  ShelleyTxCert,
-  ShelleyTxWithdrawal,
-  cborizeTxAuxiliaryVotingData,
-  prepareLedgerAuxiliaryData,
-  CATALYST_VOTING_REGISTRATION_TYPE,
+  toLedgerInput,
+  toLedgerOutput,
+  toLedgerCertificate,
+  toLedgerWithdrawal,
+  toLedgerAuxiliaryData,
 } from '../utils/shelleyLedger';
 import {
-  prepareTrezorInput,
-  prepareTrezorOutput,
-  prepareTrezorCertificate,
-  prepareTrezorWithdrawal,
-  prepareTrezorAuxiliaryData,
+  toTxInput,
+  toTxOutput,
+  toTxCertificate,
+  toTxWithdrawal,
+  toTxWitness,
+  toTxBody,
+  toTxVotingAux,
+  getTxCBOR,
+} from '../utils/dataSerialization';
+import {
+  toTrezorInput,
+  toTrezorOutput,
+  toTrezorCertificate,
+  toTrezorWithdrawal,
+  toTrezorAuxiliaryData,
   TrezorTransactionSigningMode,
 } from '../utils/shelleyTrezor';
 import {
@@ -73,7 +73,10 @@ import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
 import {
   CERTIFICATE_TYPE,
+  CATALYST_VOTING_REGISTRATION_TYPE,
   getParamsFromPath,
+  CachedDeriveXpubFactory,
+  deriveXpub,
 } from '../utils/hardwareWalletUtils';
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
@@ -260,7 +263,7 @@ export default class HardwareWalletsStore extends Store {
   @observable
   transportDevice: TransportDevice | null | undefined = null;
   @observable
-  txBody: string | null | undefined = null;
+  signedTx: string | null | undefined = null;
   @observable
   isTransactionPending = false;
   @observable
@@ -513,7 +516,7 @@ export default class HardwareWalletsStore extends Store {
     try {
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transaction = await this.sendMoneyRequest.execute({
-        signedTransactionBlob: this.txBody,
+        signedTransactionBlob: this.signedTx,
       });
 
       if (!isDelegationTransaction) {
@@ -543,7 +546,7 @@ export default class HardwareWalletsStore extends Store {
     } catch (e) {
       this.setTransactionPendingState(false);
       runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
-        this.txBody = null;
+        this.signedTx = null;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
         this.votingData = null;
@@ -2199,29 +2202,30 @@ export default class HardwareWalletsStore extends Store {
       'chainCodeHex',
     ]);
     const xpubHex = `${publicKeyHex}${chainCodeHex}`;
-    const unsignedTxInputs = [];
-    const inputsData = map(inputs, (input) => {
-      const shelleyTxInput = ShelleyTxInputFromUtxo(input);
-      unsignedTxInputs.push(shelleyTxInput);
-      return prepareTrezorInput(input);
-    });
-    const unsignedTxOutputs = [];
-    const outputsData = [];
+    const txInputs = [];
+    const txOutputs = [];
 
+    const trezorInputs = map(inputs, (input) => {
+      const txInput = toTxInput(input);
+      txInputs.push(txInput);
+      return toTrezorInput(input);
+    });
+
+    const trezorOutputs = [];
     for (const output of outputs) {
       const {
         address_style: addressStyle,
       } = await this.stores.addresses._inspectAddress({
         addressId: output.address,
       });
-      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
-      unsignedTxOutputs.push(shelleyTxOutput);
-      const ledgerOutput = prepareTrezorOutput(output);
-      outputsData.push(ledgerOutput);
+      const txOutput = toTxOutput(output, addressStyle);
+      txOutputs.push(txOutput);
+      const ledgerOutput = toTrezorOutput(output);
+      trezorOutputs.push(ledgerOutput);
     }
 
     // Construct certificates
-    const unsignedTxCerts = [];
+    const txCertificates = [];
 
     const _certificatesData = map(certificates, async (certificate) => {
       const accountAddress = await this._getRewardAccountAddress(
@@ -2229,26 +2233,26 @@ export default class HardwareWalletsStore extends Store {
         certificate.rewardAccountPath
       );
 
-      const shelleyTxCert = ShelleyTxCert({
+      const txCertificate = toTxCertificate({
         accountAddress,
         pool: certificate.pool,
         // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
         type: CERTIFICATE_TYPE[certificate.certificateType],
       });
-      unsignedTxCerts.push(shelleyTxCert);
-      return prepareTrezorCertificate(certificate);
+      txCertificates.push(txCertificate);
+      return toTrezorCertificate(certificate);
     });
 
-    const certificatesData = await Promise.all(_certificatesData);
+    const trezorCertificates = await Promise.all(_certificatesData);
 
     // Construct Withdrawals
     const _withdrawalsData = map(withdrawals, async (withdrawal) =>
-      prepareTrezorWithdrawal(withdrawal)
+      toTrezorWithdrawal(withdrawal)
     );
 
-    const withdrawalsData = await Promise.all(_withdrawalsData);
+    const trezorWithdrawals = await Promise.all(_withdrawalsData);
     let unsignedTxAuxiliaryData = null;
-    let auxiliaryData = null;
+    let trezorAuxiliaryData = null;
 
     if (this.votingData) {
       const { address, stakeKey, votingKey, nonce } = this.votingData;
@@ -2263,7 +2267,7 @@ export default class HardwareWalletsStore extends Store {
         type: CATALYST_VOTING_REGISTRATION_TYPE,
         votingPubKey: votingKey,
       };
-      auxiliaryData = prepareTrezorAuxiliaryData({
+      trezorAuxiliaryData = toTrezorAuxiliaryData({
         address,
         votingKey,
         nonce: nonce.toString(),
@@ -2321,16 +2325,16 @@ export default class HardwareWalletsStore extends Store {
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
-        inputs: inputsData,
-        outputs: outputsData,
+        inputs: trezorInputs,
+        outputs: trezorOutputs,
         fee: fee.toString(),
         ttl: ttl.toString(),
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
-        certificates: certificatesData,
-        withdrawals: withdrawalsData,
+        certificates: trezorCertificates,
+        withdrawals: trezorWithdrawals,
         signingMode: TrezorTransactionSigningMode.ORDINARY_TRANSACTION,
-        auxiliaryData,
+        auxiliaryData: trezorAuxiliaryData,
       });
 
       if (signedTransaction && !signedTransaction.success) {
@@ -2344,7 +2348,7 @@ export default class HardwareWalletsStore extends Store {
         runInAction(
           'HardwareWalletsStore:: transaction successfully signed',
           () => {
-            this.txBody = serializedTx;
+            this.signedTx = serializedTx;
             this.hwDeviceStatus =
               HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
           }
@@ -2352,16 +2356,16 @@ export default class HardwareWalletsStore extends Store {
         return;
       }
 
-      const unsignedTxWithdrawals =
-        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
+      const txWithdrawals =
+        withdrawals.length > 0 ? toTxWithdrawal(withdrawals) : null;
       // Prepare unsigned transaction structure for serialzation
-      let txAuxData = {
-        txInputs: unsignedTxInputs,
-        txOutputs: unsignedTxOutputs,
+      let txPartials = {
+        txInputs,
+        txOutputs,
         fee,
         ttl,
-        certificates: unsignedTxCerts,
-        withdrawals: unsignedTxWithdrawals,
+        certificates: txCertificates,
+        withdrawals: txWithdrawals,
       };
       let txAuxiliaryData = null;
       const auxiliaryDataSupplement = get(signedTransaction, [
@@ -2370,19 +2374,19 @@ export default class HardwareWalletsStore extends Store {
       ]);
 
       if (unsignedTxAuxiliaryData && auxiliaryDataSupplement) {
-        txAuxData = {
-          ...txAuxData,
+        txPartials = {
+          ...txPartials,
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ txAuxiliaryData: any; txAuxiliaryDataHash:... Remove this comment to see the full error message
           txAuxiliaryData: unsignedTxAuxiliaryData,
           txAuxiliaryDataHash: auxiliaryDataSupplement.auxiliaryDataHash,
         };
-        txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+        txAuxiliaryData = toTxVotingAux(
           unsignedTxAuxiliaryData,
           auxiliaryDataSupplement.catalystSignature
         );
       }
 
-      const unsignedTx = prepareTxAux(txAuxData);
+      const txBody = toTxBody(txPartials);
       const witnesses = get(signedTransaction, ['payload', 'witnesses'], []);
       const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
       const txWitnesses = new Map();
@@ -2392,14 +2396,10 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      const txBody = await prepareBody(
-        unsignedTx,
-        txWitnesses,
-        txAuxiliaryData
-      );
+      const signedTx = await getTxCBOR(txBody, txWitnesses, txAuxiliaryData);
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
-        this.txBody = txBody;
+        this.signedTx = signedTx;
         this.activeDevicePath = null;
       });
     } catch (error) {
@@ -2438,6 +2438,7 @@ export default class HardwareWalletsStore extends Store {
 
     return signedWitnesses;
   };
+
   ShelleyWitness = async (
     witness: TrezorWitness | Witness,
     xpubHex: string
@@ -2454,7 +2455,7 @@ export default class HardwareWalletsStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'TrezorWitn... Remove this comment to see the full error message
     } else if (witness.path && witness.witnessSignatureHex) {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'path' does not exist on type 'TrezorWitn... Remove this comment to see the full error message
-      const xpub = await this._deriveXpub(witness.path, xpubHex);
+      const xpub = await deriveXpub(witness.path, xpubHex);
       publicKey = xpub.slice(0, 32);
       // @ts-ignore ts-migrate(2339) FIXME: Property 'witnessSignatureHex' does not exist on t... Remove this comment to see the full error message
       witnessSignatureHex = witness.witnessSignatureHex;
@@ -2462,14 +2463,12 @@ export default class HardwareWalletsStore extends Store {
 
     if (witnessSignatureHex && publicKey) {
       const signature = Buffer.from(witnessSignatureHex, 'hex');
-      return ShelleyTxWitnessShelley(publicKey, signature);
+      return toTxWitness(publicKey, signature);
     }
 
     return null;
   };
-  _deriveXpub = CachedDeriveXpubFactory(async (xpubHex) => {
-    return Buffer.from(xpubHex, 'hex');
-  });
+
   _getRewardAccountAddress = async (walletId: string, path: Array<string>) => {
     const pathParams = getParamsFromPath(path);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -2522,55 +2521,52 @@ export default class HardwareWalletsStore extends Store {
       'chainCodeHex',
     ]);
     const xpubHex = `${publicKeyHex}${chainCodeHex}`;
-    const unsignedTxInputs = [];
-    const inputsData = map(inputs, (input) => {
-      const shelleyTxInput = ShelleyTxInputFromUtxo(input);
-      unsignedTxInputs.push(shelleyTxInput);
-      return prepareLedgerInput(input);
-    });
-    const unsignedTxOutputs = [];
-    const outputsData = [];
+    const txInputs = [];
+    const txOutputs = [];
+    const txCertificates = [];
+    const txWithdrawals =
+      withdrawals.length > 0 ? toTxWithdrawal(withdrawals) : null;
 
+    const ledgerInputs = map(inputs, (input) => {
+      const txInput = toTxInput(input);
+      txInputs.push(txInput);
+      return toLedgerInput(input);
+    });
+
+    const ledgerOutputs = [];
     for (const output of outputs) {
       const {
         address_style: addressStyle,
       } = await this.stores.addresses._inspectAddress({
         addressId: output.address,
       });
-      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
-      unsignedTxOutputs.push(shelleyTxOutput);
-      const ledgerOutput = prepareLedgerOutput(output, addressStyle);
-      outputsData.push(ledgerOutput);
+      const txOutput = toTxOutput(output, addressStyle);
+      txOutputs.push(txOutput);
+      const ledgerOutput = toLedgerOutput(output, addressStyle);
+      ledgerOutputs.push(ledgerOutput);
     }
-
-    // Construct certificates
-    const unsignedTxCerts = [];
 
     const _certificatesData = map(certificates, async (certificate) => {
       const accountAddress = await this._getRewardAccountAddress(
         walletId,
         certificate.rewardAccountPath
       );
-      const shelleyTxCert = ShelleyTxCert({
+      const txCertificate = toTxCertificate({
         accountAddress,
         pool: certificate.pool,
         // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
         type: CERTIFICATE_TYPE[certificate.certificateType],
       });
-      unsignedTxCerts.push(shelleyTxCert);
-      return prepareLedgerCertificate(certificate);
+      txCertificates.push(txCertificate);
+      return toLedgerCertificate(certificate);
     });
+    const ledgerCertificates = await Promise.all(_certificatesData);
 
-    const certificatesData = await Promise.all(_certificatesData);
-
-    // Construct Withdrawals
     const _withdrawalsData = map(withdrawals, async (withdrawal) =>
-      prepareLedgerWithdrawal(withdrawal)
+      toLedgerWithdrawal(withdrawal)
     );
-
-    const withdrawalsData = await Promise.all(_withdrawalsData);
+    const ledgerWithdrawals = await Promise.all(_withdrawalsData);
     const fee = formattedAmountToLovelace(flatFee.toString());
-
     const ttl = this._getTtl();
 
     let unsignedTxAuxiliaryData = null;
@@ -2590,38 +2586,37 @@ export default class HardwareWalletsStore extends Store {
       };
     }
 
-    const auxiliaryData = unsignedTxAuxiliaryData
-      ? prepareLedgerAuxiliaryData(unsignedTxAuxiliaryData)
+    const ledgerAuxiliaryData = unsignedTxAuxiliaryData
+      ? toLedgerAuxiliaryData(unsignedTxAuxiliaryData)
       : null;
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
-        inputs: inputsData,
-        outputs: outputsData,
+        inputs: ledgerInputs,
+        outputs: ledgerOutputs,
         fee: fee.toString(),
         ttl: ttl.toString(),
         validityIntervalStartStr: null,
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
         // @ts-ignore ts-migrate(2322) FIXME: Type '{ type: number; params: { stakeCredential: {... Remove this comment to see the full error message
-        certificates: certificatesData,
+        certificates: ledgerCertificates,
         // @ts-ignore ts-migrate(2322) FIXME: Type '{ stakeCredential: { type: StakeCredentialPa... Remove this comment to see the full error message
-        withdrawals: withdrawalsData,
+        withdrawals: ledgerWithdrawals,
         signingMode: TransactionSigningMode.ORDINARY_TRANSACTION,
         additionalWitnessPaths: [],
-        auxiliaryData,
+        auxiliaryData: ledgerAuxiliaryData,
         devicePath,
       });
-      const unsignedTxWithdrawals =
-        withdrawals.length > 0 ? ShelleyTxWithdrawal(withdrawals) : null;
+
       // Prepare unsigned transaction structure for serialzation
-      let txAuxData = {
-        txInputs: unsignedTxInputs,
-        txOutputs: unsignedTxOutputs,
+      let txPartials = {
+        txInputs,
+        txOutputs,
         fee,
         ttl,
-        certificates: unsignedTxCerts,
-        withdrawals: unsignedTxWithdrawals,
+        certificates: txCertificates,
+        withdrawals: txWithdrawals,
       };
       let txAuxiliaryData = null;
 
@@ -2630,21 +2625,21 @@ export default class HardwareWalletsStore extends Store {
         signedTransaction &&
         signedTransaction.auxiliaryDataSupplement
       ) {
-        txAuxData = {
-          ...txAuxData,
+        txPartials = {
+          ...txPartials,
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ txAuxiliaryData: any; txAuxiliaryDataHash:... Remove this comment to see the full error message
           txAuxiliaryData: unsignedTxAuxiliaryData,
           txAuxiliaryDataHash:
             signedTransaction.auxiliaryDataSupplement.auxiliaryDataHashHex,
         };
-        txAuxiliaryData = cborizeTxAuxiliaryVotingData(
+        txAuxiliaryData = toTxVotingAux(
           unsignedTxAuxiliaryData,
           signedTransaction.auxiliaryDataSupplement
             .cip36VoteRegistrationSignatureHex
         );
       }
 
-      const unsignedTx = prepareTxAux(txAuxData);
+      const txBody = toTxBody(txPartials);
       const witnesses = get(signedTransaction, 'witnesses', []);
       const signedWitnesses = await this._signWitnesses(witnesses, xpubHex);
       const txWitnesses = new Map();
@@ -2654,14 +2649,10 @@ export default class HardwareWalletsStore extends Store {
       }
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      const txBody = await prepareBody(
-        unsignedTx,
-        txWitnesses,
-        txAuxiliaryData
-      );
+      const signedTx = await getTxCBOR(txBody, txWitnesses, txAuxiliaryData);
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
-        this.txBody = txBody;
+        this.signedTx = signedTx;
         this.activeDevicePath = null;
       });
     } catch (error) {
@@ -2863,7 +2854,7 @@ export default class HardwareWalletsStore extends Store {
       logger.debug('[HW-DEBUG] unfinishedWalletTxSigning UNSET');
       runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
         this.hwDeviceStatus = HwDeviceStatuses.READY;
-        this.txBody = null;
+        this.signedTx = null;
         this.activeDevicePath = null;
         this.unfinishedWalletTxSigning = null;
         this.activeDelegationWalletId = null;

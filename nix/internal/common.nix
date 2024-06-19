@@ -1,18 +1,125 @@
 # Things common between all OS-es, that build on all platforms.
 
-{ inputs, targetSystem, cluster }:
+{ inputs, targetSystem }:
 
 rec {
 
   sourceLib = import ./source-lib.nix { inherit inputs; };
 
-  oldCode = import ./old-default.nix {
+  pkgs = let
+    # Windows can only be cross-built from Linux now
+    system = if targetSystem == "x86_64-windows" then "x86_64-linux" else targetSystem;
+  in
+    if targetSystem != "x86_64-linux"
+    then inputs.nixpkgs.legacyPackages.${system}
+    else import inputs.nixpkgs {
+      inherit system;
+      config.packageOverrides = super: {
+        # XXX: non-root users need to be able to use sd-device/device-monitor.c to detect Ledger:
+        # FIXME: find the correct (minimal) place to override this:
+        systemd = super.systemd.overrideAttrs (oldAttrs: {
+          patches = oldAttrs.patches ++ [./libsystemd--device-monitor.patch];
+        });
+      };
+    };
+
+  flake-compat = import inputs.flake-compat;
+
+  walletFlake = let
+    unpatched = inputs.cardano-wallet-unpatched;
+  in (flake-compat {
+    src = {
+      outPath = toString (pkgs.runCommand "source" {} ''
+        cp -r ${unpatched} $out
+        chmod -R +w $out
+        cd $out
+        patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
+      '');
+      inherit (unpatched) rev shortRev lastModified lastModifiedDate;
+    };
+  }).defaultNix;
+
+  nodeFlake = let
+    unpatched = walletFlake.inputs.cardano-node-runtime;
+  in (flake-compat {
+    src = {
+      outPath = toString (pkgs.runCommand "source" {} ''
+        cp -r ${unpatched} $out
+        chmod -R +w $out
+        cd $out
+        cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
+      '');
+      inherit (unpatched.sourceInfo) rev shortRev lastModified lastModifiedDate;
+    };
+  }).defaultNix;
+
+  walletPackages = {
+    x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+    x86_64-linux = walletFlake.packages.x86_64-linux;
+    x86_64-darwin = walletFlake.packages.x86_64-darwin;
+    aarch64-darwin = walletFlake.packages.aarch64-darwin;
+  }.${targetSystem};
+
+  nodePackages = {
+    x86_64-windows = nodeFlake.legacyPackages.x86_64-linux.hydraJobs.windows; # a bug in ${cardano-node}/flake.nix
+    x86_64-linux = nodeFlake.packages.x86_64-linux;
+    x86_64-darwin = nodeFlake.packages.x86_64-darwin;
+    aarch64-darwin = nodeFlake.packages.aarch64-darwin;
+  }.${targetSystem};
+
+  inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
+
+  daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: import ./cardano-bridge.nix {
     target = targetSystem;
-    inherit inputs cluster;
-    devShell = false;
+    inherit (pkgs) lib runCommandCC darwin;
+    inherit cardano-wallet cardano-node cardano-shell cardano-cli cardano-address mock-token-metadata-server;
+    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
+  });
+
+  inherit (walletPackages) cardano-wallet cardano-address mock-token-metadata-server;
+
+  inherit (nodePackages) cardano-node cardano-cli;
+
+  cardano-shell = import inputs.cardano-shell {
+    inherit (pkgs) system;
+    crossSystem = {
+      x86_64-windows = pkgs.lib.systems.examples.mingwW64;
+    }.${targetSystem} or null;
   };
 
-  inherit (oldCode) pkgs;
+  cardanoNodeVersion = cardano-node.identifier.version + "-" + builtins.substring 0 9 nodeFlake.rev;
+
+  cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
+
+  mkLauncherConfigs = { devShell ? false, cluster }: import ./launcher-config.nix {
+    inherit devShell;
+    inherit cardanoLib;
+    inherit (pkgs) system runCommand lib;
+    inherit (inputs) cardano-playground;
+    network = cluster;
+    os = {
+      x86_64-windows = "windows";
+      x86_64-linux = "linux";
+      x86_64-darwin = "macos64";
+      aarch64-darwin = "macos64-arm";
+    }.${targetSystem};
+  };
+
+  launcherConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: mkLauncherConfigs {
+    devShell = false;
+    inherit cluster;
+  });
+
+  daedalus-installer = let
+    hsDaedalusPkgs = import ../../installers {
+      inherit pkgs daedalus-bridge;
+      inherit (pkgs) system;
+    };
+  in pkgs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
+
+  tests = {
+    runShellcheck = import ../tests/shellcheck.nix { src = ../.;};
+  };
 
   originalPackageJson = builtins.fromJSON (builtins.readFile ../../package.json);
 
@@ -41,8 +148,6 @@ rec {
       pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
     )) drv.patches;
   });
-
-  nodePackages = pkgs.nodePackages.override { inherit nodejs; };
 
   yarn = (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
     # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
@@ -124,6 +229,21 @@ rec {
     # export NODE_OPTIONS='--trace-warnings'
     # export DEBUG='*'
     # export DEBUG='node-gyp @electron/get:* electron-rebuild'
+  '';
+
+  # FIXME: this has to be done better…
+  temporaryNodeModulesPatches = ''
+    sed -r "s/'127\.0\.0\.1'/undefined/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoWallet.js ; then
+      sed -r "s/'serve'/\0, '+RTS', '-N', '-RTS'/g" -i node_modules/cardano-launcher/dist/src/cardanoWallet.js
+    fi
+
+    # Has to be idempotent:
+    if ! grep -qF "'-N'" node_modules/cardano-launcher/dist/src/cardanoNode.js ; then
+      sed -r "s/config.rtsOpts/(\0 || []).concat(['-N'])/g" -i node_modules/cardano-launcher/dist/src/cardanoNode.js
+    fi
   '';
 
   electronVersion = originalPackageJson.dependencies.electron;

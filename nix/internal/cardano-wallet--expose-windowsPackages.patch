@@ -1,12 +1,12 @@
 diff --git a/flake.nix b/flake.nix
-index af206a740e..ef05414b85 100644
+index e05d417f81..a985140f89 100644
 --- a/flake.nix
 +++ b/flake.nix
-@@ -432,6 +432,7 @@
-             nixosTests = import ./nix/nixos/tests {
-               inherit pkgs project;
+@@ -420,6 +420,7 @@
+               inherit pkgs;
+               project = walletProject;
              };
-+            windowsPackages = mkPackages project.projectCross.mingwW64;
++            windowsPackages = mkPackages walletProject.projectCross.mingwW64;
            }) // {
              # Continuous integration builds
              ci.tests.all = pkgs.releaseTools.aggregate {
