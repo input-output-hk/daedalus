@@ -180,6 +180,7 @@ rec {
   srcWithoutNix = pkgs.lib.cleanSourceWith {
     src = inputs.self;
     filter = name: type: !(type == "regular" && (
+      pkgs.lib.hasInfix "-source/nix/" name ||
       pkgs.lib.hasSuffix ".nix" name ||
       pkgs.lib.hasSuffix ".hs" name ||
       pkgs.lib.hasSuffix ".cabal" name

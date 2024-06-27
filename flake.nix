@@ -13,6 +13,8 @@
     tullia.flake = false; # otherwie, +1k dependencies in flake.lock…
     flake-compat.url = "github:input-output-hk/flake-compat";
     flake-compat.flake = false;
+    nix-bundle-exe.url = "github:3noch/nix-bundle-exe";
+    nix-bundle-exe.flake = false;
   };
 
   outputs = inputs: let
