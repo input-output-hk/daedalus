@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed installation and running on Ubuntu 24.04 LTS with AppArmor enabled by removing the `chroot` ([PR 3207](https://github.com/input-output-hk/daedalus/pull/3207))
+
 ## 5.4.0
 
 ### Fixes

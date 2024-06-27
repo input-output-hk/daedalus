@@ -17,7 +17,7 @@ in rec {
   inherit common;
   inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
-  package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
+  package = newPackage;
 
   unsignedInstaller = genClusters (cluster: linuxInstaller.${cluster}.wrappedBundle);
 
@@ -170,13 +170,191 @@ in rec {
       # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
       cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
 
-      for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
-        $STRIP $file
-        patchelf --shrink-rpath $file
+      find $out/share/daedalus/node_modules -type f -iname '*.node' | while IFS= read -r file ; do
+        $STRIP "$file"
+        patchelf --set-rpath ${relocatableElectron}/lib/electron/lib "$file"
       done
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   });
+
+  electron-loader = pkgs.glibc.overrideAttrs (drv: {
+    patches = (drv.patches or []) ++ [
+      ./glibc-electron-loader.patch
+    ];
+  });
+
+  relocatableElectron = (import (pkgs.runCommandNoCC "nix-bundle-exe-patched" {} ''
+    cp -r ${inputs.nix-bundle-exe} $out
+    chmod -R +w $out
+    for additionalLib in \
+      ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1 \
+      ${pkgs.systemd /* patched */}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2} \
+      ${pkgs.nss}/lib/*.so \
+    ; do
+      sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
+    done
+  '') {
+    exe_dir = "electron";
+    lib_dir = "electron/lib";
+    #bin_dir = "electron-bin";
+    inherit pkgs;
+  } electronBin).overrideAttrs (drv: {
+    buildCommand = (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand) + ''
+      chmod -R +w $out
+
+      mkdir -p $out/lib
+      cp -R ${electronBin}/lib/electron $out/lib/
+      ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
+      rm -rf $out/electron/
+      cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
+
+      rm $out/lib/electron/lib/ld-linux-x86-64.so.2
+      ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+
+      patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
+
+      cp ${pkgs.writeScript "electron" ''
+        #!/bin/sh
+        if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
+          # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
+          export XCURSOR_PATH="/usr/share/icons"
+        fi
+        LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
+        export LD_PLEASE_INTERPRET="$LIB_DIR"/electron/electron
+        exec "$LIB_DIR"/electron/ld-linux-x86-64.so.2 "$@"
+      ''} $out/bin/electron
+    '';
+    meta.mainProgram = "electron";
+  });
+
+  # A completely portable directory that you can run on _any_ Linux:
+  newBundle = genClusters (cluster: pkgs.stdenv.mkDerivation {
+    name = "daedalus-bundle";
+    meta.mainProgram = "daedalus";
+    dontUnpack = true;
+    buildCommand = ''
+      cp -r ${newPackage.${cluster}} $out
+      chmod -R +w $out
+      for symlink in $out/libexec/{daedalus-js,bundle-*} ; do
+        target=$(readlink "$symlink")
+        rm "$symlink"
+        cp -r "$target" "$symlink"
+      done
+
+      find $out/libexec/daedalus-js/ -type f -iname '*.node' | while IFS= read -r file ; do
+        chmod +w "$file"
+        patchelf --set-rpath \
+          "\$ORIGIN/$(realpath --relative-to="$(dirname "$file")" $out/libexec/bundle-electron/lib/electron/lib)" \
+          "$file"
+      done
+
+      chmod -R +w $out/share/applications/
+      cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
+    '';
+  });
+
+  # A package that will work only on NixOS; the only differences from the bundle above are:
+  #   • symlinks instead of copying (to not waste /nix/store space when iterating on something),
+  #   • and RPATH of the native *.node modules points to ${relocatableElectron}, not relative to $ORIGIN.
+  newPackage = genClusters (cluster: pkgs.stdenv.mkDerivation {
+    name = "daedalus";
+    meta.mainProgram = "daedalus";
+    dontUnpack = true;
+    buildCommand = ''
+      mkdir -p $out/{bin,libexec,config}
+
+      cp -r ${common.launcherConfigs.${cluster}.configFiles}/. $out/config/
+
+      ln -sf ${import inputs.nix-bundle-exe { inherit pkgs; } common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
+      ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
+
+      ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
+
+      ln -sf ${relocatableElectron} $out/libexec/bundle-electron
+      ( cd $out/libexec/ && ln -sf bundle-electron/bin/* ./ ; )
+
+      cp ${pkgs.writeText "daedalus" ''
+        #!/bin/sh
+        set -ex
+
+        ENTRYPOINT_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+        export ENTRYPOINT_DIR
+        export PATH="$ENTRYPOINT_DIR/libexec:$PATH"
+
+        test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+        export CLUSTER=${cluster}
+        export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+        export DAEDALUS_CONFIG="$ENTRYPOINT_DIR/config"
+
+        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Logs/pub
+        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
+        cd "''${DAEDALUS_DIR}/${cluster}/"
+
+        exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
+      ''} $out/bin/daedalus
+
+      cp ${pkgs.writeText "daedalus-frontend" ''
+        #!/bin/sh
+        set -xe
+        exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
+      ''} $out/libexec/daedalus-frontend
+
+      chmod +x $out/bin/* $out/libexec/daedalus-frontend
+
+      mkdir -p $out/share/applications
+      cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
+      (
+        cd $out/share/applications/
+        cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop ./Daedalus-${cluster}.desktop
+        chmod +w *.desktop
+        sed -r "s,INSERT_PATH_HERE,$out/bin/daedalus,g" -i *.desktop
+        sed -r "s,INSERT_ICON_PATH_HERE,$out/share/icon_large.png,g" -i *.desktop
+      )
+    '';
+  });
+
+  desktopItemTemplate = genClusters (cluster: pkgs.makeDesktopItem {
+    name = "Daedalus-${cluster}";
+    exec = "INSERT_PATH_HERE";
+    desktopName = "Daedalus ${cluster}";
+    genericName = "Crypto-Currency Wallet";
+    categories = [ "Application" "Network" ];
+    icon = "INSERT_ICON_PATH_HERE";
+  });
+
+  # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
+  selfExtractingArchive = genClusters (cluster: let
+    scriptTemplate = __replaceStrings [
+      "@CLUSTER@"
+      "@SHA256_SUM@"
+    ] [
+      (lib.escapeShellArg cluster)
+      (lib.escapeShellArg)
+    ] (__readFile ./linux-self-extracting-archive.sh);
+    script = __replaceStrings ["1010101010"] [(toString (1000000000 + __stringLength scriptTemplate))] scriptTemplate;
+    version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
+  in pkgs.runCommand "daedalus-${cluster}-installer" {
+    inherit script;
+    passAsFile = [ "script" ];
+  } ''
+    mkdir -p $out
+    target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
+    cat $scriptPath >$target
+    chmod +x $target
+
+    echo 'Compressing (xz)...'
+    tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} .
+
+    checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
+    sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
+
+    cat tmp-archive.tar.xz >>$target
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
+  '');
 
   electronBin = pkgs.stdenv.mkDerivation {
     name = "electron-${electronVersion}";
