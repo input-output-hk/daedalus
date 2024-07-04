@@ -22,7 +22,7 @@ let
   daedalus-frontend = writeScriptBin "daedalus-frontend" ''
     #!${stdenv.shell}
 
-    test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+    XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
     export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
@@ -39,7 +39,7 @@ let
       export PATH="${daedalus-frontend}/bin/:${daedalus-bridge}/bin:$PATH"
     ''}
 
-    test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+    XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
     export           CLUSTER=${cluster'}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
     export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc" else daedalus-config}

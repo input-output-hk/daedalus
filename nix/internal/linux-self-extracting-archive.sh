@@ -14,6 +14,13 @@ if [ "$our_checksum" != 00000000000000000000000000000000000000000000000000000000
   exit 1
 fi
 
+# We could be running as an auto-update from Daedalus ≤5.4.0 using `nix-chroot`,
+# then our behavior should be different:
+in_chroot=
+if [ "${1-}" = "--extract" ] && [ -e /nix/var/nix/profiles/profile-@CLUSTER@ ] ; then
+  in_chroot=1
+fi
+
 target="$HOME"/.daedalus/@CLUSTER@
 if [ -e "$target" ] ; then
   echo "Found an older version of Daedalus "@CLUSTER@", removing it..."
@@ -22,18 +29,8 @@ if [ -e "$target" ] ; then
 fi
 mkdir -p "$target"
 
-old_nix="$HOME"/.daedalus/nix
-if [ -e "$old_nix" ] ; then
-  old_clusters=$(ls "$old_nix"/var/nix/profiles/ | grep '^profile-' | grep -v '[0-9]' || true)
-  if [ "$old_clusters" = "profile-"@CLUSTER@ ] ; then
-    # If the user *only* used Mainnet (most common), we're safe to remove the whole ~/.daedalus/nix:
-    echo "Found an older non-portable version of Daedalus in $old_nix, removing it..."
-    chmod -R +w "$old_nix"
-    rm -rf "$old_nix"
-  else
-    # But if it contains more Daedaluses for other networks, we can't risk breaking them:
-    echo "Found older non-portable versions of Daedalus for multiple networks in $old_nix, you are free to remove the directory manually, if you no longer use them."
-  fi
+if [ -z "$in_chroot" ] ; then
+  @REMOVE_OLD_NIX_CHROOT@
 fi
 
 progress_cmd="cat"
@@ -47,6 +44,16 @@ fi
 echo "Unpacking..."
 tail -c+$((skip_bytes+1)) "$0" | $progress_cmd | tar -C "$target" -xJ
 
+# Move a faux `satisfyOldUpdateRunner` to $PWD so that the old `update-runner` doesn’t error out:
+chmod +w "$target"
+chmod -R +w "$target"/dat
+if [ -z "$in_chroot" ] ; then
+  rm -rf "$target"/dat
+else
+  mv "$target"/dat ./
+fi
+chmod -w "$target"
+
 echo "Setting up a .desktop entry..."
 mkdir -p "$HOME"/.local/share/applications
 chmod -R +w "$target"/share/applications
@@ -55,10 +62,22 @@ sed -r "s+INSERT_ICON_PATH_HERE+$target/share/icon_large.png+g" -i "$target"/sha
 chmod -R -w "$target"/share/applications
 ln -sf "$target"/share/applications/*.desktop "$HOME"/.local/share/applications/Daedalus-@CLUSTER@.desktop
 
-echo "Installed successfully!"
-echo
-echo "Now, either:"
-echo "  1. In a terminal, run $(echo "$target"/bin/* | sed -r "s+^$HOME+~+")"
-echo "  2. Or select Start -> Daedalus "@CLUSTER@"."
+# Backwards compatibility:
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+DAEDALUS_DIR="${XDG_DATA_HOME}/Daedalus"
+mkdir -p "$DAEDALUS_DIR"/@CLUSTER@/
+ln -sf "$target"/bin/daedalus "$DAEDALUS_DIR"/@CLUSTER@/namespaceHelper
+
+if [ -z "$in_chroot" ] ; then
+  echo "Installed successfully!"
+  echo
+  echo "Now, either:"
+  echo "  1. In a terminal, run $(echo "$target"/bin/* | sed -r "s+^$HOME+~+")"
+  echo "  2. Or select Start -> Daedalus "@CLUSTER@"."
+else
+  # Now, the currently running `cardano-launcher` will try to restart `daedalus-frontend`. See the
+  # new `daedalus-frontend` stub in `satisfyOldUpdateRunner`.
+  :
+fi
 
 exit 0

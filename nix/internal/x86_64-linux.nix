@@ -282,7 +282,7 @@ in rec {
         export ENTRYPOINT_DIR
         export PATH="$ENTRYPOINT_DIR/libexec:$PATH"
 
-        test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+        XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
         export CLUSTER=${cluster}
         export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
         export DAEDALUS_CONFIG="$ENTRYPOINT_DIR/config"
@@ -290,6 +290,10 @@ in rec {
         mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Logs/pub
         mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
         cd "''${DAEDALUS_DIR}/${cluster}/"
+
+        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.old-nix-chroot ] ; then
+          rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.old-nix-chroot || true
+        fi
 
         exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
       ''} $out/bin/daedalus
@@ -323,14 +327,31 @@ in rec {
     icon = "INSERT_ICON_PATH_HERE";
   });
 
+  # On Windows/macOS, auto-update just launches the new installer, and exits the previous Daedalus.
+  #
+  # On Linux, however, it starts `update-runner` on PATH (updateRunnerBin from launcher-config.yaml),
+  # with argv[1] set to the path of the new installer, shows progress, and then exits Daedalus with
+  # code 20. Which is a signal for `cardano-launcher` to restart `daedalus-frontend` on PATH
+  # (daedalusBin from launcher-config.yaml).
+  #
+  # The old `update-runner` (≤5.4.0) has certain expectations about what's in the installer, so we
+  # have to provide a shim, when our installer is being run with `--extract`.
+  #
+  # We also have to change `daedalus-frontend` in the old nix-chroot sandbox to use `escape-hatch` to
+  # start the new `daedalus` with `xdg-run`, and `exit 0`. But first move the `daedalus_lockfile`
+  # to another location, because during the first launch, there will briefly be 2 `cardano-launcher`s.
+  #
+  # Now, if there’s no previous nix-chroot, i.e. if the upgrade is from ≥5.5.0 to something newer,
+  # then TODO
+
   # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
   selfExtractingArchive = genClusters (cluster: let
     scriptTemplate = __replaceStrings [
       "@CLUSTER@"
-      "@SHA256_SUM@"
+      "@REMOVE_OLD_NIX_CHROOT@"
     ] [
       (lib.escapeShellArg cluster)
-      (lib.escapeShellArg)
+      removeOldNixChroot.${cluster}
     ] (__readFile ./linux-self-extracting-archive.sh);
     script = __replaceStrings ["1010101010"] [(toString (1000000000 + __stringLength scriptTemplate))] scriptTemplate;
     version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
@@ -344,7 +365,7 @@ in rec {
     chmod +x $target
 
     echo 'Compressing (xz)...'
-    tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} .
+    tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} . -C ${satisfyOldUpdateRunner.${cluster}} .
 
     checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
     sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
@@ -354,6 +375,70 @@ in rec {
     # Make it downloadable from Hydra:
     mkdir -p $out/nix-support
     echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
+  '');
+
+  # We only want to remove the old nix-chroot, if it contains only one cluster
+  # variant – the one we’re updating. Otherwise, we’ll break other cluster
+  # installations of that user.
+  removeOldNixChroot = genClusters (cluster: ''
+    old_nix="$HOME"/.daedalus/nix
+    old_etc="$HOME"/.daedalus/etc
+    if [ -e "$old_nix" ] ; then
+      old_clusters=$(ls "$old_nix"/var/nix/profiles/ | grep '^profile-' | grep -v '[0-9]' || true)
+      if [ "$old_clusters" = "profile-${cluster}" ] ; then
+        # If the user *only* used Mainnet (most common), we're safe to remove the whole ~/.daedalus/nix:
+        echo "Found an older non-portable version of Daedalus in $old_nix, removing it..."
+        chmod -R +w "$old_nix"
+        chmod -R +w "$old_etc" || true
+        rm -rf "$old_nix" "$old_etc" || true
+      else
+        # But if it contains more Daedaluses for other networks, we can't risk breaking them:
+        echo "Found older non-portable versions of Daedalus for multiple networks in $old_nix, you are free to remove the directory manually, if you no longer use them."
+      fi
+    fi
+  '');
+
+  satisfyOldUpdateRunner = genClusters (cluster: let
+    tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
+      fileName = "tarball"; # don't rename
+      contents = [];
+      storeContents = [{
+        symlink = "firstGeneration";
+        object = pkgs.buildEnv {
+          name = "profile";
+          paths = [
+            # We need an auto-update stub to hook into the old auto-update process, and make it launch
+            # our new portable Daedalus outside of `nix-chroot`.
+            #
+            # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
+            # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
+            # independent (nohup, setsid, don’t inherit fds) Deadalus (and new cardano-launcher) after
+            # moving the old cardano-launcher’s lockfile out of the way. The old launcher will exit
+            # after our `exit 0` below.
+            #
+            # And at the very end we get rid of the previous `nix-chroot`.
+            (pkgs.writeShellScriptBin "daedalus-frontend" ''
+              set -euo pipefail
+              echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
+                #!/bin/sh
+                set -eu
+                XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
+                DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+                mv "$DAEDALUS_DIR"/${cluster}/daedalus_lockfile \
+                   "$DAEDALUS_DIR"/${cluster}/daedalus_lockfile.old-nix-chroot || true
+                nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+                sleep 5
+                ${removeOldNixChroot.${cluster}}
+              ''}" >/escape-hatch
+              exit 0
+            '')
+          ];
+        };
+      }];
+    };
+  in pkgs.runCommandNoCC "satisfy-old-update-runner" {} ''
+    mkdir -p $out/dat${tarball}
+    cp -r ${tarball}/. $out/dat${tarball}/
   '');
 
   electronBin = pkgs.stdenv.mkDerivation {
@@ -440,7 +525,7 @@ in rec {
       set -ex
 
 
-      test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+      XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
       export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
       mkdir -pv $DAEDALUS_DIR/Logs/pub
 
