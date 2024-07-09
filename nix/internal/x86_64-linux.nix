@@ -184,14 +184,27 @@ in rec {
     ];
   });
 
-  relocatableElectron = (import (pkgs.runCommandNoCC "nix-bundle-exe-patched" {} ''
+  relocatableElectron = let
+    additionalLibs = ''
+      additionalLibs=(
+        ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1
+        ${pkgs.xorg.libxcb}/lib/*.so.?
+        ${pkgs.systemd /* patched */}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
+        ${pkgs.nss}/lib/*.so
+        ${pkgs.libusb}/lib/*.so.0
+        ${pkgs.nssmdns}/lib/*.so.2
+        ${pkgs.numactl}/lib/libnuma.so.1
+        ${pkgs.pciutils}/lib/libpci.so.3
+        ${pkgs.libva.out}/lib/*.so.2
+        ${pkgs.atk}/lib/libatk-bridge-2.0.so
+        $(find ${pkgs.glibc}/lib -type l)
+      )
+    '';
+  in (import (pkgs.runCommandNoCC "nix-bundle-exe-patched" {} ''
     cp -r ${inputs.nix-bundle-exe} $out
     chmod -R +w $out
-    for additionalLib in \
-      ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1 \
-      ${pkgs.systemd /* patched */}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2} \
-      ${pkgs.nss}/lib/*.so \
-    ; do
+    ${additionalLibs}
+    for additionalLib in "''${additionalLibs[@]}" ; do
       sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
     done
   '') {
@@ -200,7 +213,7 @@ in rec {
     #bin_dir = "electron-bin";
     inherit pkgs;
   } electronBin).overrideAttrs (drv: {
-    buildCommand = (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand) + ''
+    buildCommand = additionalLibs + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand) + ''
       chmod -R +w $out
 
       mkdir -p $out/lib
@@ -211,6 +224,8 @@ in rec {
 
       rm $out/lib/electron/lib/ld-linux-x86-64.so.2
       ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+
+      ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
 
       patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
 
@@ -291,8 +306,8 @@ in rec {
         mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
         cd "''${DAEDALUS_DIR}/${cluster}/"
 
-        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.old-nix-chroot ] ; then
-          rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.old-nix-chroot || true
+        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+          rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
         fi
 
         exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
@@ -301,10 +316,25 @@ in rec {
       cp ${pkgs.writeText "daedalus-frontend" ''
         #!/bin/sh
         set -xe
+
+        # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let’s detect
+        # this case here, and restart the `cardano-launcher` itself, in case we need it to
+        # be updated as well:
+        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+          nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+          exit 0
+        fi
+
         exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
       ''} $out/libexec/daedalus-frontend
 
-      chmod +x $out/bin/* $out/libexec/daedalus-frontend
+      cp ${pkgs.writeText "update-runner" ''
+        #!/bin/sh
+        set -xe
+        exec "$1"
+      ''} $out/libexec/update-runner
+
+      chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
 
       mkdir -p $out/share/applications
       cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
@@ -422,10 +452,6 @@ in rec {
               echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
                 #!/bin/sh
                 set -eu
-                XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
-                DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-                mv "$DAEDALUS_DIR"/${cluster}/daedalus_lockfile \
-                   "$DAEDALUS_DIR"/${cluster}/daedalus_lockfile.old-nix-chroot || true
                 nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
                 sleep 5
                 ${removeOldNixChroot.${cluster}}
