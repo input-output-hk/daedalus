@@ -48,7 +48,7 @@ let
       darwin.cctools
       xcbuild
     ] else [
-      internal.electronBin
+      internal.relocatableElectron
       winePackages.minimal
     ]));
     name = "daedalus";
