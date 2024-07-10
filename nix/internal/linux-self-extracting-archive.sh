@@ -24,11 +24,11 @@ if [ "$our_checksum" != 00000000000000000000000000000000000000000000000000000000
   exit 1
 fi
 
-echo STATUS "Cleaning up the older version..."
+echo STATUS "Cleaning up already installed version(s)..."
 echo PROG 2/$num_steps
 target="$HOME"/.daedalus/@CLUSTER@
 if [ -e "$target" ] ; then
-  echo "Found an older version of Daedalus "@CLUSTER@", removing it..."
+  echo "Found another version of Daedalus "@CLUSTER@", removing it..."
   chmod -R +w "$target"
   rm -rf "$target"
 fi
