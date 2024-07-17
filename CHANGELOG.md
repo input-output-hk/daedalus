@@ -6,6 +6,10 @@
 
 - Fixed installation and running on Ubuntu 24.04 LTS with AppArmor enabled by removing the `chroot` ([PR 3207](https://github.com/input-output-hk/daedalus/pull/3207))
 
+### Chores
+
+- Updated cardano-node to 9.0.0 (via cardano-wallet) ([PR 3212](https://github.com/input-output-hk/daedalus/pull/3212))
+
 ## 5.4.0
 
 ### Fixes
