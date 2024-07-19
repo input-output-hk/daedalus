@@ -7,10 +7,6 @@ set -eu
 
 skip_bytes=$(( 1010101010 - 1000000000 ))
 
-if ! grep sse4 /proc/cpuinfo -q; then
-  echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
-  exit 1
-fi
 
 # We could be running as an auto-update from Daedalus ≤5.4.0 using `nix-chroot`,
 # then our behavior should be different:
@@ -19,6 +15,14 @@ num_steps=5
 if [ "${1-}" = "--extract" ] && [ -e /nix/var/nix/profiles/profile-@CLUSTER@ ] ; then
   in_chroot=1
   num_steps=6  # let’s have 6, so that we never reach 100% in UI, and the old update-runner also uses 6
+fi
+
+if [ -z "$in_chroot" ] ; then
+  # nix-chroot doesn’t contain `grep`
+  if ! grep sse4 /proc/cpuinfo -q; then
+    echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
+    exit 1
+  fi
 fi
 
 echo STATUS "Verifying SHA-256 checksum..."
