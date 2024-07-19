@@ -64,7 +64,6 @@ export const buildAppMenus = async (
       code: 21,
     });
     // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
-    // WRONG: safeExitWithCode(21);
     (mainWindow as any).daedalusExitCode = 21;
     mainWindow.close();
   };
@@ -78,7 +77,6 @@ export const buildAppMenus = async (
       code: 22,
     });
     // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
-    // WRONG: safeExitWithCode(22);
     (mainWindow as any).daedalusExitCode = 22;
     mainWindow.close();
   };

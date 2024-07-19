@@ -170,7 +170,6 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
 
         // We need to also wait for `cardano-node` to exit cleanly, otherwise the new auto-updated version
         // is showing the new node crashing, because the old one is still running for around 30 seconds:
-        // WRONG: safeExitWithCode(20);
         (window as any).daedalusExitCode = 20;
         window.close();
         return resolve(response(true, functionPrefix));
