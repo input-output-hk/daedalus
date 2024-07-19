@@ -7,6 +7,11 @@ set -eu
 
 skip_bytes=$(( 1010101010 - 1000000000 ))
 
+if ! grep sse4 /proc/cpuinfo -q; then
+  echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
+  exit 1
+fi
+
 # We could be running as an auto-update from Daedalus ≤5.4.0 using `nix-chroot`,
 # then our behavior should be different:
 in_chroot=
