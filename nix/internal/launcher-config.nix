@@ -37,7 +37,7 @@ let
   fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
       name = "cardano-playground-config-${envName}";
-      path = cardano-playground + ("/static/book.play.dev.cardano.org/environments-pre/" + envName);
+      path = cardano-playground + ("/static/book.play.dev.cardano.org/environments/" + envName);
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (

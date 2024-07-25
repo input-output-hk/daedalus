@@ -3,15 +3,16 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1720039830,
-        "narHash": "sha256-q3+XNKzeGJ9gj9tYnuR/vsJ2QDN9v1puCr52gFONTqU=",
+        "lastModified": 1721869644,
+        "narHash": "sha256-2qPZuuXtNi7kRPCFHv1Zvno/FIH0dOyg3Zqeywt77WQ=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "b57678bfde5cba49b933b8bcec2af278a42ea3c2",
+        "rev": "c3042e1669ad9e5af43622972913614d6b934488",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "next-2024-07-24",
         "repo": "cardano-playground",
         "type": "github"
       }
