@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 5.5.0
 
 ### Fixes
 
