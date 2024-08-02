@@ -12,6 +12,10 @@
 
 ## 5.4.0
 
+### Chores
+
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `7.1.3` and `@trezor/connect` to version `9.3.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3093))
+
 ### Fixes
 
 - Fixed logs download ([PR 3197](https://github.com/input-output-hk/daedalus/pull/3197))
