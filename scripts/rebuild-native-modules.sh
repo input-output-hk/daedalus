@@ -3,6 +3,8 @@
 set -o errexit
 set -o pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
+
 # XXX: From the very beginning we have problems with `*.node` native
 # extensions being built against Node.js ABI, and not
 # Electron’s. Let’s solve this once and for all.
@@ -20,22 +22,7 @@ nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
-# x86_64 cross-compilation won’t fly in this pure derivation:
-if [[ $system == *darwin* ]]; then
-  if [[ $system == *aarch64* ]] ; then
-    changeFrom="x86_64"
-    changeTo="arm64"
-  else
-    changeFrom="arm64"
-    changeTo="x86_64"
-  fi
-  find node_modules/ -type f '(' -name '*.gyp' -o -name '*.gypi' ')' \
-    | xargs grep -F "$changeFrom" | cut -d: -f1 | sort --unique \
-    | while IFS= read -r file
-  do
-    sed -r "s/$changeFrom/$changeTo/g" -i "$file"
-  done
-fi
+"$SCRIPT_DIR"/darwin-no-x-compile.sh
 
 # TODO: do we really need to run `electron-rebuild` 3×?
 

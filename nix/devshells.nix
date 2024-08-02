@@ -47,6 +47,7 @@ let
       darwin.apple_sdk.frameworks.AppKit
       darwin.cctools
       xcbuild
+      perl
     ] else [
       internal.electronBin
       winePackages.minimal
