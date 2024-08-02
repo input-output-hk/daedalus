@@ -2558,7 +2558,6 @@ export default class HardwareWalletsStore extends Store {
         type: CERTIFICATE_TYPE[certificate.certificateType],
       });
       txCertificates.push(txCertificate);
-      console.debug('>>> toLedgerCertificate: ', certificates);
       return toLedgerCertificate(certificate);
     });
     const ledgerCertificates = await Promise.all(_certificatesData);
