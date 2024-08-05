@@ -170,6 +170,7 @@ export const setupCardanoNode = (
       logger.info(
         'CardanoNode applied an update. Exiting Daedalus with code 20.'
       );
+      // FIXME: Dead code? This channel doesn’t seem used. The node doesn’t apply its own updates…?
       safeExitWithCode(20);
     });
     return Promise.resolve();

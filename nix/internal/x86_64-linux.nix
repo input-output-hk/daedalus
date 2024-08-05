@@ -17,9 +17,9 @@ in rec {
   inherit common;
   inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion electronChromedriverVersion originalPackageJson;
 
-  package = genClusters (cluster: mkDaedalus { sandboxed = false; inherit cluster; });
+  package = newPackage;
 
-  unsignedInstaller = genClusters (cluster: linuxInstaller.${cluster}.wrappedBundle);
+  unsignedInstaller = selfExtractingArchive;
 
   makeSignedInstaller = genClusters (cluster: pkgs.writeShellScriptBin "make-signed-installer-stub" ''
     echo "We don’t sign native code for ‘${targetSystem}’, please, use unsigned ‘nix build .#installer-${cluster}’"
@@ -170,13 +170,302 @@ in rec {
       # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
       cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
 
-      for file in $out/share/daedalus/node_modules/usb/build/usb_bindings.node $out/share/daedalus/node_modules/node-hid/build/HID_hidraw.node $out/share/daedalus/node_modules/usb-detection/build/detection.node; do
-        $STRIP $file
-        patchelf --shrink-rpath $file
+      find $out/share/daedalus/node_modules -type f -iname '*.node' | while IFS= read -r file ; do
+        $STRIP "$file"
+        patchelf --set-rpath ${relocatableElectron}/lib/electron/lib "$file"
       done
     '';
     dontFixup = true; # TODO: just to shave some seconds, turn back on after everything works
   });
+
+  electron-loader = pkgs.glibc.overrideAttrs (drv: {
+    patches = (drv.patches or []) ++ [
+      ./glibc-electron-loader.patch
+    ];
+  });
+
+  relocatableElectron = let
+    additionalLibs = ''
+      additionalLibs=(
+        ${pkgs.xorg.libX11}/lib/libX11-xcb.so.1
+        ${pkgs.xorg.libxcb}/lib/*.so.?
+        ${pkgs.systemd /* patched */}/lib/{libudev.so.1,libsystemd.so.0,libnss_*.so.2}
+        ${pkgs.nss}/lib/*.so
+        ${pkgs.libusb}/lib/*.so.0
+        ${pkgs.nssmdns}/lib/*.so.2
+        ${pkgs.numactl}/lib/libnuma.so.1
+        ${pkgs.pciutils}/lib/libpci.so.3
+        ${pkgs.libva.out}/lib/*.so.2
+        ${pkgs.atk}/lib/libatk-bridge-2.0.so
+        $(find ${pkgs.glibc}/lib -type l)
+      )
+    '';
+  in (import (pkgs.runCommandNoCC "nix-bundle-exe-patched" {} ''
+    cp -r ${inputs.nix-bundle-exe} $out
+    chmod -R +w $out
+    ${additionalLibs}
+    for additionalLib in "''${additionalLibs[@]}" ; do
+      sed -r '/bundleExe "\$binary"/a\  bundleLib "'"$additionalLib"'" "lib"' -i $out/bundle-linux.sh
+    done
+  '') {
+    exe_dir = "electron";
+    lib_dir = "electron/lib";
+    #bin_dir = "electron-bin";
+    inherit pkgs;
+  } electronBin).overrideAttrs (drv: {
+    buildCommand = additionalLibs + (builtins.replaceStrings ["find '"] ["find -L '"] drv.buildCommand) + ''
+      chmod -R +w $out
+
+      mkdir -p $out/lib
+      cp -R ${electronBin}/lib/electron $out/lib/
+      ( cd $out/electron && ${pkgs.rsync}/bin/rsync -Rah . $out/lib/electron/ ; )
+      rm -rf $out/electron/
+      cp ${electron-loader}/lib/ld-linux-x86-64.so.2 $out/lib/electron/
+
+      rm $out/lib/electron/lib/ld-linux-x86-64.so.2
+      ( cd $out/lib/electron && rm libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
+
+      ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
+
+      patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
+
+      cp ${pkgs.writeScript "electron" ''
+        #!/bin/sh
+        if [ -z "''${XCURSOR_PATH}" ] && [ -d "/usr/share/icons" ]; then
+          # Debians don't set this, and in effect all cursors are 2x too small on HiDPI displays:
+          export XCURSOR_PATH="/usr/share/icons"
+        fi
+        LIB_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")/lib"
+        export LD_PLEASE_INTERPRET="$LIB_DIR"/electron/electron
+        exec "$LIB_DIR"/electron/ld-linux-x86-64.so.2 "$@"
+      ''} $out/bin/electron
+    '';
+    meta.mainProgram = "electron";
+  });
+
+  # A completely portable directory that you can run on _any_ Linux:
+  newBundle = genClusters (cluster: pkgs.stdenv.mkDerivation {
+    name = "daedalus-bundle";
+    meta.mainProgram = "daedalus";
+    dontUnpack = true;
+    buildCommand = ''
+      cp -r ${newPackage.${cluster}} $out
+      chmod -R +w $out
+      for symlink in $out/libexec/{daedalus-js,bundle-*} ; do
+        target=$(readlink "$symlink")
+        rm "$symlink"
+        cp -r "$target" "$symlink"
+      done
+
+      find $out/libexec/daedalus-js/ -type f -iname '*.node' | while IFS= read -r file ; do
+        chmod +w "$file"
+        patchelf --set-rpath \
+          "\$ORIGIN/$(realpath --relative-to="$(dirname "$file")" $out/libexec/bundle-electron/lib/electron/lib)" \
+          "$file"
+      done
+
+      chmod -R +w $out/share/applications/
+      cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop $out/share/applications/Daedalus-${cluster}.desktop
+    '';
+  });
+
+  # A package that will work only on NixOS; the only differences from the bundle above are:
+  #   • symlinks instead of copying (to not waste /nix/store space when iterating on something),
+  #   • and RPATH of the native *.node modules points to ${relocatableElectron}, not relative to $ORIGIN.
+  newPackage = genClusters (cluster: pkgs.stdenv.mkDerivation {
+    name = "daedalus";
+    meta.mainProgram = "daedalus";
+    dontUnpack = true;
+    buildCommand = ''
+      mkdir -p $out/{bin,libexec,config}
+
+      cp -r ${common.launcherConfigs.${cluster}.configFiles}/. $out/config/
+
+      ln -sf ${import inputs.nix-bundle-exe { inherit pkgs; } common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
+      ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
+
+      ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
+
+      ln -sf ${relocatableElectron} $out/libexec/bundle-electron
+      ( cd $out/libexec/ && ln -sf bundle-electron/bin/* ./ ; )
+
+      cp ${pkgs.writeText "daedalus" ''
+        #!/bin/sh
+        set -ex
+
+        ENTRYPOINT_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+        export ENTRYPOINT_DIR
+        export PATH="$ENTRYPOINT_DIR/libexec:$PATH"
+
+        XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
+        export CLUSTER=${cluster}
+        export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+        export DAEDALUS_CONFIG="$ENTRYPOINT_DIR/config"
+
+        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Logs/pub
+        mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
+        cd "''${DAEDALUS_DIR}/${cluster}/"
+
+        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+          rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
+        fi
+
+        exec cardano-launcher --config "$ENTRYPOINT_DIR/config/launcher-config.yaml"
+      ''} $out/bin/daedalus
+
+      cp ${pkgs.writeText "daedalus-frontend" ''
+        #!/bin/sh
+        set -xe
+
+        # `daedalus-frontend` is what `cardano-launcher` restarts during auto-update; let’s detect
+        # this case here, and restart the `cardano-launcher` itself, in case we need it to
+        # be updated as well:
+        if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+          nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+          exit 0
+        fi
+
+        exec electron --disable-setuid-sandbox --no-sandbox "$ENTRYPOINT_DIR"/libexec/daedalus-js "$@"
+      ''} $out/libexec/daedalus-frontend
+
+      cp ${pkgs.writeText "update-runner" ''
+        #!/bin/sh
+        set -xe
+        exec "$1"
+      ''} $out/libexec/update-runner
+
+      chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
+
+      mkdir -p $out/share/applications
+      cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
+      (
+        cd $out/share/applications/
+        cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop ./Daedalus-${cluster}.desktop
+        chmod +w *.desktop
+        sed -r "s,INSERT_PATH_HERE,$out/bin/daedalus,g" -i *.desktop
+        sed -r "s,INSERT_ICON_PATH_HERE,$out/share/icon_large.png,g" -i *.desktop
+      )
+    '';
+  });
+
+  desktopItemTemplate = genClusters (cluster: pkgs.makeDesktopItem {
+    name = "Daedalus-${cluster}";
+    exec = "INSERT_PATH_HERE";
+    desktopName = "Daedalus ${cluster}";
+    genericName = "Crypto-Currency Wallet";
+    categories = [ "Application" "Network" ];
+    icon = "INSERT_ICON_PATH_HERE";
+  });
+
+  # On Windows/macOS, auto-update just launches the new installer, and exits the previous Daedalus.
+  #
+  # On Linux, however, it starts `update-runner` on PATH (updateRunnerBin from launcher-config.yaml),
+  # with argv[1] set to the path of the new installer, shows progress, and then exits Daedalus with
+  # code 20. Which is a signal for `cardano-launcher` to restart `daedalus-frontend` on PATH
+  # (daedalusBin from launcher-config.yaml).
+  #
+  # The old `update-runner` (≤5.4.0) has certain expectations about what's in the installer, so we
+  # have to provide a shim, when our installer is being run with `--extract`.
+  #
+  # We also have to change `daedalus-frontend` in the old nix-chroot sandbox to use `escape-hatch` to
+  # start the new `daedalus` with `xdg-run`, and `exit 0`. But first move the `daedalus_lockfile`
+  # to another location, because during the first launch, there will briefly be 2 `cardano-launcher`s.
+  #
+  # Now, if there’s no previous nix-chroot, i.e. if the upgrade is from ≥5.5.0 to something newer,
+  # then TODO
+
+  # XXX: Be *super careful* changing this!!! You WILL DELETE user data if you make a mistake.
+  selfExtractingArchive = genClusters (cluster: let
+    scriptTemplate = __replaceStrings [
+      "@CLUSTER@"
+      "@REMOVE_OLD_NIX_CHROOT@"
+    ] [
+      (lib.escapeShellArg cluster)
+      removeOldNixChroot.${cluster}
+    ] (__readFile ./linux-self-extracting-archive.sh);
+    script = __replaceStrings ["1010101010"] [(toString (1000000000 + __stringLength scriptTemplate))] scriptTemplate;
+    version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
+  in pkgs.runCommand "daedalus-${cluster}-installer" {
+    inherit script;
+    passAsFile = [ "script" ];
+  } ''
+    mkdir -p $out
+    target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
+    cat $scriptPath >$target
+    chmod +x $target
+
+    echo 'Compressing (xz)...'
+    tar -cJf tmp-archive.tar.xz -C ${newBundle.${cluster}} . -C ${satisfyOldUpdateRunner.${cluster}} .
+
+    checksum=$(sha256sum tmp-archive.tar.xz | cut -d' ' -f1)
+    sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
+
+    cat tmp-archive.tar.xz >>$target
+
+    # Make it downloadable from Hydra:
+    mkdir -p $out/nix-support
+    echo "file binary-dist \"$target\"" >$out/nix-support/hydra-build-products
+  '');
+
+  # We only want to remove the old nix-chroot, if it contains only one cluster
+  # variant – the one we’re updating. Otherwise, we’ll break other cluster
+  # installations of that user.
+  removeOldNixChroot = genClusters (cluster: ''
+    old_nix="$HOME"/.daedalus/nix
+    old_etc="$HOME"/.daedalus/etc
+    if [ -e "$old_nix" ] ; then
+      old_clusters=$(ls "$old_nix"/var/nix/profiles/ | grep '^profile-' | grep -v '[0-9]' || true)
+      if [ "$old_clusters" = "profile-${cluster}" ] ; then
+        # If the user *only* used Mainnet (most common), we're safe to remove the whole ~/.daedalus/nix:
+        echo "Found an older non-portable version of Daedalus in $old_nix, removing it..."
+        chmod -R +w "$old_nix"
+        chmod -R +w "$old_etc" || true
+        rm -rf "$old_nix" "$old_etc" || true
+      else
+        # But if it contains more Daedaluses for other networks, we can't risk breaking them:
+        echo "Found older non-portable versions of Daedalus for multiple networks in $old_nix, you are free to remove the directory manually, if you no longer use them."
+      fi
+    fi
+  '');
+
+  satisfyOldUpdateRunner = genClusters (cluster: let
+    tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
+      fileName = "tarball"; # don't rename
+      contents = [];
+      storeContents = [{
+        symlink = "firstGeneration";
+        object = pkgs.buildEnv {
+          name = "profile";
+          paths = [
+            # We need an auto-update stub to hook into the old auto-update process, and make it launch
+            # our new portable Daedalus outside of `nix-chroot`.
+            #
+            # The previously running `cardano-launcher` (inside the `nix-chroot`) will try to restart
+            # `/bin/daedalus-frontend` after a successful update, so we have to hook here: start the new
+            # independent (nohup, setsid, don’t inherit fds) Deadalus (and new cardano-launcher) after
+            # moving the old cardano-launcher’s lockfile out of the way. The old launcher will exit
+            # after our `exit 0` below.
+            #
+            # And at the very end we get rid of the previous `nix-chroot`.
+            (pkgs.writeShellScriptBin "daedalus-frontend" ''
+              set -euo pipefail
+              echo -n "$HOME/.daedalus${pkgs.writeScript "escape-and-scrap-chroot" ''
+                #!/bin/sh
+                set -eu
+                nohup setsid ~/.daedalus/${cluster}/bin/daedalus </dev/null >/dev/null 2>/dev/null &
+                sleep 5
+                ${removeOldNixChroot.${cluster}}
+              ''}" >/escape-hatch
+              exit 0
+            '')
+          ];
+        };
+      }];
+    };
+  in pkgs.runCommandNoCC "satisfy-old-update-runner" {} ''
+    mkdir -p $out/dat${tarball}
+    cp -r ${tarball}/. $out/dat${tarball}/
+  '');
 
   electronBin = pkgs.stdenv.mkDerivation {
     name = "electron-${electronVersion}";
@@ -195,133 +484,6 @@ in rec {
         $out/lib/electron/electron
     '';
   };
-
-  mkDaedalus = { sandboxed, cluster }: import ../../installers/nix/linux.nix {
-    inherit (pkgs) stdenv runCommand writeText writeScriptBin coreutils
-      utillinux procps gsettings-desktop-schemas gtk3 hicolor-icon-theme xfce;
-    inherit (common) daedalus-installer;
-    daedalus-bridge = common.daedalus-bridge.${cluster};
-    inherit cluster sandboxed;
-
-    rawapp = daedalusJs.${cluster};
-    electron = electronBin;
-
-    # FIXME: ???
-    launcherConfigs = common.launcherConfigs.${cluster};
-    linuxClusterBinName = cluster;
-  };
-
-  # FIXME: why our own fork?
-  nix-bundle-src = pkgs.fetchFromGitHub {
-    owner = "input-output-hk"; repo = "nix-bundle";
-    rev = "a43e9280628d6e7fcc2f89257106f5262d531bc7";
-    sha256 = "10qgincrs8fjdl16mld6lzd69syhyzwx65lcbz4widnkdvhlwh3i";
-  };
-
-  nix-bundle = import nix-bundle-src { nixpkgs = pkgs; };
-
-  linuxInstaller = genClusters (cluster: rec {
-
-    installPath = ".daedalus";
-
-    iconPath = common.launcherConfigs.${cluster}.installerConfig.iconPath;
-    linuxClusterBinName = cluster;
-
-    namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
-      #!/usr/bin/env bash
-
-      set -e
-
-      cd ~/${installPath}/
-      mkdir -p etc
-      cat /etc/hosts > etc/hosts
-      cat /etc/nsswitch.conf > etc/nsswitch.conf
-      cat /etc/localtime > etc/localtime
-      cat /etc/machine-id > etc/machine-id
-      cat /etc/resolv.conf > etc/resolv.conf
-
-      if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${linuxClusterBinName}/bin/enter-phase2 daedalus
-      else
-        exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${linuxClusterBinName}/bin/enter-phase2 bash
-      fi
-    '';
-
-    desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus-${linuxClusterBinName}";
-      exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus ${linuxClusterBinName}";
-      genericName = "Crypto-Currency Wallet";
-      categories = [ "Application" "Network" ];
-      icon = "INSERT_ICON_PATH_HERE";
-    };
-
-    postInstall = pkgs.writeScriptBin "post-install" ''
-      #!${pkgs.stdenv.shell}
-
-      set -ex
-
-
-      test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-      export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
-      mkdir -pv $DAEDALUS_DIR/Logs/pub
-
-      exec 2>&1 > $DAEDALUS_DIR/Logs/pub/post-install.log
-
-      echo "in post-install hook"
-
-      cp -f ${iconPath.large} $DAEDALUS_DIR/icon_large.png
-      cp -f ${iconPath.small} $DAEDALUS_DIR/icon.png
-      cp -Lf ${namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
-      mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
-      cp -Lf ${namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${linuxClusterBinName}
-
-      cat ${desktopItem}/share/applications/Daedalus*.desktop | sed \
-        -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
-        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus-${linuxClusterBinName}.desktop"
-    '';
-
-    xdg-open = pkgs.writeScriptBin "xdg-open" ''
-      #!${pkgs.stdenv.shell}
-
-      echo -n "xdg-open \"$1\"" > /escape-hatch
-    '';
-
-    preInstall = pkgs.writeText "pre-install" ''
-      if grep sse4 /proc/cpuinfo -q; then
-        echo 'SSE4 check pass'
-      else
-        echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
-        exit 1
-      fi
-    '';
-
-    newBundle = let
-      daedalus' = mkDaedalus { sandboxed = true; inherit cluster; };
-      daedalus-bridge = common.daedalus-bridge.${cluster};
-    in (import ../../installers/nix/nix-installer.nix {
-      inherit postInstall preInstall linuxClusterBinName;
-      rawapp = daedalusJs.${cluster};
-      inherit pkgs;
-      installationSlug = installPath;
-      installedPackages = [ daedalus' postInstall namespaceHelper daedalus'.cfg daedalus-bridge daedalus'.daedalus-frontend xdg-open ];
-      nix-bundle = nix-bundle;
-    }).installerBundle;
-
-    wrappedBundle = let
-      version = (builtins.fromJSON (builtins.readFile ../../package.json)).version;
-      fn = "daedalus-${version}-${toString sourceLib.buildCounter}-${linuxClusterBinName}-${sourceLib.buildRevShort}-x86_64-linux.bin";
-    in pkgs.runCommand fn {} ''
-      mkdir -p $out
-      cp ${newBundle} $out/${fn}
-
-      # Make it downloadable from Hydra:
-      mkdir -p $out/nix-support
-      echo "file binary-dist \"$(echo $out/*.bin)\"" >$out/nix-support/hydra-build-products
-    '';
-
-  });
 
   linuxSources = {
     electron = pkgs.fetchurl {

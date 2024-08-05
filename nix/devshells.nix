@@ -49,7 +49,7 @@ let
       xcbuild
       perl
     ] else [
-      internal.electronBin
+      internal.relocatableElectron
       winePackages.minimal
     ]));
     name = "daedalus";
