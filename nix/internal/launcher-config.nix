@@ -44,12 +44,13 @@ let
       builtins.readFile (originalFiles + "/config.json")));
 
     nodeConfig = originalNodeConfig // {
-      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
       AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
       ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
       ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
       minSeverity = "Info";  # XXX: Needed for sync % updates.
-    };
+    } // (if originalNodeConfig ? ConwayGenesisFile then {
+      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
+    } else {});
   in {
     cluster = envName;
     networkName = envName;
@@ -227,12 +228,13 @@ let
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
-    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!devShell || network == "local") {
+    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!devShell || network == "local") ({
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
       AlonzoGenesisFile = "genesis-alonzo.json";
+    } // (if nodeConfigAttrs ? ConwayGenesisFile then {
       ConwayGenesisFile = "genesis-conway.json";
-    })));
+    } else {})))));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;

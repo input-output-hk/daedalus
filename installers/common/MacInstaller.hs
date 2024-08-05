@@ -370,8 +370,10 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
       when (oCluster /= Selfnode) $ do
-        forM_ ["genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json", "genesis-conway.json" ] $ \f ->
+        forM_ ["genesis-byron.json", "genesis-shelley.json", "genesis-alonzo.json"] $ \f ->
           cp f (dataDir </> f)
+        forM_ ["genesis-conway.json"] $ \f ->
+          whenM (testfile f) $ cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
         cp "signing.key" (dataDir </> "signing.key")
