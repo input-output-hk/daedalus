@@ -223,6 +223,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
         </h1>
         <div className={styles.description}>
           {connectingDescription && (
+            // @ts-ignore
             <FormattedHTMLMessage {...connectingDescription} />
           )}
         </div>

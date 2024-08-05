@@ -1,0 +1,4 @@
+brew "libusb"
+
+# libudev.h
+brew "systemd"
