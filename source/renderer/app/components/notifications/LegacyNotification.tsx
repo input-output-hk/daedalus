@@ -108,6 +108,7 @@ class LegacyNotification extends Component<Props> {
       activeWalletName,
       ..._values,
     };
+    // @ts-ignore
     return <FormattedMessage {...message} values={values} />;
   };
 
