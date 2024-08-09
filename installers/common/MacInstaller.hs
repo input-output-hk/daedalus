@@ -216,6 +216,8 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     externalYarn :: [FilePath]
     externalYarn =
       [ "@babel"
+      , "@emurgo"
+      , "@fivebinaries"
       , "@noble"
       , "@protobufjs"
       , "@trezor"
