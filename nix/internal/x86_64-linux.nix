@@ -355,6 +355,7 @@ in rec {
     genericName = "Crypto-Currency Wallet";
     categories = [ "Application" "Network" ];
     icon = "INSERT_ICON_PATH_HERE";
+    startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
   });
 
   # On Windows/macOS, auto-update just launches the new installer, and exits the previous Daedalus.
