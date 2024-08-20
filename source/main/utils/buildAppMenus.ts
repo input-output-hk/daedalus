@@ -4,7 +4,6 @@ import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { logger } from './logging';
-import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
@@ -64,7 +63,9 @@ export const buildAppMenus = async (
     logger.info('Exiting Daedalus with code 21', {
       code: 21,
     });
-    safeExitWithCode(21);
+    // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
+    (mainWindow as any).daedalusExitCode = 21;
+    mainWindow.close();
   };
 
   const restartWithoutBlankScreenFix = async () => {
@@ -75,7 +76,9 @@ export const buildAppMenus = async (
     logger.info('Exiting Daedalus with code 22', {
       code: 22,
     });
-    safeExitWithCode(22);
+    // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
+    (mainWindow as any).daedalusExitCode = 22;
+    mainWindow.close();
   };
 
   const toggleBlankScreenFix = async (item) => {

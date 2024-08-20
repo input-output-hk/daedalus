@@ -1,0 +1,94 @@
+diff --git a/elf/dl-main.h b/elf/dl-main.h
+index 3e32f254c5..9efa037f6c 100644
+--- a/elf/dl-main.h
++++ b/elf/dl-main.h
+@@ -99,6 +99,9 @@ struct dl_main_state
+ 
+   /* True if information about versions has to be printed.  */
+   bool version_info;
++
++  /* <michalrus> Another way to pass argv[1] when running `./ld.so` directly (for Electron relaunching) */
++  const char *please_interpret;
+ };
+ 
+ /* Helper function to invoke _dl_init_paths with the right arguments
+diff --git a/elf/rtld.c b/elf/rtld.c
+index 86354fb0c2..955d672144 100644
+--- a/elf/rtld.c
++++ b/elf/rtld.c
+@@ -310,6 +310,7 @@ dl_main_state_init (struct dl_main_state *state)
+   state->mode = rtld_mode_normal;
+   state->any_debug = false;
+   state->version_info = false;
++  state->please_interpret = NULL;
+ }
+ 
+ #ifndef HAVE_INLINED_SYSCALLS
+@@ -1396,6 +1397,8 @@ dl_main (const ElfW(Phdr) *phdr,
+   /* Process the environment variable which control the behaviour.  */
+   process_envvars (&state);
+ 
++  _dl_printf ("; state.please_interpret = %s\n", (state.please_interpret == NULL ? "NULL" : state.please_interpret));
++
+ #ifndef HAVE_INLINED_SYSCALLS
+   /* Set up a flag which tells we are just starting.  */
+   _dl_starting_up = 1;
+@@ -1421,13 +1424,15 @@ dl_main (const ElfW(Phdr) *phdr,
+ 	 installing it.  */
+       rtld_is_main = true;
+ 
++      _dl_printf ("; rtld_is_main = true\n");
++
+       char *argv0 = NULL;
+       char **orig_argv = _dl_argv;
+ 
+       /* Note the place where the dynamic linker actually came from.  */
+       GL(dl_rtld_map).l_name = rtld_progname;
+ 
+-      while (_dl_argc > 1)
++      while (state.please_interpret == NULL && _dl_argc > 1)
+ 	if (! strcmp (_dl_argv[1], "--list"))
+ 	  {
+ 	    if (state.mode != rtld_mode_help)
+@@ -1554,17 +1559,24 @@ dl_main (const ElfW(Phdr) *phdr,
+ 
+       /* If we have no further argument the program was called incorrectly.
+ 	 Grant the user some education.  */
+-      if (_dl_argc < 2)
++      if (state.please_interpret == NULL && _dl_argc < 2)
+ 	{
+ 	  if (state.mode == rtld_mode_help)
+ 	    /* --help without an executable is not an error.  */
+ 	    _dl_help (ld_so_name, &state);
+-	  else
++	  else {
++            _dl_printf ("; will end with _dl_usage(NULL)\n");
+ 	    _dl_usage (ld_so_name, NULL);
++          }
+ 	}
+ 
+-      --_dl_argc;
+-      ++_dl_argv;
++      if (state.please_interpret == NULL)
++        {
++          --_dl_argc;
++          ++_dl_argv;
++        }
++      else
++        _dl_argv[0] = (char *)state.please_interpret;
+ 
+       /* The initialization of _dl_stack_flags done below assumes the
+ 	 executable's PT_GNU_STACK may have been honored by the kernel, and
+@@ -2865,7 +2877,12 @@ process_envvars (struct dl_main_state *state)
+ 	      GLRO(dl_verbose) = 1;
+ 	      GLRO(dl_debug_mask) |= DL_DEBUG_PRELINK;
+ 	      GLRO(dl_trace_prelink) = &envline[17];
++	      break;
+ 	    }
++
++	  if (memcmp (envline, "PLEASE_INTERPRET", 16) == 0
++	      && envline[17] != '\0')
++	    state->please_interpret = &envline[17];
+ 	  break;
+ 
+ 	case 20:

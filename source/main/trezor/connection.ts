@@ -10,7 +10,6 @@ export const initTrezorConnect = async () => {
       debug: process.env.DEBUG_TREZOR === 'true',
       manifest,
     });
-
     logger.info('[TREZOR-CONNECT] Called TrezorConnect.init()');
   } catch (error) {
     logger.info('[TREZOR-CONNECT] Failed to call TrezorConnect.init()');

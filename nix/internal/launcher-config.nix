@@ -44,12 +44,13 @@ let
       builtins.readFile (originalFiles + "/config.json")));
 
     nodeConfig = originalNodeConfig // {
-      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
       AlonzoGenesisFile  = originalFiles + "/" + originalNodeConfig.AlonzoGenesisFile;
       ByronGenesisFile   = originalFiles + "/" + originalNodeConfig.ByronGenesisFile;
       ShelleyGenesisFile = originalFiles + "/" + originalNodeConfig.ShelleyGenesisFile;
       minSeverity = "Info";  # XXX: Needed for sync % updates.
-    };
+    } // (if originalNodeConfig ? ConwayGenesisFile then {
+      ConwayGenesisFile  = originalFiles + "/" + originalNodeConfig.ConwayGenesisFile;
+    } else {});
   in {
     cluster = envName;
     networkName = envName;
@@ -61,13 +62,11 @@ let
 
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
-    linux = configFilesSource;
+    linux = if devShell then configFilesSource else "\${ENTRYPOINT_DIR}/config";
     macos64 = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     macos64-arm = if devShell then configFilesSource else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
     windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
   };
-
-  isDevOrLinux = devShell || os == "linux";
 
   mkSpacedName = network: "Daedalus ${installDirectorySuffix}";
   spacedName = mkSpacedName network;
@@ -99,7 +98,7 @@ let
       windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
     };
     binary' = if binary == "frontend" then frontendBinPath else binary;
-  in if isDevOrLinux then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
+  in if (devShell || os == "linux") then binary' else "${binDir.${os}}${dirSep}${binary'}${lib.optionalString (os == "windows") ".exe"}";
   # Helper function to make a path to a config file
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
@@ -229,12 +228,13 @@ let
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
-    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
+    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!devShell || network == "local") ({
       ByronGenesisFile = "genesis-byron.json";
       ShelleyGenesisFile = "genesis-shelley.json";
       AlonzoGenesisFile = "genesis-alonzo.json";
+    } // (if nodeConfigAttrs ? ConwayGenesisFile then {
       ConwayGenesisFile = "genesis-conway.json";
-    })));
+    } else {})))));
     genesisFile = let
       genesisFile'.selfnode = ../../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;

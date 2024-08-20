@@ -3,6 +3,8 @@
 set -o errexit
 set -o pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
+
 # XXX: From the very beginning we have problems with `*.node` native
 # extensions being built against Node.js ABI, and not
 # Electron’s. Let’s solve this once and for all.
@@ -20,13 +22,15 @@ nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
 # XXX: Electron 24.2 requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
+"$SCRIPT_DIR"/darwin-no-x-compile.sh
+
 # TODO: do we really need to run `electron-rebuild` 3×?
 
 electron-rebuild --force
 
 electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
 
-if [ "$(uname)" == "Linux" ] ; then
+if [[ $system == *linux* ]]; then
   # We ship debug version because the release one has issues with Ledger Nano S
   electron-rebuild -w usb --force -s --debug
 fi
@@ -64,6 +68,6 @@ tryLink   "usb"           "usb_bindings.node"
 tryLink   "usb-detection" "detection.node"
 tryLink   "node-hid"      "HID.node"
 
-if [ "$(uname)" == "Linux" ] ; then
+if [[ $system == *linux* ]]; then
   tryLink "node-hid"      "HID_hidraw.node"
 fi

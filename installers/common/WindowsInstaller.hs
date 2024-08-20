@@ -13,7 +13,7 @@ import           Universum hiding (pass, writeFile, stdout, FilePath, die, view)
 import qualified Data.List as L
 import qualified Data.Text as T
 import           Data.Yaml                 (decodeFileThrow)
-import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
+import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target, NonFatal),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, file, iff_, installDir, installDirRegKey,
@@ -225,7 +225,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "topology.yaml"
                     file [] "genesis.json"
                     when (clusterName /= Selfnode) $ do
-                      file [] "genesis-conway.json"
+                      file [NonFatal] "genesis-conway.json"
                       file [] "genesis-byron.json"
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
