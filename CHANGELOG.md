@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.0.0
+
+### Chores
+
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` to version `7.1.3` and `@trezor/connect` to version `9.3.0` ([PR 3093](https://github.com/input-output-hk/daedalus/pull/3215))
+
+## 5.5.0
+
+### Fixes
+
+- Fixed installation and running on Ubuntu 24.04 LTS with AppArmor enabled by removing the `chroot` ([PR 3207](https://github.com/input-output-hk/daedalus/pull/3207))
+
+### Chores
+
+- Updated cardano-node to 9.1.0 (via cardano-wallet) ([PR 3212](https://github.com/input-output-hk/daedalus/pull/3212))
+
 ## 5.4.0
 
 ### Fixes

@@ -85,12 +85,17 @@ EventEmitter.defaultMaxListeners = 100; // Default: 10
 const safeExit = async () => {
   pauseActiveDownloads();
 
+  const exitCode =
+    (mainWindow as any).daedalusExitCode !== undefined
+      ? (mainWindow as any).daedalusExitCode
+      : 0;
+
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
-      code: 0,
+    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${exitCode}`, {
+      code: exitCode,
     });
-    return safeExitWithCode(0);
+    return safeExitWithCode(exitCode);
   }
 
   if (cardanoNode.state === CardanoNodeStates.STOPPING) {
@@ -108,16 +113,16 @@ const safeExit = async () => {
     });
     await cardanoNode.stop();
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Daedalus:safeExit: exiting Daedalus with code 0', {
-      code: 0,
+    logger.info(`Daedalus:safeExit: exiting Daedalus with code ${code}`, {
+      code: exitCode,
     });
-    safeExitWithCode(0);
+    safeExitWithCode(exitCode);
   } catch (error) {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
       error,
     });
-    safeExitWithCode(0);
+    safeExitWithCode(exitCode);
   }
 };
 

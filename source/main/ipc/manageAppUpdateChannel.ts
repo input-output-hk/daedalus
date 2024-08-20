@@ -11,7 +11,6 @@ import type {
 } from '../../common/ipc/api';
 import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appUpdateConfig';
 import { environment } from '../environment';
-import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
 // IpcChannel<Incoming, Outgoing>
@@ -169,7 +168,10 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
           return reject();
         }
 
-        safeExitWithCode(20);
+        // We need to also wait for `cardano-node` to exit cleanly, otherwise the new auto-updated version
+        // is showing the new node crashing, because the old one is still running for around 30 seconds:
+        (window as any).daedalusExitCode = 20;
+        window.close();
         return resolve(response(true, functionPrefix));
       });
     });

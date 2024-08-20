@@ -62,7 +62,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkgconfig jq darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 perl pkgconfig jq darwin.cctools xcbuild ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -79,6 +79,8 @@ in rec {
       find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 
       patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+
+      ${builtins.path { path = inputs.self + "/scripts/darwin-no-x-compile.sh"; }}
 
       # And now, with correct shebangs, run the install scripts (we have to do that
       # semi-manually, because another `yarn install` will overwrite those shebangs…):
@@ -111,7 +113,7 @@ in rec {
     name = pname;
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 pkgconfig darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python3 perl pkgconfig darwin.cctools xcbuild ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit

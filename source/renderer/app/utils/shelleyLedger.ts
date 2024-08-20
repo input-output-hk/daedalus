@@ -4,7 +4,7 @@ import {
   TxOutputDestinationType,
   AddressType,
   TxAuxiliaryDataType, // CHECK THIS
-  StakeCredentialParamsType,
+  CredentialParamsType,
   CIP36VoteRegistrationFormat,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
@@ -52,7 +52,7 @@ export const toLedgerCertificate = (cert: CoinSelectionCertificate) => {
     type: CERTIFICATE_TYPE[cert.certificateType],
     params: {
       stakeCredential: {
-        type: StakeCredentialParamsType.KEY_PATH,
+        type: CredentialParamsType.KEY_PATH,
         keyPath: derivationPathToLedgerPath(cert.rewardAccountPath),
       },
       poolKeyHashHex: cert.pool
@@ -65,7 +65,7 @@ export const toLedgerCertificate = (cert: CoinSelectionCertificate) => {
 export const toLedgerWithdrawal = (withdrawal: CoinSelectionWithdrawal) => {
   return {
     stakeCredential: {
-      type: StakeCredentialParamsType.KEY_PATH,
+      type: CredentialParamsType.KEY_PATH,
       keyPath: derivationPathToLedgerPath(withdrawal.derivationPath),
     },
     amount: withdrawal.amount.quantity.toString(),

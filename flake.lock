@@ -3,15 +3,16 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1710374728,
-        "narHash": "sha256-nk79ZQLHGHPLXEYeJhZLWQWsa+wzOxxu4SuY9sKVG5c=",
+        "lastModified": 1721869644,
+        "narHash": "sha256-2qPZuuXtNi7kRPCFHv1Zvno/FIH0dOyg3Zqeywt77WQ=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "aa1d456c5e926cc07094a26f2c480773f206e4e8",
+        "rev": "c3042e1669ad9e5af43622972913614d6b934488",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "next-2024-07-24",
         "repo": "cardano-playground",
         "type": "github"
       }
@@ -36,16 +37,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1714939252,
-        "narHash": "sha256-9n5/ufTrkT3RPF6S2diepEuEDKImEfCM6NbepoCLU2I=",
+        "lastModified": 1722103243,
+        "narHash": "sha256-2Ilm37Lt0nnFOgVx9AFIf8go6JfKhPoE9Im7H5sscxM=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "85c53a2f8c6cb10d2d44ab045b3c5e4fb7155e7a",
+        "rev": "ceb90fcac0e7ddf9e30705ce1e9d5780222fc3fd",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "v2024-05-05",
+        "ref": "v2024-07-27",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -63,6 +64,22 @@
       "original": {
         "owner": "input-output-hk",
         "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "nix-bundle-exe": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1682949567,
+        "narHash": "sha256-K9PT8LVvTLOm3gX9ZFxag0X85DFgB2vvJB+S12disWw=",
+        "owner": "3noch",
+        "repo": "nix-bundle-exe",
+        "rev": "3522ae68aa4188f4366ed96b41a5881d6a88af97",
+        "type": "github"
+      },
+      "original": {
+        "owner": "3noch",
+        "repo": "nix-bundle-exe",
         "type": "github"
       }
     },
@@ -88,6 +105,7 @@
         "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
         "flake-compat": "flake-compat",
+        "nix-bundle-exe": "nix-bundle-exe",
         "nixpkgs": "nixpkgs",
         "tullia": "tullia"
       }
