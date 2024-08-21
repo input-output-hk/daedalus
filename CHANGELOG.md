@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Chores
+
+- Unset `LD_LIBRARY_PATH` on Linux ([PR 3219](https://github.com/input-output-hk/daedalus/pull/3219))
+
 ## 6.0.0
 
 ### Chores

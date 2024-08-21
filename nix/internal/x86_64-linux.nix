@@ -291,6 +291,12 @@ in rec {
 
       cp ${pkgs.writeText "daedalus" ''
         #!/bin/sh
+
+        if [ -n "$LD_LIBRARY_PATH" ]; then
+          echo >&2 'Warning: ‘LD_LIBRARY_PATH’ is set, it’s been known to cause problems in the past, unsetting it.'
+          unset LD_LIBRARY_PATH
+        fi
+
         set -ex
 
         ENTRYPOINT_DIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
