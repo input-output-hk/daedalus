@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 6.0.1
 
 ### Fixes
 
