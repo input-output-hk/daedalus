@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Update `cardano-node` to a 9.1.1 (hotfix for the ledger replay bug) ([PR 3221](https://github.com/input-output-hk/daedalus/pull/3221))
+
 ### Chores
 
 - Unset `LD_LIBRARY_PATH` on Linux ([PR 3219](https://github.com/input-output-hk/daedalus/pull/3219))

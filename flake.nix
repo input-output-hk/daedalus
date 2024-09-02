@@ -5,6 +5,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2024-07-27";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
+    cardano-node-override.url = "github:IntersectMBO/cardano-node/9.1.1";
+    cardano-node-override.flake = false;
     cardano-playground.url = "github:input-output-hk/cardano-playground/next-2024-07-24";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/0d1d5f036c73d18e641412d2c58d4acda592d493";
