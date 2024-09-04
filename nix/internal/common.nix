@@ -40,7 +40,7 @@ rec {
   }).defaultNix;
 
   nodeFlake = let
-    unpatched = walletFlake.inputs.cardano-node-runtime;
+    unpatched = inputs.cardano-node-override;
   in (flake-compat {
     src = {
       outPath = toString (pkgs.runCommand "source" {} ''
@@ -49,7 +49,7 @@ rec {
         cd $out
         cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
       '');
-      inherit (unpatched.sourceInfo) rev shortRev lastModified lastModifiedDate;
+      inherit (unpatched) rev shortRev lastModified lastModifiedDate;
     };
   }).defaultNix;
 
@@ -62,7 +62,7 @@ rec {
 
   nodePackages = {
     x86_64-windows = nodeFlake.legacyPackages.x86_64-linux.hydraJobs.windows; # a bug in ${cardano-node}/flake.nix
-    x86_64-linux = nodeFlake.packages.x86_64-linux;
+    x86_64-linux = nodeFlake.hydraJobs.x86_64-linux.musl;
     x86_64-darwin = nodeFlake.packages.x86_64-darwin;
     aarch64-darwin = nodeFlake.packages.aarch64-darwin;
   }.${targetSystem};
