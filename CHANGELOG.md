@@ -2,6 +2,8 @@
 
 ## vNext
 
+## 6.0.1
+
 ### Fixes
 
 - Update `cardano-node` to a 9.1.1 (hotfix for the ledger replay bug) ([PR 3221](https://github.com/input-output-hk/daedalus/pull/3221))
