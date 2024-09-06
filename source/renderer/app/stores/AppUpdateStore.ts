@@ -94,7 +94,7 @@ export default class AppUpdateStore extends Store {
      * Unset `APP-AUTOMATIC-UPDATE-FAILED` on every application startup to try again if we failed in the past;
      * Otherwise, this computer's auto-update would be bricked forever:
      */
-    this.unsetAppAutomaticUpdateFailedRequest.execute().then((result) => {
+    this.unsetAppAutomaticUpdateFailedRequest.execute().then(() => {
       logger.info('Resetting the APP-AUTOMATIC-UPDATE-FAILED flag on startup');
     });
 
