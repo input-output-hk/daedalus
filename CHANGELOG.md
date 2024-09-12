@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Chores
+
+- Update `cardano-wallet` to v2024-09-03 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
+
 ## 6.0.2
 
 ### Fixes
