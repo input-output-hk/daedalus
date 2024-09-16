@@ -39,7 +39,7 @@ Open a thread on #daedalus-qa on Slack, mention `@daedalusqa` and `@daedalusteam
 ### Basics
 
 - [ ] PR assigned to the PR author(s)
-- [ ] `input-output-hk/daedalus-dev` and `input-output-hk/daedalus-qa` assigned as PR reviewers
+- [ ] Teammates from your squad (and those familiar with changed part of the app) are assigned as PR reviewers
 - [ ] If there are UI changes, Alexander Rukin assigned as an additional reviewer
 - [ ] PR has appropriate labels (`release-vNext`, `feature`/`bug`/`chore`, `WIP`)
 - [ ] PR link is added to a Jira ticket, ticket moved to In Review
