@@ -4,7 +4,7 @@
 
 ### Chores
 
-- Update `cardano-node` to 9.2.0 via `cardano-wallet` v2024-09-26 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
+- Update `cardano-node` to 9.2.1 via `cardano-wallet` v2024-09-29 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
 
 ## 6.0.2
 
