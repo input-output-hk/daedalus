@@ -34,6 +34,12 @@ let
     preview = "https://preview-smash.world.dev.cardano.org";
   };
 
+  tokenMetadataServers = {
+    mainnet = "https://tokens.cardano.org";
+    preprod = "https://metadata.world.dev.cardano.org";
+    preview = "https://metadata.world.dev.cardano.org";
+  };
+
   fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
       name = "cardano-playground-config-${envName}";
@@ -57,6 +63,7 @@ let
     cardanoEnv = {
       inherit nodeConfig;
       topologyFile = originalFiles + "/topology.json";
+      metadataUrl = tokenMetadataServers.${envName};
     };
   };
 
@@ -301,13 +308,13 @@ let
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
         };
       };
-    } // (lib.optionalAttrs (network == "selfnode") {
+    } // (lib.optionalAttrs (network != "selfnode") {
+      metadataUrl = envCfg.metadataUrl;
+    }) // (lib.optionalAttrs (network == "selfnode") {
       selfnodeBin = mkBinPath "local-cluster";
       mockTokenMetadataServerBin = mkBinPath "mock-token-metadata-server";
     }) // (lib.optionalAttrs (__hasAttr network smashServers) {
       smashUrl = smashServers.${network};
-    }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {
-      metadataUrl = envCfg.metadataUrl;
     });
 
     installerConfig = {

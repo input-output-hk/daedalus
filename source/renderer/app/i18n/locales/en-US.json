@@ -728,7 +728,7 @@
   "voting.registerToVote.header": "Register to vote",
   "voting.registerToVote.registerToVoteButtonLabel": "Register to vote",
   "voting.registerToVote.step1CheckBoxLabel": "Download the Catalyst Voting app on your smartphone",
-  "voting.registerToVote.step2CheckBoxLabel": "Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
+  "voting.registerToVote.step2CheckBoxLabel": "Ensure that you register and hold the necessary {minVotingFunds} ADA at the time of the snapshot.",
   "voting.registerToVote.stepsTitle": "Follow these steps to vote:",
   "voting.registerToVote.votingInstructions": "If you are not registered yet, make sure to register to vote in the current fund before the snapshot date.",
   "voting.resultsPhase.endDateLabel": "End of voting:",

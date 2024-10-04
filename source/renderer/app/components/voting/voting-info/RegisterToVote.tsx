@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BigNumber from 'bignumber.js';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
@@ -6,6 +7,7 @@ import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './RegisterToVote.messages';
 import { messages as votingMessages } from './VotingInfo.messages';
 import styles from './RegisterToVote.scss';
+import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../../config/votingConfig';
 
 type Props = {
   intl: Intl;
@@ -38,7 +40,11 @@ function RegisterToVote({ intl, onRegisterToVoteClick }: Props) {
       <div className={styles.step}>
         <Checkbox
           checked={step2}
-          label={intl.formatMessage(messages.step2CheckBoxLabel)}
+          label={intl.formatMessage(messages.step2CheckBoxLabel, {
+            minVotingFunds: new BigNumber(
+              VOTING_REGISTRATION_MIN_WALLET_FUNDS
+            ).toFormat(0),
+          })}
           onChange={setStep2}
         />
       </div>

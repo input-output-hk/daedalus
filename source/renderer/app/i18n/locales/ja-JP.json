@@ -728,7 +728,7 @@
   "voting.registerToVote.header": "有権者登録をする",
   "voting.registerToVote.registerToVoteButtonLabel": "有権者登録をする",
   "voting.registerToVote.step1CheckBoxLabel": "スマートフォンにCatalyst Votingアプリをダウンロードします",
-  "voting.registerToVote.step2CheckBoxLabel": "スナップショット実施の時点で、登録を済ませ、500ADAを保有していてください",
+  "voting.registerToVote.step2CheckBoxLabel": "スナップショット実施の時点で、登録を済ませ、{minVotingFunds}ADAを保有していてください",
   "voting.registerToVote.stepsTitle": "投票方法:",
   "voting.registerToVote.votingInstructions": "登録を済ませていない場合は、スナップショットの実施日前に現行のファンドの有権者登録を行ってください。",
   "voting.resultsPhase.endDateLabel": "投票締め切り:",

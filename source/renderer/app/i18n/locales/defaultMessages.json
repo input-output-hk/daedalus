@@ -4467,7 +4467,7 @@
         "id": "voting.registerToVote.step1CheckBoxLabel"
       },
       {
-        "defaultMessage": "!!!Ensure that you register and hold the necessary 500 ADA at the time of the snapshot.",
+        "defaultMessage": "!!!Ensure that you register and hold the necessary {minVotingFunds} ADA at the time of the snapshot.",
         "description": "Second step to follow in order to vote",
         "id": "voting.registerToVote.step2CheckBoxLabel"
       },
