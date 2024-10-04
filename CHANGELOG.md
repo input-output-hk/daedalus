@@ -8,6 +8,10 @@
 
 - Un-brick auto-update on devices where it failed in the past ([PR 3223](https://github.com/input-output-hk/daedalus/pull/3223))
 
+### Chores
+
+- Decrease Catalyst voting power threshold from 500 to 25 ADA ([PR 3230](https://github.com/input-output-hk/daedalus/pull/3230))
+
 ## 6.0.1
 
 ### Fixes
