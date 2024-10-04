@@ -40,7 +40,7 @@ rec {
   }).defaultNix;
 
   nodeFlake = let
-    unpatched = inputs.cardano-node-override;
+    unpatched = walletFlake.inputs.cardano-node-runtime;
   in (flake-compat {
     src = {
       outPath = toString (pkgs.runCommand "source" {} ''
