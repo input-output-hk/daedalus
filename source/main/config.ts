@@ -174,7 +174,7 @@ export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks 
 
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
-  'https://metadata.cardano-testnet.iohkdev.io';
+  'https://metadata.world.dev.cardano.org';
 export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
 
 // Used by mock-token-metadata-server
