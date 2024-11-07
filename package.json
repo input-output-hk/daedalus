@@ -109,7 +109,7 @@
     "@xarc/run": "1.1.1",
     "asar": "2.1.0",
     "autodll-webpack-plugin": "0.4.2",
-    "axios": "0.24.0",
+    "axios": "0.28.0",
     "bufferutil": "4.0.1",
     "cache-loader": "4.1.0",
     "chai": "4.3.4",
