@@ -37,8 +37,22 @@ Daedalus - Cryptocurrency Wallet
    # If you are running on a Mac with Apple Silicon chip, but want to also build for Intel:
    extra-platforms = x86_64-darwin aarch64-darwin
    ```
+   
+3. Are you a MacOS user? Reload nix-daemon.
+   1. Stop the daemon
+      ```bash
+      sudo launchctl remove org.nixos.nix-daemon
+      ```
+   2. Verify it's not running (only grep process should be listed)
+      ```bash
+      ps aux | grep nix-daemon
+      ```
+   3. Start the daemon
+      ```bash
+      sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+      ```
 
-3. Run `nix develop` with a correct argument or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development, e.g.:
+4. Run `nix develop` with a correct argument or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development, e.g.:
     * `nix develop -L .#mainnet`
     * … which is equivalent to `yarn nix:mainnet`
 
