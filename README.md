@@ -82,7 +82,7 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 
 These scripts import 3 wallets by default. You can import up to 10 wallets by supplying `WALLET_COUNT` environment variable (e.g. `WALLET_COUNT=10 yarn mary:wallet:importer`).
 
-List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.js
+List of all funded wallet recovery phrases can be found here: https://github.com/input-output-hk/daedalus/blob/develop/utils/api-importer/mnemonics.ts
 
 **Notes:**
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
