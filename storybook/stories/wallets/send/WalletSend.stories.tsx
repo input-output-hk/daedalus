@@ -15,11 +15,13 @@ import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileCo
 import Wallet, {
   HwDeviceStatuses,
 } from '../../../../source/renderer/app/domains/Wallet';
+import { messages } from '../../../../source/renderer/app/api/errors';
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { WalletSendConfirmationDialogView } from '../../../../source/renderer/app/containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
+import LocalizableError from '../../../../source/renderer/app/i18n/LocalizableError';
 
 const allAssets = [
   generateAssetToken(
@@ -470,7 +472,11 @@ storiesOf('Wallets / Send', module)
           isSubmitting={boolean('isSubmitting', false)}
           isHardwareWallet={boolean('isHardwareWallet', false)}
           formattedTotalAmount="21.000000"
-          error={null}
+          error={
+            new LocalizableError({
+              ...messages.conwayWalletNotDelegatedToDRep,
+            })
+          }
           onCancel={action('onCancel')}
           onSubmitCb={action('onSubmitCb')}
           onTermsCheckboxClick={action('onTermsCheckboxClick')}

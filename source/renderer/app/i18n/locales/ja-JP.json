@@ -34,6 +34,7 @@
   "api.errors.WalletAlreadyImportedError": "インポートしようとしているウォレットは既に存在します。",
   "api.errors.WalletAlreadyRestoredError": "復元しようとしているウォレットは既に存在します。",
   "api.errors.WalletFileImportError": "ウォレットをインポートできませんでした。有効なファイルを指定していることを確認してください。",
+  "api.errors.conwayWalletNotDelegatedToDRep": "ステーキング報酬がブロックされているため、このトランザクションを処理できません。報酬のブロックを解除するには、<a href=\"/#/voting/governance\">Cardano投票権の委任タブ</a>に移動し、投票権を委任してください。",
   "api.errors.inputsDepleted": "このウォレットには報酬として得られた資金しか入っていません。<br />資金を使用するには1ADA以上をウォレットに入金してください。",
   "api.errors.invalidAddress": "有効なアドレスを入力してください。",
   "api.errors.invalidSmashServer": "このURLは有効なSMASHサーバーではありません",

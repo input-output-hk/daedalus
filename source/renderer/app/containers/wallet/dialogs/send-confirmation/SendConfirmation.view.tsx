@@ -89,7 +89,8 @@ function View({
         !isPasswordValid({
           isHardwareWallet,
           isValid: passphraseField.isValid,
-        }),
+        }) ||
+        !!error,
     },
   ];
 

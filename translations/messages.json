@@ -95,6 +95,11 @@
         "defaultMessage": "!!!Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"
+      },
+      {
+        "defaultMessage": "!!!conwayWalletNotDelegatedToDRep",
+        "description": "Error message shown when conway era wallet has staking rewards but has not participated in governance yet.",
+        "id": "api.errors.conwayWalletNotDelegatedToDRep"
       }
     ],
     "path": "source/renderer/app/api/errors.ts"
