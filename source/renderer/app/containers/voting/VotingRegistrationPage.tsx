@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import Layout from '../MainLayout';
 import { VOTING_REGISTRATION_MIN_WALLET_FUNDS } from '../../config/votingConfig';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/voting-info/VotingInfo';
@@ -77,7 +76,7 @@ class VotingRegistrationPage extends Component<Props> {
     );
     const innerContent = this.getInnerContent(isVotingRegistrationDialogOpen);
     return (
-      <Layout>
+      <>
         <VerticalFlexContainer>
           {innerContent}
           <VotingFooterLinks onClickExternalLink={openExternalLink} />
@@ -86,7 +85,7 @@ class VotingRegistrationPage extends Component<Props> {
         {isVotingRegistrationDialogOpen && (
           <VotingRegistrationDialogContainer />
         )}
-      </Layout>
+      </>
     );
   }
 }
