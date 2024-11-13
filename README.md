@@ -20,7 +20,11 @@ Daedalus - Cryptocurrency Wallet
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix develop` shell.
 
-1. Install nix: `sh <(curl -L https://nixos.org/nix/install)`
+1. Install nix using [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)
+   ```
+   $ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
+   sh -s -- install
+   ```
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
