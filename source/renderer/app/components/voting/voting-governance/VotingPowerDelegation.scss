@@ -14,3 +14,11 @@
   text-align: center;
   text-transform: uppercase;
 }
+
+.info {
+  @extend %regularText;
+  p {
+    display: block;
+    margin-bottom: 1em;
+  }
+}

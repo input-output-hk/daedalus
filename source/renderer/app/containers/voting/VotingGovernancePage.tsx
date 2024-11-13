@@ -14,7 +14,8 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    return <VotingPowerDelegation />;
+    const { openExternalLink } = this.props.stores.app;
+    return <VotingPowerDelegation onExternalLinkClick={openExternalLink} />;
   }
 }
 

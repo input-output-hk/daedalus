@@ -23,9 +23,7 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
     const { message, onExternalLinkClick } = this.props;
     const { linkPosition, linkLabel, linkURL } = message.values;
     const MainMessage = (
-      <Fragment key="mainMessage">
-        &nbsp;{intl.formatMessage(message)}&nbsp;
-      </Fragment>
+      <Fragment key="mainMessage">{intl.formatMessage(message)}</Fragment>
     );
     const url = intl.formatMessage(linkURL);
     const Link = (
@@ -36,7 +34,7 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
       </Fragment>
     );
     return linkPosition === 'before'
-      ? [Link, MainMessage]
-      : [MainMessage, Link];
+      ? [Link, <>&nbsp;</>, MainMessage]
+      : [MainMessage, <>&nbsp;</>, Link];
   }
 }
