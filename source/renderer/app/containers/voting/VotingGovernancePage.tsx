@@ -14,8 +14,16 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    const { openExternalLink } = this.props.stores.app;
-    return <VotingPowerDelegation onExternalLinkClick={openExternalLink} />;
+    const { wallets, staking, app } = this.props.stores;
+    const { openExternalLink } = app;
+    return (
+      <VotingPowerDelegation
+        onExternalLinkClick={openExternalLink}
+        wallets={wallets.all}
+        stakePools={staking.stakePools}
+        getStakePoolById={staking.getStakePoolById}
+      />
+    );
   }
 }
 

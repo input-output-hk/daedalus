@@ -29,8 +29,12 @@ import globalMessages from '../../../i18n/global-messages';
  */
 export type ItemDropdownProps = {
   options: Array<ItemDropdown>;
+  label?: string;
   className?: string;
   disabled?: boolean;
+  handleChange?: (...args: Array<any>) => any;
+  value?: string;
+  placeholder?: string;
 };
 export const onSearchItemsDropdown = (
   searchValue: string,

@@ -34,7 +34,11 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
       </Fragment>
     );
     return linkPosition === 'before'
-      ? [Link, <>&nbsp;</>, MainMessage]
-      : [MainMessage, <>&nbsp;</>, Link];
+      ? [Link, <React.Fragment key="space">&nbsp;</React.Fragment>, MainMessage]
+      : [
+          MainMessage,
+          <React.Fragment key="space">&nbsp;</React.Fragment>,
+          Link,
+        ];
   }
 }

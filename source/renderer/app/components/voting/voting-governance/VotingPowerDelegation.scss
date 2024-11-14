@@ -22,3 +22,35 @@
     margin-bottom: 1em;
   }
 }
+
+.walletSelect {
+  margin-top: 20px;
+
+  &.error {
+    input {
+      border-color: var(--theme-color-error);
+    }
+
+    :global {
+      .SimpleSelect_selectInput {
+        &:after {
+          background-color: var(--theme-color-error);
+        }
+      }
+    }
+  }
+
+  :global {
+    .SimpleOptions_option {
+      align-items: center;
+      display: flex;
+      height: 50px;
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+  }
+}
+
+.voteTypeSelect, .drepInput {
+  margin-top: 20px;
+}

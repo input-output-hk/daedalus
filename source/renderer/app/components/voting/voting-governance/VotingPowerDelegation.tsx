@@ -1,18 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedHTMLMessage } from 'react-intl';
+import { Input } from 'react-polymorph/lib/components/Input';
+
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
 import type { Intl } from '../../../types/i18nTypes';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import Wallet from '../../../domains/Wallet';
+import StakePool from '../../../domains/StakePool';
+import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 
 type Props = {
+  getStakePoolById: (...args: Array<any>) => any;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
+  stakePools: Array<StakePool>;
+  wallets: Array<Wallet>;
 };
 
-function VotingPowerDelegation({ intl, onExternalLinkClick }: Props) {
+function VotingPowerDelegation({
+  getStakePoolById,
+  intl,
+  onExternalLinkClick,
+  wallets,
+  stakePools,
+}: Props) {
+  const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
+  const [selectedVoteType, setSelectedVoteType] = useState<string | null>(null);
+  const [drepInputValue, setDrepInputValue] = useState<string>('');
+  const voteTypes = [
+    {
+      value: 'abstain',
+      label: 'Abstain',
+    },
+    {
+      value: 'noConfidence',
+      label: 'No confidence',
+    },
+    {
+      value: 'drep',
+      label: 'Delegate to dRep',
+    },
+  ];
   return (
     <div className={styles.component}>
       <BorderedBox>
@@ -48,9 +80,50 @@ function VotingPowerDelegation({ intl, onExternalLinkClick }: Props) {
             />
           </p>
         </div>
+
+        <WalletsDropdown
+          className={styles.walletSelect}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
+          label={'Select a wallet to delegate from'}
+          numberOfStakePools={stakePools.length}
+          wallets={wallets}
+          onChange={(walletId: string) => setSelectedWalletId(walletId)}
+          placeholder={'Select a wallet …'}
+          value={selectedWalletId}
+          getStakePoolById={getStakePoolById}
+        />
+
+        {selectedWalletId && (
+          <ItemsDropdown
+            className={styles.voteTypeSelect}
+            label={'Select voting registration type'}
+            placeholder={'Select delegation option'}
+            options={voteTypes}
+            handleChange={(option) => setSelectedVoteType(option.value)}
+            value={selectedVoteType}
+          />
+        )}
+
+        {selectedVoteType && (
+          <Input
+            className={styles.drepInput}
+            onChange={setDrepInputValue}
+            spellCheck={false}
+            value={drepInputValue}
+            label={
+              <div>
+                Please type or paste a valid DRep ID here. Look up{' '}
+                <a onClick={() => onExternalLinkClick('https://google.com')}>
+                  DRep directory
+                </a>
+              </div>
+            }
+            placeholder={'Paste DRep ID here.'}
+          />
+        )}
       </BorderedBox>
     </div>
   );
 }
 
-export default observer(injectIntl(VotingPowerDelegation));
+export default injectIntl(observer(VotingPowerDelegation));
