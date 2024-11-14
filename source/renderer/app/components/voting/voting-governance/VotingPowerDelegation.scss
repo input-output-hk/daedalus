@@ -51,6 +51,12 @@
   }
 }
 
-.voteTypeSelect, .drepInput {
-  margin-top: 20px;
+.voteTypeSelect,
+.drepInput,
+.voteSubmit {
+  margin-top: 40px;
+}
+
+.voteSubmit {
+  width: 100%;
 }

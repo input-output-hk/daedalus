@@ -4405,21 +4405,6 @@
         "defaultMessage": "!!!Governance first paragraph link url",
         "description": "First paragraph link for governance page",
         "id": "voting.governance.paragraph1LinkUrl"
-      },
-      {
-        "defaultMessage": "!!!Governance second paragraph",
-        "description": "Second paragraph for governance page",
-        "id": "voting.governance.paragraph2"
-      },
-      {
-        "defaultMessage": "!!!Governance third paragraph",
-        "description": "Third paragraph for governance page",
-        "id": "voting.governance.paragraph3"
-      },
-      {
-        "defaultMessage": "!!!Governance third paragraph link url",
-        "description": "Link for third governance page paragraph",
-        "id": "voting.governance.paragraph3LinkUrl"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"

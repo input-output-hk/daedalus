@@ -21,19 +21,4 @@ export const messages = defineMessages({
     defaultMessage: '!!!Governance first paragraph link url',
     description: 'First paragraph link for governance page',
   },
-  paragraph2: {
-    id: 'voting.governance.paragraph2',
-    defaultMessage: '!!!Governance second paragraph',
-    description: 'Second paragraph for governance page',
-  },
-  paragraph3: {
-    id: 'voting.governance.paragraph3',
-    defaultMessage: '!!!Governance third paragraph',
-    description: 'Third paragraph for governance page',
-  },
-  paragraph3LinkUrl: {
-    id: 'voting.governance.paragraph3LinkUrl',
-    defaultMessage: '!!!Governance third paragraph link url',
-    description: 'Link for third governance page paragraph',
-  },
 });

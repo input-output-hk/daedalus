@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
-import { injectIntl, FormattedHTMLMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
+import { Button } from 'react-polymorph/lib/components/Button';
 
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
@@ -12,6 +13,7 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
+import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -19,6 +21,19 @@ type Props = {
   onExternalLinkClick: (...args: Array<any>) => any;
   stakePools: Array<StakePool>;
   wallets: Array<Wallet>;
+};
+
+type VoteType = 'abstain' | 'noConfidence' | 'drep';
+
+// TODO discuss if we need to restrict the length
+const isDrepIdValid = (drepId: string) => {
+  try {
+    assertIsBech32WithPrefix(drepId, ['drep', 'drep_script']);
+  } catch (e) {
+    return false;
+  }
+
+  return true;
 };
 
 function VotingPowerDelegation({
@@ -29,9 +44,21 @@ function VotingPowerDelegation({
   stakePools,
 }: Props) {
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
-  const [selectedVoteType, setSelectedVoteType] = useState<string | null>(null);
-  const [drepInputValue, setDrepInputValue] = useState<string>('');
-  const voteTypes = [
+  const [selectedVoteType, setSelectedVoteType] = useState<VoteType>('drep');
+  const [drepInputState, setDrepInputState] = useState({
+    blurred: false,
+    value: '',
+  });
+  const drepInputIsValid = useMemo<boolean>(
+    () => (drepInputState.blurred ? isDrepIdValid(drepInputState.value) : true),
+    [drepInputState.blurred, drepInputState.value]
+  );
+  const formIsValid =
+    !!selectedWalletId &&
+    (selectedVoteType === 'drep'
+      ? drepInputState.blurred && drepInputState.value && drepInputIsValid
+      : true);
+  const voteTypes: { value: VoteType; label: string }[] = [
     {
       value: 'abstain',
       label: 'Abstain',
@@ -64,21 +91,6 @@ function VotingPowerDelegation({
               onExternalLinkClick={onExternalLinkClick}
             />
           </p>
-          <p>
-            <FormattedHTMLMessage {...messages.paragraph2} />
-          </p>
-          <p>
-            <FormattedHTMLMessageWithLink
-              message={{
-                ...messages.paragraph3,
-                values: {
-                  linkLabel: messages.learnMoreLinkLabel,
-                  linkURL: messages.paragraph3LinkUrl,
-                },
-              }}
-              onExternalLinkClick={onExternalLinkClick}
-            />
-          </p>
         </div>
 
         <WalletsDropdown
@@ -104,23 +116,52 @@ function VotingPowerDelegation({
           />
         )}
 
-        {selectedVoteType && (
+        {selectedWalletId && selectedVoteType === 'drep' && (
           <Input
             className={styles.drepInput}
-            onChange={setDrepInputValue}
+            onChange={(value) => {
+              setDrepInputState({
+                blurred: false,
+                value,
+              });
+            }}
+            onBlur={() => {
+              setDrepInputState((prevState) => ({
+                ...prevState,
+                blurred: true,
+              }));
+            }}
             spellCheck={false}
-            value={drepInputValue}
+            value={drepInputState.value}
             label={
               <div>
                 Please type or paste a valid DRep ID here. Look up{' '}
-                <a onClick={() => onExternalLinkClick('https://google.com')}>
+                <a
+                  onClick={() =>
+                    onExternalLinkClick('https://www.1694.io/en/dreps/list')
+                  }
+                >
                   DRep directory
                 </a>
               </div>
             }
             placeholder={'Paste DRep ID here.'}
+            error={drepInputIsValid ? undefined : 'Invalid DRep ID'}
           />
         )}
+        <Button
+          label={'Submit'}
+          className={styles.voteSubmit}
+          disabled={!formIsValid}
+          onClick={() =>
+            console.log('Submitting: ', {
+              voteType: selectedVoteType,
+              ...(selectedVoteType === 'drep'
+                ? { drepId: drepInputState.value }
+                : {}),
+            })
+          }
+        />
       </BorderedBox>
     </div>
   );
