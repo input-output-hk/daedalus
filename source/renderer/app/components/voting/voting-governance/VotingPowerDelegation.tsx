@@ -17,6 +17,7 @@ import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 import { VotingPowerDelegationConfirmationDialog } from './VotingPowerDelegationConfirmationDialog';
 import type { DelegateVotesParams } from '../../../api/voting/types';
+import { Separator } from '../../widgets/separator/Separator';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -54,30 +55,30 @@ function VotingPowerDelegation({
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [selectedVoteType, setSelectedVoteType] = useState<VoteType>('drep');
   const [drepInputState, setDrepInputState] = useState({
-    blurred: false,
+    dirty: false,
     value: '',
   });
   const drepInputIsValid = useMemo<boolean>(
-    () => (drepInputState.blurred ? isDrepIdValid(drepInputState.value) : true),
-    [drepInputState.blurred, drepInputState.value]
+    () => (drepInputState.dirty ? isDrepIdValid(drepInputState.value) : true),
+    [drepInputState.dirty, drepInputState.value]
   );
   const formIsValid =
     !!selectedWalletId &&
     (selectedVoteType === 'drep'
-      ? drepInputState.blurred && drepInputState.value && drepInputIsValid
+      ? drepInputState.dirty && drepInputState.value && drepInputIsValid
       : true);
   const voteTypes: { value: VoteType; label: string }[] = [
     {
       value: 'abstain',
-      label: 'Abstain',
+      label: intl.formatMessage(messages.abstain),
     },
     {
       value: 'noConfidence',
-      label: 'No confidence',
+      label: intl.formatMessage(messages.noConfidence),
     },
     {
       value: 'drep',
-      label: 'Delegate to dRep',
+      label: intl.formatMessage(messages.delegateToDRep),
     },
   ];
   return (
@@ -102,14 +103,16 @@ function VotingPowerDelegation({
             </p>
           </div>
 
+          <Separator />
+
           <WalletsDropdown
             className={styles.walletSelect}
             // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
-            label={'Select a wallet to delegate from'}
+            label={intl.formatMessage(messages.selectWalletLabel)}
             numberOfStakePools={stakePools.length}
             wallets={wallets}
             onChange={(walletId: string) => setSelectedWalletId(walletId)}
-            placeholder={'Select a wallet …'}
+            placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
             value={selectedWalletId}
             getStakePoolById={getStakePoolById}
           />
@@ -117,8 +120,7 @@ function VotingPowerDelegation({
           {selectedWalletId && (
             <ItemsDropdown
               className={styles.voteTypeSelect}
-              label={'Select voting registration type'}
-              placeholder={'Select delegation option'}
+              label={intl.formatMessage(messages.selectVotingTypeLabel)}
               options={voteTypes}
               handleChange={(option) => setSelectedVoteType(option.value)}
               value={selectedVoteType}
@@ -130,36 +132,36 @@ function VotingPowerDelegation({
               className={styles.drepInput}
               onChange={(value) => {
                 setDrepInputState({
-                  blurred: false,
+                  dirty: true,
                   value,
                 });
-              }}
-              onBlur={() => {
-                setDrepInputState((prevState) => ({
-                  ...prevState,
-                  blurred: true,
-                }));
               }}
               spellCheck={false}
               value={drepInputState.value}
               label={
                 <div>
-                  Please type or paste a valid DRep ID here. Look up{' '}
+                  {intl.formatMessage(messages.drepInputLabel)}{' '}
                   <a
-                    onClick={() =>
-                      onExternalLinkClick('https://www.1694.io/en/dreps/list')
-                    }
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onExternalLinkClick('https://www.1694.io/en/dreps/list');
+                    }}
                   >
-                    DRep directory
+                    {intl.formatMessage(messages.drepInputLabelLink)}
                   </a>
                 </div>
               }
-              placeholder={'Paste DRep ID here.'}
-              error={drepInputIsValid ? undefined : 'Invalid DRep ID'}
+              placeholder={intl.formatMessage(messages.drepInputPlaceholder)}
+              error={
+                drepInputIsValid
+                  ? undefined
+                  : intl.formatMessage(messages.drepInputError)
+              }
             />
           )}
           <Button
-            label={'Submit'}
+            label={intl.formatMessage(messages.submitLabel)}
             className={styles.voteSubmit}
             disabled={!formIsValid}
             onClick={() => setConfirmationDialogVisible(true)}

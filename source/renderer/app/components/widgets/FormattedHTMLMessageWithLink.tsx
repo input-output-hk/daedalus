@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { intlShape } from 'react-intl';
 import type { ReactIntlMessageShape } from '../../i18n/types';
+import { ReactIntlMessage } from '../../types/i18nTypes';
 
 type ReactIntlMessageShapeWithLink = ReactIntlMessageShape & {
   values: {
     linkPosition?: string;
-    linkLabel: string;
-    linkURL: string;
+    linkLabel: ReactIntlMessage;
+    linkURL: ReactIntlMessage;
   };
 };
 type Props = {

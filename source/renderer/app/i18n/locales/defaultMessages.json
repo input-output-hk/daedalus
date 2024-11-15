@@ -4387,6 +4387,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Abstain",
+        "description": "Translation for the \"abstain\" governance vote type",
+        "id": "voting.governance.abstain"
+      },
+      {
+        "defaultMessage": "!!!Delegate to DRep",
+        "description": "Translation for the \"delegate to DRep\" governance vote type",
+        "id": "voting.governance.delegateToDRep"
+      },
+      {
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up",
+        "description": "Label for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabel"
+      },
+      {
+        "defaultMessage": "!!!DRep directory",
+        "description": "Label link for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLink"
+      },
+      {
+        "defaultMessage": "!!!Invalid DRep ID",
+        "description": "Error for DRep input on the governance page",
+        "id": "voting.governance.drepInputError"
+      },
+      {
+        "defaultMessage": "!!!Paste DRep ID here …",
+        "description": "Placeholder for DRep input on the governance page",
+        "id": "voting.governance.drepInputPlaceholder"
+      },
+      {
         "defaultMessage": "!!!CARDANO VOTING POWER DELEGATION",
         "description": "Headline for Governance",
         "id": "voting.governance.heading"
@@ -4397,6 +4427,11 @@
         "id": "voting.governance.learnMoreLinkLabel"
       },
       {
+        "defaultMessage": "!!!No Confidence",
+        "description": "Translation for the \"no confidence\" governance vote type",
+        "id": "voting.governance.noConfidence"
+      },
+      {
         "defaultMessage": "!!!Governance first paragraph",
         "description": "First paragraph for governance page",
         "id": "voting.governance.paragraph1"
@@ -4405,6 +4440,26 @@
         "defaultMessage": "!!!Governance first paragraph link url",
         "description": "First paragraph link for governance page",
         "id": "voting.governance.paragraph1LinkUrl"
+      },
+      {
+        "defaultMessage": "!!!Select a wallet to delegate from",
+        "description": "Label for the wallet select on the governance page",
+        "id": "voting.governance.selectWalletLabel"
+      },
+      {
+        "defaultMessage": "!!!Select a wallet …",
+        "description": "Placeholder for the wallet select on the governance page",
+        "id": "voting.governance.selectWalletPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Select voting registration type",
+        "description": "Label for the registration type select on the governance page",
+        "id": "voting.governance.selectVotingTypeLabel"
+      },
+      {
+        "defaultMessage": "!!!Submit",
+        "description": "Label for the submit button on the governance page",
+        "id": "voting.governance.submitLabel"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
