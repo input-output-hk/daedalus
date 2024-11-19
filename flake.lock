@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "cardano-node-override": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1730468447,
-        "narHash": "sha256-yNEv7MQEcOPY9I9k9RCzeMfJY6gzuGc7K53GKNHs6v8=",
-        "owner": "IntersectMBO",
-        "repo": "cardano-node",
-        "rev": "01bda2e2cb0a70cd95067d696dbb44665f1d680a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "IntersectMBO",
-        "ref": "10.1.2",
-        "repo": "cardano-node",
-        "type": "github"
-      }
-    },
     "cardano-playground": {
       "flake": false,
       "locked": {
@@ -54,16 +37,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1730750355,
-        "narHash": "sha256-+Z+WGEK3Jmpn2oxj/RuSmVM6XenMVHhfiiEOINTCVGU=",
+        "lastModified": 1731946435,
+        "narHash": "sha256-vCnp2dV+mAQIt25i8VRYNmLHAH1YZfK1bsBNNrvqJSo=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "9078093ca150d97a6a4ca09895ec123bb76227c0",
+        "rev": "9eb5f59c328163ca061a20f47519686b6f118d74",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "pull/4830/head",
+        "ref": "v2024-11-18",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -118,7 +101,6 @@
     },
     "root": {
       "inputs": {
-        "cardano-node-override": "cardano-node-override",
         "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
