@@ -1,36 +1,19 @@
 {
   "nodes": {
-    "cardano-node-override": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1725255033,
-        "narHash": "sha256-VIwEjpaGk09+dAcKELjLSR2OP3qBCWTGHpd0SBjgbVc=",
-        "owner": "IntersectMBO",
-        "repo": "cardano-node",
-        "rev": "efd560070aaf042d1eb4680ae37fc607c7742319",
-        "type": "github"
-      },
-      "original": {
-        "owner": "IntersectMBO",
-        "ref": "9.1.1",
-        "repo": "cardano-node",
-        "type": "github"
-      }
-    },
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1721869644,
-        "narHash": "sha256-2qPZuuXtNi7kRPCFHv1Zvno/FIH0dOyg3Zqeywt77WQ=",
+        "lastModified": 1730399380,
+        "narHash": "sha256-VxZBbgV4faFuVMheKeJAZ03qkL16mILVAnNqDbZIsAM=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "c3042e1669ad9e5af43622972913614d6b934488",
+        "rev": "49d93e5fe42e1e37f8b4c7d463b5d6bc4af65f26",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "next-2024-07-24",
         "repo": "cardano-playground",
+        "rev": "49d93e5fe42e1e37f8b4c7d463b5d6bc4af65f26",
         "type": "github"
       }
     },
@@ -54,16 +37,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1722103243,
-        "narHash": "sha256-2Ilm37Lt0nnFOgVx9AFIf8go6JfKhPoE9Im7H5sscxM=",
+        "lastModified": 1731946435,
+        "narHash": "sha256-vCnp2dV+mAQIt25i8VRYNmLHAH1YZfK1bsBNNrvqJSo=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "ceb90fcac0e7ddf9e30705ce1e9d5780222fc3fd",
+        "rev": "9eb5f59c328163ca061a20f47519686b6f118d74",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "v2024-07-27",
+        "ref": "v2024-11-18",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -118,7 +101,6 @@
     },
     "root": {
       "inputs": {
-        "cardano-node-override": "cardano-node-override",
         "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
