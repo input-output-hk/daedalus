@@ -21,6 +21,7 @@ export const TransactionTypes: EnumMap<string, TransactionType> = {
   EXPEND: 'expend',
   INCOME: 'income',
   EXCHANGE: 'exchange',
+  VOTE: 'vote',
 };
 export const TransactionWithdrawal: TransactionWithdrawalType = 'self';
 export class WalletTransaction {

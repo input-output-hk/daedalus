@@ -3164,16 +3164,22 @@ const _createTransactionFromServerData = action(
         address,
       })
     );
+
+    const isVoteTx = data.certificates.find(
+      (c) => c.certificate_type === 'cast_vote'
+    );
+    const otherTxType =
+      direction === 'outgoing'
+        ? TransactionTypes.EXPEND
+        : TransactionTypes.INCOME;
+
     return new WalletTransaction({
       id,
       confirmations,
       slotNumber,
       epochNumber,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
-      type:
-        direction === 'outgoing'
-          ? TransactionTypes.EXPEND
-          : TransactionTypes.INCOME,
+      type: isVoteTx ? TransactionTypes.VOTE : otherTxType,
       amount: new BigNumber(
         direction === 'outgoing'
           ? `-${amount.quantity.toString()}`

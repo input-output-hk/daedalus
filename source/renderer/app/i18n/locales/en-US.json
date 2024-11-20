@@ -1323,6 +1323,7 @@
   "wallet.transaction.type.exchange": "Exchange",
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "to see these addresses.",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Open this transaction in Cardano explorer",
+  "wallet.transaction.voted": "Voting Power Delegation",
   "wallet.transactions.csv.column.addressesFrom": "Addresses from",
   "wallet.transactions.csv.column.addressesTo": "Addresses to",
   "wallet.transactions.csv.column.amount.deposit": "Deposit amount (ADA)",

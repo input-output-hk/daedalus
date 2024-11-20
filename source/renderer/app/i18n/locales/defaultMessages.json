@@ -6557,6 +6557,11 @@
         "id": "wallet.transaction.received"
       },
       {
+        "defaultMessage": "!!!Voting Power Delegation",
+        "description": "Title for governance voting transactions.",
+        "id": "wallet.transaction.voted"
+      },
+      {
         "defaultMessage": "!!!From address",
         "description": "From address",
         "id": "wallet.transaction.address.from"

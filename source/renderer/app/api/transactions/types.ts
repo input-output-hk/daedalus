@@ -54,6 +54,11 @@ export type Transaction = {
   withdrawals: Array<TransactionWithdrawals>;
   status: TransactionState;
   metadata?: TransactionMetadata;
+  certificates?: Array<{
+    pool?: string;
+    certificate_type: DelegationAction;
+    reward_account_path: Array<string>;
+  }>;
 };
 export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
@@ -79,7 +84,12 @@ export type TransactionAddresses = {
   to: Array<string>;
   withdrawals: Array<string>;
 };
-export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
+export type TransactionType =
+  | 'card'
+  | 'expend'
+  | 'income'
+  | 'exchange'
+  | 'vote';
 // Req / Res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string;

@@ -39,6 +39,10 @@
   &.expired {
     background: var(--theme-transactions-icon-type-failed-background-color);
   }
+
+  &.vote {
+    background: #00b2ff;
+  }
 }
 
 .pendingTxnIconWrapper {
