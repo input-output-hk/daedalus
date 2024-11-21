@@ -4460,9 +4460,59 @@
         "defaultMessage": "!!!Submit",
         "description": "Label for the submit button on the governance page",
         "id": "voting.governance.submitLabel"
+      },
+      {
+        "defaultMessage": "!!!Could not initialize transaction. Please try again!",
+        "description": "Generic error for initialize transaction",
+        "id": "voting.governance.initializeTxError.generic"
+      },
+      {
+        "defaultMessage": "!!!Chosen same value as previously",
+        "description": "Chosen same value as previously",
+        "id": "voting.governance.initializeTxError.sameVote"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Vote",
+        "description": "Vote title",
+        "id": "voting.governance.confirmationDialog.vote"
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "Fee title",
+        "id": "voting.governance.confirmationDialog.fee"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for password input",
+        "id": "voting.governance.confirmationDialog.password"
+      },
+      {
+        "defaultMessage": "!!!Something went wrong during transaction submission. Please try again in a few minutes.",
+        "description": "Generic error message",
+        "id": "voting.governance.confirmationDialog.error.generic"
+      },
+      {
+        "defaultMessage": "!!!Wrong password, please try again",
+        "description": "Wrong password error message",
+        "id": "voting.governance.confirmationDialog.error.password"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Cancel button",
+        "id": "voting.governance.confirmationDialog.button.cancel"
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Confirm button",
+        "id": "voting.governance.confirmationDialog.button.confirm"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
