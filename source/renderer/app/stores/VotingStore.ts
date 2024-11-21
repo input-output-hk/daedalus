@@ -321,6 +321,13 @@ export default class VotingStore extends Store {
         walletId: wallet.id,
       }).promise;
 
+      this.analytics.sendEvent(
+        EventCategories.VOTING,
+        'Casted governance vote',
+        chosenOption, // 'abstain' | 'no_confidence' | 'drep'
+        wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+      );
+
       return {
         success: true,
       };
