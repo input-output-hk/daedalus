@@ -129,6 +129,10 @@ export default class VotingStore extends Store {
     this.api.ada.delegateVotes
   );
   @observable
+  constructTxRequest: Request<
+    ReturnType<typeof this.api.ada.constructTransaction>
+  > = new Request(this.api.ada.constructTransaction);
+  @observable
   calculateFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
     this.api.ada.calculateDelegationFee
   );
@@ -228,11 +232,29 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
-  calculateVotesDelegationFee = async ({ walletId }: { walletId: string }) => {
-    this.calculateFeeRequest.reset();
+  initializeTx = async ({
+    chosenOption,
+    wallet,
+  }: {
+    chosenOption: string;
+    wallet: Wallet;
+  }) => {
+    this.constructTxRequest.reset();
     try {
-      const { fee: fees } = await this.calculateFeeRequest.execute({ walletId })
-        .promise;
+      const {
+        coinSelection,
+        fee: fees,
+      } = await this.constructTxRequest.execute({
+        walletId: wallet.id,
+        data: { vote: chosenOption },
+      }).promise;
+
+      if (wallet.isHardwareWallet) {
+        this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+        this.stores.hardwareWallets.initiateTransaction({
+          walletId: wallet.id,
+        });
+      }
 
       return {
         success: true,
@@ -243,7 +265,7 @@ export default class VotingStore extends Store {
 
       return {
         success: false,
-        error: 'Could not calculate fee. Please try again!',
+        error: 'Could not initialize transaction. Please try again!',
       };
     }
   };

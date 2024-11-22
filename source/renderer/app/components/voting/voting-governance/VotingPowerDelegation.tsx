@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -18,12 +18,13 @@ import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBe
 import { Separator } from '../../widgets/separator/Separator';
 
 type Props = {
-  getFee: (params: {
-    walletId: string;
+  getStakePoolById: (...args: Array<any>) => any;
+  initiateTransaction: (params: {
+    chosenOption: string;
+    wallet: Wallet;
   }) => Promise<
     { success: true; fees: BigNumber } | { success: false; error: string }
   >;
-  getStakePoolById: (...args: Array<any>) => any;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
   stakePools: Array<StakePool>;
@@ -47,13 +48,17 @@ type FormData = {
 };
 
 type Form = Omit<FormData, 'selectedWallet'> & {
-  feeError?: string;
   selectedWallet: Wallet | null;
   status: 'form';
 };
 
+type FormWithError = Omit<FormData, 'status'> & {
+  txInitError: string;
+  status: 'form-with-error';
+};
+
 type StateFormComplete = FormData & {
-  status: 'form-submitted' | 'form-awaiting-fee';
+  status: 'form-submitted' | 'form-initiating-tx';
 };
 
 type StateConfirmation = Omit<FormData, 'fee'> & {
@@ -61,9 +66,9 @@ type StateConfirmation = Omit<FormData, 'fee'> & {
   status: 'confirmation';
 };
 
-type State = Form | StateFormComplete | StateConfirmation;
+type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
-type VoteType = 'abstain' | 'noConfidence' | 'drep';
+type VoteType = 'abstain' | 'no_confidence' | 'drep';
 
 // TODO discuss if we need to restrict the length
 const isDrepIdValid = (drepId: string) => {
@@ -77,8 +82,8 @@ const isDrepIdValid = (drepId: string) => {
 };
 
 function VotingPowerDelegation({
-  getFee,
   getStakePoolById,
+  initiateTransaction,
   intl,
   onExternalLinkClick,
   renderConfirmationDialog,
@@ -95,25 +100,16 @@ function VotingPowerDelegation({
     },
   });
 
-  const drepInputIsValid = useMemo<boolean>(
-    () =>
-      state.drepInputState.dirty
-        ? isDrepIdValid(state.drepInputState.value)
-        : true,
-    [state.drepInputState.dirty, state.drepInputState.value]
-  );
+  const drepInputIsValid = isDrepIdValid(state.drepInputState.value);
 
   const formIsValid =
     !!state.selectedWallet &&
-    (state.selectedVoteType === 'drep'
-      ? state.drepInputState.dirty &&
-        state.drepInputState.value &&
-        drepInputIsValid
-      : true);
+    (state.selectedVoteType === 'drep' ? drepInputIsValid : true);
 
   const submitButtonDisabled =
-    !formIsValid &&
-    (state.status === 'form-submitted' || state.status === 'form-awaiting-fee');
+    !formIsValid ||
+    state.status === 'form-submitted' ||
+    state.status === 'form-initiating-tx';
 
   const voteTypes: { value: VoteType; label: string }[] = [
     {
@@ -121,7 +117,7 @@ function VotingPowerDelegation({
       label: intl.formatMessage(messages.abstain),
     },
     {
-      value: 'noConfidence',
+      value: 'no_confidence',
       label: intl.formatMessage(messages.noConfidence),
     },
     {
@@ -130,14 +126,19 @@ function VotingPowerDelegation({
     },
   ];
 
+  const chosenOption = state.drepInputState.value || state.selectedVoteType;
+
   useEffect(() => {
     (async () => {
       if (state.status !== 'form-submitted') return;
       setState({
         ...state,
-        status: 'form-awaiting-fee',
+        status: 'form-initiating-tx',
       });
-      const result = await getFee({ walletId: state.selectedWallet.id });
+      const result = await initiateTransaction({
+        chosenOption,
+        wallet: state.selectedWallet,
+      });
 
       if (result.success === true) {
         setState({
@@ -148,12 +149,12 @@ function VotingPowerDelegation({
       } else {
         setState({
           ...state,
-          feeError: result.error,
-          status: 'form',
+          txInitError: result.error,
+          status: 'form-with-error',
         });
       }
     })();
-  }, [getFee, state]);
+  }, [initiateTransaction, state]);
 
   return (
     <>
@@ -187,7 +188,11 @@ function VotingPowerDelegation({
             wallets={wallets}
             onChange={(walletId: string) => {
               const selectedWallet = wallets.find((w) => w.id === walletId);
-              setState({ ...state, selectedWallet });
+              setState({
+                ...state,
+                selectedWallet,
+                status: 'form',
+              });
             }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
             value={state.selectedWallet?.id || null}
@@ -200,7 +205,11 @@ function VotingPowerDelegation({
               label={intl.formatMessage(messages.selectVotingTypeLabel)}
               options={voteTypes}
               handleChange={(option) =>
-                setState({ ...state, selectedVoteType: option.value })
+                setState({
+                  ...state,
+                  selectedVoteType: option.value,
+                  status: 'form',
+                })
               }
               value={state.selectedVoteType}
             />
@@ -216,6 +225,7 @@ function VotingPowerDelegation({
                     dirty: true,
                     value,
                   },
+                  status: 'form',
                 });
               }}
               spellCheck={false}
@@ -236,9 +246,9 @@ function VotingPowerDelegation({
               }
               placeholder={intl.formatMessage(messages.drepInputPlaceholder)}
               error={
-                drepInputIsValid
-                  ? undefined
-                  : intl.formatMessage(messages.drepInputError)
+                state.drepInputState.dirty && !drepInputIsValid
+                  ? intl.formatMessage(messages.drepInputError)
+                  : undefined
               }
             />
           )}
@@ -254,16 +264,14 @@ function VotingPowerDelegation({
             }}
           />
 
-          {state.status === 'form' && state.feeError && (
-            <h5 className={styles.heading} style={{ color: 'red' }}>
-              {state.feeError}
-            </h5>
+          {state.status === 'form-with-error' && (
+            <p className={styles.generalError}>{state.txInitError}</p>
           )}
         </BorderedBox>
       </div>
       {state.status === 'confirmation' &&
         renderConfirmationDialog({
-          chosenOption: state.drepInputState.value || state.selectedVoteType,
+          chosenOption,
           fees: state.fees,
           onClose: () => {
             setState({

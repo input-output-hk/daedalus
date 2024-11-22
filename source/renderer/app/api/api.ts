@@ -34,7 +34,10 @@ import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHisto
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
-import { selectCoins } from './transactions/requests/selectCoins';
+import {
+  selectCoins,
+  SelectCoinsResponseType,
+} from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
@@ -149,6 +152,7 @@ import {
   GetWithdrawalsResponse,
   VotingMetadataType,
   ICOPublicKeyParams,
+  ConstructTransactionData,
 } from './transactions/types';
 // Wallets Types
 import {
@@ -231,6 +235,117 @@ import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 import { AssetLocalData } from '../types/localDataTypes';
 import { handleNotEnoughMoneyError } from './errors';
+import { constructTransaction } from './transactions/requests/constructTransaction';
+
+const parseCoinSelectionResponse = ({
+  delegation,
+  coinSelectionResponse: response,
+}: {
+  delegation?: CoinSelectionsDelegationRequestType;
+  coinSelectionResponse: SelectCoinsResponseType;
+}) => {
+  // @TODO - handle CHANGE parameter on smarter way and change corresponding downstream logic
+  const outputs = concat(response.outputs, response.change);
+  // Calculate fee from inputs and outputs
+  const inputsData = [];
+  const outputsData = [];
+  const certificatesData = [];
+  let totalInputs = new BigNumber(0);
+  let totalOutputs = new BigNumber(0);
+  map(response.inputs, (input) => {
+    const inputAmount = new BigNumber(input.amount.quantity.toString());
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
+    const inputAssets = map(input.assets, (asset) => ({
+      policyId: asset.policy_id,
+      assetName: asset.asset_name,
+      quantity: asset.quantity,
+    }));
+    totalInputs = totalInputs.plus(inputAmount);
+    const inputData = {
+      address: input.address,
+      amount: input.amount,
+      id: input.id,
+      index: input.index,
+      derivationPath: input.derivation_path,
+      assets: inputAssets,
+    };
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
+    inputsData.push(inputData);
+  });
+  map(outputs, (output) => {
+    const outputAmount = new BigNumber(output.amount.quantity.toString());
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
+    const outputAssets = map(output.assets, (asset) => ({
+      policyId: asset.policy_id,
+      assetName: asset.asset_name,
+      quantity: asset.quantity,
+    }));
+    totalOutputs = totalOutputs.plus(outputAmount);
+    const outputData = {
+      address: output.address,
+      amount: output.amount,
+      derivationPath: output.derivation_path || null,
+      assets: outputAssets,
+    };
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
+    outputsData.push(outputData);
+  });
+
+  if (response.certificates) {
+    map(response.certificates, (certificate) => {
+      const certificateData = {
+        certificateType: certificate.certificate_type,
+        rewardAccountPath: certificate.reward_account_path,
+        pool: certificate.pool || null,
+      };
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
+      certificatesData.push(certificateData);
+    });
+  }
+
+  const withdrawalsData = map(response.withdrawals, (withdrawal) => ({
+    stakeAddress: withdrawal.stake_address,
+    derivationPath: withdrawal.derivation_path,
+    amount: withdrawal.amount,
+  }));
+  const depositsArray = map(response.deposits_taken, (deposit) =>
+    deposit.quantity.toString()
+  );
+  const deposits = depositsArray.length
+    ? BigNumber.sum.apply(null, depositsArray)
+    : new BigNumber(0);
+  // @TODO - Use API response
+  // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
+  const depositsReclaimed =
+    delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
+      ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
+      : new BigNumber(0);
+  const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
+    withdrawal.amount.quantity.toString()
+  );
+  const withdrawals = withdrawalsArray.length
+    ? BigNumber.sum.apply(null, withdrawalsArray)
+    : new BigNumber(0);
+
+  if (withdrawals) {
+    totalOutputs = totalOutputs.minus(withdrawals);
+  }
+
+  const fee =
+    delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
+      ? totalInputs.minus(totalOutputs).plus(depositsReclaimed)
+      : totalInputs.minus(totalOutputs).minus(deposits);
+  return {
+    inputs: inputsData,
+    outputs: outputsData,
+    certificates: certificatesData,
+    withdrawals: withdrawals.gt(0) ? withdrawalsData : [],
+    fee: fee.dividedBy(LOVELACES_PER_ADA),
+    deposits: deposits.dividedBy(LOVELACES_PER_ADA),
+    depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
+    metadata: response.metadata || null,
+  };
+};
 
 export default class AdaApi {
   config: RequestConfig;
@@ -1123,111 +1238,16 @@ export default class AdaApi {
         throw new Error('Missing parameters!');
       }
 
-      const response = await selectCoins(this.config, {
+      const coinSelectionResponse = await selectCoins(this.config, {
         walletId,
         data,
       });
-      // @TODO - handle CHANGE parameter on smarter way and change corresponding downstream logic
-      const outputs = concat(response.outputs, response.change);
-      // Calculate fee from inputs and outputs
-      const inputsData = [];
-      const outputsData = [];
-      const certificatesData = [];
-      let totalInputs = new BigNumber(0);
-      let totalOutputs = new BigNumber(0);
-      map(response.inputs, (input) => {
-        const inputAmount = new BigNumber(input.amount.quantity.toString());
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
-        const inputAssets = map(input.assets, (asset) => ({
-          policyId: asset.policy_id,
-          assetName: asset.asset_name,
-          quantity: asset.quantity,
-        }));
-        totalInputs = totalInputs.plus(inputAmount);
-        const inputData = {
-          address: input.address,
-          amount: input.amount,
-          id: input.id,
-          index: input.index,
-          derivationPath: input.derivation_path,
-          assets: inputAssets,
-        };
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
-        inputsData.push(inputData);
-      });
-      map(outputs, (output) => {
-        const outputAmount = new BigNumber(output.amount.quantity.toString());
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'assets' does not exist on type 'unknown'... Remove this comment to see the full error message
-        const outputAssets = map(output.assets, (asset) => ({
-          policyId: asset.policy_id,
-          assetName: asset.asset_name,
-          quantity: asset.quantity,
-        }));
-        totalOutputs = totalOutputs.plus(outputAmount);
-        const outputData = {
-          address: output.address,
-          amount: output.amount,
-          derivationPath: output.derivation_path || null,
-          assets: outputAssets,
-        };
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
-        outputsData.push(outputData);
+
+      const extendedResponse = parseCoinSelectionResponse({
+        delegation,
+        coinSelectionResponse,
       });
 
-      if (response.certificates) {
-        map(response.certificates, (certificate) => {
-          const certificateData = {
-            certificateType: certificate.certificate_type,
-            rewardAccountPath: certificate.reward_account_path,
-            pool: certificate.pool || null,
-          };
-          // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
-          certificatesData.push(certificateData);
-        });
-      }
-
-      const withdrawalsData = map(response.withdrawals, (withdrawal) => ({
-        stakeAddress: withdrawal.stake_address,
-        derivationPath: withdrawal.derivation_path,
-        amount: withdrawal.amount,
-      }));
-      const depositsArray = map(response.deposits_taken, (deposit) =>
-        deposit.quantity.toString()
-      );
-      const deposits = depositsArray.length
-        ? BigNumber.sum.apply(null, depositsArray)
-        : new BigNumber(0);
-      // @TODO - Use API response
-      // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
-      const depositsReclaimed =
-        delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
-          ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
-          : new BigNumber(0);
-      const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
-        withdrawal.amount.quantity.toString()
-      );
-      const withdrawals = withdrawalsArray.length
-        ? BigNumber.sum.apply(null, withdrawalsArray)
-        : new BigNumber(0);
-
-      if (withdrawals) {
-        totalOutputs = totalOutputs.minus(withdrawals);
-      }
-
-      const fee =
-        delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
-          ? totalInputs.minus(totalOutputs).plus(depositsReclaimed)
-          : totalInputs.minus(totalOutputs).minus(deposits);
-      const extendedResponse = {
-        inputs: inputsData,
-        outputs: outputsData,
-        certificates: certificatesData,
-        withdrawals: withdrawals.gt(0) ? withdrawalsData : [],
-        fee: fee.dividedBy(LOVELACES_PER_ADA),
-        deposits: deposits.dividedBy(LOVELACES_PER_ADA),
-        depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
-        metadata: response.metadata || null,
-      };
       logger.debug('AdaApi::selectCoins success', {
         extendedResponse,
       });
@@ -1244,6 +1264,40 @@ export default class AdaApi {
       });
     }
   };
+
+  constructTransaction = async (params: ConstructTransactionData) => {
+    logger.debug('AdaApi::delegateVotes called', {
+      parameters: filterLogData(params),
+    });
+
+    try {
+      const {
+        coin_selection,
+        fee: { quantity },
+      } = await constructTransaction(this.config, params);
+
+      const result = {
+        coinSelection: parseCoinSelectionResponse({
+          coinSelectionResponse: coin_selection,
+        }),
+        fee: new BigNumber(quantity.toString()).dividedBy(LOVELACES_PER_ADA),
+      };
+
+      logger.debug('AdaApi::constructTransaction success', {
+        result,
+      });
+
+      return result;
+    } catch (error) {
+      logger.debug('AdaApi::constructTransaction error', {
+        error,
+      });
+      console.log('!DEBUG', error);
+
+      throw new ApiError(error);
+    }
+  };
+
   createExternalTransaction = async (
     request: CreateExternalTransactionRequest
   ): Promise<CreateExternalTransactionResponse> => {

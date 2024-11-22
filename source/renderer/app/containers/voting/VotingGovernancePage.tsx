@@ -15,12 +15,18 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    const { wallets, staking, app, voting } = this.props.stores;
+    const {
+      wallets,
+      staking,
+      app,
+      voting,
+      hardwareWallets,
+    } = this.props.stores;
     const { openExternalLink } = app;
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
-        getFee={voting.calculateVotesDelegationFee}
+        initiateTransaction={voting.initializeTx}
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}
@@ -33,7 +39,12 @@ class VotingGovernancePage extends Component<Props> {
           <VotingPowerDelegationConfirmationDialog
             chosenOption={chosenOption}
             fees={fees}
+            hwDeviceStatus={hardwareWallets.hwDeviceStatus}
+            isTrezor={hardwareWallets.checkIsTrezorByWalletId(
+              selectedWallet.id
+            )}
             onClose={onClose}
+            onExternalLinkClick={openExternalLink}
             onSubmit={(passphrase) =>
               voting.delegateVotes({
                 chosenOption,

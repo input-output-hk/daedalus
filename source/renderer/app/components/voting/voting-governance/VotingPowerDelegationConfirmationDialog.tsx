@@ -5,7 +5,9 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { formattedWalletAmount } from '../../../utils/formatters';
-import Wallet from '../../../domains/Wallet';
+import Wallet, { HwDeviceStatus } from '../../../domains/Wallet';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
+import styles from './VotingPowerDelegationConfirmationDialog.scss';
 
 export type VotingPowerDelegationConfirmationDialogState =
   | {
@@ -22,7 +24,10 @@ export type VotingPowerDelegationConfirmationDialogState =
 type VotingPowerDelegationConfirmationDialogProps = {
   chosenOption: string;
   fees: BigNumber;
+  hwDeviceStatus: HwDeviceStatus;
+  isTrezor: boolean;
   onClose: () => void;
+  onExternalLinkClick: (...args: Array<any>) => any;
   onSubmit: (
     passphrase?: string
   ) => Promise<{ success: true } | { success: false; error: string }>;
@@ -32,7 +37,10 @@ type VotingPowerDelegationConfirmationDialogProps = {
 export function VotingPowerDelegationConfirmationDialog({
   chosenOption,
   fees,
+  hwDeviceStatus,
+  isTrezor,
   onClose,
+  onExternalLinkClick,
   onSubmit,
   selectedWallet,
 }: VotingPowerDelegationConfirmationDialogProps) {
@@ -90,38 +98,39 @@ export function VotingPowerDelegationConfirmationDialog({
       onClose={onClose}
       closeButton={<DialogCloseButton onClose={onClose} />}
     >
-      <h4>Vote</h4>
-      <br />
-      {chosenOption}
-      <br />
-      <br />
+      <div className={styles.content}>
+        <p className={styles.paragraphTitle}>Vote</p>
+        <p className={styles.paragraphValue}>{chosenOption}</p>
 
-      <h4>Average fees</h4>
-      <br />
-      {formattedWalletAmount(fees, false)}
-      <br />
-      <br />
+        <p className={styles.paragraphTitle}>Transaction fee</p>
+        <p className={styles.paragraphValue}>{formattedWalletAmount(fees)}</p>
 
-      {selectedWallet.isHardwareWallet ? (
-        <div>{'TODO <HardwareWalletStatus />'}</div>
-      ) : (
-        <Input
-          value={state.status === 'awaiting' ? state.passphrase : ''}
-          onChange={(passphrase) => {
-            if (state.status !== 'awaiting') return;
-            setState({
-              ...state,
-              passphrase,
-            });
-          }}
-          disabled={state.status !== 'awaiting'}
-          type={'password'}
-          label={'Type your password'}
-          skin={InputSkin}
-        />
-      )}
+        {selectedWallet.isHardwareWallet ? (
+          <HardwareWalletStatus
+            hwDeviceStatus={hwDeviceStatus}
+            walletName={selectedWallet.name}
+            isTrezor={isTrezor}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        ) : (
+          <Input
+            value={state.status === 'awaiting' ? state.passphrase : ''}
+            onChange={(passphrase) => {
+              if (state.status !== 'awaiting') return;
+              setState({
+                ...state,
+                passphrase,
+              });
+            }}
+            disabled={state.status !== 'awaiting'}
+            type={'password'}
+            label={'Spending password'}
+            skin={InputSkin}
+          />
+        )}
 
-      {'error' in state && <h5>{state.error}</h5>}
+        {'error' in state && <p className={styles.error}>{state.error}</p>}
+      </div>
     </Dialog>
   );
 }

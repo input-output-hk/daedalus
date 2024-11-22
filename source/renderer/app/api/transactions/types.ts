@@ -5,6 +5,7 @@ import type { DelegationAction } from '../../types/stakingTypes';
 import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
 import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
+import { SelectCoinsResponseType } from './requests/selectCoins';
 
 export type TransactionAmount = {
   quantity: number;
@@ -284,4 +285,21 @@ export type VotingDataType = {
   index: string;
   metadata: VotingMetadataType;
   nonce: number;
+};
+
+export type ConstructTransactionData = {
+  walletId: string;
+  data: {
+    // 'abstain' | 'no_confidence' | dRepId
+    vote?: string;
+  };
+};
+
+export type ConstructTransactionResponse = {
+  fee: {
+    quantity: number;
+    unit: WalletUnits.LOVELACE;
+  };
+  coin_selection: SelectCoinsResponseType;
+  transaction: string;
 };
