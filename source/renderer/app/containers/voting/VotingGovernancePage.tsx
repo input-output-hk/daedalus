@@ -15,10 +15,12 @@ class VotingGovernancePage extends Component<Props> {
 
   render() {
     const { wallets, staking, app } = this.props.stores;
+    const { voting } = this.props.actions;
     const { openExternalLink } = app;
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
+        onSubmit={(params) => voting.delegateVotes.trigger(params)}
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}

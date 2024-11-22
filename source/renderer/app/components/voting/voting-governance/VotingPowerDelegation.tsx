@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
 
+import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
@@ -14,11 +15,14 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
+import { VotingPowerDelegationConfirmationDialog } from './VotingPowerDelegationConfirmationDialog';
+import type { DelegateVotesParams } from '../../../api/voting/types';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
+  onSubmit: (params: DelegateVotesParams) => void;
   stakePools: Array<StakePool>;
   wallets: Array<Wallet>;
 };
@@ -40,9 +44,13 @@ function VotingPowerDelegation({
   getStakePoolById,
   intl,
   onExternalLinkClick,
+  onSubmit,
   wallets,
   stakePools,
 }: Props) {
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(
+    false
+  );
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [selectedVoteType, setSelectedVoteType] = useState<VoteType>('drep');
   const [drepInputState, setDrepInputState] = useState({
@@ -73,97 +81,107 @@ function VotingPowerDelegation({
     },
   ];
   return (
-    <div className={styles.component}>
-      <BorderedBox>
-        <h1 className={styles.heading}>
-          {intl.formatMessage(messages.heading)}
-        </h1>
-        <div className={styles.info}>
-          <p>
-            <FormattedHTMLMessageWithLink
-              message={{
-                ...messages.paragraph1,
-                values: {
-                  linkLabel: messages.learnMoreLinkLabel,
-                  linkURL: messages.paragraph1LinkUrl,
-                },
-              }}
-              onExternalLinkClick={onExternalLinkClick}
+    <>
+      <div className={styles.component}>
+        <BorderedBox>
+          <h1 className={styles.heading}>
+            {intl.formatMessage(messages.heading)}
+          </h1>
+          <div className={styles.info}>
+            <p>
+              <FormattedHTMLMessageWithLink
+                message={{
+                  ...messages.paragraph1,
+                  values: {
+                    linkLabel: messages.learnMoreLinkLabel,
+                    linkURL: messages.paragraph1LinkUrl,
+                  },
+                }}
+                onExternalLinkClick={onExternalLinkClick}
+              />
+            </p>
+          </div>
+
+          <WalletsDropdown
+            className={styles.walletSelect}
+            // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
+            label={'Select a wallet to delegate from'}
+            numberOfStakePools={stakePools.length}
+            wallets={wallets}
+            onChange={(walletId: string) => setSelectedWalletId(walletId)}
+            placeholder={'Select a wallet …'}
+            value={selectedWalletId}
+            getStakePoolById={getStakePoolById}
+          />
+
+          {selectedWalletId && (
+            <ItemsDropdown
+              className={styles.voteTypeSelect}
+              label={'Select voting registration type'}
+              placeholder={'Select delegation option'}
+              options={voteTypes}
+              handleChange={(option) => setSelectedVoteType(option.value)}
+              value={selectedVoteType}
             />
-          </p>
-        </div>
+          )}
 
-        <WalletsDropdown
-          className={styles.walletSelect}
-          // @ts-ignore ts-migrate(2322) FIXME: Type '{ className: any; label: any; numberOfStakeP... Remove this comment to see the full error message
-          label={'Select a wallet to delegate from'}
-          numberOfStakePools={stakePools.length}
-          wallets={wallets}
-          onChange={(walletId: string) => setSelectedWalletId(walletId)}
-          placeholder={'Select a wallet …'}
-          value={selectedWalletId}
-          getStakePoolById={getStakePoolById}
-        />
-
-        {selectedWalletId && (
-          <ItemsDropdown
-            className={styles.voteTypeSelect}
-            label={'Select voting registration type'}
-            placeholder={'Select delegation option'}
-            options={voteTypes}
-            handleChange={(option) => setSelectedVoteType(option.value)}
-            value={selectedVoteType}
+          {selectedWalletId && selectedVoteType === 'drep' && (
+            <Input
+              className={styles.drepInput}
+              onChange={(value) => {
+                setDrepInputState({
+                  blurred: false,
+                  value,
+                });
+              }}
+              onBlur={() => {
+                setDrepInputState((prevState) => ({
+                  ...prevState,
+                  blurred: true,
+                }));
+              }}
+              spellCheck={false}
+              value={drepInputState.value}
+              label={
+                <div>
+                  Please type or paste a valid DRep ID here. Look up{' '}
+                  <a
+                    onClick={() =>
+                      onExternalLinkClick('https://www.1694.io/en/dreps/list')
+                    }
+                  >
+                    DRep directory
+                  </a>
+                </div>
+              }
+              placeholder={'Paste DRep ID here.'}
+              error={drepInputIsValid ? undefined : 'Invalid DRep ID'}
+            />
+          )}
+          <Button
+            label={'Submit'}
+            className={styles.voteSubmit}
+            disabled={!formIsValid}
+            onClick={() => setConfirmationDialogVisible(true)}
           />
-        )}
-
-        {selectedWalletId && selectedVoteType === 'drep' && (
-          <Input
-            className={styles.drepInput}
-            onChange={(value) => {
-              setDrepInputState({
-                blurred: false,
-                value,
-              });
-            }}
-            onBlur={() => {
-              setDrepInputState((prevState) => ({
-                ...prevState,
-                blurred: true,
-              }));
-            }}
-            spellCheck={false}
-            value={drepInputState.value}
-            label={
-              <div>
-                Please type or paste a valid DRep ID here. Look up{' '}
-                <a
-                  onClick={() =>
-                    onExternalLinkClick('https://www.1694.io/en/dreps/list')
-                  }
-                >
-                  DRep directory
-                </a>
-              </div>
-            }
-            placeholder={'Paste DRep ID here.'}
-            error={drepInputIsValid ? undefined : 'Invalid DRep ID'}
-          />
-        )}
-        <Button
-          label={'Submit'}
-          className={styles.voteSubmit}
-          disabled={!formIsValid}
-          onClick={() =>
-            console.log('Submitting: ', {
-              voteType: selectedVoteType,
-              ...(selectedVoteType === 'drep'
-                ? { drepId: drepInputState.value }
-                : {}),
+        </BorderedBox>
+      </div>
+      {confirmationDialogVisible && (
+        <VotingPowerDelegationConfirmationDialog
+          fees={new BigNumber('1')}
+          onClose={() => setConfirmationDialogVisible(false)}
+          onConfirm={(passphrase) =>
+            onSubmit({
+              walletId: selectedWalletId,
+              passphrase,
+              dRepId: drepInputState.value || selectedVoteType,
             })
           }
+          selectedWallet={wallets.find((w) => w.id === selectedWalletId)}
+          vote={drepInputState.value || selectedVoteType}
         />
-      </BorderedBox>
-    </div>
+      )}
+    </>
   );
 }
 
