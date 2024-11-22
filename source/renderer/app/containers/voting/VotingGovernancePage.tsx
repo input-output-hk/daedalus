@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingPowerDelegation from '../../components/voting/voting-governance/VotingPowerDelegation';
 import { VotingPowerDelegationConfirmationDialog } from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
+import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
 
@@ -52,6 +53,14 @@ class VotingGovernancePage extends Component<Props> {
                 wallet: selectedWallet,
               })
             }
+            redirectToWallet={(id) => {
+              this.props.actions.router.goToRoute.trigger({
+                route: ROUTES.WALLETS.SUMMARY,
+                params: {
+                  id,
+                },
+              });
+            }}
             selectedWallet={selectedWallet}
           />
         )}

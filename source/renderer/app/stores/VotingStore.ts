@@ -289,9 +289,6 @@ export default class VotingStore extends Store {
         passphrase,
         walletId: wallet.id,
       }).promise;
-      await this.actions.router.goToRoute.trigger({
-        route: ROUTES.WALLETS.SUMMARY,
-      });
 
       return {
         success: true,

@@ -31,6 +31,7 @@ type VotingPowerDelegationConfirmationDialogProps = {
   onSubmit: (
     passphrase?: string
   ) => Promise<{ success: true } | { success: false; error: string }>;
+  redirectToWallet: (walletId: string) => void;
   selectedWallet: Wallet;
 };
 
@@ -42,6 +43,7 @@ export function VotingPowerDelegationConfirmationDialog({
   onClose,
   onExternalLinkClick,
   onSubmit,
+  redirectToWallet,
   selectedWallet,
 }: VotingPowerDelegationConfirmationDialogProps) {
   const [state, setState] = useState<
@@ -63,15 +65,18 @@ export function VotingPowerDelegationConfirmationDialog({
 
       const result = await onSubmit(passphrase);
 
-      if (result.success === false) {
-        setState({
-          ...state,
-          error: result.error,
-          status: 'awaiting',
-        });
+      if (result.success === true) {
+        redirectToWallet(selectedWallet.id);
+        return;
       }
+
+      setState({
+        ...state,
+        error: result.error,
+        status: 'awaiting',
+      });
     })();
-  }, [onSubmit, state]);
+  }, [onSubmit, redirectToWallet, state]);
 
   return (
     <Dialog
@@ -114,6 +119,7 @@ export function VotingPowerDelegationConfirmationDialog({
           />
         ) : (
           <Input
+            autoFocus
             value={state.status === 'awaiting' ? state.passphrase : ''}
             onChange={(passphrase) => {
               if (state.status !== 'awaiting') return;
