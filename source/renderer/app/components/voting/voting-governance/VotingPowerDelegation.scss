@@ -1,11 +1,6 @@
 @import '../votingConfig';
 @import '../../../themes/mixins/error-message.scss';
 
-.generalError {
-  @include error-message;
-  margin-top: 28px;
-}
-
 .component {
   flex: 1 0 0;
   padding: 20px;
@@ -57,10 +52,19 @@
   }
 }
 
+.generalError {
+  @include error-message;
+}
+
 .voteTypeSelect,
 .drepInput,
-.voteSubmit {
+.generalError {
   margin-top: 40px;
+}
+
+.generalError,
+.voteSubmit {
+  margin-top: 28px;
 }
 
 .voteSubmit {

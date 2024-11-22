@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingPowerDelegation from '../../components/voting/voting-governance/VotingPowerDelegation';
-import { VotingPowerDelegationConfirmationDialog } from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
+import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
@@ -27,7 +27,7 @@ class VotingGovernancePage extends Component<Props> {
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
-        initiateTransaction={voting.initializeTx}
+        initiateTransaction={voting.initializeVPDelegationTx}
         wallets={wallets.all}
         stakePools={staking.stakePools}
         getStakePoolById={staking.getStakePoolById}

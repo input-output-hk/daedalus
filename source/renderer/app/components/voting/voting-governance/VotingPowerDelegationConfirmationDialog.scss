@@ -16,5 +16,6 @@
 }
 
 .error {
+  margin-top: 24px;
   @include error-message;
 }

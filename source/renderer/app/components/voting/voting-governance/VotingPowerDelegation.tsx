@@ -16,6 +16,7 @@ import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 import { Separator } from '../../widgets/separator/Separator';
+import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -23,7 +24,8 @@ type Props = {
     chosenOption: string;
     wallet: Wallet;
   }) => Promise<
-    { success: true; fees: BigNumber } | { success: false; error: string }
+    | { success: true; fees: BigNumber }
+    | { success: false; errorCode: InitializeVPDelegationTxError }
   >;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
@@ -53,7 +55,7 @@ type Form = Omit<FormData, 'selectedWallet'> & {
 };
 
 type FormWithError = Omit<FormData, 'status'> & {
-  txInitError: string;
+  txInitError: InitializeVPDelegationTxError;
   status: 'form-with-error';
 };
 
@@ -79,6 +81,14 @@ const isDrepIdValid = (drepId: string) => {
   }
 
   return true;
+};
+
+const mapOfTxErrorCodeToIntl: Record<
+  InitializeVPDelegationTxError,
+  typeof messages[keyof typeof messages]
+> = {
+  generic: messages.initializeTxErrorGeneric,
+  same_vote: messages.initializeTxErrorSameVote,
 };
 
 function VotingPowerDelegation({
@@ -109,6 +119,7 @@ function VotingPowerDelegation({
   const submitButtonDisabled =
     !formIsValid ||
     state.status === 'form-submitted' ||
+    state.status === 'form-with-error' ||
     state.status === 'form-initiating-tx';
 
   const voteTypes: { value: VoteType; label: string }[] = [
@@ -149,12 +160,12 @@ function VotingPowerDelegation({
       } else {
         setState({
           ...state,
-          txInitError: result.error,
+          txInitError: result.errorCode,
           status: 'form-with-error',
         });
       }
     })();
-  }, [initiateTransaction, state]);
+  }, [initiateTransaction, intl, state]);
 
   return (
     <>
@@ -252,6 +263,13 @@ function VotingPowerDelegation({
               }
             />
           )}
+
+          {state.status === 'form-with-error' && (
+            <p className={styles.generalError}>
+              {intl.formatMessage(mapOfTxErrorCodeToIntl[state.txInitError])}
+            </p>
+          )}
+
           <Button
             label={intl.formatMessage(messages.submitLabel)}
             className={styles.voteSubmit}
@@ -263,10 +281,6 @@ function VotingPowerDelegation({
               });
             }}
           />
-
-          {state.status === 'form-with-error' && (
-            <p className={styles.generalError}>{state.txInitError}</p>
-          )}
         </BorderedBox>
       </div>
       {state.status === 'confirmation' &&

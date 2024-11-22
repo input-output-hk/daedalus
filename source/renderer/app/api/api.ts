@@ -1292,7 +1292,6 @@ export default class AdaApi {
       logger.debug('AdaApi::constructTransaction error', {
         error,
       });
-      console.log('!DEBUG', error);
 
       throw new ApiError(error);
     }

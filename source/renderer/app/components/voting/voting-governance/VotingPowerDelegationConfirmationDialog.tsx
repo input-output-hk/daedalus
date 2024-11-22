@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
+import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import Dialog from '../../widgets/Dialog';
@@ -8,10 +9,21 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet, { HwDeviceStatus } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import styles from './VotingPowerDelegationConfirmationDialog.scss';
+import { DelegateVotesError } from '../../../stores/VotingStore';
+import type { Intl } from '../../../types/i18nTypes';
+import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
+
+const mapOfTxErrorCodeToIntl: Record<
+  DelegateVotesError,
+  typeof messages[keyof typeof messages]
+> = {
+  generic: messages.errorGeneric,
+  wrong_encryption_passphrase: messages.errorPassword,
+};
 
 export type VotingPowerDelegationConfirmationDialogState =
   | {
-      error?: string;
+      error?: DelegateVotesError;
       passphrase: string;
       status: 'awaiting';
     }
@@ -25,20 +37,24 @@ type VotingPowerDelegationConfirmationDialogProps = {
   chosenOption: string;
   fees: BigNumber;
   hwDeviceStatus: HwDeviceStatus;
+  intl: Intl;
   isTrezor: boolean;
   onClose: () => void;
   onExternalLinkClick: (...args: Array<any>) => any;
   onSubmit: (
     passphrase?: string
-  ) => Promise<{ success: true } | { success: false; error: string }>;
+  ) => Promise<
+    { success: true } | { success: false; errorCode: DelegateVotesError }
+  >;
   redirectToWallet: (walletId: string) => void;
   selectedWallet: Wallet;
 };
 
-export function VotingPowerDelegationConfirmationDialog({
+function VotingPowerDelegationConfirmationDialog({
   chosenOption,
   fees,
   hwDeviceStatus,
+  intl,
   isTrezor,
   onClose,
   onExternalLinkClick,
@@ -72,23 +88,23 @@ export function VotingPowerDelegationConfirmationDialog({
 
       setState({
         ...state,
-        error: result.error,
+        error: result.errorCode,
         status: 'awaiting',
       });
     })();
-  }, [onSubmit, redirectToWallet, state]);
+  }, [intl, onSubmit, redirectToWallet, state]);
 
   return (
     <Dialog
       title={'Confirm transaction'}
       actions={[
         {
-          label: 'Cancel',
+          label: intl.formatMessage(messages.buttonCancel),
           onClick: onClose,
           disabled: state.status === 'submitting',
         },
         {
-          label: 'Confirm',
+          label: intl.formatMessage(messages.buttonConfirm),
           onClick: () => {
             if (state.status !== 'awaiting' || !state.passphrase) return;
             setState({
@@ -104,10 +120,14 @@ export function VotingPowerDelegationConfirmationDialog({
       closeButton={<DialogCloseButton onClose={onClose} />}
     >
       <div className={styles.content}>
-        <p className={styles.paragraphTitle}>Vote</p>
+        <p className={styles.paragraphTitle}>
+          {intl.formatMessage(messages.vote)}
+        </p>
         <p className={styles.paragraphValue}>{chosenOption}</p>
 
-        <p className={styles.paragraphTitle}>Transaction fee</p>
+        <p className={styles.paragraphTitle}>
+          {intl.formatMessage(messages.fee)}
+        </p>
         <p className={styles.paragraphValue}>{formattedWalletAmount(fees)}</p>
 
         {selectedWallet.isHardwareWallet ? (
@@ -130,13 +150,19 @@ export function VotingPowerDelegationConfirmationDialog({
             }}
             disabled={state.status !== 'awaiting'}
             type={'password'}
-            label={'Spending password'}
+            label={intl.formatMessage(messages.password)}
             skin={InputSkin}
           />
         )}
 
-        {'error' in state && <p className={styles.error}>{state.error}</p>}
+        {'error' in state && (
+          <p className={styles.error}>
+            {intl.formatMessage(mapOfTxErrorCodeToIntl[state.error])}
+          </p>
+        )}
       </div>
     </Dialog>
   );
 }
+
+export default injectIntl(VotingPowerDelegationConfirmationDialog);

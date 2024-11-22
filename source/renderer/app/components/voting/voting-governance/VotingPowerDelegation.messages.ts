@@ -77,4 +77,14 @@ export const messages = defineMessages({
     defaultMessage: '!!!Submit',
     description: 'Label for the submit button on the governance page',
   },
+  initializeTxErrorGeneric: {
+    id: 'voting.governance.initializeTxError.generic',
+    defaultMessage: '!!!Could not initialize transaction. Please try again!',
+    description: 'Generic error for initialize transaction',
+  },
+  initializeTxErrorSameVote: {
+    id: 'voting.governance.initializeTxError.sameVote',
+    defaultMessage: '!!!Chosen same value as previously',
+    description: 'Chosen same value as previously',
+  },
 });

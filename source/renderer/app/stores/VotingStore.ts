@@ -29,6 +29,8 @@ import type { CatalystFund } from '../api/voting/types';
 import { EventCategories } from '../analytics';
 import type { DelegationCalculateFeeResponse } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
+import { logger } from '../utils/logging';
+import ApiError from '../domains/ApiError';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -50,6 +52,37 @@ export enum FundPhase {
   TALLYING = 'tallying',
   RESULTS = 'results',
 }
+
+type GenericErrorCode = 'generic';
+
+export type InitializeVPDelegationTxError =
+  | GenericErrorCode
+  | typeof expectedInitializeVPDelegationTxErrors[number];
+export const expectedInitializeVPDelegationTxErrors = ['same_vote'] as const;
+
+export type DelegateVotesError =
+  | GenericErrorCode
+  | typeof expectedDelegateVotesErrors[number];
+export const expectedDelegateVotesErrors = [
+  'wrong_encryption_passphrase',
+] as const;
+
+const parseApiCode = <ErrorCode extends string>(
+  expectedCodes: readonly ErrorCode[],
+  error: any
+): ErrorCode | GenericErrorCode => {
+  const isExpectedError = (
+    expectedCodes: readonly ErrorCode[],
+    errorCode: string
+  ): errorCode is ErrorCode => expectedCodes.includes(errorCode as ErrorCode);
+
+  if (error instanceof ApiError && isExpectedError(expectedCodes, error.code)) {
+    return error.code;
+  }
+
+  return 'generic';
+};
+
 export default class VotingStore extends Store {
   @observable
   registrationStep = 1;
@@ -232,7 +265,7 @@ export default class VotingStore extends Store {
     this.qrCode = value;
   };
 
-  initializeTx = async ({
+  initializeVPDelegationTx = async ({
     chosenOption,
     wallet,
   }: {
@@ -260,12 +293,10 @@ export default class VotingStore extends Store {
         success: true,
         fees,
       };
-    } catch (e) {
-      console.error(e);
-
+    } catch (error) {
       return {
         success: false,
-        error: 'Could not initialize transaction. Please try again!',
+        errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
       };
     }
   };
@@ -293,12 +324,10 @@ export default class VotingStore extends Store {
       return {
         success: true,
       };
-    } catch (e) {
-      console.error(e);
-
+    } catch (error) {
       return {
         success: false,
-        error: 'Could not delegate. Something went wrong!',
+        errorCode: parseApiCode(expectedDelegateVotesErrors, error),
       };
     }
   };
