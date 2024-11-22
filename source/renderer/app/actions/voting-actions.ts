@@ -1,4 +1,5 @@
 import Action from './lib/Action';
+import { DelegateVotesParams } from '../api/voting/types';
 
 export default class VotingActions {
   selectWallet: Action<string> = new Action();
@@ -6,6 +7,7 @@ export default class VotingActions {
     amount: number;
     passphrase: string | null | undefined;
   }> = new Action();
+  delegateVotes: Action<DelegateVotesParams> = new Action();
   generateQrCode: Action<number> = new Action();
   saveAsPDF: Action<any> = new Action();
   saveAsPDFSuccess: Action<any> = new Action();

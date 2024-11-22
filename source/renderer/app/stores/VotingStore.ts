@@ -24,7 +24,7 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
-import type { CatalystFund } from '../api/voting/types';
+import type { CatalystFund, DelegateVotesParams } from '../api/voting/types';
 import { EventCategories } from '../analytics';
 
 export type VotingRegistrationKeyType = {
@@ -79,6 +79,7 @@ export default class VotingStore extends Store {
     const { voting: votingActions } = this.actions;
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
+    votingActions.delegateVotes.listen(this._delegateVotes);
     votingActions.generateQrCode.listen(this._generateQrCode);
     votingActions.saveAsPDF.listen(this._saveAsPDF);
     votingActions.nextRegistrationStep.listen(this._nextRegistrationStep);
@@ -116,6 +117,8 @@ export default class VotingStore extends Store {
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
   );
+  @observable
+  delegateVotes: Request<Buffer> = new Request(this.api.ada.delegateVotes);
   @observable
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
     this.api.ada.getTransaction
@@ -296,6 +299,11 @@ export default class VotingStore extends Store {
     } catch (e) {
       throw e;
     }
+  };
+  _delegateVotes = async (params: DelegateVotesParams) => {
+    this.delegateVotes.reset();
+    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+    const transaction = await this.delegateVotes.execute(params);
   };
   _sendTransaction = async ({
     amount,

@@ -40,6 +40,7 @@ import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
+import { delegateVotes } from './voting/requests/delegateVotes';
 import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -207,6 +208,7 @@ import type {
   CreateWalletSignatureRequest,
   GetCatalystFundResponse,
   CatalystFund,
+  DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -2747,6 +2749,28 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+
+  delegateVotes = async (params: DelegateVotesParams) => {
+    logger.debug('AdaApi::delegateVotes called', {
+      parameters: filterLogData(params),
+    });
+
+    try {
+      const response = await delegateVotes(this.config, params);
+      logger.debug('AdaApi::delegateVotes success', {
+        response,
+      });
+
+      return response;
+    } catch (error) {
+      logger.debug('AdaApi::delegateVotes error', {
+        error,
+      });
+
+      throw new ApiError(error);
+    }
+  };
+
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
