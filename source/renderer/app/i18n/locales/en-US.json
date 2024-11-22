@@ -733,6 +733,7 @@
   "voting.governance.drepInputPlaceholder": "Paste DRep ID here …",
   "voting.governance.heading": "CARDANO VOTING POWER DELEGATION",
   "voting.governance.initializeTxError.generic": "Something went wrong during transaction initialization. Please try again in a few minutes. ",
+  "voting.governance.initializeTxError.notEnoughMoney": "This wallet does not contain the minimum required amount of 1 ADA. The wallet might still be syncing. Please choose another wallet to vote.",
   "voting.governance.initializeTxError.sameVote": "This voting power delegation choice has already been successfully recorded in a previous transaction. Please change the registration type or DRep ID in order to proceed.",
   "voting.governance.learnMoreLinkLabel": "Cardano Governance.",
   "voting.governance.noConfidence": "No Confidence",

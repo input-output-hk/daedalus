@@ -733,6 +733,7 @@
   "voting.governance.drepInputPlaceholder": "!!!Paste DRep ID here …",
   "voting.governance.heading": "!!!CARDANO VOTING POWER DELEGATION",
   "voting.governance.initializeTxError.generic": "!!!Could not initialize transaction. Please try again!",
+  "voting.governance.initializeTxError.notEnoughMoney": "!!!Not enough funds",
   "voting.governance.initializeTxError.sameVote": "!!!Chosen same value as previously",
   "voting.governance.learnMoreLinkLabel": "!!!Governance link label",
   "voting.governance.noConfidence": "!!!No Confidence",

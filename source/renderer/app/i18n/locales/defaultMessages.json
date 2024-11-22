@@ -4470,6 +4470,11 @@
         "defaultMessage": "!!!Chosen same value as previously",
         "description": "Chosen same value as previously",
         "id": "voting.governance.initializeTxError.sameVote"
+      },
+      {
+        "defaultMessage": "!!!Not enough funds",
+        "description": "Governance voting error when wallet has not enough funds",
+        "id": "voting.governance.initializeTxError.notEnoughMoney"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"

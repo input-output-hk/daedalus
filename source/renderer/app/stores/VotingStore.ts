@@ -58,7 +58,11 @@ type GenericErrorCode = 'generic';
 export type InitializeVPDelegationTxError =
   | GenericErrorCode
   | typeof expectedInitializeVPDelegationTxErrors[number];
-export const expectedInitializeVPDelegationTxErrors = ['same_vote'] as const;
+export const expectedInitializeVPDelegationTxErrors = [
+  'same_vote',
+  'no_utxos_available',
+  'not_enough_money',
+] as const;
 
 export type DelegateVotesError =
   | GenericErrorCode

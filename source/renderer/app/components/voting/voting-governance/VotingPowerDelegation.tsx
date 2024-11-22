@@ -89,6 +89,8 @@ const mapOfTxErrorCodeToIntl: Record<
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,
+  no_utxos_available: messages.initializeNotEnoughMoney,
+  not_enough_money: messages.initializeNotEnoughMoney,
 };
 
 function VotingPowerDelegation({

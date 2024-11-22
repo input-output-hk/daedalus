@@ -87,4 +87,9 @@ export const messages = defineMessages({
     defaultMessage: '!!!Chosen same value as previously',
     description: 'Chosen same value as previously',
   },
+  initializeNotEnoughMoney: {
+    id: 'voting.governance.initializeTxError.notEnoughMoney',
+    defaultMessage: '!!!Not enough funds',
+    description: 'Governance voting error when wallet has not enough funds',
+  },
 });
