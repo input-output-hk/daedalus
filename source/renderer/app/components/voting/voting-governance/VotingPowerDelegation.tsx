@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -15,18 +15,53 @@ import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
-import { VotingPowerDelegationConfirmationDialog } from './VotingPowerDelegationConfirmationDialog';
-import type { DelegateVotesParams } from '../../../api/voting/types';
 import { Separator } from '../../widgets/separator/Separator';
 
 type Props = {
+  getFee: (params: {
+    walletId: string;
+  }) => Promise<
+    { success: true; fees: BigNumber } | { success: false; error: string }
+  >;
   getStakePoolById: (...args: Array<any>) => any;
   intl: Intl;
   onExternalLinkClick: (...args: Array<any>) => any;
-  onSubmit: (params: DelegateVotesParams) => void;
   stakePools: Array<StakePool>;
   wallets: Array<Wallet>;
+  renderConfirmationDialog: (params: {
+    chosenOption: string;
+    fees: BigNumber;
+    onClose: () => void;
+    selectedWallet: Wallet;
+  }) => React.ReactElement;
 };
+
+type FormData = {
+  selectedWallet: Wallet;
+  selectedVoteType: VoteType;
+  drepInputState: {
+    dirty: boolean;
+    value: string;
+  };
+  fees?: BigNumber;
+};
+
+type Form = Omit<FormData, 'selectedWallet'> & {
+  feeError?: string;
+  selectedWallet: Wallet | null;
+  status: 'form';
+};
+
+type StateFormComplete = FormData & {
+  status: 'form-submitted' | 'form-awaiting-fee';
+};
+
+type StateConfirmation = Omit<FormData, 'fee'> & {
+  fees: BigNumber;
+  status: 'confirmation';
+};
+
+type State = Form | StateFormComplete | StateConfirmation;
 
 type VoteType = 'abstain' | 'noConfidence' | 'drep';
 
@@ -42,31 +77,44 @@ const isDrepIdValid = (drepId: string) => {
 };
 
 function VotingPowerDelegation({
+  getFee,
   getStakePoolById,
   intl,
   onExternalLinkClick,
-  onSubmit,
+  renderConfirmationDialog,
   wallets,
   stakePools,
 }: Props) {
-  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(
-    false
-  );
-  const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
-  const [selectedVoteType, setSelectedVoteType] = useState<VoteType>('drep');
-  const [drepInputState, setDrepInputState] = useState({
-    dirty: false,
-    value: '',
+  const [state, setState] = useState<State>({
+    status: 'form',
+    selectedWallet: null,
+    selectedVoteType: 'drep',
+    drepInputState: {
+      dirty: false,
+      value: '',
+    },
   });
+
   const drepInputIsValid = useMemo<boolean>(
-    () => (drepInputState.dirty ? isDrepIdValid(drepInputState.value) : true),
-    [drepInputState.dirty, drepInputState.value]
+    () =>
+      state.drepInputState.dirty
+        ? isDrepIdValid(state.drepInputState.value)
+        : true,
+    [state.drepInputState.dirty, state.drepInputState.value]
   );
+
   const formIsValid =
-    !!selectedWalletId &&
-    (selectedVoteType === 'drep'
-      ? drepInputState.dirty && drepInputState.value && drepInputIsValid
+    !!state.selectedWallet &&
+    (state.selectedVoteType === 'drep'
+      ? state.drepInputState.dirty &&
+        state.drepInputState.value &&
+        drepInputIsValid
       : true);
+
+  const submitButtonDisabled =
+    !formIsValid &&
+    (state.status === 'form-submitted' || state.status === 'form-awaiting-fee');
+
   const voteTypes: { value: VoteType; label: string }[] = [
     {
       value: 'abstain',
@@ -81,6 +129,32 @@ function VotingPowerDelegation({
       label: intl.formatMessage(messages.delegateToDRep),
     },
   ];
+
+  useEffect(() => {
+    (async () => {
+      if (state.status !== 'form-submitted') return;
+      setState({
+        ...state,
+        status: 'form-awaiting-fee',
+      });
+      const result = await getFee({ walletId: state.selectedWallet.id });
+
+      if (result.success === true) {
+        setState({
+          ...state,
+          fees: result.fees,
+          status: 'confirmation',
+        });
+      } else {
+        setState({
+          ...state,
+          feeError: result.error,
+          status: 'form',
+        });
+      }
+    })();
+  }, [getFee, state]);
+
   return (
     <>
       <div className={styles.component}>
@@ -111,33 +185,41 @@ function VotingPowerDelegation({
             label={intl.formatMessage(messages.selectWalletLabel)}
             numberOfStakePools={stakePools.length}
             wallets={wallets}
-            onChange={(walletId: string) => setSelectedWalletId(walletId)}
+            onChange={(walletId: string) => {
+              const selectedWallet = wallets.find((w) => w.id === walletId);
+              setState({ ...state, selectedWallet });
+            }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
-            value={selectedWalletId}
+            value={state.selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
           />
 
-          {selectedWalletId && (
+          {state.selectedWallet && (
             <ItemsDropdown
               className={styles.voteTypeSelect}
               label={intl.formatMessage(messages.selectVotingTypeLabel)}
               options={voteTypes}
-              handleChange={(option) => setSelectedVoteType(option.value)}
-              value={selectedVoteType}
+              handleChange={(option) =>
+                setState({ ...state, selectedVoteType: option.value })
+              }
+              value={state.selectedVoteType}
             />
           )}
 
-          {selectedWalletId && selectedVoteType === 'drep' && (
+          {state.selectedWallet && state.selectedVoteType === 'drep' && (
             <Input
               className={styles.drepInput}
               onChange={(value) => {
-                setDrepInputState({
-                  dirty: true,
-                  value,
+                setState({
+                  ...state,
+                  drepInputState: {
+                    dirty: true,
+                    value,
+                  },
                 });
               }}
               spellCheck={false}
-              value={drepInputState.value}
+              value={state.drepInputState.value}
               label={
                 <div>
                   {intl.formatMessage(messages.drepInputLabel)}{' '}
@@ -163,26 +245,34 @@ function VotingPowerDelegation({
           <Button
             label={intl.formatMessage(messages.submitLabel)}
             className={styles.voteSubmit}
-            disabled={!formIsValid}
-            onClick={() => setConfirmationDialogVisible(true)}
+            disabled={submitButtonDisabled}
+            onClick={() => {
+              setState({
+                ...state,
+                status: 'form-submitted',
+              });
+            }}
           />
+
+          {state.status === 'form' && state.feeError && (
+            <h5 className={styles.heading} style={{ color: 'red' }}>
+              {state.feeError}
+            </h5>
+          )}
         </BorderedBox>
       </div>
-      {confirmationDialogVisible && (
-        <VotingPowerDelegationConfirmationDialog
-          fees={new BigNumber('1')}
-          onClose={() => setConfirmationDialogVisible(false)}
-          onConfirm={(passphrase) =>
-            onSubmit({
-              walletId: selectedWalletId,
-              passphrase,
-              dRepId: drepInputState.value || selectedVoteType,
-            })
-          }
-          selectedWallet={wallets.find((w) => w.id === selectedWalletId)}
-          vote={drepInputState.value || selectedVoteType}
-        />
-      )}
+      {state.status === 'confirmation' &&
+        renderConfirmationDialog({
+          chosenOption: state.drepInputState.value || state.selectedVoteType,
+          fees: state.fees,
+          onClose: () => {
+            setState({
+              ...state,
+              status: 'form',
+            });
+          },
+          selectedWallet: state.selectedWallet,
+        })}
     </>
   );
 }

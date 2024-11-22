@@ -1,5 +1,6 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -24,8 +25,10 @@ import type {
   GetTransactionRequest,
   VotingMetadataType,
 } from '../api/transactions/types';
-import type { CatalystFund, DelegateVotesParams } from '../api/voting/types';
+import type { CatalystFund } from '../api/voting/types';
 import { EventCategories } from '../analytics';
+import type { DelegationCalculateFeeResponse } from '../api/staking/types';
+import Wallet from '../domains/Wallet';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -70,6 +73,11 @@ export default class VotingStore extends Store {
   fundPhase?: FundPhase;
   @observable
   catalystFund: CatalystFund;
+  @observable
+  votesDelegationFeeResult:
+    | null
+    | { success: true; fee: BigNumber }
+    | { success: false; error: string };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
@@ -79,7 +87,6 @@ export default class VotingStore extends Store {
     const { voting: votingActions } = this.actions;
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
-    votingActions.delegateVotes.listen(this._delegateVotes);
     votingActions.generateQrCode.listen(this._generateQrCode);
     votingActions.saveAsPDF.listen(this._saveAsPDF);
     votingActions.nextRegistrationStep.listen(this._nextRegistrationStep);
@@ -118,7 +125,13 @@ export default class VotingStore extends Store {
     this.api.ada.createWalletSignature
   );
   @observable
-  delegateVotes: Request<Buffer> = new Request(this.api.ada.delegateVotes);
+  delegateVotesRequest: Request<Buffer> = new Request(
+    this.api.ada.delegateVotes
+  );
+  @observable
+  calculateFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
+    this.api.ada.calculateDelegationFee
+  );
   @observable
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
     this.api.ada.getTransaction
@@ -214,6 +227,63 @@ export default class VotingStore extends Store {
   _setQrCode = (value: string | null | undefined) => {
     this.qrCode = value;
   };
+
+  calculateVotesDelegationFee = async ({ walletId }: { walletId: string }) => {
+    this.calculateFeeRequest.reset();
+    try {
+      const { fee: fees } = await this.calculateFeeRequest.execute({ walletId })
+        .promise;
+
+      return {
+        success: true,
+        fees,
+      };
+    } catch (e) {
+      console.error(e);
+
+      return {
+        success: false,
+        error: 'Could not calculate fee. Please try again!',
+      };
+    }
+  };
+
+  delegateVotes = async ({
+    chosenOption,
+    passphrase,
+    wallet,
+  }: {
+    chosenOption: string;
+    passphrase: string;
+    wallet: Wallet;
+  }) => {
+    // TODO: handle HW case
+    if (wallet.isHardwareWallet) return;
+
+    this.delegateVotesRequest.reset();
+    try {
+      await this.delegateVotesRequest.execute({
+        dRepId: chosenOption,
+        passphrase,
+        walletId: wallet.id,
+      }).promise;
+      await this.actions.router.goToRoute.trigger({
+        route: ROUTES.WALLETS.SUMMARY,
+      });
+
+      return {
+        success: true,
+      };
+    } catch (e) {
+      console.error(e);
+
+      return {
+        success: false,
+        error: 'Could not delegate. Something went wrong!',
+      };
+    }
+  };
+
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
@@ -299,11 +369,6 @@ export default class VotingStore extends Store {
     } catch (e) {
       throw e;
     }
-  };
-  _delegateVotes = async (params: DelegateVotesParams) => {
-    this.delegateVotes.reset();
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-    const transaction = await this.delegateVotes.execute(params);
   };
   _sendTransaction = async ({
     amount,
