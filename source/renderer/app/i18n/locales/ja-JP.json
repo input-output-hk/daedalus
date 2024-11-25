@@ -722,7 +722,6 @@
   "voting.governance.confirmationDialog.button.cancel": "キャンセル",
   "voting.governance.confirmationDialog.button.confirm": "確認",
   "voting.governance.confirmationDialog.error.generic": "!!!Something went wrong during transaction submission. Please try again in a few minutes.",
-  "voting.governance.confirmationDialog.error.password": "!!!Wrong password, please try again",
   "voting.governance.confirmationDialog.fee": "平均手数料",
   "voting.governance.confirmationDialog.password": "パスワードを入力してください",
   "voting.governance.confirmationDialog.title": "トランザクションの確認",

@@ -4527,11 +4527,6 @@
         "id": "voting.governance.confirmationDialog.error.generic"
       },
       {
-        "defaultMessage": "!!!Wrong password, please try again",
-        "description": "Wrong password error message",
-        "id": "voting.governance.confirmationDialog.error.password"
-      },
-      {
         "defaultMessage": "!!!Cancel",
         "description": "Cancel button",
         "id": "voting.governance.confirmationDialog.button.cancel"

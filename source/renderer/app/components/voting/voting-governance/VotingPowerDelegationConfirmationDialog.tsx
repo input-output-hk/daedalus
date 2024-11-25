@@ -12,13 +12,14 @@ import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
+import globalMessages from '../../../i18n/global-messages';
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
   typeof messages[keyof typeof messages]
 > = {
   generic: messages.errorGeneric,
-  wrong_encryption_passphrase: messages.errorPassword,
+  wrong_encryption_passphrase: globalMessages.invalidSpendingPassword,
 };
 
 export type VotingPowerDelegationConfirmationDialogState =

@@ -27,11 +27,6 @@ export const messages = defineMessages({
       '!!!Something went wrong during transaction submission. Please try again in a few minutes.',
     description: 'Generic error message',
   },
-  errorPassword: {
-    id: 'voting.governance.confirmationDialog.error.password',
-    defaultMessage: '!!!Wrong password, please try again',
-    description: 'Wrong password error message',
-  },
   buttonCancel: {
     id: 'voting.governance.confirmationDialog.button.cancel',
     defaultMessage: '!!!Cancel',
