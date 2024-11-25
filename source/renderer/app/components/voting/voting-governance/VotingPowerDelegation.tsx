@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
 
@@ -9,7 +9,6 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
 import type { Intl } from '../../../types/i18nTypes';
-import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
@@ -178,15 +177,23 @@ function VotingPowerDelegation({
           </h1>
           <div className={styles.info}>
             <p>
-              <FormattedHTMLMessageWithLink
-                message={{
-                  ...messages.paragraph1,
-                  values: {
-                    linkLabel: messages.learnMoreLinkLabel,
-                    linkURL: messages.paragraph1LinkUrl,
-                  },
+              <FormattedMessage
+                {...messages.paragraph1}
+                values={{
+                  Link: (
+                    <a
+                      href={intl.formatMessage(messages.paragraph1LinkUrl)}
+                      onClick={(event) =>
+                        onExternalLinkClick(
+                          intl.formatMessage(messages.paragraph1LinkUrl),
+                          event
+                        )
+                      }
+                    >
+                      {intl.formatMessage(messages.paragraph1LinkText)}
+                    </a>
+                  ),
                 }}
-                onExternalLinkClick={onExternalLinkClick}
               />
             </p>
           </div>
@@ -244,18 +251,26 @@ function VotingPowerDelegation({
               spellCheck={false}
               value={state.drepInputState.value}
               label={
-                <div>
-                  {intl.formatMessage(messages.drepInputLabel)}{' '}
-                  <a
-                    href="#"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      onExternalLinkClick('https://www.1694.io/en/dreps/list');
-                    }}
-                  >
-                    {intl.formatMessage(messages.drepInputLabelLink)}
-                  </a>
-                </div>
+                <FormattedMessage
+                  {...messages.drepInputLabel}
+                  values={{
+                    drepDirectoryLink: (
+                      <a
+                        href={intl.formatMessage(
+                          messages.drepInputLabelLinkUrl
+                        )}
+                        onClick={(event) =>
+                          onExternalLinkClick(
+                            intl.formatMessage(messages.drepInputLabelLinkUrl),
+                            event
+                          )
+                        }
+                      >
+                        {intl.formatMessage(messages.drepInputLabelLinkText)}
+                      </a>
+                    ),
+                  }}
+                />
               }
               placeholder={intl.formatMessage(messages.drepInputPlaceholder)}
               error={

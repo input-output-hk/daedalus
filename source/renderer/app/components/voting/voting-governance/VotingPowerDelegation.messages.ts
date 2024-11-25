@@ -13,13 +13,19 @@ export const messages = defineMessages({
   },
   drepInputLabel: {
     id: 'voting.governance.drepInputLabel',
-    defaultMessage: '!!!Please type or paste a valid DRep ID here. Look up',
+    defaultMessage:
+      '!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}',
     description: 'Label for DRep input on the governance page',
   },
-  drepInputLabelLink: {
-    id: 'voting.governance.drepInputLabelLink',
+  drepInputLabelLinkText: {
+    id: 'voting.governance.drepInputLabelLinkText',
     defaultMessage: '!!!DRep directory',
-    description: 'Label link for DRep input on the governance page',
+    description: 'Label link text for DRep input on the governance page',
+  },
+  drepInputLabelLinkUrl: {
+    id: 'voting.governance.drepInputLabelLinkUrl',
+    defaultMessage: 'https://www.1694.io/en/dreps/list',
+    description: 'Label link url for DRep input on the governance page',
   },
   drepInputError: {
     id: 'voting.governance.drepInputError',
@@ -36,11 +42,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!CARDANO VOTING POWER DELEGATION',
     description: 'Headline for Governance',
   },
-  learnMoreLinkLabel: {
-    id: 'voting.governance.learnMoreLinkLabel',
-    defaultMessage: '!!!Governance link label',
-    description: 'Link labels for governance page',
-  },
   noConfidence: {
     id: 'voting.governance.noConfidence',
     defaultMessage: '!!!No Confidence',
@@ -55,6 +56,11 @@ export const messages = defineMessages({
     id: 'voting.governance.paragraph1LinkUrl',
     defaultMessage: '!!!Governance first paragraph link url',
     description: 'First paragraph link for governance page',
+  },
+  paragraph1LinkText: {
+    id: 'voting.governance.paragraph1LinkText',
+    defaultMessage: '!!!Governance link label',
+    description: 'Link labels for governance page',
   },
   selectWalletLabel: {
     id: 'voting.governance.selectWalletLabel',

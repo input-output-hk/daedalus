@@ -1,6 +1,11 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
+  title: {
+    id: 'voting.governance.confirmationDialog.title',
+    defaultMessage: '!!!Confirm Transaction',
+    description: 'Title for confirm dialog',
+  },
   vote: {
     id: 'voting.governance.confirmationDialog.vote',
     defaultMessage: '!!!Vote',

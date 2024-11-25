@@ -96,7 +96,7 @@ function VotingPowerDelegationConfirmationDialog({
 
   return (
     <Dialog
-      title={'Confirm transaction'}
+      title={intl.formatMessage(messages.title)}
       actions={[
         {
           label: intl.formatMessage(messages.buttonCancel),

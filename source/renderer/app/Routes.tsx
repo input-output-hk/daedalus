@@ -36,7 +36,7 @@ import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import TrackedRoute from './analytics/TrackedRoute';
-import { Voting } from './containers/voting/Voting';
+import Voting from './containers/voting/Voting';
 import VotingGovernancePage from './containers/voting/VotingGovernancePage';
 
 export const Routes = withRouter(() => (

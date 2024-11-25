@@ -2247,6 +2247,21 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Catalyst Voting",
+        "description": "Label for the catalyst voting tab.",
+        "id": "voting.tabs.catalyst"
+      },
+      {
+        "defaultMessage": "!!!Governance",
+        "description": "Label for the governance voting tab.",
+        "id": "voting.tabs.governance"
+      }
+    ],
+    "path": "source/renderer/app/containers/voting/Voting.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Address",
         "description": "\"Address\" word in the Address PDF export",
         "id": "wallet.receive.pdf.filenamePrefix"
@@ -4397,14 +4412,19 @@
         "id": "voting.governance.delegateToDRep"
       },
       {
-        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up",
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}",
         "description": "Label for DRep input on the governance page",
         "id": "voting.governance.drepInputLabel"
       },
       {
         "defaultMessage": "!!!DRep directory",
-        "description": "Label link for DRep input on the governance page",
-        "id": "voting.governance.drepInputLabelLink"
+        "description": "Label link text for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkText"
+      },
+      {
+        "defaultMessage": "https://www.1694.io/en/dreps/list",
+        "description": "Label link url for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkUrl"
       },
       {
         "defaultMessage": "!!!Invalid DRep ID",
@@ -4422,11 +4442,6 @@
         "id": "voting.governance.heading"
       },
       {
-        "defaultMessage": "!!!Governance link label",
-        "description": "Link labels for governance page",
-        "id": "voting.governance.learnMoreLinkLabel"
-      },
-      {
         "defaultMessage": "!!!No Confidence",
         "description": "Translation for the \"no confidence\" governance vote type",
         "id": "voting.governance.noConfidence"
@@ -4440,6 +4455,11 @@
         "defaultMessage": "!!!Governance first paragraph link url",
         "description": "First paragraph link for governance page",
         "id": "voting.governance.paragraph1LinkUrl"
+      },
+      {
+        "defaultMessage": "!!!Governance link label",
+        "description": "Link labels for governance page",
+        "id": "voting.governance.paragraph1LinkText"
       },
       {
         "defaultMessage": "!!!Select a wallet to delegate from",
@@ -4481,6 +4501,11 @@
   },
   {
     "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm Transaction",
+        "description": "Title for confirm dialog",
+        "id": "voting.governance.confirmationDialog.title"
+      },
       {
         "defaultMessage": "!!!Vote",
         "description": "Vote title",
