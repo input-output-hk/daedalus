@@ -1,16 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
-  abstain: {
-    id: 'voting.governance.abstain',
-    defaultMessage: '!!!Abstain',
-    description: 'Translation for the "abstain" governance vote type',
-  },
-  delegateToDRep: {
-    id: 'voting.governance.delegateToDRep',
-    defaultMessage: '!!!Delegate to DRep',
-    description: 'Translation for the "delegate to DRep" governance vote type',
-  },
   drepInputLabel: {
     id: 'voting.governance.drepInputLabel',
     defaultMessage:
@@ -41,11 +31,6 @@ export const messages = defineMessages({
     id: 'voting.governance.heading',
     defaultMessage: '!!!CARDANO VOTING POWER DELEGATION',
     description: 'Headline for Governance',
-  },
-  noConfidence: {
-    id: 'voting.governance.noConfidence',
-    defaultMessage: '!!!No Confidence',
-    description: 'Translation for the "no confidence" governance vote type',
   },
   paragraph1: {
     id: 'voting.governance.paragraph1',

@@ -16,6 +16,8 @@ import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
 import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
+import { VoteType } from './types';
+import { sharedGovernanceMessages } from './shared-messages';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
@@ -68,8 +70,6 @@ type StateConfirmation = Omit<FormData, 'fee'> & {
 };
 
 type State = Form | FormWithError | StateFormComplete | StateConfirmation;
-
-type VoteType = 'abstain' | 'no_confidence' | 'drep';
 
 // TODO discuss if we need to restrict the length
 const isDrepIdValid = (drepId: string) => {
@@ -126,15 +126,15 @@ function VotingPowerDelegation({
   const voteTypes: { value: VoteType; label: string }[] = [
     {
       value: 'abstain',
-      label: intl.formatMessage(messages.abstain),
+      label: intl.formatMessage(sharedGovernanceMessages.abstain),
     },
     {
       value: 'no_confidence',
-      label: intl.formatMessage(messages.noConfidence),
+      label: intl.formatMessage(sharedGovernanceMessages.noConfidence),
     },
     {
       value: 'drep',
-      label: intl.formatMessage(messages.delegateToDRep),
+      label: intl.formatMessage(sharedGovernanceMessages.delegateToDRep),
     },
   ];
 

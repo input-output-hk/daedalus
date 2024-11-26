@@ -4402,16 +4402,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Abstain",
-        "description": "Translation for the \"abstain\" governance vote type",
-        "id": "voting.governance.abstain"
-      },
-      {
-        "defaultMessage": "!!!Delegate to DRep",
-        "description": "Translation for the \"delegate to DRep\" governance vote type",
-        "id": "voting.governance.delegateToDRep"
-      },
-      {
         "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}",
         "description": "Label for DRep input on the governance page",
         "id": "voting.governance.drepInputLabel"
@@ -4440,11 +4430,6 @@
         "defaultMessage": "!!!CARDANO VOTING POWER DELEGATION",
         "description": "Headline for Governance",
         "id": "voting.governance.heading"
-      },
-      {
-        "defaultMessage": "!!!No Confidence",
-        "description": "Translation for the \"no confidence\" governance vote type",
-        "id": "voting.governance.noConfidence"
       },
       {
         "defaultMessage": "!!!Governance first paragraph",
@@ -4538,6 +4523,26 @@
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Abstain",
+        "description": "Translation for the \"abstain\" governance vote type",
+        "id": "voting.governance.abstain"
+      },
+      {
+        "defaultMessage": "!!!Delegate to DRep",
+        "description": "Translation for the \"delegate to DRep\" governance vote type",
+        "id": "voting.governance.delegateToDRep"
+      },
+      {
+        "defaultMessage": "!!!No Confidence",
+        "description": "Translation for the \"no confidence\" governance vote type",
+        "id": "voting.governance.noConfidence"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/shared-messages.ts"
   },
   {
     "descriptors": [

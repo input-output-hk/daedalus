@@ -13,6 +13,9 @@ import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl } from '../../../types/i18nTypes';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
 import globalMessages from '../../../i18n/global-messages';
+import { ReactIntlMessageShape } from '../../../i18n/types';
+import { VoteType } from './types';
+import { sharedGovernanceMessages } from './shared-messages';
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
@@ -20,6 +23,12 @@ const mapOfTxErrorCodeToIntl: Record<
 > = {
   generic: messages.errorGeneric,
   wrong_encryption_passphrase: globalMessages.invalidSpendingPassword,
+};
+
+const mapVoteToIntlMessage: Record<VoteType, ReactIntlMessageShape> = {
+  abstain: sharedGovernanceMessages.abstain,
+  no_confidence: sharedGovernanceMessages.noConfidence,
+  drep: sharedGovernanceMessages.delegateToDRep,
 };
 
 export type VotingPowerDelegationConfirmationDialogState =
@@ -124,7 +133,9 @@ function VotingPowerDelegationConfirmationDialog({
         <p className={styles.paragraphTitle}>
           {intl.formatMessage(messages.vote)}
         </p>
-        <p className={styles.paragraphValue}>{chosenOption}</p>
+        <p className={styles.paragraphValue}>
+          {intl.formatMessage(mapVoteToIntlMessage[chosenOption])}
+        </p>
 
         <p className={styles.paragraphTitle}>
           {intl.formatMessage(messages.fee)}
