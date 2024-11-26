@@ -110,11 +110,6 @@ export default class VotingStore extends Store {
   fundPhase?: FundPhase;
   @observable
   catalystFund: CatalystFund;
-  @observable
-  votesDelegationFeeResult:
-    | null
-    | { success: true; fee: BigNumber }
-    | { success: false; error: string };
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   transactionPollingInterval: IntervalID | null | undefined = null;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
