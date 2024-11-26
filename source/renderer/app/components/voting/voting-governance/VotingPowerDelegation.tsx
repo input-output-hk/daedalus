@@ -92,6 +92,16 @@ const mapOfTxErrorCodeToIntl: Record<
   not_enough_money: messages.initializeNotEnoughMoney,
 };
 
+const initialState: State = {
+  status: 'form',
+  selectedWallet: null,
+  selectedVoteType: 'drep',
+  drepInputState: {
+    dirty: false,
+    value: '',
+  },
+};
+
 function VotingPowerDelegation({
   getStakePoolById,
   initiateTransaction,
@@ -101,15 +111,7 @@ function VotingPowerDelegation({
   wallets,
   stakePools,
 }: Props) {
-  const [state, setState] = useState<State>({
-    status: 'form',
-    selectedWallet: null,
-    selectedVoteType: 'drep',
-    drepInputState: {
-      dirty: false,
-      value: '',
-    },
-  });
+  const [state, setState] = useState<State>(initialState);
 
   const drepInputIsValid = isDrepIdValid(state.drepInputState.value);
 
@@ -209,9 +211,8 @@ function VotingPowerDelegation({
             onChange={(walletId: string) => {
               const selectedWallet = wallets.find((w) => w.id === walletId);
               setState({
-                ...state,
+                ...initialState,
                 selectedWallet,
-                status: 'form',
               });
             }}
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}

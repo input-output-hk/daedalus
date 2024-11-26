@@ -2238,6 +2238,7 @@ export default class HardwareWalletsStore extends Store {
         pool: certificate.pool,
         // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
         type: CERTIFICATE_TYPE[certificate.certificateType],
+        vote: certificate.vote,
       });
       txCertificates.push(txCertificate);
       return toTrezorCertificate(certificate);
@@ -2556,6 +2557,7 @@ export default class HardwareWalletsStore extends Store {
         pool: certificate.pool,
         // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
         type: CERTIFICATE_TYPE[certificate.certificateType],
+        vote: certificate.vote,
       });
       txCertificates.push(txCertificate);
       return toLedgerCertificate(certificate);

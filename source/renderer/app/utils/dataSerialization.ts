@@ -177,18 +177,36 @@ export const toTxOutputAssets = (assets: CoinSelectionAssetsType) => {
   return policyIdMap;
 };
 
+const parseVoteDelegation = (vote: string): [number] | [number, Buffer] => {
+  if (!vote) throw new Error('Invalid voting power option');
+  if (vote === 'abstain') return [2];
+  if (vote === 'no_confidence') return [3];
+
+  const voteHash = Buffer.from(
+    utils.buf_to_hex(utils.bech32_decodeAddress(vote)),
+    'hex'
+  );
+  return [vote.includes('_script') ? 1 : 0, voteHash];
+};
+
 export function toTxCertificate(cert: {
   type: string;
   accountAddress: string;
   pool: string | null | undefined;
+  vote?: string;
 }) {
-  const { type, accountAddress, pool } = cert;
+  const { type, accountAddress, pool, vote } = cert;
   let hash;
   let poolHash;
+  let drep;
 
   if (pool) {
     poolHash = utils.buf_to_hex(utils.bech32_decodeAddress(pool));
     hash = Buffer.from(poolHash, 'hex');
+  }
+
+  if (vote) {
+    drep = parseVoteDelegation(vote);
   }
 
   function encodeCBOR(encoder: any) {
@@ -200,6 +218,7 @@ export function toTxCertificate(cert: {
       [0]: [type, account],
       [1]: [type, account],
       [2]: [type, account, hash],
+      [9]: [type, account, drep],
     };
     return encoder.pushAny(encodedCertsTypes[type]);
   }
