@@ -14,17 +14,17 @@ import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
-import globalMessages from '../../../i18n/global-messages';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
+import { messages as apiErrorMessage } from '../../../api/errors';
 
 const mapOfTxErrorCodeToIntl: Record<
   DelegateVotesError,
   typeof messages[keyof typeof messages]
 > = {
   generic: messages.errorGeneric,
-  wrong_encryption_passphrase: globalMessages.invalidSpendingPassword,
+  wrong_encryption_passphrase: apiErrorMessage.wrongEncryptionPassphrase,
 };
 
 const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage => {
