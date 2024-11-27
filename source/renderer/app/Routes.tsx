@@ -36,6 +36,8 @@ import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
 import TrackedRoute from './analytics/TrackedRoute';
+import Voting from './containers/voting/Voting';
+import VotingGovernancePage from './containers/voting/VotingGovernancePage';
 
 export const Routes = withRouter(() => (
   <Route path={ROUTES.ROOT}>
@@ -205,11 +207,20 @@ export const Routes = withRouter(() => (
             component={RedeemItnRewardsContainer}
           />
         </Route>
-        <TrackedRoute
-          pageTitle="Voting Registration"
-          path={ROUTES.VOTING.REGISTRATION}
-          component={VotingRegistrationPage}
-        />
+        <Route path={ROUTES.VOTING.ROOT}>
+          <Voting>
+            <TrackedRoute
+              pageTitle="Voting Registration"
+              path={ROUTES.VOTING.REGISTRATION}
+              component={VotingRegistrationPage}
+            />
+            <TrackedRoute
+              pageTitle="Voting Governance"
+              path={ROUTES.VOTING.GOVERNANCE}
+              component={VotingGovernancePage}
+            />
+          </Voting>
+        </Route>
       </Switch>
     </Root>
   </Route>

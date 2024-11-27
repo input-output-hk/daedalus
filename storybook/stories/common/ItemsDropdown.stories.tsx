@@ -136,11 +136,12 @@ storiesOf('Common / ItemsDropdown', module)
             options={options}
             // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             value={store.state.value}
-            onChange={(value) =>
+            handleChange={(value) =>
               store.set({
                 value,
               })
             }
+            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
             hasSearch
             error={boolean('Has error', false) ? 'Error message' : ''}
           />

@@ -1,0 +1,21 @@
+@import '../votingConfig';
+@import '../../../themes/mixins/error-message.scss';
+
+.content {
+  padding-top: 20px;
+}
+
+.paragraphTitle {
+  @extend %accentText;
+  margin-bottom: 12px;
+}
+
+.paragraphValue {
+  @extend %regularText;
+  margin-bottom: 36px;
+}
+
+.error {
+  margin-top: 24px;
+  @include error-message;
+}

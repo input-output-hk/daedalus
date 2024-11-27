@@ -1,0 +1,72 @@
+@import '../votingConfig';
+@import '../../../themes/mixins/error-message.scss';
+
+.component {
+  flex: 1 0 0;
+  padding: 20px;
+}
+
+.heading {
+  @extend %accentText;
+  font-family: var(--font-semibold);
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.info {
+  @extend %regularText;
+  p {
+    display: block;
+    margin-bottom: 1em;
+  }
+}
+
+.walletSelect {
+  margin-top: 20px;
+
+  &.error {
+    input {
+      border-color: var(--theme-color-error);
+    }
+
+    :global {
+      .SimpleSelect_selectInput {
+        &:after {
+          background-color: var(--theme-color-error);
+        }
+      }
+    }
+  }
+
+  :global {
+    .SimpleOptions_option {
+      align-items: center;
+      display: flex;
+      height: 50px;
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+  }
+}
+
+.generalError {
+  @include error-message;
+}
+
+.voteTypeSelect,
+.drepInput,
+.generalError {
+  margin-top: 40px;
+}
+
+.generalError,
+.voteSubmit {
+  margin-top: 28px;
+}
+
+.voteSubmit {
+  width: 100%;
+}

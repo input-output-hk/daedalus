@@ -95,6 +95,11 @@
         "defaultMessage": "!!!Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"
+      },
+      {
+        "defaultMessage": "!!!conwayWalletNotDelegatedToDRep",
+        "description": "Error message shown when conway era wallet has staking rewards but has not participated in governance yet.",
+        "id": "api.errors.conwayWalletNotDelegatedToDRep"
       }
     ],
     "path": "source/renderer/app/api/errors.ts"
@@ -2247,6 +2252,21 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Catalyst Voting",
+        "description": "Label for the catalyst voting tab.",
+        "id": "voting.tabs.catalyst"
+      },
+      {
+        "defaultMessage": "!!!Governance",
+        "description": "Label for the governance voting tab.",
+        "id": "voting.tabs.governance"
+      }
+    ],
+    "path": "source/renderer/app/containers/voting/Voting.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Address",
         "description": "\"Address\" word in the Address PDF export",
         "id": "wallet.receive.pdf.filenamePrefix"
@@ -4387,6 +4407,161 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}",
+        "description": "Label for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabel"
+      },
+      {
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here.",
+        "description": "Label for DRep input on the governance page for preprod",
+        "id": "voting.governance.drepInputLabelPreprod"
+      },
+      {
+        "defaultMessage": "!!!DRep directory",
+        "description": "Label link text for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkText"
+      },
+      {
+        "defaultMessage": "https://gov.tools/drep_directory",
+        "description": "Label link url for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkUrl"
+      },
+      {
+        "defaultMessage": "https://preview.gov.tools/drep_directory",
+        "description": "Label link url for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkUrlPreview"
+      },
+      {
+        "defaultMessage": "!!!Invalid DRep ID",
+        "description": "Error for DRep input on the governance page",
+        "id": "voting.governance.drepInputError"
+      },
+      {
+        "defaultMessage": "!!!Paste DRep ID here …",
+        "description": "Placeholder for DRep input on the governance page",
+        "id": "voting.governance.drepInputPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!CARDANO VOTING POWER DELEGATION",
+        "description": "Headline for Governance",
+        "id": "voting.governance.heading"
+      },
+      {
+        "defaultMessage": "!!!Governance first paragraph",
+        "description": "First paragraph for governance page",
+        "id": "voting.governance.paragraph1"
+      },
+      {
+        "defaultMessage": "!!!Governance first paragraph link url",
+        "description": "First paragraph link for governance page",
+        "id": "voting.governance.paragraph1LinkUrl"
+      },
+      {
+        "defaultMessage": "!!!Governance link label",
+        "description": "Link labels for governance page",
+        "id": "voting.governance.paragraph1LinkText"
+      },
+      {
+        "defaultMessage": "!!!Select a wallet to delegate from",
+        "description": "Label for the wallet select on the governance page",
+        "id": "voting.governance.selectWalletLabel"
+      },
+      {
+        "defaultMessage": "!!!Select a wallet …",
+        "description": "Placeholder for the wallet select on the governance page",
+        "id": "voting.governance.selectWalletPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Select voting registration type",
+        "description": "Label for the registration type select on the governance page",
+        "id": "voting.governance.selectVotingTypeLabel"
+      },
+      {
+        "defaultMessage": "!!!Submit",
+        "description": "Label for the submit button on the governance page",
+        "id": "voting.governance.submitLabel"
+      },
+      {
+        "defaultMessage": "!!!Could not initialize transaction. Please try again!",
+        "description": "Generic error for initialize transaction",
+        "id": "voting.governance.initializeTxError.generic"
+      },
+      {
+        "defaultMessage": "!!!Chosen same value as previously",
+        "description": "Chosen same value as previously",
+        "id": "voting.governance.initializeTxError.sameVote"
+      },
+      {
+        "defaultMessage": "!!!Not enough funds",
+        "description": "Governance voting error when wallet has not enough funds",
+        "id": "voting.governance.initializeTxError.notEnoughMoney"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm Transaction",
+        "description": "Title for confirm dialog",
+        "id": "voting.governance.confirmationDialog.title"
+      },
+      {
+        "defaultMessage": "!!!Vote",
+        "description": "Vote title",
+        "id": "voting.governance.confirmationDialog.vote"
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "description": "Fee title",
+        "id": "voting.governance.confirmationDialog.fee"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for password input",
+        "id": "voting.governance.confirmationDialog.password"
+      },
+      {
+        "defaultMessage": "!!!Something went wrong during transaction submission. Please try again in a few minutes.",
+        "description": "Generic error message",
+        "id": "voting.governance.confirmationDialog.error.generic"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Cancel button",
+        "id": "voting.governance.confirmationDialog.button.cancel"
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Confirm button",
+        "id": "voting.governance.confirmationDialog.button.confirm"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Abstain",
+        "description": "Translation for the \"abstain\" governance vote type",
+        "id": "voting.governance.abstain"
+      },
+      {
+        "defaultMessage": "!!!Delegate to DRep",
+        "description": "Translation for the \"delegate to DRep\" governance vote type",
+        "id": "voting.governance.delegateToDRep"
+      },
+      {
+        "defaultMessage": "!!!No Confidence",
+        "description": "Translation for the \"no confidence\" governance vote type",
+        "id": "voting.governance.noConfidence"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/shared-messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Catalyst API unavailable",
         "description": "Title",
         "id": "voting.apiError.title"
@@ -6475,6 +6650,11 @@
         "defaultMessage": "!!!{transactionsType} received",
         "description": "Label \"{transactionsType} received\" for the transaction.",
         "id": "wallet.transaction.received"
+      },
+      {
+        "defaultMessage": "!!!Voting Power Delegation",
+        "description": "Title for governance voting transactions.",
+        "id": "wallet.transaction.voted"
       },
       {
         "defaultMessage": "!!!From address",

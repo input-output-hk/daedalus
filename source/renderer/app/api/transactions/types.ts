@@ -5,6 +5,7 @@ import type { DelegationAction } from '../../types/stakingTypes';
 import type { ApiTokens } from '../assets/types';
 import type { TransactionMetadata } from '../../types/TransactionMetadata';
 import type { PathRoleIdentityType } from '../../utils/hardwareWalletUtils';
+import { SelectCoinsResponseType } from './requests/selectCoins';
 
 export type TransactionAmount = {
   quantity: number;
@@ -53,6 +54,11 @@ export type Transaction = {
   withdrawals: Array<TransactionWithdrawals>;
   status: TransactionState;
   metadata?: TransactionMetadata;
+  certificates?: Array<{
+    pool?: string;
+    certificate_type: DelegationAction;
+    reward_account_path: Array<string>;
+  }>;
 };
 export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
@@ -78,7 +84,12 @@ export type TransactionAddresses = {
   to: Array<string>;
   withdrawals: Array<string>;
 };
-export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
+export type TransactionType =
+  | 'card'
+  | 'expend'
+  | 'income'
+  | 'exchange'
+  | 'vote';
 // Req / Res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string;
@@ -185,11 +196,13 @@ export type CoinSelectionOutput = {
 export type CertificateType =
   | 'register_reward_account'
   | 'quit_pool'
-  | 'join_pool';
+  | 'join_pool'
+  | 'cast_vote';
 export type CoinSelectionCertificate = {
   pool: string;
   certificateType: CertificateType;
   rewardAccountPath: Array<string>;
+  vote?: string;
 };
 export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
 export type CoinSelectionWithdrawal = {
@@ -284,4 +297,21 @@ export type VotingDataType = {
   index: string;
   metadata: VotingMetadataType;
   nonce: number;
+};
+
+export type ConstructTransactionData = {
+  walletId: string;
+  data: {
+    // 'abstain' | 'no_confidence' | dRepId
+    vote?: string;
+  };
+};
+
+export type ConstructTransactionResponse = {
+  fee: {
+    quantity: number;
+    unit: WalletUnits.LOVELACE;
+  };
+  coin_selection: SelectCoinsResponseType;
+  transaction: string;
 };

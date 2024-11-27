@@ -837,7 +837,12 @@ export default class WalletsStore extends Store {
         : null;
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
+
+    /**
+     * Do not try to catch the request error here, its intended to throw
+     * a localized error created in app/api/api.ts
+     */
+    // @ts-ignore
     await this.sendMoneyRequest.execute({
       address: receiver,
       amount: parseInt(amount, 10),
@@ -847,6 +852,7 @@ export default class WalletsStore extends Store {
       assets: formattedAssets,
       hasAssetsRemainingAfterTransaction,
     });
+    // The following code will not be executed if the request above fails
     this.analytics.sendEvent(
       EventCategories.WALLETS,
       'Transaction made',

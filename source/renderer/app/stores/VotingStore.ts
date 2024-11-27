@@ -1,5 +1,6 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -26,6 +27,11 @@ import type {
 } from '../api/transactions/types';
 import type { CatalystFund } from '../api/voting/types';
 import { EventCategories } from '../analytics';
+import type { DelegationCalculateFeeResponse } from '../api/staking/types';
+import Wallet from '../domains/Wallet';
+import ApiError from '../domains/ApiError';
+import type { DelegationAction } from '../types/stakingTypes';
+import { GenericApiError } from '../api/common/errors';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -47,6 +53,48 @@ export enum FundPhase {
   TALLYING = 'tallying',
   RESULTS = 'results',
 }
+
+type GenericErrorCode = 'generic';
+
+export type InitializeVPDelegationTxError =
+  | GenericErrorCode
+  | typeof expectedInitializeVPDelegationTxErrors[number];
+export const expectedInitializeVPDelegationTxErrors = [
+  'same_vote',
+  'no_utxos_available',
+  'not_enough_money',
+] as const;
+
+export type DelegateVotesError =
+  | GenericErrorCode
+  | typeof expectedDelegateVotesErrors[number];
+export const expectedDelegateVotesErrors = [
+  'wrong_encryption_passphrase',
+] as const;
+
+const parseApiCode = <ErrorCode extends string>(
+  expectedCodes: readonly ErrorCode[],
+  error: any
+): ErrorCode | GenericErrorCode => {
+  const isExpectedError = (
+    expectedCodes: readonly ErrorCode[],
+    errorCode: string
+  ): errorCode is ErrorCode => expectedCodes.includes(errorCode as ErrorCode);
+
+  if (error instanceof ApiError && isExpectedError(expectedCodes, error.code)) {
+    return error.code;
+  }
+
+  if (
+    error instanceof GenericApiError &&
+    isExpectedError(expectedCodes, error.values.code)
+  ) {
+    return error.values.code;
+  }
+
+  return 'generic';
+};
+
 export default class VotingStore extends Store {
   @observable
   registrationStep = 1;
@@ -115,6 +163,18 @@ export default class VotingStore extends Store {
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
+  );
+  @observable
+  delegateVotesRequest: Request<Buffer> = new Request(
+    this.api.ada.delegateVotes
+  );
+  @observable
+  constructTxRequest: Request<
+    ReturnType<typeof this.api.ada.constructTransaction>
+  > = new Request(this.api.ada.constructTransaction);
+  @observable
+  calculateFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
+    this.api.ada.calculateDelegationFee
   );
   @observable
   getTransactionRequest: Request<GetTransactionRequest> = new Request(
@@ -211,6 +271,186 @@ export default class VotingStore extends Store {
   _setQrCode = (value: string | null | undefined) => {
     this.qrCode = value;
   };
+
+  initializeVPDelegationTx = async ({
+    chosenOption,
+    wallet,
+  }: {
+    chosenOption: string;
+    wallet: Wallet;
+  }) => {
+    if (wallet.isHardwareWallet) {
+      const [{ id: stakePoolId }] = this.stores.staking.stakePools;
+      let dlegationData: {
+        delegationAction: DelegationAction;
+        poolId: string;
+      } = {
+        delegationAction: 'join',
+        poolId: stakePoolId,
+      };
+
+      if (wallet.isDelegating) {
+        const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
+        const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
+        dlegationData = {
+          delegationAction: 'quit',
+          poolId,
+        };
+      }
+
+      try {
+        const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
+          {
+            walletId: wallet.id,
+            ...dlegationData,
+          }
+        );
+
+        let certificates: object[] = [
+          {
+            certificateType: 'cast_vote',
+            rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+            vote: chosenOption,
+          },
+        ];
+
+        const walletNeedsRegisteringRewardAccount = initialCoinSelection.certificates.some(
+          (c) => c.certificateType === 'register_reward_account'
+        );
+        if (walletNeedsRegisteringRewardAccount) {
+          certificates = [
+            {
+              certificateType: 'register_reward_account',
+              rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+            },
+            ...certificates,
+          ];
+        }
+
+        const coinSelection = {
+          ...initialCoinSelection,
+          certificates,
+        };
+
+        this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+        this.stores.hardwareWallets.initiateTransaction({
+          walletId: wallet.id,
+        });
+
+        return {
+          success: true,
+          fees: coinSelection.fee,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          errorCode: parseApiCode(
+            expectedInitializeVPDelegationTxErrors,
+            error
+          ),
+        };
+      }
+    }
+
+    this.constructTxRequest.reset();
+    try {
+      const constructedTx = await this.constructTxRequest.execute({
+        walletId: wallet.id,
+        data: { vote: chosenOption },
+      }).promise;
+
+      return {
+        success: true,
+        fees: constructedTx.fee,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
+      };
+    }
+  };
+
+  delegateVotes = async ({
+    chosenOption,
+    passphrase,
+    wallet,
+  }: {
+    chosenOption: string;
+    passphrase: string;
+    wallet: Wallet;
+  }) => {
+    // TODO: handle HW case
+    if (wallet.isHardwareWallet) {
+      try {
+        await this.stores.hardwareWallets._sendMoney({
+          selectedWalletId: wallet.id,
+        });
+
+        await new Promise<void>((resolve) => {
+          const wait = () => {
+            setTimeout(() => {
+              const {
+                sendMoneyRequest,
+                isTransactionPending,
+              } = this.stores.hardwareWallets;
+              if (sendMoneyRequest.isExecuting || isTransactionPending) {
+                wait();
+                return;
+              }
+
+              resolve();
+            }, 2000);
+          };
+
+          wait();
+        });
+
+        this.analytics.sendEvent(
+          EventCategories.VOTING,
+          'Casted governance vote',
+          chosenOption, // 'abstain' | 'no_confidence' | 'drep'
+          wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+        );
+
+        return {
+          success: true,
+        };
+      } catch (error) {
+        const errorCode: GenericErrorCode = 'generic';
+        return {
+          success: false,
+          errorCode,
+        };
+      }
+    }
+
+    this.delegateVotesRequest.reset();
+    try {
+      await this.delegateVotesRequest.execute({
+        dRepId: chosenOption,
+        passphrase,
+        walletId: wallet.id,
+      }).promise;
+
+      this.analytics.sendEvent(
+        EventCategories.VOTING,
+        'Casted governance vote',
+        chosenOption, // 'abstain' | 'no_confidence' | 'drep'
+        wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+      );
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        errorCode: parseApiCode(expectedDelegateVotesErrors, error),
+      };
+    }
+  };
+
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(

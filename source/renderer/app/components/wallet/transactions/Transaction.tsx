@@ -19,7 +19,10 @@ import {
 } from '../../../domains/WalletTransaction';
 import WholeSelectionText from '../../widgets/WholeSelectionText';
 import globalMessages from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../api/transactions/types';
+import type {
+  TransactionState,
+  TransactionType,
+} from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import type { AssetToken } from '../../../api/assets/types';
@@ -92,6 +95,11 @@ const messages = defineMessages({
     id: 'wallet.transaction.received',
     defaultMessage: '!!!{transactionsType} received',
     description: 'Label "{transactionsType} received" for the transaction.',
+  },
+  voted: {
+    id: 'wallet.transaction.voted',
+    defaultMessage: '!!!Voting Power Delegation',
+    description: 'Title for governance voting transactions.',
   },
   fromAddress: {
     id: 'wallet.transaction.address.from',
@@ -519,6 +527,21 @@ export default class Transaction extends Component<Props, State> {
       }
     };
 
+    const getTitle = (txType: TransactionType): string => {
+      switch (txType) {
+        case TransactionTypes.EXPEND:
+          return intl.formatMessage(messages.sent, {
+            transactionsType,
+          });
+        case TransactionTypes.VOTE:
+          return intl.formatMessage(messages.voted);
+        default:
+          return intl.formatMessage(messages.received, {
+            transactionsType,
+          });
+      }
+    };
+
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
     const assetsSeparatorStyles = classNames([
       styles.assetsSeparator,
@@ -544,15 +567,7 @@ export default class Transaction extends Component<Props, State> {
 
             <div className={styles.togglerContent}>
               <div className={styles.header}>
-                <div className={styles.title}>
-                  {data.type === TransactionTypes.EXPEND
-                    ? intl.formatMessage(messages.sent, {
-                        transactionsType,
-                      })
-                    : intl.formatMessage(messages.received, {
-                        transactionsType,
-                      })}
-                </div>
+                <div className={styles.title}>{getTitle(data.type)}</div>
                 {data.amount && (
                   <div className={styles.amount}>
                     <DiscreetWalletAmount

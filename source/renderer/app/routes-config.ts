@@ -32,7 +32,9 @@ export const ROUTES = {
     UTXO: '/wallets/:id/utxo',
   },
   VOTING: {
+    ROOT: '/voting',
     REGISTRATION: '/voting/registration',
+    GOVERNANCE: '/voting/governance',
   },
   SETTINGS: {
     ROOT: '/settings',
