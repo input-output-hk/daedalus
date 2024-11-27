@@ -1,5 +1,6 @@
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { Messages } from '@trezor/transport';
+import { CardanoDRep, PROTO } from '@trezor/connect';
 import { map } from 'lodash';
 import {
   derivationPathToString,
@@ -52,12 +53,49 @@ export const toTrezorOutput = (output: CoinSelectionOutput) => {
     tokenBundle,
   };
 };
+
+const parseVoteDelegation = (cert: CoinSelectionCertificate): CardanoDRep => {
+  if (cert.vote === 'abstain') {
+    return {
+      type: PROTO.CardanoDRepType.ABSTAIN,
+    };
+  }
+
+  if (cert.vote === 'no_confidence') {
+    return {
+      type: PROTO.CardanoDRepType.NO_CONFIDENCE,
+    };
+  }
+
+  const voteHash = utils.bech32_decodeAddress(cert.vote).toString('hex');
+
+  if (cert.vote.includes('_script')) {
+    return {
+      type: PROTO.CardanoDRepType.SCRIPT_HASH,
+      scriptHash: voteHash,
+    };
+  }
+
+  return {
+    type: PROTO.CardanoDRepType.KEY_HASH,
+    keyHash: voteHash,
+  };
+};
+
 export const toTrezorCertificate = (cert: CoinSelectionCertificate) => {
   if (cert.pool) {
     return {
       type: CERTIFICATE_TYPE[cert.certificateType],
       path: derivationPathToString(cert.rewardAccountPath),
       pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
+    };
+  }
+
+  if (cert.certificateType === 'cast_vote' && 'vote' in cert) {
+    return {
+      type: PROTO.CardanoCertificateType.VOTE_DELEGATION,
+      path: derivationPathToString(cert.rewardAccountPath),
+      dRep: parseVoteDelegation(cert),
     };
   }
 

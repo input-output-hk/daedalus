@@ -4,15 +4,18 @@ import { injectIntl } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import Dialog from '../../widgets/Dialog';
-import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { formattedWalletAmount } from '../../../utils/formatters';
-import Wallet, { HwDeviceStatus } from '../../../domains/Wallet';
+import Wallet, {
+  HwDeviceStatus,
+  HwDeviceStatuses,
+} from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
 import globalMessages from '../../../i18n/global-messages';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
 
@@ -108,6 +111,13 @@ function VotingPowerDelegationConfirmationDialog({
     })();
   }, [intl, onSubmit, redirectToWallet, state]);
 
+  const confirmButtonLabel =
+    state.status === 'awaiting' ? (
+      intl.formatMessage(messages.buttonConfirm)
+    ) : (
+      <LoadingSpinner />
+    );
+
   return (
     <Dialog
       title={intl.formatMessage(messages.title)}
@@ -115,23 +125,25 @@ function VotingPowerDelegationConfirmationDialog({
         {
           label: intl.formatMessage(messages.buttonCancel),
           onClick: onClose,
-          disabled: state.status === 'submitting',
+          disabled: state.status !== 'awaiting',
         },
         {
-          label: intl.formatMessage(messages.buttonConfirm),
+          label: confirmButtonLabel,
           onClick: () => {
-            if (state.status !== 'awaiting' || !state.passphrase) return;
             setState({
-              passphrase: state.passphrase,
+              passphrase: '',
               status: 'confirmed',
             });
           },
           primary: true,
-          disabled: state.status === 'submitting' || !state.passphrase,
+          disabled:
+            state.status !== 'awaiting' ||
+            (selectedWallet.isHardwareWallet
+              ? hwDeviceStatus !==
+                HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED
+              : !state.passphrase),
         },
       ]}
-      onClose={onClose}
-      closeButton={<DialogCloseButton onClose={onClose} />}
     >
       <div className={styles.content}>
         <p className={styles.paragraphTitle}>

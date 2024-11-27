@@ -29,8 +29,9 @@ import type { CatalystFund } from '../api/voting/types';
 import { EventCategories } from '../analytics';
 import type { DelegationCalculateFeeResponse } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
-import { logger } from '../utils/logging';
 import ApiError from '../domains/ApiError';
+import type { DelegationAction } from '../types/stakingTypes';
+import { GenericApiError } from '../api/common/errors';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -82,6 +83,13 @@ const parseApiCode = <ErrorCode extends string>(
 
   if (error instanceof ApiError && isExpectedError(expectedCodes, error.code)) {
     return error.code;
+  }
+
+  if (
+    error instanceof GenericApiError &&
+    isExpectedError(expectedCodes, error.values.code)
+  ) {
+    return error.values.code;
   }
 
   return 'generic';
@@ -271,26 +279,89 @@ export default class VotingStore extends Store {
     chosenOption: string;
     wallet: Wallet;
   }) => {
-    this.constructTxRequest.reset();
-    try {
-      const {
-        coinSelection,
-        fee: fees,
-      } = await this.constructTxRequest.execute({
-        walletId: wallet.id,
-        data: { vote: chosenOption },
-      }).promise;
+    if (wallet.isHardwareWallet) {
+      const [{ id: stakePoolId }] = this.stores.staking.stakePools;
+      let dlegationData: {
+        delegationAction: DelegationAction;
+        poolId: string;
+      } = {
+        delegationAction: 'join',
+        poolId: stakePoolId,
+      };
 
-      if (wallet.isHardwareWallet) {
+      if (wallet.isDelegating) {
+        const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
+        const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
+        dlegationData = {
+          delegationAction: 'quit',
+          poolId,
+        };
+      }
+
+      try {
+        const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
+          {
+            walletId: wallet.id,
+            ...dlegationData,
+          }
+        );
+
+        let certificates: object[] = [
+          {
+            certificateType: 'cast_vote',
+            rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+            vote: chosenOption,
+          },
+        ];
+
+        const walletNeedsRegisteringRewardAccount = initialCoinSelection.certificates.some(
+          (c) => c.certificateType === 'register_reward_account'
+        );
+        if (walletNeedsRegisteringRewardAccount) {
+          certificates = [
+            {
+              certificateType: 'register_reward_account',
+              rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+            },
+            ...certificates,
+          ];
+        }
+
+        const coinSelection = {
+          ...initialCoinSelection,
+          certificates,
+        };
+
         this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
         this.stores.hardwareWallets.initiateTransaction({
           walletId: wallet.id,
         });
+
+        return {
+          success: true,
+          fees: coinSelection.fee,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          errorCode: parseApiCode(
+            expectedInitializeVPDelegationTxErrors,
+            error
+          ),
+        };
       }
+    }
+
+    this.constructTxRequest.reset();
+    try {
+      const constructedTx = await this.constructTxRequest.execute({
+        walletId: wallet.id,
+        data: { vote: chosenOption },
+      }).promise;
 
       return {
         success: true,
-        fees,
+        fees: constructedTx.fee,
       };
     } catch (error) {
       return {
@@ -310,7 +381,49 @@ export default class VotingStore extends Store {
     wallet: Wallet;
   }) => {
     // TODO: handle HW case
-    if (wallet.isHardwareWallet) return;
+    if (wallet.isHardwareWallet) {
+      try {
+        await this.stores.hardwareWallets._sendMoney({
+          selectedWalletId: wallet.id,
+        });
+
+        await new Promise<void>((resolve) => {
+          const wait = () => {
+            setTimeout(() => {
+              const {
+                sendMoneyRequest,
+                isTransactionPending,
+              } = this.stores.hardwareWallets;
+              if (sendMoneyRequest.isExecuting || isTransactionPending) {
+                wait();
+                return;
+              }
+
+              resolve();
+            }, 2000);
+          };
+
+          wait();
+        });
+
+        this.analytics.sendEvent(
+          EventCategories.VOTING,
+          'Casted governance vote',
+          chosenOption, // 'abstain' | 'no_confidence' | 'drep'
+          wallet.amount.toNumber() // ADA amount as float with 6 decimal precision
+        );
+
+        return {
+          success: true,
+        };
+      } catch (error) {
+        const errorCode: GenericErrorCode = 'generic';
+        return {
+          success: false,
+          errorCode,
+        };
+      }
+    }
 
     this.delegateVotesRequest.reset();
     try {

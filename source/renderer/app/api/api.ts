@@ -1275,11 +1275,13 @@ export default class AdaApi {
 
     try {
       const {
+        transaction,
         coin_selection,
         fee: { quantity },
       } = await constructTransaction(this.config, params);
 
       const result = {
+        transaction,
         coinSelection: parseCoinSelectionResponse({
           coinSelectionResponse: coin_selection,
         }),

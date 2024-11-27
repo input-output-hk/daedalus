@@ -196,11 +196,13 @@ export type CoinSelectionOutput = {
 export type CertificateType =
   | 'register_reward_account'
   | 'quit_pool'
-  | 'join_pool';
+  | 'join_pool'
+  | 'cast_vote';
 export type CoinSelectionCertificate = {
   pool: string;
   certificateType: CertificateType;
   rewardAccountPath: Array<string>;
+  vote?: string;
 };
 export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
 export type CoinSelectionWithdrawal = {

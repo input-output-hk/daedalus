@@ -1,30 +1,32 @@
 import _ from 'lodash';
 import {
-  utils,
-  TxOutputDestinationType,
   AddressType,
-  TxAuxiliaryDataType, // CHECK THIS
-  CredentialParamsType,
   CIP36VoteRegistrationFormat,
+  CredentialParamsType,
+  DRepParams,
+  DRepParamsType,
+  TxAuxiliaryDataType,
+  TxOutputDestinationType,
+  utils,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
-  str_to_path,
   base58_decode,
+  str_to_path,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
 import {
-  derivationPathToLedgerPath,
-  CERTIFICATE_TYPE,
-  groupTokensByPolicyId,
   CATALYST_VOTING_REGISTRATION_TYPE,
+  CERTIFICATE_TYPE,
+  derivationPathToLedgerPath,
+  groupTokensByPolicyId,
 } from './hardwareWalletUtils';
 import { AddressStyles } from '../domains/WalletAddress';
 import type { AddressStyle } from '../api/addresses/types';
 import type {
+  CoinSelectionAssetsType,
+  CoinSelectionCertificate,
   CoinSelectionInput,
   CoinSelectionOutput,
-  CoinSelectionCertificate,
   CoinSelectionWithdrawal,
-  CoinSelectionAssetsType,
 } from '../api/transactions/types';
 import { TxAuxiliaryData } from './dataSerialization';
 
@@ -47,6 +49,39 @@ export const toTokenBundle = (assets: CoinSelectionAssetsType) => {
   return tokenBundle;
 };
 
+const parseVoteDelegation = (
+  cert: CoinSelectionCertificate
+): DRepParams | undefined => {
+  if (cert.certificateType !== 'cast_vote' || !('vote' in cert))
+    return undefined;
+
+  if (cert.vote === 'abstain') {
+    return {
+      type: DRepParamsType.ABSTAIN,
+    };
+  }
+
+  if (cert.vote === 'no_confidence') {
+    return {
+      type: DRepParamsType.NO_CONFIDENCE,
+    };
+  }
+
+  const votHash = utils.buf_to_hex(utils.bech32_decodeAddress(cert.vote));
+
+  if (cert.vote.includes('_script')) {
+    return {
+      type: DRepParamsType.SCRIPT_HASH,
+      scriptHashHex: votHash,
+    };
+  }
+
+  return {
+    type: DRepParamsType.KEY_HASH,
+    keyHashHex: votHash,
+  };
+};
+
 export const toLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
@@ -58,6 +93,7 @@ export const toLedgerCertificate = (cert: CoinSelectionCertificate) => {
       poolKeyHashHex: cert.pool
         ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
         : null,
+      dRep: parseVoteDelegation(cert),
     },
   };
 };

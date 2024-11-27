@@ -21,6 +21,7 @@ export const CERTIFICATE_TYPE = {
   quit_pool: 1,
   // quit_pool
   join_pool: 2, // join_pool
+  cast_vote: 9, // join_pool
 };
 export const PATH_ROLE_IDENTITY = {
   role0: 'utxo_external',
