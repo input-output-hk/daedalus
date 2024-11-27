@@ -10,6 +10,10 @@
 
 - Update `cardano-node` to 10.1.1 via `cardano-wallet` [`ba7d3340968`](https://github.com/cardano-foundation/cardano-wallet/commit/ba7d33409680f4e75ef260add8744dcf71f40a77) ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
 
+### Fixes
+
+- Handle createTransaction error when Conway era wallet has staking rewards but has not participated in governance yet ([PR 3237](https://github.com/input-output-hk/daedalus/pull/3237)
+
 ## 6.0.2
 
 ### Fixes

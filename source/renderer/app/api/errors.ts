@@ -121,6 +121,12 @@ export const messages = defineMessages({
     description:
       '"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet',
   },
+  conwayWalletNotDelegatedToDRep: {
+    id: 'api.errors.conwayWalletNotDelegatedToDRep',
+    defaultMessage: '!!!conwayWalletNotDelegatedToDRep',
+    description:
+      'Error message shown when conway era wallet has staking rewards but has not participated in governance yet.',
+  },
 });
 
 type Balances = {

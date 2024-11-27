@@ -1016,6 +1016,9 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'created_invalid_transaction')
+        .inc('message', 'ConwayWdrlNotDelegatedToDRep')
         .set('transactionIsTooBig', true, {
           linkLabel: 'tooBigTransactionErrorLinkLabel',
           linkURL: 'tooBigTransactionErrorLinkURL',
