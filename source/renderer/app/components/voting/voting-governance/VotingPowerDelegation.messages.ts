@@ -7,6 +7,11 @@ export const messages = defineMessages({
       '!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}',
     description: 'Label for DRep input on the governance page',
   },
+  drepInputLabelPreprod: {
+    id: 'voting.governance.drepInputLabelPreprod',
+    defaultMessage: '!!!Please type or paste a valid DRep ID here.',
+    description: 'Label for DRep input on the governance page for preprod',
+  },
   drepInputLabelLinkText: {
     id: 'voting.governance.drepInputLabelLinkText',
     defaultMessage: '!!!DRep directory',
@@ -14,7 +19,12 @@ export const messages = defineMessages({
   },
   drepInputLabelLinkUrl: {
     id: 'voting.governance.drepInputLabelLinkUrl',
-    defaultMessage: 'https://www.1694.io/en/dreps/list',
+    defaultMessage: 'https://gov.tools/drep_directory',
+    description: 'Label link url for DRep input on the governance page',
+  },
+  drepInputLabelLinkUrlPreview: {
+    id: 'voting.governance.drepInputLabelLinkUrlPreview',
+    defaultMessage: 'https://preview.gov.tools/drep_directory',
     description: 'Label link url for DRep input on the governance page',
   },
   drepInputError: {

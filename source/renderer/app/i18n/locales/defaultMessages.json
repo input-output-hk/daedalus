@@ -4412,14 +4412,24 @@
         "id": "voting.governance.drepInputLabel"
       },
       {
+        "defaultMessage": "!!!Please type or paste a valid DRep ID here.",
+        "description": "Label for DRep input on the governance page for preprod",
+        "id": "voting.governance.drepInputLabelPreprod"
+      },
+      {
         "defaultMessage": "!!!DRep directory",
         "description": "Label link text for DRep input on the governance page",
         "id": "voting.governance.drepInputLabelLinkText"
       },
       {
-        "defaultMessage": "https://www.1694.io/en/dreps/list",
+        "defaultMessage": "https://gov.tools/drep_directory",
         "description": "Label link url for DRep input on the governance page",
         "id": "voting.governance.drepInputLabelLinkUrl"
+      },
+      {
+        "defaultMessage": "https://preview.gov.tools/drep_directory",
+        "description": "Label link url for DRep input on the governance page",
+        "id": "voting.governance.drepInputLabelLinkUrlPreview"
       },
       {
         "defaultMessage": "!!!Invalid DRep ID",

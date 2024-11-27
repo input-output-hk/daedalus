@@ -252,16 +252,20 @@ function VotingPowerDelegation({
               value={state.drepInputState.value}
               label={
                 <FormattedMessage
-                  {...messages.drepInputLabel}
+                  {...(environment.isPreprod
+                    ? messages.drepInputLabelPreprod
+                    : messages.drepInputLabel)}
                   values={{
                     drepDirectoryLink: (
                       <a
-                        href={intl.formatMessage(
-                          messages.drepInputLabelLinkUrl
-                        )}
+                        href="#"
                         onClick={(event) =>
                           onExternalLinkClick(
-                            intl.formatMessage(messages.drepInputLabelLinkUrl),
+                            intl.formatMessage(
+                              environment.isMainnet
+                                ? messages.drepInputLabelLinkUrl
+                                : messages.drepInputLabelLinkUrlPreview
+                            ),
                             event
                           )
                         }
