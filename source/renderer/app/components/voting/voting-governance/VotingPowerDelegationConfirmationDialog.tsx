@@ -131,7 +131,7 @@ function VotingPowerDelegationConfirmationDialog({
           label: confirmButtonLabel,
           onClick: () => {
             setState({
-              passphrase: '',
+              passphrase: ('passphrase' in state && state.passphrase) || '',
               status: 'confirmed',
             });
           },
