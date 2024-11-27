@@ -8,7 +8,7 @@
 
 ### Chores
 
-- Update `cardano-node` to 10.1.1 via `cardano-wallet` [`ba7d3340968`](https://github.com/cardano-foundation/cardano-wallet/commit/ba7d33409680f4e75ef260add8744dcf71f40a77) ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
+- Update `cardano-node` to 10.1.2 via `cardano-wallet` v2024-11-18 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
 
 ### Fixes
 
