@@ -10,10 +10,9 @@ import Wallet, { HwDeviceStatus } from '../../../domains/Wallet';
 import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import styles from './VotingPowerDelegationConfirmationDialog.scss';
 import { DelegateVotesError } from '../../../stores/VotingStore';
-import type { Intl } from '../../../types/i18nTypes';
+import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
 import globalMessages from '../../../i18n/global-messages';
-import { ReactIntlMessageShape } from '../../../i18n/types';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
 
@@ -25,10 +24,15 @@ const mapOfTxErrorCodeToIntl: Record<
   wrong_encryption_passphrase: globalMessages.invalidSpendingPassword,
 };
 
-const mapVoteToIntlMessage: Record<VoteType, ReactIntlMessageShape> = {
-  abstain: sharedGovernanceMessages.abstain,
-  no_confidence: sharedGovernanceMessages.noConfidence,
-  drep: sharedGovernanceMessages.delegateToDRep,
+const mapVoteToIntlMessage = (vote: VoteType | string): ReactIntlMessage => {
+  switch (vote) {
+    case 'abstain':
+      return sharedGovernanceMessages.abstain;
+    case 'no_confidence':
+      return sharedGovernanceMessages.noConfidence;
+    default:
+      return sharedGovernanceMessages.delegateToDRep;
+  }
 };
 
 export type VotingPowerDelegationConfirmationDialogState =
@@ -134,7 +138,7 @@ function VotingPowerDelegationConfirmationDialog({
           {intl.formatMessage(messages.vote)}
         </p>
         <p className={styles.paragraphValue}>
-          {intl.formatMessage(mapVoteToIntlMessage[chosenOption])}
+          {intl.formatMessage(mapVoteToIntlMessage(chosenOption))}
         </p>
 
         <p className={styles.paragraphTitle}>
