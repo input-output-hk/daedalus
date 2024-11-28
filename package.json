@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -315,5 +315,6 @@
     "**/**/nan": "^2.17.0",
     "prebuild-install": "^6.1.4",
     "pbkdf2": "3.1.2"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
