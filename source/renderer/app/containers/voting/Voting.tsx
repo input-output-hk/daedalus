@@ -37,28 +37,32 @@ class Voting extends Component<Props> {
     const { intl } = this.props;
     const navItems: Array<NavButtonProps> = [
       {
-        id: ROUTES.VOTING.REGISTRATION,
-        label: intl.formatMessage(messages.votingTabCatalyst),
-      },
-      {
         id: ROUTES.VOTING.GOVERNANCE,
         label: intl.formatMessage(messages.votingTabGovernance),
+      },
+      {
+        id: ROUTES.VOTING.REGISTRATION,
+        label: intl.formatMessage(messages.votingTabCatalyst),
       },
     ];
     const activeItem = navItems.find((item) => app.currentRoute === item.id);
     return (
       <MainLayout>
         <div style={{ height: '50px' }}>
-          <Navigation
-            items={navItems}
-            activeItem={activeItem.label}
-            isActiveNavItem={(navItemId: string) => navItemId === activeItem.id}
-            onNavItemClick={(navItemId: string) => {
-              this.props.actions.router.goToRoute.trigger({
-                route: navItemId,
-              });
-            }}
-          />
+          {environment.isMainnet || environment.isDev ? (
+            <Navigation
+              items={navItems}
+              activeItem={activeItem.label}
+              isActiveNavItem={(navItemId: string) =>
+                navItemId === activeItem.id
+              }
+              onNavItemClick={(navItemId: string) => {
+                this.props.actions.router.goToRoute.trigger({
+                  route: navItemId,
+                });
+              }}
+            />
+          ) : null}
         </div>
         {this.props.children}
       </MainLayout>

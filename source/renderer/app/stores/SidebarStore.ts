@@ -130,8 +130,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]:
-        isMainnet || isDev || environment.votingVisibleOverride,
+      [categories.VOTING.name]: true,
       [categories.NETWORK_INFO.name]: isFlight,
     };
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
