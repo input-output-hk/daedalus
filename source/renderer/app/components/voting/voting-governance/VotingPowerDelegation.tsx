@@ -5,6 +5,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
 
 import BigNumber from 'bignumber.js';
+import { Cardano } from '@cardano-sdk/core';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
@@ -13,7 +14,6 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
-import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import { VoteType } from './types';
@@ -73,13 +73,9 @@ type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
 // TODO discuss if we need to restrict the length
 const isDrepIdValid = (drepId: string) => {
-  try {
-    assertIsBech32WithPrefix(drepId, ['drep', 'drep_script']);
-  } catch (e) {
-    return false;
-  }
-
-  return true;
+  const isDRepId = (value: string): value is Cardano.DRepID =>
+    Cardano.DRepID.isValid(value);
+  return isDRepId(drepId) && Cardano.DRepID.toCip105DRepID(drepId) === drepId;
 };
 
 const mapOfTxErrorCodeToIntl: Record<
