@@ -4,12 +4,12 @@ export const messages = defineMessages({
   drepInputLabel: {
     id: 'voting.governance.drepInputLabel',
     defaultMessage:
-      '!!!Please type or paste a valid DRep ID here. Look up {drepDirectoryLink}',
+      '!!!Please type or paste a valid DRep ID (CIP-105) here. Look up {drepDirectoryLink}',
     description: 'Label for DRep input on the governance page',
   },
   drepInputLabelPreprod: {
     id: 'voting.governance.drepInputLabelPreprod',
-    defaultMessage: '!!!Please type or paste a valid DRep ID here.',
+    defaultMessage: '!!!Please type or paste a valid DRep ID (CIP-105) here.',
     description: 'Label for DRep input on the governance page for preprod',
   },
   drepInputLabelLinkText: {
