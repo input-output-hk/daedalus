@@ -136,7 +136,10 @@ function VotingPowerDelegation({
     },
   ];
 
-  const chosenOption = state.drepInputState.value || state.selectedVoteType;
+  const chosenOption =
+    state.selectedVoteType === 'drep'
+      ? state.drepInputState.value
+      : state.selectedVoteType;
 
   useEffect(() => {
     (async () => {
