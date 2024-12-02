@@ -1019,6 +1019,8 @@ export default class AdaApi {
         .set('conwayWalletNotDelegatedToDRep')
         .where('code', 'created_invalid_transaction')
         .inc('message', 'ConwayWdrlNotDelegatedToDRep')
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'withdrawal_not_possible_without_vote')
         .set('transactionIsTooBig', true, {
           linkLabel: 'tooBigTransactionErrorLinkLabel',
           linkURL: 'tooBigTransactionErrorLinkURL',
