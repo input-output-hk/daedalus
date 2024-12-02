@@ -1300,7 +1300,7 @@ export default class AdaApi {
         error,
       });
 
-      throw new ApiError(error);
+      throw new ApiError(error).result();
     }
   };
 
@@ -1318,7 +1318,7 @@ export default class AdaApi {
       logger.error('AdaApi::createExternalTransaction error', {
         error,
       });
-      throw new ApiError(error);
+      throw new ApiError(error).result();
     }
   };
   inspectAddress = async (request: {
@@ -2827,7 +2827,7 @@ export default class AdaApi {
         error,
       });
 
-      throw new ApiError(error);
+      throw new ApiError(error).result();
     }
   };
 
