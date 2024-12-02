@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Link } from 'react-polymorph/lib/components/Link';
 
 import BigNumber from 'bignumber.js';
 import { Cardano } from '@cardano-sdk/core';
@@ -182,17 +183,17 @@ function VotingPowerDelegation({
                 {...messages.paragraph1}
                 values={{
                   Link: (
-                    <a
+                    <Link
+                      className={styles.link}
                       href={intl.formatMessage(messages.paragraph1LinkUrl)}
+                      label={intl.formatMessage(messages.paragraph1LinkText)}
                       onClick={(event) =>
                         onExternalLinkClick(
                           intl.formatMessage(messages.paragraph1LinkUrl),
                           event
                         )
                       }
-                    >
-                      {intl.formatMessage(messages.paragraph1LinkText)}
-                    </a>
+                    />
                   ),
                 }}
               />
@@ -257,7 +258,11 @@ function VotingPowerDelegation({
                     : messages.drepInputLabel)}
                   values={{
                     drepDirectoryLink: (
-                      <a
+                      <Link
+                        className={styles.link}
+                        label={intl.formatMessage(
+                          messages.drepInputLabelLinkText
+                        )}
                         href="#"
                         onClick={(event) =>
                           onExternalLinkClick(
@@ -269,9 +274,7 @@ function VotingPowerDelegation({
                             event
                           )
                         }
-                      >
-                        {intl.formatMessage(messages.drepInputLabelLinkText)}
-                      </a>
+                      />
                     ),
                   }}
                 />
