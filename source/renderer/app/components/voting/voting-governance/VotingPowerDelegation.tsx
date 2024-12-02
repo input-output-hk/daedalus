@@ -217,6 +217,7 @@ function VotingPowerDelegation({
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
             value={state.selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
+            disableSyncingWallets
           />
 
           {state.selectedWallet && (
