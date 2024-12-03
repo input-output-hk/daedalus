@@ -4,6 +4,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingPowerDelegation from '../../components/voting/voting-governance/VotingPowerDelegation';
 import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import { ROUTES } from '../../routes-config';
+import VotingUnavailable from '../../components/voting/VotingUnavailable';
 
 type Props = InjectedProps;
 
@@ -22,8 +23,21 @@ class VotingGovernancePage extends Component<Props> {
       app,
       voting,
       hardwareWallets,
+      networkStatus,
     } = this.props.stores;
     const { openExternalLink } = app;
+    const { isSynced, syncPercentage } = networkStatus;
+
+    if (!isSynced) {
+      return (
+        <VotingUnavailable
+          syncPercentage={syncPercentage}
+          // @ts-ignore ts-migrate(2322) FIXME: Type '{ syncPercentage: any; onExternalLinkClick: ... Remove this comment to see the full error message
+          onExternalLinkClick={openExternalLink}
+        />
+      );
+    }
+
     return (
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
