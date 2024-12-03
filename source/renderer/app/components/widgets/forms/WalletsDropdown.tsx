@@ -27,6 +27,7 @@ type Props = {
   value?: string;
   errorPosition?: string;
   disabled?: boolean;
+  disableSyncingWallets?: boolean;
   wallets?: Array<Partial<Wallet>>;
 };
 export const onSearchWalletsDropdown = (
@@ -46,6 +47,7 @@ function WalletsDropdown({
   numberOfStakePools,
   onSearch = onSearchWalletsDropdown,
   wallets = [],
+  disableSyncingWallets,
   ...props
 }: Props) {
   const discreetModeFeature = useDiscreetModeFeature();
@@ -81,6 +83,7 @@ function WalletsDropdown({
       walletName: wallet.name,
       isSyncing,
       syncingProgress,
+      isDisabled: disableSyncingWallets ? isSyncing : false,
     };
   });
   return (
