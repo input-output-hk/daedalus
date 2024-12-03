@@ -1318,7 +1318,13 @@ export default class AdaApi {
       logger.error('AdaApi::createExternalTransaction error', {
         error,
       });
-      throw new ApiError(error).result();
+
+      const apiError = new ApiError(error)
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'created_invalid_transaction')
+        .inc('message', 'ConwayWdrlNotDelegatedToDRep');
+
+      throw apiError.result();
     }
   };
   inspectAddress = async (request: {
