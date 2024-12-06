@@ -90,7 +90,7 @@ function View({
           isHardwareWallet,
           isValid: passphraseField.isValid,
         }) ||
-        !!error,
+        isSubmitting,
     },
   ];
 
