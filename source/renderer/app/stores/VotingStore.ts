@@ -278,80 +278,80 @@ export default class VotingStore extends Store {
     chosenOption: string;
     wallet: Wallet;
   }) => {
-    if (wallet.isHardwareWallet) {
-      let poolId: string;
-
-      if (wallet.isDelegating) {
-        const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
-        const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
-        poolId = this.stores.staking.stakePools.find(
-          (stakePool) => stakePool.id !== currentPoolId
-        ).id;
-      } else {
-        const [{ id }] = this.stores.staking.stakePools;
-        poolId = id;
-      }
-
-      try {
-        const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
-          {
-            walletId: wallet.id,
-            delegationAction: 'join',
-            poolId,
-          }
-        );
-
-        let certificates: object[] = [
-          {
-            certificateType: 'cast_vote',
-            rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            vote: chosenOption,
-          },
-        ];
-
-        const walletNeedsRegisteringRewardAccount = initialCoinSelection.certificates.some(
-          (c) => c.certificateType === 'register_reward_account'
-        );
-        if (walletNeedsRegisteringRewardAccount) {
-          certificates = [
-            {
-              certificateType: 'register_reward_account',
-              rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            },
-            ...certificates,
-          ];
-        }
-
-        const coinSelection = {
-          ...initialCoinSelection,
-          certificates,
-        };
-
-        this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
-        this.stores.hardwareWallets.initiateTransaction({
-          walletId: wallet.id,
-        });
-
-        return {
-          success: true,
-          fees: coinSelection.fee,
-        };
-      } catch (error) {
-        logger.error(
-          'VotingStore: error while initializing VP delegation TX with HW',
-          {
-            error,
-          }
-        );
-        return {
-          success: false,
-          errorCode: parseApiCode(
-            expectedInitializeVPDelegationTxErrors,
-            error
-          ),
-        };
-      }
-    }
+    // if (wallet.isHardwareWallet) {
+    //   let poolId: string;
+    //
+    //   if (wallet.isDelegating) {
+    //     const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
+    //     const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
+    //     poolId = this.stores.staking.stakePools.find(
+    //       (stakePool) => stakePool.id !== currentPoolId
+    //     ).id;
+    //   } else {
+    //     const [{ id }] = this.stores.staking.stakePools;
+    //     poolId = id;
+    //   }
+    //
+    //   try {
+    //     const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
+    //       {
+    //         walletId: wallet.id,
+    //         delegationAction: 'join',
+    //         poolId,
+    //       }
+    //     );
+    //
+    //     let certificates: object[] = [
+    //       {
+    //         certificateType: 'cast_vote',
+    //         rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+    //         vote: chosenOption,
+    //       },
+    //     ];
+    //
+    //     const walletNeedsRegisteringRewardAccount = initialCoinSelection.certificates.some(
+    //       (c) => c.certificateType === 'register_reward_account'
+    //     );
+    //     if (walletNeedsRegisteringRewardAccount) {
+    //       certificates = [
+    //         {
+    //           certificateType: 'register_reward_account',
+    //           rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
+    //         },
+    //         ...certificates,
+    //       ];
+    //     }
+    //
+    //     const coinSelection = {
+    //       ...initialCoinSelection,
+    //       certificates,
+    //     };
+    //
+    //     this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+    //     this.stores.hardwareWallets.initiateTransaction({
+    //       walletId: wallet.id,
+    //     });
+    //
+    //     return {
+    //       success: true,
+    //       fees: coinSelection.fee,
+    //     };
+    //   } catch (error) {
+    //     logger.error(
+    //       'VotingStore: error while initializing VP delegation TX with HW',
+    //       {
+    //         error,
+    //       }
+    //     );
+    //     return {
+    //       success: false,
+    //       errorCode: parseApiCode(
+    //         expectedInitializeVPDelegationTxErrors,
+    //         error
+    //       ),
+    //     };
+    //   }
+    // }
 
     this.constructTxRequest.reset();
     try {

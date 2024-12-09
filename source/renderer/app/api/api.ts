@@ -1271,7 +1271,7 @@ export default class AdaApi {
   };
 
   constructTransaction = async (params: ConstructTransactionData) => {
-    logger.debug('AdaApi::delegateVotes called', {
+    logger.debug('AdaApi::constructTransaction called', {
       parameters: filterLogData(params),
     });
 
