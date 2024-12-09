@@ -1,7 +1,5 @@
 # Changelog
 
-## vNext
-
 ## 7.0.0
 
 ### Features
