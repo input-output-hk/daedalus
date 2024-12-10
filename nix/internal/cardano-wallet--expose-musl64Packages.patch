@@ -1,0 +1,12 @@
+diff --git a/flake.nix b/flake.nix
+index 2d680c2198..9888884449 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -427,6 +427,7 @@
+               project = walletProject;
+             };
+             windowsPackages = mkPackages walletProject.projectCross.mingwW64;
++            musl64Packages = mkPackages walletProject.projectCross.musl64;
+           }) // {
+             # Continuous integration builds
+             ci.tests.all = pkgs.releaseTools.aggregate {
