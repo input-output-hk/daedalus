@@ -1019,6 +1019,8 @@ export default class AdaApi {
         .set('conwayWalletNotDelegatedToDRep')
         .where('code', 'created_invalid_transaction')
         .inc('message', 'ConwayWdrlNotDelegatedToDRep')
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'withdrawal_not_possible_without_vote')
         .set('transactionIsTooBig', true, {
           linkLabel: 'tooBigTransactionErrorLinkLabel',
           linkURL: 'tooBigTransactionErrorLinkURL',
@@ -1298,7 +1300,7 @@ export default class AdaApi {
         error,
       });
 
-      throw new ApiError(error);
+      throw new ApiError(error).result();
     }
   };
 
@@ -1316,7 +1318,13 @@ export default class AdaApi {
       logger.error('AdaApi::createExternalTransaction error', {
         error,
       });
-      throw new ApiError(error);
+
+      const apiError = new ApiError(error)
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'created_invalid_transaction')
+        .inc('message', 'ConwayWdrlNotDelegatedToDRep');
+
+      throw apiError.result();
     }
   };
   inspectAddress = async (request: {
@@ -2825,7 +2833,7 @@ export default class AdaApi {
         error,
       });
 
-      throw new ApiError(error);
+      throw new ApiError(error).result();
     }
   };
 

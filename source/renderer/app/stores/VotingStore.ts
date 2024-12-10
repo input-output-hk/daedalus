@@ -1,6 +1,5 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
-import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -30,8 +29,8 @@ import { EventCategories } from '../analytics';
 import type { DelegationCalculateFeeResponse } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import ApiError from '../domains/ApiError';
-import type { DelegationAction } from '../types/stakingTypes';
 import { GenericApiError } from '../api/common/errors';
+import { logger } from '../utils/logging';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -280,29 +279,25 @@ export default class VotingStore extends Store {
     wallet: Wallet;
   }) => {
     if (wallet.isHardwareWallet) {
-      const [{ id: stakePoolId }] = this.stores.staking.stakePools;
-      let dlegationData: {
-        delegationAction: DelegationAction;
-        poolId: string;
-      } = {
-        delegationAction: 'join',
-        poolId: stakePoolId,
-      };
+      let poolId: string;
 
       if (wallet.isDelegating) {
         const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
-        const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
-        dlegationData = {
-          delegationAction: 'quit',
-          poolId,
-        };
+        const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
+        poolId = this.stores.staking.stakePools.find(
+          (stakePool) => stakePool.id !== currentPoolId
+        ).id;
+      } else {
+        const [{ id }] = this.stores.staking.stakePools;
+        poolId = id;
       }
 
       try {
         const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
           {
             walletId: wallet.id,
-            ...dlegationData,
+            delegationAction: 'join',
+            poolId,
           }
         );
 
@@ -342,6 +337,12 @@ export default class VotingStore extends Store {
           fees: coinSelection.fee,
         };
       } catch (error) {
+        logger.error(
+          'VotingStore: error while initializing VP delegation TX with HW',
+          {
+            error,
+          }
+        );
         return {
           success: false,
           errorCode: parseApiCode(
@@ -364,6 +365,9 @@ export default class VotingStore extends Store {
         fees: constructedTx.fee,
       };
     } catch (error) {
+      logger.error('VotingStore: error while initializing VP delegation TX', {
+        error,
+      });
       return {
         success: false,
         errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
@@ -417,6 +421,9 @@ export default class VotingStore extends Store {
           success: true,
         };
       } catch (error) {
+        logger.error('VotingStore: error while delegating vote with HW', {
+          error,
+        });
         const errorCode: GenericErrorCode = 'generic';
         return {
           success: false,

@@ -3,8 +3,10 @@ import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Link } from 'react-polymorph/lib/components/Link';
 
 import BigNumber from 'bignumber.js';
+import { Cardano } from '@cardano-sdk/core';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
 import styles from './VotingPowerDelegation.scss';
@@ -13,7 +15,6 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import ItemsDropdown from '../../widgets/forms/ItemsDropdown';
-import { assertIsBech32WithPrefix } from '../../../../../common/utils/assertIsBech32WithPrefix';
 import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import { VoteType } from './types';
@@ -73,13 +74,9 @@ type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
 // TODO discuss if we need to restrict the length
 const isDrepIdValid = (drepId: string) => {
-  try {
-    assertIsBech32WithPrefix(drepId, ['drep', 'drep_script']);
-  } catch (e) {
-    return false;
-  }
-
-  return true;
+  const isDRepId = (value: string): value is Cardano.DRepID =>
+    Cardano.DRepID.isValid(value);
+  return isDRepId(drepId) && Cardano.DRepID.toCip105DRepID(drepId) === drepId;
 };
 
 const mapOfTxErrorCodeToIntl: Record<
@@ -140,7 +137,10 @@ function VotingPowerDelegation({
     },
   ];
 
-  const chosenOption = state.drepInputState.value || state.selectedVoteType;
+  const chosenOption =
+    state.selectedVoteType === 'drep'
+      ? state.drepInputState.value
+      : state.selectedVoteType;
 
   useEffect(() => {
     (async () => {
@@ -183,17 +183,17 @@ function VotingPowerDelegation({
                 {...messages.paragraph1}
                 values={{
                   Link: (
-                    <a
+                    <Link
+                      className={styles.link}
                       href={intl.formatMessage(messages.paragraph1LinkUrl)}
+                      label={intl.formatMessage(messages.paragraph1LinkText)}
                       onClick={(event) =>
                         onExternalLinkClick(
                           intl.formatMessage(messages.paragraph1LinkUrl),
                           event
                         )
                       }
-                    >
-                      {intl.formatMessage(messages.paragraph1LinkText)}
-                    </a>
+                    />
                   ),
                 }}
               />
@@ -218,6 +218,7 @@ function VotingPowerDelegation({
             placeholder={intl.formatMessage(messages.selectWalletPlaceholder)}
             value={state.selectedWallet?.id || null}
             getStakePoolById={getStakePoolById}
+            disableSyncingWallets
           />
 
           {state.selectedWallet && (
@@ -258,7 +259,11 @@ function VotingPowerDelegation({
                     : messages.drepInputLabel)}
                   values={{
                     drepDirectoryLink: (
-                      <a
+                      <Link
+                        className={styles.link}
+                        label={intl.formatMessage(
+                          messages.drepInputLabelLinkText
+                        )}
                         href="#"
                         onClick={(event) =>
                           onExternalLinkClick(
@@ -270,9 +275,7 @@ function VotingPowerDelegation({
                             event
                           )
                         }
-                      >
-                        {intl.formatMessage(messages.drepInputLabelLinkText)}
-                      </a>
+                      />
                     ),
                   }}
                 />

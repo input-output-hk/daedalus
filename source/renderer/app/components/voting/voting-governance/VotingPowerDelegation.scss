@@ -16,6 +16,16 @@
   text-transform: uppercase;
 }
 
+span.link {
+  font-size: inherit;
+  line-height: inherit;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
 .info {
   @extend %regularText;
   p {

@@ -2,17 +2,21 @@
 
 ## vNext
 
+## 7.0.0
+
 ### Features
 
 - Added Cardano governance voting tab ([PR 3240](https://github.com/input-output-hk/daedalus/pull/3240))
 
 ### Chores
 
-- Update `cardano-node` to 10.1.2 via `cardano-wallet` v2024-11-18 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
+- Update `cardano-node` to 10.1.3 ([PR 3249](https://github.com/input-output-hk/daedalus/pull/3249))
+
+- Update `cardano-wallet` to v2024-11-18 ([PR 3229](https://github.com/input-output-hk/daedalus/pull/3229))
 
 ### Fixes
 
-- Handle createTransaction error when Conway era wallet has staking rewards but has not participated in governance yet ([PR 3237](https://github.com/input-output-hk/daedalus/pull/3237)
+- Handle createTransaction error when Conway era wallet has staking rewards but has not participated in governance yet ([PR 3237](https://github.com/input-output-hk/daedalus/pull/3237))
 
 ## 6.0.2
 
