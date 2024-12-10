@@ -1,6 +1,11 @@
 export interface AnalyticsClient {
   sendPageNavigationEvent(pageTitle: string): Promise<void>;
-  sendEvent(category: string, action: string, name?: string): Promise<void>;
+  sendEvent(
+    category: string,
+    action: string,
+    name?: string,
+    value?: number
+  ): Promise<void>;
 }
 
 export enum AnalyticsAcceptanceStatus {
@@ -13,7 +18,12 @@ export interface AnalyticsTracker {
   enableTracking(): Promise<void>;
   disableTracking(): void;
   sendPageNavigationEvent(pageTitle: string): void;
-  sendEvent(category: EventCategories, name: string, action?: string): void;
+  sendEvent(
+    category: EventCategories,
+    name: string,
+    action?: string,
+    value?: number
+  ): void;
 }
 
 export enum EventCategories {

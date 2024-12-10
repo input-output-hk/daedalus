@@ -34,8 +34,8 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
     return this.#analyticsClient.sendPageNavigationEvent(pageTitle);
   }
 
-  sendEvent(category: string, name: string, action?: string) {
-    return this.#analyticsClient.sendEvent(category, name, action);
+  sendEvent(category: string, name: string, action?: string, value?: number) {
+    return this.#analyticsClient.sendEvent(category, name, action, value);
   }
 
   async #enableTrackingIfAccepted() {

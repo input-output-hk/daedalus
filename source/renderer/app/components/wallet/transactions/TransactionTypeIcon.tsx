@@ -13,6 +13,7 @@ import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg'
 import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/wallet-... Remove this comment to see the full error message
 import pendingIcon from '../../../assets/images/wallet-nav/pending.inline.svg';
+import votingIcon from '../../../assets/images/wallet-nav/voting.inline.svg';
 import {
   TransactionTypes,
   TransactionStates,
@@ -98,6 +99,10 @@ export default class TransactionTypeIcon extends Component<Props> {
 
       case TransactionTypes.EXCHANGE:
         icon = exchangeIcon;
+        break;
+
+      case TransactionTypes.VOTE:
+        icon = votingIcon;
         break;
 
       default:

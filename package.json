@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -197,6 +197,7 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "7.1.3",
+    "@cardano-sdk/core": "^0.41.4",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "@ledgerhq/hw-transport-node-hid": "6.27.15",
     "@trezor/connect": "9.3.0",
@@ -315,5 +316,6 @@
     "**/**/nan": "^2.17.0",
     "prebuild-install": "^6.1.4",
     "pbkdf2": "3.1.2"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }

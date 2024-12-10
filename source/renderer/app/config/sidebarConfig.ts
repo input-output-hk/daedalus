@@ -58,7 +58,7 @@ export const CATEGORIES_BY_NAME = {
   VOTING: {
     name: 'VOTING',
     icon: votingIcon,
-    route: ROUTES.VOTING.REGISTRATION,
+    route: ROUTES.VOTING.GOVERNANCE,
     tooltipTextId: 'voting',
   },
 };
