@@ -2,6 +2,10 @@
 
 ## 7.0.1
 
+### Chores
+
+- Removed number of unnecessary dependencies ([PR 3259](https://github.com/input-output-hk/daedalus/pull/3259))
+
 - Fixed crashing of Daedalus 7.0.0 on Ubuntu ([PR 3257](https://github.com/input-output-hk/daedalus/pull/3257))
 
 ## 7.0.0
