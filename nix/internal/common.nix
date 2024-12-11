@@ -34,6 +34,7 @@ rec {
         chmod -R +w $out
         cd $out
         patch -p1 -i ${./cardano-wallet--expose-windowsPackages.patch}
+        patch -p1 -i ${./cardano-wallet--expose-musl64Packages.patch}
       '');
       inherit (unpatched) rev shortRev lastModified lastModifiedDate;
     };
@@ -55,7 +56,7 @@ rec {
 
   walletPackages = {
     x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
-    x86_64-linux = walletFlake.packages.x86_64-linux;
+    x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
     x86_64-darwin = walletFlake.packages.x86_64-darwin;
     aarch64-darwin = walletFlake.packages.aarch64-darwin;
   }.${targetSystem};
