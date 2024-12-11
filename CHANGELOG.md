@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.1
+
+- Fixed crashing of Daedalus 7.0.0 on Ubuntu ([PR 3257](https://github.com/input-output-hk/daedalus/pull/3257))
+
 ## 7.0.0
 
 ### Features

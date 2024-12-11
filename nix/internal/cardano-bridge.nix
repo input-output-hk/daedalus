@@ -33,7 +33,7 @@ runCommandCC "daedalus-cardano-bridge" {
   ''}
   ${lib.optionalString (target == "x86_64-linux") ''
     chmod +w -R .
-    for x in cardano-launcher cardano-wallet; do
+    for x in cardano-launcher; do
       $STRIP $x
       patchelf --shrink-rpath $x
     done
