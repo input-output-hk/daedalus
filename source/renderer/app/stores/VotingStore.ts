@@ -278,29 +278,29 @@ export default class VotingStore extends Store {
     chosenOption: string;
     wallet: Wallet;
   }) => {
-    if (wallet.isHardwareWallet) {
-      let poolId: string;
+    let poolId: string;
 
-      if (wallet.isDelegating) {
-        const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
-        const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
-        poolId = this.stores.staking.stakePools.find(
-          (stakePool) => stakePool.id !== currentPoolId
-        ).id;
-      } else {
-        const [{ id }] = this.stores.staking.stakePools;
-        poolId = id;
-      }
+    if (wallet.isDelegating) {
+      const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
+      const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
+      poolId = this.stores.staking.stakePools.find(
+        (stakePool) => stakePool.id !== currentPoolId
+      ).id;
+    } else {
+      const [{ id }] = this.stores.staking.stakePools;
+      poolId = id;
+    }
 
-      try {
-        const initialCoinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
-          {
-            walletId: wallet.id,
-            delegationAction: 'join',
-            poolId,
-          }
-        );
+    try {
+      let coinSelection = await this.stores.hardwareWallets.selectDelegationCoins(
+        {
+          walletId: wallet.id,
+          delegationAction: 'join',
+          poolId,
+        }
+      );
 
+      if (wallet.isHardwareWallet) {
         let certificates: object[] = [
           {
             certificateType: 'cast_vote',
@@ -309,7 +309,7 @@ export default class VotingStore extends Store {
           },
         ];
 
-        const walletNeedsRegisteringRewardAccount = initialCoinSelection.certificates.some(
+        const walletNeedsRegisteringRewardAccount = coinSelection.certificates.some(
           (c) => c.certificateType === 'register_reward_account'
         );
         if (walletNeedsRegisteringRewardAccount) {
@@ -322,8 +322,8 @@ export default class VotingStore extends Store {
           ];
         }
 
-        const coinSelection = {
-          ...initialCoinSelection,
+        coinSelection = {
+          ...coinSelection,
           certificates,
         };
 
@@ -331,43 +331,19 @@ export default class VotingStore extends Store {
         this.stores.hardwareWallets.initiateTransaction({
           walletId: wallet.id,
         });
-
-        return {
-          success: true,
-          fees: coinSelection.fee,
-        };
-      } catch (error) {
-        logger.error(
-          'VotingStore: error while initializing VP delegation TX with HW',
-          {
-            error,
-          }
-        );
-        return {
-          success: false,
-          errorCode: parseApiCode(
-            expectedInitializeVPDelegationTxErrors,
-            error
-          ),
-        };
       }
-    }
-
-    this.constructTxRequest.reset();
-    try {
-      const constructedTx = await this.constructTxRequest.execute({
-        walletId: wallet.id,
-        data: { vote: chosenOption },
-      }).promise;
 
       return {
         success: true,
-        fees: constructedTx.fee,
+        fees: coinSelection.fee,
       };
     } catch (error) {
-      logger.error('VotingStore: error while initializing VP delegation TX', {
-        error,
-      });
+      logger.error(
+        'VotingStore: error while initializing VP delegation TX with HW',
+        {
+          error,
+        }
+      );
       return {
         success: false,
         errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),

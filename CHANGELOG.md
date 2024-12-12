@@ -1,6 +1,10 @@
 # Changelog
 
-## vNext
+## 7.0.2
+
+### Fixes
+
+- Changed Cardano Wallet endpoint used to initialize VP delegation transaction ([PR 3262](https://github.com/input-output-hk/daedalus/pull/3262))
 
 ## 7.0.1
 
