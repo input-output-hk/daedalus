@@ -2829,7 +2829,7 @@ export default class AdaApi {
 
       return response;
     } catch (error) {
-      logger.debug('AdaApi::delegateVotes error', {
+      logger.error('AdaApi::delegateVotes error', {
         error,
       });
 

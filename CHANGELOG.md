@@ -1,6 +1,14 @@
 # Changelog
 
+## 7.0.2
+
+### Fixes
+
+- Changed Cardano Wallet endpoint used to initialize VP delegation transaction ([PR 3262](https://github.com/input-output-hk/daedalus/pull/3262))
+
 ## 7.0.1
+
+### Chores
 
 - Fixed crashing of Daedalus 7.0.0 on Ubuntu ([PR 3257](https://github.com/input-output-hk/daedalus/pull/3257))
 
