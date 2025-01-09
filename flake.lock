@@ -20,17 +20,17 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1730399380,
-        "narHash": "sha256-VxZBbgV4faFuVMheKeJAZ03qkL16mILVAnNqDbZIsAM=",
+        "lastModified": 1736275496,
+        "narHash": "sha256-4Mk9Ts8ztZGhTuO0P1ukz2TsMenLpWiOWTc7gUdhUOI=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "49d93e5fe42e1e37f8b4c7d463b5d6bc4af65f26",
+        "rev": "d3322dce0ab1c00386adc93899aabe9252342b54",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "49d93e5fe42e1e37f8b4c7d463b5d6bc4af65f26",
+        "rev": "d3322dce0ab1c00386adc93899aabe9252342b54",
         "type": "github"
       }
     },
