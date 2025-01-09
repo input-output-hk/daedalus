@@ -2,7 +2,7 @@
 
 ## vNext
 
-- Update `cardano-node` to 10.1.4, and `cardano-wallet` to v2025-01-07 ([PR 3270](https://github.com/input-output-hk/daedalus/pull/3270))
+- Update `cardano-node` to 10.1.4, and `cardano-wallet` to v2025-01-09 ([PR 3270](https://github.com/input-output-hk/daedalus/pull/3270))
 
 ## 7.0.2
 
