@@ -276,7 +276,9 @@ in rec {
         cp node_modules/"$f" "$pathtoapp"/Contents/Resources/app/build/
       done
 
-      jq --arg name "xxx" '.productName = $name' "$pathtoapp/Contents/Resources/app/package.json" >tmp-package.json
+      jq >tmp-package.json <"$pathtoapp/Contents/Resources/app/package.json" \
+        --arg name ${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} \
+        '.productName = $name'
       mv tmp-package.json "$pathtoapp/Contents/Resources/app/package.json"
 
       dir="$pathtoapp/Contents/MacOS"
