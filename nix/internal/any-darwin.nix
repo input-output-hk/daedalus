@@ -107,10 +107,6 @@ in rec {
 
   darwin-launcher = pkgs.callPackage ./darwin-launcher.nix {};
 
-  # TODO: don’t use cardano-bridge.nix
-
-  # TODO: compare runtime-nodejs-deps.json with Linux and Windows, and re-use it there
-
   nix-bundle-exe-same-dir = pkgs.runCommand "nix-bundle-exe-same-dir" {} ''
     cp -R ${inputs.nix-bundle-exe} $out
     chmod -R +w $out
