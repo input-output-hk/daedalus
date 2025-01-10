@@ -14,8 +14,6 @@ library
   exposed-modules:   Types
                    , Config
                    , WindowsInstaller
-                   , MacInstaller
-                   , RewriteLibs
                    , Util
   ghc-options:         -Wextra -Wno-unused-do-bind -Werror
                        -fno-warn-orphans

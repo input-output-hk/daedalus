@@ -1,7 +1,6 @@
 { system ? builtins.currentSystem
 , config ? {}
 , pkgs
-, daedalus-bridge
 }:
 
 let
