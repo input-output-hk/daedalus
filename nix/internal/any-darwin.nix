@@ -196,16 +196,19 @@ in rec {
     bash "$tmpdir"/bundle-macos.sh "$tmpdir" "$target"
     rm "$tmpdir"/bundle-macos.sh
 
-    mv "$tmpdir/bundle" "$(dirname "$target")/$(basename "$target")"-lib
+    # We can’t have dots in directory names, or they’re interpreted as bundles, and code signing fails:
+    libDirName="$(basename "$target" | tr . -)-lib"
+
+    mv "$tmpdir/bundle" "$(dirname "$target")/$libDirName"
     rmdir "$tmpdir"
     rm "$target"
-    mv "$(dirname "$target")/$(basename "$target")-lib/$(basename "$target")" "$target"
+    mv "$(dirname "$target")/$libDirName/$(basename "$target")" "$target"
 
     otool -L "$target" \
       | { grep -E '^\s*@loader_path' || true ; } \
       | sed -r 's/^\s*//g ; s/ \(.*//g' \
       | while IFS= read -r lib ; do
-          install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@loader_path/,@loader_path/'"$(basename "$target")"'-lib/,g')" "$target"
+          install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@loader_path/,@loader_path/'"$libDirName"'/,g')" "$target"
         done
   '';
 
