@@ -19,44 +19,12 @@ import Data.Aeson (decode)
 
 import Config
 import Types
-import qualified MacInstaller as Mac
 import Util
 
 main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
-  describe "MacInstaller build" macBuildSpec
   describe "recursive directory deletion" deleteSpec
-
-macBuildSpec :: Spec
-macBuildSpec = do
-  describe "The whole thing" $ do
-    it "Runs through the whole installer build" $ runManaged $ do
-      out <- getTempDir "test-build"
-      installersDir <- makeTestInstallersDir
-      daedalusBridge <- liftIO getDaedalusBridge
-
-      let opts = Options
-                 { oOS = Win64
-                 , oBackend = Cardano daedalusBridge
-                 , oBuildJob = Just (BuildJob "test")
-                 , oCluster = Testnet
-                 , oAppName = "Daedalus"
-                 , oOutputDir = out
-                 , oTestInstaller = testInstaller False
-                 , oSigningConfigPath = Nothing
-                 }
-
-      liftIO $ do
-        withDir installersDir $ do
-          mktree "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app"
-          mktree "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app"
-          writeFile "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/Resources/app/package.json" "{}"
-          writeFile "../release/darwin-arm64/Daedalus-darwin-arm64/Daedalus.app/Contents/Resources/app/package.json" "{}"
-          Mac.main opts
-
-        -- there should be an installer file at the end
-        fold (ls out) Fold.length `shouldReturn` 1
 
 -- | Set up a temporary source/installers directory with everything
 -- required for the installer builder. This is so that the installer

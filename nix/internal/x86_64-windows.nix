@@ -449,8 +449,15 @@ in rec {
     convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
   '');
 
+  make-installer = let
+    hsDaedalusPkgs = import ../../installers {
+      inherit pkgs;
+      inherit (pkgs) system;
+    };
+  in pkgs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
+
   nsisFiles = genClusters (cluster: pkgs.runCommand "nsis-files" {
-    buildInputs = [ common.daedalus-installer pkgs.glibcLocales ];
+    buildInputs = [ make-installer pkgs.glibcLocales ];
   } ''
     mkdir installers
     cp -vir ${../../package.json} package.json

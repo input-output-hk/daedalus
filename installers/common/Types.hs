@@ -42,11 +42,9 @@ import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
 import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:), genericParseJSON, defaultOptions)
 import qualified Data.ByteString.Lazy.Char8       as L8
-import qualified System.Info
 
 data OS
   = Linux64
-  | Macos64
   | Win64
   deriving (Bounded, Enum, Eq, Read, Show)
 
@@ -125,18 +123,12 @@ packageFileName uglyName _os cluster ver backend buildJob buildCounter = fromTex
                  Cardano _ -> "cardano-wallet"
     ext = case _os of
             Win64   -> "exe"
-            Macos64 -> "pkg"
             Linux64 -> "bin"
     _os' = case _os of
             Win64   -> "windows"
-            Macos64 -> "macos"
             Linux64 -> "linux"
     archOS = case _os of
             Win64   -> "x86_64-windows"
-            Macos64 ->
-              if System.Info.arch == "aarch64"
-              then "aarch64-darwin"
-              else "x86_64-darwin"
             Linux64 -> "x86_64-linux"
     buildJob' = maybe [] (\b -> [fromBuildJob b]) buildJob
     buildCounter' = "-" <> maybe "0" fromBuildJob buildCounter
