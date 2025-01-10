@@ -113,11 +113,11 @@ in rec {
     sed -r 's+@executable_path/\$relative_bin_to_lib/\$lib_dir+@executable_path+g' -i $out/bundle-macos.sh
   '';
 
-  mkBundle = exes: let
-    unbundled = pkgs.linkFarm "exes" (lib.mapAttrsToList (name: path: {
-      name = "bin/" + name;
-      inherit path;
-    }) exes);
+  # XXX: they cannot be a symlinks, because:
+  #   1) cardano-launcher looks at its own `realpath` to determine DAEDALUS_INSTALL_DIRECTORY,
+  #   2) symlinks under Contents/MacOS break code signing, and notarization.
+  mkBundle = exeName: target: let
+    unbundled = pkgs.linkFarm "exes" { "bin/${exeName}" = target; };
   in (import nix-bundle-exe-same-dir {
     inherit pkgs;
     bin_dir = "bundle";
@@ -132,35 +132,53 @@ in rec {
       ) + ''
         mv $out/bundle/* $out/
         rmdir $out/bundle
+        ${moveDylibsToSubdir exeName}
       '';
   });
 
-  # XXX: cardano-launcher cannot be a symlink, because it looks at its own
-  # `realpath` to determine DAEDALUS_INSTALL_DIRECTORY:
-  bundle-cardano-launcher = (mkBundle {
-    "cardano-launcher" = common.cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher + "/bin/cardano-launcher";
-  }).overrideAttrs (drv: {
-    buildCommand = let exeName = "cardano-launcher"; in drv.buildCommand + ''
-      (
-        cd $out
-        mkdir -p bundle-${exeName}
-        mv *.dylib bundle-${exeName}/
-        otool -L ${exeName} \
-          | grep -E '^\s*@executable_path' \
+  moveDylibsToSubdir = exeName: ''
+    (
+      export PATH=${lib.makeBinPath (with pkgs; [ darwin.cctools darwin.binutils darwin.sigtool nukeReferences ])}:"$PATH"
+
+      cd $out
+      mkdir -p ${exeName}-lib
+      mv *.dylib ${exeName}-lib/
+      otool -L ${exeName} \
+        | { grep -E '^\s*@executable_path' || true ; } \
+        | sed -r 's/^\s*//g ; s/ \(.*//g' \
+        | while IFS= read -r lib ; do
+            install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@executable_path/,@executable_path/${exeName}-lib/,g')" ${exeName}
+          done
+      nuke-refs ${exeName}
+      codesign -f -s - ${exeName} || true
+
+      cd ${exeName}-lib
+      ls *.dylib | while IFS= read -r dylib ; do
+        otool -L "$dylib" \
+          | { grep -E '^\s*@executable_path' || true ; } \
           | sed -r 's/^\s*//g ; s/ \(.*//g' \
           | while IFS= read -r lib ; do
-          install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@executable_path/,@executable_path/bundle-${exeName}/,g')" ${exeName}
-        done
-      )
-    '';
-  });
+              install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@executable_path/,@loader_path/,g')" "$dylib"
+            done
+        nuke-refs "$dylib"
+        codesign -f -s - "$dylib" || true
+      done
+    )
+  '';
 
-  bundle-cardano-node     = mkBundle { "cardano-node"     = lib.getExe common.cardano-node; };
-  bundle-cardano-cli      = mkBundle { "cardano-cli"      = lib.getExe common.cardano-cli; };
-  bundle-cardano-address  = mkBundle { "cardano-address"  = lib.getExe common.cardano-address; };
-  bundle-cardano-wallet   = pkgs.runCommandNoCC "bundle-cardano-wallet" {} ''cp -r ${common.cardano-wallet}/bin $out'';  # upstream bundles it
-  bundle-mock-token-metadata-server = mkBundle { "mock-token-metadata-server"  = lib.getExe common.mock-token-metadata-server; };
-  bundle-local-cluster              = mkBundle { "local-cluster"               = lib.getExe common.walletPackages.local-cluster; };
+  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher + "/bin/cardano-launcher");
+  bundle-cardano-node     = mkBundle "cardano-node"     (lib.getExe common.cardano-node);
+  bundle-cardano-cli      = mkBundle "cardano-cli"      (lib.getExe common.cardano-cli);
+  bundle-cardano-address  = mkBundle "cardano-address"  (lib.getExe common.cardano-address);
+  bundle-mock-token-metadata-server = mkBundle "mock-token-metadata-server" (lib.getExe common.mock-token-metadata-server);
+  bundle-local-cluster              = mkBundle "local-cluster"              (lib.getExe common.walletPackages.local-cluster);
+
+  # Unfortunately they bundle it upstream, but not in a subdir:
+  bundle-cardano-wallet = pkgs.runCommandNoCC "bundle-cardano-wallet" {} ''
+    cp -r ${common.cardano-wallet}/bin $out
+    chmod -R +w $out
+    ${moveDylibsToSubdir "cardano-wallet"}
+  '';
 
   # HID.node and others depend on `/nix/store`, we have to bundle them, too:
   bundleNodeJsNativeModule = pkgs.writeShellScript "bundleNodeJsNativeModule" ''
@@ -177,10 +195,18 @@ in rec {
     sed -r 's/@executable_path/@loader_path/g' -i "$tmpdir"/bundle-macos.sh
     bash "$tmpdir"/bundle-macos.sh "$tmpdir" "$target"
     rm "$tmpdir"/bundle-macos.sh
-    mv "$tmpdir/bundle" "$(dirname "$target")/bundle-$(basename "$target")"
+
+    mv "$tmpdir/bundle" "$(dirname "$target")/$(basename "$target")"-lib
     rmdir "$tmpdir"
     rm "$target"
-    ln -s "bundle-$(basename "$target")/$(basename "$target")" "$target"
+    mv "$(dirname "$target")/$(basename "$target")-lib/$(basename "$target")" "$target"
+
+    otool -L "$target" \
+      | { grep -E '^\s*@loader_path' || true ; } \
+      | sed -r 's/^\s*//g ; s/ \(.*//g' \
+      | while IFS= read -r lib ; do
+          install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@loader_path/,@loader_path/'"$(basename "$target")"'-lib/,g')" "$target"
+        done
   '';
 
   package = genClusters (cluster: let
@@ -259,19 +285,15 @@ in rec {
       cp installers/launcher-config.yaml "$dataDir"/
 
       cp -r ${bundle-cardano-launcher}/. "$dir"/
+      cp -r ${bundle-cardano-node    }/. "$dir"/
+      cp -r ${bundle-cardano-cli     }/. "$dir"/
+      cp -r ${bundle-cardano-address }/. "$dir"/
+      cp -r ${bundle-cardano-wallet  }/. "$dir"/
 
-      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (exe: bundle: ''
-        cp -r ${bundle} "$dir"/bundle-${exe}
-        ln -s bundle-${exe}/${exe} "$dir"/${exe}
-      '') ({
-        "cardano-node" = bundle-cardano-node;
-        "cardano-cli" = bundle-cardano-cli;
-        "cardano-address" = bundle-cardano-address;
-        "cardano-wallet" = bundle-cardano-wallet;
-      } // (lib.optionalAttrs (cluster == "selfnode") {
-        "mock-token-metadata-server" = bundle-mock-token-metadata-server;
-        "local-cluster" = bundle-local-cluster;
-      })))}
+      ${lib.optionalString (cluster == "selfnode") ''
+        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/
+        cp -r ${bundle-local-cluster             }/. "$dir"/
+      ''}
 
       cp installers/{config.yaml,genesis.json,topology.yaml} "$dataDir"/
       ${if (cluster != "selfnode") then ''
