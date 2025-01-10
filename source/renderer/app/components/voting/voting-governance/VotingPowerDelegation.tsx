@@ -72,13 +72,6 @@ type StateConfirmation = Omit<FormData, 'fee'> & {
 
 type State = Form | FormWithError | StateFormComplete | StateConfirmation;
 
-// TODO discuss if we need to restrict the length
-const isDrepIdValid = (drepId: string) => {
-  const isDRepId = (value: string): value is Cardano.DRepID =>
-    Cardano.DRepID.isValid(value);
-  return isDRepId(drepId) && Cardano.DRepID.toCip105DRepID(drepId) === drepId;
-};
-
 const mapOfTxErrorCodeToIntl: Record<
   InitializeVPDelegationTxError,
   typeof messages[keyof typeof messages]
@@ -110,7 +103,7 @@ function VotingPowerDelegation({
 }: Props) {
   const [state, setState] = useState<State>(initialState);
 
-  const drepInputIsValid = isDrepIdValid(state.drepInputState.value);
+  const drepInputIsValid = Cardano.DRepID.isValid(state.drepInputState.value);
 
   const formIsValid =
     !!state.selectedWallet &&
