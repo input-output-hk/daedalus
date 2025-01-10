@@ -4,6 +4,8 @@
 
 ### Chores
 
+- Added support of CIP-129 for DRep IDs ([PR 3271](https://github.com/input-output-hk/daedalus/pull/3271))
+
 - Update `cardano-node` to 10.1.4, and `cardano-wallet` to v2025-01-09 ([PR 3270](https://github.com/input-output-hk/daedalus/pull/3270))
 
 ## 7.0.2
