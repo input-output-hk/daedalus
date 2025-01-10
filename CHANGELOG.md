@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 7.1.0
 
 ### Chores
 
