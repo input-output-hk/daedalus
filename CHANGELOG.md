@@ -273,6 +273,7 @@
 
 ### Chores
 
+- Removed unused files ([PR 2950](https://github.com/input-output-hk/daedalus/pull/2950))
 - Fixed Daedalus menu in Storybook used for theme and language selection ([PR 2886](https://github.com/input-output-hk/daedalus/pull/2886))
 
 ## 4.9.0-FC1
