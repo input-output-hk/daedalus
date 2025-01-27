@@ -13,6 +13,7 @@ import {
   base58_decode,
   str_to_path,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { Cardano } from '@cardano-sdk/core';
 import {
   CATALYST_VOTING_REGISTRATION_TYPE,
   CERTIFICATE_TYPE,
@@ -67,18 +68,18 @@ const parseVoteDelegation = (
     };
   }
 
-  const votHash = utils.buf_to_hex(utils.bech32_decodeAddress(cert.vote));
+  const { type, hash } = Cardano.DRepID.toCredential(Cardano.DRepID(cert.vote));
 
-  if (cert.vote.includes('_script')) {
+  if (type === Cardano.CredentialType.ScriptHash) {
     return {
       type: DRepParamsType.SCRIPT_HASH,
-      scriptHashHex: votHash,
+      scriptHashHex: hash,
     };
   }
 
   return {
     type: DRepParamsType.KEY_HASH,
-    keyHashHex: votHash,
+    keyHashHex: hash,
   };
 };
 
