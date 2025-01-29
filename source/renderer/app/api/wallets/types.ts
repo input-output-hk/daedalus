@@ -77,7 +77,11 @@ export type SyncStateStatus =
   | 'syncing'
   | 'not_responding';
 export type Discovery = 'random' | 'sequential';
-export type DelegationStatus = 'delegating' | 'not_delegating';
+export type DelegationStatus =
+  | 'delegating'
+  | 'not_delegating'
+  | 'voting'
+  | 'voting_and_delegating';
 export type WalletSyncStateProgress = {
   quantity: number;
   unit: 'percentage';
