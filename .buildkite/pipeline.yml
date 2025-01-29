@@ -6,22 +6,14 @@ steps:
 
   # XXX: `</dev/null turns off any interactive questions from Nix (e.g. accept-flake-config)
 
-  - input: ':recycle: Trigger ‘x86_64-darwin’'
-    key: 'trigger-x86_64-darwin'
-
-  - input: ':recycle: Trigger ‘aarch64-darwin’'
-    key: 'trigger-aarch64-darwin'
-
   - label: 'daedalus-x86_64-darwin'
     command: 'nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-darwin.buildkitePipeline'
-    depends_on: 'trigger-x86_64-darwin'
     agents:
       queue: lace
       system: x86_64-darwin
 
   - label: 'daedalus-aarch64-darwin'
     command: 'nix </dev/null run --no-accept-flake-config -L .#packages.aarch64-darwin.buildkitePipeline'
-    depends_on: 'trigger-aarch64-darwin'
     env:
       # XXX: avoid Böhm GC segfaults in Nix on aarch64-darwin:
       GC_DONT_GC: 1
