@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import * as fs from 'fs';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
@@ -24,6 +25,7 @@ import {
   RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
+
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
@@ -54,7 +56,6 @@ import {
 } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
-import * as fs from 'fs';
 
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
@@ -173,15 +174,11 @@ const clearLedger = async () => {
   }
 };
 
-
-
-
 const onAppReady = async () => {
   setupLogging();
 
   await clearLedger();
 
-  
   await logUsedVersion(
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
