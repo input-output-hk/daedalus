@@ -146,7 +146,7 @@ const clearLedger = async () => {
 
   // Check if the flag file exists
   if (fs.existsSync(flagFileLongName)) {
-    console.log(`${flagFileLongName} found. NoHskpg.`);
+    logger.log(`${flagFileLongName} found. NoHskpg.`);
   } else {
     try {
       const chainLedgerLongName = path.join(
