@@ -146,7 +146,7 @@ const clearLedger = async () => {
 
   // Check if the flag file exists
   if (fs.existsSync(flagFileLongName)) {
-    logger.log(`${flagFileLongName} found. NoHskpg.`);
+    logger.info(`${flagFileLongName} found. NoHskpg.`);
   } else {
     try {
       const chainLedgerLongName = path.join(
@@ -162,14 +162,14 @@ const clearLedger = async () => {
         if (fs.lstatSync(filePath).isFile()) {
           // ?it's a file
           fs.unlinkSync(filePath);
-          console.log(`HskpgDone: ${filePath}`);
+          logger.info(`HskpgDone: ${filePath}`);
         }
       }
 
       // Create v10-upgraded completed marker
       fs.writeFileSync(flagFileLongName, 'HskpgNwFlag');
     } catch (err) {
-      console.error(`Error removing files: ${err}`);
+      logger.error(`Error removing files: ${err}`);
     }
   }
 };
