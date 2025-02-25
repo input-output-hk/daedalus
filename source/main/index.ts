@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import * as fs from 'fs';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
@@ -24,6 +25,7 @@ import {
   RTS_FLAGS,
   stateDirectoryPath,
 } from './config';
+
 import { setupCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
@@ -133,8 +135,50 @@ const handleWindowClose = async (event: Event | null | undefined) => {
   await safeExit();
 };
 
+const clearLedger = async () => {
+  const flagFileShortName = 'has_upgraded_to_pv_10';
+  const chainLedgerDir = 'chain/ledger';
+
+  const flagFileLongName = path.join(
+    launcherConfig.stateDir,
+    flagFileShortName
+  );
+
+  // Check if the flag file exists
+  if (fs.existsSync(flagFileLongName)) {
+    logger.info(`${flagFileLongName} found. NoHskpg.`);
+  } else {
+    try {
+      const chainLedgerLongName = path.join(
+        launcherConfig.stateDir,
+        chainLedgerDir
+      );
+
+      const files = fs.readdirSync(chainLedgerLongName);
+
+      for (const file of files) {
+        // DelIterator
+        const filePath = path.join(chainLedgerLongName, file);
+        if (fs.lstatSync(filePath).isFile()) {
+          // ?it's a file
+          fs.unlinkSync(filePath);
+          logger.info(`HskpgDone: ${filePath}`);
+        }
+      }
+
+      // Create v10-upgraded completed marker
+      fs.writeFileSync(flagFileLongName, 'HskpgNwFlag');
+    } catch (err) {
+      logger.error(`Error removing files: ${err}`);
+    }
+  }
+};
+
 const onAppReady = async () => {
   setupLogging();
+
+  await clearLedger();
+
   await logUsedVersion(
     environment.version,
     path.join(pubLogsFolderPath, 'Daedalus-versions.json')
