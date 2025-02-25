@@ -2,11 +2,17 @@
 
 ## 7.1.0
 
+### Fixes
+
+- Added mechanism for recreating broken node's leger files ([PR 3276](https://github.com/input-output-hk/daedalus/pull/3276))
+
+### Features
+
+- Added support of CIP-129 for DRep IDs ([PR 3271](https://github.com/input-output-hk/daedalus/pull/3271))
+
 ### Chores
 
 - Introduced a potential fix for dynamic libraries on earlier macOS versions ([PR 3268](https://github.com/input-output-hk/daedalus/pull/3268))
-
-- Added support of CIP-129 for DRep IDs ([PR 3271](https://github.com/input-output-hk/daedalus/pull/3271))
 
 - Update `cardano-node` to 10.1.4, and `cardano-wallet` to v2025-01-09 ([PR 3270](https://github.com/input-output-hk/daedalus/pull/3270))
 
