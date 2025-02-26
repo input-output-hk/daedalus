@@ -2,17 +2,18 @@ import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { Messages } from '@trezor/transport';
 import { CardanoDRep, PROTO } from '@trezor/connect';
 import { map } from 'lodash';
+import { Cardano } from '@cardano-sdk/core';
 import {
-  derivationPathToString,
   CERTIFICATE_TYPE,
+  derivationPathToString,
   groupTokensByPolicyId,
 } from './hardwareWalletUtils';
 import type {
+  CoinSelectionAssetsType,
+  CoinSelectionCertificate,
   CoinSelectionInput,
   CoinSelectionOutput,
-  CoinSelectionCertificate,
   CoinSelectionWithdrawal,
-  CoinSelectionAssetsType,
 } from '../api/transactions/types';
 
 export const TrezorTransactionSigningMode = {
@@ -67,18 +68,18 @@ const parseVoteDelegation = (cert: CoinSelectionCertificate): CardanoDRep => {
     };
   }
 
-  const voteHash = utils.bech32_decodeAddress(cert.vote).toString('hex');
+  const { type, hash } = Cardano.DRepID.toCredential(Cardano.DRepID(cert.vote));
 
-  if (cert.vote.includes('_script')) {
+  if (type === Cardano.CredentialType.ScriptHash) {
     return {
       type: PROTO.CardanoDRepType.SCRIPT_HASH,
-      scriptHash: voteHash,
+      scriptHash: hash,
     };
   }
 
   return {
     type: PROTO.CardanoDRepType.KEY_HASH,
-    keyHash: voteHash,
+    keyHash: hash,
   };
 };
 

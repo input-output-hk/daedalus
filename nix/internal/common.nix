@@ -111,13 +111,6 @@ rec {
     inherit cluster;
   });
 
-  daedalus-installer = let
-    hsDaedalusPkgs = import ../../installers {
-      inherit pkgs daedalus-bridge;
-      inherit (pkgs) system;
-    };
-  in pkgs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
-
   tests = {
     runShellcheck = import ../tests/shellcheck.nix { src = ../.;};
   };

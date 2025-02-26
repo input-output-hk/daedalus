@@ -31,7 +31,6 @@ let
       internal.common.nodejs
       internal.common.yarn
       common.daedalus-bridge.${cluster}
-      common.daedalus-installer
       common.mock-token-metadata-server
       regenerateDevCerts
     ] ++ (with pkgs; [

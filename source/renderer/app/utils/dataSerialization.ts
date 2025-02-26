@@ -3,6 +3,7 @@ import blakejs from 'blakejs';
 import { encode } from 'borc';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { base58_decode } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
+import { Cardano } from '@cardano-sdk/core';
 import { AddressStyles } from '../domains/WalletAddress';
 import {
   derivationPathToLedgerPath,
@@ -182,11 +183,12 @@ const parseVoteDelegation = (vote: string): [number] | [number, Buffer] => {
   if (vote === 'abstain') return [2];
   if (vote === 'no_confidence') return [3];
 
-  const voteHash = Buffer.from(
-    utils.buf_to_hex(utils.bech32_decodeAddress(vote)),
-    'hex'
-  );
-  return [vote.includes('_script') ? 1 : 0, voteHash];
+  const { type, hash } = Cardano.DRepID.toCredential(Cardano.DRepID(vote));
+
+  return [
+    type === Cardano.CredentialType.ScriptHash ? 1 : 0,
+    Buffer.from(hash, 'hex'),
+  ];
 };
 
 export function toTxCertificate(cert: {

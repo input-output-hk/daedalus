@@ -33,9 +33,13 @@ export const WalletSyncStateStatuses: {
 export const WalletDelegationStatuses: {
   DELEGATING: DelegationStatus;
   NOT_DELEGATING: DelegationStatus;
+  VOTING: DelegationStatus;
+  VOTING_AND_DELEGATING: DelegationStatus;
 } = {
   DELEGATING: 'delegating',
   NOT_DELEGATING: 'not_delegating',
+  VOTING: 'voting',
+  VOTING_AND_DELEGATING: 'voting_and_delegating',
 };
 export type HwDeviceStatus =
   | 'connecting'
@@ -234,10 +238,12 @@ export default class Wallet {
 
   @computed
   get isDelegating(): boolean {
-    return this.lastDelegationStakePoolStatus
-      ? this.lastDelegationStakePoolStatus ===
-          WalletDelegationStatuses.DELEGATING
-      : this.delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
+    const statusToCheck = (this.lastDelegationStakePoolStatus ||
+      this.delegationStakePoolStatus) as DelegationStatus;
+    return [
+      WalletDelegationStatuses.DELEGATING,
+      WalletDelegationStatuses.VOTING_AND_DELEGATING,
+    ].includes(statusToCheck);
   }
 
   @computed

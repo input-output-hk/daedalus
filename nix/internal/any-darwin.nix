@@ -10,7 +10,7 @@ let
   inherit (pkgs) lib;
 
   inherit (common)
-    daedalus-bridge daedalus-installer launcherConfigs mock-token-metadata-server
+    launcherConfigs mock-token-metadata-server
     cardanoNodeVersion cardanoWalletVersion;
 
   inherit (common) originalPackageJson electronVersion electronChromedriverVersion commonSources;
@@ -107,19 +107,123 @@ in rec {
 
   darwin-launcher = pkgs.callPackage ./darwin-launcher.nix {};
 
+  nix-bundle-exe-same-dir = pkgs.runCommand "nix-bundle-exe-same-dir" {} ''
+    cp -R ${inputs.nix-bundle-exe} $out
+    chmod -R +w $out
+    sed -r 's+@executable_path/\$relative_bin_to_lib/\$lib_dir+@executable_path+g' -i $out/bundle-macos.sh
+  '';
+
+  # XXX: they cannot be a symlinks, because:
+  #   1) cardano-launcher looks at its own `realpath` to determine DAEDALUS_INSTALL_DIRECTORY,
+  #   2) symlinks under Contents/MacOS break code signing, and notarization.
+  mkBundle = exeName: target: let
+    unbundled = pkgs.linkFarm "exes" { "bin/${exeName}" = target; };
+  in (import nix-bundle-exe-same-dir {
+    inherit pkgs;
+    bin_dir = "bundle";
+    exe_dir = "_unused_";
+    lib_dir = "bundle";
+  } unbundled).overrideAttrs (drv: {
+      buildCommand = (
+        builtins.replaceStrings
+          ["'${unbundled}/bin'"]
+          ["'${unbundled}/bin' -follow"]
+          drv.buildCommand
+      ) + ''
+        mv $out/bundle/* $out/
+        rmdir $out/bundle
+        ${moveDylibsToSubdir exeName}
+      '';
+  });
+
+  moveDylibsToSubdir = exeName: ''
+    (
+      export PATH=${lib.makeBinPath (with pkgs; [ darwin.cctools darwin.binutils darwin.sigtool nukeReferences ])}:"$PATH"
+
+      cd $out
+      mkdir -p ${exeName}-lib
+      mv *.dylib ${exeName}-lib/
+      otool -L ${exeName} \
+        | { grep -E '^\s*@executable_path' || true ; } \
+        | sed -r 's/^\s*//g ; s/ \(.*//g' \
+        | while IFS= read -r lib ; do
+            install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@executable_path/,@executable_path/${exeName}-lib/,g')" ${exeName}
+          done
+      nuke-refs ${exeName}
+      codesign -f -s - ${exeName} || true
+
+      cd ${exeName}-lib
+      ls *.dylib | while IFS= read -r dylib ; do
+        otool -L "$dylib" \
+          | { grep -E '^\s*@executable_path' || true ; } \
+          | sed -r 's/^\s*//g ; s/ \(.*//g' \
+          | while IFS= read -r lib ; do
+              install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@executable_path/,@loader_path/,g')" "$dylib"
+            done
+        nuke-refs "$dylib"
+        codesign -f -s - "$dylib" || true
+      done
+    )
+  '';
+
+  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher + "/bin/cardano-launcher");
+  bundle-cardano-node     = mkBundle "cardano-node"     (lib.getExe common.cardano-node);
+  bundle-cardano-cli      = mkBundle "cardano-cli"      (lib.getExe common.cardano-cli);
+  bundle-cardano-address  = mkBundle "cardano-address"  (lib.getExe common.cardano-address);
+  bundle-mock-token-metadata-server = mkBundle "mock-token-metadata-server" (lib.getExe common.mock-token-metadata-server);
+  bundle-local-cluster              = mkBundle "local-cluster"              (lib.getExe common.walletPackages.local-cluster);
+
+  # Unfortunately they bundle it upstream, but not in a subdir:
+  bundle-cardano-wallet = pkgs.runCommandNoCC "bundle-cardano-wallet" {} ''
+    cp -r ${common.cardano-wallet}/bin $out
+    chmod -R +w $out
+    ${moveDylibsToSubdir "cardano-wallet"}
+  '';
+
+  # HID.node and others depend on `/nix/store`, we have to bundle them, too:
+  bundleNodeJsNativeModule = pkgs.writeShellScript "bundleNodeJsNativeModule" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+    target="$1"
+    export bin_dir="bundle"
+    export exe_dir="_unused_"
+    export lib_dir="bundle"
+    export PATH=${lib.makeBinPath (with pkgs; [ darwin.cctools darwin.binutils darwin.sigtool nukeReferences ])}:"$PATH"
+    tmpdir=$(mktemp -d)
+    cp ${nix-bundle-exe-same-dir}/bundle-macos.sh "$tmpdir"/
+    chmod -R +w "$tmpdir"
+    sed -r 's/@executable_path/@loader_path/g' -i "$tmpdir"/bundle-macos.sh
+    bash "$tmpdir"/bundle-macos.sh "$tmpdir" "$target"
+    rm "$tmpdir"/bundle-macos.sh
+
+    # We can’t have dots in directory names, or they’re interpreted as bundles, and code signing fails:
+    libDirName="$(basename "$target" | tr . -)-lib"
+
+    mv "$tmpdir/bundle" "$(dirname "$target")/$libDirName"
+    rmdir "$tmpdir"
+    rm "$target"
+    mv "$(dirname "$target")/$libDirName/$(basename "$target")" "$target"
+
+    otool -L "$target" \
+      | { grep -E '^\s*@loader_path' || true ; } \
+      | sed -r 's/^\s*//g ; s/ \(.*//g' \
+      | while IFS= read -r lib ; do
+          install_name_tool -change "$lib" "$(sed <<<"$lib" -r 's,@loader_path/,@loader_path/'"$libDirName"'/,g')" "$target"
+        done
+  '';
+
   package = genClusters (cluster: let
     pname = "daedalus";
   in pkgs.stdenv.mkDerivation {
     name = pname;
     src = srcWithoutNix;
-    nativeBuildInputs = [ yarn nodejs daedalus-installer ]
-      ++ (with pkgs; [ python3 perl pkgconfig darwin.cctools xcbuild ]);
+    nativeBuildInputs = [ yarn nodejs ]
+      ++ (with pkgs; [ python3 perl pkgconfig darwin.cctools xcbuild jq ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
       libobjc
     ]) ++ [
-      daedalus-bridge.${cluster}
       darwin-launcher
       mock-token-metadata-server
     ];
@@ -141,21 +245,101 @@ in rec {
 
       ${common.temporaryNodeModulesPatches}
 
-      export DEVX_FIXME_DONT_YARN_INSTALL=1
       (
         cd installers/
         cp -r ${launcherConfigs.${cluster}.configFiles}/. ./.
 
-        # make-installer needs to see `bin/nix-store` to break all references to dylibs inside /nix/store:
-        export PATH="${lib.makeBinPath [ pkgs.nixUnstable ]}:$PATH"
-
-        make-installer --cardano ${daedalus-bridge.${cluster}} \
-          --build-rev-short ${sourceLib.buildRevShort} \
-          --build-counter ${toString sourceLib.buildCounter} \
-          --cluster ${cluster} \
-          --out-dir doesnt-matter \
-          --dont-pkgbuild
+        echo "Creating icons ..."
+        /usr/bin/iconutil --convert icns --output icons/electron.icns "icons/${cluster}.iconset"
       )
+
+      mkdir -p release
+      echo "Installing nodejs dependencies..."
+      echo "Running electron packager script..."
+      export "NODE_ENV" "production"
+      yarn build:electron
+      yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
+      echo "Size of Electron app is $(du -sh release)"
+      find -name '*.node'
+
+      pathtoapp=release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+      mkdir -p "$pathtoapp"/Contents/Resources/app/node_modules
+      jq -r '.[]' ${./runtime-nodejs-deps.json} | sed -r 's,^,node_modules/,' | xargs -d '\n' cp -r -t "$pathtoapp"/Contents/Resources/app/node_modules/
+
+      mkdir -p "$pathtoapp"/Contents/Resources/app/build
+
+      for f in \
+        "usb/build/Release/usb_bindings.node" \
+        "node-hid/build/Release/HID.node" \
+        "usb-detection/build/Release/detection.node" \
+        ; do
+        cp node_modules/"$f" "$pathtoapp"/Contents/Resources/app/build/
+      done
+
+      jq >tmp-package.json <"$pathtoapp/Contents/Resources/app/package.json" \
+        --arg name ${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} \
+        '.productName = $name'
+      mv tmp-package.json "$pathtoapp/Contents/Resources/app/package.json"
+
+      dir="$pathtoapp/Contents/MacOS"
+      dataDir="$pathtoapp/Contents/Resources"
+
+      mkdir -p "$dir" "$dataDir"
+
+      echo "Preparing files ..."
+      cp installers/launcher-config.yaml "$dataDir"/
+
+      cp -r ${bundle-cardano-launcher}/. "$dir"/
+      cp -r ${bundle-cardano-node    }/. "$dir"/
+      cp -r ${bundle-cardano-cli     }/. "$dir"/
+      cp -r ${bundle-cardano-address }/. "$dir"/
+      cp -r ${bundle-cardano-wallet  }/. "$dir"/
+
+      ${lib.optionalString (cluster == "selfnode") ''
+        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/
+        cp -r ${bundle-local-cluster             }/. "$dir"/
+      ''}
+
+      cp installers/{config.yaml,genesis.json,topology.yaml} "$dataDir"/
+      ${if (cluster != "selfnode") then ''
+        cp installers/{genesis-byron.json,genesis-shelley.json,genesis-alonzo.json} "$dataDir"/
+        cp installers/genesis-conway.json "$dataDir"/ || true
+      '' else ''
+        cp installers/{signing.key,delegation.cert} "$dataDir"/
+        cp -f ${./../../utils/cardano/selfnode}/token-metadata.json "$dir"/
+      ''}
+
+      chmod -R +w "$dir"
+      rm -r "$dataDir/app/installers"
+
+      for f in "usb_bindings.node" "detection.node" "HID.node" ; do
+        (
+          cd "$dataDir"/app/build/
+          mv "$f" ../../../MacOS/"$f"
+          # TODO: why is/was this "reverse" symlink needed? does it make sense?
+          ln -s   ../../../MacOS/"$f" ./
+        )
+        ${bundleNodeJsNativeModule} "$dir/$f"
+      done
+
+      # TODO: why is/was this "reverse" symlink needed? does it make sense?
+      (
+        cd "$dataDir"/app/node_modules/usb-detection/build/Release/
+        rm detection.node
+        ln -sfn ../../../../../../MacOS/detection.node
+      )
+
+      mv "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
+      chmod +x "$dir"/Frontend
+
+      cat ${pkgs.writeText "helper" ''
+        #!/usr/bin/env bash
+        mkdir -p "${launcherConfigs.${cluster}.installerConfig.dataDir}/Secrets-1.0"
+        mkdir -p "${launcherConfigs.${cluster}.installerConfig.dataDir}/Logs/pub"
+      ''} >"$dataDir"/helper
+      chmod +x "$dataDir"/helper
+
+      cp ${darwin-launcher}/bin/darwin-launcher "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}
     '';
     installPhase = ''
       mkdir -p $out/Applications/
