@@ -38,7 +38,7 @@ in rec {
     else "dirty";
   # XXX: inputs.self.revCount is not available in Cicero, let’s use a counter incrementing every hour:
   buildCounter =
-    if inputs.self ? shortRev
+    if inputs.self ? lastModified
     then (inputs.self.lastModified - daedalusEpoch) / (60 * 60)
     else 0;
 

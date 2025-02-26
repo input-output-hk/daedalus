@@ -7,7 +7,6 @@ import qualified System.Info                      as Sys
 import           Turtle                              (export)
 import qualified System.IO as IO
 
-import qualified MacInstaller
 import qualified WindowsInstaller
 import           Data.Yaml                 (decodeFileThrow)
 
@@ -20,7 +19,6 @@ main = do
   IO.hSetEncoding IO.stdout IO.utf8
   let os = case Sys.os of
              "linux"   -> Linux64
-             "darwin"  -> Macos64
              "mingw32" -> Win64
              _         -> error ("Unsupported OS: " <> pack Sys.os)
 
@@ -43,5 +41,4 @@ genSignedInstaller os options'= do
     export "NETWORK" (clusterNetwork $ oCluster options')
     case os of
         Linux64 -> putStrLn ("Use default.nix, please." :: String)
-        Macos64 -> MacInstaller.main options'
         Win64   -> WindowsInstaller.main options'
