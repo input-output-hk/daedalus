@@ -50,7 +50,7 @@ export const VotingFooterLinks = injectIntl(
         label: intl.formatMessage(messages.community),
       },
       {
-        url: 'https://cardano.ideascale.com/',
+        url: 'https://app.preprod.projectcatalyst.io/',
         label: intl.formatMessage(messages.projects),
       },
     ];

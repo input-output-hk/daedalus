@@ -13,7 +13,7 @@ export const messages = defineMessages({
   },
   viewResultsLinkURL: {
     id: 'voting.resultsPhase.viewResultsLinkURL',
-    defaultMessage: 'https://cardano.ideascale.com/a/pages/results',
+    defaultMessage: 'https://projectcatalyst.io/funds',
     description: 'View results link',
   },
 });

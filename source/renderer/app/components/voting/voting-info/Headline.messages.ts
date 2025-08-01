@@ -25,7 +25,7 @@ export const messages = defineMessages({
   },
   learnMoreLinkUrl: {
     id: 'voting.info.learnMoreLinkUrl',
-    defaultMessage: '!!!https://cardano.ideascale.com/a/index',
+    defaultMessage: '!!!https://app.preprod.projectcatalyst.io',
     description: 'Learn more link url for registration steps',
   },
 });
