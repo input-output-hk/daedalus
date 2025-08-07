@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Added the links to app.projectcatalyst.io ([PR 3286](https://github.com/input-output-hk/daedalus/pull/3286))
+
 ## 7.1.0
 
 ### Chores
