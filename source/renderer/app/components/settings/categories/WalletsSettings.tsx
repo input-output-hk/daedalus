@@ -78,7 +78,7 @@ class WalletSettings extends Component<Props> {
       const currencyData = {
         label: `${code.toUpperCase()} - ${name}`,
         value: code,
-      }
+      };
       currencyOptions.push(currencyData);
     });
 
