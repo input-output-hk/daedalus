@@ -4,6 +4,8 @@
 
 ### Chores
 
+- Update `cardano-node` to 10.2.1 and `cardano-wallet` to v2025-03-31 ([PR 3288](https://github.com/input-output-hk/daedalus/pull/3288))
+
 - Added the links to app.projectcatalyst.io ([PR 3286](https://github.com/input-output-hk/daedalus/pull/3286))
 
 ## 7.1.0

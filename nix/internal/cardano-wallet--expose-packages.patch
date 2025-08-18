@@ -1,0 +1,20 @@
+diff --git a/flake.nix b/flake.nix
+index 76b05e4d73..03fd75e9e7 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -370,6 +370,7 @@
+                     tests = lib.collect lib.isDerivation windowsPackages.tests;
+                     benchmarks = lib.collect lib.isDerivation windowsPackages.benchmarks;
+                   };
++                  inherit windowsPackages;
+                 };
+             }
+             # macos is never cross-compiled
+@@ -434,6 +435,7 @@
+               inherit pkgs;
+               project = walletProject;
+             };
++            musl64Packages = mkPackages walletProject.projectCross.musl64;
+           }) // {
+             # Continuous integration builds
+             ci.tests.all = pkgs.releaseTools.aggregate {
