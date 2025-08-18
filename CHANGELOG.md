@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fixed a blank screen issue ([PR 3289](https://github.com/input-output-hk/daedalus/pull/3289))
+
 ### Chores
 
 - Update `cardano-node` to 10.2.1 and `cardano-wallet` to v2025-03-31 ([PR 3288](https://github.com/input-output-hk/daedalus/pull/3288))
