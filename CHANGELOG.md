@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 7.2.0
 
 ### Fixes
 
