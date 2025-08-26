@@ -392,9 +392,9 @@ in rec {
   makeSignedInstaller = genClusters (cluster: pkgs.writeShellScriptBin "make-signed-installer" (let
 
     # FIXME: in the future this has to be done better, now let’s reuse the Buildkite legacy:
-    credentials = "/var/lib/buildkite-agent/signing.sh";
-    codeSigningConfig = "/var/lib/buildkite-agent/code-signing-config.json";
-    signingConfig = "/var/lib/buildkite-agent/signing-config.json";
+    credentials = "/var/lib/buildkite-agent-default/signing.sh";
+    codeSigningConfig = "/var/lib/buildkite-agent-default/code-signing-config.json";
+    signingConfig = "/var/lib/buildkite-agent-default/signing-config.json";
     shallSignPredicate = "[ -f ${credentials} ] && [ -f ${codeSigningConfig} ] && [ -f ${signingConfig} ]";
     bashSetup = ''
       set -o errexit
@@ -451,7 +451,7 @@ in rec {
       if ${shallSignPredicate} ; then
         echo "Signing installer…"
 
-        # FIXME: this doesn’t work outside of `buildkite-agent`, it seems:
+        # FIXME: this doesn’t work outside of `buildkite-agent-default`, it seems:
         #(
         #  source ${credentials}
         #  security unlock-keychain -p "$SIGNING" "$signingKeyChain"
@@ -473,7 +473,7 @@ in rec {
     cd /
     ${bashSetup}
     if ${shallSignPredicate} && [ "$USER" == "root" ]; then
-      exec sudo -u buildkite-agent ${packAndSign}
+      exec sudo -u buildkite-agent-default ${packAndSign}
     else
       exec ${packAndSign}
     fi
