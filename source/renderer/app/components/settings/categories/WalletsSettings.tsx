@@ -70,10 +70,18 @@ class WalletSettings extends Component<Props> {
       onToggleCurrencyIsActive,
       onOpenExternalLink,
     } = this.props;
-    const currencyOptions = map(currencyList, ({ code, name }) => ({
-      label: `${code.toUpperCase()} - ${name}`,
-      value: code,
-    }));
+
+    const currencyOptions = [];
+    map(currencyList, ({ code, name }) => {
+      // Prevent empty currency data from being displayed
+      if (!code || !name) return;
+      const currencyData = {
+        label: `${code.toUpperCase()} - ${name}`,
+        value: code,
+      };
+      currencyOptions.push(currencyData);
+    });
+
     return (
       <div className={styles.component}>
         <div className={styles.label}>
