@@ -43,7 +43,7 @@ let
   fromCardanoPlayground = envName: let
     originalFiles = builtins.path {
       name = "cardano-playground-config-${envName}";
-      path = cardano-playground + ("/static/book.play.dev.cardano.org/environments/" + envName);
+      path = cardano-playground + ("/docs/environments/" + envName);
     };
 
     originalNodeConfig = builtins.fromJSON (builtins.unsafeDiscardStringContext (
@@ -63,6 +63,7 @@ let
     cardanoEnv = {
       inherit nodeConfig;
       topologyFile = originalFiles + "/topology.json";
+      peerSnapshotFile = originalFiles + "/peer-snapshot.json";
       metadataUrl = tokenMetadataServers.${envName};
     };
   };
@@ -267,6 +268,9 @@ let
       cp ${genesisFile} $out/genesis.json
       cp $nodeConfigPath $out/config.yaml
       cp $topologyFile $out/topology.yaml
+      ${lib.optionalString (envCfg ? peerSnapshotFile) ''
+        cp ${envCfg.peerSnapshotFile} $out/peer-snapshot.json
+      ''}
       ${lib.optionalString (network == "selfnode") ''
         cp ${envCfg.delegationCertificate} $out/delegation.cert
         cp ${envCfg.signingKey} $out/signing.key
