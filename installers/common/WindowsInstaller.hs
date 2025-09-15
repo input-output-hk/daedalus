@@ -229,6 +229,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "genesis-byron.json"
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
+                      file [] "peer-snapshot.json"
                     file [] "libsodium-23.dll"
                     file [] "libsecp256k1-2.dll"
                     when (clusterName == Selfnode) $ do
