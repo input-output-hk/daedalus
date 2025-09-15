@@ -289,15 +289,15 @@ in rec {
       echo "Preparing files ..."
       cp installers/launcher-config.yaml "$dataDir"/
 
-      cp -r ${bundle-cardano-launcher}/. "$dir"/
-      cp -r ${bundle-cardano-node    }/. "$dir"/
-      cp -r ${bundle-cardano-cli     }/. "$dir"/
-      cp -r ${bundle-cardano-address }/. "$dir"/
-      cp -r ${bundle-cardano-wallet  }/. "$dir"/
+      cp -r ${bundle-cardano-launcher}/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-node    }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-cli     }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-address }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-wallet  }/. "$dir"/ && chmod -R +w "$dir/"
 
       ${lib.optionalString (cluster == "selfnode") ''
-        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/
-        cp -r ${bundle-local-cluster             }/. "$dir"/
+        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/ && chmod -R +w "$dir/"
+        cp -r ${bundle-local-cluster             }/. "$dir"/ && chmod -R +w "$dir/"
       ''}
 
       cp installers/{config.yaml,genesis.json,topology.yaml} "$dataDir"/
