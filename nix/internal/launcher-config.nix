@@ -65,7 +65,9 @@ let
       topologyFile = originalFiles + "/topology.json";
       peerSnapshotFile = originalFiles + "/peer-snapshot.json";
       metadataUrl = tokenMetadataServers.${envName};
-    };
+    } // (let
+      checkpointsFile = originalFiles + "/checkpoints.json";
+    in if builtins.pathExists checkpointsFile then { inherit checkpointsFile; } else {});
   };
 
   dirSep = if os == "windows" then "\\" else "/";
@@ -270,6 +272,9 @@ let
       cp $topologyFile $out/topology.yaml
       ${lib.optionalString (envCfg ? peerSnapshotFile) ''
         cp ${envCfg.peerSnapshotFile} $out/peer-snapshot.json
+      ''}
+      ${lib.optionalString (envCfg ? checkpointsFile) ''
+        cp ${envCfg.checkpointsFile} $out/checkpoints.json
       ''}
       ${lib.optionalString (network == "selfnode") ''
         cp ${envCfg.delegationCertificate} $out/delegation.cert
