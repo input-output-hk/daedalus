@@ -213,6 +213,9 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                   detailPrint "Removing previously installed version"
                   rmdir [Recursive] "$INSTDIR"
 
+                -- FIXME: Let's make it recursively take all files from a single install directory…
+                -- FIXME: Why the repetition?
+
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
@@ -224,6 +227,8 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
+                    when (clusterName == Mainnet) $ do
+                      file [] "checkpoints.json"
                     when (clusterName /= Selfnode) $ do
                       file [NonFatal] "genesis-conway.json"
                       file [] "genesis-byron.json"
