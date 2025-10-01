@@ -9,7 +9,7 @@
     cardano-node-override.flake = false;
     cardano-playground.url = "github:input-output-hk/cardano-playground/56ebfef5595c43014029b039ade01b0ef06233e0";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
-    cardano-shell.url = "github:input-output-hk/cardano-shell/0d1d5f036c73d18e641412d2c58d4acda592d493";
+    cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
     tullia.url = "github:input-output-hk/tullia";
     tullia.flake = false; # otherwie, +1k dependencies in flake.lock…

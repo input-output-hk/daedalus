@@ -166,7 +166,7 @@ in rec {
     )
   '';
 
-  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher + "/bin/cardano-launcher");
+  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-launcher + "/bin/cardano-launcher");
   bundle-cardano-node     = mkBundle "cardano-node"     (lib.getExe common.cardano-node);
   bundle-cardano-cli      = mkBundle "cardano-cli"      (lib.getExe common.cardano-cli);
   bundle-cardano-address  = mkBundle "cardano-address"  (lib.getExe common.cardano-address);

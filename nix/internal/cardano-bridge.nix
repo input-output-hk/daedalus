@@ -1,4 +1,4 @@
-{ target, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
+{ target, runCommandCC, cardano-wallet, cardano-node, cardano-launcher, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
 
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
@@ -11,7 +11,7 @@ runCommandCC "daedalus-cardano-bridge" {
   echo ${cardano-wallet.version} > $out/version
   cp ${cardano-wallet}/bin/* .
   cp -f ${cardano-address}/bin/cardano-address* .
-  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/* .
+  cp -f ${cardano-launcher}/bin/* .
   cp -f ${cardano-node}/bin/* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) ''
@@ -30,13 +30,6 @@ runCommandCC "daedalus-cardano-bridge" {
 
     cp -f ${mock-token-metadata-server}/bin/* . || true
     cp -f ${./../../utils/cardano/selfnode}/token-metadata.json .
-  ''}
-  ${lib.optionalString (target == "x86_64-linux") ''
-    chmod +w -R .
-    for x in cardano-launcher; do
-      $STRIP $x
-      patchelf --shrink-rpath $x
-    done
   ''}
   ${lib.optionalString (target == "aarch64-darwin") ''
     chmod +w -R .
