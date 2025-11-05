@@ -213,6 +213,9 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                   detailPrint "Removing previously installed version"
                   rmdir [Recursive] "$INSTDIR"
 
+                -- FIXME: Let's make it recursively take all files from a single install directory…
+                -- FIXME: Why the repetition?
+
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
@@ -224,11 +227,14 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
+                    when (clusterName == Mainnet) $ do
+                      file [] "checkpoints.json"
                     when (clusterName /= Selfnode) $ do
                       file [NonFatal] "genesis-conway.json"
                       file [] "genesis-byron.json"
                       file [] "genesis-shelley.json"
                       file [] "genesis-alonzo.json"
+                      file [] "peer-snapshot.json"
                     file [] "libsodium-23.dll"
                     file [] "libsecp256k1-2.dll"
                     when (clusterName == Selfnode) $ do
@@ -240,16 +246,16 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{installDirecto
                       file [] "mock-token-metadata-server.exe"
                       file [] "token-metadata.json"
                 file [] "cardano-launcher.exe"
-                file [] "libatomic-1.dll"
                 file [] "libffi-8.dll"
                 file [] "libgmp-10.dll"
                 file [] "libstdc++-6.dll"
                 file [] "mcfgthread-12.dll"
                 file [] "libmcfgthread-1.dll"
-                file [] "libquadmath-0.dll"
-                file [] "libssp-0.dll"
+                file [] "libmcfgthread-minimal-1.dll"
                 file [] "libgcc_s_seh-1.dll"
                 file [] "zlib1.dll"
+                file [] "liblmdb.dll"
+                file [] "libz.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"

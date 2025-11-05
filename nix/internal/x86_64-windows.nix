@@ -167,7 +167,7 @@ in rec {
     inherit version;
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-7+vNhYbrizqhoIDL6vN7vE+Gq2duoYW5adMgOpJgw2w=";
+    outputHash = "sha256-6RVneGKjsEMYGfZSYg5mMafjl0itdZQXtzLPRdrawII=";
     buildInputs = [];
     dontUnpack = true;
     dontConfigure = true;

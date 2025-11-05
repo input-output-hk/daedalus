@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Update `cardano-node` to 10.5.1 and support `peer-snapshot.json` ([PR 3294](https://github.com/input-output-hk/daedalus/pull/3294))
+
 ## 7.2.0
 
 ### Fixes

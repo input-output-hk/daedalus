@@ -166,7 +166,7 @@ in rec {
     )
   '';
 
-  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher + "/bin/cardano-launcher");
+  bundle-cardano-launcher = mkBundle "cardano-launcher" (common.cardano-launcher + "/bin/cardano-launcher");
   bundle-cardano-node     = mkBundle "cardano-node"     (lib.getExe common.cardano-node);
   bundle-cardano-cli      = mkBundle "cardano-cli"      (lib.getExe common.cardano-cli);
   bundle-cardano-address  = mkBundle "cardano-address"  (lib.getExe common.cardano-address);
@@ -289,15 +289,15 @@ in rec {
       echo "Preparing files ..."
       cp installers/launcher-config.yaml "$dataDir"/
 
-      cp -r ${bundle-cardano-launcher}/. "$dir"/
-      cp -r ${bundle-cardano-node    }/. "$dir"/
-      cp -r ${bundle-cardano-cli     }/. "$dir"/
-      cp -r ${bundle-cardano-address }/. "$dir"/
-      cp -r ${bundle-cardano-wallet  }/. "$dir"/
+      cp -r ${bundle-cardano-launcher}/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-node    }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-cli     }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-address }/. "$dir"/ && chmod -R +w "$dir/"
+      cp -r ${bundle-cardano-wallet  }/. "$dir"/ && chmod -R +w "$dir/"
 
       ${lib.optionalString (cluster == "selfnode") ''
-        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/
-        cp -r ${bundle-local-cluster             }/. "$dir"/
+        cp -r ${bundle-mock-token-metadata-server}/. "$dir"/ && chmod -R +w "$dir/"
+        cp -r ${bundle-local-cluster             }/. "$dir"/ && chmod -R +w "$dir/"
       ''}
 
       cp installers/{config.yaml,genesis.json,topology.yaml} "$dataDir"/
