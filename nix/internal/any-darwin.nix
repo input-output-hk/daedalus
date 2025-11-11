@@ -304,6 +304,7 @@ in rec {
       ${if (cluster != "selfnode") then ''
         cp installers/{genesis-byron.json,genesis-shelley.json,genesis-alonzo.json} "$dataDir"/
         cp installers/genesis-conway.json "$dataDir"/ || true
+        cp installers/checkpoints.json "$dataDir"/ || true
       '' else ''
         cp installers/{signing.key,delegation.cert} "$dataDir"/
         cp -f ${./../../utils/cardano/selfnode}/token-metadata.json "$dir"/
