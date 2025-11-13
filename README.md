@@ -20,18 +20,19 @@ Daedalus - Cryptocurrency Wallet
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix develop` shell.
 
-1. Install nix using [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)
+1. Install upstream nix using [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)
    ```
-   $ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
-   sh -s -- install
+   $ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
    ```
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
-   $ sudo vi /etc/nix/nix.conf       # ..or any other editor, if you prefer
+   $ sudo vi /etc/nix/nix.custom.conf       # ..or any other editor, if you prefer
    ```
-   and then add the following 4 settings are set to:
+   and then add the following 5 settings are set to:
    ```
+   trusted-users = <your_user_id>
+
    substituters = https://cache.iog.io https://cache.nixos.org/
 
    trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
@@ -42,19 +43,35 @@ Daedalus - Cryptocurrency Wallet
    extra-platforms = x86_64-darwin aarch64-darwin
    ```
    
-3. Are you a MacOS user? Reload nix-daemon.
-   1. Stop the daemon
+3. Reload nix-daemon.
+   1. For MacOS
+      1. Stop the daemon
       ```bash
       sudo launchctl remove org.nixos.nix-daemon
       ```
-   2. Verify it's not running (only grep process should be listed)
+      2. Verify it's not running (only grep process should be listed)
       ```bash
       ps aux | grep nix-daemon
       ```
-   3. Start the daemon
+      3. Start the daemon
       ```bash
       sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
       ```
+   2. For Linux
+      1. Stop the daemon
+      ```bash
+      sudo systemctl stop nix-daemon.service nix-daemon.socket determinate-nixd.socket
+      ```
+      2. Verify it's not running (only grep process should be listed)
+      ```bash
+      ps aux | grep nix-daemon
+      ```
+      3. Start the sockets that will later auto-start the daemon
+      ```bash
+      sudo systemctl start nix-daemon.socket determinate-nixd.socket
+      ```
+
+
 
 4. Run `nix develop` with a correct argument or by using existing `package.json` scripts to load a shell with all the correct versions of all the required dependencies for development, e.g.:
     * `nix develop -L .#mainnet`
@@ -71,6 +88,14 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 2. Download certificate from https://docs.certifytheweb.com/docs/kb/kb-202109-letsencrypt/ and import to your keychain.
 
 #### Running Daedalus with Cardano Node
+
+**Notes:**
+
+If you get a chrome sandbox error when running Daedalus, you can disable the sandbox by setting the environment variable.
+
+```bash
+$ export ELECTRON_DISABLE_SANDBOX=true
+```
 
 ##### Selfnode
 
