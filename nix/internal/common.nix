@@ -132,15 +132,18 @@ rec {
 
   nodejs = let
     base = pkgs.nodejs_24;
-  in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
-    # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
-    # the pure `xcbuild` – without that, `blake2` doesn’t build,
-    # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-    patches = pkgs.lib.filter (patch: !(
-      pkgs.lib.hasInfix "bypass-xcodebuild" patch ||
-      pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
-    )) drv.patches;
-  });
+  in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base
+  # FIXME: is this still needed?
+  # .overrideAttrs (drv: {
+  #   # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
+  #   # the pure `xcbuild` – without that, `blake2` doesn’t build,
+  #   # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
+  #   patches = pkgs.lib.filter (patch: !(
+  #     pkgs.lib.hasInfix "bypass-xcodebuild" patch ||
+  #     pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
+  #   )) drv.patches;
+  # })
+  ;
 
   yarn =
     (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
