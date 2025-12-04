@@ -131,7 +131,7 @@ rec {
   #   };
 
   nodejs = let
-    base = pkgs.nodejs_22;
+    base = pkgs.nodejs_24;
   in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
     # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
     # the pure `xcbuild` – without that, `blake2` doesn’t build,
@@ -143,29 +143,28 @@ rec {
   });
 
   yarn =
-    # (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
-    #   # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
-    #   postFixup = (drv.postFixup or "") + ''
-    #     sed -r 's,#!/bin/sh,#!${pkgs.bash}/bin/sh,g' -i $out/libexec/yarn/lib/cli.js
-    #   '';
-    # });
-    pkgs.yarn;
+    (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
+      # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
+      postFixup = (drv.postFixup or "") + ''
+        sed -r 's,#!/bin/sh,#!${pkgs.bash}/bin/sh,g' -i $out/libexec/yarn/lib/cli.js
+      '';
+    })
+    ;
 
   yarn2nix =
-    # let
-    # # Nixpkgs master @ 2022-07-18
-    # # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
-    # source = pkgs.fetchzip {
-    #   url = "https://github.com/NixOS/nixpkgs/archive/e4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
-    #   hash = "sha256-X/nhnMCa1Wx4YapsspyAs6QYz6T/85FofrI6NpdPDHg=";
-    # };
-    # subdir = builtins.path { path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix"; };
-    # in
-    # import subdir {
-    #   inherit pkgs nodejs yarn;
-    #   allowAliases = true;
-    # };
-    pkgs.yarn2nix-moretea;
+    let
+      # # Nixpkgs master @ 2022-07-18
+      # # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
+      # source = pkgs.fetchzip {
+      #   url = "https://github.com/NixOS/nixpkgs/archive/e4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
+      #   hash = "sha256-X/nhnMCa1Wx4YapsspyAs6QYz6T/85FofrI6NpdPDHg=";
+      # };
+      subdir = builtins.path { path = pkgs.path + "/pkgs/development/tools/yarn2nix-moretea"; };
+    in
+    import subdir {
+      inherit pkgs nodejs yarn;
+      allowAliases = true;
+    };
 
   # To better cache node_modules, let’s only depend on package.json, and yarn.lock:
   srcLockfiles = pkgs.lib.cleanSourceWith {
