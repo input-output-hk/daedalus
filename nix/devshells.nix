@@ -38,8 +38,8 @@ let
       git python3 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-      pkgconfig
-      libusb
+      pkg-config
+      libusb1
     ] ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") || (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then [
       internal.darwin-launcher
       darwin.apple_sdk.frameworks.CoreServices

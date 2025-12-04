@@ -48,8 +48,8 @@ in rec {
     name = "daedalus-js";
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs wine64 ]
-      ++ (with pkgs; [ python3 pkgconfig unzip jq ]);
-    buildInputs = with pkgs; [ libusb ];
+      ++ (with pkgs; [ python3 pkg-config unzip jq ]);
+    buildInputs = with pkgs; [ libusb1 ];
     CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
     CARDANO_NODE_VERSION = common.cardanoNodeVersion;
     CI = "nix";
@@ -213,8 +213,8 @@ in rec {
     src = common.srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
-      ++ (with pkgs; [ python3 pkgconfig jq file procps ]);
-    buildInputs = with pkgs; [ libusb ];
+      ++ (with pkgs; [ python3 pkg-config jq file procps ]);
+    buildInputs = with pkgs; [ libusb1 ];
     configurePhase = common.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
       cp -r ${node_modules}/. ./

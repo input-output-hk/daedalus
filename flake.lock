@@ -20,17 +20,17 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1763488287,
-        "narHash": "sha256-fP592wXc5IaJFUFjRi9jbR9Gm8nI0oRU36j9bya2FsI=",
+        "lastModified": 1763920364,
+        "narHash": "sha256-NxJUfXFfZ0jXDbgTKMcinE5BRF/KbGS8KDCn1szC1/c=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "19d0c33a7f00856727344faf011f83cf30cfb06a",
+        "rev": "c0715c2b04628ce1946803b0a829b3e1445b5c4d",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "19d0c33a7f00856727344faf011f83cf30cfb06a",
+        "rev": "c0715c2b04628ce1946803b0a829b3e1445b5c4d",
         "type": "github"
       }
     },
@@ -71,15 +71,15 @@
     "flake-compat": {
       "flake": false,
       "locked": {
-        "lastModified": 1635892615,
-        "narHash": "sha256-harGbMZr4hzat2BWBU+Y5OYXlu+fVz7E4WeQzHi5o8A=",
-        "owner": "input-output-hk",
+        "lastModified": 1764712249,
+        "narHash": "sha256-DhsrZsMebdvpjZC2EzPsqiLGI84tD7kZz7zc6tTCmqg=",
+        "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "eca47d3377946315596da653862d341ee5341318",
+        "rev": "3b279e4317ccfa4865356387935310531357d919",
         "type": "github"
       },
       "original": {
-        "owner": "input-output-hk",
+        "owner": "edolstra",
         "repo": "flake-compat",
         "type": "github"
       }
@@ -102,16 +102,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1672844754,
-        "narHash": "sha256-o26WabuHABQsaHxxmIrR3AQRqDFUEdLckLXkVCpIjSU=",
+        "lastModified": 1764794491,
+        "narHash": "sha256-53ax34WU7ScLVbHWVuWgeJ6hHtKUJoRLd7mLvoqcnDE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e9ade2c8240e00a4784fac282a502efff2786bdc",
+        "rev": "db8ef220795ce3c1d0c96987dccd5534db780135",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixpkgs-22.11-darwin",
+        "ref": "nixpkgs-25.05-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -124,24 +124,7 @@
         "cardano-wallet-unpatched": "cardano-wallet-unpatched",
         "flake-compat": "flake-compat",
         "nix-bundle-exe": "nix-bundle-exe",
-        "nixpkgs": "nixpkgs",
-        "tullia": "tullia"
-      }
-    },
-    "tullia": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1677666696,
-        "narHash": "sha256-Oga/fHNJba7dM6HSz83RNv/UrUeGs1WRHUHbI8dCUqc=",
-        "owner": "input-output-hk",
-        "repo": "tullia",
-        "rev": "708d1ec45b17923d2452ba8f28795228ba8aafd5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "tullia",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

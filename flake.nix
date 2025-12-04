@@ -2,18 +2,16 @@
   description = "The open source wallet for ada, built to grow with the Cardano blockchain";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-node-override.url = "github:IntersectMBO/cardano-node/10.5.3";
     cardano-node-override.flake = false;
-    cardano-playground.url = "github:input-output-hk/cardano-playground/19d0c33a7f00856727344faf011f83cf30cfb06a";
+    cardano-playground.url = "github:input-output-hk/cardano-playground/c0715c2b04628ce1946803b0a829b3e1445b5c4d";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
-    tullia.url = "github:input-output-hk/tullia";
-    tullia.flake = false; # otherwie, +1k dependencies in flake.lock…
-    flake-compat.url = "github:input-output-hk/flake-compat";
+    flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     nix-bundle-exe.url = "github:3noch/nix-bundle-exe";
     nix-bundle-exe.flake = false;
