@@ -12,7 +12,7 @@ export type DeviceDetectionPayload = {
 
 const getDetector = () => {
   if (TransportNodeHid.isSupported()) {
-    logger.info('[HW-DEBUG] Using usb-detection');
+    logger.info('[HW-DEBUG] Using node-usb');
 
     return useEventDrivenDetection;
   }

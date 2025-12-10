@@ -288,7 +288,7 @@
     "tcp-port-used": "1.0.1",
     "unorm": "1.6.0",
     "url": "0.11.0",
-    "usb-detection": "4.13.0",
+    "usb": "2.16.0",
     "util": "0.12.4",
     "uuid": "8.3.2",
     "validator": "13.7.0"

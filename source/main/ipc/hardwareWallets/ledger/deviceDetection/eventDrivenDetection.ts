@@ -1,49 +1,25 @@
-import { ledgerUSBVendorId } from '@ledgerhq/devices';
-import usbDetect from 'usb-detection';
+import { usb, WebUSB } from 'usb';
+import { app } from 'electron';
 
 import { logger } from '../../../../utils/logging';
 import { DeviceTracker } from './deviceTracker';
 import { Detector } from './types';
 
-const deviceToLog = ({ productId, locationId, deviceAddress }) =>
-  `productId=${productId} locationId=${locationId} deviceAddress=${deviceAddress}`;
-
-let isMonitoring = false;
-
 const USB_EVENT_BUFFER_DELAY = 1500;
 
-const monitorUSBDevices = () => {
-  if (!isMonitoring) {
-    isMonitoring = true;
-    usbDetect.startMonitoring();
-  }
-};
+const deviceToLog = ({ deviceAddress, busNumber, deviceDescriptor }) =>
+  `productId=${deviceDescriptor.idProduct} busNumber=${busNumber} deviceAddress=${deviceAddress}`;
 
-const stopMonitoring = () => {
-  if (isMonitoring) {
-    // redeem the monitoring so the process can be terminated.
-    usbDetect.stopMonitoring();
-  }
-};
-
-// No better way for now. see https://github.com/LedgerHQ/ledgerjs/issues/434
-process.on('exit', () => {
-  stopMonitoring();
-});
-
-const addEvent = `add:${ledgerUSBVendorId}`;
-const removeEvent = `remove:${ledgerUSBVendorId}`;
-
-export const detectDevices: Detector = (onAdd, onRemove) => {
+export const detectDevices: Detector = async (onAdd, onRemove) => {
   let timeout;
-
-  monitorUSBDevices();
-
+  // Start device monitoring
+  const customWebUSB = new WebUSB({ allowAllDevices: true });
+  // Device tracking (isNew/Exist...)
   const deviceTracker = new DeviceTracker();
 
   const add = (device: usbDetect.Device) => {
     logger.info(
-      `[HW-DEBUG] USB-DETECTION ADDED DEVICE: ${deviceToLog(device)}`
+      `[HW-DEBUG] NODE-USB ADDED DEVICE: ${deviceToLog(device)}`
     );
 
     if (!timeout) {
@@ -63,7 +39,7 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
 
   const remove = (device: usbDetect.Device) => {
     logger.info(
-      `[HW-DEBUG] USB-DETECTION REMOVED DEVICE: ${deviceToLog(device)}`
+      `[HW-DEBUG] NODE-USB REMOVED DEVICE: ${deviceToLog(device)}`
     );
 
     if (timeout) {
@@ -78,14 +54,12 @@ export const detectDevices: Detector = (onAdd, onRemove) => {
     }
   };
 
-  usbDetect.on(addEvent, add);
-  usbDetect.on(removeEvent, remove);
+  usb.on('attach', add);
+  usb.on('detach', remove);
 
   return () => {
+    logger.info('[HW-DEBUG] LISTENER OFF');
     if (timeout) clearTimeout(timeout);
-    // @ts-expect-error not all EventEmitter methods are covered in its definition file
-    usbDetect.off(addEvent, add);
-    // @ts-expect-error not all EventEmitter methods are covered in its definition file
-    usbDetect.off(removeEvent, remove);
+    return customWebUSB;
   };
 };
