@@ -102,7 +102,6 @@
   "unicode-properties",
   "unicode-trie",
   "usb",
-  "usb-detection",
   "util-deprecate",
   "varuint-bitcoin",
   "whatwg-url",

@@ -28,8 +28,6 @@ sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
 electron-rebuild --force
 
-electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
-
 if [[ $system == *linux* ]]; then
   # We ship debug version because the release one has issues with Ledger Nano S
   electron-rebuild -w usb --force -s --debug
@@ -65,7 +63,6 @@ tryLink() {
 }
 
 tryLink   "usb"           "usb_bindings.node"
-tryLink   "usb-detection" "detection.node"
 tryLink   "node-hid"      "HID.node"
 
 if [[ $system == *linux* ]]; then

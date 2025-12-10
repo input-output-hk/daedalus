@@ -271,7 +271,6 @@ in rec {
       for f in \
         "usb/build/Release/usb_bindings.node" \
         "node-hid/build/Release/HID.node" \
-        "usb-detection/build/Release/detection.node" \
         ; do
         cp node_modules/"$f" "$pathtoapp"/Contents/Resources/app/build/
       done
@@ -323,13 +322,6 @@ in rec {
         )
         ${bundleNodeJsNativeModule} "$dir/$f"
       done
-
-      # TODO: why is/was this "reverse" symlink needed? does it make sense?
-      (
-        cd "$dataDir"/app/node_modules/usb-detection/build/Release/
-        rm detection.node
-        ln -sfn ../../../../../../MacOS/detection.node
-      )
 
       mv "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
       chmod +x "$dir"/Frontend

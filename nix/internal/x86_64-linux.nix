@@ -165,10 +165,6 @@ in rec {
       mkdir -p $out/share/daedalus/node_modules/node-hid/build
       cp node_modules/node-hid/build/Debug/HID_hidraw.node $out/share/daedalus/node_modules/node-hid/build
 
-      mkdir -p $out/share/daedalus/node_modules/usb-detection/build
-      # TODO: we took Release/detection.node before `rebuild-native-modules.sh` ever existed – is this still fine?
-      cp node_modules/usb-detection/build/Debug/detection.node $out/share/daedalus/node_modules/usb-detection/build
-
       find $out/share/daedalus/node_modules -type f -iname '*.node' | while IFS= read -r file ; do
         $STRIP "$file"
         patchelf --set-rpath ${relocatableElectron}/lib/electron/lib "$file"

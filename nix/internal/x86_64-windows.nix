@@ -388,7 +388,6 @@ in rec {
       #find -iname '*.node' | xargs file -L
 
       mkdir -p $out/build/Release
-      cp node_modules/usb-detection/build/Release/detection.node $out/build/Release/
       cp node_modules/usb/build/Release/usb_bindings.node        $out/build/Release/
       cp node_modules/node-hid/build/Release/HID.node            $out/build/Release/
 
