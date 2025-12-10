@@ -10,14 +10,14 @@ const USB_EVENT_BUFFER_DELAY = 1500;
 const deviceToLog = ({ deviceAddress, busNumber, deviceDescriptor }) =>
   `productId=${deviceDescriptor.idProduct} busNumber=${busNumber} deviceAddress=${deviceAddress}`;
 
-export const detectDevices: Detector = async (onAdd, onRemove) => {
+export const detectDevices: Detector = (onAdd, onRemove) => {
   let timeout;
   // Start device monitoring
   const customWebUSB = new WebUSB({ allowAllDevices: true });
   // Device tracking (isNew/Exist...)
   const deviceTracker = new DeviceTracker();
 
-  const add = (device: usbDetect.Device) => {
+  const add = (device) => {
     logger.info(`[HW-DEBUG] NODE-USB ADDED DEVICE: ${deviceToLog(device)}`);
 
     if (!timeout) {
@@ -35,7 +35,7 @@ export const detectDevices: Detector = async (onAdd, onRemove) => {
     }
   };
 
-  const remove = (device: usbDetect.Device) => {
+  const remove = (device) => {
     logger.info(`[HW-DEBUG] NODE-USB REMOVED DEVICE: ${deviceToLog(device)}`);
 
     if (timeout) {
