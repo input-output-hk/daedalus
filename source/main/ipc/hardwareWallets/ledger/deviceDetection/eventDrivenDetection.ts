@@ -18,9 +18,7 @@ export const detectDevices: Detector = async (onAdd, onRemove) => {
   const deviceTracker = new DeviceTracker();
 
   const add = (device: usbDetect.Device) => {
-    logger.info(
-      `[HW-DEBUG] NODE-USB ADDED DEVICE: ${deviceToLog(device)}`
-    );
+    logger.info(`[HW-DEBUG] NODE-USB ADDED DEVICE: ${deviceToLog(device)}`);
 
     if (!timeout) {
       // a time is needed for the device to actually be connectable over HID..
@@ -38,9 +36,7 @@ export const detectDevices: Detector = async (onAdd, onRemove) => {
   };
 
   const remove = (device: usbDetect.Device) => {
-    logger.info(
-      `[HW-DEBUG] NODE-USB REMOVED DEVICE: ${deviceToLog(device)}`
-    );
+    logger.info(`[HW-DEBUG] NODE-USB REMOVED DEVICE: ${deviceToLog(device)}`);
 
     if (timeout) {
       clearTimeout(timeout);
