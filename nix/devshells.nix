@@ -35,7 +35,7 @@ let
       regenerateDevCerts
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
-      git python3 curl jq
+      git python310 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       pkg-config

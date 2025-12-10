@@ -62,7 +62,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 perl pkg-config jq darwin.cctools xcbuild ]);
+      ++ (with pkgs; [ python310 perl pkg-config jq darwin.cctools xcbuild ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -218,7 +218,7 @@ in rec {
     name = pname;
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 perl pkg-config darwin.cctools xcbuild jq ]);
+      ++ (with pkgs; [ python310 perl pkg-config darwin.cctools xcbuild jq ]);
     buildInputs = (with pkgs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit

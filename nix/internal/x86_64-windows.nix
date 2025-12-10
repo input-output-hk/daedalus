@@ -48,7 +48,7 @@ in rec {
     name = "daedalus-js";
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs wine64 ]
-      ++ (with pkgs; [ python3 pkg-config unzip jq ]);
+      ++ (with pkgs; [ python310 pkg-config unzip jq ]);
     buildInputs = with pkgs; [ libusb1 ];
     CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
     CARDANO_NODE_VERSION = common.cardanoNodeVersion;
@@ -149,7 +149,7 @@ in rec {
       hash = "sha256-hA11dIOIL9sta+rwGb2EwWrEkRm6nvczpGmLZtr3nHI=";
     };
     buildInputs = [
-      (pkgs.python3.withPackages (ps: with ps; [ six ]))
+      (pkgs.python310.withPackages (ps: with ps; [ six ]))
     ];
     configurePhase = ":";
     buildPhase = ":";
@@ -213,7 +213,7 @@ in rec {
     src = common.srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
       ++ (with fresherPkgs; [ wineWowPackages.stableFull fontconfig winetricks samba /* samba for bin/ntlm_auth */ ])
-      ++ (with pkgs; [ python3 pkg-config jq file procps ]);
+      ++ (with pkgs; [ python310 pkg-config jq file procps ]);
     buildInputs = with pkgs; [ libusb1 ];
     configurePhase = common.setupCacheAndGypDirs + ''
       # Grab all cached `node_modules` from above:
@@ -316,7 +316,7 @@ in rec {
           ${mkSection "Setting WINEPATH"}
           export WINEPATH="$(winepath -w ${native.nodejs});$(winepath -w ${native.python})"
 
-          ${mkSection "Removing all symlinks to /nix/store (mostly python3)"}
+          ${mkSection "Removing all symlinks to /nix/store (mostly python310)"}
           find node_modules -type l >all-symlinks.lst
           paste all-symlinks.lst <(xargs <all-symlinks.lst readlink) | grep -F /nix/store | cut -f1 | xargs rm -v
           rm all-symlinks.lst

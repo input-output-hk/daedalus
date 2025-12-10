@@ -43,7 +43,7 @@ in rec {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkg-config jq ]);
+      ++ (with pkgs; [ python310 pkg-config jq ]);
     buildInputs = with pkgs; [ libusb1 ];
     configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches;
     buildPhase = ''
@@ -85,7 +85,7 @@ in rec {
     name = "daedalus-js";
     src = srcWithoutNix;
     nativeBuildInputs = [ yarn nodejs ]
-      ++ (with pkgs; [ python3 pkg-config jq ]);
+      ++ (with pkgs; [ python310 pkg-config jq ]);
     buildInputs = with pkgs; [ libusb1 ];
     CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
     CARDANO_NODE_VERSION = common.cardanoNodeVersion;
