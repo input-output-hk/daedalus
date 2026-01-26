@@ -1,5 +1,16 @@
-{ target, runCommandCC, cardano-wallet, cardano-node, cardano-launcher, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
-
+{
+  target,
+  runCommandCC,
+  cardano-wallet,
+  cardano-node,
+  cardano-launcher,
+  cardano-cli,
+  cardano-address,
+  lib,
+  local-cluster ? null,
+  mock-token-metadata-server,
+  darwin,
+}:
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
     node-version = cardano-node.passthru.identifier.version;
@@ -16,17 +27,25 @@ runCommandCC "daedalus-cardano-bridge" {
   cp -f ${cardano-cli}/bin/cardano-cli* .
   ${lib.optionalString (local-cluster != null) ''
 
-    ${if target == "x86_64-windows" then ''
-      # Recursive for selfnode shelley test data:
-      cp -rf ${local-cluster}/bin/* .
+    ${
+      if target == "x86_64-windows"
+      then ''
+        # Recursive for selfnode shelley test data:
+        cp -rf ${local-cluster}/bin/* .
 
-    '' else if target == "x86_64-linux" then ''
-      cp -f ${local-cluster}/bin/local-cluster .
+      ''
+      else if target == "x86_64-linux"
+      then ''
+        cp -f ${local-cluster}/bin/local-cluster .
 
-    '' else if target == "x86_64-darwin" || target == "aarch64-darwin" then ''
-      cp -f ${local-cluster}/bin/local-cluster .
+      ''
+      else if target == "x86_64-darwin" || target == "aarch64-darwin"
+      then ''
+        cp -f ${local-cluster}/bin/local-cluster .
 
-    '' else abort "Unknown target: ${target}"}
+      ''
+      else abort "Unknown target: ${target}"
+    }
 
     cp -f ${mock-token-metadata-server}/bin/* . || true
     cp -f ${./../../utils/cardano/selfnode}/token-metadata.json .

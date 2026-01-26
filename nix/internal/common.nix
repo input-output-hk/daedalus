@@ -41,7 +41,8 @@
         '');
         inherit (unpatched) rev shortRev lastModified lastModifiedDate;
       };
-    }).defaultNix;
+    })
+    .defaultNix;
 
   nodeFlake = let
     unpatched = inputs.cardano-node-override;
@@ -56,7 +57,8 @@
         '');
         inherit (unpatched) rev shortRev lastModified lastModifiedDate;
       };
-    }).defaultNix;
+    })
+    .defaultNix;
 
   walletPackages =
     {
@@ -64,7 +66,8 @@
       x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
       x86_64-darwin = walletFlake.packages.x86_64-darwin;
       aarch64-darwin = walletFlake.packages.aarch64-darwin;
-    }.${
+    }
+    .${
       targetSystem
     };
 
@@ -74,7 +77,8 @@
       x86_64-linux = nodeFlake.hydraJobs.x86_64-linux.musl;
       x86_64-darwin = nodeFlake.packages.x86_64-darwin;
       aarch64-darwin = nodeFlake.packages.aarch64-darwin;
-    }.${
+    }
+    .${
       targetSystem
     };
 
@@ -98,7 +102,8 @@
   cardano-shell =
     (flake-compat {
       src = inputs.cardano-shell;
-    }).defaultNix;
+    })
+    .defaultNix;
 
   cardano-launcher = cardano-shell.hydraJobs.cardano-launcher.${targetSystem};
 
@@ -122,7 +127,8 @@
           x86_64-linux = "linux";
           x86_64-darwin = "macos64";
           aarch64-darwin = "macos64-arm";
-        }.${
+        }
+        .${
           targetSystem
         };
     };
