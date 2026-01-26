@@ -3,16 +3,16 @@
     "cardano-node-override": {
       "flake": false,
       "locked": {
-        "lastModified": 1752857436,
-        "narHash": "sha256-YAAwDfzMMTeEQa0zHin7yo2nMdxONJ983tJ3NrP7K6E=",
+        "lastModified": 1764201974,
+        "narHash": "sha256-rsm/3pyU5a5gwMWuig9sJOA36otpgQpMbmh+sRzfoOo=",
         "owner": "IntersectMBO",
         "repo": "cardano-node",
-        "rev": "ca1ec278070baf4481564a6ba7b4a5b9e3d9f366",
+        "rev": "0c220b27a9b612bb94b557017452be4a97b640d4",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
-        "ref": "10.5.1",
+        "ref": "10.6.1",
         "repo": "cardano-node",
         "type": "github"
       }
@@ -54,16 +54,16 @@
     "cardano-wallet-unpatched": {
       "flake": false,
       "locked": {
-        "lastModified": 1743395731,
-        "narHash": "sha256-SdSIgci9IP2tmxiIs9YC/JtF4ih/Vyd7mU4G7/DesHo=",
+        "lastModified": 1765818086,
+        "narHash": "sha256-anooHB60bSBl6XiOWjklSlNoQtCcZYQ8ezidYK7DsBc=",
         "owner": "cardano-foundation",
         "repo": "cardano-wallet",
-        "rev": "1649791d8e9f14c8c97bd15a5687319672025652",
+        "rev": "b13cf08f7c8c3e59c408eaaf4307a71972e00e66",
         "type": "github"
       },
       "original": {
         "owner": "cardano-foundation",
-        "ref": "v2025-03-31",
+        "ref": "v2025-12-15",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -125,7 +125,28 @@
         "flake-compat": "flake-compat",
         "nix-bundle-exe": "nix-bundle-exe",
         "nixpkgs": "nixpkgs",
+        "treefmt-nix": "treefmt-nix",
         "tullia": "tullia"
+      }
+    },
+    "treefmt-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769353635,
+        "narHash": "sha256-J0G1ACrUK29M0THPAsz429eZX07GmR9Bs/b0pB3N0dQ=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "f46bb205f239b415309f58166f8df6919fa88377",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
       }
     },
     "tullia": {

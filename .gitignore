@@ -116,6 +116,10 @@ cardano-wallet
 # JS Launcher
 utils/js-launcher/state
 
+# Direnv cache
+
+.direnv
+
 # local development cluster
 
 state-cluster

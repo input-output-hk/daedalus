@@ -3,9 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
-    cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
+    cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-12-15";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
-    cardano-node-override.url = "github:IntersectMBO/cardano-node/10.5.1";
+    cardano-node-override.url = "github:IntersectMBO/cardano-node/10.6.1";
     cardano-node-override.flake = false;
     cardano-playground.url = "github:input-output-hk/cardano-playground/56ebfef5595c43014029b039ade01b0ef06233e0";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
@@ -17,20 +17,46 @@
     flake-compat.flake = false;
     nix-bundle-exe.url = "github:3noch/nix-bundle-exe";
     nix-bundle-exe.flake = false;
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs: let
     supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"];
     inherit (inputs.nixpkgs) lib;
+    genPkgs = system: inputs.nixpkgs.legacyPackages.${system};
+    mkTreefmt = system:
+      inputs.treefmt-nix.lib.evalModule (genPkgs system) {
+        projectRootFile = "flake.nix";
+        programs.alejandra.enable = true;
+        settings.global.excludes = [
+          "*.lock"
+          "*.patch"
+          "package-lock.json"
+          "go.mod"
+          "go.sum"
+          ".gitattributes"
+          ".gitignore"
+          ".gitmodules"
+          "LICENSE"
+        ];
+        settings.formatter.alejandra.includes = ["**/*.nix"];
+      };
   in {
-    internal = import ./nix/internal.nix { inherit inputs; };
+    formatter = lib.genAttrs supportedSystems (system: (mkTreefmt system).config.build.wrapper);
+    internal = import ./nix/internal.nix {inherit inputs;};
 
-    packages = lib.genAttrs supportedSystems (buildSystem:
-      import ./nix/packages.nix { inherit inputs buildSystem; }
+    packages = lib.genAttrs supportedSystems (
+      buildSystem:
+        import ./nix/packages.nix {inherit inputs buildSystem;}
     );
 
-    devShells = lib.genAttrs supportedSystems (targetSystem:
-      import ./nix/devshells.nix { inherit inputs targetSystem; }
+    devShells = lib.genAttrs supportedSystems (
+      targetSystem:
+        import ./nix/devshells.nix {
+          inherit inputs targetSystem;
+          treefmtEval = mkTreefmt targetSystem;
+        }
     );
 
     # Compatibility with older Nix:
