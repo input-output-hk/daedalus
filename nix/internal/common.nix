@@ -29,7 +29,7 @@
   flake-compat = import inputs.flake-compat;
 
   walletFlake = let
-    unpatched = inputs.cardano-wallet-unpatched;
+    unpatched = inputs.cardano-wallet;
   in
     (flake-compat {
       src = {
@@ -37,7 +37,6 @@
           cp -r ${unpatched} $out
           chmod -R +w $out
           cd $out
-          patch -p1 -i ${./cardano-wallet--expose-packages.patch}
         '');
         inherit (unpatched) rev shortRev lastModified lastModifiedDate;
       };

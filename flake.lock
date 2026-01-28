@@ -51,19 +51,19 @@
         "type": "github"
       }
     },
-    "cardano-wallet-unpatched": {
+    "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1765818086,
-        "narHash": "sha256-anooHB60bSBl6XiOWjklSlNoQtCcZYQ8ezidYK7DsBc=",
-        "owner": "cardano-foundation",
+        "lastModified": 1769436661,
+        "narHash": "sha256-9mUYX246+OhwHKWdkyff2II/x2EnZAD4K8kGjXHuQbI=",
+        "owner": "DripDropz",
         "repo": "cardano-wallet",
-        "rev": "b13cf08f7c8c3e59c408eaaf4307a71972e00e66",
+        "rev": "1daee340f92407e38b214aa9644d598a6812707b",
         "type": "github"
       },
       "original": {
-        "owner": "cardano-foundation",
-        "ref": "v2025-12-15",
+        "owner": "DripDropz",
+        "ref": "sl/expose-packages",
         "repo": "cardano-wallet",
         "type": "github"
       }
@@ -87,11 +87,11 @@
     "nix-bundle-exe": {
       "flake": false,
       "locked": {
-        "lastModified": 1682949567,
-        "narHash": "sha256-K9PT8LVvTLOm3gX9ZFxag0X85DFgB2vvJB+S12disWw=",
+        "lastModified": 1727401894,
+        "narHash": "sha256-NKdglYdwN4M7/UOZ8Ml3fuJT1MYXAb6aU4ccU920BjM=",
         "owner": "3noch",
         "repo": "nix-bundle-exe",
-        "rev": "3522ae68aa4188f4366ed96b41a5881d6a88af97",
+        "rev": "7f61fe91a73119e1e39d821f0d215d6186d01363",
         "type": "github"
       },
       "original": {
@@ -102,11 +102,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1672844754,
-        "narHash": "sha256-o26WabuHABQsaHxxmIrR3AQRqDFUEdLckLXkVCpIjSU=",
+        "lastModified": 1688392541,
+        "narHash": "sha256-lHrKvEkCPTUO+7tPfjIcb7Trk6k31rz18vkyqmkeJfY=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e9ade2c8240e00a4784fac282a502efff2786bdc",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
         "type": "github"
       },
       "original": {
@@ -121,7 +121,7 @@
         "cardano-node-override": "cardano-node-override",
         "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
-        "cardano-wallet-unpatched": "cardano-wallet-unpatched",
+        "cardano-wallet": "cardano-wallet",
         "flake-compat": "flake-compat",
         "nix-bundle-exe": "nix-bundle-exe",
         "nixpkgs": "nixpkgs",
@@ -136,11 +136,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769353635,
-        "narHash": "sha256-J0G1ACrUK29M0THPAsz429eZX07GmR9Bs/b0pB3N0dQ=",
+        "lastModified": 1769515380,
+        "narHash": "sha256-CWWK3PaQ7zhr+Jcf5zyaTR2cfRBXPo09H7+5nWApL8s=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "f46bb205f239b415309f58166f8df6919fa88377",
+        "rev": "9911802c2822def2eec3d22e2cafd1619ede94a5",
         "type": "github"
       },
       "original": {
@@ -152,11 +152,11 @@
     "tullia": {
       "flake": false,
       "locked": {
-        "lastModified": 1677666696,
-        "narHash": "sha256-Oga/fHNJba7dM6HSz83RNv/UrUeGs1WRHUHbI8dCUqc=",
+        "lastModified": 1684859161,
+        "narHash": "sha256-wOKutImA7CRL0rN+Ng80E72fD5FkVub7LLP2k9NICpg=",
         "owner": "input-output-hk",
         "repo": "tullia",
-        "rev": "708d1ec45b17923d2452ba8f28795228ba8aafd5",
+        "rev": "2964cff1a16eefe301bdddb508c49d94d04603d6",
         "type": "github"
       },
       "original": {
