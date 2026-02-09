@@ -131,14 +131,14 @@ List of all funded wallet recovery phrases can be found here: https://github.com
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent shell
 
-##### Flight
+##### Preview
 
-1. Run `yarn nix:flight` from `daedalus`.
+1. Run `yarn nix:preview` from `daedalus`.
 2. Run `yarn dev` from the subsequent shell
 
-##### Testnet
+##### Preprod
 
-1. Run `yarn nix:testnet` from `daedalus`.
+1. Run `yarn nix:preprod` from `daedalus`.
 2. Run `yarn dev` from the subsequent shell
 
 ##### Native token metadata server
