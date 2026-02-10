@@ -1,0 +1,248 @@
+{
+  "metadata": {
+    "title": "Mithril Snapshot Bootstrapping Tasks",
+    "created": "2026-02-10",
+    "updated": "2026-02-10",
+    "version": "1.0.0",
+    "totalTasks": 17,
+    "prdReference": ".agent/plans/mithril/bootstrap-cardano-node.md",
+    "description": "Implement Mithril snapshot bootstrapping in Daedalus"
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Dependency Integration",
+      "description": "Bundle mithril-client into installers",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Add Mithril flake input",
+          "description": "Pin Mithril repo tag in flake.nix for stable client builds",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [],
+          "completedAt": "",
+          "targetPath": "flake.nix"
+        },
+        {
+          "id": "task-002",
+          "title": "Bundle mithril-client binary",
+          "description": "Include mithril-client binary in Nix cardano-bridge bundle",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-001"],
+          "completedAt": "",
+          "targetPath": "nix/internal/common.nix"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Main Process + IPC",
+      "description": "Implement bootstrap service and IPC wiring",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-003",
+          "title": "Add Mithril IPC definitions",
+          "description": "Define new Mithril bootstrap IPC channels and types",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [],
+          "completedAt": "",
+          "targetPath": "source/common/ipc/api.ts"
+        },
+        {
+          "id": "task-004",
+          "title": "Create MithrilBootstrapService",
+          "description": "Implement service to run mithril-client, parse JSON output, and manage state",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": ["task-002"],
+          "completedAt": "",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-005",
+          "title": "Wire IPC channels",
+          "description": "Add main-process handlers for Mithril bootstrap requests",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-003", "task-004"],
+          "completedAt": "",
+          "targetPath": "source/main/ipc/mithrilBootstrapChannel.ts"
+        },
+        {
+          "id": "task-006",
+          "title": "Gate node startup",
+          "description": "Modify startup flow to pause cardano-node when chain is empty, detect incomplete Mithril restores, wipe chain when needed, and expose a pending decision state",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-005"],
+          "completedAt": "",
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        },
+        {
+          "id": "task-017",
+          "title": "Add Mithril restore lock and cleanup",
+          "description": "Create mithril-bootstrap lock file at start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup snapshot artifacts and leave the lock so startup gating (task-006) wipes stateDir/chain and re-prompts on next launch.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-004"],
+          "completedAt": "",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-007",
+          "title": "Add wipe-db dev flag",
+          "description": "Add --wipe-db CLI flag, DAEDALUS_WIPE_DB env, and LauncherConfig.wipeDb with precedence",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-006"],
+          "completedAt": "",
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Renderer UI",
+      "description": "Add prompt and progress UI",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-008",
+          "title": "Create MithrilBootstrapStore",
+          "description": "Add MobX store for Mithril bootstrap flow",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-003"],
+          "completedAt": "",
+          "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
+        },
+        {
+          "id": "task-009",
+          "title": "Create MithrilBootstrap UI",
+          "description": "Add prompt and progress screen components",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-008"],
+          "completedAt": "",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap"
+        },
+        {
+          "id": "task-010",
+          "title": "Integrate loading flow",
+          "description": "Wire Mithril bootstrap UI into existing syncing/connecting flow, gating the decision prompt until onboarding is complete (AppStore.isSetupPage false)",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-008", "task-009"],
+          "completedAt": "",
+          "targetPath": "source/renderer/app/containers/loading/LoadingPage.tsx"
+        },
+        {
+          "id": "task-011",
+          "title": "Snapshot selection UI",
+          "description": "Allow users to choose a snapshot and view metadata before starting",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-008", "task-009"],
+          "completedAt": "",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Testing + Hardening",
+      "description": "Validation and fallback behaviors",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-012",
+          "title": "Unit test parsing logic",
+          "description": "Add unit tests for progress parsing from mithril-client output",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-004"],
+          "completedAt": "",
+          "targetPath": "source/main/mithril/__tests__"
+        },
+        {
+          "id": "task-013",
+          "title": "Manual QA checklist",
+          "description": "Document manual verification steps for each OS",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": [],
+          "completedAt": "",
+          "targetPath": ".agent/plans/mithril/bootstrap-cardano-node.md"
+        },
+        {
+          "id": "task-014",
+          "title": "Fallback validation",
+          "description": "Verify fallback to standard sync when Mithril fails",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-006"],
+          "completedAt": "",
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        },
+        {
+          "id": "task-015",
+          "title": "Retry with DB wipe",
+          "description": "Surface node-start errors and offer DB wipe + retry bootstrap",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-006", "task-009"],
+          "completedAt": "",
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        },
+        {
+          "id": "task-016",
+          "title": "Mithril parsing substeps",
+          "description": "Implement JSON parsing for snapshot list/details/download progress and converter output",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-004"],
+          "completedAt": "",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 17,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-004",
+      "task-005",
+      "task-006",
+      "task-007",
+      "task-008",
+      "task-009",
+      "task-010",
+      "task-011"
+    ]
+  }
+}

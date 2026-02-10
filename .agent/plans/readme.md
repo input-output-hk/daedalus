@@ -155,9 +155,9 @@ Any unresolved decisions.
 
 > Update this section as new plans are added.
 
-| Domain | Plan                 | Status | Date |
-|--------|----------------------|--------|------|
-| _None_ | _No plans added yet_ | _-_    | _-_  |
+| Domain | Plan | Status | Date |
+|--------|------|--------|------|
+| mithril | bootstrap-cardano-node | 🚧 In Progress | 2026-02-10 |
 
 ---
 
