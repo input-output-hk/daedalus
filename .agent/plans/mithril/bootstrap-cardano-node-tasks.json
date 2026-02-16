@@ -71,11 +71,11 @@
           "id": "task-005",
           "title": "Wire IPC channels",
           "description": "Add main-process handlers for Mithril bootstrap requests",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-003", "task-004"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/ipc/mithrilBootstrapChannel.ts"
         },
         {
