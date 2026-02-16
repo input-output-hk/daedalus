@@ -19,7 +19,10 @@ import type {
   MithrilBootstrapSnapshotsRendererRequest,
   MithrilBootstrapSnapshotsMainResponse,
 } from '../../common/ipc/api';
-import type { MithrilBootstrapDecision } from '../../common/types/mithril-bootstrap.types';
+import type {
+  MithrilBootstrapDecision,
+  MithrilBootstrapStatusUpdate,
+} from '../../common/types/mithril-bootstrap.types';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { logger } from '../utils/logging';
 
@@ -31,7 +34,7 @@ const mithrilBootstrapStartChannel: MainIpcChannel<
   MithrilBootstrapStartRendererRequest,
   MithrilBootstrapStartMainResponse
 > = new MainIpcChannel(MITHRIL_BOOTSTRAP_START_CHANNEL);
-const mithrilBootstrapStatusChannel: MainIpcChannel<
+export const mithrilBootstrapStatusChannel: MainIpcChannel<
   MithrilBootstrapStatusRendererRequest,
   MithrilBootstrapStatusMainResponse
 > = new MainIpcChannel(MITHRIL_BOOTSTRAP_STATUS_CHANNEL);
@@ -47,7 +50,25 @@ const mithrilBootstrapSnapshotsChannel: MainIpcChannel<
 let pendingDecision: MithrilBootstrapDecision | null = null;
 let decisionWaiters: Array<(decision: MithrilBootstrapDecision) => void> = [];
 
+let lastStatus: MithrilBootstrapStatusUpdate = {
+  status: 'idle',
+  progress: 0,
+  currentStep: undefined,
+  snapshot: null,
+  error: null,
+};
+
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
+
+export const setMithrilBootstrapStatus = (
+  update: Partial<MithrilBootstrapStatusUpdate>
+) => {
+  lastStatus = {
+    ...lastStatus,
+    ...update,
+  };
+  return lastStatus;
+};
 
 export const waitForMithrilBootstrapDecision = (): Promise<
   MithrilBootstrapDecision
@@ -60,12 +81,14 @@ export const waitForMithrilBootstrapDecision = (): Promise<
 
 export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   const service = new MithrilBootstrapService();
+  lastStatus = service.status;
 
   service.onStatus((status) => {
+    lastStatus = status;
     mithrilBootstrapStatusChannel.send(status, window.webContents);
   });
 
-  mithrilBootstrapStatusChannel.onRequest(async () => service.status);
+  mithrilBootstrapStatusChannel.onRequest(async () => lastStatus);
 
   mithrilBootstrapSnapshotsChannel.onRequest(async () =>
     service.listSnapshots()

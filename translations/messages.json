@@ -2352,6 +2352,61 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Fast sync with Mithril",
+        "description": "Headline for Mithril bootstrap prompt.",
+        "id": "loading.mithrilBootstrap.title"
+      },
+      {
+        "defaultMessage": "!!!Mithril can download a verified snapshot to sync your wallet faster. Choose a snapshot and continue, or sync from genesis.",
+        "description": "Description for Mithril bootstrap prompt.",
+        "id": "loading.mithrilBootstrap.description"
+      },
+      {
+        "defaultMessage": "!!!Use Mithril fast sync",
+        "description": "Button label to accept Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.accept"
+      },
+      {
+        "defaultMessage": "!!!Sync from genesis",
+        "description": "Button label to decline Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.decline"
+      },
+      {
+        "defaultMessage": "!!!Snapshot",
+        "description": "Label for snapshot selector.",
+        "id": "loading.mithrilBootstrap.selectLabel"
+      },
+      {
+        "defaultMessage": "!!!Latest snapshot",
+        "description": "Label for latest snapshot option.",
+        "id": "loading.mithrilBootstrap.snapshotLatest"
+      },
+      {
+        "defaultMessage": "!!!Bootstrap progress",
+        "description": "Label for Mithril progress bar.",
+        "id": "loading.mithrilBootstrap.progressLabel"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Button label to cancel Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.cancel"
+      },
+      {
+        "defaultMessage": "!!!Try again",
+        "description": "Button label to retry Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.retry"
+      },
+      {
+        "defaultMessage": "!!!Mithril bootstrap failed",
+        "description": "Title for Mithril error state.",
+        "id": "loading.mithrilBootstrap.errorTitle"
+      }
+    ],
+    "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!<b>Daedalus requires at least {diskSpaceRequired} of hard drive space to operate. Your computer is missing {diskSpaceMissing} of available space. Please delete some files to increase available hard drive space to continue using Daedalus. </b><br /><br />It is recommended to have at least 15% of hard drive space available ({diskSpaceRecommended} in your case) for normal and stable operation of the operating system and installed programs. We strongly recommend that you free up at least that amount of space from your hard drive.",
         "description": "Content of No disk space overlay",
         "id": "noDiskSpace.error.overlayContent"

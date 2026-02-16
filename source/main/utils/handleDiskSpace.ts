@@ -19,12 +19,12 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import { MITHRIL_BOOTSTRAP_STATUS_CHANNEL } from '../../common/ipc/api';
-import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 import type { MithrilBootstrapStatusUpdate } from '../../common/types/mithril-bootstrap.types';
 import {
   getPendingMithrilBootstrapDecision,
   waitForMithrilBootstrapDecision,
+  mithrilBootstrapStatusChannel,
+  setMithrilBootstrapStatus,
 } from '../ipc/mithrilBootstrapChannel';
 import { launcherConfig } from '../config';
 
@@ -97,11 +97,7 @@ export const handleDiskSpace = (
   const argvWipeDb = process.argv.slice(1).includes('--wipe-db')
     ? true
     : undefined;
-  const wipeDbFlag = launcherConfig.wipeDb ?? envWipeDb ?? argvWipeDb ?? false;
-  const mithrilStatusChannel: MainIpcChannel<
-    void,
-    MithrilBootstrapStatusUpdate
-  > = new MainIpcChannel(MITHRIL_BOOTSTRAP_STATUS_CHANNEL);
+  const wipeDbFlag = envWipeDb ?? argvWipeDb ?? launcherConfig.wipeDb ?? false;
   const emitMithrilDecisionStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
@@ -110,7 +106,8 @@ export const handleDiskSpace = (
       snapshot: null,
       error: null,
     };
-    await mithrilStatusChannel.send(update, mainWindow.webContents);
+    setMithrilBootstrapStatus(update);
+    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
   };
 
   const ensureMithrilStartupGate = async (): Promise<boolean> => {
@@ -228,9 +225,7 @@ export const handleDiskSpace = (
       cardanoNode.state !== CardanoNodeStates.STOPPING &&
       cardanoNode.state !== CardanoNodeStates.STOPPED;
     const CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME =
-      !isNotEnoughDiskSpace &&
-      cardanoNode.state === CardanoNodeStates.STOPPED &&
-      cardanoNode._startupTries === 0;
+      !isNotEnoughDiskSpace && cardanoNode.state === CardanoNodeStates.STOPPED;
     const CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE =
       !isNotEnoughDiskSpace &&
       cardanoNode.state !== CardanoNodeStates.STOPPED &&
@@ -255,6 +250,7 @@ export const handleDiskSpace = (
             const chainEmpty = await isChainEmpty();
             if (chainEmpty) {
               if (!mithrilDecisionPrompted) {
+                logger.info('[MITHRIL] Emitting decision status');
                 await emitMithrilDecisionStatus();
                 mithrilDecisionPrompted = true;
               }
