@@ -24,6 +24,7 @@ import WalletSettingsStore from './WalletSettingsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletsStore from './WalletsStore';
 import WindowStore from './WindowStore';
+import MithrilBootstrapStore from './MithrilBootstrapStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
@@ -35,6 +36,7 @@ export const storeClasses = {
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
+  mithrilBootstrap: MithrilBootstrapStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -73,6 +75,7 @@ export type StoresMap = {
   walletBackup: WalletBackupStore;
   walletMigration: WalletMigrationStore;
   walletSettings: WalletSettingsStore;
+  mithrilBootstrap: MithrilBootstrapStore;
   window: WindowStore;
 };
 let stores: StoresMap | null | undefined = null;
@@ -124,6 +127,7 @@ export const setUpStores = action(
       walletBackup: createStoreInstanceOf(WalletBackupStore),
       walletMigration: createStoreInstanceOf(WalletMigrationStore),
       walletSettings: createStoreInstanceOf(WalletSettingsStore),
+      mithrilBootstrap: createStoreInstanceOf(MithrilBootstrapStore),
       window: createStoreInstanceOf(WindowStore),
     });
     // Configure and initialize all stores
