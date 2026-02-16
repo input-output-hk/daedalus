@@ -72,7 +72,7 @@ rec {
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: import ./cardano-bridge.nix {
     target = targetSystem;
     inherit (pkgs) lib runCommandCC darwin;
-    inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server;
+    inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client;
     local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
   });
 
@@ -80,8 +80,14 @@ rec {
 
   inherit (nodePackages) cardano-node cardano-cli;
 
+  mithril-client = mithrilFlake.packages.${pkgs.system}.mithril-client;
+
   cardano-shell = (flake-compat {
     src = inputs.cardano-shell;
+  }).defaultNix;
+
+  mithrilFlake = (flake-compat {
+    src = inputs.mithril;
   }).defaultNix;
 
   cardano-launcher = cardano-shell.hydraJobs.cardano-launcher.${targetSystem};
