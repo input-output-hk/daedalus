@@ -19,3 +19,4 @@
 
 ## Notes
 - `GENESIS_VERIFICATION_KEY` and `ANCILLARY_VERIFICATION_KEY` in Mithril docs are shown as URLs; the CLI accepts URLs and fetches keys when those env vars are set.
+- `--wipe-db` flow now supports LauncherConfig (`wipeDb`), `DAEDALUS_WIPE_DB=true`, or CLI `--wipe-db` in that precedence order; `wipeDb` defaults to false in the launcher config.

@@ -66,6 +66,7 @@ No existing CLI flag or environment variable for wiping the DB was found in the 
 Resolution precedence: `launcherConfig.wipeDb ?? (process.env.DAEDALUS_WIPE_DB === 'true') ?? argv.includes('--wipe-db')`.
 
 Launcher wiring note: extend `nix/launcher-config.nix` (and any launcher config generator) to pass `wipeDb` into `LauncherConfig` for dev/test builds.
+This is now wired in `nix/internal/launcher-config.nix` with a default `wipeDb = false`.
 
 Behavior:
 - Stops `cardano-node` if running.
@@ -146,3 +147,4 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-16] Implemented main-process MithrilBootstrapService with progress parsing and lock cleanup.
 [2026-02-16] Wired Mithril bootstrap IPC handlers and decision waiters.
 [2026-02-16] Gated cardano-node startup on Mithril decision and handled lock cleanup on restart.
+[2026-02-16] Added wipe-db support (LauncherConfig + env/argv) for deterministic Mithril tests.
