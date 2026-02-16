@@ -148,3 +148,4 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-16] Wired Mithril bootstrap IPC handlers and decision waiters.
 [2026-02-16] Gated cardano-node startup on Mithril decision and handled lock cleanup on restart.
 [2026-02-16] Added wipe-db support (LauncherConfig + env/argv) for deterministic Mithril tests.
+[2026-02-16] Added renderer MithrilBootstrapStore and IPC channels.

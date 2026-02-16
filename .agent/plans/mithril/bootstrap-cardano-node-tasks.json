@@ -123,11 +123,11 @@
           "id": "task-008",
           "title": "Create MithrilBootstrapStore",
           "description": "Add MobX store for Mithril bootstrap flow",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-003"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
         },
         {
