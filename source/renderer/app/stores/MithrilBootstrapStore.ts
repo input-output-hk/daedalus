@@ -37,7 +37,18 @@ export default class MithrilBootstrapStore extends Store {
 
   setup() {
     mithrilBootstrapStatusChannel.onReceive(this._updateStatus);
+    this.syncStatus().catch((error) => {
+      logger.warn('MithrilBootstrapStore: failed to sync status', { error });
+    });
   }
+
+  @action
+  syncStatus = async () => {
+    const status =
+      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
+      await mithrilBootstrapStatusChannel.request();
+    this._updateStatus(status);
+  };
 
   @action
   _updateStatus = (update: MithrilBootstrapStatusUpdate): Promise<void> => {

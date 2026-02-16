@@ -20,3 +20,21 @@
 ## Notes
 - `GENESIS_VERIFICATION_KEY` and `ANCILLARY_VERIFICATION_KEY` in Mithril docs are shown as URLs; the CLI accepts URLs and fetches keys when those env vars are set.
 - `--wipe-db` flow now supports LauncherConfig (`wipeDb`), `DAEDALUS_WIPE_DB=true`, or CLI `--wipe-db` in that precedence order; `wipeDb` defaults to false in the launcher config.
+- Preview env got blocked by Nix flakes treating `nixpkgs` as non-flake. For manual testing, we temporarily set `flake.nix` inputs:
+  - `nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin"` and `nixpkgs.flake = true`
+  - `mithril.flake = true` (required because `nix/internal/common.nix` expects `mithrilFlake.packages`)
+- With nixpkgs 23.11, build failed due to `pkgconfig` rename; fix by replacing `pkgconfig` with `pkg-config` in:
+  - `nix/devshells.nix`
+  - `nix/internal/x86_64-linux.nix`
+  - `nix/internal/x86_64-windows.nix`
+  - `nix/internal/any-darwin.nix`
+- Nix dev shell failed copying empty bin globs in `nix/internal/cardano-bridge.nix`. Fix by adding `|| true` to the `cp` lines for:
+  - `${cardano-wallet}`, `${cardano-address}`, `${cardano-launcher}`, `${cardano-node}`, `${cardano-cli}`, `${mithril-client}`
+- Electron dev on Linux may fail with SUID sandbox error; use `ELECTRON_DISABLE_SANDBOX=1 yarn start:dev` (optionally `--no-sandbox`).
+- Mithril decision overlay debugging notes:
+  - `handleDiskSpace` originally gated on `_startupTries === 0`. Removing that condition allows decision status to emit when node is STOPPED.
+  - `launcherConfig.wipeDb` default in nix launcher config overrides env; remove default or ensure precedence favors env/argv.
+  - Renderer store should call `syncStatus()` on setup to pick up cached status if broadcast was missed.
+  - Decision status must be cached in main (IPC module) so `status` request returns the decision update.
+  - Overlay was hidden while onboarding (`app.isSetupPage`); removing that gate allows decision screen to show during setup.
+- If Mithril UI strings log missing i18n ids, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, `translations/ja-JP.json`.
