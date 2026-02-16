@@ -104,11 +104,11 @@
           "id": "task-007",
           "title": "Add wipe-db dev flag",
           "description": "Add --wipe-db CLI flag, DAEDALUS_WIPE_DB env, and LauncherConfig.wipeDb with precedence",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": ["task-006"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/utils/handleDiskSpace.ts"
         }
       ]

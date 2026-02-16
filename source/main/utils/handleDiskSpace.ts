@@ -26,6 +26,7 @@ import {
   getPendingMithrilBootstrapDecision,
   waitForMithrilBootstrapDecision,
 } from '../ipc/mithrilBootstrapChannel';
+import { launcherConfig } from '../config';
 
 const getDiskCheckReport = async (
   path: string,
@@ -92,6 +93,11 @@ export const handleDiskSpace = (
     'Logs',
     'mithril-bootstrap.lock'
   );
+  const envWipeDb = process.env.DAEDALUS_WIPE_DB === 'true' ? true : undefined;
+  const argvWipeDb = process.argv.slice(1).includes('--wipe-db')
+    ? true
+    : undefined;
+  const wipeDbFlag = launcherConfig.wipeDb ?? envWipeDb ?? argvWipeDb ?? false;
   const mithrilStatusChannel: MainIpcChannel<
     void,
     MithrilBootstrapStatusUpdate
@@ -112,6 +118,25 @@ export const handleDiskSpace = (
     mithrilStartupCheckDone = true;
 
     try {
+      if (wipeDbFlag) {
+        if (
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          cardanoNode.state !== CardanoNodeStates.STOPPED
+        ) {
+          try {
+            await cardanoNode.stop();
+          } catch (error) {
+            logger.warn('[MITHRIL] Failed to stop cardano-node for wipe', {
+              error,
+            });
+          }
+        }
+        const chainDir = path.join(stateDirectoryPath, 'chain');
+        if (await fs.pathExists(chainDir)) {
+          await fs.remove(chainDir);
+        }
+        logger.info('[MITHRIL] wipe-db flag set. Wiped chain directory.');
+      }
       const lockExists = await fs.pathExists(mithrilLockFilePath);
       if (lockExists) {
         const chainDir = path.join(stateDirectoryPath, 'chain');
