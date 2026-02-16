@@ -137,5 +137,10 @@ Use official Mithril network configuration values. Keep these in a single map ke
 ---
 
 **Status:** 🚧 In Progress  
-**Date:** 2026-02-10  
-**Author:** Antigravity AI
+**Date:** 2026-02-16  
+**Author:** Antigravity AI  
+**Notes:**
+[2026-02-16] Added Mithril flake input.
+[2026-02-16] Bundled mithril-client in cardano-bridge.
+[2026-02-16] Defined Mithril bootstrap IPC channel/types.
+[2026-02-16] Implemented main-process MithrilBootstrapService with progress parsing and lock cleanup.

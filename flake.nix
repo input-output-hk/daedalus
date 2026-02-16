@@ -11,6 +11,8 @@
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
+    mithril.url = "github:input-output-hk/mithril";
+    mithril.flake = false;
     tullia.url = "github:input-output-hk/tullia";
     tullia.flake = false; # otherwie, +1k dependencies in flake.lock…
     flake-compat.url = "github:input-output-hk/flake-compat";

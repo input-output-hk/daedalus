@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Snapshot Bootstrapping Tasks",
     "created": "2026-02-10",
-    "updated": "2026-02-10",
+    "updated": "2026-02-16",
     "version": "1.0.0",
     "totalTasks": 17,
     "prdReference": ".agent/plans/mithril/bootstrap-cardano-node.md",
@@ -19,22 +19,22 @@
           "id": "task-001",
           "title": "Add Mithril flake input",
           "description": "Pin Mithril repo tag in flake.nix for stable client builds",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1,
           "dependencies": [],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "flake.nix"
         },
         {
           "id": "task-002",
           "title": "Bundle mithril-client binary",
           "description": "Include mithril-client binary in Nix cardano-bridge bundle",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-001"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "nix/internal/common.nix"
         }
       ]
@@ -49,22 +49,22 @@
           "id": "task-003",
           "title": "Add Mithril IPC definitions",
           "description": "Define new Mithril bootstrap IPC channels and types",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1,
           "dependencies": [],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/common/ipc/api.ts"
         },
         {
           "id": "task-004",
           "title": "Create MithrilBootstrapService",
           "description": "Implement service to run mithril-client, parse JSON output, and manage state",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 6,
           "dependencies": ["task-002"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         },
         {
@@ -93,11 +93,11 @@
           "id": "task-017",
           "title": "Add Mithril restore lock and cleanup",
           "description": "Create mithril-bootstrap lock file at start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup snapshot artifacts and leave the lock so startup gating (task-006) wipes stateDir/chain and re-prompts on next launch.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-004"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         },
         {

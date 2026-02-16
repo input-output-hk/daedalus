@@ -1,4 +1,4 @@
-{ target, runCommandCC, cardano-wallet, cardano-node, cardano-launcher, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin }:
+{ target, runCommandCC, cardano-wallet, cardano-node, cardano-launcher, cardano-cli, cardano-address, lib, local-cluster ? null, mock-token-metadata-server, darwin, mithril-client }:
 
 runCommandCC "daedalus-cardano-bridge" {
   passthru = {
@@ -14,6 +14,7 @@ runCommandCC "daedalus-cardano-bridge" {
   cp -f ${cardano-launcher}/bin/* .
   cp -f ${cardano-node}/bin/* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
+  cp -f ${mithril-client}/bin/mithril-client* .
   ${lib.optionalString (local-cluster != null) ''
 
     ${if target == "x86_64-windows" then ''
