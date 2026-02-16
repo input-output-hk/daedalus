@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs-extra';
 import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
@@ -17,6 +19,13 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
+import { MITHRIL_BOOTSTRAP_STATUS_CHANNEL } from '../../common/ipc/api';
+import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
+import type { MithrilBootstrapStatusUpdate } from '../../common/types/mithril-bootstrap.types';
+import {
+  getPendingMithrilBootstrapDecision,
+  waitForMithrilBootstrapDecision,
+} from '../ipc/mithrilBootstrapChannel';
 
 const getDiskCheckReport = async (
   path: string,
@@ -74,6 +83,61 @@ export const handleDiskSpace = (
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
   let isNotEnoughDiskSpace = false; // Default check state
+  let mithrilDecisionInFlight = false;
+  let mithrilStartupCheckDone = false;
+  let mithrilDecisionPrompted = false;
+  let mithrilDecision: 'accept' | 'decline' | null = null;
+  const mithrilLockFilePath = path.join(
+    stateDirectoryPath,
+    'Logs',
+    'mithril-bootstrap.lock'
+  );
+  const mithrilStatusChannel: MainIpcChannel<
+    void,
+    MithrilBootstrapStatusUpdate
+  > = new MainIpcChannel(MITHRIL_BOOTSTRAP_STATUS_CHANNEL);
+  const emitMithrilDecisionStatus = async () => {
+    const update: MithrilBootstrapStatusUpdate = {
+      status: 'decision',
+      progress: 0,
+      currentStep: 'Choose a sync method',
+      snapshot: null,
+      error: null,
+    };
+    await mithrilStatusChannel.send(update, mainWindow.webContents);
+  };
+
+  const ensureMithrilStartupGate = async (): Promise<boolean> => {
+    if (mithrilStartupCheckDone) return true;
+    mithrilStartupCheckDone = true;
+
+    try {
+      const lockExists = await fs.pathExists(mithrilLockFilePath);
+      if (lockExists) {
+        const chainDir = path.join(stateDirectoryPath, 'chain');
+        if (await fs.pathExists(chainDir)) {
+          await fs.remove(chainDir);
+        }
+        logger.info(
+          '[MITHRIL] Incomplete bootstrap detected. Wiped chain directory.'
+        );
+        mithrilDecisionPrompted = false;
+        mithrilDecision = null;
+      }
+    } catch (error) {
+      logger.warn('[MITHRIL] Failed to handle bootstrap lock', { error });
+    }
+
+    return true;
+  };
+
+  const isChainEmpty = async (): Promise<boolean> => {
+    const chainDir = path.join(stateDirectoryPath, 'chain');
+    const exists = await fs.pathExists(chainDir);
+    if (!exists) return true;
+    const entries = await fs.readdir(chainDir);
+    return entries.length === 0;
+  };
 
   const handleCheckDiskSpace = async (
     hadNotEnoughSpaceLeft: boolean,
@@ -81,6 +145,7 @@ export const handleDiskSpace = (
   ): Promise<CheckDiskSpaceResponse> => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
     const response = await getDiskCheckReport(stateDirectoryPath);
+    await ensureMithrilStartupGate();
 
     if (response.isError) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -161,7 +226,53 @@ export const handleDiskSpace = (
           break;
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
-          await cardanoNode.start();
+          try {
+            const chainEmpty = await isChainEmpty();
+            if (chainEmpty) {
+              if (!mithrilDecisionPrompted) {
+                await emitMithrilDecisionStatus();
+                mithrilDecisionPrompted = true;
+              }
+              mithrilDecision =
+                mithrilDecision || getPendingMithrilBootstrapDecision();
+
+              if (mithrilDecision === 'decline') {
+                await cardanoNode.start();
+                break;
+              }
+
+              if (mithrilDecision === 'accept') {
+                break;
+              }
+
+              if (!mithrilDecisionInFlight) {
+                mithrilDecisionInFlight = true;
+                waitForMithrilBootstrapDecision()
+                  .then(async (decision) => {
+                    mithrilDecision = decision;
+                    mithrilDecisionPrompted = false;
+                    if (decision === 'decline') {
+                      await cardanoNode.start();
+                    }
+                  })
+                  .catch((error) => {
+                    logger.error('[MITHRIL] Decision wait failed', { error });
+                  })
+                  .finally(() => {
+                    mithrilDecisionInFlight = false;
+                  });
+              }
+              response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
+            await cardanoNode.start();
+          } catch (error) {
+            logger.error('[MITHRIL] Failed to handle bootstrap decision', {
+              error,
+            });
+            await cardanoNode.start();
+          }
           break;
 
         case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:

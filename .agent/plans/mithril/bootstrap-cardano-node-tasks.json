@@ -82,11 +82,11 @@
           "id": "task-006",
           "title": "Gate node startup",
           "description": "Modify startup flow to pause cardano-node when chain is empty, detect incomplete Mithril restores, wipe chain when needed, and expose a pending decision state",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-005"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/utils/handleDiskSpace.ts"
         },
         {

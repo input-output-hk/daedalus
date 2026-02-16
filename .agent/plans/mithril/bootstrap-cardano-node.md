@@ -145,3 +145,4 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-16] Defined Mithril bootstrap IPC channel/types.
 [2026-02-16] Implemented main-process MithrilBootstrapService with progress parsing and lock cleanup.
 [2026-02-16] Wired Mithril bootstrap IPC handlers and decision waiters.
+[2026-02-16] Gated cardano-node startup on Mithril decision and handled lock cleanup on restart.
