@@ -2382,9 +2382,54 @@
         "id": "loading.mithrilBootstrap.snapshotLatest"
       },
       {
+        "defaultMessage": "!!!Snapshot details",
+        "description": "Title for snapshot metadata section.",
+        "id": "loading.mithrilBootstrap.snapshotDetailsTitle"
+      },
+      {
+        "defaultMessage": "!!!Snapshot details unavailable",
+        "description": "Fallback text when snapshot metadata is missing.",
+        "id": "loading.mithrilBootstrap.snapshotDetailsUnavailable"
+      },
+      {
+        "defaultMessage": "!!!Size",
+        "description": "Label for snapshot size metadata.",
+        "id": "loading.mithrilBootstrap.snapshotSizeLabel"
+      },
+      {
+        "defaultMessage": "!!!Created",
+        "description": "Label for snapshot creation date metadata.",
+        "id": "loading.mithrilBootstrap.snapshotCreatedLabel"
+      },
+      {
+        "defaultMessage": "!!!Node version",
+        "description": "Label for snapshot node version metadata.",
+        "id": "loading.mithrilBootstrap.snapshotNodeVersionLabel"
+      },
+      {
+        "defaultMessage": "!!!Digest",
+        "description": "Label for snapshot digest metadata.",
+        "id": "loading.mithrilBootstrap.snapshotDigestLabel"
+      },
+      {
         "defaultMessage": "!!!Bootstrap progress",
         "description": "Label for Mithril progress bar.",
         "id": "loading.mithrilBootstrap.progressLabel"
+      },
+      {
+        "defaultMessage": "!!!Elapsed {elapsed} • Remaining {remaining}",
+        "description": "Label for Mithril elapsed/remaining time row.",
+        "id": "loading.mithrilBootstrap.progressTiming"
+      },
+      {
+        "defaultMessage": "!!!Elapsed {elapsed}",
+        "description": "Label for Mithril elapsed time only row.",
+        "id": "loading.mithrilBootstrap.progressElapsed"
+      },
+      {
+        "defaultMessage": "!!!Remaining {remaining}",
+        "description": "Label for Mithril remaining time only row.",
+        "id": "loading.mithrilBootstrap.progressRemaining"
       },
       {
         "defaultMessage": "!!!Cancel",

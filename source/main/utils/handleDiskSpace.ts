@@ -22,6 +22,8 @@ import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.ty
 import type { MithrilBootstrapStatusUpdate } from '../../common/types/mithril-bootstrap.types';
 import {
   getPendingMithrilBootstrapDecision,
+  getMithrilBootstrapStatus,
+  onMithrilBootstrapStatus,
   waitForMithrilBootstrapDecision,
   mithrilBootstrapStatusChannel,
   setMithrilBootstrapStatus,
@@ -88,6 +90,8 @@ export const handleDiskSpace = (
   let mithrilStartupCheckDone = false;
   let mithrilDecisionPrompted = false;
   let mithrilDecision: 'accept' | 'decline' | null = null;
+  let mithrilBootstrapCompleted = false;
+  let mithrilStartInFlight = false;
   const mithrilLockFilePath = path.join(
     stateDirectoryPath,
     'Logs',
@@ -103,6 +107,18 @@ export const handleDiskSpace = (
       status: 'decision',
       progress: 0,
       currentStep: 'Choose a sync method',
+      snapshot: null,
+      error: null,
+    };
+    setMithrilBootstrapStatus(update);
+    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+  };
+
+  const emitMithrilIdleStatus = async () => {
+    const update: MithrilBootstrapStatusUpdate = {
+      status: 'idle',
+      progress: 0,
+      currentStep: undefined,
       snapshot: null,
       error: null,
     };
@@ -152,6 +168,25 @@ export const handleDiskSpace = (
 
     return true;
   };
+
+  onMithrilBootstrapStatus(async (status) => {
+    if (status.status !== 'completed' || mithrilStartInFlight) return;
+    if (cardanoNode.state !== CardanoNodeStates.STOPPED) return;
+    mithrilStartInFlight = true;
+    mithrilBootstrapCompleted = true;
+    try {
+      await emitMithrilIdleStatus();
+      await cardanoNode.start();
+      mithrilDecision = null;
+      mithrilDecisionPrompted = false;
+    } catch (error) {
+      logger.error('[MITHRIL] Failed to start cardano-node after bootstrap', {
+        error,
+      });
+    } finally {
+      mithrilStartInFlight = false;
+    }
+  });
 
   const isChainEmpty = async (): Promise<boolean> => {
     const chainDir = path.join(stateDirectoryPath, 'chain');
@@ -249,15 +284,30 @@ export const handleDiskSpace = (
           try {
             const chainEmpty = await isChainEmpty();
             if (chainEmpty) {
+              const mithrilStatus = getMithrilBootstrapStatus();
+              if (mithrilStatus.status === 'completed') {
+                mithrilBootstrapCompleted = true;
+              }
+
+              if (mithrilBootstrapCompleted) {
+                await emitMithrilIdleStatus();
+                await cardanoNode.start();
+                mithrilDecision = null;
+                mithrilDecisionPrompted = false;
+                break;
+              }
               if (!mithrilDecisionPrompted) {
                 logger.info('[MITHRIL] Emitting decision status');
                 await emitMithrilDecisionStatus();
                 mithrilDecisionPrompted = true;
               }
-              mithrilDecision =
-                mithrilDecision || getPendingMithrilBootstrapDecision();
+              const latestDecision = getPendingMithrilBootstrapDecision();
+              if (latestDecision && latestDecision !== mithrilDecision) {
+                mithrilDecision = latestDecision;
+              }
 
               if (mithrilDecision === 'decline') {
+                await emitMithrilIdleStatus();
                 await cardanoNode.start();
                 break;
               }
@@ -273,6 +323,7 @@ export const handleDiskSpace = (
                     mithrilDecision = decision;
                     mithrilDecisionPrompted = false;
                     if (decision === 'decline') {
+                      await emitMithrilIdleStatus();
                       await cardanoNode.start();
                     }
                   })

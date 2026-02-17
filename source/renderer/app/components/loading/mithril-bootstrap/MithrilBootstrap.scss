@@ -105,6 +105,56 @@
   margin-bottom: 24px;
 }
 
+.progressMeta {
+  color: rgba(168, 184, 201, 0.92);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.details {
+  border: 1px solid rgba(46, 64, 82, 0.6);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(10, 18, 28, 0.6);
+}
+
+.detailsHeader {
+  color: rgba(225, 233, 242, 0.9);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.detailsGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.detailLabel {
+  color: rgba(158, 173, 189, 0.85);
+  font-size: 13px;
+}
+
+.detailValue {
+  color: rgba(236, 241, 247, 0.95);
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.detailsFallback {
+  color: rgba(158, 173, 189, 0.8);
+  font-size: 14px;
+}
+
 .actions {
   display: flex;
   gap: 12px;
@@ -149,5 +199,9 @@
   .actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .detailRow {
+    grid-template-columns: 1fr;
   }
 }

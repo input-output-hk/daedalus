@@ -1,4 +1,5 @@
 import path from 'path';
+import https from 'https';
 import fs from 'fs-extra';
 import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
@@ -13,11 +14,17 @@ import type {
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
+import {
+  parseMithrilProgressLine,
+  parseMithrilProgressUpdate,
+} from './mithrilProgress';
 
 type MithrilNetworkConfig = {
   aggregatorEndpoint: string;
   genesisKeyUrl: string;
   ancillaryKeyUrl: string;
+  genesisKey?: string;
+  ancillaryKey?: string;
 };
 
 type RunCommandResult = {
@@ -30,6 +37,7 @@ type RunCommandOptions = {
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
   allowJsonParseErrors?: boolean;
+  requireKeys?: boolean;
 };
 
 const MITHRIL_NETWORK_CONFIG: Record<string, MithrilNetworkConfig> = {
@@ -70,9 +78,10 @@ const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
 const STEP_PROGRESS = {
   preparing: 5,
   downloadingStart: 10,
-  downloadingEnd: 80,
-  verifying: 85,
+  downloadingEnd: 90,
+  verifying: 92.5,
   converting: 95,
+  finalizing: 97.5,
   completed: 100,
 };
 
@@ -81,7 +90,13 @@ const normalizeSnapshotItem = (
 ): MithrilSnapshotItem => {
   const digest = raw.digest || raw.snapshot_digest || raw.hash || '';
   const createdAt = raw.created_at || raw.createdAt || raw.timestamp || '';
-  const size = Number(raw.size ?? raw.total_size ?? raw.size_bytes ?? 0);
+  const size = Number(
+    raw.size ??
+      raw.total_size ??
+      raw.total_db_size_uncompressed ??
+      raw.size_bytes ??
+      0
+  );
   const cardanoNodeVersion =
     raw.cardano_node_version || raw.cardanoNodeVersion || raw.node_version;
   const network = raw.network || raw.cardano_network || raw.cardanoNetwork;
@@ -102,6 +117,7 @@ export class MithrilBootstrapService {
   _statusEmitter = new EventEmitter();
   _currentProcess: ChildProcess | null = null;
   _logStream: WriteStream | null = null;
+  _cardanoDbDownloadMode?: 'download' | 'snapshot';
   _lockFilePath: string;
   _workDir: string;
 
@@ -126,12 +142,10 @@ export class MithrilBootstrapService {
   }
 
   async listSnapshots(): Promise<Array<MithrilSnapshotItem>> {
-    const { stdout } = await this._runCommand([
-      'cardano-db',
-      'snapshot',
-      'list',
-      '--json',
-    ]);
+    const { stdout } = await this._runCommand(
+      ['cardano-db', 'snapshot', 'list', '--json'],
+      { requireKeys: false }
+    );
     const parsed = this._safeJsonParse(stdout);
     if (!Array.isArray(parsed)) return [];
     return parsed.map((item) => normalizeSnapshotItem(item));
@@ -139,13 +153,10 @@ export class MithrilBootstrapService {
 
   async showSnapshot(digest: string): Promise<MithrilSnapshotItem | null> {
     if (!isNonEmptyString(digest)) return null;
-    const { stdout } = await this._runCommand([
-      'cardano-db',
-      'snapshot',
-      'show',
-      digest,
-      '--json',
-    ]);
+    const { stdout } = await this._runCommand(
+      ['cardano-db', 'snapshot', 'show', digest, '--json'],
+      { requireKeys: false }
+    );
     const parsed = this._safeJsonParse(stdout);
     if (!parsed || typeof parsed !== 'object') return null;
     return normalizeSnapshotItem(parsed);
@@ -183,16 +194,18 @@ export class MithrilBootstrapService {
     try {
       await this._downloadSnapshot(snapshotDigest, snapshot);
       await this._convertSnapshot(snapshot);
+      const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
+      await this._installSnapshot(dbDirectory);
 
       this._updateStatus({
         status: 'completed',
         progress: STEP_PROGRESS.completed,
         currentStep: 'Mithril bootstrap completed',
       });
-      await this._cleanupSnapshotArtifacts();
+      await this._cleanupSnapshotArtifacts({ preserveDb: true });
       await this._removeLockFile();
     } catch (error) {
-      await this._cleanupSnapshotArtifacts();
+      await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
         error: this._buildError(error),
@@ -220,7 +233,7 @@ export class MithrilBootstrapService {
       currentStep: 'Mithril bootstrap cancelled',
     });
 
-    await this._cleanupSnapshotArtifacts();
+    await this._cleanupSnapshotArtifacts({ preserveDb: false });
   }
 
   _updateStatus(update: Partial<MithrilBootstrapStatusUpdate>) {
@@ -229,6 +242,26 @@ export class MithrilBootstrapService {
       ...update,
     };
     this._statusEmitter.emit('status', { ...this._status });
+  }
+
+  async _resolveCardanoDbDownloadMode(): Promise<'download' | 'snapshot'> {
+    if (this._cardanoDbDownloadMode) return this._cardanoDbDownloadMode;
+    try {
+      const { stdout } = await this._runCommand(['cardano-db', '--help']);
+      const hasDownload =
+        stdout.includes('\n  download') ||
+        stdout.includes('download  Download');
+      this._cardanoDbDownloadMode = hasDownload ? 'download' : 'snapshot';
+    } catch (error) {
+      logger.warn(
+        'MithrilBootstrapService: unable to resolve download command',
+        {
+          error,
+        }
+      );
+      this._cardanoDbDownloadMode = 'download';
+    }
+    return this._cardanoDbDownloadMode;
   }
 
   _resolveNetworkConfig(): MithrilNetworkConfig {
@@ -240,13 +273,91 @@ export class MithrilBootstrapService {
     return config;
   }
 
-  _buildMithrilEnv(): NodeJS.ProcessEnv {
-    const config = this._resolveNetworkConfig();
-    return Object.assign({}, process.env, {
-      AGGREGATOR_ENDPOINT: config.aggregatorEndpoint,
-      GENESIS_VERIFICATION_KEY: config.genesisKeyUrl,
-      ANCILLARY_VERIFICATION_KEY: config.ancillaryKeyUrl,
+  async _fetchText(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const request = https.request(url, (response) => {
+        const { statusCode } = response;
+        if (!statusCode || statusCode < 200 || statusCode >= 300) {
+          response.resume();
+          reject(new Error(`Request failed with status ${statusCode}`));
+          return;
+        }
+
+        let data = '';
+        response.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        response.on('end', () => resolve(data.trim()));
+      });
+
+      request.on('error', reject);
+      request.end();
     });
+  }
+
+  _normalizeVerificationKey(key: string): string {
+    const trimmed = key.trim();
+    if (/^[0-9a-fA-F]+$/.test(trimmed) && trimmed.length % 2 === 0) {
+      return trimmed;
+    }
+
+    if (trimmed.startsWith('[')) {
+      try {
+        const bytes = JSON.parse(trimmed);
+        if (Array.isArray(bytes)) {
+          return bytes
+            .map((value) => {
+              const byte = Number(value);
+              if (!Number.isFinite(byte) || byte < 0 || byte > 255) {
+                throw new Error('Invalid byte value');
+              }
+              return byte.toString(16).padStart(2, '0');
+            })
+            .join('');
+        }
+      } catch (error) {
+        logger.warn(
+          'MithrilBootstrapService: failed to parse verification key',
+          {
+            error,
+          }
+        );
+      }
+    }
+
+    return trimmed;
+  }
+
+  async _resolveVerificationKeys(config: MithrilNetworkConfig): Promise<void> {
+    if (!config.genesisKey) {
+      const raw = await this._fetchText(config.genesisKeyUrl);
+      config.genesisKey = this._normalizeVerificationKey(raw);
+    }
+    if (!config.ancillaryKey) {
+      const raw = await this._fetchText(config.ancillaryKeyUrl);
+      config.ancillaryKey = this._normalizeVerificationKey(raw);
+    }
+  }
+
+  async _buildMithrilEnv(requireKeys: boolean): Promise<NodeJS.ProcessEnv> {
+    const config = this._resolveNetworkConfig();
+    if (requireKeys) {
+      await this._resolveVerificationKeys(config);
+    }
+    const env = ({
+      ...process.env,
+      AGGREGATOR_ENDPOINT: config.aggregatorEndpoint,
+    } as unknown) as NodeJS.ProcessEnv;
+
+    if (requireKeys && config.genesisKey && config.ancillaryKey) {
+      env.GENESIS_VERIFICATION_KEY = config.genesisKey;
+      env.ANCILLARY_VERIFICATION_KEY = config.ancillaryKey;
+    } else {
+      delete env.GENESIS_VERIFICATION_KEY;
+      delete env.ANCILLARY_VERIFICATION_KEY;
+    }
+
+    return env;
   }
 
   _openLogStream(): WriteStream {
@@ -290,11 +401,19 @@ export class MithrilBootstrapService {
     }
   }
 
-  async _cleanupSnapshotArtifacts(): Promise<void> {
+  async _cleanupSnapshotArtifacts(options: {
+    preserveDb: boolean;
+  }): Promise<void> {
     try {
       const dataDir = path.join(this._workDir, 'data');
       if (await fs.pathExists(dataDir)) {
         await fs.remove(dataDir);
+      }
+      if (!options.preserveDb) {
+        const dbDir = path.join(this._workDir, 'db');
+        if (await fs.pathExists(dbDir)) {
+          await fs.remove(dbDir);
+        }
       }
     } catch (error) {
       logger.warn('MithrilBootstrapService: failed to cleanup artifacts', {
@@ -316,14 +435,16 @@ export class MithrilBootstrapService {
     args: Array<string>,
     options: RunCommandOptions = {}
   ): Promise<RunCommandResult> {
-    const { onStdout, onStderr } = options;
+    const { onStdout, onStderr, requireKeys = true } = options;
     const logStream = this._openLogStream();
     this._logStream = logStream;
+
+    const env = await this._buildMithrilEnv(requireKeys);
 
     return new Promise((resolve, reject) => {
       const child = spawn('mithril-client', args, {
         cwd: this._workDir,
-        env: this._buildMithrilEnv(),
+        env,
       });
 
       this._currentProcess = child;
@@ -366,6 +487,25 @@ export class MithrilBootstrapService {
     try {
       return JSON.parse(payload);
     } catch (error) {
+      const lines = payload
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean);
+      for (let index = lines.length - 1; index >= 0; index -= 1) {
+        const line = lines[index];
+        if (line.startsWith('{') || line.startsWith('[')) {
+          try {
+            return JSON.parse(line);
+          } catch (nestedError) {
+            logger.warn('MithrilBootstrapService: JSON parse failed', {
+              error: nestedError,
+              payload: line.slice(0, 200),
+            });
+            break;
+          }
+        }
+      }
+
       logger.warn('MithrilBootstrapService: JSON parse failed', {
         error,
         payload: payload?.slice(0, 200),
@@ -374,68 +514,78 @@ export class MithrilBootstrapService {
     }
   }
 
-  _parseProgressLine(line: string): number | null {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith('{')) return null;
-
-    try {
-      const parsed = JSON.parse(trimmed);
-      const progress = parsed.progress ?? parsed.percentage ?? parsed.percent;
-      if (typeof progress === 'number') return progress;
-      if (typeof progress === 'string') return Number(progress);
-      return null;
-    } catch (error) {
-      return null;
-    }
-  }
-
   async _downloadSnapshot(
     digest: string,
     snapshot: MithrilSnapshotItem | null
   ): Promise<void> {
+    await this._cleanupSnapshotArtifacts({ preserveDb: false });
     this._updateStatus({
       status: 'downloading',
       progress: STEP_PROGRESS.downloadingStart,
       currentStep: 'Downloading Mithril snapshot',
     });
 
-    let buffered = '';
+    let stdoutBuffered = '';
+    let stderrBuffered = '';
     let sawJsonProgress = false;
-    const { exitCode, stderr } = await this._runCommand(
-      [
-        'cardano-db',
-        'snapshot',
-        'download',
-        '--include-ancillary',
-        digest,
-        '--json',
-      ],
-      {
-        onStdout: (chunk) => {
-          buffered += chunk;
-          const lines = buffered.split('\n');
-          buffered = lines.pop() || '';
-          lines.forEach((line) => {
-            const progress = this._parseProgressLine(line);
-            if (progress != null && !Number.isNaN(progress)) {
-              sawJsonProgress = true;
-              const mapped =
-                STEP_PROGRESS.downloadingStart +
-                ((STEP_PROGRESS.downloadingEnd -
-                  STEP_PROGRESS.downloadingStart) *
-                  Math.min(Math.max(progress, 0), 100)) /
-                  100;
-              this._updateStatus({
-                status: 'downloading',
-                progress: mapped,
-                currentStep: 'Downloading Mithril snapshot',
-                snapshot: snapshot || undefined,
-              });
-            }
-          });
-        },
+    const downloadMode = await this._resolveCardanoDbDownloadMode();
+    const downloadArgs =
+      downloadMode === 'download'
+        ? ['cardano-db', 'download', '--include-ancillary', digest, '--json']
+        : [
+            'cardano-db',
+            'snapshot',
+            'download',
+            '--include-ancillary',
+            digest,
+            '--json',
+          ];
+    const applyProgressUpdate = (line: string) => {
+      const update = parseMithrilProgressUpdate(line);
+      if (!update) return;
+      const progress = update.progress;
+      if (progress != null && !Number.isNaN(progress)) {
+        sawJsonProgress = true;
+        const mapped =
+          STEP_PROGRESS.downloadingStart +
+          ((STEP_PROGRESS.downloadingEnd - STEP_PROGRESS.downloadingStart) *
+            Math.min(Math.max(progress, 0), 100)) /
+            100;
+        this._updateStatus({
+          status: 'downloading',
+          progress: mapped,
+          currentStep: 'Downloading Mithril snapshot',
+          snapshot: snapshot || undefined,
+          elapsedSeconds: update.elapsedSeconds,
+          remainingSeconds: update.remainingSeconds,
+        });
+        return;
       }
-    );
+
+      if (update.elapsedSeconds != null || update.remainingSeconds != null) {
+        this._updateStatus({
+          status: 'downloading',
+          currentStep: 'Downloading Mithril snapshot',
+          snapshot: snapshot || undefined,
+          elapsedSeconds: update.elapsedSeconds,
+          remainingSeconds: update.remainingSeconds,
+        });
+      }
+    };
+    const { exitCode, stderr } = await this._runCommand(downloadArgs, {
+      onStdout: (chunk) => {
+        stdoutBuffered += chunk;
+        const lines = stdoutBuffered.split('\n');
+        stdoutBuffered = lines.pop() || '';
+        lines.forEach(applyProgressUpdate);
+      },
+      onStderr: (chunk) => {
+        stderrBuffered += chunk;
+        const lines = stderrBuffered.split('\n');
+        stderrBuffered = lines.pop() || '';
+        lines.forEach(applyProgressUpdate);
+      },
+    });
 
     if (exitCode !== 0) {
       const error: MithrilBootstrapError = {
@@ -493,6 +643,12 @@ export class MithrilBootstrapService {
       this._updateStatus({ status: 'failed', error });
       throw new Error(error.message);
     }
+
+    this._updateStatus({
+      status: 'converting',
+      progress: STEP_PROGRESS.finalizing,
+      currentStep: 'Finalizing Mithril bootstrap',
+    });
   }
 
   async _resolveDbDirectory(digest?: string): Promise<string> {
@@ -517,5 +673,16 @@ export class MithrilBootstrapService {
     }
 
     throw new Error('Unable to locate downloaded Mithril snapshot database');
+  }
+
+  async _installSnapshot(dbDirectory: string): Promise<void> {
+    const chainDir = path.join(stateDirectoryPath, 'chain');
+    if (path.resolve(dbDirectory) === path.resolve(chainDir)) {
+      return;
+    }
+    if (await fs.pathExists(chainDir)) {
+      await fs.remove(chainDir);
+    }
+    await fs.move(dbDirectory, chainDir, { overwrite: true });
   }
 }

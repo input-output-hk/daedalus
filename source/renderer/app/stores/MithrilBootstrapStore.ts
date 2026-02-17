@@ -30,6 +30,10 @@ export default class MithrilBootstrapStore extends Store {
   @observable currentStep: string | undefined = DEFAULT_STATUS.currentStep;
   @observable snapshot: MithrilSnapshotItem | null =
     DEFAULT_STATUS.snapshot ?? null;
+  @observable elapsedSeconds: number | undefined =
+    DEFAULT_STATUS.elapsedSeconds;
+  @observable remainingSeconds: number | undefined =
+    DEFAULT_STATUS.remainingSeconds;
   @observable error: MithrilBootstrapError | null =
     DEFAULT_STATUS.error ?? null;
   @observable snapshots: Array<MithrilSnapshotItem> = [];
@@ -53,10 +57,18 @@ export default class MithrilBootstrapStore extends Store {
   @action
   _updateStatus = (update: MithrilBootstrapStatusUpdate): Promise<void> => {
     this.status = update.status;
-    this.progress = update.progress;
-    this.currentStep = update.currentStep;
-    this.snapshot = update.snapshot ?? null;
-    this.error = update.error ?? null;
+    if (typeof update.progress === 'number') {
+      this.progress = update.progress;
+    }
+    this.currentStep = update.currentStep ?? this.currentStep;
+    if (update.snapshot !== undefined) {
+      this.snapshot = update.snapshot ?? null;
+    }
+    this.elapsedSeconds = update.elapsedSeconds ?? this.elapsedSeconds;
+    this.remainingSeconds = update.remainingSeconds ?? this.remainingSeconds;
+    if (update.error !== undefined) {
+      this.error = update.error ?? null;
+    }
     return Promise.resolve();
   };
 
@@ -81,16 +93,19 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   setDecision = async (decision: MithrilBootstrapDecision) => {
-    await mithrilBootstrapDecisionChannel.send({ decision });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
+    await mithrilBootstrapDecisionChannel.request({ decision });
   };
 
   @action
   startBootstrap = async (digest?: string) => {
-    await mithrilBootstrapStartChannel.send({ digest });
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
+    await mithrilBootstrapStartChannel.request({ digest });
   };
 
   @action
   cancelBootstrap = async () => {
-    await mithrilBootstrapCancelChannel.send();
+    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
+    await mithrilBootstrapCancelChannel.request();
   };
 }

@@ -6,6 +6,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ProgressBarLarge from '../../widgets/ProgressBarLarge';
+import { formattedBytesToSize } from '../../../utils/formatters';
 import type {
   MithrilBootstrapStatus,
   MithrilSnapshotItem,
@@ -45,10 +46,55 @@ const messages = defineMessages({
     defaultMessage: '!!!Latest snapshot',
     description: 'Label for latest snapshot option.',
   },
+  snapshotDetailsTitle: {
+    id: 'loading.mithrilBootstrap.snapshotDetailsTitle',
+    defaultMessage: '!!!Snapshot details',
+    description: 'Title for snapshot metadata section.',
+  },
+  snapshotDetailsUnavailable: {
+    id: 'loading.mithrilBootstrap.snapshotDetailsUnavailable',
+    defaultMessage: '!!!Snapshot details unavailable',
+    description: 'Fallback text when snapshot metadata is missing.',
+  },
+  snapshotSizeLabel: {
+    id: 'loading.mithrilBootstrap.snapshotSizeLabel',
+    defaultMessage: '!!!Size',
+    description: 'Label for snapshot size metadata.',
+  },
+  snapshotCreatedLabel: {
+    id: 'loading.mithrilBootstrap.snapshotCreatedLabel',
+    defaultMessage: '!!!Created',
+    description: 'Label for snapshot creation date metadata.',
+  },
+  snapshotNodeVersionLabel: {
+    id: 'loading.mithrilBootstrap.snapshotNodeVersionLabel',
+    defaultMessage: '!!!Node version',
+    description: 'Label for snapshot node version metadata.',
+  },
+  snapshotDigestLabel: {
+    id: 'loading.mithrilBootstrap.snapshotDigestLabel',
+    defaultMessage: '!!!Digest',
+    description: 'Label for snapshot digest metadata.',
+  },
   progressLabel: {
     id: 'loading.mithrilBootstrap.progressLabel',
     defaultMessage: '!!!Bootstrap progress',
     description: 'Label for Mithril progress bar.',
+  },
+  progressTiming: {
+    id: 'loading.mithrilBootstrap.progressTiming',
+    defaultMessage: '!!!Elapsed {elapsed} • Remaining {remaining}',
+    description: 'Label for Mithril elapsed/remaining time row.',
+  },
+  progressElapsed: {
+    id: 'loading.mithrilBootstrap.progressElapsed',
+    defaultMessage: '!!!Elapsed {elapsed}',
+    description: 'Label for Mithril elapsed time only row.',
+  },
+  progressRemaining: {
+    id: 'loading.mithrilBootstrap.progressRemaining',
+    defaultMessage: '!!!Remaining {remaining}',
+    description: 'Label for Mithril remaining time only row.',
   },
   cancel: {
     id: 'loading.mithrilBootstrap.cancel',
@@ -71,8 +117,11 @@ type Props = {
   status: MithrilBootstrapStatus;
   progress: number;
   currentStep?: string;
+  elapsedSeconds?: number;
+  remainingSeconds?: number;
   snapshots: Array<MithrilSnapshotItem>;
   selectedDigest?: string | null;
+  selectedSnapshot?: MithrilSnapshotItem | null;
   error?: MithrilBootstrapError | null;
   isFetchingSnapshots: boolean;
   onSelectSnapshot: (digest: string | null) => void;
@@ -115,6 +164,72 @@ class MithrilBootstrap extends Component<Props> {
     return options;
   };
 
+  formatSnapshotDate = (value?: string) => {
+    if (!value) return null;
+    const parsed = Date.parse(value);
+    if (Number.isNaN(parsed)) return value;
+    return new Date(parsed).toLocaleString();
+  };
+
+  renderSnapshotDetails() {
+    const { intl } = this.context;
+    const { selectedSnapshot } = this.props;
+    if (!selectedSnapshot) {
+      return (
+        <div className={styles.details}>
+          <div className={styles.detailsHeader}>
+            {intl.formatMessage(messages.snapshotDetailsTitle)}
+          </div>
+          <div className={styles.detailsFallback}>
+            {intl.formatMessage(messages.snapshotDetailsUnavailable)}
+          </div>
+        </div>
+      );
+    }
+
+    const createdAt = this.formatSnapshotDate(selectedSnapshot.createdAt);
+    const size =
+      typeof selectedSnapshot.size === 'number' && selectedSnapshot.size > 0
+        ? formattedBytesToSize(selectedSnapshot.size)
+        : null;
+
+    return (
+      <div className={styles.details}>
+        <div className={styles.detailsHeader}>
+          {intl.formatMessage(messages.snapshotDetailsTitle)}
+        </div>
+        <div className={styles.detailsGrid}>
+          <div className={styles.detailRow}>
+            <div className={styles.detailLabel}>
+              {intl.formatMessage(messages.snapshotDigestLabel)}
+            </div>
+            <div className={styles.detailValue}>{selectedSnapshot.digest}</div>
+          </div>
+          <div className={styles.detailRow}>
+            <div className={styles.detailLabel}>
+              {intl.formatMessage(messages.snapshotCreatedLabel)}
+            </div>
+            <div className={styles.detailValue}>{createdAt || 'n/a'}</div>
+          </div>
+          <div className={styles.detailRow}>
+            <div className={styles.detailLabel}>
+              {intl.formatMessage(messages.snapshotSizeLabel)}
+            </div>
+            <div className={styles.detailValue}>{size || 'n/a'}</div>
+          </div>
+          <div className={styles.detailRow}>
+            <div className={styles.detailLabel}>
+              {intl.formatMessage(messages.snapshotNodeVersionLabel)}
+            </div>
+            <div className={styles.detailValue}>
+              {selectedSnapshot.cardanoNodeVersion || 'n/a'}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderDecision() {
     const { intl } = this.context;
     const {
@@ -143,12 +258,11 @@ class MithrilBootstrap extends Component<Props> {
               options={options}
               value={selectedValue}
               disabled={isFetchingSnapshots}
-              onChange={(option) =>
-                onSelectSnapshot(option ? option.value : null)
-              }
+              onChange={(value) => onSelectSnapshot(value ?? null)}
             />
           </div>
         </div>
+        {this.renderSnapshotDetails()}
         <div className={styles.actions}>
           <Button
             className={styles.primaryAction}
@@ -169,7 +283,17 @@ class MithrilBootstrap extends Component<Props> {
 
   renderProgress() {
     const { intl } = this.context;
-    const { progress, currentStep, onCancel } = this.props;
+    const {
+      progress,
+      currentStep,
+      elapsedSeconds,
+      remainingSeconds,
+      onCancel,
+    } = this.props;
+    const normalizedProgress = Math.min(Math.max(progress, 0), 100);
+    const progressLabel = normalizedProgress.toFixed(1);
+    const elapsedLabel = this.formatDuration(elapsedSeconds);
+    const remainingLabel = this.formatDuration(remainingSeconds);
     return (
       <div className={styles.card}>
         <div className={styles.header}>
@@ -178,11 +302,27 @@ class MithrilBootstrap extends Component<Props> {
         </div>
         <div className={styles.progress}>
           <ProgressBarLarge
-            progress={Math.round(progress)}
+            progress={normalizedProgress}
             leftLabel={intl.formatMessage(messages.progressLabel)}
-            rightLabel1={`${Math.round(progress)}%`}
+            rightLabel1={`${progressLabel}%`}
             isDarkMode
           />
+          {(elapsedLabel || remainingLabel) && (
+            <div className={styles.progressMeta}>
+              {elapsedLabel && remainingLabel
+                ? intl.formatMessage(messages.progressTiming, {
+                    elapsed: elapsedLabel,
+                    remaining: remainingLabel,
+                  })
+                : elapsedLabel
+                ? intl.formatMessage(messages.progressElapsed, {
+                    elapsed: elapsedLabel,
+                  })
+                : intl.formatMessage(messages.progressRemaining, {
+                    remaining: remainingLabel,
+                  })}
+            </div>
+          )}
         </div>
         <div className={styles.actions}>
           <Button
@@ -194,6 +334,20 @@ class MithrilBootstrap extends Component<Props> {
         </div>
       </div>
     );
+  }
+
+  formatDuration(value?: number) {
+    if (value == null || Number.isNaN(value)) return null;
+    const totalSeconds = Math.max(0, Math.floor(value));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) {
+      return `${hours}:${String(minutes).padStart(2, '0')}:${String(
+        seconds
+      ).padStart(2, '0')}`;
+    }
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
   }
 
   renderError() {

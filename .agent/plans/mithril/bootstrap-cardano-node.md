@@ -121,6 +121,41 @@ Use official Mithril network configuration values. Keep these in a single map ke
 - **Unit**: Mock `mithril-client` output parsing and progress events.
 - **Integration**: Ensure IPC round-trip and safe fallback when Mithril errors.
 
+### Manual QA Checklist
+
+#### Common (all OS)
+1. Start from an empty DB:
+   - Fresh install or remove `stateDir/chain`.
+   - Or launch with `--wipe-db` / `DAEDALUS_WIPE_DB=true`.
+2. Complete onboarding (Profile, Terms, Analytics) and confirm the Mithril decision prompt appears once onboarding ends.
+3. Choose **Use Mithril Fast Sync** and verify:
+   - Snapshot list loads and selecting a snapshot updates metadata.
+   - Progress steps move through download → verify → convert.
+   - `stateDir/Logs/mithril-bootstrap.log` updates during the process.
+4. On success:
+   - `stateDir/Logs/mithril-bootstrap.lock` is removed.
+   - The app continues to node startup without re-prompting.
+5. Choose **Sync from Genesis** and verify:
+   - The prompt closes.
+   - Standard node sync begins.
+6. Cancellation path:
+   - Start Mithril, hit cancel, ensure cleanup happens and the prompt returns.
+7. Failure path (simulate by breaking network):
+   - Mithril fails, error is shown, `stateDir/chain` is wiped, lock remains.
+   - Restarting Daedalus re-prompts for Mithril decision.
+
+#### Windows
+1. Verify `mithril-client` is present in the installed bundle (same directory as `cardano-node`).
+2. Run the Common checklist and confirm no Windows Defender or permissions blocks the download.
+
+#### macOS
+1. Verify `mithril-client` exists inside the app bundle (`Daedalus.app/Contents/Resources`).
+2. Run the Common checklist; confirm the app is not blocked by Gatekeeper.
+
+#### Linux
+1. Verify `mithril-client` exists in the installed bundle directory and is executable.
+2. Run the Common checklist; confirm required permissions for the data directory.
+
 ## Rollout Plan
 - Enable by default for Mainnet, Preprod, Preview.
 - Keep a feature flag to disable Mithril via environment variable if needed.
@@ -150,3 +185,14 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-16] Added wipe-db support (LauncherConfig + env/argv) for deterministic Mithril tests.
 [2026-02-16] Added renderer MithrilBootstrapStore and IPC channels.
 [2026-02-16] Added Mithril bootstrap decision/progress UI overlay.
+[2026-02-16] Gated Mithril overlay display until onboarding completes (AppStore.isSetupPage false).
+[2026-02-16] Added snapshot selection metadata panel (digest, size, created, node version).
+[2026-02-16] Added Mithril progress parsing helper and Jest unit coverage for progress line parsing.
+[2026-02-16] Documented manual QA checklist for Mithril bootstrap across OSes.
+[2026-02-16] Emitted Mithril idle status on decline to ensure fallback sync UI clears promptly.
+[2026-02-16] Fixed onboarding rendering during node-stopped state so Mithril prompt can appear after setup.
+[2026-02-17] Added snapshot details resolution for "latest", size parsing, and selection updates in the Mithril UI.
+[2026-02-17] Added elapsed/remaining time display and file-based progress parsing for Mithril downloads.
+[2026-02-17] Normalized mithril-client download commands and verification key handling for preview/mainnet/preprod.
+[2026-02-17] Install Mithril snapshot into stateDir/chain before starting cardano-node.
+[2026-02-17] Start cardano-node automatically after Mithril bootstrap completes.
