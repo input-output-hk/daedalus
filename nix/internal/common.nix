@@ -80,7 +80,7 @@ rec {
 
   inherit (nodePackages) cardano-node cardano-cli;
 
-  mithril-client = mithrilFlake.packages.${pkgs.system}.mithril-client;
+  mithril-client = mithrilFlake.packages.${pkgs.system}.mithril-client-cli;
 
   cardano-shell = (flake-compat {
     src = inputs.cardano-shell;

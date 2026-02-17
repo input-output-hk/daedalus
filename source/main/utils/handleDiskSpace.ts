@@ -15,6 +15,7 @@ import {
   DISK_SPACE_CHECK_TIMEOUT,
   DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
   stateDirectoryPath,
+  launcherConfig,
 } from '../config';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
@@ -23,12 +24,13 @@ import type { MithrilBootstrapStatusUpdate } from '../../common/types/mithril-bo
 import {
   getPendingMithrilBootstrapDecision,
   getMithrilBootstrapStatus,
+  onMithrilBootstrapDecision,
   onMithrilBootstrapStatus,
   waitForMithrilBootstrapDecision,
   mithrilBootstrapStatusChannel,
   setMithrilBootstrapStatus,
 } from '../ipc/mithrilBootstrapChannel';
-import { launcherConfig } from '../config';
+import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 
 const getDiskCheckReport = async (
   path: string,
@@ -87,6 +89,8 @@ export const handleDiskSpace = (
 
   let isNotEnoughDiskSpace = false; // Default check state
   let mithrilDecisionInFlight = false;
+  let mithrilFailureDecisionInFlight = false;
+  let mithrilFailureDeclineInFlight = false;
   let mithrilStartupCheckDone = false;
   let mithrilDecisionPrompted = false;
   let mithrilDecision: 'accept' | 'decline' | null = null;
@@ -97,11 +101,14 @@ export const handleDiskSpace = (
     'Logs',
     'mithril-bootstrap.lock'
   );
-  const envWipeDb = process.env.DAEDALUS_WIPE_DB === 'true' ? true : undefined;
-  const argvWipeDb = process.argv.slice(1).includes('--wipe-db')
+  const envWipeChain =
+    process.env.DAEDALUS_WIPE_CHAIN === 'true' ? true : undefined;
+  const argvWipeChain = process.argv.slice(1).includes('--wipe-chain')
     ? true
     : undefined;
-  const wipeDbFlag = envWipeDb ?? argvWipeDb ?? launcherConfig.wipeDb ?? false;
+  const wipeChainFlag =
+    envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
+  const mithrilBootstrapService = new MithrilBootstrapService();
   const emitMithrilDecisionStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
@@ -126,12 +133,49 @@ export const handleDiskSpace = (
     await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
   };
 
+  const emitMithrilStartFailure = async (error: unknown) => {
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'Cardano node failed to start after Mithril bootstrap. Wipe the chain data and try again.';
+    const update: MithrilBootstrapStatusUpdate = {
+      status: 'failed',
+      progress: 0,
+      currentStep: 'Cardano node failed to start',
+      snapshot: null,
+      error: {
+        message,
+      },
+    };
+    setMithrilBootstrapStatus(update);
+    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+  };
+
+  const handleMithrilFailureDecline = async (source: string) => {
+    if (mithrilFailureDeclineInFlight) return false;
+    const pendingDecision = getPendingMithrilBootstrapDecision();
+    if (pendingDecision !== 'decline') return false;
+    mithrilFailureDeclineInFlight = true;
+    try {
+      await emitMithrilIdleStatus();
+      await mithrilBootstrapService.wipeChainAndSnapshots(
+        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`
+      );
+      await cardanoNode.start();
+      mithrilDecision = null;
+      mithrilDecisionPrompted = false;
+      return true;
+    } finally {
+      mithrilFailureDeclineInFlight = false;
+    }
+  };
+
   const ensureMithrilStartupGate = async (): Promise<boolean> => {
     if (mithrilStartupCheckDone) return true;
     mithrilStartupCheckDone = true;
 
     try {
-      if (wipeDbFlag) {
+      if (wipeChainFlag) {
         if (
           cardanoNode.state !== CardanoNodeStates.STOPPING &&
           cardanoNode.state !== CardanoNodeStates.STOPPED
@@ -144,20 +188,14 @@ export const handleDiskSpace = (
             });
           }
         }
-        const chainDir = path.join(stateDirectoryPath, 'chain');
-        if (await fs.pathExists(chainDir)) {
-          await fs.remove(chainDir);
-        }
-        logger.info('[MITHRIL] wipe-db flag set. Wiped chain directory.');
+        await mithrilBootstrapService.wipeChainAndSnapshots(
+          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.'
+        );
       }
       const lockExists = await fs.pathExists(mithrilLockFilePath);
       if (lockExists) {
-        const chainDir = path.join(stateDirectoryPath, 'chain');
-        if (await fs.pathExists(chainDir)) {
-          await fs.remove(chainDir);
-        }
-        logger.info(
-          '[MITHRIL] Incomplete bootstrap detected. Wiped chain directory.'
+        await mithrilBootstrapService.wipeChainAndSnapshots(
+          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.'
         );
         mithrilDecisionPrompted = false;
         mithrilDecision = null;
@@ -175,17 +213,46 @@ export const handleDiskSpace = (
     mithrilStartInFlight = true;
     mithrilBootstrapCompleted = true;
     try {
-      await emitMithrilIdleStatus();
       await cardanoNode.start();
+      await emitMithrilIdleStatus();
       mithrilDecision = null;
       mithrilDecisionPrompted = false;
     } catch (error) {
       logger.error('[MITHRIL] Failed to start cardano-node after bootstrap', {
         error,
       });
+      mithrilBootstrapCompleted = false;
+      await emitMithrilStartFailure(error);
     } finally {
       mithrilStartInFlight = false;
     }
+  });
+
+  onMithrilBootstrapStatus((status) => {
+    if (status.status !== 'failed') return;
+    if (mithrilFailureDecisionInFlight) return;
+    mithrilFailureDecisionInFlight = true;
+    waitForMithrilBootstrapDecision()
+      .then(async (decision) => {
+        if (decision !== 'decline') return;
+        await handleMithrilFailureDecline('status-listener');
+      })
+      .catch((error) => {
+        logger.error('[MITHRIL] Decision wait failed after failure', { error });
+      })
+      .finally(() => {
+        mithrilFailureDecisionInFlight = false;
+      });
+  });
+
+  onMithrilBootstrapDecision((decision) => {
+    if (decision !== 'decline') return;
+    if (getMithrilBootstrapStatus().status !== 'failed') return;
+    handleMithrilFailureDecline('decision-listener').catch((error) => {
+      logger.error('[MITHRIL] Decline handling failed after decision', {
+        error,
+      });
+    });
   });
 
   const isChainEmpty = async (): Promise<boolean> => {
@@ -203,6 +270,10 @@ export const handleDiskSpace = (
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
     const response = await getDiskCheckReport(stateDirectoryPath);
     await ensureMithrilStartupGate();
+    const latestDecision = getPendingMithrilBootstrapDecision();
+    if (latestDecision && latestDecision !== mithrilDecision) {
+      mithrilDecision = latestDecision;
+    }
 
     if (response.isError) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -289,6 +360,12 @@ export const handleDiskSpace = (
                 mithrilBootstrapCompleted = true;
               }
 
+              if (mithrilStatus.status === 'failed') {
+                await handleMithrilFailureDecline('polling-chain-empty');
+                response.hadNotEnoughSpaceLeft = false;
+                break;
+              }
+
               if (mithrilBootstrapCompleted) {
                 await emitMithrilIdleStatus();
                 await cardanoNode.start();
@@ -301,13 +378,11 @@ export const handleDiskSpace = (
                 await emitMithrilDecisionStatus();
                 mithrilDecisionPrompted = true;
               }
-              const latestDecision = getPendingMithrilBootstrapDecision();
-              if (latestDecision && latestDecision !== mithrilDecision) {
-                mithrilDecision = latestDecision;
-              }
-
               if (mithrilDecision === 'decline') {
                 await emitMithrilIdleStatus();
+                await mithrilBootstrapService.wipeChainAndSnapshots(
+                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                );
                 await cardanoNode.start();
                 break;
               }
@@ -324,6 +399,9 @@ export const handleDiskSpace = (
                     mithrilDecisionPrompted = false;
                     if (decision === 'decline') {
                       await emitMithrilIdleStatus();
+                      await mithrilBootstrapService.wipeChainAndSnapshots(
+                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                      );
                       await cardanoNode.start();
                     }
                   })
@@ -334,6 +412,13 @@ export const handleDiskSpace = (
                     mithrilDecisionInFlight = false;
                   });
               }
+              response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
+            const mithrilStatus = getMithrilBootstrapStatus();
+            if (mithrilStatus.status === 'failed') {
+              await handleMithrilFailureDecline('polling-chain-present');
               response.hadNotEnoughSpaceLeft = false;
               break;
             }

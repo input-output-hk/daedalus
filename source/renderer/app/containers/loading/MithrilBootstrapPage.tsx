@@ -54,21 +54,31 @@ class MithrilBootstrapPage extends Component<Props> {
   handleAccept = async () => {
     const { mithrilBootstrap } = this.props.stores;
     const selected = this.state.selectedDigest;
-    await mithrilBootstrap.setDecision('accept');
-    await mithrilBootstrap.startBootstrap(
-      selected && selected !== 'latest' ? selected : undefined
-    );
+    try {
+      await mithrilBootstrap.setDecision('accept');
+      await mithrilBootstrap.startBootstrap(
+        selected && selected !== 'latest' ? selected : undefined,
+        { wipeChain: false }
+      );
+    } catch (error) {
+      // Errors are surfaced via Mithril status updates; avoid unhandled rejections.
+    }
   };
 
   handleDecline = async () => {
     await this.props.stores.mithrilBootstrap.setDecision('decline');
   };
 
-  handleRetry = async () => {
+  handleWipeRetry = async () => {
     const selected = this.state.selectedDigest;
-    await this.props.stores.mithrilBootstrap.startBootstrap(
-      selected && selected !== 'latest' ? selected : undefined
-    );
+    try {
+      await this.props.stores.mithrilBootstrap.startBootstrap(
+        selected && selected !== 'latest' ? selected : undefined,
+        { wipeChain: true }
+      );
+    } catch (error) {
+      // Errors are surfaced via Mithril status updates; avoid unhandled rejections.
+    }
   };
 
   handleCancel = async () => {
@@ -111,7 +121,7 @@ class MithrilBootstrapPage extends Component<Props> {
         onSelectSnapshot={this.handleSelectSnapshot}
         onAccept={this.handleAccept}
         onDecline={this.handleDecline}
-        onRetry={this.handleRetry}
+        onWipeRetry={this.handleWipeRetry}
         onCancel={this.handleCancel}
       />
     );

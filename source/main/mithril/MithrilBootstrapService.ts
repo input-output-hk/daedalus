@@ -162,11 +162,19 @@ export class MithrilBootstrapService {
     return normalizeSnapshotItem(parsed);
   }
 
-  async startBootstrap(digest?: string): Promise<void> {
+  async startBootstrap(
+    digest?: string,
+    options?: {
+      wipeChain?: boolean;
+    }
+  ): Promise<void> {
     if (this._currentProcess) {
       throw new Error('Mithril bootstrap already in progress');
     }
 
+    if (options?.wipeChain) {
+      await this.wipeChainAndSnapshots('bootstrap-request');
+    }
     await this._createLockFile();
 
     this._updateStatus({
@@ -234,6 +242,21 @@ export class MithrilBootstrapService {
     });
 
     await this._cleanupSnapshotArtifacts({ preserveDb: false });
+  }
+
+  async wipeChainAndSnapshots(reason: string): Promise<void> {
+    const chainDir = path.join(stateDirectoryPath, 'chain');
+    try {
+      if (await fs.pathExists(chainDir)) {
+        await fs.emptyDir(chainDir);
+      }
+      await this._cleanupSnapshotArtifacts({ preserveDb: false });
+      logger.info(`[MITHRIL] ${reason}`);
+    } catch (error) {
+      logger.warn('MithrilBootstrapService: failed to wipe chain data', {
+        error,
+      });
+    }
   }
 
   _updateStatus(update: Partial<MithrilBootstrapStatusUpdate>) {

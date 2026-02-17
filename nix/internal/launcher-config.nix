@@ -307,7 +307,7 @@ let
         legacyStateDir
         legacyWalletDB
         legacySecretKey;
-      wipeDb = false;
+      wipeChain = false;
       syncTolerance = "300s";
       nodeConfig = {
         inherit kind;

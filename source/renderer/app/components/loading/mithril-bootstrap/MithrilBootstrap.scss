@@ -62,16 +62,16 @@
 .selectorRow {
   align-items: center;
   display: grid;
-  grid-template-columns: 120px 1fr;
   gap: 16px;
+  grid-template-columns: 120px 1fr;
   margin-bottom: 24px;
 }
 
 .label {
   color: rgba(172, 182, 195, 0.9);
   font-size: 14px;
-  text-transform: uppercase;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .selectInput {
@@ -112,11 +112,11 @@
 }
 
 .details {
+  background: rgba(10, 18, 28, 0.6);
   border: 1px solid rgba(46, 64, 82, 0.6);
   border-radius: 10px;
   margin-bottom: 24px;
   padding: 16px 20px;
-  background: rgba(10, 18, 28, 0.6);
 }
 
 .detailsHeader {
@@ -133,10 +133,10 @@
 }
 
 .detailRow {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 12px;
   align-items: start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 140px 1fr;
 }
 
 .detailLabel {
@@ -187,6 +187,12 @@
   }
 }
 
+.errorHint {
+  color: rgba(168, 184, 201, 0.9);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
 @media (max-width: 720px) {
   .card {
     padding: 24px;
@@ -197,8 +203,8 @@
   }
 
   .actions {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: column;
   }
 
   .detailRow {

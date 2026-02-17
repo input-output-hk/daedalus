@@ -1,1 +1,3 @@
-export { default } from './MithrilBootstrap';
+import MithrilBootstrap from './MithrilBootstrap';
+
+export { MithrilBootstrap };

@@ -4,16 +4,16 @@
 Improve the first-run experience by offering Mithril snapshot bootstrapping when the Cardano DB is empty. This reduces initial sync time from days to minutes by downloading and verifying a certified Cardano DB snapshot, then launching `cardano-node` against the restored DB.
 
 ## Requirements
-- [ ] Detect empty `stateDir/chain` on startup before `cardano-node` launches.
-- [ ] Interrupt automatic node startup and present a user choice: "Use Mithril Fast Sync" or "Sync from Genesis".
-- [ ] Sequence the Mithril decision after onboarding agreements (Profile Configuration, Terms of Service, Analytics). Acceptance state lives in `ProfileStore` (`areTermsOfUseAccepted`, `analyticsAcceptanceStatus`, `isInitialScreen`, `isCurrentLocaleSet`) with setup routing derived in `AppStore.isSetupPage`. Show the decision immediately on startup when `isSetupPage` is false; otherwise wait until onboarding completes.
-- [ ] For supported networks (Mainnet, Preprod, Preview), run Mithril snapshot restoration using hardcoded aggregator endpoints and verification keys.
-- [ ] Allow the user to select which snapshot to restore (latest by default, but list available snapshots).
-- [ ] Automate ledger snapshot conversion using `mithril-client tools utxo-hd snapshot-converter --commit` after restoration.
-- [ ] Provide a progress UI with explicit steps and error states.
-- [ ] If the user declines, continue with standard genesis sync. If Mithril fails, wipe `stateDir/chain`, any downloaded snapshot data, present error to the user and re-prompt.
-- [ ] Provide a developer/test flag to launch Daedalus with a wiped DB for consistent Mithril flow testing.
-- [ ] On startup, detect an incomplete Mithril restore (e.g., marker/lock file or partial snapshot artifacts), wipe `stateDir/chain`, and re-prompt the user to either retry Mithril from scratch or sync from genesis.
+- [x] Detect empty `stateDir/chain` on startup before `cardano-node` launches.
+- [x] Interrupt automatic node startup and present a user choice: "Use Mithril Fast Sync" or "Sync from Genesis".
+- [x] Sequence the Mithril decision after onboarding agreements (Profile Configuration, Terms of Service, Analytics). Acceptance state lives in `ProfileStore` (`areTermsOfUseAccepted`, `analyticsAcceptanceStatus`, `isInitialScreen`, `isCurrentLocaleSet`) with setup routing derived in `AppStore.isSetupPage`. Show the decision immediately on startup when `isSetupPage` is false; otherwise wait until onboarding completes.
+- [x] For supported networks (Mainnet, Preprod, Preview), run Mithril snapshot restoration using hardcoded aggregator endpoints and verification keys.
+- [x] Allow the user to select which snapshot to restore (latest by default, but list available snapshots).
+- [x] Automate ledger snapshot conversion using `mithril-client tools utxo-hd snapshot-converter --commit` after restoration.
+- [x] Provide a progress UI with explicit steps and error states.
+- [x] If the user declines, continue with standard genesis sync. If Mithril fails, wipe `stateDir/chain`, any downloaded snapshot data, present error to the user and re-prompt.
+- [x] Provide a developer/test flag to launch Daedalus with wiped chain + Mithril snapshot artifacts for consistent Mithril flow testing.
+- [x] On startup, detect an incomplete Mithril restore (e.g., marker/lock file or partial snapshot artifacts), wipe `stateDir/chain`, and re-prompt the user to either retry Mithril from scratch or sync from genesis.
 
 ## Technical Design
 
@@ -58,19 +58,19 @@ Improve the first-run experience by offering Mithril snapshot bootstrapping when
 - Incomplete restore marker: create `stateDir/Logs/mithril-bootstrap.lock` at bootstrap start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup downloaded snapshot artifacts, wipe `stateDir/chain`, and leave the lock so the next startup re-prompts.
 
 ### Test/Developer Workflow
-No existing CLI flag or environment variable for wiping the DB was found in the codebase. Add a dev/test-only switch with:
-- CLI: `--wipe-db`
-- Env: `DAEDALUS_WIPE_DB=true`
-- Launcher config: `wipeDb?: boolean` in `LauncherConfig`
+Add a dev/test-only switch with:
+- CLI: `--wipe-chain`
+- Env: `DAEDALUS_WIPE_CHAIN=true`
+- Launcher config: `wipeChain?: boolean` in `LauncherConfig`
 
-Resolution precedence: `launcherConfig.wipeDb ?? (process.env.DAEDALUS_WIPE_DB === 'true') ?? argv.includes('--wipe-db')`.
+Resolution precedence: `launcherConfig.wipeChain ?? (process.env.DAEDALUS_WIPE_CHAIN === 'true') ?? argv.includes('--wipe-chain')`.
 
-Launcher wiring note: extend `nix/launcher-config.nix` (and any launcher config generator) to pass `wipeDb` into `LauncherConfig` for dev/test builds.
-This is now wired in `nix/internal/launcher-config.nix` with a default `wipeDb = false`.
+Launcher wiring note: extend `nix/launcher-config.nix` (and any launcher config generator) to pass `wipeChain` into `LauncherConfig` for dev/test builds.
+This is now wired in `nix/internal/launcher-config.nix` with a default `wipeChain = false`.
 
 Behavior:
 - Stops `cardano-node` if running.
-- Deletes `stateDir/chain`.
+- Deletes `stateDir/chain` and any Mithril snapshot artifacts in `stateDir/data` and `stateDir/db`.
 - Starts the app normally, triggering the Mithril flow.
 
 ### Network Configuration (Hardcoded)
@@ -124,9 +124,9 @@ Use official Mithril network configuration values. Keep these in a single map ke
 ### Manual QA Checklist
 
 #### Common (all OS)
-1. Start from an empty DB:
+1. Start from an empty chain:
    - Fresh install or remove `stateDir/chain`.
-   - Or launch with `--wipe-db` / `DAEDALUS_WIPE_DB=true`.
+   - Or launch with `--wipe-chain` / `DAEDALUS_WIPE_CHAIN=true`.
 2. Complete onboarding (Profile, Terms, Analytics) and confirm the Mithril decision prompt appears once onboarding ends.
 3. Choose **Use Mithril Fast Sync** and verify:
    - Snapshot list loads and selecting a snapshot updates metadata.
@@ -182,7 +182,8 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-16] Implemented main-process MithrilBootstrapService with progress parsing and lock cleanup.
 [2026-02-16] Wired Mithril bootstrap IPC handlers and decision waiters.
 [2026-02-16] Gated cardano-node startup on Mithril decision and handled lock cleanup on restart.
-[2026-02-16] Added wipe-db support (LauncherConfig + env/argv) for deterministic Mithril tests.
+[2026-02-16] Added wipe-chain support (LauncherConfig + env/argv) for deterministic Mithril tests.
+[2026-02-17] Centralized chain/snapshot wipe in MithrilBootstrapService and aligned flags to `wipeChain` naming.
 [2026-02-16] Added renderer MithrilBootstrapStore and IPC channels.
 [2026-02-16] Added Mithril bootstrap decision/progress UI overlay.
 [2026-02-16] Gated Mithril overlay display until onboarding completes (AppStore.isSetupPage false).
@@ -196,3 +197,5 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-17] Normalized mithril-client download commands and verification key handling for preview/mainnet/preprod.
 [2026-02-17] Install Mithril snapshot into stateDir/chain before starting cardano-node.
 [2026-02-17] Start cardano-node automatically after Mithril bootstrap completes.
+[2026-02-17] Added node-start failure retry UI with optional DB wipe and wired Mithril bootstrap to wipe chain on retry when requested.
+[2026-02-17] Fixed decline-after-failure flow so "Sync from genesis" always wipes chain artifacts and starts the node; added persistent decision listener in main.
