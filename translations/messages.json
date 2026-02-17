@@ -2437,14 +2437,19 @@
         "id": "loading.mithrilBootstrap.cancel"
       },
       {
-        "defaultMessage": "!!!Try again",
-        "description": "Button label to retry Mithril bootstrap.",
-        "id": "loading.mithrilBootstrap.retry"
+        "defaultMessage": "!!!Wipe chain & retry",
+        "description": "Button label to wipe chain and retry Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.wipeAndRetry"
       },
       {
         "defaultMessage": "!!!Mithril bootstrap failed",
         "description": "Title for Mithril error state.",
         "id": "loading.mithrilBootstrap.errorTitle"
+      },
+      {
+        "defaultMessage": "!!!The node could not start with the restored chain data. Wipe the chain and try Mithril again, or sync from genesis.",
+        "description": "Hint for node start failure after Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.startFailureHint"
       }
     ],
     "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"

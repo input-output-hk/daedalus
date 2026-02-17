@@ -101,15 +101,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Cancel',
     description: 'Button label to cancel Mithril bootstrap.',
   },
-  retry: {
-    id: 'loading.mithrilBootstrap.retry',
-    defaultMessage: '!!!Try again',
-    description: 'Button label to retry Mithril bootstrap.',
+  wipeAndRetry: {
+    id: 'loading.mithrilBootstrap.wipeAndRetry',
+    defaultMessage: '!!!Wipe chain & retry',
+    description: 'Button label to wipe chain and retry Mithril bootstrap.',
   },
   errorTitle: {
     id: 'loading.mithrilBootstrap.errorTitle',
     defaultMessage: '!!!Mithril bootstrap failed',
     description: 'Title for Mithril error state.',
+  },
+  startFailureHint: {
+    id: 'loading.mithrilBootstrap.startFailureHint',
+    defaultMessage:
+      '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril again, or sync from genesis.',
+    description: 'Hint for node start failure after Mithril bootstrap.',
   },
 });
 
@@ -127,7 +133,7 @@ type Props = {
   onSelectSnapshot: (digest: string | null) => void;
   onAccept: () => void;
   onDecline: () => void;
-  onRetry: () => void;
+  onWipeRetry: () => void;
   onCancel: () => void;
 };
 
@@ -136,7 +142,6 @@ type SnapshotOption = {
   label: string;
 };
 
-@observer
 class MithrilBootstrap extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -251,7 +256,7 @@ class MithrilBootstrap extends Component<Props> {
           <div className={styles.label}>
             <FormattedMessage {...messages.selectLabel} />
           </div>
-          <div className={styles.selector}>
+          <div>
             <Select
               skin={SelectSkin}
               className={styles.selectInput}
@@ -294,6 +299,7 @@ class MithrilBootstrap extends Component<Props> {
     const progressLabel = normalizedProgress.toFixed(1);
     const elapsedLabel = this.formatDuration(elapsedSeconds);
     const remainingLabel = this.formatDuration(remainingSeconds);
+    const progressMeta = this.formatProgressMeta(elapsedLabel, remainingLabel);
     return (
       <div className={styles.card}>
         <div className={styles.header}>
@@ -307,21 +313,8 @@ class MithrilBootstrap extends Component<Props> {
             rightLabel1={`${progressLabel}%`}
             isDarkMode
           />
-          {(elapsedLabel || remainingLabel) && (
-            <div className={styles.progressMeta}>
-              {elapsedLabel && remainingLabel
-                ? intl.formatMessage(messages.progressTiming, {
-                    elapsed: elapsedLabel,
-                    remaining: remainingLabel,
-                  })
-                : elapsedLabel
-                ? intl.formatMessage(messages.progressElapsed, {
-                    elapsed: elapsedLabel,
-                  })
-                : intl.formatMessage(messages.progressRemaining, {
-                    remaining: remainingLabel,
-                  })}
-            </div>
+          {progressMeta && (
+            <div className={styles.progressMeta}>{progressMeta}</div>
           )}
         </div>
         <div className={styles.actions}>
@@ -350,21 +343,48 @@ class MithrilBootstrap extends Component<Props> {
     return `${minutes}:${String(seconds).padStart(2, '0')}`;
   }
 
+  formatProgressMeta(
+    elapsedLabel: string | null,
+    remainingLabel: string | null
+  ) {
+    const { intl } = this.context;
+    if (elapsedLabel && remainingLabel) {
+      return intl.formatMessage(messages.progressTiming, {
+        elapsed: elapsedLabel,
+        remaining: remainingLabel,
+      });
+    }
+    if (elapsedLabel) {
+      return intl.formatMessage(messages.progressElapsed, {
+        elapsed: elapsedLabel,
+      });
+    }
+    if (remainingLabel) {
+      return intl.formatMessage(messages.progressRemaining, {
+        remaining: remainingLabel,
+      });
+    }
+    return null;
+  }
+
   renderError() {
     const { intl } = this.context;
-    const { error, onRetry, onDecline } = this.props;
+    const { error, onWipeRetry, onDecline } = this.props;
     return (
       <div className={styles.card}>
         <div className={styles.header}>
           <h1>{intl.formatMessage(messages.errorTitle)}</h1>
           <p>{error?.message}</p>
+          <div className={styles.errorHint}>
+            {intl.formatMessage(messages.startFailureHint)}
+          </div>
         </div>
         <div className={styles.actions}>
           <Button
             className={styles.primaryAction}
             skin={ButtonSkin}
-            label={intl.formatMessage(messages.retry)}
-            onClick={onRetry}
+            label={intl.formatMessage(messages.wipeAndRetry)}
+            onClick={onWipeRetry}
           />
           <Button
             className={styles.secondaryAction}
@@ -400,4 +420,4 @@ class MithrilBootstrap extends Component<Props> {
   }
 }
 
-export default MithrilBootstrap;
+export default observer(MithrilBootstrap);

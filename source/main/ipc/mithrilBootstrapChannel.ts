@@ -50,6 +50,7 @@ const mithrilBootstrapSnapshotsChannel: MainIpcChannel<
 let pendingDecision: MithrilBootstrapDecision | null = null;
 let decisionWaiters: Array<(decision: MithrilBootstrapDecision) => void> = [];
 let statusListeners: Array<(status: MithrilBootstrapStatusUpdate) => void> = [];
+let decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
 
 let lastStatus: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -67,6 +68,17 @@ export const onMithrilBootstrapStatus = (
   statusListeners.push(handler);
   return () => {
     statusListeners = statusListeners.filter(
+      (listener) => listener !== handler
+    );
+  };
+};
+
+export const onMithrilBootstrapDecision = (
+  handler: (decision: MithrilBootstrapDecision) => void
+) => {
+  decisionListeners.push(handler);
+  return () => {
+    decisionListeners = decisionListeners.filter(
       (listener) => listener !== handler
     );
   };
@@ -111,11 +123,28 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
     pendingDecision = decision;
     decisionWaiters.forEach((resolve) => resolve(decision));
     decisionWaiters = [];
+    decisionListeners.forEach((listener) => listener(decision));
+    if (decision === 'decline') {
+      if (lastStatus.status === 'failed') {
+        return;
+      }
+      const update = setMithrilBootstrapStatus({
+        status: 'idle',
+        progress: 0,
+        currentStep: undefined,
+        snapshot: null,
+        error: null,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      });
+      await mithrilBootstrapStatusChannel.send(update, window.webContents);
+      statusListeners.forEach((listener) => listener(update));
+    }
   });
 
-  mithrilBootstrapStartChannel.onRequest(async ({ digest }) => {
+  mithrilBootstrapStartChannel.onRequest(async ({ digest, wipeChain }) => {
     try {
-      await service.startBootstrap(digest);
+      await service.startBootstrap(digest, { wipeChain });
     } catch (error) {
       logger.error('Mithril bootstrap failed to start', error);
       throw error;

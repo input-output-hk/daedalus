@@ -98,9 +98,17 @@ export default class MithrilBootstrapStore extends Store {
   };
 
   @action
-  startBootstrap = async (digest?: string) => {
+  startBootstrap = async (
+    digest?: string,
+    options?: {
+      wipeChain?: boolean;
+    }
+  ) => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
-    await mithrilBootstrapStartChannel.request({ digest });
+    await mithrilBootstrapStartChannel.request({
+      digest,
+      wipeChain: options?.wipeChain,
+    });
   };
 
   @action

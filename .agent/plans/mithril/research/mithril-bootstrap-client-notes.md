@@ -19,7 +19,7 @@
 
 ## Notes
 - `GENESIS_VERIFICATION_KEY` and `ANCILLARY_VERIFICATION_KEY` in Mithril docs are shown as URLs; the CLI accepts URLs and fetches keys when those env vars are set.
-- `--wipe-db` flow now supports LauncherConfig (`wipeDb`), `DAEDALUS_WIPE_DB=true`, or CLI `--wipe-db` in that precedence order; `wipeDb` defaults to false in the launcher config.
+- `--wipe-chain` flow now supports LauncherConfig (`wipeChain`), `DAEDALUS_WIPE_CHAIN=true`, or CLI `--wipe-chain` in that precedence order; `wipeChain` defaults to false in the launcher config.
 - Preview env got blocked by Nix flakes treating `nixpkgs` as non-flake. For manual testing, we temporarily set `flake.nix` inputs:
   - `nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin"` and `nixpkgs.flake = true`
   - `mithril.flake = true` (required because `nix/internal/common.nix` expects `mithrilFlake.packages`)
@@ -33,7 +33,7 @@
 - Electron dev on Linux may fail with SUID sandbox error; use `ELECTRON_DISABLE_SANDBOX=1 yarn start:dev` (optionally `--no-sandbox`).
 - Mithril decision overlay debugging notes:
   - `handleDiskSpace` originally gated on `_startupTries === 0`. Removing that condition allows decision status to emit when node is STOPPED.
-  - `launcherConfig.wipeDb` default in nix launcher config overrides env; remove default or ensure precedence favors env/argv.
+- `launcherConfig.wipeChain` default in nix launcher config overrides env; remove default or ensure precedence favors env/argv.
   - Renderer store should call `syncStatus()` on setup to pick up cached status if broadcast was missed.
 - Decision status must be cached in main (IPC module) so `status` request returns the decision update.
 - Overlay was hidden while onboarding (`app.isSetupPage`); removing that gate allows decision screen to show during setup.
@@ -49,3 +49,5 @@
 - Snapshot selection UI now surfaces metadata (digest, size, created, node version). Created timestamps are displayed using local time formatting and fallback to raw strings when parsing fails.
 - Added `parseMithrilProgressLine` helper to keep progress parsing isolated from `MithrilBootstrapService` so Jest tests can run without requiring nix-shell.
 - Manual QA checklist lives in `.agent/plans/mithril/bootstrap-cardano-node.md` under the Testing Strategy section.
+- Added a Mithril retry path that can optionally wipe `stateDir/chain` and Mithril snapshot artifacts when the node fails to start after bootstrap; the renderer sends `wipeChain` on retry to trigger the wipe before re-downloading.
+- Added persistent Mithril decision listeners in main so decline-after-failure reliably wipes chain/snapshot artifacts and starts the node.

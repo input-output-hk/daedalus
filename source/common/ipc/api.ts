@@ -425,6 +425,7 @@ export const MITHRIL_BOOTSTRAP_START_CHANNEL =
   'MITHRIL_BOOTSTRAP_START_CHANNEL';
 export type MithrilBootstrapStartRendererRequest = {
   digest?: string;
+  wipeChain?: boolean;
 };
 export type MithrilBootstrapStartMainResponse = void;
 

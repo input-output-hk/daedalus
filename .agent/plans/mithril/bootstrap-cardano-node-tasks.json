@@ -102,8 +102,8 @@
         },
         {
           "id": "task-007",
-          "title": "Add wipe-db dev flag",
-          "description": "Add --wipe-db CLI flag, DAEDALUS_WIPE_DB env, and LauncherConfig.wipeDb with precedence",
+          "title": "Add wipe-chain dev flag",
+          "description": "Add --wipe-chain CLI flag, DAEDALUS_WIPE_CHAIN env, and LauncherConfig.wipeChain with precedence",
           "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
@@ -208,11 +208,11 @@
           "id": "task-015",
           "title": "Retry with DB wipe",
           "description": "Surface node-start errors and offer DB wipe + retry bootstrap",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": ["task-006", "task-009"],
-          "completedAt": "",
+          "completedAt": "2026-02-17",
           "targetPath": "source/main/utils/handleDiskSpace.ts"
         },
         {

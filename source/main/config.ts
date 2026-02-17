@@ -73,7 +73,7 @@ export type LauncherConfig = {
   legacyWalletDB: string;
   isFlight: boolean;
   isStaging: boolean;
-  wipeDb?: boolean;
+  wipeChain?: boolean;
   smashUrl?: string;
   metadataUrl?: string;
   updateRunnerBin: string;
