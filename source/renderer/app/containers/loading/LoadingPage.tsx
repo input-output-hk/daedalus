@@ -16,11 +16,17 @@ class LoadingPage extends Component<InjectedProps> {
   };
 
   get activeOverlay() {
-    if (this.isMithrilBootstrapDecision) return <MithrilBootstrapPage />;
-    if (this.isMithrilBootstrapActive) return <MithrilBootstrapPage />;
+    if (this.shouldShowMithrilBootstrap) return <MithrilBootstrapPage />;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     return null;
+  }
+
+  get shouldShowMithrilBootstrap() {
+    return (
+      !this.isSetupPage &&
+      (this.isMithrilBootstrapDecision || this.isMithrilBootstrapActive)
+    );
   }
 
   get isNotEnoughDiskSpace() {
@@ -51,6 +57,10 @@ class LoadingPage extends Component<InjectedProps> {
       'failed',
     ];
     return activeStatuses.includes(mithrilBootstrap.status);
+  }
+
+  get isSetupPage() {
+    return this.props.stores.app.isSetupPage;
   }
 
   get networkStatus() {

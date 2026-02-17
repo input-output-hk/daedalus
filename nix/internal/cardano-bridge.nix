@@ -9,12 +9,22 @@ runCommandCC "daedalus-cardano-bridge" {
   mkdir -pv $out/bin
   cd $out/bin
   echo ${cardano-wallet.version} > $out/version
-  cp ${cardano-wallet}/bin/* .
-  cp -f ${cardano-address}/bin/cardano-address* .
-  cp -f ${cardano-launcher}/bin/* .
-  cp -f ${cardano-node}/bin/* .
-  cp -f ${cardano-cli}/bin/cardano-cli* .
-  cp -f ${mithril-client}/bin/mithril-client* .
+  copy_glob() {
+    local label="$1"
+    local pattern="$2"
+    set -- $pattern
+    if [ "$1" != "$pattern" ]; then
+      cp -f "$@" . || true
+    else
+      echo "WARNING: Missing binaries for ''${label} (''${pattern})"
+    fi
+  }
+  copy_glob "cardano-wallet" "${cardano-wallet}/bin/*"
+  copy_glob "cardano-address" "${cardano-address}/bin/cardano-address*"
+  copy_glob "cardano-launcher" "${cardano-launcher}/bin/*"
+  copy_glob "cardano-node" "${cardano-node}/bin/*"
+  copy_glob "cardano-cli" "${cardano-cli}/bin/cardano-cli*"
+  copy_glob "mithril-client" "${mithril-client}/bin/mithril-client*"
   ${lib.optionalString (local-cluster != null) ''
 
     ${if target == "x86_64-windows" then ''

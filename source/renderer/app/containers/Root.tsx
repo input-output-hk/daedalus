@@ -43,6 +43,7 @@ class Root extends Component<Props> {
       isSplashShown,
       isSystemTimeCorrect,
     } = networkStatus;
+    const { isSetupPage } = app;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
@@ -74,7 +75,8 @@ class Root extends Component<Props> {
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
-      (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
+      (isProfilePage &&
+        (isNotEnoughDiskSpace || !isNodeInStoppingSequence || isSetupPage))
     ) {
       return children;
     }

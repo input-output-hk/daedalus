@@ -145,22 +145,22 @@
           "id": "task-010",
           "title": "Integrate loading flow",
           "description": "Wire Mithril bootstrap UI into existing syncing/connecting flow, gating the decision prompt until onboarding is complete (AppStore.isSetupPage false)",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-008", "task-009"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/renderer/app/containers/loading/LoadingPage.tsx"
         },
         {
           "id": "task-011",
           "title": "Snapshot selection UI",
           "description": "Allow users to choose a snapshot and view metadata before starting",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-008", "task-009"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap"
         }
       ]
@@ -175,33 +175,33 @@
           "id": "task-012",
           "title": "Unit test parsing logic",
           "description": "Add unit tests for progress parsing from mithril-client output",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": ["task-004"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/mithril/__tests__"
         },
         {
           "id": "task-013",
           "title": "Manual QA checklist",
           "description": "Document manual verification steps for each OS",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 1,
           "dependencies": [],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": ".agent/plans/mithril/bootstrap-cardano-node.md"
         },
         {
           "id": "task-014",
           "title": "Fallback validation",
           "description": "Verify fallback to standard sync when Mithril fails",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": ["task-006"],
-          "completedAt": "",
+          "completedAt": "2026-02-16",
           "targetPath": "source/main/utils/handleDiskSpace.ts"
         },
         {
@@ -219,11 +219,11 @@
           "id": "task-016",
           "title": "Mithril parsing substeps",
           "description": "Implement JSON parsing for snapshot list/details/download progress and converter output",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": ["task-004"],
-          "completedAt": "",
+          "completedAt": "2026-02-17",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         }
       ]

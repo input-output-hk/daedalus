@@ -30,5 +30,7 @@ export type MithrilBootstrapStatusUpdate = {
   progress: number;
   currentStep?: string;
   snapshot?: MithrilSnapshotItem | null;
+  elapsedSeconds?: number;
+  remainingSeconds?: number;
   error?: MithrilBootstrapError | null;
 };

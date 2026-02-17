@@ -49,6 +49,7 @@ const mithrilBootstrapSnapshotsChannel: MainIpcChannel<
 
 let pendingDecision: MithrilBootstrapDecision | null = null;
 let decisionWaiters: Array<(decision: MithrilBootstrapDecision) => void> = [];
+let statusListeners: Array<(status: MithrilBootstrapStatusUpdate) => void> = [];
 
 let lastStatus: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -59,6 +60,17 @@ let lastStatus: MithrilBootstrapStatusUpdate = {
 };
 
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
+export const getMithrilBootstrapStatus = () => lastStatus;
+export const onMithrilBootstrapStatus = (
+  handler: (status: MithrilBootstrapStatusUpdate) => void
+) => {
+  statusListeners.push(handler);
+  return () => {
+    statusListeners = statusListeners.filter(
+      (listener) => listener !== handler
+    );
+  };
+};
 
 export const setMithrilBootstrapStatus = (
   update: Partial<MithrilBootstrapStatusUpdate>
@@ -86,6 +98,7 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   service.onStatus((status) => {
     lastStatus = status;
     mithrilBootstrapStatusChannel.send(status, window.webContents);
+    statusListeners.forEach((listener) => listener(status));
   });
 
   mithrilBootstrapStatusChannel.onRequest(async () => lastStatus);

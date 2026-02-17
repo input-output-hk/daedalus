@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs.flake = true;
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-node-override.url = "github:IntersectMBO/cardano-node/10.5.1";
@@ -12,7 +13,7 @@
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
     mithril.url = "github:input-output-hk/mithril";
-    mithril.flake = false;
+    mithril.flake = true;
     tullia.url = "github:input-output-hk/tullia";
     tullia.flake = false; # otherwie, +1k dependencies in flake.lock…
     flake-compat.url = "github:input-output-hk/flake-compat";

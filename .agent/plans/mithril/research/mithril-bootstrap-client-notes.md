@@ -35,6 +35,17 @@
   - `handleDiskSpace` originally gated on `_startupTries === 0`. Removing that condition allows decision status to emit when node is STOPPED.
   - `launcherConfig.wipeDb` default in nix launcher config overrides env; remove default or ensure precedence favors env/argv.
   - Renderer store should call `syncStatus()` on setup to pick up cached status if broadcast was missed.
-  - Decision status must be cached in main (IPC module) so `status` request returns the decision update.
-  - Overlay was hidden while onboarding (`app.isSetupPage`); removing that gate allows decision screen to show during setup.
+- Decision status must be cached in main (IPC module) so `status` request returns the decision update.
+- Overlay was hidden while onboarding (`app.isSetupPage`); removing that gate allows decision screen to show during setup.
+- If the user declines Mithril, emit an idle status to clear the Mithril overlay before starting node sync.
+- Onboarding pages were hidden when node was stopped; adjust Root to render profile setup routes even in node-stopped state.
 - If Mithril UI strings log missing i18n ids, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, `translations/ja-JP.json`.
+- Mithril `cardano-db` subcommands differ by client version; detect whether `download` is under `cardano-db` or `cardano-db snapshot`.
+- Verification keys are fetched from mithril-infra URLs and must be converted from JSON byte arrays into hex strings for `mithril-client` env vars.
+- Snapshot download progress includes `files_downloaded/files_total` and `seconds_elapsed/seconds_left` fields.
+- `total_db_size_uncompressed` is the size field used for snapshot detail size.
+- After bootstrap, move the snapshot database from `stateDir/db` into `stateDir/chain` so cardano-node uses it.
+- Cardano node should auto-start after Mithril bootstrap completion (don’t wait for disk check polling).
+- Snapshot selection UI now surfaces metadata (digest, size, created, node version). Created timestamps are displayed using local time formatting and fallback to raw strings when parsing fails.
+- Added `parseMithrilProgressLine` helper to keep progress parsing isolated from `MithrilBootstrapService` so Jest tests can run without requiring nix-shell.
+- Manual QA checklist lives in `.agent/plans/mithril/bootstrap-cardano-node.md` under the Testing Strategy section.
