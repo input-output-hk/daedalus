@@ -96,6 +96,13 @@ result*
 !result*.ts
 !result*.tsx
 
+# direnv
+.direnv
+
+# AI Agents
+
+.agent/settings.local.json
+
 # Npm
 package-lock.json
 
