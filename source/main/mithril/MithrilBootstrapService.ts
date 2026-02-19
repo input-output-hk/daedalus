@@ -201,7 +201,8 @@ export class MithrilBootstrapService {
 
     try {
       await this._downloadSnapshot(snapshotDigest, snapshot);
-      await this._convertSnapshot(snapshot);
+      // Skip conversion - Mithril provides in-memory format snapshots, no conversion needed
+      // await this._convertSnapshot(snapshot);
       const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
       await this._installSnapshot(dbDirectory);
 
@@ -631,6 +632,13 @@ export class MithrilBootstrapService {
       status: 'verifying',
       progress: STEP_PROGRESS.verifying,
       currentStep: 'Verifying Mithril snapshot',
+    });
+
+    // Skip converting step - proceed directly to finalizing
+    this._updateStatus({
+      status: 'converting',
+      progress: STEP_PROGRESS.finalizing,
+      currentStep: 'Finalizing Mithril bootstrap',
     });
   }
 
