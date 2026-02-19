@@ -2,8 +2,10 @@
   description = "The open source wallet for ada, built to grow with the Cardano blockchain";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.flake = true;
+    nixpkgsJs.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgsJs.flake = true;
     cardano-wallet-unpatched.url = "github:cardano-foundation/cardano-wallet/v2025-03-31";
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-node-override.url = "github:IntersectMBO/cardano-node/10.5.4";
@@ -12,8 +14,9 @@
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
-    mithril.url = "github:input-output-hk/mithril";
+    mithril.url = "github:input-output-hk/mithril/2603.1";
     mithril.flake = true;
+    mithril.inputs.nixpkgs.follows = "nixpkgs";
     tullia.url = "github:input-output-hk/tullia";
     tullia.flake = false; # otherwie, +1k dependencies in flake.lock…
     flake-compat.url = "github:input-output-hk/flake-compat";

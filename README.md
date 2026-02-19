@@ -77,6 +77,24 @@ Daedalus - Cryptocurrency Wallet
     * `nix develop -L .#mainnet`
     * … which is equivalent to `yarn nix:mainnet`
 
+#### Using direnv (Optional)
+
+If you have [direnv](https://direnv.net/) installed, you can use it to automatically load the appropriate Nix development shell when entering the project directory.
+
+1. Allow direnv for this directory:
+   ```bash
+   $ direnv allow
+   ```
+
+2. By default, the `preprod` environment will be loaded. To use a different network, set the `DAEDALUS_CLUSTER` environment variable:
+   ```bash
+   $ export DAEDALUS_CLUSTER=mainnet  # Use mainnet
+   $ export DAEDALUS_CLUSTER=preview  # Use preview testnet
+   $ export DAEDALUS_CLUSTER=selfnode # Use local selfnode
+   ```
+
+3. The environment will automatically reload when you `cd` into the project directory.
+
 **Notes:**
 
 If you get SSL error when running `nix develop` (SSL peer certificate or SSH remote key was not OK) try the next steps:
