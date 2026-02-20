@@ -19,11 +19,11 @@ assert targetSystem == "x86_64-darwin" || targetSystem == "aarch64-darwin"; let
   inherit (common) originalPackageJson electronVersion electronChromedriverVersion commonSources;
 
   archSuffix =
-    if pkgs.system == "aarch64-darwin"
+    if pkgs.stdenv.hostPlatform.system == "aarch64-darwin"
     then "arm64"
     else "x64";
   packageVersion = originalPackageJson.version;
-  installerName = cluster: "daedalus-${packageVersion}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.system}";
+  installerName = cluster: "daedalus-${packageVersion}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-${pkgs.stdenv.hostPlatform.system}";
 
   genClusters = lib.genAttrs sourceLib.installerClusters;
 in rec {

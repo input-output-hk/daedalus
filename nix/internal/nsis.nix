@@ -4,7 +4,7 @@ let
   buildGcc = pkgs.gcc;
   crossPkgs = import pkgs.path {
     crossSystem = pkgs.lib.systems.examples."${if arch == "x86" then "mingw32" else "mingwW64"}";
-    localSystem.system = pkgs.system;
+    localSystem.system = pkgs.stdenv.hostPlatform.system;
   };
   nsis = crossPkgs.callPackage ./nsis-inner.nix { inherit arch buildGcc; };
 in nsis

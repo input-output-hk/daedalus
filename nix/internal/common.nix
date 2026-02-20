@@ -76,7 +76,7 @@
       targetSystem
     };
 
-  inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
+  inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
     import ./cardano-bridge.nix {
@@ -93,7 +93,7 @@
 
   inherit (nodePackages) cardano-node cardano-cli;
 
-  mithril-client = inputs.mithril.packages.${pkgs.system}.mithril-client-cli;
+  mithril-client = inputs.mithril.packages.${pkgs.stdenv.hostPlatform.system}.mithril-client-cli;
 
   cardano-shell =
     (flake-compat {
@@ -113,7 +113,8 @@
     import ./launcher-config.nix {
       inherit devShell;
       inherit cardanoLib;
-      inherit (pkgs) system runCommand lib;
+      inherit (pkgs) runCommand lib;
+      system = pkgs.stdenv.hostPlatform.system;
       inherit (inputs) cardano-playground;
       network = cluster;
       os =
