@@ -46,7 +46,7 @@ module.exports = {
             },
             transform: {
               react: {
-                refresh: isDevelopment,
+                refresh: false, // Disabled: React Refresh has Electron compatibility issues
               },
             },
             target: 'es2019',
@@ -151,6 +151,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
-    isDevelopment && new ReactRefreshWebpackPlugin(),
+    // Disabled: React Refresh has compatibility issues with Electron
+    // isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),
 };
