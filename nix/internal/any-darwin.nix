@@ -184,7 +184,7 @@ in rec {
   bundle-local-cluster = mkBundle "local-cluster" (lib.getExe common.walletPackages.local-cluster);
 
   # Unfortunately they bundle it upstream, but not in a subdir:
-  bundle-cardano-wallet = pkgs.runCommandNoCC "bundle-cardano-wallet" {} ''
+  bundle-cardano-wallet = pkgs.runCommand "bundle-cardano-wallet" {} ''
     cp -r ${common.cardano-wallet}/bin $out
     chmod -R +w $out
     ${moveDylibsToSubdir "cardano-wallet"}
@@ -398,6 +398,7 @@ in rec {
   unsignedInstaller = genClusters (cluster:
     pkgs.stdenv.mkDerivation {
       name = "daedalus-unsigned-darwin-installer";
+      meta.mainProgram = "daedalus-${cluster}-installer";
       dontUnpack = true;
       buildPhase = ''
         ${makeSignedInstaller.${cluster}}/bin/* | tee make-installer.log
@@ -405,6 +406,10 @@ in rec {
       installPhase = ''
         mkdir -p $out
         cp $(tail -n 1 make-installer.log) $out/
+
+        # Create bin directory with hard link for nix run
+        mkdir -p $out/bin
+        ln $out/*.pkg $out/bin/daedalus-${cluster}-installer
 
         # Make it downloadable from Hydra:
         mkdir -p $out/nix-support

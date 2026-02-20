@@ -209,7 +209,7 @@ in rec {
       )
     '';
   in
-    (import (pkgsJs.runCommandNoCC "nix-bundle-exe-patched" {} ''
+    (import (pkgsJs.runCommand "nix-bundle-exe-patched" {} ''
         cp -r ${inputs.nix-bundle-exe} $out
         chmod -R +w $out
         ${additionalLibs}
@@ -413,6 +413,7 @@ in rec {
     pkgs.runCommand "daedalus-${cluster}-installer" {
       inherit script;
       passAsFile = ["script"];
+      meta.mainProgram = "daedalus-${cluster}-installer";
     } ''
       mkdir -p $out
       target=$out/daedalus-${version}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-linux.bin
@@ -426,6 +427,11 @@ in rec {
       sed -r "s/0000000000000000000000000000000000000000000000000000000000000000/$checksum/g" -i $target
 
       cat tmp-archive.tar.xz >>$target
+
+      # Create bin directory with hard link for nix run
+      # (symlink won't work for self-extracting archives)
+      mkdir -p $out/bin
+      ln $target $out/bin/daedalus-${cluster}-installer
 
       # Make it downloadable from Hydra:
       mkdir -p $out/nix-support
@@ -490,7 +496,7 @@ in rec {
       ];
     };
   in
-    pkgs.runCommandNoCC "satisfy-old-update-runner" {} ''
+    pkgs.runCommand "satisfy-old-update-runner" {} ''
       mkdir -p $out/dat${tarball}
       cp -r ${tarball}/. $out/dat${tarball}/
     '');

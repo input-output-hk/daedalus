@@ -25,13 +25,19 @@ in rec {
     });
 
   unsignedInstaller = genClusters (cluster:
-    pkgs.runCommand "win64-installer-${cluster}" {} ''
+    pkgs.runCommand "win64-installer-${cluster}" {
+      meta.mainProgram = "daedalus-${cluster}-installer";
+    } ''
       ${makeInstaller {
         signed = false;
         inherit cluster;
       }}/bin/make-signed-installer
       mkdir $out
       cp -v installers/daedalus-*-*.exe $out/
+
+      # Create bin directory with hard link for nix run
+      mkdir -p $out/bin
+      ln $out/*.exe $out/bin/daedalus-${cluster}-installer
 
       # Make it downloadable from Hydra:
       mkdir -p $out/nix-support
