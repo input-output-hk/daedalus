@@ -26,6 +26,12 @@ sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
 
 # TODO: do we really need to run `electron-rebuild` 3×?
 
+# Export flags to disable strict enum checking for clang
+# Make all warnings non-fatal (older clang doesn't support -Wno-enum-constexpr-conversion)
+export npm_config_cxxflags="${npm_config_cxxflags:--Wno-error}"
+export NPM_CONFIG_CXXFLAGS="${NPM_CONFIG_CXXFLAGS:--Wno-error}"
+export CXXFLAGS="${CXXFLAGS} -Wno-error"
+
 electron-rebuild --force
 
 electron-rebuild -w usb-detection --force -s # <https://github.com/MadLittleMods/node-usb-detection#install-for-electron>
