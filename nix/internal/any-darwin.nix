@@ -69,7 +69,7 @@ in rec {
       [yarn nodejs]
       ++ (with pkgs; [perl pkg-config jq darwin.cctools xcbuild])
       ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
-    buildInputs = with pkgs.darwin; [
+    buildInputs = with pkgsJs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
     ];
@@ -233,7 +233,7 @@ in rec {
         ++ (with pkgs; [perl pkg-config darwin.cctools xcbuild jq])
         ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
       buildInputs =
-        (with pkgs.darwin; [
+        (with pkgsJs.darwin; [
           apple_sdk.frameworks.CoreServices
           apple_sdk.frameworks.AppKit
           libobjc
