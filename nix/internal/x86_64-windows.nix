@@ -497,7 +497,7 @@ in rec {
 
   make-installer = let
     hsDaedalusPkgs = import ../../installers {
-      inherit pkgs;
+      pkgs = pkgsJs;
       inherit (pkgs) system;
     };
   in
