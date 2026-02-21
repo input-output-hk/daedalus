@@ -46,12 +46,12 @@ in rec {
   # XXX: we don't use `autoSignDarwinBinariesHook` for ad-hoc signing,
   # because it takes too long (minutes) for all the JS/whatnot files we
   # have. Instead, we locate targets in a more clever way.
-  signAllBinaries = pkgs.writeShellScript "signAllBinaries" ''
+  signAllBinaries = pkgsJs.writeShellScript "signAllBinaries" ''
     set -o nounset
     echo 'Searching for binaries to ad-hoc sign…'
-    source ${pkgs.darwin.signingUtils}
-    ${pkgs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
-      echo "ad-hoc signing ‘$target’…"
+    source ${pkgsJs.darwin.signingUtils}
+    ${pkgsJs.findutils}/bin/find "$1" -type f -not '(' -name '*.js' -o -name '*.ts' -o -name '*.ts.map' -o -name '*.js.map' -o -name '*.json' ')' -exec ${pkgsJs.file}/bin/file '{}' ';' | grep -F ': Mach-O' | cut -d: -f1 | while IFS= read -r target ; do
+      echo "ad-hoc signing '$target'…"
       signIfRequired "$target"
     done
   '';
