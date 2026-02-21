@@ -501,7 +501,7 @@ in rec {
       inherit (pkgs) system;
     };
   in
-    pkgs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
+    pkgsJs.haskell.lib.justStaticExecutables hsDaedalusPkgs.daedalus-installer;
 
   nsisFiles = genClusters (cluster:
     pkgs.runCommand "nsis-files" {

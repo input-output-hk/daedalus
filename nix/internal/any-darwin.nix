@@ -67,8 +67,8 @@ in rec {
     src = srcLockfiles;
     nativeBuildInputs =
       [yarn nodejs]
-      ++ (with pkgs; [perl pkg-config jq darwin.cctools xcbuild])
-      ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
+      ++ (with pkgs; [perl pkg-config jq])
+      ++ (with pkgsJs; [darwin.cctools xcbuild python3]);  # Use from nixpkgs-22.11 for clang/node-addon-api compatibility
     buildInputs = with pkgsJs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
