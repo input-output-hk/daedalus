@@ -73,9 +73,9 @@ in rec {
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
     ];
-    # Disable strict enum checking for cross-compilation compatibility
-    # Use npm_config_cxxflags for node-gyp
-    npm_config_cxxflags = "-Wno-enum-constexpr-conversion";
+    # Disable strict enum checking for all darwin builds
+    # Use -Wno-error because older clang doesn't support -Wno-enum-constexpr-conversion
+    npm_config_cxxflags = "-Wno-error";
     configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
@@ -251,9 +251,10 @@ in rec {
       BUILD_COUNTER = sourceLib.buildCounter;
       CARDANO_WALLET_VERSION = cardanoWalletVersion;
       CARDANO_NODE_VERSION = cardanoNodeVersion;
-      # Disable strict enum checking for cross-compilation compatibility
-      # Use npm_config_cxxflags for electron-rebuild/node-gyp
-      npm_config_cxxflags = "-Wno-enum-constexpr-conversion";
+      # Disable strict enum checking for all darwin builds
+      # Use -Wno-error because older clang doesn't support -Wno-enum-constexpr-conversion
+      npm_config_cxxflags = "-Wno-error";
+      NIX_CFLAGS_COMPILE = "-Wno-error";
       configurePhase =
         common.setupCacheAndGypDirs
         + darwinSpecificCaches
@@ -281,7 +282,6 @@ in rec {
         echo "Installing nodejs dependencies..."
         echo "Running electron packager script..."
         export NODE_ENV="production"
-        export npm_config_cxxflags="-Wno-enum-constexpr-conversion"
         yarn build:electron
         yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
         echo "Size of Electron app is $(du -sh release)"

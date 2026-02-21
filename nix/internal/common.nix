@@ -348,19 +348,20 @@
   #
   # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
   patchElectronRebuild = pkgs.writeShellScriptBin "patch-electron-rebuild" ''
-    echo 'Patching electron-rebuild to force our Node.js headers…'
+    echo 'Patching electron-rebuild to force our Node.js headers and CXXFLAGS…'
 
     tarball="''${1:-${commonSources.electronHeaders.src}}"
     nodedir="''${2:-${commonSources.electronHeaders}}"
 
     echo "  → tarball=$tarball"
     echo "  → nodedir=$nodedir"
+    echo "  → forcing CXXFLAGS=-Wno-error for Darwin builds"
 
     nodeGypJs="node_modules/@electron/rebuild/lib/module-type/node-gyp/node-gyp.js"
 
     # Patch idempotently (matters in repetitive shell.nix):
     if ! grep -qF "$tarball" $nodeGypJs ; then
-      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir');|" -i $nodeGypJs
+      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir'); process.env.CXXFLAGS='-Wno-error'; process.env.npm_config_cxxflags='-Wno-error';|" -i $nodeGypJs
     fi
 
     echo "  → result=$(grep -F "const extraNodeGypArgs" $nodeGypJs)"
