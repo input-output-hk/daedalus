@@ -280,7 +280,8 @@ in rec {
         mkdir -p release
         echo "Installing nodejs dependencies..."
         echo "Running electron packager script..."
-        export "NODE_ENV" "production"
+        export NODE_ENV="production"
+        export npm_config_cxxflags="-Wno-enum-constexpr-conversion"
         yarn build:electron
         yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
         echo "Size of Electron app is $(du -sh release)"
