@@ -73,6 +73,9 @@ in rec {
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
     ];
+    # Disable strict enum checking for cross-compilation compatibility
+    # Use npm_config_cxxflags for node-gyp
+    npm_config_cxxflags = "-Wno-enum-constexpr-conversion";
     configurePhase = common.setupCacheAndGypDirs + darwinSpecificCaches;
     buildPhase = ''
       # Do not look up in the registry, but in the offline cache:
@@ -248,6 +251,9 @@ in rec {
       BUILD_COUNTER = sourceLib.buildCounter;
       CARDANO_WALLET_VERSION = cardanoWalletVersion;
       CARDANO_NODE_VERSION = cardanoNodeVersion;
+      # Disable strict enum checking for cross-compilation compatibility
+      # Use npm_config_cxxflags for electron-rebuild/node-gyp
+      npm_config_cxxflags = "-Wno-enum-constexpr-conversion";
       configurePhase =
         common.setupCacheAndGypDirs
         + darwinSpecificCaches
