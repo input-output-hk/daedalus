@@ -62,13 +62,13 @@ in rec {
   # /nix/store with pure dependencies), then add a newline in the middle
   # of `package.json`, and then build the `package` again, only this time
   # with network turned off system-wise.
-  node_modules = pkgs.stdenv.mkDerivation {
+  node_modules = pkgsJs.stdenv.mkDerivation {
     name = "daedalus-node_modules";
     src = srcLockfiles;
     nativeBuildInputs =
       [yarn nodejs]
       ++ (with pkgs; [perl pkg-config jq])
-      ++ (with pkgsJs; [darwin.cctools xcbuild python3]);  # Use from nixpkgs-22.11 for clang/node-addon-api compatibility
+      ++ (with pkgsJs; [darwin.cctools xcbuild python3]);  # Use nixpkgs-22.11 for build tools to avoid clang/linker compatibility issues
     buildInputs = with pkgsJs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
