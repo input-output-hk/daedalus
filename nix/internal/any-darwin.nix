@@ -228,11 +228,11 @@ in rec {
   package = genClusters (cluster: let
     pname = "daedalus";
   in
-    pkgs.stdenv.mkDerivation {
+    pkgsJs.stdenv.mkDerivation {
       name = pname;
       src = srcWithoutNix;
       nativeBuildInputs =
-        [yarn nodejs common.cxxWrapper]  # cxxWrapper intercepts clang++ to add -Wno-error
+        [yarn nodejs]
         ++ (with pkgs; [perl pkg-config darwin.cctools xcbuild jq])
         ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
       buildInputs =
