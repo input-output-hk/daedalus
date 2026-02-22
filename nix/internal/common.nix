@@ -366,4 +366,14 @@
 
     echo "  → result=$(grep -F "const extraNodeGypArgs" $nodeGypJs)"
   '';
+
+  # Wrapper for C++ compiler that automatically adds -Wno-error
+  # This intercepts compiler calls from make/node-gyp during electron-rebuild
+  cxxWrapper = pkgs.writeShellScriptBin "clang++" ''
+    # Find the real clang++ in PATH (skip our wrapper)
+    realCxx=$(PATH=''${PATH#*:} command -v clang++)
+
+    # Add -Wno-error flag and pass all arguments to real compiler
+    exec "$realCxx" -Wno-error "$@"
+  '';
 }

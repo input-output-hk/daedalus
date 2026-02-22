@@ -232,7 +232,7 @@ in rec {
       name = pname;
       src = srcWithoutNix;
       nativeBuildInputs =
-        [yarn nodejs]
+        [yarn nodejs common.cxxWrapper]  # cxxWrapper intercepts clang++ to add -Wno-error
         ++ (with pkgs; [perl pkg-config darwin.cctools xcbuild jq])
         ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
       buildInputs =
