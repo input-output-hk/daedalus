@@ -55,7 +55,7 @@ Improve the first-run experience by offering Mithril snapshot bootstrapping when
 - Download progress: parse `--json` progress events from stdout and map to step progress (download, unpack, verify).
 - Conversion: parse converter stdout/stderr; treat non-zero exit as failure and surface the error.
 - Persist last Mithril logs in `stateDir/Logs/mithril-bootstrap.log` for support.
-- Incomplete restore marker: create `stateDir/Logs/mithril-bootstrap.lock` at bootstrap start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup downloaded snapshot artifacts, wipe `stateDir/chain`, and leave the lock so the next startup re-prompts.
+- Incomplete restore marker: create `stateDir/Logs/mithril-bootstrap.lock` at bootstrap start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup downloaded snapshot artifacts and wipe `stateDir/chain`. The lock is left behind on failure to ensure that a restart re-prompts for Mithril, but it MUST be cleared if the user subsequently chooses "Sync from genesis" or cancels the operation.
 
 ### Test/Developer Workflow
 Add a dev/test-only switch with:
@@ -139,10 +139,11 @@ Use official Mithril network configuration values. Keep these in a single map ke
    - The prompt closes.
    - Standard node sync begins.
 6. Cancellation path:
-   - Start Mithril, hit cancel, ensure cleanup happens and the prompt returns.
+   - Start Mithril, hit cancel, ensure cleanup happens, the lock file is removed, and the prompt returns.
 7. Failure path (simulate by breaking network):
-   - Mithril fails, error is shown, `stateDir/chain` is wiped, lock remains.
-   - Restarting Daedalus re-prompts for Mithril decision.
+   - Mithril fails, error is shown, `stateDir/chain` is wiped, lock remains (to force re-prompt on restart).
+   - From error screen, choose **Sync from Genesis**: verify the lock file is removed and node starts.
+   - Restarting Daedalus before making a choice: verify it re-prompts for Mithril decision.
 
 #### Windows
 1. Verify `mithril-client` is present in the installed bundle (same directory as `cardano-node`).
@@ -199,3 +200,4 @@ Use official Mithril network configuration values. Keep these in a single map ke
 [2026-02-17] Start cardano-node automatically after Mithril bootstrap completes.
 [2026-02-17] Added node-start failure retry UI with optional DB wipe and wired Mithril bootstrap to wipe chain on retry when requested.
 [2026-02-17] Fixed decline-after-failure flow so "Sync from genesis" always wipes chain artifacts and starts the node; added persistent decision listener in main.
+[2026-02-24] Fixed issue where `mithril-bootstrap.lock` caused unintended chain wipes on next launch after a failure + genesis sync choice. Exposed `clearLockFile` and ensured it's called on decline and cancel.

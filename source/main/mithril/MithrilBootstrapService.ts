@@ -212,7 +212,7 @@ export class MithrilBootstrapService {
         currentStep: 'Mithril bootstrap completed',
       });
       await this._cleanupSnapshotArtifacts({ preserveDb: true });
-      await this._removeLockFile();
+      await this.clearLockFile();
     } catch (error) {
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
@@ -224,25 +224,22 @@ export class MithrilBootstrapService {
   }
 
   async cancel(): Promise<void> {
-    if (!this._currentProcess) return;
-
     this._updateStatus({
       status: 'cancelled',
       currentStep: 'Cancelling Mithril bootstrap',
     });
 
     try {
-      this._currentProcess.kill();
+      if (this._currentProcess) {
+        this._currentProcess.kill();
+        this._currentProcess = null;
+      }
     } catch (error) {
       logger.warn('MithrilBootstrapService: failed to kill process', { error });
     }
 
-    this._updateStatus({
-      status: 'cancelled',
-      currentStep: 'Mithril bootstrap cancelled',
-    });
-
     await this._cleanupSnapshotArtifacts({ preserveDb: false });
+    await this.clearLockFile();
   }
 
   async wipeChainAndSnapshots(reason: string): Promise<void> {
@@ -252,6 +249,7 @@ export class MithrilBootstrapService {
         await fs.emptyDir(chainDir);
       }
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
+      await this.clearLockFile();
       logger.info(`[MITHRIL] ${reason}`);
     } catch (error) {
       logger.warn('MithrilBootstrapService: failed to wipe chain data', {
@@ -415,7 +413,7 @@ export class MithrilBootstrapService {
     }
   }
 
-  async _removeLockFile(): Promise<void> {
+  async clearLockFile(): Promise<void> {
     try {
       await fs.remove(this._lockFilePath);
     } catch (error) {
