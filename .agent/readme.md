@@ -91,6 +91,7 @@ When an issue is resolved or a complex integration succeeds:
 |------------------------------------------------------------------------|-----------------------------------------|
 | [`i18n-messaging`](./skills/frontend/i18n-messaging/SKILL.md)         | Manage react-intl i18n messaging        |
 | [`theme-management`](./skills/frontend/theme-management/SKILL.md)     | CSS variables theme system              |
+| [`storybook-creation`](../.claude/skills/storybook-creation/SKILL.md)  | Create/update Storybook stories         |
 
 #### General
 
