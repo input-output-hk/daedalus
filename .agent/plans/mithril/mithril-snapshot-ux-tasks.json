@@ -2,11 +2,11 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-03",
-    "version": "1.0.0",
-    "totalTasks": 19,
+    "updated": "2026-03-05",
+    "version": "2.0.0",
+    "totalTasks": 26,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
-    "description": "Decompose MithrilBootstrap into sub-components, add stepper UX, download metadata, stage-specific errors, theme variables, and Storybook coverage"
+    "description": "Decompose MithrilBootstrap into sub-components, add stepper UX, download metadata, stage-specific errors, theme variables (via theme-management skill tooling), i18n (via i18n-messaging skill conventions), Storybook coverage (via storybook-creation skill), and E2E tests (via e2e-test-creation skill)"
   },
   "phases": [
     {
@@ -105,13 +105,14 @@
     {
       "id": "phase-3",
       "name": "i18n Message Extraction",
-      "description": "Extract and extend i18n messages before component decomposition",
+      "description": "Extract and extend i18n messages before component decomposition. Follow i18n-messaging skill conventions.",
+      "skill": "i18n-messaging",
       "riskLevel": "low",
       "tasks": [
         {
           "id": "task-008",
           "title": "Extract i18n messages file",
-          "description": "Create MithrilBootstrap.messages.ts with all 19 existing defineMessages entries plus ~8 new messages for stage-specific error titles/hints, download metadata labels, and step indicator labels",
+          "description": "Create MithrilBootstrap.messages.ts using defineMessages() with all 19 existing entries plus ~8 new messages for stage-specific error titles/hints, download metadata labels, and step indicator labels. Conventions: (1) Message IDs use 'mithril.bootstrap.<messageKey>' dot-separated format, (2) all defaultMessage values prefixed with '!!!', (3) every message includes 'description' field for translators, (4) placeholders use {variableName} syntax documented in description",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
@@ -121,8 +122,8 @@
         },
         {
           "id": "task-009",
-          "title": "Run i18n extraction",
-          "description": "Run yarn i18n:extract and yarn i18n:manage to sync translations. Update translations/messages.json with new entries",
+          "title": "Run i18n manage workflow",
+          "description": "Run 'yarn i18n:manage' (combines extract + check) to sync translations and validate across en-US and ja-JP locales. Verify updated files: translations/messages.json, source/renderer/app/i18n/locales/en-US.json, source/renderer/app/i18n/locales/ja-JP.json. Do NOT run i18n:extract separately — i18n:manage includes it.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 0.5,
@@ -220,13 +221,14 @@
     {
       "id": "phase-5",
       "name": "Theming & Styling",
-      "description": "Migrate hardcoded colors to CSS theme variables and register in both themes",
+      "description": "Migrate hardcoded colors to CSS theme variables using theme-management skill tooling. Do NOT manually edit theme output files.",
+      "skill": "theme-management",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-017",
           "title": "Migrate SCSS to theme variables",
-          "description": "Replace all hardcoded backdrop/card/text/button colors in MithrilBootstrap.scss and new SCSS files with --theme-mithril-* CSS custom properties",
+          "description": "Replace all hardcoded backdrop/card/text/button colors in MithrilBootstrap.scss and new SCSS files with --theme-mithril-* CSS custom properties. Follow naming pattern: --theme-mithril-[element]-[property]",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
@@ -236,19 +238,30 @@
         },
         {
           "id": "task-018",
-          "title": "Register theme variables",
-          "description": "Add --theme-mithril-card-background, --theme-mithril-text-color, --theme-mithril-text-secondary, --theme-mithril-button-primary-background, etc. to cardano.ts (dark) and light-blue.ts (light) with matching dark defaults",
+          "title": "Add theme variables to createTheme",
+          "description": "Add --theme-mithril-card-background, --theme-mithril-text-color, --theme-mithril-text-secondary, --theme-mithril-button-primary-background, etc. to createTheme in source/renderer/app/themes/utils/constants.ts with both 'light' and 'dark' values. Do NOT manually edit theme output files (cardano.ts, light-blue.ts, etc.)",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1.5,
           "dependencies": ["task-017"],
           "completedAt": null,
-          "targetPath": "source/renderer/app/themes/daedalus/"
+          "targetPath": "source/renderer/app/themes/utils/constants.ts"
         },
         {
           "id": "task-019",
+          "title": "Run theme validation and update",
+          "description": "Run 'yarn themes:check:createTheme' to validate consistency between createTheme and theme output files. Then run 'yarn themes:update' to propagate new --theme-mithril-* variables to ALL theme files automatically. Verify with 'yarn prettier:check && yarn compile'",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-018"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/themes/daedalus/"
+        },
+        {
+          "id": "task-020",
           "title": "Regenerate SCSS type definitions",
-          "description": "Run yarn typedef:sass after all SCSS changes to regenerate .scss.d.ts files for new modules",
+          "description": "Run 'yarn typedef:sass' after all SCSS changes to regenerate .scss.d.ts files for new modules",
           "status": "pending",
           "priority": "low",
           "estimatedHours": 0.5,
@@ -261,11 +274,12 @@
     {
       "id": "phase-6",
       "name": "Accessibility & Storybook",
-      "description": "Add a11y attributes and full Storybook coverage",
+      "description": "Add a11y attributes and full Storybook coverage using storybook-creation skill conventions",
+      "skill": "storybook-creation",
       "riskLevel": "low",
       "tasks": [
         {
-          "id": "task-020",
+          "id": "task-021",
           "title": "Add accessibility attributes",
           "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live='polite' on step indicator, aria-label on buttons and Select, ensure keyboard navigability",
           "status": "pending",
@@ -276,32 +290,74 @@
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         },
         {
-          "id": "task-021",
+          "id": "task-022",
           "title": "Create Storybook stories",
-          "description": "Add 12 stories: Decision (Loading, With Snapshots, Specific Snapshot), Progress (Preparing, Downloading early/mid, Verifying, Finalizing), Error (Download, Verify, Convert, Node Start)",
+          "description": "Create storybook/stories/loading/MithrilBootstrap.stories.tsx with 12 stories using storiesOf('Loading / Mithril Bootstrap', module) API (NOT CSF). Use StoryDecorator for theme + withKnobs for interactive props. Cover states: Decision (Loading, With Snapshots, Specific Snapshot), Progress (Preparing, Downloading early/mid, Verifying, Finalizing), Error (Download, Verify, Convert, Node Start). Import component via relative path from source/renderer/app/components/loading/mithril-bootstrap/",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
           "dependencies": ["task-016"],
           "completedAt": null,
           "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
+        },
+        {
+          "id": "task-023",
+          "title": "Register stories in barrel file",
+          "description": "Create storybook/stories/loading/ domain directory. Add \"import './loading/MithrilBootstrap.stories'\" to storybook/stories/index.ts barrel file under a '// Loading' comment section. Verify story appears in Storybook navigation.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-022"],
+          "completedAt": null,
+          "targetPath": "storybook/stories/index.ts"
         }
       ]
     },
     {
       "id": "phase-7",
+      "name": "E2E Tests",
+      "description": "Create Cucumber BDD end-to-end tests for Mithril bootstrap flow using e2e-test-creation skill conventions",
+      "skill": "e2e-test-creation",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-024",
+          "title": "Create E2E feature file",
+          "description": "Create tests/mithril/e2e/features/mithril-bootstrap.feature with @e2e tag. Include Background with basic setup, then scenarios for: (1) Decision screen displays with snapshot selector, (2) User accepts bootstrap and enters progress, (3) User declines bootstrap, (4) Progress stages advance through stepper, (5) Error screen displays stage-specific messaging, (6) Cancel during progress. Use daedalus.stores.mithrilBootstrap to set state since real bootstrap requires cardano-node.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-016"],
+          "completedAt": null,
+          "targetPath": "tests/mithril/e2e/features/mithril-bootstrap.feature"
+        },
+        {
+          "id": "task-025",
+          "title": "Write E2E step definitions",
+          "description": "Create tests/mithril/e2e/steps/mithril-bootstrap.ts with: (1) SELECTORS const grouping all CSS class selectors matching SCSS module output (e.g., '.MithrilBootstrap_component', '.MithrilDecisionView_acceptButton'), (2) async function step definitions (not arrow functions), (3) Chai expect assertions, (4) this.client.execute() for setting store state, (5) this.waitAndClick() and this.client.waitForVisible() for DOM interaction.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-024"],
+          "completedAt": null,
+          "targetPath": "tests/mithril/e2e/steps/mithril-bootstrap.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
       "name": "Verification",
-      "description": "Run all checks and verify correctness",
+      "description": "Run all checks and verify correctness including theme validation, i18n validation, and storybook rendering",
       "riskLevel": "low",
       "tasks": [
         {
-          "id": "task-022",
+          "id": "task-026",
           "title": "Run verification suite",
-          "description": "Run yarn compile, yarn lint, yarn test:jest, yarn prettier:check, yarn storybook. Verify all 12 stories render correctly and theme variables are inherited",
+          "description": "Run full verification: (1) yarn compile — no TS errors, (2) yarn lint — clean, (3) yarn prettier:check — clean, (4) yarn themes:check:createTheme — all mithril theme vars consistent across themes, (5) yarn i18n:manage — all messages extracted and validated for en-US/ja-JP, (6) yarn test:jest — unit tests pass, (7) yarn storybook — all 12 stories render correctly, (8) yarn typedef:sass — SCSS types up to date",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-005", "task-019", "task-020", "task-021"],
+          "dependencies": ["task-005", "task-009", "task-019", "task-020", "task-021", "task-023", "task-025"],
           "completedAt": null,
           "targetPath": null
         }
@@ -309,8 +365,8 @@
     }
   ],
   "summary": {
-    "totalPhases": 7,
-    "totalTasks": 22,
+    "totalPhases": 8,
+    "totalTasks": 26,
     "criticalPath": [
       "task-001",
       "task-002",
@@ -322,7 +378,10 @@
       "task-016",
       "task-017",
       "task-018",
-      "task-022"
+      "task-019",
+      "task-022",
+      "task-023",
+      "task-026"
     ]
   }
 }
