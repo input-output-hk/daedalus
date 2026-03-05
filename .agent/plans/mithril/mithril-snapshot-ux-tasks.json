@@ -1,0 +1,328 @@
+{
+  "metadata": {
+    "title": "Mithril Snapshot UX Refinement Tasks",
+    "created": "2026-03-03",
+    "updated": "2026-03-03",
+    "version": "1.0.0",
+    "totalTasks": 19,
+    "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
+    "description": "Decompose MithrilBootstrap into sub-components, add stepper UX, download metadata, stage-specific errors, theme variables, and Storybook coverage"
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Backend Type & Pipeline Extensions",
+      "description": "Extend shared types and backend progress pipeline to carry file counts and error stage",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Extend shared types",
+          "description": "Add filesDownloaded, filesTotal to MithrilBootstrapStatusUpdate and stage to MithrilBootstrapError in source/common/types/mithril-bootstrap.types.ts",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [],
+          "completedAt": null,
+          "targetPath": "source/common/types/mithril-bootstrap.types.ts"
+        },
+        {
+          "id": "task-002",
+          "title": "Update mithrilProgress parser",
+          "description": "Extend MithrilProgressUpdate and parseMithrilProgressUpdate to preserve raw files_downloaded and files_total instead of only converting to percentage",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": ["task-001"],
+          "completedAt": null,
+          "targetPath": "source/main/mithril/mithrilProgress.ts"
+        },
+        {
+          "id": "task-003",
+          "title": "Update MithrilBootstrapService progress",
+          "description": "In _downloadSnapshot(), include filesDownloaded and filesTotal from progress update in _updateStatus() call. Annotate errors with stage: 'download' | 'verify' | 'convert'",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-002"],
+          "completedAt": null,
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-004",
+          "title": "Annotate node-start failure stage",
+          "description": "In handleDiskSpace.ts where _updateStatus({ status: 'failed' }) is called for node-start failures, set error.stage to 'node-start'",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-001"],
+          "completedAt": null,
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        },
+        {
+          "id": "task-005",
+          "title": "Update backend unit tests",
+          "description": "Extend MithrilBootstrapService.spec.ts to verify filesDownloaded/filesTotal preservation and stage annotation on errors",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-003"],
+          "completedAt": null,
+          "targetPath": "source/main/mithril/MithrilBootstrapService.spec.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Store & Container Updates",
+      "description": "Extend MobX store with download metadata observables and computed properties",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-006",
+          "title": "Add store observables and computeds",
+          "description": "Add @observable filesDownloaded, filesTotal and @computed bytesDownloaded, throughputBps to MithrilBootstrapStore. Update _updateStatus action to assign file count fields",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-001"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
+        },
+        {
+          "id": "task-007",
+          "title": "Update MithrilBootstrapPage container",
+          "description": "Pass new store observables (filesDownloaded, filesTotal, bytesDownloaded, throughputBps) through to the component",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": ["task-006"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/containers/loading/MithrilBootstrapPage.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "i18n Message Extraction",
+      "description": "Extract and extend i18n messages before component decomposition",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-008",
+          "title": "Extract i18n messages file",
+          "description": "Create MithrilBootstrap.messages.ts with all 19 existing defineMessages entries plus ~8 new messages for stage-specific error titles/hints, download metadata labels, and step indicator labels",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
+        },
+        {
+          "id": "task-009",
+          "title": "Run i18n extraction",
+          "description": "Run yarn i18n:extract and yarn i18n:manage to sync translations. Update translations/messages.json with new entries",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-008"],
+          "completedAt": null,
+          "targetPath": "translations/messages.json"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Component Decomposition",
+      "description": "Break monolithic MithrilBootstrap.tsx into focused sub-components",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-010",
+          "title": "Implement MithrilStepIndicator",
+          "description": "New component modeled on SyncingProgress.tsx with 4 steps (preparing, downloading, verifying, finalizing), spinner/checkmark/pending states, and download metadata display",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-008"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx"
+        },
+        {
+          "id": "task-011",
+          "title": "Implement MithrilSnapshotSelector",
+          "description": "Extract and improve snapshot dropdown with truncated digest labels ({first8}...{last8}), locale-aware dates, and formatted size in option labels",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-008"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotSelector.tsx"
+        },
+        {
+          "id": "task-012",
+          "title": "Implement MithrilSnapshotDetails",
+          "description": "Extract metadata grid (digest, date, size, node version) into dedicated component with truncated digest display",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-008"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotDetails.tsx"
+        },
+        {
+          "id": "task-013",
+          "title": "Implement MithrilErrorView",
+          "description": "Stage-specific error screens with contextual titles/hints for download, verify, convert, node-start, and generic stages. Collapsible error code details and log path link",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-008", "task-001"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx"
+        },
+        {
+          "id": "task-014",
+          "title": "Implement MithrilProgressView",
+          "description": "Compose MithrilStepIndicator + ProgressBarLarge + timing metadata + cancel button. Show bytesDownloaded/bytesTotal and throughput during download step",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-010", "task-006"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
+        },
+        {
+          "id": "task-015",
+          "title": "Implement MithrilDecisionView",
+          "description": "Extract decision screen with title, description, MithrilSnapshotSelector, MithrilSnapshotDetails, and accept/decline buttons",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-011", "task-012", "task-008"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilDecisionView.tsx"
+        },
+        {
+          "id": "task-016",
+          "title": "Slim down root MithrilBootstrap.tsx",
+          "description": "Reduce to overlay chrome (backdrop + centered card) + view delegation based on status. Create index.ts re-export",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-013", "task-014", "task-015"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Theming & Styling",
+      "description": "Migrate hardcoded colors to CSS theme variables and register in both themes",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-017",
+          "title": "Migrate SCSS to theme variables",
+          "description": "Replace all hardcoded backdrop/card/text/button colors in MithrilBootstrap.scss and new SCSS files with --theme-mithril-* CSS custom properties",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-016"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        },
+        {
+          "id": "task-018",
+          "title": "Register theme variables",
+          "description": "Add --theme-mithril-card-background, --theme-mithril-text-color, --theme-mithril-text-secondary, --theme-mithril-button-primary-background, etc. to cardano.ts (dark) and light-blue.ts (light) with matching dark defaults",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-017"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/themes/daedalus/"
+        },
+        {
+          "id": "task-019",
+          "title": "Regenerate SCSS type definitions",
+          "description": "Run yarn typedef:sass after all SCSS changes to regenerate .scss.d.ts files for new modules",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-017"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Accessibility & Storybook",
+      "description": "Add a11y attributes and full Storybook coverage",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-020",
+          "title": "Add accessibility attributes",
+          "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live='polite' on step indicator, aria-label on buttons and Select, ensure keyboard navigability",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-016"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        },
+        {
+          "id": "task-021",
+          "title": "Create Storybook stories",
+          "description": "Add 12 stories: Decision (Loading, With Snapshots, Specific Snapshot), Progress (Preparing, Downloading early/mid, Verifying, Finalizing), Error (Download, Verify, Convert, Node Start)",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": ["task-016"],
+          "completedAt": null,
+          "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "Verification",
+      "description": "Run all checks and verify correctness",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-022",
+          "title": "Run verification suite",
+          "description": "Run yarn compile, yarn lint, yarn test:jest, yarn prettier:check, yarn storybook. Verify all 12 stories render correctly and theme variables are inherited",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-005", "task-019", "task-020", "task-021"],
+          "completedAt": null,
+          "targetPath": null
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 7,
+    "totalTasks": 22,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-006",
+      "task-008",
+      "task-010",
+      "task-014",
+      "task-016",
+      "task-017",
+      "task-018",
+      "task-022"
+    ]
+  }
+}

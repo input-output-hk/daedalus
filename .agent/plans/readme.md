@@ -158,6 +158,7 @@ Any unresolved decisions.
 | Domain | Plan | Status | Date |
 |--------|------|--------|------|
 | mithril | bootstrap-cardano-node | 🚧 In Progress | 2026-02-10 |
+| mithril | mithril-snapshot-ux | 🚧 In Progress | 2026-03-03 |
 
 ---
 
