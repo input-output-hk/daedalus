@@ -3,10 +3,10 @@
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
     "updated": "2026-03-05",
-    "version": "2.0.0",
-    "totalTasks": 26,
+    "version": "3.0.0",
+    "totalTasks": 34,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
-    "description": "Decompose MithrilBootstrap into sub-components, add stepper UX, download metadata, stage-specific errors, theme variables (via theme-management skill tooling), i18n (via i18n-messaging skill conventions), Storybook coverage (via storybook-creation skill), and E2E tests (via e2e-test-creation skill)"
+    "description": "Decompose MithrilBootstrap into sub-components, add stepper UX, download metadata, stage-specific errors, custom chain storage location (symlink-based directory redirection), theme variables (via theme-management skill tooling), i18n (via i18n-messaging skill conventions), Storybook coverage (via storybook-creation skill), and E2E tests (via e2e-test-creation skill)"
   },
   "phases": [
     {
@@ -33,7 +33,9 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 1,
-          "dependencies": ["task-001"],
+          "dependencies": [
+            "task-001"
+          ],
           "completedAt": null,
           "targetPath": "source/main/mithril/mithrilProgress.ts"
         },
@@ -44,7 +46,9 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-002"],
+          "dependencies": [
+            "task-002"
+          ],
           "completedAt": null,
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         },
@@ -55,7 +59,9 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 0.5,
-          "dependencies": ["task-001"],
+          "dependencies": [
+            "task-001"
+          ],
           "completedAt": null,
           "targetPath": "source/main/utils/handleDiskSpace.ts"
         },
@@ -66,7 +72,9 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-003"],
+          "dependencies": [
+            "task-003"
+          ],
           "completedAt": null,
           "targetPath": "source/main/mithril/MithrilBootstrapService.spec.ts"
         }
@@ -85,20 +93,124 @@
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-001"],
+          "dependencies": [
+            "task-001"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
         },
         {
           "id": "task-007",
           "title": "Update MithrilBootstrapPage container",
-          "description": "Pass new store observables (filesDownloaded, filesTotal, bytesDownloaded, throughputBps) through to the component",
+          "description": "Pass new store observables (filesDownloaded, filesTotal, bytesDownloaded, throughputBps, customChainPath, chainStorageValidation, isChainStorageLoading) and actions (setChainStorageDirectory, resetChainStorageDirectory) through to the component",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 1,
-          "dependencies": ["task-006"],
+          "dependencies": [
+            "task-006"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/containers/loading/MithrilBootstrapPage.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-2b",
+      "name": "Custom Chain Storage Location",
+      "description": "Add IPC channels, ChainStorageManager, symlink handling, and store actions to let users redirect the chain/db directory to an alternative location (e.g., external drives)",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-008",
+          "title": "Add chain storage shared types",
+          "description": "Add ChainStorageConfig ({ customPath: string | null; isSymlinked: boolean; resolvedPath: string }) and ChainStorageValidation ({ isValid: boolean; availableSpace: number; isWritable: boolean; error?: string }) to source/common/types/mithril-bootstrap.types.ts",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-001"
+          ],
+          "completedAt": null,
+          "targetPath": "source/common/types/mithril-bootstrap.types.ts"
+        },
+        {
+          "id": "task-009",
+          "title": "Add chain storage IPC channels",
+          "description": "Define SET_CHAIN_STORAGE_DIRECTORY_CHANNEL and GET_CHAIN_STORAGE_DIRECTORY_CHANNEL in source/common/ipc/api.ts with request/response types. Create main-side handlers in source/main/ipc/chainStorageChannels.ts and renderer-side clients in source/renderer/app/ipc/chainStorageChannels.ts",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-008"
+          ],
+          "completedAt": null,
+          "targetPath": "source/common/ipc/api.ts"
+        },
+        {
+          "id": "task-010",
+          "title": "Implement ChainStorageManager",
+          "description": "Create source/main/utils/chainStorageManager.ts with methods: validate(targetDir) \u2014 checks writable, sufficient space, not inside stateDir; setDirectory(targetDir) \u2014 migrate data, create symlink (POSIX symlink on Linux/macOS, NTFS junction on Windows), persist config; resetToDefault() \u2014 copy data back, remove symlink, remove config; migrateData(from, to) \u2014 fs.move() with cross-device fallback; verifySymlink() \u2014 check target exists on startup; getConfig() \u2014 read chain-storage-config.json. Use fs.lstat() to detect symlinks vs real directories.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-008"
+          ],
+          "completedAt": null,
+          "targetPath": "source/main/utils/chainStorageManager.ts"
+        },
+        {
+          "id": "task-011",
+          "title": "Integrate ChainStorageManager with disk space and downloads",
+          "description": "Update handleDiskSpace.ts to resolve symlinks via fs.realpath() before calling checkDiskSpace(), so disk space is checked against the actual target drive. Pass custom directory as workDir when constructing MithrilBootstrapService so mithril-client downloads snapshot data directly to the target location (avoids needing double disk space for download + move). Update MithrilBootstrapService._installSnapshot() to use resolved real paths when comparing dbDirectory === chainDir.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-010"
+          ],
+          "completedAt": null,
+          "targetPath": "source/main/utils/handleDiskSpace.ts"
+        },
+        {
+          "id": "task-012",
+          "title": "Add chain storage store actions",
+          "description": "Add to MithrilBootstrapStore: @observable customChainPath (string | null), chainStorageValidation (ChainStorageValidation | null), isChainStorageLoading (boolean), storageLocationConfirmed (boolean \u2014 false until user clicks Continue on storage picker). Add @action setChainStorageDirectory(path) \u2014 sends to main via SET_CHAIN_STORAGE_DIRECTORY_CHANNEL, updates observables; resetChainStorageDirectory() \u2014 sends null to main; loadChainStorageConfig() \u2014 called on store init via GET_CHAIN_STORAGE_DIRECTORY_CHANNEL; confirmStorageLocation() \u2014 sets storageLocationConfirmed = true to advance to decision view.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-009",
+            "task-006"
+          ],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
+        },
+        {
+          "id": "task-013",
+          "title": "Add startup symlink verification",
+          "description": "Call ChainStorageManager.verifySymlink() during app initialization in source/main/index.ts or handleDiskSpace. If broken symlink detected (target directory missing/inaccessible), surface warning through MithrilBootstrapStore so the UI can prompt the user to reconnect the drive or reset to default.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-010"
+          ],
+          "completedAt": null,
+          "targetPath": "source/main/utils/chainStorageManager.ts"
+        },
+        {
+          "id": "task-014",
+          "title": "Unit tests for ChainStorageManager",
+          "description": "Create source/main/utils/chainStorageManager.spec.ts. Test: validate() rejects paths inside stateDir, rejects non-writable dirs, rejects insufficient space; setDirectory() creates symlink and persists config; resetToDefault() removes symlink and restores real dir; migrateData() handles cross-device move fallback; verifySymlink() detects broken symlinks. Mock fs module.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-010"
+          ],
+          "completedAt": null,
+          "targetPath": "source/main/utils/chainStorageManager.spec.ts"
         }
       ]
     },
@@ -110,9 +222,9 @@
       "riskLevel": "low",
       "tasks": [
         {
-          "id": "task-008",
+          "id": "task-015",
           "title": "Extract i18n messages file",
-          "description": "Create MithrilBootstrap.messages.ts using defineMessages() with all 19 existing entries plus ~8 new messages for stage-specific error titles/hints, download metadata labels, and step indicator labels. Conventions: (1) Message IDs use 'mithril.bootstrap.<messageKey>' dot-separated format, (2) all defaultMessage values prefixed with '!!!', (3) every message includes 'description' field for translators, (4) placeholders use {variableName} syntax documented in description",
+          "description": "Create MithrilBootstrap.messages.ts using defineMessages() with all 19 existing entries plus ~8 new messages for stage-specific error titles/hints, download metadata labels, step indicator labels, and ~6 new messages for storage location picker (directory label, change button, reset button, space available, validation errors). Conventions: (1) Message IDs use 'mithril.bootstrap.<messageKey>' dot-separated format, (2) all defaultMessage values prefixed with '!!!', (3) every message includes 'description' field for translators, (4) placeholders use {variableName} syntax documented in description",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
@@ -121,13 +233,15 @@
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
         },
         {
-          "id": "task-009",
+          "id": "task-016",
           "title": "Run i18n manage workflow",
-          "description": "Run 'yarn i18n:manage' (combines extract + check) to sync translations and validate across en-US and ja-JP locales. Verify updated files: translations/messages.json, source/renderer/app/i18n/locales/en-US.json, source/renderer/app/i18n/locales/ja-JP.json. Do NOT run i18n:extract separately — i18n:manage includes it.",
+          "description": "Run 'yarn i18n:manage' (combines extract + check) to sync translations and validate across en-US and ja-JP locales. Verify updated files: translations/messages.json, source/renderer/app/i18n/locales/en-US.json, source/renderer/app/i18n/locales/ja-JP.json. Do NOT run i18n:extract separately \u2014 i18n:manage includes it.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 0.5,
-          "dependencies": ["task-008"],
+          "dependencies": [
+            "task-015"
+          ],
           "completedAt": null,
           "targetPath": "translations/messages.json"
         }
@@ -140,79 +254,114 @@
       "riskLevel": "high",
       "tasks": [
         {
-          "id": "task-010",
+          "id": "task-017",
           "title": "Implement MithrilStepIndicator",
           "description": "New component modeled on SyncingProgress.tsx with 4 steps (preparing, downloading, verifying, finalizing), spinner/checkmark/pending states, and download metadata display",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 4,
-          "dependencies": ["task-008"],
+          "dependencies": [
+            "task-015"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx"
         },
         {
-          "id": "task-011",
+          "id": "task-018",
           "title": "Implement MithrilSnapshotSelector",
           "description": "Extract and improve snapshot dropdown with truncated digest labels ({first8}...{last8}), locale-aware dates, and formatted size in option labels",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-008"],
+          "dependencies": [
+            "task-015"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotSelector.tsx"
         },
         {
-          "id": "task-012",
+          "id": "task-019",
           "title": "Implement MithrilSnapshotDetails",
           "description": "Extract metadata grid (digest, date, size, node version) into dedicated component with truncated digest display",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1.5,
-          "dependencies": ["task-008"],
+          "dependencies": [
+            "task-015"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotDetails.tsx"
         },
         {
-          "id": "task-013",
+          "id": "task-020",
           "title": "Implement MithrilErrorView",
           "description": "Stage-specific error screens with contextual titles/hints for download, verify, convert, node-start, and generic stages. Collapsible error code details and log path link",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "dependencies": ["task-008", "task-001"],
+          "dependencies": [
+            "task-015",
+            "task-001"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx"
         },
         {
-          "id": "task-014",
+          "id": "task-021",
           "title": "Implement MithrilProgressView",
           "description": "Compose MithrilStepIndicator + ProgressBarLarge + timing metadata + cancel button. Show bytesDownloaded/bytesTotal and throughput during download step",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
-          "dependencies": ["task-010", "task-006"],
+          "dependencies": [
+            "task-017",
+            "task-006"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
         },
         {
-          "id": "task-015",
+          "id": "task-022",
           "title": "Implement MithrilDecisionView",
-          "description": "Extract decision screen with title, description, MithrilSnapshotSelector, MithrilSnapshotDetails, and accept/decline buttons",
+          "description": "Extract decision screen with title, description, MithrilSnapshotSelector, MithrilSnapshotDetails, and accept/decline buttons. Shown AFTER the storage location picker screen has been confirmed \u2014 does NOT contain the storage picker itself.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-011", "task-012", "task-008"],
+          "dependencies": [
+            "task-018",
+            "task-019",
+            "task-015"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilDecisionView.tsx"
         },
         {
-          "id": "task-016",
+          "id": "task-023",
+          "title": "Implement MithrilStorageLocationPicker",
+          "description": "Preliminary screen shown BEFORE the decision view \u2014 user must confirm or change storage location before seeing snapshot/sync options. Shows current chain storage path (default or custom), available disk space on target drive (formatted with prettysize), and validation feedback. 'Change location' button triggers SHOW_OPEN_DIALOG_CHANNEL with properties: ['openDirectory', 'createDirectory']. 'Reset to default' link (shown only with custom path) calls resetChainStorageDirectory(). 'Continue' button proceeds to decision view. Shows spinner + 'Moving chain data...' during migration. Picker disabled when bootstrap status is preparing/downloading/verifying/converting. Snapshot downloads go directly to the selected directory (via MithrilBootstrapService workDir) to avoid needing double disk space. Props: customChainPath, chainStorageValidation, isChainStorageLoading, onSelectDirectory(), onResetToDefault(), onContinue(), resolvedChainPath, availableSpace.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-012",
+            "task-015"
+          ],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStorageLocationPicker.tsx"
+        },
+        {
+          "id": "task-024",
           "title": "Slim down root MithrilBootstrap.tsx",
-          "description": "Reduce to overlay chrome (backdrop + centered card) + view delegation based on status. Create index.ts re-export",
+          "description": "Reduce to overlay chrome (backdrop + centered card) + view delegation based on status. Route: storage picker screen \u2192 decision screen \u2192 progress/error screens. Create index.ts re-export",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-013", "task-014", "task-015"],
+          "dependencies": [
+            "task-020",
+            "task-021",
+            "task-022",
+            "task-023"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
         }
@@ -226,46 +375,54 @@
       "riskLevel": "medium",
       "tasks": [
         {
-          "id": "task-017",
+          "id": "task-025",
           "title": "Migrate SCSS to theme variables",
           "description": "Replace all hardcoded backdrop/card/text/button colors in MithrilBootstrap.scss and new SCSS files with --theme-mithril-* CSS custom properties. Follow naming pattern: --theme-mithril-[element]-[property]",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
-          "dependencies": ["task-016"],
+          "dependencies": [
+            "task-024"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         },
         {
-          "id": "task-018",
+          "id": "task-026",
           "title": "Add theme variables to createTheme",
           "description": "Add --theme-mithril-card-background, --theme-mithril-text-color, --theme-mithril-text-secondary, --theme-mithril-button-primary-background, etc. to createTheme in source/renderer/app/themes/utils/constants.ts with both 'light' and 'dark' values. Do NOT manually edit theme output files (cardano.ts, light-blue.ts, etc.)",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1.5,
-          "dependencies": ["task-017"],
+          "dependencies": [
+            "task-025"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/themes/utils/constants.ts"
         },
         {
-          "id": "task-019",
+          "id": "task-027",
           "title": "Run theme validation and update",
           "description": "Run 'yarn themes:check:createTheme' to validate consistency between createTheme and theme output files. Then run 'yarn themes:update' to propagate new --theme-mithril-* variables to ALL theme files automatically. Verify with 'yarn prettier:check && yarn compile'",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 0.5,
-          "dependencies": ["task-018"],
+          "dependencies": [
+            "task-026"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/themes/daedalus/"
         },
         {
-          "id": "task-020",
+          "id": "task-028",
           "title": "Regenerate SCSS type definitions",
           "description": "Run 'yarn typedef:sass' after all SCSS changes to regenerate .scss.d.ts files for new modules",
           "status": "pending",
           "priority": "low",
           "estimatedHours": 0.5,
-          "dependencies": ["task-017"],
+          "dependencies": [
+            "task-025"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         }
@@ -279,35 +436,41 @@
       "riskLevel": "low",
       "tasks": [
         {
-          "id": "task-021",
+          "id": "task-029",
           "title": "Add accessibility attributes",
           "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live='polite' on step indicator, aria-label on buttons and Select, ensure keyboard navigability",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-016"],
+          "dependencies": [
+            "task-024"
+          ],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         },
         {
-          "id": "task-022",
+          "id": "task-030",
           "title": "Create Storybook stories",
-          "description": "Create storybook/stories/loading/MithrilBootstrap.stories.tsx with 12 stories using storiesOf('Loading / Mithril Bootstrap', module) API (NOT CSF). Use StoryDecorator for theme + withKnobs for interactive props. Cover states: Decision (Loading, With Snapshots, Specific Snapshot), Progress (Preparing, Downloading early/mid, Verifying, Finalizing), Error (Download, Verify, Convert, Node Start). Import component via relative path from source/renderer/app/components/loading/mithril-bootstrap/",
+          "description": "Create storybook/stories/loading/MithrilBootstrap.stories.tsx with 16 stories using storiesOf('Loading / Mithril Bootstrap', module) API (NOT CSF). Use StoryDecorator for theme + withKnobs for interactive props. Cover states: Decision (Loading, With Snapshots, Specific Snapshot), Progress (Preparing, Downloading early/mid, Verifying, Finalizing), Error (Download, Verify, Convert, Node Start), Storage (Default Path, Custom Path, Validation Error, Migrating). Import component via relative path from source/renderer/app/components/loading/mithril-bootstrap/",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
-          "dependencies": ["task-016"],
+          "dependencies": [
+            "task-024"
+          ],
           "completedAt": null,
           "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
         },
         {
-          "id": "task-023",
+          "id": "task-031",
           "title": "Register stories in barrel file",
           "description": "Create storybook/stories/loading/ domain directory. Add \"import './loading/MithrilBootstrap.stories'\" to storybook/stories/index.ts barrel file under a '// Loading' comment section. Verify story appears in Storybook navigation.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 0.5,
-          "dependencies": ["task-022"],
+          "dependencies": [
+            "task-030"
+          ],
           "completedAt": null,
           "targetPath": "storybook/stories/index.ts"
         }
@@ -321,24 +484,28 @@
       "riskLevel": "medium",
       "tasks": [
         {
-          "id": "task-024",
+          "id": "task-032",
           "title": "Create E2E feature file",
-          "description": "Create tests/mithril/e2e/features/mithril-bootstrap.feature with @e2e tag. Include Background with basic setup, then scenarios for: (1) Decision screen displays with snapshot selector, (2) User accepts bootstrap and enters progress, (3) User declines bootstrap, (4) Progress stages advance through stepper, (5) Error screen displays stage-specific messaging, (6) Cancel during progress. Use daedalus.stores.mithrilBootstrap to set state since real bootstrap requires cardano-node.",
+          "description": "Create tests/mithril/e2e/features/mithril-bootstrap.feature with @e2e tag. Include Background with basic setup, then scenarios for: (1) Decision screen displays with snapshot selector, (2) User accepts bootstrap and enters progress, (3) User declines bootstrap, (4) Progress stages advance through stepper, (5) Error screen displays stage-specific messaging, (6) Cancel during progress, (7) Storage location change to external directory, (8) Storage location reset to default, (9) Storage location with insufficient space shows error, (10) Storage picker disabled during active sync. Use daedalus.stores.mithrilBootstrap to set state since real bootstrap requires cardano-node.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-016"],
+          "dependencies": [
+            "task-024"
+          ],
           "completedAt": null,
           "targetPath": "tests/mithril/e2e/features/mithril-bootstrap.feature"
         },
         {
-          "id": "task-025",
+          "id": "task-033",
           "title": "Write E2E step definitions",
-          "description": "Create tests/mithril/e2e/steps/mithril-bootstrap.ts with: (1) SELECTORS const grouping all CSS class selectors matching SCSS module output (e.g., '.MithrilBootstrap_component', '.MithrilDecisionView_acceptButton'), (2) async function step definitions (not arrow functions), (3) Chai expect assertions, (4) this.client.execute() for setting store state, (5) this.waitAndClick() and this.client.waitForVisible() for DOM interaction.",
+          "description": "Create tests/mithril/e2e/steps/mithril-bootstrap.ts with: (1) SELECTORS const grouping all CSS class selectors matching SCSS module output (e.g., '.MithrilBootstrap_component', '.MithrilDecisionView_acceptButton', '.MithrilStorageLocationPicker_changeButton', '.MithrilStorageLocationPicker_resetLink'), (2) async function step definitions (not arrow functions), (3) Chai expect assertions, (4) this.client.execute() for setting store state (including customChainPath and chainStorageValidation), (5) this.waitAndClick() and this.client.waitForVisible() for DOM interaction.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
-          "dependencies": ["task-024"],
+          "dependencies": [
+            "task-032"
+          ],
           "completedAt": null,
           "targetPath": "tests/mithril/e2e/steps/mithril-bootstrap.ts"
         }
@@ -351,13 +518,22 @@
       "riskLevel": "low",
       "tasks": [
         {
-          "id": "task-026",
+          "id": "task-034",
           "title": "Run verification suite",
-          "description": "Run full verification: (1) yarn compile — no TS errors, (2) yarn lint — clean, (3) yarn prettier:check — clean, (4) yarn themes:check:createTheme — all mithril theme vars consistent across themes, (5) yarn i18n:manage — all messages extracted and validated for en-US/ja-JP, (6) yarn test:jest — unit tests pass, (7) yarn storybook — all 12 stories render correctly, (8) yarn typedef:sass — SCSS types up to date",
+          "description": "Run full verification: (1) yarn compile \u2014 no TS errors, (2) yarn lint \u2014 clean, (3) yarn prettier:check \u2014 clean, (4) yarn themes:check:createTheme \u2014 all mithril theme vars consistent across themes, (5) yarn i18n:manage \u2014 all messages extracted and validated for en-US/ja-JP, (6) yarn test:jest \u2014 unit tests pass including ChainStorageManager tests, (7) yarn storybook \u2014 all 16 stories render correctly, (8) yarn typedef:sass \u2014 SCSS types up to date",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": ["task-005", "task-009", "task-019", "task-020", "task-021", "task-023", "task-025"],
+          "dependencies": [
+            "task-005",
+            "task-016",
+            "task-027",
+            "task-028",
+            "task-029",
+            "task-031",
+            "task-033",
+            "task-014"
+          ],
           "completedAt": null,
           "targetPath": null
         }
@@ -365,23 +541,29 @@
     }
   ],
   "summary": {
-    "totalPhases": 8,
-    "totalTasks": 26,
+    "totalPhases": 9,
+    "totalTasks": 34,
     "criticalPath": [
       "task-001",
       "task-002",
       "task-003",
       "task-006",
+      "task-015",
       "task-008",
       "task-010",
-      "task-014",
-      "task-016",
-      "task-017",
-      "task-018",
-      "task-019",
-      "task-022",
+      "task-011",
+      "task-012",
       "task-023",
-      "task-026"
+      "task-017",
+      "task-021",
+      "task-022",
+      "task-024",
+      "task-025",
+      "task-026",
+      "task-027",
+      "task-030",
+      "task-031",
+      "task-034"
     ]
   }
 }
