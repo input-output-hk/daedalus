@@ -198,6 +198,12 @@ Output: `dist/storybook/`
 
 ---
 
+## Writing New Tests
+
+For guidance on creating new Cucumber BDD tests (feature files, step definitions, helpers), see the [e2e-test-creation skill](../skills/e2e-test-creation/SKILL.md).
+
+---
+
 ## Test Reports
 
 ### Generate Report

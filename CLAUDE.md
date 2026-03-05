@@ -33,7 +33,7 @@ All agent documentation is centralized in the [`.agent/`](./.agent/) directory.
 ### Learning Resources
 - [Task History](./.agent/plans/) — Past implementation plans
 - [SOPs](./.agent/SOPs/) — Standard operating procedures
-- [Skills](./.agent/skills/) — Cardano CLI guidance
+- [Skills](./.agent/skills/) — Reusable task-specific playbooks (CLI, frontend, testing)
 
 ---
 

@@ -13,7 +13,7 @@ This folder contains all the documentation needed for AI agents to effectively a
 | [`/system`](./system/)        | Architecture, APIs, state management   | **First**, for any architectural decisions or understanding system design  |
 | [`/plans`](./plans/)          | PRDs and implementation plans history  | When implementing new features similar to past work                        |
 | [`/SOPs`](./SOPs/)            | Standard Operating Procedures          | When encountering known issues or following established patterns           |
-| [`/skills`](./skills/)        | Cardano CLI skills                     | When working with cardano-cli operations                                   |
+| [`/skills`](./skills/)        | Reusable task-specific playbooks       | When making domain-specific changes (CLI, frontend, testing)               |
 | [`/workflows`](./workflows/)  | Step-by-step development workflows     | When executing specific development tasks                                  |
 
 ---
@@ -64,11 +64,11 @@ When an issue is resolved or a complex integration succeeds:
 
 ---
 
-### `/skills` — Cardano CLI Skills
+### `/skills` — Reusable Skills
 
-**Reusable, task-specific playbooks for Cardano CLI operations.**
+**Reusable, task-specific playbooks organized by domain.**
 
-Use these when working with cardano-cli:
+#### Cardano CLI
 
 | Skill                                                                  | Description                             |
 |------------------------------------------------------------------------|-----------------------------------------|
@@ -84,6 +84,19 @@ Use these when working with cardano-cli:
 | [`cardano-cli-wallets-operator`](./skills/cardano-cli-wallets-operator/SKILL.md) | Wallet execution (operator)       |
 | [`cardano-protocol-params`](./skills/cardano-protocol-params/SKILL.md) | Protocol parameters diagnostics     |
 | [`cbor-encoding-decoding`](./skills/cbor-encoding-decoding/SKILL.md)  | CBOR encoding/decoding guidance          |
+
+#### Frontend
+
+| Skill                                                                  | Description                             |
+|------------------------------------------------------------------------|-----------------------------------------|
+| [`i18n-messaging`](./skills/frontend/i18n-messaging/SKILL.md)         | Manage react-intl i18n messaging        |
+| [`theme-management`](./skills/frontend/theme-management/SKILL.md)     | CSS variables theme system              |
+
+#### General
+
+| Skill                                                                  | Description                             |
+|------------------------------------------------------------------------|-----------------------------------------|
+| [`e2e-test-creation`](./skills/e2e-test-creation/SKILL.md)            | Create Cucumber BDD e2e tests           |
 | [`git-commit-formatter`](./skills/git-commit-formatter/SKILL.md)      | Conventional commit formatting          |
 
 ---

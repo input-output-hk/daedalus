@@ -434,7 +434,7 @@ The Daedalus project includes comprehensive video tutorials on theme management:
 - **Part 3**: Writing theme CSS variables to output objects
 - **Part 4**: Using `themes:check:createTheme` for validation
 
-See [Theme README](./../../renderer/app/themes/README.md) for video links.
+See [Theme README](./../../../source/renderer/app/themes/README.md) for video links.
 
 ---
 

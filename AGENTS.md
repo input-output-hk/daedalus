@@ -16,7 +16,7 @@ The `.agent/` directory contains comprehensive documentation organized for AI ag
 | `.agent/plans/`     | Past PRDs and implementation plans       | Before implementing new features |
 | `.agent/SOPs/`      | Standard operating procedures            | When encountering known issues   |
 | `.agent/workflows/` | Step-by-step guides                      | When executing specific tasks    |
-| `.agent/skills/`    | Cardano CLI guidance                     | When working with cardano-cli    |
+| `.agent/skills/`    | Reusable task-specific playbooks         | When making domain-specific changes |
 
 ---
 
@@ -34,7 +34,6 @@ Use these slash commands to access workflows:
 | `/hardware-wallets` | Ledger/Trezor hardware wallet development |
 | `/ipc`        | IPC channel development                       |
 | `/nix`        | Nix environment setup                         |
-| `/storybook`  | Component development with Storybook         |
 | `/update-doc` | Update this documentation                    |
 
 ---

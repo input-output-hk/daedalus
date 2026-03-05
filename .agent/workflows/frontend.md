@@ -293,6 +293,8 @@ yarn themes:update             # Update theme files
 yarn themes:copy               # Copy theme
 ```
 
+For full theme workflow details (createTheme object, validation, interactive CLI tools), see the [theme-management skill](../skills/frontend/theme-management/SKILL.md).
+
 ---
 
 ## Internationalization (i18n)
@@ -336,6 +338,8 @@ yarn i18n:extract   # Extract messages
 yarn i18n:check     # Validate translations
 yarn i18n:manage    # Extract and validate
 ```
+
+For full i18n workflow details (message schema, naming conventions, locale management), see the [i18n-messaging skill](../skills/frontend/i18n-messaging/SKILL.md).
 
 ### Supported Locales
 

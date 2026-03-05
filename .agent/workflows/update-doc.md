@@ -242,7 +242,7 @@ Standard operating procedures for common issues.
 
 ### Skills (`.agent/skills/`)
 
-Cardano CLI guidance (do not modify - known-good reference).
+Reusable task-specific playbooks organized by domain (Cardano CLI, frontend, general).
 
 ---
 
