@@ -19,10 +19,17 @@ export type MithrilSnapshotItem = {
   network?: string;
 };
 
+export type MithrilBootstrapErrorStage =
+  | 'download'
+  | 'verify'
+  | 'convert'
+  | 'node-start';
+
 export type MithrilBootstrapError = {
   message: string;
   code?: string;
   logPath?: string;
+  stage?: MithrilBootstrapErrorStage;
 };
 
 export type MithrilBootstrapStatusUpdate = {
@@ -30,6 +37,8 @@ export type MithrilBootstrapStatusUpdate = {
   progress: number;
   currentStep?: string;
   snapshot?: MithrilSnapshotItem | null;
+  filesDownloaded?: number;
+  filesTotal?: number;
   elapsedSeconds?: number;
   remainingSeconds?: number;
   error?: MithrilBootstrapError | null;

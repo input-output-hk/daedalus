@@ -2,6 +2,25 @@ import {
   parseMithrilProgressLine,
   parseMithrilProgressUpdate,
 } from './mithrilProgress';
+import { MithrilBootstrapService } from './MithrilBootstrapService';
+
+jest.mock('../config', () => ({
+  stateDirectoryPath: '/tmp/daedalus-state',
+}));
+
+jest.mock('../environment', () => ({
+  environment: {
+    network: 'mainnet',
+    nodeVersion: '1.35.0',
+  },
+}));
+
+jest.mock('../utils/logging', () => ({
+  logger: {
+    warn: jest.fn(),
+    info: jest.fn(),
+  },
+}));
 
 describe('MithrilBootstrapService parsing', () => {
   it('returns null for non-JSON lines', () => {
@@ -32,11 +51,129 @@ describe('MithrilBootstrapService parsing', () => {
     ).toBe(25);
   });
 
+  it('preserves raw file progress counters', () => {
+    expect(
+      parseMithrilProgressUpdate('{"files_downloaded": 50, "files_total": 200}')
+    ).toEqual({ filesDownloaded: 50, filesTotal: 200, progress: 25 });
+  });
+
   it('parses elapsed and remaining times', () => {
     expect(
       parseMithrilProgressUpdate(
         '{"seconds_elapsed": 120.5, "seconds_left": 42}'
       )
     ).toEqual({ elapsedSeconds: 120.5, remainingSeconds: 42 });
+  });
+});
+
+describe('MithrilBootstrapService progress and error stages', () => {
+  it('propagates raw file counters in download status updates', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const originalUpdateStatus = service._updateStatus.bind(service);
+    const statusSpy = jest
+      .spyOn(service, '_updateStatus')
+      .mockImplementation((update) => originalUpdateStatus(update));
+
+    jest
+      .spyOn(service, '_cleanupSnapshotArtifacts')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(service, '_resolveCardanoDbDownloadMode')
+      .mockResolvedValue('download');
+    jest
+      .spyOn(service, '_runCommand')
+      .mockImplementation(async (_, options) => {
+        options?.onStdout?.(
+          '{"files_downloaded": 1, "files_total": 4, "seconds_elapsed": 2, "seconds_left": 6}\n'
+        );
+        return { stdout: '', stderr: '', exitCode: 0 };
+      });
+
+    await service._downloadSnapshot('latest', null);
+
+    expect(statusSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        filesDownloaded: 1,
+        filesTotal: 4,
+      })
+    );
+  });
+
+  it('keeps download stage when startBootstrap reports failure', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const originalUpdateStatus = service._updateStatus.bind(service);
+    const statusSpy = jest
+      .spyOn(service, '_updateStatus')
+      .mockImplementation((update) => originalUpdateStatus(update));
+
+    jest.spyOn(service, '_createLockFile').mockResolvedValue(undefined);
+    jest.spyOn(service, 'showSnapshot').mockResolvedValue(null);
+    jest
+      .spyOn(service, '_cleanupSnapshotArtifacts')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(service, '_downloadSnapshot')
+      .mockRejectedValue(
+        service._createStageError('download', 'Mithril download failed', 'ERR')
+      );
+
+    await expect(service.startBootstrap('latest')).rejects.toThrow(
+      'Mithril download failed'
+    );
+
+    expect(statusSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'failed',
+        error: expect.objectContaining({
+          stage: 'download',
+          code: 'ERR',
+        }),
+      })
+    );
+  });
+
+  it('annotates conversion failures with convert stage', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_runCommand').mockResolvedValue({
+      stdout: '',
+      stderr: 'conversion failed',
+      exitCode: 1,
+    });
+
+    let conversionError: unknown;
+    try {
+      await service._convertSnapshot(null);
+    } catch (error) {
+      conversionError = error;
+    }
+
+    expect(service._buildError(conversionError)).toEqual(
+      expect.objectContaining({
+        stage: 'convert',
+      })
+    );
+  });
+
+  it('keeps fallback stage for generic errors', () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+
+    expect(service._buildError(new Error('generic failure'), 'verify')).toEqual(
+      expect.objectContaining({
+        message: 'generic failure',
+        stage: 'verify',
+      })
+    );
+  });
+
+  it('preserves explicit stage when normalizing stage errors', () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const stageError = service._createStageError('download', 'failed', 'E1');
+
+    expect(service._buildError(stageError, 'verify')).toEqual({
+      message: 'failed',
+      code: 'E1',
+      stage: 'download',
+    });
   });
 });

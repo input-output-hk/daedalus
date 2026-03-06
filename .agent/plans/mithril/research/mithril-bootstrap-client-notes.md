@@ -43,6 +43,11 @@
 - Mithril `cardano-db` subcommands differ by client version; detect whether `download` is under `cardano-db` or `cardano-db snapshot`.
 - Verification keys are fetched from mithril-infra URLs and must be converted from JSON byte arrays into hex strings for `mithril-client` env vars.
 - Snapshot download progress includes `files_downloaded/files_total` and `seconds_elapsed/seconds_left` fields.
+- Shared IPC type now carries optional `filesDownloaded/filesTotal` on `MithrilBootstrapStatusUpdate` and optional `error.stage` (`download|verify|convert|node-start`) on `MithrilBootstrapError` for staged UX without breaking existing producers.
+- `parseMithrilProgressUpdate` now preserves raw `files_downloaded/files_total` as `filesDownloaded/filesTotal` while still deriving percentage progress when totals are valid.
+- In `MithrilBootstrapService`, download progress status updates now include `filesDownloaded/filesTotal`, and stage-aware errors are thrown/normalized so `startBootstrap` catch handling does not lose `error.stage` metadata.
+- `handleDiskSpace` now emits Mithril startup failures with `error.stage = 'node-start'` when cardano-node fails to start after bootstrap completion.
+- `MithrilBootstrapService.spec.ts` now mocks `../config`, `../environment`, and `../utils/logging` so service-level tests run outside nix-shell while verifying file-count and staged-error behavior.
 - `total_db_size_uncompressed` is the size field used for snapshot detail size.
 - After bootstrap, move the snapshot database from `stateDir/db` into `stateDir/chain` so cardano-node uses it.
 - Cardano node should auto-start after Mithril bootstrap completion (don’t wait for disk check polling).

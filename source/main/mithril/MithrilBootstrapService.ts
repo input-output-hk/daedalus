@@ -11,13 +11,11 @@ import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import { stateDirectoryPath } from '../config';
 import type {
   MithrilBootstrapError,
+  MithrilBootstrapErrorStage,
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
 } from '../../common/types/mithril-bootstrap.types';
-import {
-  parseMithrilProgressLine,
-  parseMithrilProgressUpdate,
-} from './mithrilProgress';
+import { parseMithrilProgressUpdate } from './mithrilProgress';
 
 type MithrilNetworkConfig = {
   aggregatorEndpoint: string;
@@ -112,6 +110,22 @@ const normalizeSnapshotItem = (
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === 'string' && value.trim().length > 0;
 
+class MithrilBootstrapStageError extends Error {
+  stage: MithrilBootstrapErrorStage;
+  code?: string;
+
+  constructor(
+    message: string,
+    stage: MithrilBootstrapErrorStage,
+    code?: string
+  ) {
+    super(message);
+    this.name = 'MithrilBootstrapStageError';
+    this.stage = stage;
+    this.code = code;
+  }
+}
+
 export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
   _statusEmitter = new EventEmitter();
@@ -181,6 +195,8 @@ export class MithrilBootstrapService {
       status: 'preparing',
       progress: STEP_PROGRESS.preparing,
       currentStep: 'Preparing Mithril bootstrap',
+      filesDownloaded: undefined,
+      filesTotal: undefined,
       error: null,
     });
 
@@ -217,7 +233,10 @@ export class MithrilBootstrapService {
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
-        error: this._buildError(error),
+        error: this._buildError(
+          error,
+          this._inferErrorStageFromStatus(this._status.status)
+        ),
       });
       throw error;
     }
@@ -389,16 +408,52 @@ export class MithrilBootstrapService {
     return fs.createWriteStream(logPath, { flags: 'a' });
   }
 
-  _buildError(error: unknown): MithrilBootstrapError {
+  _buildError(
+    error: unknown,
+    fallbackStage?: MithrilBootstrapErrorStage
+  ): MithrilBootstrapError {
+    if (error instanceof MithrilBootstrapStageError) {
+      return {
+        message: error.message,
+        code: error.code,
+        stage: error.stage,
+      };
+    }
+
     if (error instanceof Error) {
       return {
         message: error.message,
+        stage: fallbackStage,
       };
     }
 
     return {
       message: 'Mithril bootstrap failed',
+      stage: fallbackStage,
     };
+  }
+
+  _createStageError(
+    stage: MithrilBootstrapErrorStage,
+    message: string,
+    code?: string
+  ): MithrilBootstrapStageError {
+    return new MithrilBootstrapStageError(message, stage, code);
+  }
+
+  _inferErrorStageFromStatus(
+    status: MithrilBootstrapStatusUpdate['status']
+  ): MithrilBootstrapErrorStage | undefined {
+    switch (status) {
+      case 'downloading':
+        return 'download';
+      case 'verifying':
+        return 'verify';
+      case 'converting':
+        return 'convert';
+      default:
+        return undefined;
+    }
   }
 
   async _createLockFile(): Promise<void> {
@@ -578,6 +633,8 @@ export class MithrilBootstrapService {
           progress: mapped,
           currentStep: 'Downloading Mithril snapshot',
           snapshot: snapshot || undefined,
+          filesDownloaded: update.filesDownloaded,
+          filesTotal: update.filesTotal,
           elapsedSeconds: update.elapsedSeconds,
           remainingSeconds: update.remainingSeconds,
         });
@@ -589,6 +646,8 @@ export class MithrilBootstrapService {
           status: 'downloading',
           currentStep: 'Downloading Mithril snapshot',
           snapshot: snapshot || undefined,
+          filesDownloaded: update.filesDownloaded,
+          filesTotal: update.filesTotal,
           elapsedSeconds: update.elapsedSeconds,
           remainingSeconds: update.remainingSeconds,
         });
@@ -610,12 +669,12 @@ export class MithrilBootstrapService {
     });
 
     if (exitCode !== 0) {
-      const error: MithrilBootstrapError = {
-        message: `Mithril download failed with exit code ${exitCode}`,
-      };
-      if (stderr) error.code = stderr.trim().slice(0, 200);
-      this._updateStatus({ status: 'failed', error });
-      throw new Error(error.message);
+      const errorCode = stderr ? stderr.trim().slice(0, 200) : undefined;
+      throw this._createStageError(
+        'download',
+        `Mithril download failed with exit code ${exitCode}`,
+        errorCode
+      );
     }
 
     if (!sawJsonProgress) {
@@ -665,12 +724,12 @@ export class MithrilBootstrapService {
     ]);
 
     if (exitCode !== 0) {
-      const error: MithrilBootstrapError = {
-        message: `Mithril snapshot conversion failed with exit code ${exitCode}`,
-      };
-      if (stderr) error.code = stderr.trim().slice(0, 200);
-      this._updateStatus({ status: 'failed', error });
-      throw new Error(error.message);
+      const errorCode = stderr ? stderr.trim().slice(0, 200) : undefined;
+      throw this._createStageError(
+        'convert',
+        `Mithril snapshot conversion failed with exit code ${exitCode}`,
+        errorCode
+      );
     }
 
     this._updateStatus({

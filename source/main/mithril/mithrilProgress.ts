@@ -1,5 +1,7 @@
 export type MithrilProgressUpdate = {
   progress?: number;
+  filesDownloaded?: number;
+  filesTotal?: number;
   elapsedSeconds?: number;
   remainingSeconds?: number;
 };
@@ -14,12 +16,19 @@ export const parseMithrilProgressUpdate = (
     const parsed = JSON.parse(trimmed);
     const update: MithrilProgressUpdate = {};
 
+    if (typeof parsed.files_downloaded === 'number') {
+      update.filesDownloaded = parsed.files_downloaded;
+    }
+    if (typeof parsed.files_total === 'number') {
+      update.filesTotal = parsed.files_total;
+    }
+
     if (
-      typeof parsed.files_downloaded === 'number' &&
-      typeof parsed.files_total === 'number' &&
-      parsed.files_total > 0
+      update.filesDownloaded != null &&
+      update.filesTotal != null &&
+      update.filesTotal > 0
     ) {
-      update.progress = (parsed.files_downloaded / parsed.files_total) * 100;
+      update.progress = (update.filesDownloaded / update.filesTotal) * 100;
     }
 
     const progress = parsed.progress ?? parsed.percentage ?? parsed.percent;
@@ -38,6 +47,8 @@ export const parseMithrilProgressUpdate = (
 
     if (
       update.progress == null &&
+      update.filesDownloaded == null &&
+      update.filesTotal == null &&
       update.elapsedSeconds == null &&
       update.remainingSeconds == null
     ) {

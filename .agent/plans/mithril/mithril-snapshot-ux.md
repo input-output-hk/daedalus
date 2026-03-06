@@ -14,8 +14,8 @@
 ## Requirements
 
 ### Backend
-- [ ] Extend shared types with `filesDownloaded`, `filesTotal` on status updates and `stage` on errors
-- [ ] Update progress pipeline to preserve raw file counts and annotate errors with failure stage
+- [x] Extend shared types with `filesDownloaded`, `filesTotal` on status updates and `stage` on errors
+- [x] Update progress pipeline to preserve raw file counts and annotate errors with failure stage
 - [ ] Add MobX computed properties for `bytesDownloaded` and `throughputBps`
 
 ### Custom Chain Storage Location
@@ -347,3 +347,8 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 **Status:** In Progress
 **Date:** 2026-03-03  
 **Author:** david-profrontsolutions
+**Notes:**
+- [2026-03-06] Extended shared Mithril status/error types for file counts and stage metadata.
+- [2026-03-06] Updated parser and bootstrap service to emit file counters and staged errors.
+- [2026-03-06] Added `node-start` stage annotation for post-bootstrap startup failures.
+- [2026-03-06] Expanded backend unit coverage for file-count and stage propagation.

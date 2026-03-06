@@ -145,6 +145,7 @@ export const handleDiskSpace = (
       snapshot: null,
       error: {
         message,
+        stage: 'node-start',
       },
     };
     setMithrilBootstrapStatus(update);
