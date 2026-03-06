@@ -418,9 +418,9 @@ Theme changes are validated in CI via:
 
 ## Related Documentation
 
-- **Theme Architecture**: [System Architecture - Theme System](./../../../.agent/system/architecture.md)
-- **Component Development**: [Storybook Workflow](./../../../.agent/workflows/storybook.md)
-- **Best Practices**: [BESTPRACTICES.md](./../../../BESTPRACTICES.md)
+- **Theme Architecture**: [System Architecture - Theme System](./../../../system/architecture.md)
+- **Component Development**: [Storybook Workflow](./../../../workflows/storybook.md)
+- **Best Practices**: [BESTPRACTICES.md](./../../../../BESTPRACTICES.md)
 - **Theme Tutorial Series**: [Theme Tutorial Videos](https://www.youtube.com/playlist?list=PLhYa9Lr0WjdXN69m4B2pVyuP9UlAT1Xw_)
 
 ---
@@ -434,7 +434,7 @@ The Daedalus project includes comprehensive video tutorials on theme management:
 - **Part 3**: Writing theme CSS variables to output objects
 - **Part 4**: Using `themes:check:createTheme` for validation
 
-See [Theme README](./../../../source/renderer/app/themes/README.md) for video links.
+See [Theme README](./../../../../source/renderer/app/themes/README.md) for video links.
 
 ---
 
