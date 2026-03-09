@@ -48,6 +48,8 @@
 - In `MithrilBootstrapService`, download progress status updates now include `filesDownloaded/filesTotal`, and stage-aware errors are thrown/normalized so `startBootstrap` catch handling does not lose `error.stage` metadata.
 - `handleDiskSpace` now emits Mithril startup failures with `error.stage = 'node-start'` when cardano-node fails to start after bootstrap completion.
 - `MithrilBootstrapService.spec.ts` now mocks `../config`, `../environment`, and `../utils/logging` so service-level tests run outside nix-shell while verifying file-count and staged-error behavior.
+- `MithrilBootstrapStore` should assign optional progress fields using property presence checks (`'field' in update`) rather than nullish coalescing so explicit backend resets like `filesDownloaded: undefined` are not dropped.
+- Store-side download metadata can be derived cheaply from existing payloads: `bytesDownloaded ~= snapshot.size * (filesDownloaded / filesTotal)` and `throughputBps = bytesDownloaded / elapsedSeconds`, with file counts clamped to `[0, filesTotal]` to avoid overshoot.
 - `total_db_size_uncompressed` is the size field used for snapshot detail size.
 - After bootstrap, move the snapshot database from `stateDir/db` into `stateDir/chain` so cardano-node uses it.
 - Cardano node should auto-start after Mithril bootstrap completion (don’t wait for disk check polling).

@@ -16,7 +16,7 @@
 ### Backend
 - [x] Extend shared types with `filesDownloaded`, `filesTotal` on status updates and `stage` on errors
 - [x] Update progress pipeline to preserve raw file counts and annotate errors with failure stage
-- [ ] Add MobX computed properties for `bytesDownloaded` and `throughputBps`
+- [x] Add MobX computed properties for `bytesDownloaded` and `throughputBps`
 
 ### Custom Chain Storage Location
 - [ ] Add `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` and `GET_CHAIN_STORAGE_DIRECTORY_CHANNEL` IPC channels
@@ -206,7 +206,8 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 
 ### Phase 2: Store & Container Updates
 5. Add download metadata observables/computeds to MithrilBootstrapStore
-6. Update MithrilBootstrapPage container to pass new props
+6. Update MithrilBootstrapPage container to pass progress metadata props
+7. Update MithrilBootstrapPage container to pass chain storage props after store actions exist
 
 ### Phase 2b: Custom Chain Storage (Backend)
 7. Add ChainStorageConfig and ChainStorageValidation types
@@ -352,3 +353,6 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-06] Updated parser and bootstrap service to emit file counters and staged errors.
 - [2026-03-06] Added `node-start` stage annotation for post-bootstrap startup failures.
 - [2026-03-06] Expanded backend unit coverage for file-count and stage propagation.
+- [2026-03-09] Added store-level `filesDownloaded/filesTotal` observables and derived `bytesDownloaded/throughputBps` metadata for the upcoming progress UX.
+- [2026-03-09] Tightened Mithril store status assignment to honor explicit `undefined` resets from the backend so progress metadata does not linger across state transitions.
+- [2026-03-09] Split container wiring so progress metadata can land now while chain storage props wait for the later custom storage store actions.

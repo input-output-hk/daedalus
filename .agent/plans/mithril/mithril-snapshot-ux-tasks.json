@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-06",
+    "updated": "2026-03-09",
     "version": "1.0.0",
-    "totalTasks": 39,
+    "totalTasks": 40,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
     "description": "Decompose MithrilBootstrap into sub-components with stepper UX, download metadata, stage-specific errors, custom chain storage, theming, i18n, Storybook, and E2E tests"
   },
@@ -82,21 +82,32 @@
           "id": "task-006",
           "title": "Add store observables and computeds",
           "description": "Add @observable filesDownloaded, filesTotal and @computed bytesDownloaded, throughputBps to MithrilBootstrapStore. Update _updateStatus to assign file counts.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-001"],
-          "completedAt": null,
+          "completedAt": "2026-03-09",
           "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
         },
         {
-          "id": "task-007",
-          "title": "Update MithrilBootstrapPage container",
-          "description": "Pass new store observables and chain storage actions through to the component",
+          "id": "task-007a",
+          "title": "Update MithrilBootstrapPage progress metadata wiring",
+          "description": "Pass filesDownloaded/filesTotal and derived bytesDownloaded/throughputBps from MithrilBootstrapStore through the container to the component contract for the upcoming progress UX.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-006"],
+          "completedAt": "2026-03-09",
+          "targetPath": "source/renderer/app/containers/loading/MithrilBootstrapPage.tsx"
+        },
+        {
+          "id": "task-007b",
+          "title": "Update MithrilBootstrapPage chain storage wiring",
+          "description": "Pass chain storage state and actions through to the component once custom storage store actions exist.",
           "status": "pending",
           "priority": "high",
-          "estimatedHours": 1,
-          "dependencies": ["task-006"],
+          "estimatedHours": 0.5,
+          "dependencies": ["task-012"],
           "completedAt": null,
           "targetPath": "source/renderer/app/containers/loading/MithrilBootstrapPage.tsx"
         }

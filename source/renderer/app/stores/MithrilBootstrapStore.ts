@@ -1,4 +1,4 @@
-import { action, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import Store from './lib/Store';
 import type {
   MithrilBootstrapStatus,
@@ -30,6 +30,9 @@ export default class MithrilBootstrapStore extends Store {
   @observable currentStep: string | undefined = DEFAULT_STATUS.currentStep;
   @observable snapshot: MithrilSnapshotItem | null =
     DEFAULT_STATUS.snapshot ?? null;
+  @observable filesDownloaded: number | undefined =
+    DEFAULT_STATUS.filesDownloaded;
+  @observable filesTotal: number | undefined = DEFAULT_STATUS.filesTotal;
   @observable elapsedSeconds: number | undefined =
     DEFAULT_STATUS.elapsedSeconds;
   @observable remainingSeconds: number | undefined =
@@ -38,6 +41,42 @@ export default class MithrilBootstrapStore extends Store {
     DEFAULT_STATUS.error ?? null;
   @observable snapshots: Array<MithrilSnapshotItem> = [];
   @observable isFetchingSnapshots = false;
+
+  @computed
+  get bytesDownloaded(): number | undefined {
+    if (
+      this.snapshot == null ||
+      typeof this.snapshot.size !== 'number' ||
+      this.snapshot.size <= 0 ||
+      this.filesDownloaded == null ||
+      this.filesTotal == null ||
+      this.filesTotal <= 0
+    ) {
+      return undefined;
+    }
+
+    const normalizedFilesDownloaded = Math.min(
+      Math.max(this.filesDownloaded, 0),
+      this.filesTotal
+    );
+
+    return Math.round(
+      (normalizedFilesDownloaded / this.filesTotal) * this.snapshot.size
+    );
+  }
+
+  @computed
+  get throughputBps(): number | undefined {
+    if (
+      this.bytesDownloaded == null ||
+      this.elapsedSeconds == null ||
+      this.elapsedSeconds <= 0
+    ) {
+      return undefined;
+    }
+
+    return this.bytesDownloaded / this.elapsedSeconds;
+  }
 
   setup() {
     mithrilBootstrapStatusChannel.onReceive(this._updateStatus);
@@ -60,13 +99,25 @@ export default class MithrilBootstrapStore extends Store {
     if (typeof update.progress === 'number') {
       this.progress = update.progress;
     }
-    this.currentStep = update.currentStep ?? this.currentStep;
-    if (update.snapshot !== undefined) {
+    if ('currentStep' in update) {
+      this.currentStep = update.currentStep;
+    }
+    if ('snapshot' in update) {
       this.snapshot = update.snapshot ?? null;
     }
-    this.elapsedSeconds = update.elapsedSeconds ?? this.elapsedSeconds;
-    this.remainingSeconds = update.remainingSeconds ?? this.remainingSeconds;
-    if (update.error !== undefined) {
+    if ('filesDownloaded' in update) {
+      this.filesDownloaded = update.filesDownloaded;
+    }
+    if ('filesTotal' in update) {
+      this.filesTotal = update.filesTotal;
+    }
+    if ('elapsedSeconds' in update) {
+      this.elapsedSeconds = update.elapsedSeconds;
+    }
+    if ('remainingSeconds' in update) {
+      this.remainingSeconds = update.remainingSeconds;
+    }
+    if ('error' in update) {
       this.error = update.error ?? null;
     }
     return Promise.resolve();

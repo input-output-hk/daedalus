@@ -111,6 +111,10 @@ class MithrilBootstrapPage extends Component<Props> {
         status={mithrilBootstrap.status}
         progress={mithrilBootstrap.progress}
         currentStep={mithrilBootstrap.currentStep}
+        filesDownloaded={mithrilBootstrap.filesDownloaded}
+        filesTotal={mithrilBootstrap.filesTotal}
+        bytesDownloaded={mithrilBootstrap.bytesDownloaded}
+        throughputBps={mithrilBootstrap.throughputBps}
         elapsedSeconds={mithrilBootstrap.elapsedSeconds}
         remainingSeconds={mithrilBootstrap.remainingSeconds}
         snapshots={mithrilBootstrap.snapshots}

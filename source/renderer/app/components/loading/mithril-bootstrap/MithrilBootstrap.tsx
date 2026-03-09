@@ -123,6 +123,10 @@ type Props = {
   status: MithrilBootstrapStatus;
   progress: number;
   currentStep?: string;
+  filesDownloaded?: number;
+  filesTotal?: number;
+  bytesDownloaded?: number;
+  throughputBps?: number;
   elapsedSeconds?: number;
   remainingSeconds?: number;
   snapshots: Array<MithrilSnapshotItem>;
@@ -291,6 +295,10 @@ class MithrilBootstrap extends Component<Props> {
     const {
       progress,
       currentStep,
+      filesDownloaded,
+      filesTotal,
+      bytesDownloaded,
+      throughputBps,
       elapsedSeconds,
       remainingSeconds,
       onCancel,
@@ -300,6 +308,10 @@ class MithrilBootstrap extends Component<Props> {
     const elapsedLabel = this.formatDuration(elapsedSeconds);
     const remainingLabel = this.formatDuration(remainingSeconds);
     const progressMeta = this.formatProgressMeta(elapsedLabel, remainingLabel);
+    void filesDownloaded;
+    void filesTotal;
+    void bytesDownloaded;
+    void throughputBps;
     return (
       <div className={styles.card}>
         <div className={styles.header}>
