@@ -24,6 +24,7 @@ import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleMithrilBootstrapRequests } from './mithrilBootstrapChannel';
+import { handleChainStorageRequests } from './chainStorageChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -43,6 +44,7 @@ export default (window: BrowserWindow) => {
   handleAddressIntrospectionRequests();
   handleManageAppUpdateRequests(window);
   handleMithrilBootstrapRequests(window);
+  handleChainStorageRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

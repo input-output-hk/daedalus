@@ -11,6 +11,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilSnapshotItem,
   MithrilBootstrapError,
+  ChainStorageValidation,
 } from '../../../../../common/types/mithril-bootstrap.types';
 import styles from './MithrilBootstrap.scss';
 
@@ -129,11 +130,19 @@ type Props = {
   throughputBps?: number;
   elapsedSeconds?: number;
   remainingSeconds?: number;
+  customChainPath?: string | null;
+  chainStorageValidation?: ChainStorageValidation;
+  isChainStorageLoading?: boolean;
+  storageLocationConfirmed?: boolean;
   snapshots: Array<MithrilSnapshotItem>;
   selectedDigest?: string | null;
   selectedSnapshot?: MithrilSnapshotItem | null;
   error?: MithrilBootstrapError | null;
   isFetchingSnapshots: boolean;
+  onSetChainStorageDirectory?: (path: string | null) => Promise<unknown>;
+  onResetChainStorageDirectory?: () => Promise<unknown>;
+  onConfirmStorageLocation?: () => void;
+  onLoadChainStorageConfig?: () => Promise<void>;
   onSelectSnapshot: (digest: string | null) => void;
   onAccept: () => void;
   onDecline: () => void;

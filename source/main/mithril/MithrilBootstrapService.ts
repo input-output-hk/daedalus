@@ -148,6 +148,10 @@ export class MithrilBootstrapService {
     return { ...this._status };
   }
 
+  setWorkDir(workDir: string): void {
+    this._workDir = workDir;
+  }
+
   onStatus(
     listener: (update: MithrilBootstrapStatusUpdate) => void
   ): () => void {
@@ -765,10 +769,52 @@ export class MithrilBootstrapService {
 
   async _installSnapshot(dbDirectory: string): Promise<void> {
     const chainDir = path.join(stateDirectoryPath, 'chain');
-    if (path.resolve(dbDirectory) === path.resolve(chainDir)) {
+    const resolvedDbDirectory = path.resolve(dbDirectory);
+    let resolvedChainDir = path.resolve(chainDir);
+
+    try {
+      if (await fs.pathExists(chainDir)) {
+        resolvedChainDir = await fs.realpath(chainDir);
+      }
+    } catch (error) {
+      logger.warn(
+        'MithrilBootstrapService: unable to resolve chain directory',
+        {
+          error,
+          chainDir,
+        }
+      );
+    }
+
+    if (resolvedDbDirectory === resolvedChainDir) {
       return;
     }
+
+    if (path.dirname(resolvedDbDirectory) === resolvedChainDir) {
+      const entries = await fs.readdir(resolvedDbDirectory);
+      for (const entry of entries) {
+        const sourceEntry = path.join(resolvedDbDirectory, entry);
+        const targetEntry = path.join(resolvedChainDir, entry);
+        await fs.move(sourceEntry, targetEntry, { overwrite: true });
+      }
+      await fs.remove(resolvedDbDirectory);
+      return;
+    }
+
     if (await fs.pathExists(chainDir)) {
+      const chainStats = await fs.lstat(chainDir);
+      if (chainStats.isSymbolicLink()) {
+        await fs.emptyDir(resolvedChainDir);
+        const entries = await fs.readdir(resolvedDbDirectory);
+        for (const entry of entries) {
+          const sourceEntry = path.join(resolvedDbDirectory, entry);
+          const targetEntry = path.join(resolvedChainDir, entry);
+          await fs.move(sourceEntry, targetEntry, { overwrite: true });
+        }
+        await fs.remove(resolvedDbDirectory);
+        return;
+      }
+
       await fs.remove(chainDir);
     }
     await fs.move(dbDirectory, chainDir, { overwrite: true });

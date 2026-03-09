@@ -72,6 +72,8 @@ import type {
   TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
 import type {
+  ChainStorageConfig,
+  ChainStorageValidation,
   MithrilBootstrapDecision,
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
@@ -443,6 +445,25 @@ export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
   'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
 export type MithrilBootstrapSnapshotsRendererRequest = void;
 export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
+
+export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type SetChainStorageDirectoryRendererRequest = {
+  path: string | null;
+};
+export type SetChainStorageDirectoryMainResponse = ChainStorageValidation;
+
+export const GET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'GET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type GetChainStorageDirectoryRendererRequest = void;
+export type GetChainStorageDirectoryMainResponse = ChainStorageConfig;
+
+export const VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type ValidateChainStorageDirectoryRendererRequest = {
+  path: string | null;
+};
+export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
 
 /**
  * Channel for quitting Daedalus and installing update

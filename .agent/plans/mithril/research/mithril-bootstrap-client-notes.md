@@ -50,6 +50,28 @@
 - `MithrilBootstrapService.spec.ts` now mocks `../config`, `../environment`, and `../utils/logging` so service-level tests run outside nix-shell while verifying file-count and staged-error behavior.
 - `MithrilBootstrapStore` should assign optional progress fields using property presence checks (`'field' in update`) rather than nullish coalescing so explicit backend resets like `filesDownloaded: undefined` are not dropped.
 - Store-side download metadata can be derived cheaply from existing payloads: `bytesDownloaded ~= snapshot.size * (filesDownloaded / filesTotal)` and `throughputBps = bytesDownloaded / elapsedSeconds`, with file counts clamped to `[0, filesTotal]` to avoid overshoot.
+- Shared chain-storage contracts now live in `mithril-bootstrap.types.ts`: `ChainStorageConfig` (`customPath`, optional `setAt`) and `ChainStorageValidation` (`isValid`, `path`, optional `resolvedPath/space metrics/reason/message`) with canonical reasons (`not-writable`, `insufficient-space`, `inside-state-dir`, `path-not-found`, `unknown`).
+- Added shared IPC channels in `common/ipc/api.ts`: `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` and `GET_CHAIN_STORAGE_DIRECTORY_CHANNEL`, plus renderer/main channel wrappers.
+- `ChainStorageManager` now backs chain-storage IPC validation/config reads: validates existence, directory type, writability, free space (`DISK_SPACE_REQUIRED`), and rejects targets inside `stateDir`; `getConfig()` reads `{stateDir}/chain-storage-config.json` with null-safe fallback.
+- `ChainStorageManager.setDirectory()` now applies validated path changes end-to-end: resolves current chain source (real dir vs symlink target via `fs.lstat`), migrates data, recreates `{stateDir}/chain` as symlink/junction, and persists config timestamp.
+- `ChainStorageManager.migrateData()` moves directory entries with `fs.move(..., { overwrite: true })` and falls back to `copy + remove` on `EXDEV`, then removes the source directory after successful entry migration.
+- `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` now executes `setDirectory()` instead of validate-only behavior, and unit coverage lives in `source/main/utils/chainStorageManager.spec.ts`.
+- `setDirectory(null)` now routes to `resetToDefault()`: removes chain symlink, migrates data back to `{stateDir}/chain`, and removes `chain-storage-config.json`.
+- `verifySymlink()` now compares configured custom path to `{stateDir}/chain` symlink target and returns validation diagnostics for missing/mismatched/broken targets.
+- Added `VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL` so UI can request chain-directory validation without invoking `setDirectory()` migration side effects.
+- `handleDiskSpace` now resolves the chain storage real path before disk-space checks, so free-space polling follows custom chain symlink targets instead of always using `stateDir`.
+- `mithrilBootstrapChannel` now syncs `MithrilBootstrapService` workDir from `ChainStorageManager.resolveMithrilWorkDir()` before start/cancel operations.
+- `MithrilBootstrapService._installSnapshot()` now compares resolved paths and preserves symlinked `{stateDir}/chain` targets by moving DB contents into the resolved target directory instead of deleting the symlink.
+- Added focused install-path tests in `source/main/mithril/MithrilBootstrapService.install.spec.ts` and expanded `ChainStorageManager.spec.ts` with path/workDir resolution coverage.
+- `ChainStorageManager.setDirectory()` now snapshots previous chain/config state and performs rollback on failure (migrating data back and restoring previous symlink/config) to keep `{stateDir}/chain` usable.
+- Review follow-up captured as low-priority task: `handleDiskSpace.ts` has legacy lint debt (`@ts-ignore`, broad `any`, and a shadowed `path` parameter) worth cleanup in a dedicated safe refactor pass.
+- `MithrilBootstrapStore` now owns chain storage UI state and actions: config preload on setup, set/reset directory requests via IPC, validation persistence, loading flag management, and explicit storage confirmation state.
+- Store tests in `MithrilBootstrapStore.spec.ts` now cover chain storage action flows (valid/invalid set, reset-to-default, config load, confirmation toggle).
+- `MithrilBootstrapPage` now forwards chain storage state/actions to `MithrilBootstrap` props (`customChainPath`, validation/loading/confirmation, and set/reset/load/confirm handlers), so decomposition tasks can consume this wiring without touching store internals.
+- Startup path now invokes `ChainStorageManager.verifySymlink()` during main IPC chain-storage initialization and logs warnings when the configured custom target is missing or mismatched.
+- `MithrilBootstrapStore.loadChainStorageConfig()` now validates configured custom paths at setup time and surfaces invalid results through `chainStorageValidation` for UI warning states.
+- `handleDiskSpace.ts` now has typed disk-report `Promise.race` handling and logger calls that satisfy the current lint rules without behavior changes.
+- Added `source/main/ipc/chainStorageChannel.spec.ts` with startup verification tests that mock `ChainStorageManager` and assert warning logs for invalid and rejected verification paths.
 - `total_db_size_uncompressed` is the size field used for snapshot detail size.
 - After bootstrap, move the snapshot database from `stateDir/db` into `stateDir/chain` so cardano-node uses it.
 - Cardano node should auto-start after Mithril bootstrap completion (don’t wait for disk check polling).

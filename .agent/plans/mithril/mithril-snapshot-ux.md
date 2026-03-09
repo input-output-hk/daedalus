@@ -19,16 +19,19 @@
 - [x] Add MobX computed properties for `bytesDownloaded` and `throughputBps`
 
 ### Custom Chain Storage Location
-- [ ] Add `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` and `GET_CHAIN_STORAGE_DIRECTORY_CHANNEL` IPC channels
-- [ ] Implement `ChainStorageManager` with:
-  - Directory validation (writable, sufficient space, not inside stateDir)
-  - Symlink creation/removal (`{stateDir}/chain` -> user-selected directory)
-  - Config persistence to `{stateDir}/chain-storage-config.json`
-  - Data migration between directories
-- [ ] Integrate with `handleDiskSpace.ts` to check space on resolved symlink target
-- [ ] Pass custom directory as `workDir` to `MithrilBootstrapService` so downloads go directly to target
-- [ ] Add `ChainStorageConfig` and `ChainStorageValidation` shared types
-- [ ] Verify symlink integrity on app startup; warn if broken
+- [x] Add `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` and `GET_CHAIN_STORAGE_DIRECTORY_CHANNEL` IPC channels
+- [x] Implement `ChainStorageManager` with:
+  - [x] Directory validation (writable, sufficient space, not inside stateDir)
+  - [x] Symlink creation (`{stateDir}/chain` -> user-selected directory) during `setDirectory`
+  - [x] Symlink removal for reset-to-default flow
+  - [x] Config persistence to `{stateDir}/chain-storage-config.json`
+  - [x] Data migration between directories (`migrateData` with cross-device fallback)
+- [x] Integrate with `handleDiskSpace.ts` to check space on resolved symlink target
+- [x] Pass custom directory as `workDir` to `MithrilBootstrapService` so downloads go directly to target
+- [x] Add `ChainStorageConfig` and `ChainStorageValidation` shared types
+- [x] Add validate-only chain storage IPC for non-destructive picker feedback
+- [x] Add rollback safeguards in `setDirectory` for symlink-switch failures
+- [x] Verify symlink integrity on app startup; warn if broken
 
 ### Component Decomposition
 - [ ] Decompose `MithrilBootstrap.tsx` into 6+ sub-components
@@ -356,3 +359,20 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-09] Added store-level `filesDownloaded/filesTotal` observables and derived `bytesDownloaded/throughputBps` metadata for the upcoming progress UX.
 - [2026-03-09] Tightened Mithril store status assignment to honor explicit `undefined` resets from the backend so progress metadata does not linger across state transitions.
 - [2026-03-09] Split container wiring so progress metadata can land now while chain storage props wait for the later custom storage store actions.
+- [2026-03-09] Added shared `ChainStorageConfig` and `ChainStorageValidation` types for upcoming chain storage IPC and store integration.
+- [2026-03-09] Added shared chain storage IPC contracts and wired main/renderer channel wrappers with request handlers for set/get directory flow.
+- [2026-03-09] Implemented `ChainStorageManager.validate()` and `getConfig()` with writable/space/stateDir checks and manager-backed chain storage IPC request handling.
+- [2026-03-09] Implemented `ChainStorageManager.setDirectory()`, `migrateData()`, `resetToDefault()`, and `verifySymlink()` with symlink-aware migration flows and config lifecycle handling.
+- [2026-03-09] Added `ChainStorageManager` unit tests for set/reset/migrate/verify flows and recorded follow-up tasks for validate-only IPC and symlink-switch rollback hardening.
+- [2026-03-09] Added `VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL` and main/renderer channel bindings so UI can validate candidate directories without applying side effects.
+- [2026-03-09] Integrated chain storage path resolution into disk-space polling and Mithril bootstrap IPC startup/cancel flow so custom storage locations are used consistently.
+- [2026-03-09] Updated `_installSnapshot()` to compare resolved real paths and preserve chain symlinks while installing snapshot data into external storage targets.
+- [2026-03-09] Added transactional rollback safeguards in `setDirectory()` to restore prior chain path/config state when symlink switch fails after migration.
+- [2026-03-09] Added low-priority follow-up task to clean legacy lint debt in `handleDiskSpace.ts` (`ts-ignore`, `any`, and naming shadowing) without behavioral changes.
+- [2026-03-09] Extended `MithrilBootstrapStore` with chain storage state/actions (`customChainPath`, `chainStorageValidation`, `isChainStorageLoading`, `storageLocationConfirmed`) and config bootstrap loading during store setup.
+- [2026-03-09] Added renderer-store unit tests covering chain storage config loading, set/reset validation handling, and storage confirmation state transitions.
+- [2026-03-09] Wired chain storage store state/actions through `MithrilBootstrapPage` into the existing `MithrilBootstrap` component contract to unblock storage picker UI decomposition tasks.
+- [2026-03-09] Added startup chain storage symlink verification in main IPC initialization and surfaced invalid custom-path warnings through `MithrilBootstrapStore` validation state.
+- [2026-03-09] Completed targeted `handleDiskSpace.ts` lint cleanup for this phase (removed `@ts-ignore` sites, fixed typed disk report fields, and standardized logger call signatures).
+- [2026-03-09] Added low-priority follow-up task to cover startup chain-storage IPC verification logging with dedicated unit tests.
+- [2026-03-09] Completed startup IPC verification test coverage in `chainStorageChannel.spec.ts` for invalid and exception verification branches.

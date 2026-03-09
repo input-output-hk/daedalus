@@ -24,6 +24,7 @@ import type {
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
+import { ChainStorageManager } from '../utils/chainStorageManager';
 import { logger } from '../utils/logging';
 
 const mithrilBootstrapDecisionChannel: MainIpcChannel<
@@ -105,7 +106,13 @@ export const waitForMithrilBootstrapDecision = (): Promise<
 
 export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   const service = new MithrilBootstrapService();
+  const chainStorageManager = new ChainStorageManager();
   lastStatus = service.status;
+
+  const syncWorkDir = async () => {
+    const workDir = await chainStorageManager.resolveMithrilWorkDir();
+    service.setWorkDir(workDir);
+  };
 
   service.onStatus((status) => {
     lastStatus = status;
@@ -144,6 +151,7 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
 
   mithrilBootstrapStartChannel.onRequest(async ({ digest, wipeChain }) => {
     try {
+      await syncWorkDir();
       await service.startBootstrap(digest, { wipeChain });
     } catch (error) {
       logger.error('Mithril bootstrap failed to start', error);
@@ -152,6 +160,7 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   });
 
   mithrilBootstrapCancelChannel.onRequest(async () => {
+    await syncWorkDir();
     await service.cancel();
   });
 };

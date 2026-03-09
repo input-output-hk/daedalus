@@ -117,11 +117,21 @@ class MithrilBootstrapPage extends Component<Props> {
         throughputBps={mithrilBootstrap.throughputBps}
         elapsedSeconds={mithrilBootstrap.elapsedSeconds}
         remainingSeconds={mithrilBootstrap.remainingSeconds}
+        customChainPath={mithrilBootstrap.customChainPath}
+        chainStorageValidation={mithrilBootstrap.chainStorageValidation}
+        isChainStorageLoading={mithrilBootstrap.isChainStorageLoading}
+        storageLocationConfirmed={mithrilBootstrap.storageLocationConfirmed}
         snapshots={mithrilBootstrap.snapshots}
         selectedDigest={this.state.selectedDigest}
         selectedSnapshot={selectedSnapshot || null}
         error={mithrilBootstrap.error}
         isFetchingSnapshots={mithrilBootstrap.isFetchingSnapshots}
+        onSetChainStorageDirectory={mithrilBootstrap.setChainStorageDirectory}
+        onResetChainStorageDirectory={
+          mithrilBootstrap.resetChainStorageDirectory
+        }
+        onConfirmStorageLocation={mithrilBootstrap.confirmStorageLocation}
+        onLoadChainStorageConfig={mithrilBootstrap.loadChainStorageConfig}
         onSelectSnapshot={this.handleSelectSnapshot}
         onAccept={this.handleAccept}
         onDecline={this.handleDecline}

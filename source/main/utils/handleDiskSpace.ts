@@ -31,9 +31,10 @@ import {
   setMithrilBootstrapStatus,
 } from '../ipc/mithrilBootstrapChannel';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
+import { ChainStorageManager } from './chainStorageManager';
 
 const getDiskCheckReport = async (
-  path: string,
+  targetPath: string,
   timeout: number = DISK_SPACE_CHECK_TIMEOUT
 ): Promise<CheckDiskSpaceResponse> => {
   const initialReport: CheckDiskSpaceResponse = {
@@ -47,43 +48,41 @@ const getDiskCheckReport = async (
     diskTotalSpaceRaw: 0,
     isError: false,
   };
-  // @ts-ignore ts-migrate(2740) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
-  return Promise.race([
-    // Disk space check promise
-    new Promise((resolve) => {
-      checkDiskSpace(path)
-        .then(({ free, size }) => {
-          logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
-            free,
-            size,
-          });
-          resolve({
-            ...initialReport,
-            diskSpaceAvailableRaw: free,
-            diskSpaceAvailable: prettysize(free),
-            diskTotalSpace: size,
-          });
-        })
-        .catch((error) => {
-          logger.error(
-            '[DISK-SPACE-DEBUG] Error getting diskCheckReport',
-            error
-          );
-          resolve({ ...initialReport, isError: true });
+  const diskCheckPromise = new Promise<CheckDiskSpaceResponse>((resolve) => {
+    checkDiskSpace(targetPath)
+      .then(({ free, size }) => {
+        logger.info('[DISK-SPACE-DEBUG] Disk space check completed', {
+          free,
+          size,
         });
-    }), // Timeout promise
-    new Promise((resolve) => {
-      setTimeout(() => {
+        resolve({
+          ...initialReport,
+          diskSpaceAvailableRaw: free,
+          diskSpaceAvailable: prettysize(free),
+          diskTotalSpaceRaw: size,
+        });
+      })
+      .catch((error) => {
+        logger.error('[DISK-SPACE-DEBUG] Error getting diskCheckReport', {
+          error,
+        });
         resolve({ ...initialReport, isError: true });
-      }, timeout);
-    }),
-  ]);
+      });
+  });
+
+  const timeoutPromise = new Promise<CheckDiskSpaceResponse>((resolve) => {
+    setTimeout(() => {
+      resolve({ ...initialReport, isError: true });
+    }, timeout);
+  });
+
+  return Promise.race([diskCheckPromise, timeoutPromise]);
 };
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
-): ((...args: Array<any>) => any) => {
+) => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
@@ -108,7 +107,13 @@ export const handleDiskSpace = (
     : undefined;
   const wipeChainFlag =
     envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
+  const chainStorageManager = new ChainStorageManager();
   const mithrilBootstrapService = new MithrilBootstrapService();
+
+  const syncMithrilWorkDir = async () => {
+    const workDir = await chainStorageManager.resolveMithrilWorkDir();
+    mithrilBootstrapService.setWorkDir(workDir);
+  };
   const emitMithrilDecisionStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
@@ -159,6 +164,7 @@ export const handleDiskSpace = (
     mithrilFailureDeclineInFlight = true;
     try {
       await emitMithrilIdleStatus();
+      await syncMithrilWorkDir();
       await mithrilBootstrapService.wipeChainAndSnapshots(
         `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`
       );
@@ -189,12 +195,14 @@ export const handleDiskSpace = (
             });
           }
         }
+        await syncMithrilWorkDir();
         await mithrilBootstrapService.wipeChainAndSnapshots(
           'wipe-chain flag set. Wiped chain directory and Mithril snapshots.'
         );
       }
       const lockExists = await fs.pathExists(mithrilLockFilePath);
       if (lockExists) {
+        await syncMithrilWorkDir();
         await mithrilBootstrapService.wipeChainAndSnapshots(
           'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.'
         );
@@ -269,7 +277,8 @@ export const handleDiskSpace = (
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
-    const response = await getDiskCheckReport(stateDirectoryPath);
+    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
+    const response = await getDiskCheckReport(diskSpacePath);
     await ensureMithrilStartupGate();
     const latestDecision = getPendingMithrilBootstrapDecision();
     if (latestDecision && latestDecision !== mithrilDecision) {
@@ -277,9 +286,9 @@ export const handleDiskSpace = (
     }
 
     if (response.isError) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.info(
-        '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway'
+        '[DISK-SPACE-DEBUG] We could not check disk space, but we will try to start cardano-node anyway',
+        null
       );
       resetInterval(DISK_SPACE_CHECK_DONT_BOTHER_ME_INTERVAL);
     } else {
@@ -343,8 +352,7 @@ export const handleDiskSpace = (
       switch (true) {
         case NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED:
           try {
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node');
+            logger.info('[DISK-SPACE-DEBUG] Stopping cardano node', null);
             await cardanoNode.stop();
           } catch (error) {
             logger.error('[DISK-SPACE-DEBUG] Cannot stop cardano node', error);
@@ -381,6 +389,7 @@ export const handleDiskSpace = (
               }
               if (mithrilDecision === 'decline') {
                 await emitMithrilIdleStatus();
+                await syncMithrilWorkDir();
                 await mithrilBootstrapService.wipeChainAndSnapshots(
                   'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
                 );
@@ -400,6 +409,7 @@ export const handleDiskSpace = (
                     mithrilDecisionPrompted = false;
                     if (decision === 'decline') {
                       await emitMithrilIdleStatus();
+                      await syncMithrilWorkDir();
                       await mithrilBootstrapService.wipeChainAndSnapshots(
                         'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
                       );
@@ -435,9 +445,9 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_AFTER_FREEING_SPACE:
           try {
-            // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.info(
-              '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space'
+              '[DISK-SPACE-DEBUG] restart cardano node after freeing up disk space',
+              null
             );
             if (cardanoNode._startupTries > 0) await cardanoNode.restart();
             else await cardanoNode.start();
@@ -485,7 +495,8 @@ export const handleDiskSpace = (
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
-    const diskReport = await getDiskCheckReport(stateDirectoryPath);
+    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
+    const diskReport = await getDiskCheckReport(diskSpacePath);
     await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;
   });

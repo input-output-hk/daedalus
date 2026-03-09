@@ -43,3 +43,25 @@ export type MithrilBootstrapStatusUpdate = {
   remainingSeconds?: number;
   error?: MithrilBootstrapError | null;
 };
+
+export type ChainStorageConfig = {
+  customPath: string | null;
+  setAt?: string;
+};
+
+export type ChainStorageValidationReason =
+  | 'not-writable'
+  | 'insufficient-space'
+  | 'inside-state-dir'
+  | 'path-not-found'
+  | 'unknown';
+
+export type ChainStorageValidation = {
+  isValid: boolean;
+  path: string | null;
+  resolvedPath?: string;
+  availableSpaceBytes?: number;
+  requiredSpaceBytes?: number;
+  reason?: ChainStorageValidationReason;
+  message?: string;
+};

@@ -6,6 +6,7 @@ import type {
   MithrilSnapshotItem,
   MithrilBootstrapError,
   MithrilBootstrapDecision,
+  ChainStorageValidation,
 } from '../../../common/types/mithril-bootstrap.types';
 import {
   mithrilBootstrapDecisionChannel,
@@ -14,6 +15,11 @@ import {
   mithrilBootstrapCancelChannel,
   mithrilBootstrapSnapshotsChannel,
 } from '../ipc/mithrilBootstrapChannel';
+import {
+  setChainStorageDirectoryChannel,
+  getChainStorageDirectoryChannel,
+  validateChainStorageDirectoryChannel,
+} from '../ipc/chainStorageChannel';
 import { logger } from '../utils/logging';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
@@ -41,6 +47,13 @@ export default class MithrilBootstrapStore extends Store {
     DEFAULT_STATUS.error ?? null;
   @observable snapshots: Array<MithrilSnapshotItem> = [];
   @observable isFetchingSnapshots = false;
+  @observable customChainPath: string | null = null;
+  @observable chainStorageValidation: ChainStorageValidation = {
+    isValid: true,
+    path: null,
+  };
+  @observable isChainStorageLoading = false;
+  @observable storageLocationConfirmed = false;
 
   @computed
   get bytesDownloaded(): number | undefined {
@@ -82,6 +95,14 @@ export default class MithrilBootstrapStore extends Store {
     mithrilBootstrapStatusChannel.onReceive(this._updateStatus);
     this.syncStatus().catch((error) => {
       logger.warn('MithrilBootstrapStore: failed to sync status', { error });
+    });
+    this.loadChainStorageConfig().catch((error) => {
+      logger.warn(
+        'MithrilBootstrapStore: failed to load chain storage config',
+        {
+          error,
+        }
+      );
     });
   }
 
@@ -166,5 +187,76 @@ export default class MithrilBootstrapStore extends Store {
   cancelBootstrap = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
     await mithrilBootstrapCancelChannel.request();
+  };
+
+  @action
+  loadChainStorageConfig = async () => {
+    this.isChainStorageLoading = true;
+    try {
+      const config =
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
+        await getChainStorageDirectoryChannel.request();
+
+      const validation =
+        config?.customPath != null
+          ? // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
+            await validateChainStorageDirectoryChannel.request({
+              path: config.customPath,
+            })
+          : {
+              isValid: true,
+              path: null,
+            };
+
+      runInAction('load chain storage config', () => {
+        this.customChainPath = config?.customPath ?? null;
+        this.chainStorageValidation = validation;
+      });
+    } catch (error) {
+      logger.warn(
+        'MithrilBootstrapStore: failed to load chain storage config',
+        {
+          error,
+        }
+      );
+    } finally {
+      runInAction('finish chain storage config load', () => {
+        this.isChainStorageLoading = false;
+      });
+    }
+  };
+
+  @action
+  setChainStorageDirectory = async (path: string | null) => {
+    this.isChainStorageLoading = true;
+
+    try {
+      const validation =
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
+        await setChainStorageDirectoryChannel.request({ path });
+
+      runInAction('set chain storage directory', () => {
+        this.chainStorageValidation = validation;
+        if (validation.isValid) {
+          this.customChainPath = validation.path ?? null;
+        }
+      });
+
+      return validation;
+    } finally {
+      runInAction('finish setting chain storage directory', () => {
+        this.isChainStorageLoading = false;
+      });
+    }
+  };
+
+  @action
+  resetChainStorageDirectory = async () => {
+    return this.setChainStorageDirectory(null);
+  };
+
+  @action
+  confirmStorageLocation = () => {
+    this.storageLocationConfirmed = true;
   };
 }
