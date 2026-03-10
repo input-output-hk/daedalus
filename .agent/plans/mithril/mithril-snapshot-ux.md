@@ -77,7 +77,7 @@
 - `source/main/mithril/MithrilBootstrapService.ts` - Pass file counts, annotate error stages
 - `source/main/utils/handleDiskSpace.ts` - Annotate node-start stage, resolve symlinks for disk checks
 - `source/main/utils/chainStorageManager.ts` **(new)** - Symlink management, validation, migration
-- `source/main/ipc/chainStorageChannels.ts` **(new)** - Chain storage IPC handlers
+- `source/main/ipc/chainStorageChannel.ts` **(new)** - Chain storage IPC handlers
 
 **Renderer - Store:**
 - `source/renderer/app/stores/MithrilBootstrapStore.ts` - Download metadata observables/computeds, chain storage actions
@@ -212,51 +212,51 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 6. Update MithrilBootstrapPage container to pass progress metadata props
 7. Update MithrilBootstrapPage container to pass chain storage props after store actions exist
 
-### Phase 2b: Custom Chain Storage (Backend)
-7. Add ChainStorageConfig and ChainStorageValidation types
-8. Add chain storage IPC channels
-9. Implement ChainStorageManager (validate + config)
-10. Implement ChainStorageManager (setDirectory + migrateData)
-11. Implement ChainStorageManager (resetToDefault + verifySymlink)
-12. Integrate with disk space checks and download path
-13. Add chain storage store actions
-14. Add startup symlink verification
-15. Unit tests for ChainStorageManager
+### Phase 3: Custom Chain Storage (Backend)
+8. Add ChainStorageConfig and ChainStorageValidation types
+9. Add chain storage IPC channels
+10. Implement ChainStorageManager (validate + config)
+11. Implement ChainStorageManager (setDirectory + migrateData)
+12. Implement ChainStorageManager (resetToDefault + verifySymlink)
+13. Integrate with disk space checks and download path
+14. Add chain storage store actions
+15. Add startup symlink verification
+16. Unit tests for ChainStorageManager
 
-### Phase 3: i18n (follow i18n-messaging skill)
-16. Extract i18n messages file with existing + new messages
-17. Run `yarn i18n:manage`
+### Phase 4: i18n (follow i18n-messaging skill)
+17. Extract i18n messages file with existing + new messages
+18. Run `yarn i18n:manage`
 
-### Phase 4: Component Decomposition
-18. MithrilStepIndicator - step logic and rendering
-19. MithrilStepIndicator - download metadata and SCSS
-20. MithrilSnapshotSelector
-21. MithrilSnapshotDetails
-22. MithrilErrorView
-23. MithrilProgressView
-24. MithrilDecisionView
-25. MithrilStorageLocationPicker - layout and path display
-26. MithrilStorageLocationPicker - picker and validation
-27. Slim down root MithrilBootstrap.tsx
+### Phase 5: Component Decomposition
+19. MithrilStepIndicator - step logic and rendering
+20. MithrilStepIndicator - download metadata and SCSS
+21. MithrilSnapshotSelector
+22. MithrilSnapshotDetails
+23. MithrilErrorView
+24. MithrilProgressView
+25. MithrilDecisionView
+26. MithrilStorageLocationPicker - layout and path display
+27. MithrilStorageLocationPicker - picker and validation
+28. Slim down root MithrilBootstrap.tsx
 
-### Phase 5: Theming (follow theme-management skill)
-28. Migrate SCSS to theme variables
-29. Add variables to createTheme
-30. Run theme validation and update
-31. Regenerate SCSS type definitions
+### Phase 6: Theming (follow theme-management skill)
+29. Migrate SCSS to theme variables
+30. Add variables to createTheme
+31. Run theme validation and update
+32. Regenerate SCSS type definitions
 
-### Phase 6: Accessibility & Storybook (follow storybook-creation skill)
-32. Add a11y attributes
-33. Storybook stories - Decision and Storage states
-34. Storybook stories - Progress and Error states
-35. Register stories in barrel file
+### Phase 7: Accessibility & Storybook (follow storybook-creation skill)
+33. Add a11y attributes
+34. Storybook stories - Decision and Storage states
+35. Storybook stories - Progress and Error states
+36. Register stories in barrel file
 
-### Phase 7: E2E Tests (follow e2e-test-creation skill)
-36. Create E2E feature file
-37. Write step definitions
+### Phase 8: E2E Tests (follow e2e-test-creation skill)
+37. Create E2E feature file
+38. Write step definitions
 
-### Phase 8: Verification
-38. Run full suite: compile, lint, prettier, themes, i18n, jest, storybook, typedef:sass
+### Phase 9: Verification
+39. Run full suite: compile, lint, prettier, themes, i18n, jest, storybook, typedef:sass
 
 ## Testing Strategy
 
@@ -280,7 +280,7 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 | Storage insufficient space | Show validation error |
 | Storage during active sync | Picker is disabled |
 
-E2E tests set store state directly via `daedalus.stores.mithrilBootstrap` (no real cardano-node needed).
+E2E coverage should follow the repo's backend-integrated pattern: drive the real app flow in Electron and use browser-context helpers only for targeted setup/assertion support rather than directly forcing Mithril store state.
 
 ### Storybook States
 
@@ -322,10 +322,13 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 4. **Theme variables:** Registered in `createTheme`, propagated via `yarn themes:update`
 5. **No new IPC for progress:** Extended type payloads on existing `MITHRIL_BOOTSTRAP_STATUS_CHANNEL`
 6. **Storybook API:** Uses `storiesOf()` per Daedalus convention (not CSF)
-7. **E2E mocking:** Tests manipulate store state directly (real bootstrap requires cardano-node)
+7. **E2E coverage:** Follow the repo's backend-integrated E2E pattern; drive the real app flow and use browser-context helpers only for test harness setup or assertions, not to force Mithril UI state transitions.
 8. **Symlink strategy:** POSIX symlinks on Linux/macOS, NTFS junctions on Windows (no admin needed)
 9. **Config location:** `chain-storage-config.json` in stateDir (co-located with chain data, survives reinstalls)
 10. **Picker disabled during sync:** Prevents filesystem race conditions
+11. **Storage picker timing:** Show the storage location picker first, before the snapshot decision view, including on the initial Mithril flow.
+12. **Throughput display:** Use a rolling-average transfer rate in the progress UX.
+13. **Snapshot digest copy:** Defer copy-to-clipboard support to a follow-up iteration.
 
 ## Rollout Plan
 - UX refinement of existing functionality; no feature flags needed
@@ -333,11 +336,7 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - Light-theme differentiation deferred to a future PR
 
 ## Open Questions
-- Copy-to-clipboard button on snapshot digest: now or future iteration?
-- Throughput display: rolling average or instantaneous rate?
-- E2E tests: mock store state only, or also run against real backend (tagged `@skip` for CI)?
 - Migration progress: progress bar (requires monitoring fs.move) or spinner with estimate?
-- Storage picker on first launch: show before any sync, or only with existing chain directory?
 - External drive disconnection while running: immediate error, periodic health check, or passive failure?
 - Theme createTheme structure: add `mithril` section key in theme output, or through createTheme params?
 

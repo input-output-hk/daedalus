@@ -2,8 +2,8 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-09",
-    "version": "1.0.0",
+    "updated": "2026-03-10",
+    "version": "1.1.0",
     "totalTasks": 44,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
     "description": "Decompose MithrilBootstrap into sub-components with stepper UX, download metadata, stage-specific errors, custom chain storage, theming, i18n, Storybook, and E2E tests"
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "id": "phase-2b",
+      "id": "phase-3",
       "name": "Custom Chain Storage Location",
       "description": "IPC channels, ChainStorageManager, symlink handling, and store actions for custom chain/db directory redirection",
       "riskLevel": "high",
@@ -265,7 +265,7 @@
       ]
     },
     {
-      "id": "phase-3",
+      "id": "phase-4",
       "name": "i18n Message Extraction",
       "description": "Extract and extend i18n messages before component decomposition. Follow i18n-messaging skill.",
       "skill": "i18n-messaging",
@@ -296,7 +296,7 @@
       ]
     },
     {
-      "id": "phase-4",
+      "id": "phase-5",
       "name": "Component Decomposition",
       "description": "Break monolithic MithrilBootstrap.tsx into focused sub-components",
       "riskLevel": "high",
@@ -414,7 +414,7 @@
       ]
     },
     {
-      "id": "phase-5",
+      "id": "phase-6",
       "name": "Theming & Styling",
       "description": "Migrate hardcoded colors to CSS theme variables. Follow theme-management skill.",
       "skill": "theme-management",
@@ -467,7 +467,7 @@
       ]
     },
     {
-      "id": "phase-6",
+      "id": "phase-7",
       "name": "Accessibility & Storybook",
       "description": "Add a11y attributes and Storybook coverage. Follow storybook-creation skill.",
       "skill": "storybook-creation",
@@ -520,16 +520,16 @@
       ]
     },
     {
-      "id": "phase-7",
+      "id": "phase-8",
       "name": "E2E Tests",
-      "description": "Cucumber BDD tests for Mithril bootstrap flow. Follow e2e-test-creation skill.",
+      "description": "Cucumber BDD tests for Mithril bootstrap flow using the repo's backend-integrated app-flow pattern. Follow e2e-test-creation skill.",
       "skill": "e2e-test-creation",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-032",
           "title": "Create E2E feature file",
-          "description": "Gherkin scenarios with @e2e tag covering decision screen (accept/decline bootstrap), progress stage advancement and cancel, error stage-specific messaging, and storage location (change, reset, insufficient space, disabled during sync). Set state via daedalus.stores.mithrilBootstrap (no real cardano-node needed).",
+          "description": "Gherkin scenarios with @e2e tag covering decision screen (accept/decline bootstrap), progress stage advancement and cancel, error stage-specific messaging, and storage location (change, reset, insufficient space, disabled during sync). Exercise the real app/bootstrap flow using the repo's existing backend-integrated E2E pattern rather than direct Mithril store-state seeding.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
@@ -540,7 +540,7 @@
         {
           "id": "task-033",
           "title": "Write E2E step definitions",
-          "description": "Step definitions with SELECTORS const for CSS classes, async functions, Chai assertions, store state manipulation via this.client.execute(). Follow e2e-test-creation skill.",
+          "description": "Step definitions with SELECTORS const for CSS classes, async functions, Chai assertions, and repo-style E2E helpers/browser-context execution where needed for setup or assertions. Avoid direct Mithril store-state forcing for the primary flow. Follow e2e-test-creation skill.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
@@ -551,7 +551,7 @@
       ]
     },
     {
-      "id": "phase-8",
+      "id": "phase-9",
       "name": "Verification",
       "description": "Run all checks and verify correctness",
       "riskLevel": "low",
@@ -581,7 +581,7 @@
   ],
   "summary": {
     "totalPhases": 9,
-    "totalTasks": 39,
+    "totalTasks": 44,
     "criticalPath": [
       "task-001",
       "task-002",

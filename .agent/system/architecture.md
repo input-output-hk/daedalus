@@ -52,7 +52,7 @@ Daedalus is the official full-node cryptocurrency wallet for Cardano, built with
 │  │  • Downloads and verifies a certified Cardano DB snapshot             │   │
 │  │  • Runs BEFORE cardano-node starts (chain directory must be empty)    │   │
 │  │  • Converts snapshot to LMDB UTxO-HD format                           │   │
-│  │  • Installs snapshot into stateDir/chain/                             │   │
+│  │  • Installs snapshot into stateDir/chain/ or its resolved custom target │   │
 │  └───────────────────────────────────────────────────────────────────────┘   │
 │                                    │                                         │
 │                      REST API (localhost:8090)                               │
@@ -125,31 +125,31 @@ Code shared between main and renderer processes:
 
 ## Mithril Bootstrap Process
 
-Mithril is a first-run feature that accelerates initial chain sync by downloading a certified Cardano DB snapshot instead of syncing from genesis. The entire Mithril flow runs **before** `cardano-node` starts and only when `stateDir/chain/` is empty.
+Mithril is a first-run feature that accelerates initial chain sync by downloading a certified Cardano DB snapshot instead of syncing from genesis. The entire Mithril flow runs **before** `cardano-node` starts and only when the resolved chain directory is empty (`stateDir/chain/` by default, or the configured custom chain-storage target when redirection is enabled).
 
 ### Startup Flow
 
 ```
 App starts
   └─► handleDiskSpace.ts polling loop
-        └─► disk OK + cardano-node STOPPED + stateDir/chain/ EMPTY
-              │
-              ├─► ensureMithrilStartupGate()
-              │     • --wipe-chain / DAEDALUS_WIPE_CHAIN / launcherConfig.wipeChain?
-              │       → wipe stateDir/chain/ and snapshot artifacts
-              │     • mithril-bootstrap.lock exists (incomplete prior run)?
-              │       → wipe stateDir/chain/ and re-prompt
-              │
-              └─► Emit 'decision' status over IPC
-                    └─► Renderer shows MithrilBootstrap overlay
-                          │
-                          ├─► User accepts
-                          │     MithrilBootstrapService.startBootstrap()
-                          │       1. mithril-client cardano-db snapshot list --json
-                          │       2. mithril-client cardano-db download --include-ancillary <digest> --json
-                          │       3. mithril-client tools utxo-hd snapshot-converter --commit
-                          │       4. Move stateDir/db → stateDir/chain/
-                          │     → onMithrilBootstrapStatus 'completed'
+    └─► disk OK + cardano-node STOPPED + resolved chain target EMPTY
+      │
+      ├─► ensureMithrilStartupGate()
+      │     • --wipe-chain / DAEDALUS_WIPE_CHAIN / launcherConfig.wipeChain?
+      │       → wipe resolved chain target and snapshot artifacts
+      │     • mithril-bootstrap.lock exists (incomplete prior run)?
+      │       → wipe resolved chain target and re-prompt
+      │
+      └─► Emit 'decision' status over IPC
+        └─► Renderer shows MithrilBootstrap overlay
+          │
+          ├─► User accepts
+          │     MithrilBootstrapService.startBootstrap()
+          │       1. mithril-client cardano-db snapshot list --json
+          │       2. mithril-client cardano-db download --include-ancillary <digest> --json
+          │       3. mithril-client tools utxo-hd snapshot-converter --commit
+          │       4. Move stateDir/db → resolved chain target
+          │     → onMithrilBootstrapStatus 'completed'
                           │     → cardanoNode.start()
                           │
                           └─► User declines
@@ -164,10 +164,12 @@ App starts
 | `source/main/mithril/MithrilBootstrapService.ts`                                | Spawns `mithril-client` child process, parses progress, handles cancellation and snapshot installation          |
 | `source/main/mithril/mithrilProgress.ts`                                        | Parses `mithril-client --json` stdout lines into typed progress events                                          |
 | `source/main/ipc/mithrilBootstrapChannel.ts`                                    | Main-side IPC handlers; exports `waitForMithrilBootstrapDecision()`, `onMithrilBootstrapStatus()` etc.          |
+| `source/main/ipc/chainStorageChannel.ts`                                        | Main-side IPC handlers for custom chain storage validation, config reads, and directory changes                 |
+| `source/main/utils/chainStorageManager.ts`                                      | Resolves active chain target, manages chain symlink/config state, validates locations, and migrates data        |
 | `source/main/utils/handleDiskSpace.ts`                                          | Startup gating — detects empty chain, triggers Mithril decision, calls `cardanoNode.start()` after outcome      |
 | `source/common/types/mithril-bootstrap.types.ts`                                | Shared TypeScript types (`MithrilBootstrapStatus`, `MithrilSnapshotItem`, `MithrilBootstrapStatusUpdate`, etc.) |
 | `source/renderer/app/ipc/mithrilBootstrapChannel.ts`                            | Renderer-side IPC channel instances                                                                             |
-| `source/renderer/app/stores/MithrilBootstrapStore.ts`                           | MobX state for status, progress, snapshot selection, error                                                      |
+| `source/renderer/app/stores/MithrilBootstrapStore.ts`                           | MobX state for status, progress metadata, snapshot selection, chain storage, and error handling                 |
 | `source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx` | Decision / progress / error UI overlay                                                                          |
 | `source/renderer/app/containers/loading/MithrilBootstrapPage.tsx`               | Container — wires store to component, manages `selectedDigest`                                                  |
 
@@ -197,7 +199,10 @@ Genesis and ancillary verification keys are fetched at runtime from `raw.githubu
 |----------------------------------------|-----------------------------------------------------------------------------------------------|
 | `stateDir/Logs/mithril-bootstrap.lock` | Created at start; deleted on success; retained on failure to trigger re-prompt on next launch |
 | `stateDir/Logs/mithril-bootstrap.log`  | Append-mode log of all `mithril-client` stdout/stderr                                         |
-| `stateDir/chain/`                      | Target install directory (moved from `stateDir/db/` after conversion)                         |
+| `stateDir/chain/`                      | Stable app-visible chain path; default install directory or symlink/junction to custom target |
+| `stateDir/chain-storage-config.json`   | Persists the configured custom chain-storage target and timestamp                             |
+
+When custom chain storage is configured, `stateDir/chain/` remains the stable application path while `ChainStorageManager` redirects it to the user-selected directory.
 
 ### Developer / Test Flag
 

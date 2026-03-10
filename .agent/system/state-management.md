@@ -67,6 +67,7 @@ stores/
 ├── WalletSettingsStore.ts      # Per-wallet settings
 ├── WalletBackupStore.ts        # Backup flow
 ├── WalletMigrationStore.ts     # Byron to Shelley migration
+├── MithrilBootstrapStore.ts    # Mithril bootstrap progress and chain storage
 └── WindowStore.ts              # Window state
 ```
 
@@ -86,6 +87,7 @@ stores/
 | `AppStore`             | 9KB       | App lifecycle state                 |
 | `AppUpdateStore`       | 15KB      | Update download, installation       |
 | `SidebarStore`         | 7KB       | Sidebar navigation state            |
+| `MithrilBootstrapStore` | 7KB      | Mithril bootstrap status, snapshot selection, and chain storage UI state |
 
 ---
 
