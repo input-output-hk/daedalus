@@ -23,6 +23,7 @@ type Props = {
   filesDownloaded?: number;
   filesTotal?: number;
   bytesDownloaded?: number;
+  snapshotSize?: number;
   throughputBps?: number;
   elapsedSeconds?: number;
   remainingSeconds?: number;

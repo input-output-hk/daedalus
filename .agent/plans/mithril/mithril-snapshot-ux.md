@@ -35,7 +35,7 @@
 
 ### Component Decomposition
 - [ ] Decompose `MithrilBootstrap.tsx` into 6+ sub-components
-- [ ] Implement multi-step visual stepper with spinner/checkmark/pending states
+- [x] Implement multi-step visual stepper with spinner/checkmark/pending states
 - [ ] Surface download metadata in progress view
 - [ ] Stage-specific error screens with contextual titles, hints, and actions
 - [ ] Extract snapshot selector and details grid into reusable components
@@ -342,6 +342,8 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 
 ## References
 - Parent feature plan: [bootstrap-cardano-node.md](bootstrap-cardano-node.md)
+- Backend/client notes: [research/mithril-bootstrap-client-notes.md](research/mithril-bootstrap-client-notes.md)
+- Frontend UX notes: [research/mithril-bootstrap-ux-notes.md](research/mithril-bootstrap-ux-notes.md)
 - `SyncingConnecting` pattern: `source/renderer/app/components/loading/syncing-connecting/`
 - `SyncingProgress` stepper: `source/renderer/app/components/loading/syncing-connecting/SyncingProgress/SyncingProgress.tsx`
 
@@ -377,3 +379,5 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-09] Completed startup IPC verification test coverage in `chainStorageChannel.spec.ts` for invalid and exception verification branches.
 - [2026-03-11] Extracted Mithril bootstrap copy into a shared messages module and added staged-error, stepper, download-metadata, and storage-picker strings for the component split.
 - [2026-03-11] Ran `yarn i18n:manage` to sync Mithril bootstrap message descriptors into the extracted catalogs and locale files.
+- [2026-03-11] Added a reusable `MithrilStepIndicator` component with status-derived step states, connector styling, and compact download metadata formatting for later composition in `MithrilProgressView`.
+- [2026-03-11] Review follow-up: `MithrilStepIndicator` is implemented at the component level, but the current `MithrilBootstrap.renderProgress()` path still renders the legacy `ProgressBarLarge`-only view until tasks 021 and 024 land.

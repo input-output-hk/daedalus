@@ -305,22 +305,22 @@
           "id": "task-017a",
           "title": "MithrilStepIndicator - step logic and rendering",
           "description": "4-step indicator (preparing, downloading, verifying, finalizing) with spinner/checkmark/pending states. Model on SyncingProgress.tsx.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2.5,
           "dependencies": ["task-015"],
-          "completedAt": null,
+          "completedAt": "2026-03-11",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx"
         },
         {
           "id": "task-017b",
           "title": "MithrilStepIndicator - download metadata and SCSS",
           "description": "Add download metadata display (bytes, throughput) to active download step. Create SCSS with themed spinner animation.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": ["task-017a"],
-          "completedAt": null,
+          "completedAt": "2026-03-11",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.scss"
         },
         {

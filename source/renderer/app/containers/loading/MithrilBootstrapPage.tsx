@@ -114,6 +114,7 @@ class MithrilBootstrapPage extends Component<Props> {
         filesDownloaded={mithrilBootstrap.filesDownloaded}
         filesTotal={mithrilBootstrap.filesTotal}
         bytesDownloaded={mithrilBootstrap.bytesDownloaded}
+        snapshotSize={mithrilBootstrap.snapshot?.size}
         throughputBps={mithrilBootstrap.throughputBps}
         elapsedSeconds={mithrilBootstrap.elapsedSeconds}
         remainingSeconds={mithrilBootstrap.remainingSeconds}
