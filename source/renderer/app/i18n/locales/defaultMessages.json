@@ -2462,6 +2462,11 @@
         "id": "loading.mithrilBootstrap.step.downloading"
       },
       {
+        "defaultMessage": "!!!Installing",
+        "description": "Label for the installing step in the Mithril step indicator.",
+        "id": "loading.mithrilBootstrap.step.installing"
+      },
+      {
         "defaultMessage": "!!!Verifying",
         "description": "Label for the verifying step in the Mithril step indicator.",
         "id": "loading.mithrilBootstrap.step.verifying"
@@ -2480,6 +2485,21 @@
         "defaultMessage": "!!!Transfer rate",
         "description": "Label for transfer speed during Mithril download.",
         "id": "loading.mithrilBootstrap.download.rateLabel"
+      },
+      {
+        "defaultMessage": "!!!Current step",
+        "description": "Label for non-download progress stage details.",
+        "id": "loading.mithrilBootstrap.progress.stageLabel"
+      },
+      {
+        "defaultMessage": "!!!Download complete. Installing the restored snapshot into chain storage.",
+        "description": "Detail copy shown while the restored Mithril snapshot is being installed locally.",
+        "id": "loading.mithrilBootstrap.progress.installingDetail"
+      },
+      {
+        "defaultMessage": "!!!Wrapping up Mithril bootstrap before the node starts again.",
+        "description": "Detail copy shown while Mithril bootstrap performs final local cleanup.",
+        "id": "loading.mithrilBootstrap.progress.finalizingDetail"
       },
       {
         "defaultMessage": "!!!Snapshot download failed",

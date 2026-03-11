@@ -5,6 +5,8 @@ export type MithrilBootstrapStatus =
   | 'decision'
   | 'preparing'
   | 'downloading'
+  | 'installing'
+  | 'finalizing'
   | 'verifying'
   | 'converting'
   | 'completed'

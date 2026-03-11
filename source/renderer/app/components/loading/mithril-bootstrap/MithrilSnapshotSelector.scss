@@ -1,0 +1,47 @@
+.selectorRow {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 120px 1fr;
+  margin-bottom: 24px;
+}
+
+.label {
+  color: rgba(172, 182, 195, 0.9);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.selectInput {
+  background-color: rgba(22, 33, 46, 0.9);
+  border-radius: 8px;
+  color: rgba(236, 241, 247, 0.9);
+  width: 100%;
+}
+
+.selectInput :global {
+  .SimpleSelect_simpleSelect__menu,
+  .SimpleSelect_simpleSelect__menuList,
+  .SimpleSelect_simpleSelect__control,
+  .SimpleSelect_simpleSelect__singleValue,
+  .SimpleSelect_simpleSelect__option {
+    background-color: rgba(22, 33, 46, 0.98);
+    color: rgba(236, 241, 247, 0.92);
+  }
+
+  .SimpleSelect_simpleSelect__control {
+    border-color: rgba(92, 110, 128, 0.6);
+  }
+
+  .SimpleSelect_simpleSelect__option--is-focused,
+  .SimpleSelect_simpleSelect__option--is-selected {
+    background-color: rgba(34, 52, 70, 0.96);
+  }
+}
+
+@media (max-width: 720px) {
+  .selectorRow {
+    grid-template-columns: 1fr;
+  }
+}

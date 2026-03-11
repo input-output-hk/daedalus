@@ -85,6 +85,10 @@ class MithrilBootstrapPage extends Component<Props> {
     await this.props.stores.mithrilBootstrap.cancelBootstrap();
   };
 
+  handleOpenExternalLink = (url: string) => {
+    this.props.stores.app.openExternalLink(url);
+  };
+
   getLatestSnapshot = () => {
     const { snapshots } = this.props.stores.mithrilBootstrap;
     if (!snapshots.length) return null;
@@ -127,6 +131,7 @@ class MithrilBootstrapPage extends Component<Props> {
         selectedSnapshot={selectedSnapshot || null}
         error={mithrilBootstrap.error}
         isFetchingSnapshots={mithrilBootstrap.isFetchingSnapshots}
+        onOpenExternalLink={this.handleOpenExternalLink}
         onSetChainStorageDirectory={mithrilBootstrap.setChainStorageDirectory}
         onResetChainStorageDirectory={
           mithrilBootstrap.resetChainStorageDirectory

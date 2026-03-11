@@ -77,7 +77,7 @@ const STEP_PROGRESS = {
   preparing: 5,
   downloadingStart: 10,
   downloadingEnd: 90,
-  verifying: 92.5,
+  installing: 92.5,
   converting: 95,
   finalizing: 97.5,
   completed: 100,
@@ -201,6 +201,8 @@ export class MithrilBootstrapService {
       currentStep: 'Preparing Mithril bootstrap',
       filesDownloaded: undefined,
       filesTotal: undefined,
+      elapsedSeconds: undefined,
+      remainingSeconds: undefined,
       error: null,
     });
 
@@ -224,19 +226,49 @@ export class MithrilBootstrapService {
       // Skip conversion - Mithril provides in-memory format snapshots, no conversion needed
       // await this._convertSnapshot(snapshot);
       const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
+
+      this._updateStatus({
+        status: 'installing',
+        progress: STEP_PROGRESS.installing,
+        currentStep: 'Installing Mithril snapshot',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      });
+
       await this._installSnapshot(dbDirectory);
+
+      this._updateStatus({
+        status: 'finalizing',
+        progress: STEP_PROGRESS.finalizing,
+        currentStep: 'Finalizing Mithril bootstrap',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      });
+
+      await this._cleanupSnapshotArtifacts({ preserveDb: true });
+      await this.clearLockFile();
 
       this._updateStatus({
         status: 'completed',
         progress: STEP_PROGRESS.completed,
         currentStep: 'Mithril bootstrap completed',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
       });
-      await this._cleanupSnapshotArtifacts({ preserveDb: true });
-      await this.clearLockFile();
     } catch (error) {
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
         error: this._buildError(
           error,
           this._inferErrorStageFromStatus(this._status.status)
@@ -453,7 +485,9 @@ export class MithrilBootstrapService {
         return 'download';
       case 'verifying':
         return 'verify';
+      case 'installing':
       case 'converting':
+      case 'finalizing':
         return 'convert';
       default:
         return undefined;
@@ -608,7 +642,6 @@ export class MithrilBootstrapService {
 
     let stdoutBuffered = '';
     let stderrBuffered = '';
-    let sawJsonProgress = false;
     const downloadMode = await this._resolveCardanoDbDownloadMode();
     const downloadArgs =
       downloadMode === 'download'
@@ -624,9 +657,8 @@ export class MithrilBootstrapService {
     const applyProgressUpdate = (line: string) => {
       const update = parseMithrilProgressUpdate(line);
       if (!update) return;
-      const progress = update.progress;
+      const { progress } = update;
       if (progress != null && !Number.isNaN(progress)) {
-        sawJsonProgress = true;
         const mapped =
           STEP_PROGRESS.downloadingStart +
           ((STEP_PROGRESS.downloadingEnd - STEP_PROGRESS.downloadingStart) *
@@ -681,25 +713,11 @@ export class MithrilBootstrapService {
       );
     }
 
-    if (!sawJsonProgress) {
-      this._updateStatus({
-        status: 'downloading',
-        progress: STEP_PROGRESS.downloadingEnd,
-        currentStep: 'Downloading Mithril snapshot',
-      });
-    }
-
     this._updateStatus({
-      status: 'verifying',
-      progress: STEP_PROGRESS.verifying,
-      currentStep: 'Verifying Mithril snapshot',
-    });
-
-    // Skip converting step - proceed directly to finalizing
-    this._updateStatus({
-      status: 'converting',
-      progress: STEP_PROGRESS.finalizing,
-      currentStep: 'Finalizing Mithril bootstrap',
+      status: 'downloading',
+      progress: STEP_PROGRESS.downloadingEnd,
+      currentStep: 'Downloading Mithril snapshot',
+      snapshot: snapshot || undefined,
     });
   }
 

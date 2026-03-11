@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { intlShape, FormattedMessage } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import ProgressBarLarge from '../../widgets/ProgressBarLarge';
-import { formattedBytesToSize } from '../../../utils/formatters';
+import { intlShape } from 'react-intl';
 import type {
   MithrilBootstrapStatus,
   MithrilSnapshotItem,
@@ -14,9 +8,12 @@ import type {
   ChainStorageValidation,
 } from '../../../../../common/types/mithril-bootstrap.types';
 import messages from './MithrilBootstrap.messages';
+import MithrilDecisionView from './MithrilDecisionView';
+import MithrilErrorView from './MithrilErrorView';
+import MithrilProgressView from './MithrilProgressView';
 import styles from './MithrilBootstrap.scss';
 
-type Props = {
+interface Props {
   status: MithrilBootstrapStatus;
   progress: number;
   currentStep?: string;
@@ -36,162 +33,44 @@ type Props = {
   selectedSnapshot?: MithrilSnapshotItem | null;
   error?: MithrilBootstrapError | null;
   isFetchingSnapshots: boolean;
-  onSetChainStorageDirectory?: (path: string | null) => Promise<unknown>;
-  onResetChainStorageDirectory?: () => Promise<unknown>;
-  onConfirmStorageLocation?: () => void;
-  onLoadChainStorageConfig?: () => Promise<void>;
-  onSelectSnapshot: (digest: string | null) => void;
-  onAccept: () => void;
-  onDecline: () => void;
-  onWipeRetry: () => void;
-  onCancel: () => void;
-};
-
-type SnapshotOption = {
-  value: string;
-  label: string;
-};
+  onOpenExternalLink?: (...args: [string]) => void;
+  onSetChainStorageDirectory?: (...args: [string | null]) => Promise<unknown>;
+  onResetChainStorageDirectory?(): Promise<unknown>;
+  onConfirmStorageLocation?(): void;
+  onLoadChainStorageConfig?(): Promise<void>;
+  onSelectSnapshot: (...args: [string | null]) => void;
+  onAccept(): void;
+  onDecline(): void;
+  onWipeRetry(): void;
+  onCancel(): void;
+}
 
 class MithrilBootstrap extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  buildOptions = (): Array<SnapshotOption> => {
-    const { intl } = this.context;
-    const { snapshots } = this.props;
-    const options: Array<SnapshotOption> = [
-      {
-        value: 'latest',
-        label: intl.formatMessage(messages.snapshotLatest),
-      },
-    ];
-    snapshots.forEach((snapshot) => {
-      const createdAt = snapshot.createdAt ? ` • ${snapshot.createdAt}` : '';
-      const version = snapshot.cardanoNodeVersion
-        ? ` • ${snapshot.cardanoNodeVersion}`
-        : '';
-      options.push({
-        value: snapshot.digest,
-        label: `${snapshot.digest}${createdAt}${version}`,
-      });
-    });
-    return options;
-  };
-
-  formatSnapshotDate = (value?: string) => {
-    if (!value) return null;
-    const parsed = Date.parse(value);
-    if (Number.isNaN(parsed)) return value;
-    return new Date(parsed).toLocaleString();
-  };
-
-  renderSnapshotDetails() {
-    const { intl } = this.context;
-    const { selectedSnapshot } = this.props;
-    if (!selectedSnapshot) {
-      return (
-        <div className={styles.details}>
-          <div className={styles.detailsHeader}>
-            {intl.formatMessage(messages.snapshotDetailsTitle)}
-          </div>
-          <div className={styles.detailsFallback}>
-            {intl.formatMessage(messages.snapshotDetailsUnavailable)}
-          </div>
-        </div>
-      );
-    }
-
-    const createdAt = this.formatSnapshotDate(selectedSnapshot.createdAt);
-    const size =
-      typeof selectedSnapshot.size === 'number' && selectedSnapshot.size > 0
-        ? formattedBytesToSize(selectedSnapshot.size)
-        : null;
-
-    return (
-      <div className={styles.details}>
-        <div className={styles.detailsHeader}>
-          {intl.formatMessage(messages.snapshotDetailsTitle)}
-        </div>
-        <div className={styles.detailsGrid}>
-          <div className={styles.detailRow}>
-            <div className={styles.detailLabel}>
-              {intl.formatMessage(messages.snapshotDigestLabel)}
-            </div>
-            <div className={styles.detailValue}>{selectedSnapshot.digest}</div>
-          </div>
-          <div className={styles.detailRow}>
-            <div className={styles.detailLabel}>
-              {intl.formatMessage(messages.snapshotCreatedLabel)}
-            </div>
-            <div className={styles.detailValue}>{createdAt || 'n/a'}</div>
-          </div>
-          <div className={styles.detailRow}>
-            <div className={styles.detailLabel}>
-              {intl.formatMessage(messages.snapshotSizeLabel)}
-            </div>
-            <div className={styles.detailValue}>{size || 'n/a'}</div>
-          </div>
-          <div className={styles.detailRow}>
-            <div className={styles.detailLabel}>
-              {intl.formatMessage(messages.snapshotNodeVersionLabel)}
-            </div>
-            <div className={styles.detailValue}>
-              {selectedSnapshot.cardanoNodeVersion || 'n/a'}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderDecision() {
-    const { intl } = this.context;
     const {
+      snapshots,
       selectedDigest,
+      selectedSnapshot,
       isFetchingSnapshots,
       onSelectSnapshot,
       onAccept,
       onDecline,
     } = this.props;
-    const options = this.buildOptions();
-    const selectedValue = selectedDigest || 'latest';
     return (
       <div className={styles.card}>
-        <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.title)}</h1>
-          <p>{intl.formatMessage(messages.description)}</p>
-        </div>
-        <div className={styles.selectorRow}>
-          <div className={styles.label}>
-            <FormattedMessage {...messages.selectLabel} />
-          </div>
-          <div>
-            <Select
-              skin={SelectSkin}
-              className={styles.selectInput}
-              options={options}
-              value={selectedValue}
-              disabled={isFetchingSnapshots}
-              onChange={(value) => onSelectSnapshot(value ?? null)}
-            />
-          </div>
-        </div>
-        {this.renderSnapshotDetails()}
-        <div className={styles.actions}>
-          <Button
-            className={styles.primaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.accept)}
-            onClick={onAccept}
-          />
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.decline)}
-            onClick={onDecline}
-          />
-        </div>
+        <MithrilDecisionView
+          snapshots={snapshots}
+          selectedDigest={selectedDigest}
+          selectedSnapshot={selectedSnapshot}
+          isFetchingSnapshots={isFetchingSnapshots}
+          onSelectSnapshot={onSelectSnapshot}
+          onAccept={onAccept}
+          onDecline={onDecline}
+        />
       </div>
     );
   }
@@ -199,118 +78,46 @@ class MithrilBootstrap extends Component<Props> {
   renderProgress() {
     const { intl } = this.context;
     const {
+      status,
       progress,
       currentStep,
-      filesDownloaded,
-      filesTotal,
       bytesDownloaded,
+      snapshotSize,
       throughputBps,
       elapsedSeconds,
       remainingSeconds,
       onCancel,
     } = this.props;
-    const normalizedProgress = Math.min(Math.max(progress, 0), 100);
-    const progressLabel = normalizedProgress.toFixed(1);
-    const elapsedLabel = this.formatDuration(elapsedSeconds);
-    const remainingLabel = this.formatDuration(remainingSeconds);
-    const progressMeta = this.formatProgressMeta(elapsedLabel, remainingLabel);
-    void filesDownloaded;
-    void filesTotal;
-    void bytesDownloaded;
-    void throughputBps;
     return (
       <div className={styles.card}>
         <div className={styles.header}>
           <h1>{intl.formatMessage(messages.title)}</h1>
           <p>{currentStep || intl.formatMessage(messages.progressLabel)}</p>
         </div>
-        <div className={styles.progress}>
-          <ProgressBarLarge
-            progress={normalizedProgress}
-            leftLabel={intl.formatMessage(messages.progressLabel)}
-            rightLabel1={`${progressLabel}%`}
-            isDarkMode
-          />
-          {progressMeta && (
-            <div className={styles.progressMeta}>{progressMeta}</div>
-          )}
-        </div>
-        <div className={styles.actions}>
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.cancel)}
-            onClick={onCancel}
-          />
-        </div>
+        <MithrilProgressView
+          status={status}
+          progress={progress}
+          bytesDownloaded={bytesDownloaded}
+          snapshotSize={snapshotSize}
+          throughputBps={throughputBps}
+          elapsedSeconds={elapsedSeconds}
+          remainingSeconds={remainingSeconds}
+          onCancel={onCancel}
+        />
       </div>
     );
   }
 
-  formatDuration(value?: number) {
-    if (value == null || Number.isNaN(value)) return null;
-    const totalSeconds = Math.max(0, Math.floor(value));
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    if (hours > 0) {
-      return `${hours}:${String(minutes).padStart(2, '0')}:${String(
-        seconds
-      ).padStart(2, '0')}`;
-    }
-    return `${minutes}:${String(seconds).padStart(2, '0')}`;
-  }
-
-  formatProgressMeta(
-    elapsedLabel: string | null,
-    remainingLabel: string | null
-  ) {
-    const { intl } = this.context;
-    if (elapsedLabel && remainingLabel) {
-      return intl.formatMessage(messages.progressTiming, {
-        elapsed: elapsedLabel,
-        remaining: remainingLabel,
-      });
-    }
-    if (elapsedLabel) {
-      return intl.formatMessage(messages.progressElapsed, {
-        elapsed: elapsedLabel,
-      });
-    }
-    if (remainingLabel) {
-      return intl.formatMessage(messages.progressRemaining, {
-        remaining: remainingLabel,
-      });
-    }
-    return null;
-  }
-
   renderError() {
-    const { intl } = this.context;
-    const { error, onWipeRetry, onDecline } = this.props;
+    const { error, onOpenExternalLink, onWipeRetry, onDecline } = this.props;
     return (
       <div className={styles.card}>
-        <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.errorTitle)}</h1>
-          <p>{error?.message}</p>
-          <div className={styles.errorHint}>
-            {intl.formatMessage(messages.startFailureHint)}
-          </div>
-        </div>
-        <div className={styles.actions}>
-          <Button
-            className={styles.primaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.wipeAndRetry)}
-            onClick={onWipeRetry}
-          />
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.decline)}
-            onClick={onDecline}
-          />
-        </div>
+        <MithrilErrorView
+          error={error}
+          onOpenExternalLink={onOpenExternalLink}
+          onWipeRetry={onWipeRetry}
+          onDecline={onDecline}
+        />
       </div>
     );
   }
@@ -322,6 +129,8 @@ class MithrilBootstrap extends Component<Props> {
     const isWorking =
       status === 'preparing' ||
       status === 'downloading' ||
+      status === 'installing' ||
+      status === 'finalizing' ||
       status === 'verifying' ||
       status === 'converting';
     const isError = status === 'failed';

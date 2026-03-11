@@ -273,9 +273,10 @@ export const handleDiskSpace = (
   };
 
   const handleCheckDiskSpace = async (
-    hadNotEnoughSpaceLeft: boolean,
+    hadNotEnoughSpaceLeft?: boolean,
     forceDiskSpaceRequired?: number
   ): Promise<CheckDiskSpaceResponse> => {
+    const hadNotEnoughSpaceFlag = hadNotEnoughSpaceLeft ?? false;
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
     const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
     const response = await getDiskCheckReport(diskSpacePath);
@@ -333,7 +334,7 @@ export const handleDiskSpace = (
       response.diskSpaceRequired = prettysize(diskSpaceRequired);
       response.diskSpaceMissing = prettysize(diskSpaceMissing);
       response.diskSpaceRecommended = prettysize(diskSpaceRecommended);
-      response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceLeft;
+      response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceFlag;
     }
 
     const NO_SPACE_AND_CARDANO_NODE_CAN_BE_STOPPED =
@@ -346,7 +347,7 @@ export const handleDiskSpace = (
       !isNotEnoughDiskSpace &&
       cardanoNode.state !== CardanoNodeStates.STOPPED &&
       cardanoNode.state !== CardanoNodeStates.STOPPING &&
-      hadNotEnoughSpaceLeft;
+      hadNotEnoughSpaceFlag;
 
     try {
       switch (true) {

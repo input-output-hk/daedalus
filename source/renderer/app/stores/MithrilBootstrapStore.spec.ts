@@ -72,7 +72,7 @@ describe('MithrilBootstrapStore', () => {
     expect(store.throughputBps).toBe(300);
   });
 
-  it('clears transient progress metadata when the status update explicitly resets those fields', async () => {
+  it('clears transient progress metadata when download transitions into installing', async () => {
     const store = setupStore();
 
     await store._updateStatus({
@@ -91,9 +91,9 @@ describe('MithrilBootstrapStore', () => {
     });
 
     await store._updateStatus({
-      status: 'preparing',
-      progress: 5,
-      currentStep: undefined,
+      status: 'installing',
+      progress: 92.5,
+      currentStep: 'Installing Mithril snapshot',
       filesDownloaded: undefined,
       filesTotal: undefined,
       elapsedSeconds: undefined,
@@ -101,7 +101,7 @@ describe('MithrilBootstrapStore', () => {
       error: null,
     });
 
-    expect(store.currentStep).toBeUndefined();
+    expect(store.currentStep).toBe('Installing Mithril snapshot');
     expect(store.filesDownloaded).toBeUndefined();
     expect(store.filesTotal).toBeUndefined();
     expect(store.elapsedSeconds).toBeUndefined();

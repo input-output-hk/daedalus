@@ -52,6 +52,8 @@ class LoadingPage extends Component<InjectedProps> {
     const activeStatuses = [
       'preparing',
       'downloading',
+      'installing',
+      'finalizing',
       'verifying',
       'converting',
       'failed',

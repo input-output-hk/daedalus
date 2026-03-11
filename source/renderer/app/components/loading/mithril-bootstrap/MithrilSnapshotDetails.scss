@@ -1,0 +1,53 @@
+.details {
+  background: rgba(10, 18, 28, 0.6);
+  border: 1px solid rgba(46, 64, 82, 0.6);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+}
+
+.detailsHeader {
+  color: rgba(225, 233, 242, 0.9);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.detailsGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.detailRow {
+  align-items: start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 140px 1fr;
+}
+
+.detailLabel {
+  color: rgba(158, 173, 189, 0.85);
+  font-size: 13px;
+}
+
+.detailValue {
+  color: rgba(236, 241, 247, 0.95);
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.detailValueDigest {
+  font-family: var(--font-mono);
+}
+
+.detailsFallback {
+  color: rgba(158, 173, 189, 0.8);
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .detailRow {
+    grid-template-columns: 1fr;
+  }
+}

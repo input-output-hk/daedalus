@@ -42,7 +42,8 @@
 .icon {
   font-size: 24px;
 
-  svg {
+  > svg {
+    display: block;
     fill: currentColor;
     height: 1em;
     width: 1em;
@@ -57,7 +58,8 @@
   color: rgba(233, 237, 242, 0.92);
 
   :global {
-    animation: loading-spin 1.2s linear infinite;
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
   }
 }
 

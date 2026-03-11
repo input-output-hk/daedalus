@@ -114,6 +114,11 @@ export default defineMessages({
     description:
       'Label for the downloading step in the Mithril step indicator.',
   },
+  stepInstalling: {
+    id: 'loading.mithrilBootstrap.step.installing',
+    defaultMessage: '!!!Installing',
+    description: 'Label for the installing step in the Mithril step indicator.',
+  },
   stepVerifying: {
     id: 'loading.mithrilBootstrap.step.verifying',
     defaultMessage: '!!!Verifying',
@@ -133,6 +138,25 @@ export default defineMessages({
     id: 'loading.mithrilBootstrap.download.rateLabel',
     defaultMessage: '!!!Transfer rate',
     description: 'Label for transfer speed during Mithril download.',
+  },
+  progressStageLabel: {
+    id: 'loading.mithrilBootstrap.progress.stageLabel',
+    defaultMessage: '!!!Current step',
+    description: 'Label for non-download progress stage details.',
+  },
+  progressInstallingDetail: {
+    id: 'loading.mithrilBootstrap.progress.installingDetail',
+    defaultMessage:
+      '!!!Download complete. Installing the restored snapshot into chain storage.',
+    description:
+      'Detail copy shown while the restored Mithril snapshot is being installed locally.',
+  },
+  progressFinalizingDetail: {
+    id: 'loading.mithrilBootstrap.progress.finalizingDetail',
+    defaultMessage:
+      '!!!Wrapping up Mithril bootstrap before the node starts again.',
+    description:
+      'Detail copy shown while Mithril bootstrap performs final local cleanup.',
   },
   errorDownloadTitle: {
     id: 'loading.mithrilBootstrap.error.download.title',

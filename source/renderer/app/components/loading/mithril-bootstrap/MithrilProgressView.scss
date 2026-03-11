@@ -1,0 +1,74 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepIndicator {
+  margin-bottom: 24px;
+}
+
+.progressBar {
+  margin-bottom: 16px;
+}
+
+.metadataGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 12px;
+}
+
+.metadataItem {
+  background: rgba(10, 18, 28, 0.6);
+  border: 1px solid rgba(46, 64, 82, 0.6);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.metadataLabel {
+  color: rgba(172, 182, 195, 0.9);
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.metadataValue {
+  color: rgba(236, 241, 247, 0.95);
+  font-family: var(--font-medium);
+  font-size: 14px;
+}
+
+.timingMeta {
+  color: rgba(168, 184, 201, 0.92);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid rgba(92, 110, 128, 0.6);
+  color: rgba(225, 233, 242, 0.92);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  padding: 12px 24px;
+
+  &:hover {
+    border-color: rgba(129, 147, 166, 0.9);
+    color: rgba(255, 255, 255, 0.98);
+  }
+}
+
+@media (max-width: 720px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

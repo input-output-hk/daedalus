@@ -1,33 +1,47 @@
 # Mithril bootstrap UX notes
 
 ## Sources
-- `source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx`
-- `source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts`
-- `source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx`
-- `source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.tsx`
+- `source/renderer/app/components/loading/mithril-bootstrap/`
+- `source/renderer/app/containers/loading/MithrilBootstrapPage.tsx`
 - `source/renderer/app/components/loading/syncing-connecting/SyncingProgress/SyncingProgress.tsx`
-- `.agent/plans/mithril/research/mithril-bootstrap-client-notes.md`
+- `source/renderer/app/components/widgets/collapsible-section/CollapsibleSection.tsx`
 - `.agent/plans/mithril/mithril-snapshot-ux.md`
+- `.agent/plans/mithril/research/mithril-bootstrap-client-notes.md`
 
-## Notes
-- `SyncingProgress.tsx` is the structural model for Mithril progress sub-components: functional component, `contextTypes`, `intlShape`, `SVGInline`, CSS-module state classes.
+## Component boundaries
+- `MithrilDecisionView` owns the pre-bootstrap decision composition: title/description copy, selector, details card, and accept/decline actions.
+- `MithrilSnapshotSelector` owns the snapshot dropdown row and formats concrete snapshot options as truncated digest plus localized created timestamp and formatted size.
+- `MithrilSnapshotDetails` owns the metadata card and truncates the displayed digest while preserving the full digest in the hover title.
+- `MithrilErrorView` owns failed-state copy mapping, collapsible diagnostics, and log-path linking.
+- `MithrilProgressView` owns the mounted progress composition: step indicator, progress bar, explicit download/timing metadata, and cancel action.
+- Root `MithrilBootstrap` still owns overlay chrome and top-level view routing until `MithrilStorageLocationPicker` lands.
+
+## Data and state flow
+- `MithrilBootstrapStore` is the source of snapshot metadata, derived download metrics, staged error state, and chain-storage picker state.
+- `MithrilBootstrapPage` is the contract boundary: it normalizes the `latest` sentinel, resolves the selected snapshot, and forwards store/app actions into the extracted Mithril view components.
+- Optional Mithril status fields should be assigned with property-presence checks (`'field' in update`) so explicit backend resets like `filesDownloaded: undefined` propagate correctly.
+- `MithrilBootstrapStore.loadChainStorageConfig()` should validate persisted custom paths during setup so broken storage targets surface immediately in renderer state.
+
+## UI behavior reminders
+- `snapshotFormatting.ts` is the shared source for digest truncation plus localized date and size formatting; keep selector/details formatting aligned there.
+- `formatTransferSize()` is the local wrapper for download-progress byte values because the shared `formattedBytesToSize()` helper renders `0` as `n/a`.
+- `SyncingProgress.tsx` is the structural model for Mithril progress sub-components: functional component, `contextTypes`, `intlShape`, `SVGInline`, and CSS-module state classes.
 - In the loading domain, new components should prefer `import classNames from 'classnames'`; `cx` exists in `SyncingProgress.tsx` but is the minority convention.
-- `loading-spin` is already available as a global keyframe from `themes/mixins/loading-spinner.scss`; Mithril stepper SCSS can reference it directly with `:global { animation: loading-spin ... }`.
-- `MithrilBootstrapStore.snapshot?.size` is the total size source for download metadata. `bytesDownloaded` and `throughputBps` are already derived in the store.
-- `MithrilBootstrapStore` should call `syncStatus()` during setup so the renderer can recover cached Mithril decision/progress state if the initial broadcast was missed.
-- Decision/progress UX depends on main IPC caching the current Mithril status so renderer status requests can recover after reload or onboarding transitions.
-- `handleDiskSpace` originally gated Mithril decision emission on `_startupTries === 0`; removing that gate is what allows the decision overlay to appear while the node is stopped.
-- The Mithril overlay was previously hidden while onboarding (`app.isSetupPage`) and when the node was stopped; decision/progress views need both gates removed so setup routes remain visible while Mithril UI is active.
-- If the user declines Mithril, emit an `idle` status before normal sync starts so the Mithril overlay clears reliably.
-- If Mithril UI strings log missing ids, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, and `translations/ja-JP.json`.
-- `MithrilBootstrapStore` should assign optional progress fields using property-presence checks (`'field' in update`) so explicit backend resets like `filesDownloaded: undefined` are not dropped.
-- `MithrilBootstrapStore` owns chain-storage UI state/actions (`customChainPath`, validation/loading state, config preload, set/reset/confirm flows) and should remain the single source of truth for the storage picker.
-- `MithrilBootstrapPage` is the contract boundary that forwards store state/actions into the Mithril UI components; decomposition tasks should keep new view components dumb and consume props from there.
-- `MithrilBootstrapStore.loadChainStorageConfig()` should validate configured custom paths during setup so invalid storage targets surface immediately in renderer state.
-- Renderer-store tests already cover chain-storage config loading, set/reset flows, and confirmation state transitions; extend those tests instead of introducing parallel fixtures.
-- `MithrilStepIndicator` is currently implemented but not mounted anywhere. User-visible stepper/metadata changes do not land until `MithrilProgressView` and the root `MithrilBootstrap` delegation work are integrated.
-- Keep PRD checklist items user-visible: component-level completion belongs in task notes, but progress-view completion should wait until the new progress view replaces `MithrilBootstrap.renderProgress()`.
-- `downloadBytesLabel` and `downloadRateLabel` message descriptors exist but are not yet consumed by the compact stepper row; they remain available for future progress-view copy or a11y labels.
+- `loading-spin` is already available as a global keyframe from `themes/mixins/loading-spinner.scss`; Mithril loading components can reference it directly with `:global { animation: loading-spin ... }`.
+- The current 90% UX gap comes from backend phase mapping, not missing renderer math: `MithrilBootstrapService` maps Mithril CLI download progress into 10-90%, then `_installSnapshot()` does the heavy local file move/copy after status has already left `downloading`.
+- Task 021a improved the plateau by adding explicit `installing`/`finalizing` phases and download-only transfer stats, but follow-up task-024a should collapse the visible UX to `preparing -> downloading -> finalizing`, with finalizing covering post-download install plus cleanup/handoff.
+- Follow-up task-024b should rename install-related post-download state/copy to `unpacking` where internal sub-phases still exist, while the visible UX stays on finalizing.
+- Follow-up task-024c should remove `currentStep` as display transport and let the renderer derive localized labels directly from `status`.
 - Snapshot metadata UX uses `total_db_size_uncompressed` as the size source and should show digest, size, created timestamp, and node version. Created timestamps should prefer local time formatting with raw-string fallback when parsing fails.
-- Manual QA for the full Mithril flow lives in `.agent/plans/mithril/bootstrap-cardano-node.md` under Testing Strategy.
+- `MithrilErrorView` maps backend `error.stage` values onto the extracted Mithril error-title/hint messages and keeps raw `error.message`/`error.code` in a collapsible diagnostic section.
+- Local `error.logPath` values should be converted to `file://` URLs with a renderer-safe helper before sending them through `stores.app.openExternalLink`; do not import Node `url.pathToFileURL()` in the browser bundle.
+- Mithril loading components should follow the same image-import depth as `SyncingProgress.tsx`; from `components/loading/mithril-bootstrap/`, shared loading icons live under `../../../assets/images/`.
+- If Mithril UI strings change, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, and `translations/ja-JP.json`.
 - `.scss.d.ts` files are regenerated during `yarn compile`; do not hand-edit them unless tooling is unavailable.
+
+## Current gaps
+- `MithrilStorageLocationPicker` is still pending, so the root component intentionally carries some props it does not use yet.
+- Chain-storage UI state already lives in `MithrilBootstrapStore`; keep it there when the storage picker component is extracted.
+
+## QA pointer
+- Manual QA for the full Mithril flow lives in `.agent/plans/mithril/bootstrap-cardano-node.md` under Testing Strategy.

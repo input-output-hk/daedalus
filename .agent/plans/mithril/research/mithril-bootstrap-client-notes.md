@@ -35,6 +35,7 @@
 - Mithril `cardano-db` subcommands differ by client version; detect whether `download` is under `cardano-db` or `cardano-db snapshot`.
 - Verification keys are fetched from mithril-infra URLs and must be converted from JSON byte arrays into hex strings for `mithril-client` env vars.
 - Snapshot download progress includes `files_downloaded/files_total` and `seconds_elapsed/seconds_left` fields.
+- Mithril manual Step 4 shows `cardano-db download` already checks disk info, fetches the certificate, validates the certificate chain, downloads/unpacks the DB, computes the Cardano DB message, and verifies the signature before returning success.
 - Shared IPC type now carries optional `filesDownloaded/filesTotal` on `MithrilBootstrapStatusUpdate` and optional `error.stage` (`download|verify|convert|node-start`) on `MithrilBootstrapError` for staged UX without breaking existing producers.
 - `parseMithrilProgressUpdate` now preserves raw `files_downloaded/files_total` as `filesDownloaded/filesTotal` while still deriving percentage progress when totals are valid.
 - In `MithrilBootstrapService`, download progress status updates now include `filesDownloaded/filesTotal`, and stage-aware errors are thrown/normalized so `startBootstrap` catch handling does not lose `error.stage` metadata.
@@ -52,6 +53,11 @@
 - `handleDiskSpace` now resolves the chain storage real path before disk-space checks, so free-space polling follows custom chain symlink targets instead of always using `stateDir`.
 - `mithrilBootstrapChannel` now syncs `MithrilBootstrapService` workDir from `ChainStorageManager.resolveMithrilWorkDir()` before start/cancel operations.
 - `MithrilBootstrapService._installSnapshot()` now compares resolved paths and preserves symlinked `{stateDir}/chain` targets by moving DB contents into the resolved target directory instead of deleting the symlink.
+- The current Daedalus progress mapping squeezes Mithril CLI download progress into 10-90%, then performs `_installSnapshot()` as the real post-download local move/copy into `chain`; that local install work is the likely cause of the visible 90% plateau, especially with custom chain storage targets.
+- Task 021a implementation now emits explicit `installing` and `finalizing` statuses after download completion and clears `filesDownloaded/filesTotal/elapsedSeconds/remainingSeconds` when network transfer ends so renderer progress metadata cannot linger into local post-download work.
+- Follow-up task-024a should collapse the visible Mithril flow to `preparing -> downloading -> finalizing`, with finalizing covering install plus cleanup/handoff and no separate verify step in the progress UX.
+- Follow-up task-024b should rename install-related post-download states/messages to `unpacking` where the service still distinguishes that work internally.
+- Follow-up task-024c should remove raw `currentStep` display transport and let renderer components derive localized step labels directly from `status`.
 - Added focused install-path tests in `source/main/mithril/MithrilBootstrapService.install.spec.ts` and expanded `ChainStorageManager.spec.ts` with path/workDir resolution coverage.
 - `ChainStorageManager.setDirectory()` now snapshots previous chain/config state and performs rollback on failure (migrating data back and restoring previous symlink/config) to keep `{stateDir}/chain` usable.
 - Review follow-up captured as low-priority task: `handleDiskSpace.ts` has legacy lint debt (`@ts-ignore`, broad `any`, and a shadowed `path` parameter) worth cleanup in a dedicated safe refactor pass.

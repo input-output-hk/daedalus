@@ -32,11 +32,16 @@ Improve the first-run experience by offering Mithril snapshot bootstrapping when
 
 ### Store Changes
 - `MithrilBootstrapStore` (new)
-  - `status`: `idle | decision | preparing | downloading | verifying | converting | completed | failed | cancelled`
-  - `progress`: `number` (0-100, step-weighted)
-  - `currentStep`: `string`
-  - `snapshot`: `{ digest, size, nodeVersion, createdAt } | null`
-  - `error`: `{ message, code, logPath } | null`
+   - `status`: `idle | decision | preparing | downloading | finalizing | completed | failed | cancelled`
+   - `progress`: `number` (0-100, step-weighted)
+   - `snapshot`: `{ digest, size, nodeVersion, createdAt } | null`
+   - `error`: `{ message, code, logPath } | null`
+
+Visible Mithril progress should use a 3-step model: `preparing`, `downloading`, `finalizing`.
+- Downloading includes Mithril transfer plus the CLI's internal verification work.
+- Finalizing covers post-download snapshot unpacking/DB movement into `chain` plus cleanup and handoff before node sync resumes.
+- If internal post-download sub-phases remain in the service or supporting copy, prefer `unpacking` over `installing` while the renderer still presents a single visible finalizing step.
+- `verify` remains useful as an error stage, but not as a user-visible progress step.
 
 ### IPC Changes
 - `MITHRIL_BOOTSTRAP_DECISION_CHANNEL`: Renderer -> Main (accept/decline).
@@ -52,7 +57,7 @@ Improve the first-run experience by offering Mithril snapshot bootstrapping when
 
 ### Parsing Requirements
 - Snapshot list: parse JSON items into `{ digest, createdAt, size, cardanoNodeVersion, network }`.
-- Download progress: parse `--json` progress events from stdout and map to step progress (download, unpack, verify).
+- Download progress: parse `--json` progress events from stdout and map them into the visible `downloading` phase; Mithril unpack/verify work should not become separate user-facing steps.
 - Conversion: parse converter stdout/stderr; treat non-zero exit as failure and surface the error.
 - Persist last Mithril logs in `stateDir/Logs/mithril-bootstrap.log` for support.
 - Incomplete restore marker: create `stateDir/Logs/mithril-bootstrap.lock` at bootstrap start. On success, delete the lock and cleanup downloaded snapshot artifacts. On failure, cleanup downloaded snapshot artifacts and wipe `stateDir/chain`. The lock is left behind on failure to ensure that a restart re-prompts for Mithril, but it MUST be cleared if the user subsequently chooses "Sync from genesis" or cancels the operation.
@@ -130,7 +135,7 @@ Use official Mithril network configuration values. Keep these in a single map ke
 2. Complete onboarding (Profile, Terms, Analytics) and confirm the Mithril decision prompt appears once onboarding ends.
 3. Choose **Use Mithril Fast Sync** and verify:
    - Snapshot list loads and selecting a snapshot updates metadata.
-   - Progress steps move through download → verify → convert.
+   - Progress steps move through preparing → downloading → finalizing.
    - `stateDir/Logs/mithril-bootstrap.log` updates during the process.
 4. On success:
    - `stateDir/Logs/mithril-bootstrap.lock` is removed.

@@ -132,6 +132,69 @@ describe('MithrilBootstrapService progress and error stages', () => {
     );
   });
 
+  it('transitions through installing and finalizing after download completes', async () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    const originalUpdateStatus = service._updateStatus.bind(service);
+    const statusSpy = jest
+      .spyOn(service, '_updateStatus')
+      .mockImplementation((update) => originalUpdateStatus(update));
+
+    jest.spyOn(service, '_createLockFile').mockResolvedValue(undefined);
+    jest.spyOn(service, 'showSnapshot').mockResolvedValue(null);
+    jest.spyOn(service, '_downloadSnapshot').mockImplementation(async () => {
+      service._updateStatus({
+        status: 'downloading',
+        progress: 90,
+        currentStep: 'Downloading Mithril snapshot',
+        filesDownloaded: 4,
+        filesTotal: 4,
+        elapsedSeconds: 12,
+        remainingSeconds: 0,
+      });
+    });
+    jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
+    jest.spyOn(service, '_installSnapshot').mockResolvedValue(undefined);
+    jest
+      .spyOn(service, '_cleanupSnapshotArtifacts')
+      .mockResolvedValue(undefined);
+    jest.spyOn(service, 'clearLockFile').mockResolvedValue(undefined);
+
+    await service.startBootstrap('latest');
+
+    expect(statusSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'installing',
+        progress: 92.5,
+        currentStep: 'Installing Mithril snapshot',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      })
+    );
+    expect(statusSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'finalizing',
+        progress: 97.5,
+        currentStep: 'Finalizing Mithril bootstrap',
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      })
+    );
+    expect(service.status).toEqual(
+      expect.objectContaining({
+        status: 'completed',
+        progress: 100,
+        filesDownloaded: undefined,
+        filesTotal: undefined,
+        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      })
+    );
+  });
+
   it('annotates conversion failures with convert stage', async () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');
     jest.spyOn(service, '_resolveDbDirectory').mockResolvedValue('/tmp/db');
