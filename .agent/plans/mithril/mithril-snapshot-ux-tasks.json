@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-10",
+    "updated": "2026-03-11",
     "version": "1.1.0",
     "totalTasks": 44,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
@@ -275,22 +275,22 @@
           "id": "task-015",
           "title": "Extract i18n messages file",
           "description": "Create MithrilBootstrap.messages.ts with existing 19 messages plus ~14 new messages for stage-specific error titles/hints, download metadata labels, step indicator labels, and storage location picker (directory label, buttons, space, validation errors). Follow i18n-messaging skill conventions.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": [],
-          "completedAt": null,
+          "completedAt": "2026-03-11",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
         },
         {
           "id": "task-016",
           "title": "Run i18n manage workflow",
           "description": "Run 'yarn i18n:manage' to sync/validate translations for en-US and ja-JP",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.5,
           "dependencies": ["task-015"],
-          "completedAt": null,
+          "completedAt": "2026-03-11",
           "targetPath": "translations/messages.json"
         }
       ]

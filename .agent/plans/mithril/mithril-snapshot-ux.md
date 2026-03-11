@@ -47,9 +47,9 @@
   - Disabled during active bootstrap
 
 ### i18n (follow i18n-messaging skill)
-- [ ] Extract all messages into `MithrilBootstrap.messages.ts`
-- [ ] Add ~14 new messages for errors, download metadata, steps, and storage picker
-- [ ] Run `yarn i18n:manage` to sync translations
+- [x] Extract all messages into `MithrilBootstrap.messages.ts`
+- [x] Add ~14 new messages for errors, download metadata, steps, and storage picker
+- [x] Run `yarn i18n:manage` to sync translations
 
 ### Theming (follow theme-management skill)
 - [ ] Migrate hardcoded RGBA values to `--theme-mithril-*` CSS variables
@@ -375,3 +375,5 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-09] Completed targeted `handleDiskSpace.ts` lint cleanup for this phase (removed `@ts-ignore` sites, fixed typed disk report fields, and standardized logger call signatures).
 - [2026-03-09] Added low-priority follow-up task to cover startup chain-storage IPC verification logging with dedicated unit tests.
 - [2026-03-09] Completed startup IPC verification test coverage in `chainStorageChannel.spec.ts` for invalid and exception verification branches.
+- [2026-03-11] Extracted Mithril bootstrap copy into a shared messages module and added staged-error, stepper, download-metadata, and storage-picker strings for the component split.
+- [2026-03-11] Ran `yarn i18n:manage` to sync Mithril bootstrap message descriptors into the extracted catalogs and locale files.

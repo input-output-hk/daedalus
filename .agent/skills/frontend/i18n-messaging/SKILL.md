@@ -197,6 +197,13 @@ notEnoughFunds: {
 4. **Verify**: Run `check:all` before committing
 5. **Commit**: Include updated `translations/messages.json` and locale files
 
+### Generated `!!!` Placeholders
+
+- `yarn i18n:manage` seeds missing locale entries from `defaultMessage`, so new keys in `en-US.json` and `ja-JP.json` can be written with the `!!!` prefix.
+- Treat `!!!` in locale files as a new or untranslated message marker, not polished release copy.
+- This workflow does not remove the prefix automatically. If locale polish is in scope, manually replace new `en-US.json` entries with approved English copy and add real Japanese translations in `ja-JP.json` before commit.
+- If the task only covers extraction or catalog sync, keeping generated `!!!` placeholders is acceptable, but document the follow-up translation work explicitly.
+
 ---
 
 ## Related Files

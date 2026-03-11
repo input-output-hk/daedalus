@@ -2353,12 +2353,12 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Fast sync with Mithril",
-        "description": "Headline for Mithril bootstrap prompt.",
+        "description": "Headline for the Mithril bootstrap prompt.",
         "id": "loading.mithrilBootstrap.title"
       },
       {
         "defaultMessage": "!!!Mithril can download a verified snapshot to sync your wallet faster. Choose a snapshot and continue, or sync from genesis.",
-        "description": "Description for Mithril bootstrap prompt.",
+        "description": "Description for the Mithril bootstrap prompt.",
         "id": "loading.mithrilBootstrap.description"
       },
       {
@@ -2373,17 +2373,17 @@
       },
       {
         "defaultMessage": "!!!Snapshot",
-        "description": "Label for snapshot selector.",
+        "description": "Label for the snapshot selector.",
         "id": "loading.mithrilBootstrap.selectLabel"
       },
       {
         "defaultMessage": "!!!Latest snapshot",
-        "description": "Label for latest snapshot option.",
+        "description": "Label for the latest snapshot option.",
         "id": "loading.mithrilBootstrap.snapshotLatest"
       },
       {
         "defaultMessage": "!!!Snapshot details",
-        "description": "Title for snapshot metadata section.",
+        "description": "Title for the snapshot metadata section.",
         "id": "loading.mithrilBootstrap.snapshotDetailsTitle"
       },
       {
@@ -2413,22 +2413,22 @@
       },
       {
         "defaultMessage": "!!!Bootstrap progress",
-        "description": "Label for Mithril progress bar.",
+        "description": "Label for the Mithril progress bar.",
         "id": "loading.mithrilBootstrap.progressLabel"
       },
       {
         "defaultMessage": "!!!Elapsed {elapsed} • Remaining {remaining}",
-        "description": "Label for Mithril elapsed/remaining time row.",
+        "description": "Label for the Mithril elapsed and remaining time row.",
         "id": "loading.mithrilBootstrap.progressTiming"
       },
       {
         "defaultMessage": "!!!Elapsed {elapsed}",
-        "description": "Label for Mithril elapsed time only row.",
+        "description": "Label for the Mithril elapsed time row.",
         "id": "loading.mithrilBootstrap.progressElapsed"
       },
       {
         "defaultMessage": "!!!Remaining {remaining}",
-        "description": "Label for Mithril remaining time only row.",
+        "description": "Label for the Mithril remaining time row.",
         "id": "loading.mithrilBootstrap.progressRemaining"
       },
       {
@@ -2443,16 +2443,136 @@
       },
       {
         "defaultMessage": "!!!Mithril bootstrap failed",
-        "description": "Title for Mithril error state.",
+        "description": "Generic title for the Mithril bootstrap error state.",
         "id": "loading.mithrilBootstrap.errorTitle"
       },
       {
         "defaultMessage": "!!!The node could not start with the restored chain data. Wipe the chain and try Mithril again, or sync from genesis.",
-        "description": "Hint for node start failure after Mithril bootstrap.",
+        "description": "Hint for node-start failures after Mithril bootstrap.",
         "id": "loading.mithrilBootstrap.startFailureHint"
+      },
+      {
+        "defaultMessage": "!!!Preparing",
+        "description": "Label for the preparing step in the Mithril step indicator.",
+        "id": "loading.mithrilBootstrap.step.preparing"
+      },
+      {
+        "defaultMessage": "!!!Downloading",
+        "description": "Label for the downloading step in the Mithril step indicator.",
+        "id": "loading.mithrilBootstrap.step.downloading"
+      },
+      {
+        "defaultMessage": "!!!Verifying",
+        "description": "Label for the verifying step in the Mithril step indicator.",
+        "id": "loading.mithrilBootstrap.step.verifying"
+      },
+      {
+        "defaultMessage": "!!!Finalizing",
+        "description": "Label for the finalizing step in the Mithril step indicator.",
+        "id": "loading.mithrilBootstrap.step.finalizing"
+      },
+      {
+        "defaultMessage": "!!!Downloaded",
+        "description": "Label for bytes transferred during Mithril download.",
+        "id": "loading.mithrilBootstrap.download.bytesLabel"
+      },
+      {
+        "defaultMessage": "!!!Transfer rate",
+        "description": "Label for transfer speed during Mithril download.",
+        "id": "loading.mithrilBootstrap.download.rateLabel"
+      },
+      {
+        "defaultMessage": "!!!Snapshot download failed",
+        "description": "Title for Mithril download-stage failures.",
+        "id": "loading.mithrilBootstrap.error.download.title"
+      },
+      {
+        "defaultMessage": "!!!Check your network connection and try the download again.",
+        "description": "Hint shown for Mithril download-stage failures.",
+        "id": "loading.mithrilBootstrap.error.download.hint"
+      },
+      {
+        "defaultMessage": "!!!Snapshot verification failed",
+        "description": "Title for Mithril verification-stage failures.",
+        "id": "loading.mithrilBootstrap.error.verify.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not verify the snapshot integrity. Try another snapshot or sync from genesis.",
+        "description": "Hint shown for Mithril verification-stage failures.",
+        "id": "loading.mithrilBootstrap.error.verify.hint"
+      },
+      {
+        "defaultMessage": "!!!Ledger conversion failed",
+        "description": "Title for Mithril conversion-stage failures.",
+        "id": "loading.mithrilBootstrap.error.convert.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not prepare the downloaded snapshot for use. Try again or sync from genesis.",
+        "description": "Hint shown for Mithril conversion-stage failures.",
+        "id": "loading.mithrilBootstrap.error.convert.hint"
+      },
+      {
+        "defaultMessage": "!!!Node failed to start",
+        "description": "Title for node-start failures after Mithril bootstrap.",
+        "id": "loading.mithrilBootstrap.error.nodeStart.title"
+      },
+      {
+        "defaultMessage": "!!!Chain storage location",
+        "description": "Label for the selected chain storage directory.",
+        "id": "loading.mithrilBootstrap.storage.directoryLabel"
+      },
+      {
+        "defaultMessage": "!!!Choose directory",
+        "description": "Button label to open the chain storage directory picker.",
+        "id": "loading.mithrilBootstrap.storage.chooseDirectory"
+      },
+      {
+        "defaultMessage": "!!!Reset to default",
+        "description": "Button label to reset chain storage back to the default path.",
+        "id": "loading.mithrilBootstrap.storage.resetToDefault"
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Button label to continue after confirming chain storage.",
+        "id": "loading.mithrilBootstrap.storage.continue"
+      },
+      {
+        "defaultMessage": "!!!Available space",
+        "description": "Label for available disk space in the storage picker.",
+        "id": "loading.mithrilBootstrap.storage.availableSpaceLabel"
+      },
+      {
+        "defaultMessage": "!!!Default location",
+        "description": "Fallback label for the default chain storage location.",
+        "id": "loading.mithrilBootstrap.storage.defaultLocationLabel"
+      },
+      {
+        "defaultMessage": "!!!The selected directory does not exist.",
+        "description": "Validation message when the selected chain storage directory cannot be found.",
+        "id": "loading.mithrilBootstrap.storage.validation.pathNotFound"
+      },
+      {
+        "defaultMessage": "!!!The selected path must be a writable directory.",
+        "description": "Validation message when the selected chain storage path cannot be written to.",
+        "id": "loading.mithrilBootstrap.storage.validation.notWritable"
+      },
+      {
+        "defaultMessage": "!!!Choose a directory outside the Daedalus state directory.",
+        "description": "Validation message when the selected chain storage path is inside the state directory.",
+        "id": "loading.mithrilBootstrap.storage.validation.insideStateDir"
+      },
+      {
+        "defaultMessage": "!!!The selected directory does not have enough free space for Mithril fast sync.",
+        "description": "Validation message when the selected chain storage path does not have enough free space.",
+        "id": "loading.mithrilBootstrap.storage.validation.insufficientSpace"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not validate the selected directory.",
+        "description": "Fallback validation message when chain storage validation fails for an unknown reason.",
+        "id": "loading.mithrilBootstrap.storage.validation.unknown"
       }
     ],
-    "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
+    "path": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
   },
   {
     "descriptors": [

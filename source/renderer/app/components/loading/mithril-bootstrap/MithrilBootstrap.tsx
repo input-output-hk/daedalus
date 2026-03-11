@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Select } from 'react-polymorph/lib/components/Select';
@@ -13,112 +13,8 @@ import type {
   MithrilBootstrapError,
   ChainStorageValidation,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import messages from './MithrilBootstrap.messages';
 import styles from './MithrilBootstrap.scss';
-
-const messages = defineMessages({
-  title: {
-    id: 'loading.mithrilBootstrap.title',
-    defaultMessage: '!!!Fast sync with Mithril',
-    description: 'Headline for Mithril bootstrap prompt.',
-  },
-  description: {
-    id: 'loading.mithrilBootstrap.description',
-    defaultMessage:
-      '!!!Mithril can download a verified snapshot to sync your wallet faster. Choose a snapshot and continue, or sync from genesis.',
-    description: 'Description for Mithril bootstrap prompt.',
-  },
-  accept: {
-    id: 'loading.mithrilBootstrap.accept',
-    defaultMessage: '!!!Use Mithril fast sync',
-    description: 'Button label to accept Mithril bootstrap.',
-  },
-  decline: {
-    id: 'loading.mithrilBootstrap.decline',
-    defaultMessage: '!!!Sync from genesis',
-    description: 'Button label to decline Mithril bootstrap.',
-  },
-  selectLabel: {
-    id: 'loading.mithrilBootstrap.selectLabel',
-    defaultMessage: '!!!Snapshot',
-    description: 'Label for snapshot selector.',
-  },
-  snapshotLatest: {
-    id: 'loading.mithrilBootstrap.snapshotLatest',
-    defaultMessage: '!!!Latest snapshot',
-    description: 'Label for latest snapshot option.',
-  },
-  snapshotDetailsTitle: {
-    id: 'loading.mithrilBootstrap.snapshotDetailsTitle',
-    defaultMessage: '!!!Snapshot details',
-    description: 'Title for snapshot metadata section.',
-  },
-  snapshotDetailsUnavailable: {
-    id: 'loading.mithrilBootstrap.snapshotDetailsUnavailable',
-    defaultMessage: '!!!Snapshot details unavailable',
-    description: 'Fallback text when snapshot metadata is missing.',
-  },
-  snapshotSizeLabel: {
-    id: 'loading.mithrilBootstrap.snapshotSizeLabel',
-    defaultMessage: '!!!Size',
-    description: 'Label for snapshot size metadata.',
-  },
-  snapshotCreatedLabel: {
-    id: 'loading.mithrilBootstrap.snapshotCreatedLabel',
-    defaultMessage: '!!!Created',
-    description: 'Label for snapshot creation date metadata.',
-  },
-  snapshotNodeVersionLabel: {
-    id: 'loading.mithrilBootstrap.snapshotNodeVersionLabel',
-    defaultMessage: '!!!Node version',
-    description: 'Label for snapshot node version metadata.',
-  },
-  snapshotDigestLabel: {
-    id: 'loading.mithrilBootstrap.snapshotDigestLabel',
-    defaultMessage: '!!!Digest',
-    description: 'Label for snapshot digest metadata.',
-  },
-  progressLabel: {
-    id: 'loading.mithrilBootstrap.progressLabel',
-    defaultMessage: '!!!Bootstrap progress',
-    description: 'Label for Mithril progress bar.',
-  },
-  progressTiming: {
-    id: 'loading.mithrilBootstrap.progressTiming',
-    defaultMessage: '!!!Elapsed {elapsed} • Remaining {remaining}',
-    description: 'Label for Mithril elapsed/remaining time row.',
-  },
-  progressElapsed: {
-    id: 'loading.mithrilBootstrap.progressElapsed',
-    defaultMessage: '!!!Elapsed {elapsed}',
-    description: 'Label for Mithril elapsed time only row.',
-  },
-  progressRemaining: {
-    id: 'loading.mithrilBootstrap.progressRemaining',
-    defaultMessage: '!!!Remaining {remaining}',
-    description: 'Label for Mithril remaining time only row.',
-  },
-  cancel: {
-    id: 'loading.mithrilBootstrap.cancel',
-    defaultMessage: '!!!Cancel',
-    description: 'Button label to cancel Mithril bootstrap.',
-  },
-  wipeAndRetry: {
-    id: 'loading.mithrilBootstrap.wipeAndRetry',
-    defaultMessage: '!!!Wipe chain & retry',
-    description: 'Button label to wipe chain and retry Mithril bootstrap.',
-  },
-  errorTitle: {
-    id: 'loading.mithrilBootstrap.errorTitle',
-    defaultMessage: '!!!Mithril bootstrap failed',
-    description: 'Title for Mithril error state.',
-  },
-  startFailureHint: {
-    id: 'loading.mithrilBootstrap.startFailureHint',
-    defaultMessage:
-      '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril again, or sync from genesis.',
-    description: 'Hint for node start failure after Mithril bootstrap.',
-  },
-});
 
 type Props = {
   status: MithrilBootstrapStatus;

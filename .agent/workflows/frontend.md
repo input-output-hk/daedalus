@@ -339,7 +339,7 @@ yarn i18n:check     # Validate translations
 yarn i18n:manage    # Extract and validate
 ```
 
-For full i18n workflow details (message schema, naming conventions, locale management), see the [i18n-messaging skill](../skills/frontend/i18n-messaging/SKILL.md).
+For full i18n workflow details (message schema, naming conventions, locale management, and `!!!` placeholder handling after `yarn i18n:manage`), see the [i18n-messaging skill](../skills/frontend/i18n-messaging/SKILL.md).
 
 ### Supported Locales
 
