@@ -36,8 +36,18 @@ jest.mock('./logging', () => ({
 }));
 
 describe('ChainStorageManager', () => {
+  const createConfig = (customPath: string | null, setAt?: string) => ({
+    customPath,
+    defaultPath: '/tmp/state/chain',
+    availableSpaceBytes: 4096,
+    requiredSpaceBytes: 1024,
+    setAt,
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+    const checkDiskSpace = require('check-disk-space');
+    checkDiskSpace.mockResolvedValue({ free: 4096 });
   });
 
   it('setDirectory returns validation response when invalid', async () => {
@@ -72,27 +82,35 @@ describe('ChainStorageManager', () => {
     expect(result).toEqual({ isValid: true, path: null });
   });
 
-  it('setDirectory migrates data, creates symlink, and persists config', async () => {
+  it('setDirectory with explicit default path resets to default chain storage', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const resetSpy = jest
+      .spyOn(manager, 'resetToDefault')
+      .mockResolvedValue({ isValid: true, path: null });
+
+    const result = await manager.setDirectory('/tmp/state/chain');
+
+    expect(resetSpy).toHaveBeenCalled();
+    expect(result).toEqual({ isValid: true, path: null });
+  });
+
+  it('setDirectory creates a symlink and persists config without migrating data', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
       path: '/tmp/custom-chain',
       resolvedPath: '/mnt/external/daedalus-chain',
     });
-    jest
-      .spyOn(manager, '_resolveCurrentChainSource')
-      .mockResolvedValue('/tmp/state/chain');
-    const migrateSpy = jest
-      .spyOn(manager, 'migrateData')
-      .mockResolvedValue(undefined);
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'directory',
+      resolvedPath: '/tmp/state/chain',
+    });
+    (fs.readdir as jest.Mock).mockResolvedValue([]);
 
     const result = await manager.setDirectory('/tmp/custom-chain');
 
-    expect(migrateSpy).toHaveBeenCalledWith(
-      '/tmp/state/chain',
-      '/mnt/external/daedalus-chain'
-    );
     expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain');
+    expect(fs.ensureDir).toHaveBeenCalledWith('/mnt/external/daedalus-chain');
     expect(fs.symlink).toHaveBeenCalledWith(
       '/mnt/external/daedalus-chain',
       '/tmp/state/chain',
@@ -115,16 +133,17 @@ describe('ChainStorageManager', () => {
     );
   });
 
-  it('setDirectory skips migration when source already matches target', async () => {
+  it('setDirectory does not migrate when switching between custom locations', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
       path: '/tmp/custom-chain',
       resolvedPath: '/mnt/external/daedalus-chain',
     });
-    jest
-      .spyOn(manager, '_resolveCurrentChainSource')
-      .mockResolvedValue('/mnt/external/daedalus-chain');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/old-chain',
+    });
     const migrateSpy = jest
       .spyOn(manager, 'migrateData')
       .mockResolvedValue(undefined);
@@ -133,6 +152,31 @@ describe('ChainStorageManager', () => {
 
     expect(migrateSpy).not.toHaveBeenCalled();
     expect(fs.symlink).toHaveBeenCalled();
+  });
+
+  it('setDirectory rejects switching when default chain data already exists locally', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest.spyOn(manager, 'validate').mockResolvedValue({
+      isValid: true,
+      path: '/tmp/new-custom-chain',
+      resolvedPath: '/mnt/new-chain',
+    });
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'directory',
+      resolvedPath: '/tmp/state/chain',
+    });
+    (fs.readdir as jest.Mock).mockResolvedValue(['immutable']);
+
+    const result = await manager.setDirectory('/tmp/new-custom-chain');
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        path: '/tmp/new-custom-chain',
+        reason: 'unknown',
+      })
+    );
+    expect(fs.symlink).not.toHaveBeenCalled();
   });
 
   it('setDirectory triggers rollback when symlink creation fails', async () => {
@@ -146,10 +190,8 @@ describe('ChainStorageManager', () => {
       type: 'directory',
       resolvedPath: '/tmp/state/chain',
     });
-    jest
-      .spyOn(manager, '_resolveCurrentChainSource')
-      .mockResolvedValue('/tmp/state/chain');
-    jest.spyOn(manager, 'getConfig').mockResolvedValue({ customPath: null });
+    (fs.readdir as jest.Mock).mockResolvedValue([]);
+    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
     const rollbackSpy = jest
       .spyOn(manager, '_rollbackSetDirectory')
       .mockResolvedValue(undefined);
@@ -214,15 +256,13 @@ describe('ChainStorageManager', () => {
     expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain');
   });
 
-  it('resetToDefault migrates symlinked chain data back and removes config', async () => {
+  it('resetToDefault removes the symlink and config without migrating data back', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => true,
     });
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/external/chain'
-    );
+    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue('/tmp/state');
     const migrateSpy = jest
       .spyOn(manager, 'migrateData')
       .mockResolvedValue(undefined);
@@ -231,10 +271,7 @@ describe('ChainStorageManager', () => {
 
     expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain');
     expect(fs.ensureDir).toHaveBeenCalledWith('/tmp/state/chain');
-    expect(migrateSpy).toHaveBeenCalledWith(
-      '/mnt/external/chain',
-      '/tmp/state/chain'
-    );
+    expect(migrateSpy).not.toHaveBeenCalled();
     expect(fs.remove).toHaveBeenCalledWith(
       '/tmp/state/chain-storage-config.json'
     );
@@ -249,9 +286,9 @@ describe('ChainStorageManager', () => {
 
   it('verifySymlink returns invalid when symlink target does not match config', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest.spyOn(manager, 'getConfig').mockResolvedValue({
-      customPath: '/mnt/configured-chain',
-    });
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/configured-chain'));
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => true,
@@ -273,9 +310,9 @@ describe('ChainStorageManager', () => {
 
   it('verifySymlink returns valid when symlink target matches config', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest.spyOn(manager, 'getConfig').mockResolvedValue({
-      customPath: '/mnt/configured-chain',
-    });
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/configured-chain'));
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
     (fs.lstat as jest.Mock).mockResolvedValue({
       isSymbolicLink: () => true,
@@ -305,14 +342,14 @@ describe('ChainStorageManager', () => {
         type: 'symlink',
         resolvedPath: '/mnt/old-chain',
       },
-      previousConfig: {
-        customPath: '/mnt/old-chain',
-        setAt: '2026-03-09T00:00:00.000Z',
-      },
+      previousConfig: createConfig(
+        '/mnt/old-chain',
+        '2026-03-09T00:00:00.000Z'
+      ),
       targetPath: '/mnt/new-chain',
     });
 
-    expect(migrateSpy).toHaveBeenCalledWith('/mnt/new-chain', '/mnt/old-chain');
+    expect(migrateSpy).not.toHaveBeenCalled();
     expect(fs.symlink).toHaveBeenCalledWith(
       '/mnt/old-chain',
       '/tmp/state/chain',
@@ -326,6 +363,26 @@ describe('ChainStorageManager', () => {
       },
       { spaces: 2 }
     );
+  });
+
+  it('migrateData can preserve the source root directory', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isDirectory: () => true,
+    });
+    (fs.readdir as jest.Mock).mockResolvedValue(['db']);
+
+    await manager.migrateData('/mnt/source-chain', '/mnt/target-chain', {
+      preserveSourceRoot: true,
+    });
+
+    expect(fs.move).toHaveBeenCalledWith(
+      '/mnt/source-chain/db',
+      '/mnt/target-chain/db',
+      { overwrite: true }
+    );
+    expect(fs.remove).not.toHaveBeenCalledWith('/mnt/source-chain');
   });
 
   it('resolveChainStoragePath prefers resolved chain symlink target', async () => {
@@ -342,9 +399,9 @@ describe('ChainStorageManager', () => {
 
   it('resolveMithrilWorkDir resolves configured custom path', async () => {
     const manager = new ChainStorageManager('/tmp/state');
-    jest.spyOn(manager, 'getConfig').mockResolvedValue({
-      customPath: '/mnt/custom-chain',
-    });
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/custom-chain'));
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
       '/mnt/custom-chain'
     );
@@ -352,5 +409,62 @@ describe('ChainStorageManager', () => {
     const result = await manager.resolveMithrilWorkDir();
 
     expect(result).toBe('/mnt/custom-chain');
+  });
+
+  it('validate treats the default chain path as a valid default selection', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const checkDiskSpace = require('check-disk-space');
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue('/tmp/state');
+    checkDiskSpace.mockResolvedValue({ free: 4096 });
+
+    const result = await manager.validate('/tmp/state/chain');
+
+    expect(result).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+  });
+
+  it('validate succeeds when the state directory has not been created yet', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const checkDiskSpace = require('check-disk-space');
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
+      '/mnt/custom-chain'
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({
+      isDirectory: () => true,
+    });
+    (fs.access as jest.Mock).mockResolvedValue(undefined);
+    checkDiskSpace.mockResolvedValue({ free: 4096 });
+
+    const result = await manager.validate('/mnt/custom-chain');
+
+    expect(result).toEqual({
+      isValid: true,
+      path: '/mnt/custom-chain',
+      resolvedPath: '/mnt/custom-chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+  });
+
+  it('getConfig falls back to unavailable disk space when default metadata cannot be resolved', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const checkDiskSpace = require('check-disk-space');
+    checkDiskSpace.mockRejectedValue(new Error('disk unavailable'));
+
+    const result = await manager.getConfig();
+
+    expect(result.customPath).toBeNull();
+    expect(result.defaultPath).toBe('/tmp/state/chain');
+    expect(Number.isNaN(result.availableSpaceBytes)).toBe(true);
+    expect(result.requiredSpaceBytes).toBe(1024);
   });
 });

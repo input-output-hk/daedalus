@@ -1,0 +1,127 @@
+import React from 'react';
+import { IntlProvider } from 'react-intl';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
+import translations from '../../../i18n/locales/en-US.json';
+import MithrilBootstrap from './MithrilBootstrap';
+
+jest.mock('./BlockDataStorageLocationPicker', () => {
+  const React = require('react');
+
+  return function BlockDataStorageLocationPickerMock() {
+    return <h1>Choose blockchain data location</h1>;
+  };
+});
+
+jest.mock('./MithrilDecisionView', () => {
+  const React = require('react');
+
+  return function MithrilDecisionViewMock(props) {
+    return (
+      <div>
+        <button type="button" onClick={props.onReturnToStorageLocation}>
+          Back to directory location
+        </button>
+        <span>Decision view</span>
+      </div>
+    );
+  };
+});
+
+jest.mock('./MithrilProgressView', () => {
+  const React = require('react');
+
+  return function MithrilProgressViewMock() {
+    return <div>Progress view</div>;
+  };
+});
+
+jest.mock('./MithrilErrorView', () => {
+  const React = require('react');
+
+  return function MithrilErrorViewMock() {
+    return <div>Error view</div>;
+  };
+});
+
+describe('MithrilBootstrap', () => {
+  const snapshots: Array<MithrilSnapshotItem> = [
+    {
+      digest: '12345678abcdef9012345678abcdef90',
+      size: 2048,
+      createdAt: '2026-03-10T12:00:00.000Z',
+      network: 'mainnet',
+      cardanoNodeVersion: '10.0.0',
+    },
+  ];
+
+  const renderComponent = (overrides = {}) =>
+    render(
+      <IntlProvider locale="en-US" messages={translations}>
+        <MithrilBootstrap
+          status="decision"
+          progress={0}
+          customChainPath="/mnt/current-chain"
+          defaultChainPath="/tmp/state/chain"
+          defaultChainStorageValidation={{
+            isValid: true,
+            path: null,
+            resolvedPath: '/tmp/state/chain',
+          }}
+          chainStorageValidation={{
+            isValid: true,
+            path: '/mnt/current-chain',
+            resolvedPath: '/mnt/current-chain',
+          }}
+          storageLocationConfirmed
+          snapshots={snapshots}
+          selectedDigest="latest"
+          selectedSnapshot={snapshots[0]}
+          error={null}
+          isFetchingSnapshots={false}
+          onSelectSnapshot={jest.fn()}
+          onAccept={jest.fn()}
+          onDecline={jest.fn()}
+          onWipeRetry={jest.fn()}
+          onCancel={jest.fn()}
+          onConfirmStorageLocation={jest.fn()}
+          onReturnToStorageLocation={jest.fn()}
+          {...overrides}
+        />
+      </IntlProvider>
+    );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(cleanup);
+
+  it('returns to the storage picker from the decision view', () => {
+    const onReturnToStorageLocation = jest.fn();
+
+    renderComponent({ onReturnToStorageLocation });
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /back to directory location/i,
+      })
+    );
+
+    expect(onReturnToStorageLocation).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the storage picker when storage location is not confirmed', () => {
+    renderComponent({ storageLocationConfirmed: false });
+
+    expect(
+      screen.getByRole('heading', {
+        name: /choose blockchain data location/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /use mithril fast sync/i })
+    ).not.toBeInTheDocument();
+  });
+});

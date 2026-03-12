@@ -30,6 +30,9 @@ const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   error: null,
 };
 
+const isDecisionCycleStatus = (status: MithrilBootstrapStatus) =>
+  status === 'decision' || status === 'idle' || status === 'cancelled';
+
 export default class MithrilBootstrapStore extends Store {
   @observable status: MithrilBootstrapStatus = DEFAULT_STATUS.status;
   @observable progress = DEFAULT_STATUS.progress;
@@ -48,6 +51,11 @@ export default class MithrilBootstrapStore extends Store {
   @observable snapshots: Array<MithrilSnapshotItem> = [];
   @observable isFetchingSnapshots = false;
   @observable customChainPath: string | null = null;
+  @observable defaultChainPath: string | null = null;
+  @observable defaultChainStorageValidation: ChainStorageValidation = {
+    isValid: true,
+    path: null,
+  };
   @observable chainStorageValidation: ChainStorageValidation = {
     isValid: true,
     path: null,
@@ -116,7 +124,14 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   _updateStatus = (update: MithrilBootstrapStatusUpdate): Promise<void> => {
+    const previousStatus = this.status;
     this.status = update.status;
+    if (
+      isDecisionCycleStatus(this.status) &&
+      !isDecisionCycleStatus(previousStatus)
+    ) {
+      this.storageLocationConfirmed = false;
+    }
     if (typeof update.progress === 'number') {
       this.progress = update.progress;
     }
@@ -197,19 +212,26 @@ export default class MithrilBootstrapStore extends Store {
         // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
         await getChainStorageDirectoryChannel.request();
 
+      const defaultValidation: ChainStorageValidation = {
+        isValid: true,
+        path: null,
+        resolvedPath: config?.defaultPath,
+        availableSpaceBytes: config?.availableSpaceBytes,
+        requiredSpaceBytes: config?.requiredSpaceBytes,
+      };
+
       const validation =
         config?.customPath != null
           ? // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
             await validateChainStorageDirectoryChannel.request({
               path: config.customPath,
             })
-          : {
-              isValid: true,
-              path: null,
-            };
+          : defaultValidation;
 
       runInAction('load chain storage config', () => {
         this.customChainPath = config?.customPath ?? null;
+        this.defaultChainPath = config?.defaultPath ?? null;
+        this.defaultChainStorageValidation = defaultValidation;
         this.chainStorageValidation = validation;
       });
     } catch (error) {
@@ -239,6 +261,10 @@ export default class MithrilBootstrapStore extends Store {
         this.chainStorageValidation = validation;
         if (validation.isValid) {
           this.customChainPath = validation.path ?? null;
+          if (validation.path == null && validation.resolvedPath) {
+            this.defaultChainPath = validation.resolvedPath;
+            this.defaultChainStorageValidation = validation;
+          }
         }
       });
 
@@ -256,7 +282,37 @@ export default class MithrilBootstrapStore extends Store {
   };
 
   @action
+  validateChainStorageDirectory = async (path: string) => {
+    try {
+      return (
+        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
+        await validateChainStorageDirectoryChannel.request({ path })
+      );
+    } catch (error) {
+      logger.warn(
+        'MithrilBootstrapStore: failed to validate chain storage directory',
+        {
+          error,
+          path,
+        }
+      );
+
+      return {
+        isValid: false,
+        path,
+        reason: 'unknown' as const,
+        message: 'Unable to validate selected directory.',
+      };
+    }
+  };
+
+  @action
   confirmStorageLocation = () => {
     this.storageLocationConfirmed = true;
+  };
+
+  @action
+  clearStorageLocationConfirmation = () => {
+    this.storageLocationConfirmed = false;
   };
 }

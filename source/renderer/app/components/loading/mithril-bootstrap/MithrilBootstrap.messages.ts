@@ -12,6 +12,32 @@ export default defineMessages({
       '!!!Mithril can download a verified snapshot to sync your wallet faster. Choose a snapshot and continue, or sync from genesis.',
     description: 'Description for the Mithril bootstrap prompt.',
   },
+  storageTitle: {
+    id: 'loading.mithrilBootstrap.storage.title',
+    defaultMessage: '!!!Choose blockchain data location',
+    description: 'Headline for the preliminary chain storage picker screen.',
+  },
+  storageDescription: {
+    id: 'loading.mithrilBootstrap.storage.description',
+    defaultMessage:
+      '!!!Choose where Daedalus should keep blockchain data before you continue.',
+    description:
+      'Description shown on the preliminary chain storage picker screen.',
+  },
+  storageDescriptionWithSnapshotEstimate: {
+    id: 'loading.mithrilBootstrap.storage.descriptionWithSnapshotEstimate',
+    defaultMessage:
+      '!!!Choose where Daedalus should keep blockchain data before you continue. The latest available snapshot is about {requiredSpace}, so make sure this location has plenty of free space.',
+    description:
+      'Description shown on the preliminary chain storage picker screen when the latest snapshot size is available.',
+  },
+  storageDescriptionLargeRequirement: {
+    id: 'loading.mithrilBootstrap.storage.descriptionLargeRequirement',
+    defaultMessage:
+      '!!!Choose where Daedalus should keep blockchain data before you continue. Blockchain data can require a large amount of free space, so choose a location with plenty of capacity.',
+    description:
+      'Description shown on the preliminary chain storage picker screen when an estimated snapshot size is not available yet.',
+  },
   accept: {
     id: 'loading.mithrilBootstrap.accept',
     defaultMessage: '!!!Use Mithril fast sync',
@@ -198,7 +224,7 @@ export default defineMessages({
   },
   storageDirectoryLabel: {
     id: 'loading.mithrilBootstrap.storage.directoryLabel',
-    defaultMessage: '!!!Chain storage location',
+    defaultMessage: '!!!Blockchain data location',
     description: 'Label for the selected chain storage directory.',
   },
   storageChooseDirectory: {
@@ -217,10 +243,28 @@ export default defineMessages({
     defaultMessage: '!!!Continue',
     description: 'Button label to continue after confirming chain storage.',
   },
+  storageChangeLocation: {
+    id: 'loading.mithrilBootstrap.storage.changeLocation',
+    defaultMessage: '!!!Back to directory location',
+    description:
+      'Button label to return from the snapshot decision screen to the blockchain data location picker.',
+  },
+  storageUpdating: {
+    id: 'loading.mithrilBootstrap.storage.updating',
+    defaultMessage: '!!!Updating blockchain data location...',
+    description:
+      'Status message shown while Daedalus is applying a storage location change.',
+  },
   storageAvailableSpaceLabel: {
     id: 'loading.mithrilBootstrap.storage.availableSpaceLabel',
     defaultMessage: '!!!Available space',
     description: 'Label for available disk space in the storage picker.',
+  },
+  storageAvailableSpaceUnknown: {
+    id: 'loading.mithrilBootstrap.storage.availableSpaceUnknown',
+    defaultMessage: '!!!Unavailable',
+    description:
+      'Fallback value when available disk space is unavailable in the storage picker.',
   },
   storageDefaultLocationLabel: {
     id: 'loading.mithrilBootstrap.storage.defaultLocationLabel',
@@ -249,7 +293,7 @@ export default defineMessages({
   storageValidationInsufficientSpace: {
     id: 'loading.mithrilBootstrap.storage.validation.insufficientSpace',
     defaultMessage:
-      '!!!The selected directory does not have enough free space for Mithril fast sync.',
+      '!!!The selected directory does not have enough free space for blockchain data.',
     description:
       'Validation message when the selected chain storage path does not have enough free space.',
   },

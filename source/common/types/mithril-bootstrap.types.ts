@@ -48,6 +48,9 @@ export type MithrilBootstrapStatusUpdate = {
 
 export type ChainStorageConfig = {
   customPath: string | null;
+  defaultPath: string;
+  availableSpaceBytes: number;
+  requiredSpaceBytes: number;
   setAt?: string;
 };
 

@@ -114,6 +114,9 @@ describe('MithrilBootstrapStore', () => {
     const store = setupStore();
     mockGetChainStorageDirectoryRequest.mockResolvedValue({
       customPath: '/mnt/external/daedalus-chain',
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 123456,
+      requiredSpaceBytes: 654321,
       setAt: '2026-03-09T00:00:00.000Z',
     });
     mockValidateChainStorageDirectoryRequest.mockResolvedValue({
@@ -125,6 +128,14 @@ describe('MithrilBootstrapStore', () => {
     await store.loadChainStorageConfig();
 
     expect(store.customChainPath).toBe('/mnt/external/daedalus-chain');
+    expect(store.defaultChainPath).toBe('/tmp/state/chain');
+    expect(store.defaultChainStorageValidation).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 123456,
+      requiredSpaceBytes: 654321,
+    });
     expect(store.chainStorageValidation).toEqual({
       isValid: true,
       path: '/mnt/external/daedalus-chain',
@@ -137,6 +148,7 @@ describe('MithrilBootstrapStore', () => {
     const store = setupStore();
     mockGetChainStorageDirectoryRequest.mockResolvedValue({
       customPath: '/mnt/missing-chain',
+      defaultPath: '/tmp/state/chain',
     });
     mockValidateChainStorageDirectoryRequest.mockResolvedValue({
       isValid: false,
@@ -150,11 +162,42 @@ describe('MithrilBootstrapStore', () => {
     expect(mockValidateChainStorageDirectoryRequest).toHaveBeenCalledWith({
       path: '/mnt/missing-chain',
     });
+    expect(store.defaultChainPath).toBe('/tmp/state/chain');
     expect(store.chainStorageValidation).toEqual({
       isValid: false,
       path: '/mnt/missing-chain',
       reason: 'path-not-found',
       message: 'Configured chain storage target is unavailable.',
+    });
+  });
+
+  it('loads default chain storage metadata when no custom path is configured', async () => {
+    const store = setupStore();
+    mockGetChainStorageDirectoryRequest.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 987654321,
+      requiredSpaceBytes: 654321,
+    });
+
+    await store.loadChainStorageConfig();
+
+    expect(mockValidateChainStorageDirectoryRequest).not.toHaveBeenCalled();
+    expect(store.customChainPath).toBeNull();
+    expect(store.defaultChainPath).toBe('/tmp/state/chain');
+    expect(store.defaultChainStorageValidation).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 987654321,
+      requiredSpaceBytes: 654321,
+    });
+    expect(store.chainStorageValidation).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 987654321,
+      requiredSpaceBytes: 654321,
     });
   });
 
@@ -208,10 +251,13 @@ describe('MithrilBootstrapStore', () => {
 
   it('resets chain storage to default through dedicated action', async () => {
     const store = setupStore();
+    store.defaultChainPath = '/tmp/state/chain';
     mockSetChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
       path: null,
       resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 456789,
+      requiredSpaceBytes: 654321,
     });
 
     await store.resetChainStorageDirectory();
@@ -220,6 +266,43 @@ describe('MithrilBootstrapStore', () => {
       path: null,
     });
     expect(store.customChainPath).toBeNull();
+    expect(store.defaultChainPath).toBe('/tmp/state/chain');
+    expect(store.chainStorageValidation).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 456789,
+      requiredSpaceBytes: 654321,
+    });
+    expect(store.defaultChainStorageValidation).toEqual({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 456789,
+      requiredSpaceBytes: 654321,
+    });
+  });
+
+  it('validates chain storage directory without mutating selected config', async () => {
+    const store = setupStore();
+    store.customChainPath = '/mnt/current-chain';
+    mockValidateChainStorageDirectoryRequest.mockResolvedValue({
+      isValid: true,
+      path: '/mnt/new-chain',
+      resolvedPath: '/mnt/new-chain',
+    });
+
+    const result = await store.validateChainStorageDirectory('/mnt/new-chain');
+
+    expect(mockValidateChainStorageDirectoryRequest).toHaveBeenCalledWith({
+      path: '/mnt/new-chain',
+    });
+    expect(result).toEqual({
+      isValid: true,
+      path: '/mnt/new-chain',
+      resolvedPath: '/mnt/new-chain',
+    });
+    expect(store.customChainPath).toBe('/mnt/current-chain');
   });
 
   it('marks storage location as confirmed when requested', () => {
@@ -228,5 +311,35 @@ describe('MithrilBootstrapStore', () => {
     expect(store.storageLocationConfirmed).toBe(false);
     store.confirmStorageLocation();
     expect(store.storageLocationConfirmed).toBe(true);
+  });
+
+  it('clears storage location confirmation when requested', () => {
+    const store = setupStore();
+
+    store.confirmStorageLocation();
+
+    expect(store.storageLocationConfirmed).toBe(true);
+
+    store.clearStorageLocationConfirmation();
+
+    expect(store.storageLocationConfirmed).toBe(false);
+  });
+
+  it('resets storage location confirmation when re-entering a decision cycle', async () => {
+    const store = setupStore();
+
+    store.confirmStorageLocation();
+    await store._updateStatus({
+      status: 'preparing',
+      progress: 0,
+    });
+    expect(store.storageLocationConfirmed).toBe(true);
+
+    await store._updateStatus({
+      status: 'decision',
+      progress: 0,
+    });
+
+    expect(store.storageLocationConfirmed).toBe(false);
   });
 });

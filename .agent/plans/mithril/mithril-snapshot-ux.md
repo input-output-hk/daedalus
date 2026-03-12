@@ -52,11 +52,13 @@
   - Replace install wording in post-download progress/detail copy so it matches snapshot materialization more closely
 - [ ] Derive localized step labels from `status` in the renderer; do not transport user-facing copy in `currentStep`
 - [ ] Add a11y attributes (`role="progressbar"`, `aria-live`, `aria-label`, keyboard nav)
-- [ ] `MithrilStorageLocationPicker` as first screen in bootstrap flow (before decision view)
+- [x] `BlockDataStorageLocationPicker` as first screen in bootstrap flow (before decision view)
   - Shows current path, available space, validation feedback
+  - Uses the latest available snapshot size as the storage estimate when that metadata is already loaded; otherwise falls back to a generic large-space warning
   - Directory picker via `SHOW_OPEN_DIALOG_CHANNEL`
   - "Reset to default" and "Continue" actions
   - Disabled during active bootstrap
+ - [x] Allow returning from the Mithril decision view to the block-data storage picker to choose a better location before continuing
 
 ### i18n (follow i18n-messaging skill)
 - [x] Extract all messages into `MithrilBootstrap.messages.ts`
@@ -96,7 +98,7 @@
 
 **Renderer - Components** (new sub-component directory):
 - `MithrilBootstrap.tsx` - Root: overlay + view delegation (slimmed down)
-- `MithrilStorageLocationPicker.tsx` **(new)** - Preliminary storage screen
+- `BlockDataStorageLocationPicker.tsx` **(new)** - Preliminary blockchain-data storage screen
 - `MithrilDecisionView.tsx` - Snapshot selector + accept/decline
 - `MithrilProgressView.tsx` - Stepper + progress bar + metadata + cancel
 - `MithrilErrorView.tsx` - Stage-specific error screens
@@ -113,8 +115,8 @@
 components/loading/mithril-bootstrap/
 ├── MithrilBootstrap.tsx          # Root: overlay + view delegation
 ├── MithrilBootstrap.scss
-├── MithrilStorageLocationPicker.tsx
-├── MithrilStorageLocationPicker.scss
+├── BlockDataStorageLocationPicker.tsx
+├── BlockDataStorageLocationPicker.scss
 ├── MithrilDecisionView.tsx
 ├── MithrilDecisionView.scss
 ├── MithrilProgressView.tsx
@@ -254,8 +256,9 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 24b. Rename install-related post-download state/copy to unpacking while keeping finalizing as the visible step
 24c. Remove `currentStep` display transport and derive step labels from status in the renderer
 25. MithrilDecisionView
-26. MithrilStorageLocationPicker - layout and path display
-27. MithrilStorageLocationPicker - picker and validation
+26. BlockDataStorageLocationPicker - layout and path display
+27. BlockDataStorageLocationPicker - picker and validation
+27a. Return from decision view to BlockDataStorageLocationPicker
 28. Slim down root MithrilBootstrap.tsx
 
 ### Phase 6: Theming (follow theme-management skill)
@@ -408,6 +411,11 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-11] Extracted `MithrilErrorView` with stage-to-copy mapping, collapsible diagnostic details, file-URL log-path linking, and root/container wiring so failed Mithril states now render through a focused error component.
 - [2026-03-11] Extracted `MithrilProgressView` with the step indicator, explicit downloaded/rate/timing metadata, and cancel action, then routed `MithrilBootstrap.renderProgress()` through it so the new progress UX is now user-visible.
 - [2026-03-11] Extracted `MithrilDecisionView` to own the decision-screen header, selector/details composition, and accept/decline actions, then routed the root decision branch through it in preparation for the later storage-picker-first flow.
+- [2026-03-11] Completed task-023a: added `BlockDataStorageLocationPicker`, routed the Mithril decision flow through a storage-first screen, and surfaced default/custom chain-path plus available-space metadata from store config so the layout can render before picker-side validation work lands.
+- [2026-03-11] Completed task-023b: wired the block-data storage picker to `SHOW_OPEN_DIALOG_CHANNEL`, added inline validation/reset/loading feedback, and patched reset/default metadata so the picker stays coherent when switching back from custom chain storage.
+- [2026-03-12] Renamed the planning references for the generic blockchain-data picker to `BlockDataStorageLocationPicker` and updated the documented target file names accordingly.
+- [2026-03-12] Updated the storage picker recommendation plan so it uses the latest available snapshot size when loaded and otherwise falls back to a generic large-space warning; added a follow-up task for returning from the Mithril decision view to the storage picker.
+- [2026-03-12] Completed task-023c by adding a decision-screen action that returns users to `BlockDataStorageLocationPicker`, backed by an explicit store action and focused renderer/store test coverage.
 - [2026-03-11] Captured a Phase 5 cleanup follow-up for the 90% plateau: Mithril verification already happens inside `cardano-db download`, while the long post-download work is `_installSnapshot()` moving/copying DB files into `chain`, so the visible UX should collapse to a single finalizing phase after download.
 - [2026-03-11] Completed task-021a: Mithril bootstrap now transitions from `downloading` into explicit `installing` and `finalizing` phases, clears stale transfer metrics after network download, and shows local-processing copy instead of frozen bandwidth stats during post-download work; follow-up task-024a will collapse that post-download work into one visible finalizing phase before node-sync handoff.
 - [2026-03-11] Added follow-up tasks 024a/024b: finish the 3-step visible model (`preparing -> downloading -> finalizing`) and remove `currentStep` as display transport so renderer labels come from status.

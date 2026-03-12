@@ -11,6 +11,7 @@ import messages from './MithrilBootstrap.messages';
 import MithrilDecisionView from './MithrilDecisionView';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
+import BlockDataStorageLocationPicker from './BlockDataStorageLocationPicker';
 import styles from './MithrilBootstrap.scss';
 
 interface Props {
@@ -25,7 +26,10 @@ interface Props {
   elapsedSeconds?: number;
   remainingSeconds?: number;
   customChainPath?: string | null;
+  defaultChainPath?: string | null;
+  defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
+  latestSnapshotSize?: number;
   isChainStorageLoading?: boolean;
   storageLocationConfirmed?: boolean;
   snapshots: Array<MithrilSnapshotItem>;
@@ -36,7 +40,11 @@ interface Props {
   onOpenExternalLink?: (...args: [string]) => void;
   onSetChainStorageDirectory?: (...args: [string | null]) => Promise<unknown>;
   onResetChainStorageDirectory?(): Promise<unknown>;
+  onValidateChainStorageDirectory?: (
+    ...args: [string]
+  ) => Promise<ChainStorageValidation>;
   onConfirmStorageLocation?(): void;
+  onReturnToStorageLocation?(): void;
   onLoadChainStorageConfig?(): Promise<void>;
   onSelectSnapshot: (...args: [string | null]) => void;
   onAccept(): void;
@@ -50,13 +58,48 @@ class MithrilBootstrap extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  renderStorageLocation() {
+    const {
+      customChainPath,
+      defaultChainPath,
+      defaultChainStorageValidation,
+      chainStorageValidation,
+      latestSnapshotSize,
+      isChainStorageLoading,
+      onSetChainStorageDirectory,
+      onResetChainStorageDirectory,
+      onValidateChainStorageDirectory,
+      onConfirmStorageLocation,
+    } = this.props;
+
+    return (
+      <div className={styles.card}>
+        <BlockDataStorageLocationPicker
+          customChainPath={customChainPath}
+          defaultChainPath={defaultChainPath}
+          defaultChainStorageValidation={defaultChainStorageValidation}
+          chainStorageValidation={chainStorageValidation}
+          latestSnapshotSize={latestSnapshotSize}
+          isChainStorageLoading={isChainStorageLoading}
+          onSetChainStorageDirectory={onSetChainStorageDirectory}
+          onResetChainStorageDirectory={onResetChainStorageDirectory}
+          onValidateChainStorageDirectory={onValidateChainStorageDirectory}
+          onConfirmStorageLocation={onConfirmStorageLocation}
+        />
+      </div>
+    );
+  }
+
   renderDecision() {
     const {
       snapshots,
       selectedDigest,
       selectedSnapshot,
       isFetchingSnapshots,
+      customChainPath,
+      defaultChainPath,
       onSelectSnapshot,
+      onReturnToStorageLocation,
       onAccept,
       onDecline,
     } = this.props;
@@ -67,7 +110,10 @@ class MithrilBootstrap extends Component<Props> {
           selectedDigest={selectedDigest}
           selectedSnapshot={selectedSnapshot}
           isFetchingSnapshots={isFetchingSnapshots}
+          customChainPath={customChainPath}
+          defaultChainPath={defaultChainPath}
           onSelectSnapshot={onSelectSnapshot}
+          onReturnToStorageLocation={onReturnToStorageLocation}
           onAccept={onAccept}
           onDecline={onDecline}
         />
@@ -123,7 +169,7 @@ class MithrilBootstrap extends Component<Props> {
   }
 
   render() {
-    const { status } = this.props;
+    const { status, storageLocationConfirmed } = this.props;
     const isDecision =
       status === 'decision' || status === 'idle' || status === 'cancelled';
     const isWorking =
@@ -138,7 +184,10 @@ class MithrilBootstrap extends Component<Props> {
       <div className={styles.component}>
         <div className={styles.backdrop} />
         <div className={styles.content}>
-          {isDecision && this.renderDecision()}
+          {isDecision &&
+            !storageLocationConfirmed &&
+            this.renderStorageLocation()}
+          {isDecision && storageLocationConfirmed && this.renderDecision()}
           {isWorking && this.renderProgress()}
           {isError && this.renderError()}
         </div>

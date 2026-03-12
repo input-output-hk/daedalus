@@ -1,0 +1,148 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: left;
+
+  h1 {
+    color: rgba(255, 255, 255, 0.98);
+    font-family: var(--font-medium);
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: rgba(199, 208, 219, 0.9);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+.metadataGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 20px;
+}
+
+.metadataItem {
+  background: rgba(10, 18, 28, 0.6);
+  border: 1px solid rgba(46, 64, 82, 0.6);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 112px;
+  padding: 18px 20px;
+}
+
+.metadataLabel {
+  color: rgba(172, 182, 195, 0.9);
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.metadataValue {
+  color: rgba(236, 241, 247, 0.95);
+  display: block;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.pathValue {
+  font-family: var(--font-regular);
+  overflow-wrap: anywhere;
+}
+
+.validationMessage {
+  background: rgba(110, 37, 44, 0.26);
+  border: 1px solid rgba(201, 96, 103, 0.38);
+  border-radius: 10px;
+  color: rgba(255, 219, 223, 0.96);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+}
+
+.statusMessage {
+  align-items: center;
+  color: rgba(199, 208, 219, 0.9);
+  display: flex;
+  font-size: 13px;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.spinnerIcon {
+  color: rgba(233, 237, 242, 0.92);
+  display: inline-flex;
+  font-size: 18px;
+
+  > svg {
+    display: block;
+    fill: currentColor;
+    height: 1em;
+    width: 1em;
+  }
+}
+
+.spinnerActive {
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.primaryAction {
+  background-color: #1ea47e;
+  border: none;
+  color: #071017;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  max-width: 360px;
+  padding: 12px 24px;
+  width: 100%;
+
+  &:hover {
+    background-color: #29b58c;
+    color: #071017;
+  }
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid rgba(92, 110, 128, 0.6);
+  color: rgba(225, 233, 242, 0.92);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  max-width: 360px;
+  padding: 12px 24px;
+  width: 100%;
+
+  &:hover {
+    border-color: rgba(129, 147, 166, 0.9);
+    color: rgba(255, 255, 255, 0.98);
+  }
+}
+
+@media (max-width: 720px) {
+  .actions {
+    align-items: stretch;
+  }
+}

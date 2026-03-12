@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-11",
-    "version": "1.2.0",
-    "totalTasks": 48,
+    "updated": "2026-03-12",
+    "version": "1.2.3",
+    "totalTasks": 49,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
     "description": "Decompose MithrilBootstrap into sub-components with stepper UX, download metadata, stage-specific errors, custom chain storage, theming, i18n, Storybook, and E2E tests"
   },
@@ -391,25 +391,36 @@
         },
         {
           "id": "task-023a",
-          "title": "MithrilStorageLocationPicker - layout and path display",
-          "description": "Preliminary screen before decision view showing current chain storage path (default or custom), available disk space (formatted with prettysize), and Continue button to proceed to decision view",
-          "status": "pending",
+          "title": "BlockDataStorageLocationPicker - layout and path display",
+          "description": "Preliminary screen before decision view showing the current blockchain-data path (default or custom), available disk space (formatted with prettysize), and Continue button to proceed to decision view",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-012", "task-015"],
-          "completedAt": null,
-          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStorageLocationPicker.tsx"
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/BlockDataStorageLocationPicker.tsx"
         },
         {
           "id": "task-023b",
-          "title": "MithrilStorageLocationPicker - picker and validation",
-          "description": "Add directory picker via SHOW_OPEN_DIALOG_CHANNEL, validation feedback, reset-to-default link, migration spinner. Disable picker during active bootstrap.",
-          "status": "pending",
+          "title": "BlockDataStorageLocationPicker - picker and validation",
+          "description": "Add directory picker via SHOW_OPEN_DIALOG_CHANNEL, validation feedback, reset-to-default link, migration spinner, and generic blockchain-data messaging. Disable the picker during active bootstrap.",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-023a"],
-          "completedAt": null,
-          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStorageLocationPicker.tsx"
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/BlockDataStorageLocationPicker.tsx"
+        },
+        {
+          "id": "task-023c",
+          "title": "Return from decision view to storage picker",
+          "description": "Allow users to navigate back from the Fast sync with Mithril snapshot decision screen to BlockDataStorageLocationPicker so they can choose a better blockchain-data location before continuing.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": ["task-022", "task-023b"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
         },
         {
           "id": "task-024",

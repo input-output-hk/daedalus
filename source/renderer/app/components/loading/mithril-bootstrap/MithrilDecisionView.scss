@@ -21,6 +21,52 @@
   }
 }
 
+.locationContext {
+  align-items: center;
+  background: rgba(10, 18, 28, 0.42);
+  border: 1px solid rgba(46, 64, 82, 0.6);
+  border-radius: 10px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+}
+
+.locationSummary {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.locationLabel {
+  color: rgba(172, 182, 195, 0.9);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.locationValue {
+  color: rgba(236, 241, 247, 0.95);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.locationAction {
+  color: rgba(214, 223, 234, 0.94);
+  flex: 0 0 auto;
+  font-size: 13px;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.98);
+  }
+}
+
 .actions {
   display: flex;
   gap: 12px;
@@ -56,6 +102,12 @@
 }
 
 @media (max-width: 720px) {
+  .locationContext {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .actions {
     align-items: stretch;
     flex-direction: column;

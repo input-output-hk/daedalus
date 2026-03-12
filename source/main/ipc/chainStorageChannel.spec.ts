@@ -1,3 +1,6 @@
+import { handleChainStorageRequests } from './chainStorageChannel';
+import { logger } from '../utils/logging';
+
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn().mockImplementation(() => ({
     onRequest: jest.fn(),
@@ -31,9 +34,6 @@ jest.mock('../utils/logging', () => ({
     warn: jest.fn(),
   },
 }));
-
-import { handleChainStorageRequests } from './chainStorageChannel';
-import { logger } from '../utils/logging';
 
 const chainStorageManagerMock = jest.requireMock('../utils/chainStorageManager')
   .__mocks;

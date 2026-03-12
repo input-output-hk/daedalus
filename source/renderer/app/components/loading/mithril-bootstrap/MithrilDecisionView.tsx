@@ -1,7 +1,9 @@
 import React from 'react';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Link } from 'react-polymorph/lib/components/Link';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
@@ -14,7 +16,10 @@ interface Props {
   selectedDigest?: string | null;
   selectedSnapshot?: MithrilSnapshotItem | null;
   isFetchingSnapshots: boolean;
+  customChainPath?: string | null;
+  defaultChainPath?: string | null;
   onSelectSnapshot: (...args: [string | null]) => void;
+  onReturnToStorageLocation?(): void;
   onAccept(): void;
   onDecline(): void;
 }
@@ -29,10 +34,17 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
     selectedDigest,
     selectedSnapshot,
     isFetchingSnapshots,
+    customChainPath,
+    defaultChainPath,
     onSelectSnapshot,
+    onReturnToStorageLocation,
     onAccept,
     onDecline,
   } = props;
+  const currentStoragePath =
+    customChainPath ||
+    defaultChainPath ||
+    intl.formatMessage(messages.storageDefaultLocationLabel);
 
   return (
     <div className={styles.root}>
@@ -40,6 +52,23 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
         <h1>{intl.formatMessage(messages.title)}</h1>
         <p>{intl.formatMessage(messages.description)}</p>
       </div>
+
+      {onReturnToStorageLocation && (
+        <div className={styles.locationContext}>
+          <div className={styles.locationSummary}>
+            <span className={styles.locationLabel}>
+              {intl.formatMessage(messages.storageDirectoryLabel)}
+            </span>
+            <span className={styles.locationValue}>{currentStoragePath}</span>
+          </div>
+          <Link
+            className={styles.locationAction}
+            skin={LinkSkin}
+            label={intl.formatMessage(messages.storageChangeLocation)}
+            onClick={onReturnToStorageLocation}
+          />
+        </div>
+      )}
 
       <MithrilSnapshotSelector
         snapshots={snapshots}
