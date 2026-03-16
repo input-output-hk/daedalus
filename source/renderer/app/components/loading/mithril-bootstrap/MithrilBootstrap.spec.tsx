@@ -7,21 +7,17 @@ import translations from '../../../i18n/locales/en-US.json';
 import MithrilBootstrap from './MithrilBootstrap';
 
 jest.mock('./BlockDataStorageLocationPicker', () => {
-  const React = require('react');
-
   return function BlockDataStorageLocationPickerMock() {
     return <h1>Choose blockchain data location</h1>;
   };
 });
 
 jest.mock('./MithrilDecisionView', () => {
-  const React = require('react');
-
   return function MithrilDecisionViewMock(props) {
     return (
       <div>
         <button type="button" onClick={props.onReturnToStorageLocation}>
-          Back to directory location
+          Change location
         </button>
         <span>Decision view</span>
       </div>
@@ -30,16 +26,12 @@ jest.mock('./MithrilDecisionView', () => {
 });
 
 jest.mock('./MithrilProgressView', () => {
-  const React = require('react');
-
   return function MithrilProgressViewMock() {
     return <div>Progress view</div>;
   };
 });
 
 jest.mock('./MithrilErrorView', () => {
-  const React = require('react');
-
   return function MithrilErrorViewMock() {
     return <div>Error view</div>;
   };
@@ -105,7 +97,7 @@ describe('MithrilBootstrap', () => {
 
     fireEvent.click(
       screen.getByRole('button', {
-        name: /back to directory location/i,
+        name: /change location/i,
       })
     );
 
@@ -123,5 +115,26 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.queryByRole('button', { name: /use mithril fast sync/i })
     ).not.toBeInTheDocument();
+  });
+
+  it('shows the progress view for active bootstrap statuses', () => {
+    renderComponent({ status: 'downloading' });
+
+    expect(screen.getByText('Progress view')).toBeInTheDocument();
+    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+  });
+
+  it('keeps the progress view mounted through bootstrap completion handoff', () => {
+    renderComponent({ status: 'completed' });
+
+    expect(screen.getByText('Progress view')).toBeInTheDocument();
+    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+  });
+
+  it('shows the error view when bootstrap fails', () => {
+    renderComponent({ status: 'failed' });
+
+    expect(screen.getByText('Error view')).toBeInTheDocument();
+    expect(screen.queryByText('Progress view')).not.toBeInTheDocument();
   });
 });

@@ -67,7 +67,7 @@ describe('BlockDataStorageLocationPicker', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /choose blockchain data location/i,
+        name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
     expect(
@@ -125,7 +125,7 @@ describe('BlockDataStorageLocationPicker', () => {
     });
 
     expect(onSetChainStorageDirectory).not.toHaveBeenCalled();
-    expect(screen.getByText('/mnt/new-chain')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('/mnt/new-chain')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /continue/i }));
 
@@ -150,7 +150,7 @@ describe('BlockDataStorageLocationPicker', () => {
     fireEvent.click(screen.getByRole('button', { name: /reset to default/i }));
 
     expect(onResetChainStorageDirectory).not.toHaveBeenCalled();
-    expect(screen.getByText('/tmp/state/chain')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('/tmp/state/chain')).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /reset to default/i })
     ).not.toBeInTheDocument();

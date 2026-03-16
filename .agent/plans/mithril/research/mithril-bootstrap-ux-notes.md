@@ -14,8 +14,8 @@
 - `MithrilSnapshotSelector` owns the snapshot dropdown row and formats concrete snapshot options as truncated digest plus localized created timestamp and formatted size.
 - `MithrilSnapshotDetails` owns the metadata card and truncates the displayed digest while preserving the full digest in the hover title.
 - `MithrilErrorView` owns failed-state copy mapping, collapsible diagnostics, and log-path linking.
-- `MithrilProgressView` owns the mounted progress composition: step indicator, progress bar, explicit download/timing metadata, and cancel action.
-- Root `MithrilBootstrap` still owns overlay chrome and top-level view routing around the extracted `BlockDataStorageLocationPicker` and the remaining Mithril views.
+- `MithrilProgressView` owns the mounted progress composition: step indicator, progress bar, explicit download/timing metadata, cancel action, and the progress heading copy.
+- Root `MithrilBootstrap` now owns only the overlay shell and a single active view selection; view-specific headings stay inside the delegated child components.
 
 ## Data and state flow
 - `MithrilBootstrapStore` is the source of snapshot metadata, derived download metrics, staged error state, and chain-storage picker state.
@@ -33,9 +33,13 @@
 - In the loading domain, new components should prefer `import classNames from 'classnames'`; `cx` exists in `SyncingProgress.tsx` but is the minority convention.
 - `loading-spin` is already available as a global keyframe from `themes/mixins/loading-spinner.scss`; Mithril loading components can reference it directly with `:global { animation: loading-spin ... }`.
 - The current 90% UX gap comes from backend phase mapping, not missing renderer math: `MithrilBootstrapService` maps Mithril CLI download progress into 10-90%, then `_installSnapshot()` does the heavy local file move/copy after status has already left `downloading`.
-- Task 021a improved the plateau by adding explicit `installing`/`finalizing` phases and download-only transfer stats, but follow-up task-024a should collapse the visible UX to `preparing -> downloading -> finalizing`, with finalizing covering post-download install plus cleanup/handoff.
-- Follow-up task-024b should rename install-related post-download state/copy to `unpacking` where internal sub-phases still exist, while the visible UX stays on finalizing.
-- Follow-up task-024c should remove `currentStep` as display transport and let the renderer derive localized labels directly from `status`.
+- The visible Mithril stepper is now a 3-step flow: `preparing -> downloading -> finalizing`; main emits internal `unpacking`/`converting` statuses for post-download local work, and the renderer maps those back into the visible finalizing step while the overlay stays mounted through cleanup and handoff.
+- Preferred follow-up: keep late-download verification as copy inside `downloading`, then instrument `_installSnapshot()` and cleanup/handoff directly so finalizing can expose real local restore telemetry rather than guessed percentages.
+- Keep the step indicator horizontally pinned across the full progress view, and let the current-status panel focus on stage copy rather than redundant progress/timing metadata.
+- Post-download Mithril service/detail copy should use `unpacking` rather than `installing` wherever internal sub-phases are still exposed while the visible UX stays on finalizing.
+- Task-024c completed: Mithril no longer transports `currentStep`; `MithrilProgressView` and `MithrilStepIndicator` derive localized headings/labels directly from `status`.
+- Disk-space polling must honor an existing accepted Mithril decision before re-emitting `decision`, or the renderer can bounce from the progress state back to the storage picker during post-download work.
+- Destination-size polling against snapshot size is documented only as a fallback option; it is not the preferred UX contract because same-device moves and cleanup phases make it too jumpy.
 - Snapshot metadata UX uses `total_db_size_uncompressed` as the size source and should show digest, size, created timestamp, and node version. Created timestamps should prefer local time formatting with raw-string fallback when parsing fails.
 - `BlockDataStorageLocationPicker` uses the latest snapshot size as the recommended-space hint when it is already available; otherwise it falls back to a generic high-capacity warning and still shows the current available-space reading.
 - The picker treats the default chain path as a first-class selection, validates custom candidates locally after `SHOW_OPEN_DIALOG_CHANNEL`, and defers all on-disk changes until `Continue`; this keeps browsing/reset actions side-effect free.
@@ -49,6 +53,8 @@
 ## Current gaps
 - `BlockDataStorageLocationPicker` is the generic blockchain-data location picker; keep future copy and file references aligned to that name instead of Mithril-specific wording.
 - Chain-storage UI state already lives in `MithrilBootstrapStore`; keep it there as the block-data storage picker evolves.
+- Disk-space enforcement still depends on a static 4 GB backend threshold (`DISK_SPACE_REQUIRED`) while Mithril snapshots are much larger; align validation with snapshot-aware required space (for example latest `total_db_size_uncompressed` plus margin) so warnings and hard validation match real data size.
+- If there is a mismatch between the `cardano-node` version used by Daedalus and the version the Mithril snapshot was created with, the blockchain will need to be verified, which can add significant time to the sync process. Investigate adding a warning UI for this scenario, and explore whether Mithril command-line conversions or snapshot version checks can be used to detect and mitigate this issue.
 
 ## QA pointer
 - Manual QA for the full Mithril flow lives in `.agent/plans/mithril/bootstrap-cardano-node.md` under Testing Strategy.

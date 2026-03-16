@@ -1,29 +1,24 @@
 .root {
+  align-items: center;
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  gap: 12px;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .step {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
+  flex: 1 1 0;
   gap: 12px;
-  padding-bottom: 16px;
-  position: relative;
-
-  &:last-child {
-    padding-bottom: 0;
-  }
+  min-width: 0;
 }
 
 .connector {
   background: rgba(92, 110, 128, 0.3);
-  bottom: 0;
-  left: 11px;
-  position: absolute;
-  top: 28px;
-  width: 2px;
+  flex: 1 1 auto;
+  height: 2px;
+  min-width: 24px;
 }
 
 .connectorCompleted {
@@ -76,24 +71,14 @@
   gap: 2px;
   justify-content: center;
   min-height: 24px;
+  min-width: 0;
 }
 
 .label {
   color: rgba(233, 237, 242, 0.92);
   font-size: 15px;
   line-height: 1.4;
-}
-
-.percentage {
-  color: rgba(168, 184, 201, 0.85);
-  font-size: 14px;
-}
-
-.meta {
-  color: rgba(168, 184, 201, 0.8);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .stepActive {
@@ -111,5 +96,24 @@
 .stepPending {
   .label {
     color: rgba(158, 173, 189, 0.6);
+  }
+}
+
+@media (max-width: 720px) {
+  .root {
+    gap: 8px;
+  }
+
+  .step {
+    gap: 8px;
+  }
+
+  .connector {
+    min-width: 12px;
+  }
+
+  .label {
+    font-size: 14px;
+    white-space: normal;
   }
 }

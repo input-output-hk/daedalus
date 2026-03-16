@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Mithril Snapshot UX Refinement Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-12",
-    "version": "1.2.3",
-    "totalTasks": 49,
+    "updated": "2026-03-14",
+    "version": "1.2.6",
+    "totalTasks": 52,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
     "description": "Decompose MithrilBootstrap into sub-components with stepper UX, download metadata, stage-specific errors, custom chain storage, theming, i18n, Storybook, and E2E tests"
   },
@@ -426,50 +426,91 @@
           "id": "task-024",
           "title": "Slim down root MithrilBootstrap.tsx",
           "description": "Reduce to overlay chrome + view delegation: storage picker -> decision -> progress/error. Create index.ts re-export.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-020", "task-021", "task-021a", "task-022", "task-023b"],
-          "completedAt": null,
+          "completedAt": "2026-03-12",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
         },
         {
           "id": "task-024a",
           "title": "Collapse visible progress to 3 steps",
           "description": "Update Mithril bootstrap progress so the user-visible flow is Preparing -> Downloading -> Finalizing. Keep verify inside download, fold post-download install/db-to-chain movement into finalizing, remove the lingering ~90% stall, and keep the Mithril overlay visible until local post-download work finishes.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": ["task-021a", "task-003"],
-          "completedAt": null,
+          "completedAt": "2026-03-12",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         },
         {
           "id": "task-024b",
           "title": "Rename install states and copy to unpacking",
           "description": "Rename install-related post-download states, details, and messages to unpacking where they describe snapshot materialization work. Keep the visible 3-step UX as Preparing -> Downloading -> Finalizing, but stop leaking install wording into the finalizing phase.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": ["task-024a", "task-015"],
-          "completedAt": null,
+          "completedAt": "2026-03-12",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         },
         {
           "id": "task-024c",
           "title": "Derive step labels from status",
           "description": "Remove `currentStep` as user-facing transport. Let MithrilProgressView and MithrilStepIndicator derive localized labels from MithrilBootstrapStatus, keep verify as an error stage only, and update shared types/store plumbing to stop depending on hardcoded step copy from the main process.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": ["task-024a", "task-024b", "task-015"],
-          "completedAt": null,
+          "completedAt": "2026-03-12",
           "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
         }
       ]
     },
     {
       "id": "phase-6",
+      "name": "Verifying & Finalizing UX",
+      "description": "Adopt the Phase 6 four-step model: Preparing, Downloading, Verifying, Finalizing. Keep the progress bar scoped to Downloading, move to Verifying when file download completes, and only expose local install progress if `_installSnapshot()` can report it honestly.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-024d",
+          "title": "Refine backend phase boundaries",
+          "description": "Update the Mithril service/status model for the planned `preparing -> downloading -> verifying -> finalizing` UX. Keep Downloading driven by the exposed file progress, transition to Verifying when that file download completes, rename Daedalus-side `unpacking` to `installing` for local DB placement work, and do not depend on Mithril JSON message strings for user-facing copy.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-024c", "task-011"],
+          "completedAt": null,
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-024e",
+          "title": "Wire 4-step progress UI",
+          "description": "Extend shared Mithril status, store, container, and progress-view contracts for the visible `Preparing`, `Downloading`, `Verifying`, and `Finalizing` steps. Keep the determinate progress bar and estimated bytes/rate/timing metadata in Downloading only, keep Verifying and Finalizing minimal unless honest install telemetry is available, and confirm the extracted i18n messaging is appropriate for the exposed steps instead of surfacing Mithril JSON messages.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-024d", "task-006", "task-015"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
+        },
+        {
+          "id": "task-024f",
+          "title": "Validate install-progress exposure and coverage",
+          "description": "Investigate whether `_installSnapshot()` / `fs.move()` can expose honest measured progress for Finalizing across the real move/copy paths. If it can, cover the measured-progress path; if it cannot, keep Finalizing activity-only and add focused backend and renderer tests for the Downloading-to-Verifying transition and the activity-only fallback.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-024e"],
+          "completedAt": null,
+          "targetPath": "source/main/mithril/MithrilBootstrapService.spec.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
       "name": "Theming & Styling",
       "description": "Migrate hardcoded colors to CSS theme variables. Follow theme-management skill.",
       "skill": "theme-management",
@@ -482,7 +523,7 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
-          "dependencies": ["task-024"],
+          "dependencies": ["task-024e"],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         },
@@ -522,7 +563,7 @@
       ]
     },
     {
-      "id": "phase-7",
+      "id": "phase-8",
       "name": "Accessibility & Storybook",
       "description": "Add a11y attributes and Storybook coverage. Follow storybook-creation skill.",
       "skill": "storybook-creation",
@@ -535,7 +576,7 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-024"],
+          "dependencies": ["task-024e"],
           "completedAt": null,
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
         },
@@ -546,14 +587,14 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-024"],
+          "dependencies": ["task-024e"],
           "completedAt": null,
           "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
         },
         {
           "id": "task-030b",
           "title": "Storybook stories - Progress and Error",
-          "description": "Stories for: Progress (preparing, downloading early/mid, verifying, finalizing), Error (download, verify, convert, node-start). Follow storybook-creation skill.",
+          "description": "Stories for: Progress (preparing, downloading early/mid, downloading late-verifying copy, finalizing with local telemetry), Error (download, verify, convert, node-start). Follow storybook-creation skill.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
@@ -575,7 +616,7 @@
       ]
     },
     {
-      "id": "phase-8",
+      "id": "phase-9",
       "name": "E2E Tests",
       "description": "Cucumber BDD tests for Mithril bootstrap flow using the repo's backend-integrated app-flow pattern. Follow e2e-test-creation skill.",
       "skill": "e2e-test-creation",
@@ -588,7 +629,7 @@
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
-          "dependencies": ["task-024"],
+          "dependencies": ["task-024e"],
           "completedAt": null,
           "targetPath": "tests/mithril/e2e/features/mithril-bootstrap.feature"
         },
@@ -606,7 +647,7 @@
       ]
     },
     {
-      "id": "phase-9",
+      "id": "phase-10",
       "name": "Verification",
       "description": "Run all checks and verify correctness",
       "riskLevel": "low",
@@ -622,6 +663,7 @@
             "task-005",
             "task-016",
             "task-021a",
+            "task-024f",
             "task-027",
             "task-028",
             "task-029",
@@ -636,8 +678,8 @@
     }
   ],
   "summary": {
-    "totalPhases": 9,
-    "totalTasks": 48,
+    "totalPhases": 10,
+    "totalTasks": 52,
     "criticalPath": [
       "task-001",
       "task-002",
@@ -661,6 +703,9 @@
       "task-024a",
       "task-024b",
       "task-024c",
+      "task-024d",
+      "task-024e",
+      "task-024f",
       "task-025",
       "task-026",
       "task-027",

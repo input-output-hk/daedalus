@@ -21,44 +21,121 @@
   }
 }
 
-.metadataGrid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin-bottom: 20px;
-}
-
-.metadataItem {
-  background: rgba(10, 18, 28, 0.6);
-  border: 1px solid rgba(46, 64, 82, 0.6);
-  border-radius: 10px;
+.storageField {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-height: 112px;
-  padding: 18px 20px;
+  gap: 0;
+  margin-bottom: 14px;
 }
 
-.metadataLabel {
+.storageInputWrapper {
+  align-items: center;
+  display: flex;
+
+  .storageInput {
+    background: rgba(10, 18, 28, 0.6);
+    border: 1px solid rgba(46, 64, 82, 0.6);
+    border-radius: 10px;
+    color: rgba(236, 241, 247, 0.95);
+    flex: 1 1 auto;
+
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 50px;
+    overflow: hidden;
+    padding: 0 52px 0 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+
+    &::-webkit-input-placeholder {
+      color: rgba(172, 182, 195, 0.8);
+    }
+  }
+
+  .error {
+    border-color: rgba(201, 96, 103, 0.75);
+  }
+}
+
+.selectDirectoryButton {
+  align-items: center;
+  background-color: rgba(34, 52, 70, 0.95);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  height: 32px;
+  justify-content: center;
+  left: -42px;
+  position: relative;
+  width: 32px;
+
+  &:hover:enabled {
+    background-color: rgba(48, 69, 90, 0.98);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+}
+
+.penIcon {
+  display: inline-flex;
+
+  svg {
+    display: block;
+    height: 12px;
+    width: 12px;
+
+    path {
+      stroke: rgba(236, 241, 247, 0.95);
+    }
+  }
+}
+
+.storageSubtext {
   color: rgba(172, 182, 195, 0.9);
-  display: block;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  margin-bottom: 0;
-  text-transform: uppercase;
-}
-
-.metadataValue {
-  color: rgba(236, 241, 247, 0.95);
-  display: block;
-  font-family: var(--font-medium);
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.pathValue {
   font-family: var(--font-regular);
-  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0 0 10px;
+  text-align: left;
+}
+
+.resetActionRow {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+  min-height: 22px;
+  width: 100%;
+}
+
+.inlineAction {
+  background: transparent;
+  border: none;
+  color: rgba(214, 223, 234, 0.94);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-family: var(--font-medium);
+  font-size: 13px;
+  line-height: 1.3;
+  padding: 0;
+  text-decoration: underline;
+  white-space: nowrap;
+
+  &:disabled {
+    color: rgba(143, 157, 173, 0.7);
+    cursor: default;
+    text-decoration: none;
+  }
+
+  &:hover:enabled {
+    color: rgba(255, 255, 255, 0.98);
+  }
 }
 
 .validationMessage {
@@ -104,8 +181,6 @@
 .actions {
   align-items: center;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
   justify-content: center;
 }
 
@@ -115,7 +190,7 @@
   color: #071017;
   font-family: var(--font-medium);
   font-size: 14px;
-  max-width: 360px;
+  max-width: 280px;
   padding: 12px 24px;
   width: 100%;
 
@@ -125,24 +200,16 @@
   }
 }
 
-.secondaryAction {
-  background-color: transparent;
-  border: 1px solid rgba(92, 110, 128, 0.6);
-  color: rgba(225, 233, 242, 0.92);
-  font-family: var(--font-regular);
-  font-size: 14px;
-  max-width: 360px;
-  padding: 12px 24px;
-  width: 100%;
-
-  &:hover {
-    border-color: rgba(129, 147, 166, 0.9);
-    color: rgba(255, 255, 255, 0.98);
-  }
-}
-
 @media (max-width: 720px) {
   .actions {
     align-items: stretch;
+  }
+
+  .primaryAction {
+    max-width: none;
+  }
+
+  .selectDirectoryButton {
+    left: -40px;
   }
 }

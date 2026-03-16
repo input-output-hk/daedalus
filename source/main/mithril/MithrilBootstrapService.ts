@@ -68,7 +68,6 @@ const MITHRIL_NETWORK_CONFIG: Record<string, MithrilNetworkConfig> = {
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
   progress: 0,
-  currentStep: undefined,
   snapshot: null,
   error: null,
 };
@@ -77,9 +76,9 @@ const STEP_PROGRESS = {
   preparing: 5,
   downloadingStart: 10,
   downloadingEnd: 90,
-  installing: 92.5,
-  converting: 95,
-  finalizing: 97.5,
+  finalizingStart: 92.5,
+  finalizingProcessing: 95,
+  finalizingEnd: 97.5,
   completed: 100,
 };
 
@@ -134,6 +133,7 @@ export class MithrilBootstrapService {
   _cardanoDbDownloadMode?: 'download' | 'snapshot';
   _lockFilePath: string;
   _workDir: string;
+  _bootstrapStartedAt: number | null = null;
 
   constructor(workDir: string = stateDirectoryPath) {
     this._workDir = workDir;
@@ -193,15 +193,14 @@ export class MithrilBootstrapService {
     if (options?.wipeChain) {
       await this.wipeChainAndSnapshots('bootstrap-request');
     }
+    this._bootstrapStartedAt = Date.now();
     await this._createLockFile();
 
     this._updateStatus({
       status: 'preparing',
       progress: STEP_PROGRESS.preparing,
-      currentStep: 'Preparing Mithril bootstrap',
       filesDownloaded: undefined,
       filesTotal: undefined,
-      elapsedSeconds: undefined,
       remainingSeconds: undefined,
       error: null,
     });
@@ -228,12 +227,10 @@ export class MithrilBootstrapService {
       const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
 
       this._updateStatus({
-        status: 'installing',
-        progress: STEP_PROGRESS.installing,
-        currentStep: 'Installing Mithril snapshot',
+        status: 'unpacking',
+        progress: STEP_PROGRESS.finalizingStart,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
         remainingSeconds: undefined,
       });
 
@@ -241,11 +238,9 @@ export class MithrilBootstrapService {
 
       this._updateStatus({
         status: 'finalizing',
-        progress: STEP_PROGRESS.finalizing,
-        currentStep: 'Finalizing Mithril bootstrap',
+        progress: STEP_PROGRESS.finalizingProcessing,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
         remainingSeconds: undefined,
       });
 
@@ -253,12 +248,18 @@ export class MithrilBootstrapService {
       await this.clearLockFile();
 
       this._updateStatus({
-        status: 'completed',
-        progress: STEP_PROGRESS.completed,
-        currentStep: 'Mithril bootstrap completed',
+        status: 'finalizing',
+        progress: STEP_PROGRESS.finalizingEnd,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      });
+
+      this._updateStatus({
+        status: 'completed',
+        progress: STEP_PROGRESS.completed,
+        filesDownloaded: undefined,
+        filesTotal: undefined,
         remainingSeconds: undefined,
       });
     } catch (error) {
@@ -267,7 +268,6 @@ export class MithrilBootstrapService {
         status: 'failed',
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
         remainingSeconds: undefined,
         error: this._buildError(
           error,
@@ -281,7 +281,6 @@ export class MithrilBootstrapService {
   async cancel(): Promise<void> {
     this._updateStatus({
       status: 'cancelled',
-      currentStep: 'Cancelling Mithril bootstrap',
     });
 
     try {
@@ -314,11 +313,29 @@ export class MithrilBootstrapService {
   }
 
   _updateStatus(update: Partial<MithrilBootstrapStatusUpdate>) {
+    const nextStatus = update.status ?? this._status.status;
+    const normalizedUpdate =
+      !('elapsedSeconds' in update) && this._shouldTrackElapsed(nextStatus)
+        ? {
+            ...update,
+            elapsedSeconds: this._getElapsedSeconds(),
+          }
+        : update;
+
     this._status = {
       ...this._status,
-      ...update,
+      ...normalizedUpdate,
     };
     this._statusEmitter.emit('status', { ...this._status });
+  }
+
+  _shouldTrackElapsed(status: MithrilBootstrapStatusUpdate['status']) {
+    return !['idle', 'decision', 'cancelled'].includes(status);
+  }
+
+  _getElapsedSeconds(): number | undefined {
+    if (this._bootstrapStartedAt == null) return undefined;
+    return Math.max(0, (Date.now() - this._bootstrapStartedAt) / 1000);
   }
 
   async _resolveCardanoDbDownloadMode(): Promise<'download' | 'snapshot'> {
@@ -483,9 +500,7 @@ export class MithrilBootstrapService {
     switch (status) {
       case 'downloading':
         return 'download';
-      case 'verifying':
-        return 'verify';
-      case 'installing':
+      case 'unpacking':
       case 'converting':
       case 'finalizing':
         return 'convert';
@@ -637,7 +652,6 @@ export class MithrilBootstrapService {
     this._updateStatus({
       status: 'downloading',
       progress: STEP_PROGRESS.downloadingStart,
-      currentStep: 'Downloading Mithril snapshot',
     });
 
     let stdoutBuffered = '';
@@ -667,7 +681,6 @@ export class MithrilBootstrapService {
         this._updateStatus({
           status: 'downloading',
           progress: mapped,
-          currentStep: 'Downloading Mithril snapshot',
           snapshot: snapshot || undefined,
           filesDownloaded: update.filesDownloaded,
           filesTotal: update.filesTotal,
@@ -680,7 +693,6 @@ export class MithrilBootstrapService {
       if (update.elapsedSeconds != null || update.remainingSeconds != null) {
         this._updateStatus({
           status: 'downloading',
-          currentStep: 'Downloading Mithril snapshot',
           snapshot: snapshot || undefined,
           filesDownloaded: update.filesDownloaded,
           filesTotal: update.filesTotal,
@@ -716,7 +728,6 @@ export class MithrilBootstrapService {
     this._updateStatus({
       status: 'downloading',
       progress: STEP_PROGRESS.downloadingEnd,
-      currentStep: 'Downloading Mithril snapshot',
       snapshot: snapshot || undefined,
     });
   }
@@ -724,8 +735,7 @@ export class MithrilBootstrapService {
   async _convertSnapshot(snapshot: MithrilSnapshotItem | null): Promise<void> {
     this._updateStatus({
       status: 'converting',
-      progress: STEP_PROGRESS.converting,
-      currentStep: 'Converting ledger snapshot',
+      progress: STEP_PROGRESS.finalizingProcessing,
     });
 
     const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
@@ -755,9 +765,8 @@ export class MithrilBootstrapService {
     }
 
     this._updateStatus({
-      status: 'converting',
-      progress: STEP_PROGRESS.finalizing,
-      currentStep: 'Finalizing Mithril bootstrap',
+      status: 'finalizing',
+      progress: STEP_PROGRESS.finalizingEnd,
     });
   }
 

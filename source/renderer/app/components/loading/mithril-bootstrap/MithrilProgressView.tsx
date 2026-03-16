@@ -25,6 +25,24 @@ interface Context {
   intl: Intl;
 }
 
+type StageCopy = {
+  title: string;
+  detail: string;
+};
+
+type MetadataItem = {
+  label: string;
+  value: string;
+};
+
+const DOWNLOAD_VERIFICATION_THRESHOLD = 89.5;
+const LOCAL_PROCESSING_STATUSES: Array<MithrilBootstrapStatus> = [
+  'unpacking',
+  'converting',
+  'finalizing',
+  'completed',
+];
+
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
 
@@ -42,31 +60,59 @@ const formatDuration = (value?: number) => {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 };
 
-const formatTimingMeta = (
+const getStageDetail = (intl: Intl, status: MithrilBootstrapStatus) => {
+  switch (status) {
+    case 'preparing':
+      return {
+        title: intl.formatMessage(messages.progressPreparingTitle),
+        detail: intl.formatMessage(messages.progressPreparingDetail),
+      };
+    case 'downloading':
+      return null;
+    case 'unpacking':
+      return {
+        title: intl.formatMessage(messages.progressUnpackingTitle),
+        detail: intl.formatMessage(messages.progressUnpackingDetail),
+      };
+    case 'converting':
+      return {
+        title: intl.formatMessage(messages.progressConvertingTitle),
+        detail: intl.formatMessage(messages.progressConvertingDetail),
+      };
+    case 'finalizing':
+      return {
+        title: intl.formatMessage(messages.progressFinalizingTitle),
+        detail: intl.formatMessage(messages.progressFinalizingDetail),
+      };
+    case 'completed':
+      return {
+        title: intl.formatMessage(messages.progressCompletedTitle),
+        detail: intl.formatMessage(messages.progressCompletedDetail),
+      };
+    default:
+      return null;
+  }
+};
+
+const getFallbackDownloadedValue = (
   intl: Intl,
-  elapsedLabel: string | null,
-  remainingLabel: string | null
+  status: MithrilBootstrapStatus,
+  snapshotSize?: number
 ) => {
-  if (elapsedLabel && remainingLabel) {
-    return intl.formatMessage(messages.progressTiming, {
-      elapsed: elapsedLabel,
-      remaining: remainingLabel,
-    });
+  const snapshotSizeLabel =
+    snapshotSize != null && snapshotSize > 0
+      ? formatTransferSize(snapshotSize)
+      : null;
+
+  if (snapshotSizeLabel && LOCAL_PROCESSING_STATUSES.includes(status)) {
+    return `${snapshotSizeLabel} / ${snapshotSizeLabel}`;
   }
 
-  if (elapsedLabel) {
-    return intl.formatMessage(messages.progressElapsed, {
-      elapsed: elapsedLabel,
-    });
-  }
-
-  if (remainingLabel) {
-    return intl.formatMessage(messages.progressRemaining, {
-      remaining: remainingLabel,
-    });
-  }
-
-  return null;
+  return snapshotSizeLabel
+    ? intl.formatMessage(messages.progressSnapshotSizeValue, {
+        size: snapshotSizeLabel,
+      })
+    : intl.formatMessage(messages.progressWaitingValue);
 };
 
 function MithrilProgressView(props: Props, { intl }: Context) {
@@ -84,41 +130,91 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   const normalizedProgress = Math.min(Math.max(progress, 0), 100);
   const progressLabel = normalizedProgress.toFixed(1);
   const isDownloadStage = status === 'downloading';
+  const isLocalProcessingStage = LOCAL_PROCESSING_STATUSES.includes(status);
+  const isNearDownloadPlateau =
+    isDownloadStage && normalizedProgress >= DOWNLOAD_VERIFICATION_THRESHOLD;
+  const stageDetail = getStageDetail(intl, status);
   const totalSizeLabel =
     snapshotSize != null && snapshotSize > 0
       ? formatTransferSize(snapshotSize)
       : null;
-  const throughputLabel =
-    throughputBps != null ? formatTransferSize(throughputBps) : null;
   const downloadedLabel =
     bytesDownloaded != null
       ? [formatTransferSize(bytesDownloaded), totalSizeLabel]
           .filter(Boolean)
           .join(' / ')
-      : null;
-  const transferRateLabel = throughputLabel ? `${throughputLabel}/s` : null;
-  let stageDetail = null;
-  if (status === 'installing') {
-    stageDetail = intl.formatMessage(messages.progressInstallingDetail);
-  } else if (status === 'finalizing' || status === 'converting') {
-    stageDetail = intl.formatMessage(messages.progressFinalizingDetail);
+      : getFallbackDownloadedValue(intl, status, snapshotSize);
+  const transferRateLabel =
+    isDownloadStage && throughputBps != null
+      ? `${formatTransferSize(throughputBps)}/s`
+      : intl.formatMessage(
+          isDownloadStage
+            ? messages.progressRatePendingValue
+            : messages.progressLocalProcessingValue
+        );
+  const elapsedLabel =
+    formatDuration(elapsedSeconds) ||
+    intl.formatMessage(
+      isDownloadStage
+        ? messages.progressTimingPendingValue
+        : messages.progressUnknownDurationValue
+    );
+  let remainingFallbackMessage = messages.progressWaitingValue;
+  if (isDownloadStage) {
+    remainingFallbackMessage = messages.progressTimingPendingValue;
+  } else if (isLocalProcessingStage) {
+    remainingFallbackMessage = messages.progressFinalizingRemainingValue;
   }
-  const timingLabel = formatTimingMeta(
-    intl,
-    formatDuration(elapsedSeconds),
-    formatDuration(remainingSeconds)
-  );
+  const remainingLabel =
+    formatDuration(remainingSeconds) ||
+    (status === 'completed'
+      ? formatDuration(0)
+      : intl.formatMessage(remainingFallbackMessage));
+  const statusCopy: StageCopy = isDownloadStage
+    ? {
+        title: intl.formatMessage(
+          isNearDownloadPlateau
+            ? messages.progressDownloadVerifyingTitle
+            : messages.progressDownloadingTitle
+        ),
+        detail: intl.formatMessage(
+          isNearDownloadPlateau
+            ? messages.progressDownloadVerifyingDetail
+            : messages.progressDownloadingDetail
+        ),
+      }
+    : stageDetail || {
+        title: intl.formatMessage(messages.progressPreparingTitle),
+        detail: intl.formatMessage(messages.progressPreparingDetail),
+      };
+  const metadataItems: Array<MetadataItem> = [
+    {
+      label: intl.formatMessage(messages.downloadBytesLabel),
+      value: downloadedLabel,
+    },
+    {
+      label: intl.formatMessage(messages.downloadRateLabel),
+      value: transferRateLabel,
+    },
+    {
+      label: intl.formatMessage(messages.progressElapsedLabel),
+      value: elapsedLabel,
+    },
+    {
+      label: intl.formatMessage(messages.progressTimeRemainingLabel),
+      value:
+        remainingLabel || intl.formatMessage(messages.progressWaitingValue),
+    },
+  ];
 
   return (
     <div className={styles.root}>
+      <div className={styles.header}>
+        <h1>{intl.formatMessage(messages.title)}</h1>
+      </div>
+
       <div className={styles.stepIndicator}>
-        <MithrilStepIndicator
-          status={status}
-          progress={normalizedProgress}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
-          throughputBps={throughputBps}
-        />
+        <MithrilStepIndicator status={status} />
       </div>
 
       <div className={styles.progressBar}>
@@ -130,41 +226,29 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         />
       </div>
 
-      {isDownloadStage && (downloadedLabel || transferRateLabel) && (
-        <div className={styles.metadataGrid}>
-          {downloadedLabel && (
-            <div className={styles.metadataItem}>
-              <span className={styles.metadataLabel}>
-                {intl.formatMessage(messages.downloadBytesLabel)}
-              </span>
-              <span className={styles.metadataValue}>{downloadedLabel}</span>
-            </div>
-          )}
-          {transferRateLabel && (
-            <div className={styles.metadataItem}>
-              <span className={styles.metadataLabel}>
-                {intl.formatMessage(messages.downloadRateLabel)}
-              </span>
-              <span className={styles.metadataValue}>{transferRateLabel}</span>
-            </div>
-          )}
+      <div
+        className={styles.statusPanel}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div className={styles.statusCopy}>
+          <span className={styles.statusLabel}>
+            {intl.formatMessage(messages.progressStatusLabel)}
+          </span>
+          <h2 className={styles.statusTitle}>{statusCopy.title}</h2>
+          <p className={styles.statusDetail}>{statusCopy.detail}</p>
         </div>
-      )}
+      </div>
 
-      {!isDownloadStage && stageDetail && (
-        <div className={styles.metadataGrid}>
-          <div className={styles.metadataItem}>
-            <span className={styles.metadataLabel}>
-              {intl.formatMessage(messages.progressStageLabel)}
-            </span>
-            <span className={styles.metadataValue}>{stageDetail}</span>
+      <div className={styles.metadataGrid}>
+        {metadataItems.map(({ label, value }) => (
+          <div key={label} className={styles.metadataItem}>
+            <span className={styles.metadataLabel}>{label}</span>
+            <span className={styles.metadataValue}>{value}</span>
           </div>
-        </div>
-      )}
-
-      {isDownloadStage && timingLabel && (
-        <div className={styles.timingMeta}>{timingLabel}</div>
-      )}
+        ))}
+      </div>
 
       <div className={styles.actions}>
         <Button

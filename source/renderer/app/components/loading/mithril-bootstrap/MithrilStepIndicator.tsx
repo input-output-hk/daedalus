@@ -8,36 +8,27 @@ import type { MithrilBootstrapStatus } from '../../../../../common/types/mithril
 import messages from './MithrilBootstrap.messages';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
-import { formatTransferSize } from './snapshotFormatting';
 
-type StepId = 'preparing' | 'downloading' | 'installing' | 'finalizing';
+type StepId = 'preparing' | 'downloading' | 'finalizing';
 
 type StepState = 'completed' | 'active' | 'pending';
 
 type Props = {
   status: MithrilBootstrapStatus;
-  progress: number;
-  bytesDownloaded?: number;
-  snapshotSize?: number;
-  throughputBps?: number;
+  progress?: number;
 };
 
 interface Context {
   intl: Intl;
 }
 
-const STEPS: ReadonlyArray<StepId> = [
-  'preparing',
-  'downloading',
-  'installing',
-  'finalizing',
-];
+const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
+const DOWNLOAD_VERIFICATION_THRESHOLD = 89.5;
 
 const STATUS_TO_STEP: Partial<Record<MithrilBootstrapStatus, StepId>> = {
   preparing: 'preparing',
   downloading: 'downloading',
-  verifying: 'downloading',
-  installing: 'installing',
+  unpacking: 'finalizing',
   converting: 'finalizing',
   finalizing: 'finalizing',
 };
@@ -45,7 +36,6 @@ const STATUS_TO_STEP: Partial<Record<MithrilBootstrapStatus, StepId>> = {
 const STEP_MESSAGES: Record<StepId, keyof typeof messages> = {
   preparing: 'stepPreparing',
   downloading: 'stepDownloading',
-  installing: 'stepInstalling',
   finalizing: 'stepFinalizing',
 };
 
@@ -59,53 +49,49 @@ function getStepState(
   return 'pending';
 }
 
-function MithrilStepIndicator(props: Props, { intl }: Context) {
-  const {
-    status,
-    progress,
-    bytesDownloaded,
-    snapshotSize,
-    throughputBps,
-  } = props;
+function getActiveStepIndex(
+  status: MithrilBootstrapStatus,
+  progress?: number
+): number {
+  if (status === 'completed') {
+    return STEPS.length;
+  }
+
+  if (
+    status === 'downloading' &&
+    typeof progress === 'number' &&
+    progress >= DOWNLOAD_VERIFICATION_THRESHOLD
+  ) {
+    return STEPS.indexOf('finalizing');
+  }
 
   const activeStep = STATUS_TO_STEP[status];
-  const activeStepIndex = activeStep ? STEPS.indexOf(activeStep) : -1;
+  return activeStep ? STEPS.indexOf(activeStep) : -1;
+}
+
+function MithrilStepIndicator(props: Props, { intl }: Context) {
+  const { status, progress } = props;
+  const activeStepIndex = getActiveStepIndex(status, progress);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} role="list">
       {STEPS.map((stepId, index) => {
         const state = getStepState(stepId, activeStepIndex, index);
         const messageKey = STEP_MESSAGES[stepId];
         const label = intl.formatMessage(messages[messageKey]);
-
-        const isDownloadActive = stepId === 'downloading' && state === 'active';
-        const bytesDownloadedLabel =
-          bytesDownloaded != null ? formatTransferSize(bytesDownloaded) : null;
-        const snapshotSizeLabel =
-          snapshotSize != null && snapshotSize > 0
-            ? formatTransferSize(snapshotSize)
-            : null;
-        const throughputLabel =
-          throughputBps != null ? formatTransferSize(throughputBps) : null;
-
         const isLast = index === STEPS.length - 1;
 
         return (
           <div
             key={stepId}
+            role="listitem"
+            aria-current={state === 'active' ? 'step' : undefined}
             className={classNames(styles.step, {
               [styles.stepCompleted]: state === 'completed',
               [styles.stepActive]: state === 'active',
               [styles.stepPending]: state === 'pending',
             })}
           >
-            {!isLast && (
-              <div
-                className={classNames(styles.connector, {
-                  [styles.connectorCompleted]: state === 'completed',
-                })}
-              />
-            )}
             <div className={styles.iconContainer}>
               {state === 'completed' && (
                 <SVGInline
@@ -122,29 +108,15 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               {state === 'pending' && <div className={styles.pendingCircle} />}
             </div>
             <div className={styles.labelContainer}>
-              <span className={styles.label}>
-                {label}
-                {state === 'active' && (
-                  <span className={styles.percentage}>
-                    {' '}
-                    {progress.toFixed(1)}%
-                  </span>
-                )}
-              </span>
-              {isDownloadActive &&
-                (bytesDownloaded != null || throughputBps != null) && (
-                  <span className={styles.meta}>
-                    {bytesDownloadedLabel && (
-                      <>
-                        {bytesDownloadedLabel}
-                        {snapshotSizeLabel && <> / {snapshotSizeLabel}</>}
-                      </>
-                    )}
-                    {bytesDownloadedLabel && throughputLabel && ' • '}
-                    {throughputLabel && `${throughputLabel}/s`}
-                  </span>
-                )}
+              <span className={styles.label}>{label}</span>
             </div>
+            {!isLast && (
+              <div
+                className={classNames(styles.connector, {
+                  [styles.connectorCompleted]: state === 'completed',
+                })}
+              />
+            )}
           </div>
         );
       })}

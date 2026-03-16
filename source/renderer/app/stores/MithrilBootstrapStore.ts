@@ -25,7 +25,6 @@ import { logger } from '../utils/logging';
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
   progress: 0,
-  currentStep: undefined,
   snapshot: null,
   error: null,
 };
@@ -36,7 +35,6 @@ const isDecisionCycleStatus = (status: MithrilBootstrapStatus) =>
 export default class MithrilBootstrapStore extends Store {
   @observable status: MithrilBootstrapStatus = DEFAULT_STATUS.status;
   @observable progress = DEFAULT_STATUS.progress;
-  @observable currentStep: string | undefined = DEFAULT_STATUS.currentStep;
   @observable snapshot: MithrilSnapshotItem | null =
     DEFAULT_STATUS.snapshot ?? null;
   @observable filesDownloaded: number | undefined =
@@ -134,9 +132,6 @@ export default class MithrilBootstrapStore extends Store {
     }
     if (typeof update.progress === 'number') {
       this.progress = update.progress;
-    }
-    if ('currentStep' in update) {
-      this.currentStep = update.currentStep;
     }
     if ('snapshot' in update) {
       this.snapshot = update.snapshot ?? null;

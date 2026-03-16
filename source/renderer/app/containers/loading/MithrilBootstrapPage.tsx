@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import MithrilBootstrap from '../../components/loading/mithril-bootstrap/MithrilBootstrap';
+import MithrilBootstrap from '../../components/loading/mithril-bootstrap';
 
 type Props = InjectedProps;
 
@@ -118,7 +118,6 @@ class MithrilBootstrapPage extends Component<Props> {
       <MithrilBootstrap
         status={mithrilBootstrap.status}
         progress={mithrilBootstrap.progress}
-        currentStep={mithrilBootstrap.currentStep}
         filesDownloaded={mithrilBootstrap.filesDownloaded}
         filesTotal={mithrilBootstrap.filesTotal}
         bytesDownloaded={mithrilBootstrap.bytesDownloaded}

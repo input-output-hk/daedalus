@@ -64,6 +64,8 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
           <Link
             className={styles.locationAction}
             skin={LinkSkin}
+            isUnderlined={false}
+            underlineOnHover
             label={intl.formatMessage(messages.storageChangeLocation)}
             onClick={onReturnToStorageLocation}
           />

@@ -118,7 +118,6 @@ export const handleDiskSpace = (
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
       progress: 0,
-      currentStep: 'Choose a sync method',
       snapshot: null,
       error: null,
     };
@@ -130,7 +129,6 @@ export const handleDiskSpace = (
     const update: MithrilBootstrapStatusUpdate = {
       status: 'idle',
       progress: 0,
-      currentStep: undefined,
       snapshot: null,
       error: null,
     };
@@ -146,7 +144,6 @@ export const handleDiskSpace = (
     const update: MithrilBootstrapStatusUpdate = {
       status: 'failed',
       progress: 0,
-      currentStep: 'Cardano node failed to start',
       snapshot: null,
       error: {
         message,
@@ -383,6 +380,9 @@ export const handleDiskSpace = (
                 mithrilDecisionPrompted = false;
                 break;
               }
+              if (mithrilDecision === 'accept') {
+                break;
+              }
               if (!mithrilDecisionPrompted) {
                 logger.info('[MITHRIL] Emitting decision status');
                 await emitMithrilDecisionStatus();
@@ -397,17 +397,12 @@ export const handleDiskSpace = (
                 await cardanoNode.start();
                 break;
               }
-
-              if (mithrilDecision === 'accept') {
-                break;
-              }
-
               if (!mithrilDecisionInFlight) {
                 mithrilDecisionInFlight = true;
                 waitForMithrilBootstrapDecision()
                   .then(async (decision) => {
                     mithrilDecision = decision;
-                    mithrilDecisionPrompted = false;
+                    mithrilDecisionPrompted = decision !== 'accept';
                     if (decision === 'decline') {
                       await emitMithrilIdleStatus();
                       await syncMithrilWorkDir();

@@ -132,7 +132,7 @@ describe('MithrilBootstrapService progress and error stages', () => {
     );
   });
 
-  it('transitions through installing and finalizing after download completes', async () => {
+  it('collapses post-download work into finalizing after download completes', async () => {
     const service = new MithrilBootstrapService('/tmp/mithril-test');
     const originalUpdateStatus = service._updateStatus.bind(service);
     const statusSpy = jest
@@ -145,7 +145,6 @@ describe('MithrilBootstrapService progress and error stages', () => {
       service._updateStatus({
         status: 'downloading',
         progress: 90,
-        currentStep: 'Downloading Mithril snapshot',
         filesDownloaded: 4,
         filesTotal: 4,
         elapsedSeconds: 12,
@@ -163,12 +162,19 @@ describe('MithrilBootstrapService progress and error stages', () => {
 
     expect(statusSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: 'installing',
+        status: 'unpacking',
         progress: 92.5,
-        currentStep: 'Installing Mithril snapshot',
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
+        remainingSeconds: undefined,
+      })
+    );
+    expect(statusSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'finalizing',
+        progress: 95,
+        filesDownloaded: undefined,
+        filesTotal: undefined,
         remainingSeconds: undefined,
       })
     );
@@ -176,10 +182,8 @@ describe('MithrilBootstrapService progress and error stages', () => {
       expect.objectContaining({
         status: 'finalizing',
         progress: 97.5,
-        currentStep: 'Finalizing Mithril bootstrap',
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
         remainingSeconds: undefined,
       })
     );
@@ -189,10 +193,23 @@ describe('MithrilBootstrapService progress and error stages', () => {
         progress: 100,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        elapsedSeconds: undefined,
         remainingSeconds: undefined,
       })
     );
+  });
+
+  it('tracks total elapsed time through post-download local processing', () => {
+    const service = new MithrilBootstrapService('/tmp/mithril-test');
+    service._bootstrapStartedAt = Date.now() - 4500;
+
+    service._updateStatus({
+      status: 'unpacking',
+      progress: 92.5,
+      remainingSeconds: undefined,
+    });
+
+    expect(service.status.elapsedSeconds).toBeGreaterThanOrEqual(4);
+    expect(service.status.elapsedSeconds).toBeLessThan(6);
   });
 
   it('annotates conversion failures with convert stage', async () => {

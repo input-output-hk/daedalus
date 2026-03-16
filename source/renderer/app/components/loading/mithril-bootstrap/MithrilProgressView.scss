@@ -3,23 +3,79 @@
   flex-direction: column;
 }
 
-.stepIndicator {
+.header {
   margin-bottom: 24px;
+  text-align: left;
+
+  h1 {
+    color: rgba(255, 255, 255, 0.98);
+    font-family: var(--font-medium);
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: rgba(199, 208, 219, 0.9);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+.stepIndicator {
+  margin-bottom: 18px;
 }
 
 .progressBar {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.statusPanel {
+  background: rgba(10, 18, 28, 0.62);
+  border: 1px solid rgba(46, 64, 82, 0.72);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  min-height: 144px;
+  padding: 20px 22px;
+}
+
+.statusCopy {
+  margin: 0;
+  max-width: none;
+}
+
+.statusLabel {
+  color: rgba(122, 210, 188, 0.92);
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.statusTitle {
+  color: rgba(243, 247, 251, 0.98);
+  font-family: var(--font-medium);
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 0 0 6px;
+}
+
+.statusDetail {
+  color: rgba(187, 198, 210, 0.92);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
 }
 
 .metadataGrid {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
 
 .metadataItem {
-  background: rgba(10, 18, 28, 0.6);
+  background: rgba(10, 18, 28, 0.52);
   border: 1px solid rgba(46, 64, 82, 0.6);
   border-radius: 10px;
   padding: 14px 16px;
@@ -29,7 +85,7 @@
   color: rgba(172, 182, 195, 0.9);
   display: block;
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   margin-bottom: 6px;
   text-transform: uppercase;
 }
@@ -38,12 +94,7 @@
   color: rgba(236, 241, 247, 0.95);
   font-family: var(--font-medium);
   font-size: 14px;
-}
-
-.timingMeta {
-  color: rgba(168, 184, 201, 0.92);
-  font-size: 13px;
-  margin-bottom: 24px;
+  line-height: 1.45;
 }
 
 .actions {
@@ -67,6 +118,15 @@
 }
 
 @media (max-width: 720px) {
+  .metadataGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statusPanel {
+    min-height: 0;
+    padding: 18px;
+  }
+
   .actions {
     align-items: stretch;
     flex-direction: column;

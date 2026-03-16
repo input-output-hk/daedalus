@@ -56,7 +56,6 @@ let decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
 let lastStatus: MithrilBootstrapStatusUpdate = {
   status: 'idle',
   progress: 0,
-  currentStep: undefined,
   snapshot: null,
   error: null,
 };
@@ -138,7 +137,6 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
       const update = setMithrilBootstrapStatus({
         status: 'idle',
         progress: 0,
-        currentStep: undefined,
         snapshot: null,
         error: null,
         elapsedSeconds: undefined,

@@ -1,5 +1,3 @@
-import MithrilBootstrap from './MithrilBootstrap';
-import BlockDataStorageLocationPicker from './BlockDataStorageLocationPicker';
-
-export { MithrilBootstrap };
-export { BlockDataStorageLocationPicker };
+export { default } from './MithrilBootstrap';
+export { default as MithrilBootstrap } from './MithrilBootstrap';
+export { default as BlockDataStorageLocationPicker } from './BlockDataStorageLocationPicker';

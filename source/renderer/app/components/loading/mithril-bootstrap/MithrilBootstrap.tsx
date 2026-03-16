@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
 import type {
   MithrilBootstrapStatus,
   MithrilSnapshotItem,
   MithrilBootstrapError,
   ChainStorageValidation,
 } from '../../../../../common/types/mithril-bootstrap.types';
-import messages from './MithrilBootstrap.messages';
 import MithrilDecisionView from './MithrilDecisionView';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
@@ -17,7 +15,6 @@ import styles from './MithrilBootstrap.scss';
 interface Props {
   status: MithrilBootstrapStatus;
   progress: number;
-  currentStep?: string;
   filesDownloaded?: number;
   filesTotal?: number;
   bytesDownloaded?: number;
@@ -53,147 +50,119 @@ interface Props {
   onCancel(): void;
 }
 
-class MithrilBootstrap extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
+const DECISION_STATUSES: Array<MithrilBootstrapStatus> = [
+  'decision',
+  'idle',
+  'cancelled',
+];
 
-  renderStorageLocation() {
-    const {
-      customChainPath,
-      defaultChainPath,
-      defaultChainStorageValidation,
-      chainStorageValidation,
-      latestSnapshotSize,
-      isChainStorageLoading,
-      onSetChainStorageDirectory,
-      onResetChainStorageDirectory,
-      onValidateChainStorageDirectory,
-      onConfirmStorageLocation,
-    } = this.props;
+const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
+  'preparing',
+  'downloading',
+  'unpacking',
+  'finalizing',
+  'converting',
+  'completed',
+];
 
-    return (
-      <div className={styles.card}>
-        <BlockDataStorageLocationPicker
-          customChainPath={customChainPath}
-          defaultChainPath={defaultChainPath}
-          defaultChainStorageValidation={defaultChainStorageValidation}
-          chainStorageValidation={chainStorageValidation}
-          latestSnapshotSize={latestSnapshotSize}
-          isChainStorageLoading={isChainStorageLoading}
-          onSetChainStorageDirectory={onSetChainStorageDirectory}
-          onResetChainStorageDirectory={onResetChainStorageDirectory}
-          onValidateChainStorageDirectory={onValidateChainStorageDirectory}
-          onConfirmStorageLocation={onConfirmStorageLocation}
-        />
-      </div>
+function MithrilBootstrap(props: Props) {
+  const {
+    status,
+    progress,
+    bytesDownloaded,
+    snapshotSize,
+    throughputBps,
+    elapsedSeconds,
+    remainingSeconds,
+    customChainPath,
+    defaultChainPath,
+    defaultChainStorageValidation,
+    chainStorageValidation,
+    latestSnapshotSize,
+    isChainStorageLoading,
+    storageLocationConfirmed,
+    snapshots,
+    selectedDigest,
+    selectedSnapshot,
+    error,
+    isFetchingSnapshots,
+    onOpenExternalLink,
+    onSetChainStorageDirectory,
+    onResetChainStorageDirectory,
+    onValidateChainStorageDirectory,
+    onConfirmStorageLocation,
+    onReturnToStorageLocation,
+    onSelectSnapshot,
+    onAccept,
+    onDecline,
+    onWipeRetry,
+    onCancel,
+  } = props;
+
+  let content = null;
+
+  if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
+    content = (
+      <BlockDataStorageLocationPicker
+        customChainPath={customChainPath}
+        defaultChainPath={defaultChainPath}
+        defaultChainStorageValidation={defaultChainStorageValidation}
+        chainStorageValidation={chainStorageValidation}
+        latestSnapshotSize={latestSnapshotSize}
+        isChainStorageLoading={isChainStorageLoading}
+        onSetChainStorageDirectory={onSetChainStorageDirectory}
+        onResetChainStorageDirectory={onResetChainStorageDirectory}
+        onValidateChainStorageDirectory={onValidateChainStorageDirectory}
+        onConfirmStorageLocation={onConfirmStorageLocation}
+      />
+    );
+  } else if (DECISION_STATUSES.includes(status)) {
+    content = (
+      <MithrilDecisionView
+        snapshots={snapshots}
+        selectedDigest={selectedDigest}
+        selectedSnapshot={selectedSnapshot}
+        isFetchingSnapshots={isFetchingSnapshots}
+        customChainPath={customChainPath}
+        defaultChainPath={defaultChainPath}
+        onSelectSnapshot={onSelectSnapshot}
+        onReturnToStorageLocation={onReturnToStorageLocation}
+        onAccept={onAccept}
+        onDecline={onDecline}
+      />
+    );
+  } else if (WORKING_STATUSES.includes(status)) {
+    content = (
+      <MithrilProgressView
+        status={status}
+        progress={progress}
+        bytesDownloaded={bytesDownloaded}
+        snapshotSize={snapshotSize}
+        throughputBps={throughputBps}
+        elapsedSeconds={elapsedSeconds}
+        remainingSeconds={remainingSeconds}
+        onCancel={onCancel}
+      />
+    );
+  } else if (status === 'failed') {
+    content = (
+      <MithrilErrorView
+        error={error}
+        onOpenExternalLink={onOpenExternalLink}
+        onWipeRetry={onWipeRetry}
+        onDecline={onDecline}
+      />
     );
   }
 
-  renderDecision() {
-    const {
-      snapshots,
-      selectedDigest,
-      selectedSnapshot,
-      isFetchingSnapshots,
-      customChainPath,
-      defaultChainPath,
-      onSelectSnapshot,
-      onReturnToStorageLocation,
-      onAccept,
-      onDecline,
-    } = this.props;
-    return (
-      <div className={styles.card}>
-        <MithrilDecisionView
-          snapshots={snapshots}
-          selectedDigest={selectedDigest}
-          selectedSnapshot={selectedSnapshot}
-          isFetchingSnapshots={isFetchingSnapshots}
-          customChainPath={customChainPath}
-          defaultChainPath={defaultChainPath}
-          onSelectSnapshot={onSelectSnapshot}
-          onReturnToStorageLocation={onReturnToStorageLocation}
-          onAccept={onAccept}
-          onDecline={onDecline}
-        />
+  return (
+    <div className={styles.component}>
+      <div className={styles.backdrop} />
+      <div className={styles.content}>
+        {content && <div className={styles.card}>{content}</div>}
       </div>
-    );
-  }
-
-  renderProgress() {
-    const { intl } = this.context;
-    const {
-      status,
-      progress,
-      currentStep,
-      bytesDownloaded,
-      snapshotSize,
-      throughputBps,
-      elapsedSeconds,
-      remainingSeconds,
-      onCancel,
-    } = this.props;
-    return (
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.title)}</h1>
-          <p>{currentStep || intl.formatMessage(messages.progressLabel)}</p>
-        </div>
-        <MithrilProgressView
-          status={status}
-          progress={progress}
-          bytesDownloaded={bytesDownloaded}
-          snapshotSize={snapshotSize}
-          throughputBps={throughputBps}
-          elapsedSeconds={elapsedSeconds}
-          remainingSeconds={remainingSeconds}
-          onCancel={onCancel}
-        />
-      </div>
-    );
-  }
-
-  renderError() {
-    const { error, onOpenExternalLink, onWipeRetry, onDecline } = this.props;
-    return (
-      <div className={styles.card}>
-        <MithrilErrorView
-          error={error}
-          onOpenExternalLink={onOpenExternalLink}
-          onWipeRetry={onWipeRetry}
-          onDecline={onDecline}
-        />
-      </div>
-    );
-  }
-
-  render() {
-    const { status, storageLocationConfirmed } = this.props;
-    const isDecision =
-      status === 'decision' || status === 'idle' || status === 'cancelled';
-    const isWorking =
-      status === 'preparing' ||
-      status === 'downloading' ||
-      status === 'installing' ||
-      status === 'finalizing' ||
-      status === 'verifying' ||
-      status === 'converting';
-    const isError = status === 'failed';
-    return (
-      <div className={styles.component}>
-        <div className={styles.backdrop} />
-        <div className={styles.content}>
-          {isDecision &&
-            !storageLocationConfirmed &&
-            this.renderStorageLocation()}
-          {isDecision && storageLocationConfirmed && this.renderDecision()}
-          {isWorking && this.renderProgress()}
-          {isError && this.renderError()}
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default observer(MithrilBootstrap);

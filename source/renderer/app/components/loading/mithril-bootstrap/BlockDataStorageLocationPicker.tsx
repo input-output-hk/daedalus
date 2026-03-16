@@ -9,6 +9,7 @@ import SVGInline from 'react-svg-inline';
 import type { ChainStorageValidation } from '../../../../../common/types/mithril-bootstrap.types';
 import type { FileDialogRequestParams } from '../../../../../common/types/file-dialog.types';
 import type { Intl } from '../../../types/i18nTypes';
+import penIcon from '../../../assets/images/pen.inline.svg';
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
 import messages from './MithrilBootstrap.messages';
@@ -179,8 +180,6 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
   };
 
   const currentPath = effectiveSelection.path || defaultChainPath;
-  const pathLabel =
-    currentPath || intl.formatMessage(messages.storageDefaultLocationLabel);
   const displayedValidation =
     selectionValidation != null && !selectionValidation.isValid
       ? selectionValidation
@@ -211,6 +210,15 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
   const isContinueDisabled =
     isBusy || (isCurrentStorageInvalid && !hasValidCandidateOverride);
   const canResetToDefault = effectiveSelection.path != null;
+  const inputClasses = classNames(styles.storageInput, {
+    [styles.error]: validationMessage != null,
+  });
+  const displayedPath =
+    currentPath || intl.formatMessage(messages.storageDefaultLocationLabel);
+  const availableSpace = formatAvailableSpace(
+    intl,
+    effectiveSelection.validation.availableSpaceBytes
+  );
 
   const handleChooseDirectory = async () => {
     if (isBusy || !onValidateChainStorageDirectory) {
@@ -353,26 +361,45 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
         <p>{storageDescription}</p>
       </div>
 
-      <div className={styles.metadataGrid}>
-        <div className={styles.metadataItem}>
-          <span className={styles.metadataLabel}>
-            {intl.formatMessage(messages.storageDirectoryLabel)}
-          </span>
-          <span className={classNames(styles.metadataValue, styles.pathValue)}>
-            {pathLabel}
-          </span>
+      <div className={styles.storageField}>
+        <p className={styles.storageSubtext}>
+          {intl.formatMessage(messages.storageAvailableSpaceSubtext, {
+            availableSpace,
+          })}
+        </p>
+        <div className={styles.storageInputWrapper}>
+          <input
+            type="text"
+            className={inputClasses}
+            value={displayedPath}
+            placeholder={
+              defaultChainPath ||
+              intl.formatMessage(messages.storageDefaultLocationLabel)
+            }
+            readOnly
+          />
+          <button
+            type="button"
+            className={styles.selectDirectoryButton}
+            disabled={isBusy}
+            onClick={handleChooseDirectory}
+            aria-label={intl.formatMessage(messages.storageChooseDirectory)}
+            title={intl.formatMessage(messages.storageChooseDirectory)}
+          >
+            <SVGInline svg={penIcon} className={styles.penIcon} />
+          </button>
         </div>
-
-        <div className={styles.metadataItem}>
-          <span className={styles.metadataLabel}>
-            {intl.formatMessage(messages.storageAvailableSpaceLabel)}
-          </span>
-          <span className={styles.metadataValue}>
-            {formatAvailableSpace(
-              intl,
-              effectiveSelection.validation.availableSpaceBytes
-            )}
-          </span>
+        <div className={styles.resetActionRow}>
+          {canResetToDefault && (
+            <button
+              type="button"
+              className={styles.inlineAction}
+              disabled={isBusy}
+              onClick={handleResetToDefault}
+            >
+              {intl.formatMessage(messages.storageResetToDefault)}
+            </button>
+          )}
         </div>
       </div>
 
@@ -392,28 +419,12 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
 
       <div className={styles.actions}>
         <Button
-          className={styles.secondaryAction}
-          skin={ButtonSkin}
-          disabled={isBusy}
-          label={intl.formatMessage(messages.storageChooseDirectory)}
-          onClick={handleChooseDirectory}
-        />
-        <Button
           className={styles.primaryAction}
           skin={ButtonSkin}
           disabled={isContinueDisabled}
           label={intl.formatMessage(messages.storageContinue)}
           onClick={handleContinue}
         />
-        {canResetToDefault && (
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            disabled={isBusy}
-            label={intl.formatMessage(messages.storageResetToDefault)}
-            onClick={handleResetToDefault}
-          />
-        )}
       </div>
     </div>
   );

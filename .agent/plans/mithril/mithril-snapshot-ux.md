@@ -3,7 +3,7 @@
 ## Overview
 
 - Decompose monolithic `MithrilBootstrap.tsx` into focused sub-components following the `SyncingConnecting` pattern
-- Add multi-step visual stepper modeled on `SyncingProgress`, with an explicit post-download install phase instead of a hidden 90% plateau
+- Add multi-step visual stepper modeled on `SyncingProgress`, then follow it with truthful post-download restore telemetry instead of a hidden 90% plateau
 - Surface download metadata (bytes transferred, throughput, timing)
 - Implement stage-specific error screens
 - Allow custom chain storage location via directory picker with symlink-based redirection
@@ -17,6 +17,10 @@
 - [x] Extend shared types with `filesDownloaded`, `filesTotal` on status updates and `stage` on errors
 - [x] Update progress pipeline to preserve raw file counts and annotate errors with failure stage
 - [x] Add MobX computed properties for `bytesDownloaded` and `throughputBps`
+- [ ] Refine the Mithril service/status model for the planned `preparing -> downloading -> verifying -> finalizing` UX without surfacing Mithril JSON message strings as UI copy
+  - Keep the download-phase progress bar scoped to the file download work and scale it from 0 to 100 inside `downloading`
+  - Transition into `verifying` when the exposed file download work completes
+  - Investigate honest `_installSnapshot()` / `fs.move()` progress exposure for final local install work; fall back to activity-only `finalizing` if measured progress is not reliable
 
 ### Custom Chain Storage Location
 - [x] Add `SET_CHAIN_STORAGE_DIRECTORY_CHANNEL` and `GET_CHAIN_STORAGE_DIRECTORY_CHANNEL` IPC channels
@@ -34,7 +38,7 @@
 - [x] Verify symlink integrity on app startup; warn if broken
 
 ### Component Decomposition
-- [ ] Decompose `MithrilBootstrap.tsx` into 6+ sub-components
+- [x] Decompose `MithrilBootstrap.tsx` into 6+ sub-components
 - [x] Implement multi-step visual stepper with spinner/checkmark/pending states
 - [x] Surface download metadata in progress view
 - [x] Stage-specific error screens with contextual titles, hints, and actions
@@ -43,14 +47,23 @@
   - Download step covers Mithril transfer plus the client's built-in certificate/signature verification
   - Post-download local work centers on `_installSnapshot()` moving/copying the restored DB into `chain` or the resolved custom chain target
   - Transfer stats stop once network download ends; local-processing copy replaces them until follow-up task-024a collapses that work into the single visible finalizing phase
-- [ ] Collapse the visible Mithril progress model to `preparing -> downloading -> finalizing`
+- [x] Collapse the visible Mithril progress model to `preparing -> downloading -> finalizing`
   - Keep Mithril verification inside the download phase and retain `verify` only for error staging
   - Treat `_installSnapshot()` db-to-chain movement plus cleanup/handoff as the single visible finalizing phase
   - Keep the Mithril stepper visible through the end of post-download work instead of switching straight to node sync
-- [ ] Rename install-related post-download state/copy to `unpacking` where internal sub-phases are still needed
+- [x] Rename install-related post-download state/copy to `unpacking` where internal sub-phases are still needed
   - Keep the visible UX mapped to finalizing even if service/message details still distinguish post-download work internally
   - Replace install wording in post-download progress/detail copy so it matches snapshot materialization more closely
-- [ ] Derive localized step labels from `status` in the renderer; do not transport user-facing copy in `currentStep`
+- [x] Derive localized step labels from `status` in the renderer; do not transport user-facing copy in `currentStep`
+- [ ] Promote the planned visible Mithril progress model to `preparing -> downloading -> verifying -> finalizing`
+  - Keep `Downloading` as the label for the determinate transfer phase and reserve the progress bar for that step only
+  - Transition into `Verifying` once the exposed file download completes; keep that step indeterminate unless Mithril later exposes truthful verification progress
+  - Reword Daedalus-side post-download `unpacking` to `installing` where it describes local DB placement work
+- [ ] Investigate `_installSnapshot()` / `fs.move()` progress exposure for finalizing
+  - Prefer honest measured install progress only when it can be derived without inventing percentages for same-device moves, renames, or symlink-target handoff
+  - If explicit install telemetry is not reliable, keep `Finalizing` minimal and indeterminate like `Verifying`
+- [ ] Confirm the extracted i18n messages are appropriate for the exposed `Preparing`, `Downloading`, `Verifying`, and `Finalizing` steps
+  - Do not route Mithril JSON step messages into the renderer as user-facing copy
 - [ ] Add a11y attributes (`role="progressbar"`, `aria-live`, `aria-label`, keyboard nav)
 - [x] `BlockDataStorageLocationPicker` as first screen in bootstrap flow (before decision view)
   - Shows current path, available space, validation feedback
@@ -85,6 +98,7 @@
 
 **Shared Types:**
 - `source/common/types/mithril-bootstrap.types.ts` - Add file counts to status, stage to errors, chain storage types
+- Follow-up Phase 6 extends Mithril status payloads again to support a visible `verifying` phase and any honest local-install telemetry that can be measured during finalizing without depending on Mithril JSON message strings for UI copy
 
 **Main Process:**
 - `source/main/mithril/mithrilProgress.ts` - Preserve raw file counts
@@ -157,15 +171,27 @@ components/loading/mithril-bootstrap/
 
 ### Step Indicator Design
 
-Progress steps should reflect real backend work rather than synthetic status flips:
-- `preparing` - preflight setup before invoking Mithril download
-- `downloading` - Mithril transfer plus the client-side certificate/signature verification performed by `cardano-db download`
-- `finalizing` - post-download local work, including `_installSnapshot()` moving/copying the restored DB into `{stateDir}/chain` or the resolved custom chain target, followed by cleanup and handoff before node startup resumes
-- Active step: spinner SVG + progress percentage when meaningful
+Phase 6 follow-up target:
+- `preparing` - local preflight work before file transfer is underway
+- `downloading` - the exposed Mithril file transfer phase only; show the determinate progress bar here and scale it from 0 to 100 within the step
+- `verifying` - begins once the exposed file download completes; use localized verifying copy with no determinate progress bar
+- `finalizing` - Daedalus local install and cleanup/handoff work after Mithril exits; rename local `unpacking` wording to `installing` where that is the user-visible concept
+- Active step: spinner SVG + progress percentage only when the step has truthful determinate progress
 - Completed step: checkmark SVG
 - Pending step: dimmed circle
-- Download step shows bytes (e.g., "2.1 GB / 8.4 GB") and throughput ("12.3 MB/s")
-- Finalizing replaces transfer stats with stage-specific local-processing copy
+- Download step keeps estimated bytes, throughput, and elapsed/remaining timing metadata
+- Verifying and finalizing replace transfer stats with localized activity copy unless explicit install telemetry proves reliable enough to expose
+- Do not use Mithril JSON step messages as labels; keep renderer copy fully localized
+
+### Post-download Telemetry Strategy
+
+- Downloading should remain the only determinate progress step. Keep the existing bytes display as an estimate derived from exposed file progress and snapshot size.
+- Transition from `downloading` into `verifying` when the exposed file download work completes; keep verifying indeterminate unless Mithril later exposes a truthful verification metric.
+- Do not use Mithril JSON `message` strings as renderer copy. If service-side phase detection consumes Mithril JSON, rely on structured signals and keep UI text localized.
+- Investigate `_installSnapshot()` and cleanup/handoff instrumentation so finalizing can expose honest local install progress where possible.
+- If `fs.move()` progress cannot be exposed honestly across the relevant move/copy paths, keep finalizing minimal and activity-only rather than fabricating percentages.
+- Destination-size polling remains fallback-only and should not be the default UX contract.
+- Renderer fallback should remain explicit state copy plus elapsed time whenever the backend can only emit activity state temporarily, but the target outcome is real local restore telemetry rather than estimated progress.
 
 ### Error View Design
 
@@ -261,24 +287,29 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 27a. Return from decision view to BlockDataStorageLocationPicker
 28. Slim down root MithrilBootstrap.tsx
 
-### Phase 6: Theming (follow theme-management skill)
-29. Migrate SCSS to theme variables
-30. Add variables to createTheme
-31. Run theme validation and update
-32. Regenerate SCSS type definitions
+### Phase 6: Verifying & Finalizing UX Follow-up
+29. Refine Mithril service/status boundaries for `preparing -> downloading -> verifying -> finalizing`
+30. Wire the 4-step progress UI so only `downloading` shows a 0-100 progress bar with estimated transfer metadata, and confirm extracted i18n copy remains appropriate for the exposed steps
+31. Investigate honest `_installSnapshot()` / `fs.move()` progress exposure for finalizing and add focused backend/renderer coverage for both measured-progress and activity-only fallback behavior
 
-### Phase 7: Accessibility & Storybook (follow storybook-creation skill)
-33. Add a11y attributes
-34. Storybook stories - Decision and Storage states
-35. Storybook stories - Progress and Error states
-36. Register stories in barrel file
+### Phase 7: Theming (follow theme-management skill)
+32. Migrate SCSS to theme variables
+33. Add variables to createTheme
+34. Run theme validation and update
+35. Regenerate SCSS type definitions
 
-### Phase 8: E2E Tests (follow e2e-test-creation skill)
-37. Create E2E feature file
-38. Write step definitions
+### Phase 8: Accessibility & Storybook (follow storybook-creation skill)
+36. Add a11y attributes
+37. Storybook stories - Decision and Storage states
+38. Storybook stories - Progress and Error states
+39. Register stories in barrel file
 
-### Phase 9: Verification
-39. Run full suite: compile, lint, prettier, themes, i18n, jest, storybook, typedef:sass
+### Phase 9: E2E Tests (follow e2e-test-creation skill)
+40. Create E2E feature file
+41. Write step definitions
+
+### Phase 10: Verification
+42. Run full suite: compile, lint, prettier, themes, i18n, jest, storybook, typedef:sass
 
 ## Testing Strategy
 
@@ -294,7 +325,7 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 | Decision screen displays | Snapshot selector and details render |
 | Accept bootstrap | Transition to preparing/downloading |
 | Decline bootstrap | Alternative sync path |
-| Progress stages advance | Step indicator transitions through preparing, download, and finalizing without a hidden 90% stall |
+| Progress stages advance | Step indicator stays on downloading through late verification copy, then transitions into finalizing with truthful local restore telemetry instead of a hidden 90% stall |
 | Error screen displays | Stage-specific messaging |
 | Cancel during progress | Return to decision or sync |
 | Storage location change | Select external directory, verify symlink |
@@ -314,8 +345,9 @@ E2E coverage should follow the repo's backend-integrated pattern: drive the real
 | Progress - Preparing | `progress: 5` |
 | Progress - Downloading (early) | `progress: 15`, partial bytes |
 | Progress - Downloading (mid) | `progress: 55`, bytes + throughput |
-| Progress - Finalizing (early) | `progress: 92.5`, local-processing copy |
-| Progress - Finalizing (late) | `progress: 97.5`, cleanup/handoff |
+| Progress - Downloading (late verification) | `status: downloading`, high progress, verification copy, transfer metadata may stop updating |
+| Progress - Finalizing (active restore) | local restore telemetry active |
+| Progress - Finalizing (late) | cleanup/handoff |
 | Error - Download Failed | `error.stage: 'download'` |
 | Error - Verify Failed | `error.stage: 'verify'` |
 | Error - Convert Failed | `error.stage: 'convert'` |
@@ -353,7 +385,8 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 13. **Visible phase model:** Use a 3-step Mithril progress UX: `preparing`, `downloading`, and `finalizing`. Verification stays inside the download phase, while `_installSnapshot()` and cleanup/handoff are grouped under finalizing.
 14. **Post-download naming:** Where service-level or message-level sub-phases are still needed after download, prefer `unpacking` over `installing`; renderer still maps that work into the visible finalizing step.
 15. **Step labels:** Renderer components derive localized labels from `status`; do not transport user-facing step copy in `currentStep`.
-16. **Snapshot digest copy:** Defer copy-to-clipboard support to a follow-up iteration.
+16. **Post-download telemetry:** Preferred fix is explicit backend instrumentation of `_installSnapshot()` and cleanup/handoff so finalizing exposes real local restore telemetry; do not fake verification percentages or rely on destination-size polling unless instrumentation is blocked.
+17. **Snapshot digest copy:** Defer copy-to-clipboard support to a follow-up iteration.
 
 ## Rollout Plan
 - UX refinement of existing functionality; no feature flags needed
@@ -361,7 +394,7 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - Light-theme differentiation deferred to a future PR
 
 ## Open Questions
-- Migration progress: progress bar (requires monitoring fs.move) or spinner with estimate?
+- Once explicit local restore telemetry lands, should finalizing surface bytes, files, or both in the metadata row?
 - External drive disconnection while running: immediate error, periodic health check, or passive failure?
 - Theme createTheme structure: add `mithril` section key in theme output, or through createTheme params?
 
@@ -416,6 +449,12 @@ Walk through full bootstrap flow in dev mode (`yarn dev`):
 - [2026-03-12] Renamed the planning references for the generic blockchain-data picker to `BlockDataStorageLocationPicker` and updated the documented target file names accordingly.
 - [2026-03-12] Updated the storage picker recommendation plan so it uses the latest available snapshot size when loaded and otherwise falls back to a generic large-space warning; added a follow-up task for returning from the Mithril decision view to the storage picker.
 - [2026-03-12] Completed task-023c by adding a decision-screen action that returns users to `BlockDataStorageLocationPicker`, backed by an explicit store action and focused renderer/store test coverage.
+- [2026-03-12] Completed task-024 by slimming `MithrilBootstrap.tsx` down to a single overlay shell with one delegated content branch, moving the progress heading into `MithrilProgressView`, and switching the container to the mithril-bootstrap barrel export.
+- [2026-03-12] Completed task-024a by collapsing the visible Mithril progress flow to Preparing, Downloading, and Finalizing, with post-download install/conversion work emitted as finalizing while the overlay stays up through local handoff.
+- [2026-03-12] Completed task-024b by renaming the remaining post-download install wording to unpacking in Mithril service/status copy, progress detail messaging, and extracted translations while keeping the visible UX on the finalizing step.
+- [2026-03-12] Completed task-024c by removing `currentStep` from Mithril status updates, emitting `unpacking`/`converting` as internal progress statuses from main, and deriving localized progress headings/details from `status` in the renderer with focused service/store/component coverage.
+- [2026-03-13] Follow-up refinement: flattened the progress stepper into a horizontal row, removed redundant status-box metadata, switched the late-download copy to verification/unpacking language, kept the overlay mounted through completed handoff, and fixed accepted-bootstrap polling so post-download work no longer snaps back to the storage picker mid-bootstrap.
+- [2026-03-13] Added a dedicated Phase 6 follow-up plan for the remaining 90% plateau gap: keep verification as state-only copy inside `downloading`, and prefer explicit backend instrumentation of post-download local restore work over destination-size polling so finalizing can expose real telemetry.
 - [2026-03-11] Captured a Phase 5 cleanup follow-up for the 90% plateau: Mithril verification already happens inside `cardano-db download`, while the long post-download work is `_installSnapshot()` moving/copying DB files into `chain`, so the visible UX should collapse to a single finalizing phase after download.
 - [2026-03-11] Completed task-021a: Mithril bootstrap now transitions from `downloading` into explicit `installing` and `finalizing` phases, clears stale transfer metrics after network download, and shows local-processing copy instead of frozen bandwidth stats during post-download work; follow-up task-024a will collapse that post-download work into one visible finalizing phase before node-sync handoff.
 - [2026-03-11] Added follow-up tasks 024a/024b: finish the 3-step visible model (`preparing -> downloading -> finalizing`) and remove `currentStep` as display transport so renderer labels come from status.

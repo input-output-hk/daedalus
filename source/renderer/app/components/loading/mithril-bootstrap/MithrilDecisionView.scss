@@ -57,13 +57,14 @@
 }
 
 .locationAction {
-  color: rgba(214, 223, 234, 0.94);
+  color: rgba(129, 219, 194, 0.96);
   flex: 0 0 auto;
   font-size: 13px;
-  text-decoration: underline;
+  font-family: var(--font-medium);
+  text-decoration: none;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.98);
+    color: rgba(180, 240, 221, 0.98);
   }
 }
 

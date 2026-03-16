@@ -72,13 +72,12 @@ describe('MithrilBootstrapStore', () => {
     expect(store.throughputBps).toBe(300);
   });
 
-  it('clears transient progress metadata when download transitions into installing', async () => {
+  it('clears transient progress metadata when download transitions into unpacking', async () => {
     const store = setupStore();
 
     await store._updateStatus({
       status: 'downloading',
       progress: 50,
-      currentStep: 'Downloading snapshot',
       snapshot: {
         digest: 'snapshot-3',
         createdAt: '2026-03-06T12:00:00.000Z',
@@ -91,9 +90,8 @@ describe('MithrilBootstrapStore', () => {
     });
 
     await store._updateStatus({
-      status: 'installing',
+      status: 'unpacking',
       progress: 92.5,
-      currentStep: 'Installing Mithril snapshot',
       filesDownloaded: undefined,
       filesTotal: undefined,
       elapsedSeconds: undefined,
@@ -101,7 +99,7 @@ describe('MithrilBootstrapStore', () => {
       error: null,
     });
 
-    expect(store.currentStep).toBe('Installing Mithril snapshot');
+    expect(store.status).toBe('unpacking');
     expect(store.filesDownloaded).toBeUndefined();
     expect(store.filesTotal).toBeUndefined();
     expect(store.elapsedSeconds).toBeUndefined();

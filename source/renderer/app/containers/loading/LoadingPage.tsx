@@ -52,10 +52,10 @@ class LoadingPage extends Component<InjectedProps> {
     const activeStatuses = [
       'preparing',
       'downloading',
-      'installing',
+      'unpacking',
       'finalizing',
-      'verifying',
       'converting',
+      'completed',
       'failed',
     ];
     return activeStatuses.includes(mithrilBootstrap.status);

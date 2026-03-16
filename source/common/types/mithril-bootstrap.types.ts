@@ -5,9 +5,8 @@ export type MithrilBootstrapStatus =
   | 'decision'
   | 'preparing'
   | 'downloading'
-  | 'installing'
+  | 'unpacking'
   | 'finalizing'
-  | 'verifying'
   | 'converting'
   | 'completed'
   | 'failed'
@@ -37,7 +36,6 @@ export type MithrilBootstrapError = {
 export type MithrilBootstrapStatusUpdate = {
   status: MithrilBootstrapStatus;
   progress: number;
-  currentStep?: string;
   snapshot?: MithrilSnapshotItem | null;
   filesDownloaded?: number;
   filesTotal?: number;
