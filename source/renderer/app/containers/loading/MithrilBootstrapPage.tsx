@@ -155,6 +155,13 @@ class MithrilBootstrapPage extends Component<Props> {
         onDecline={this.handleDecline}
         onWipeRetry={this.handleWipeRetry}
         onCancel={this.handleCancel}
+        ancillaryBytesDownloaded={mithrilBootstrap.ancillaryBytesDownloaded}
+        ancillaryBytesTotal={mithrilBootstrap.ancillaryBytesTotal}
+        ancillaryElapsedSeconds={mithrilBootstrap.ancillaryElapsedSeconds}
+        ancillaryRemainingSeconds={mithrilBootstrap.ancillaryRemainingSeconds}
+        ancillaryProgress={mithrilBootstrap.ancillaryProgress}
+        progressItems={mithrilBootstrap.progressItems}
+        overallElapsedSeconds={mithrilBootstrap.overallElapsedSeconds}
       />
     );
   }

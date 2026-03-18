@@ -489,4 +489,95 @@ export default defineMessages({
     description:
       'Fallback validation message when chain storage validation fails for an unknown reason.',
   },
+  progressDiskCheck: {
+    id: 'loading.mithrilBootstrap.progress.diskCheck',
+    defaultMessage: '!!!Checking local disk info',
+    description:
+      'Label for Mithril progress step 1 (mithril-client disk-check step).',
+  },
+  progressCertificateChain: {
+    id: 'loading.mithrilBootstrap.progress.certificateChain',
+    defaultMessage: '!!!Fetching certificate chain',
+    description:
+      'Label for Mithril progress step 2 (mithril-client certificate-chain step).',
+  },
+  progressDownloadingSnapshot: {
+    id: 'loading.mithrilBootstrap.progress.downloadingSnapshot',
+    defaultMessage: '!!!Downloading snapshot data',
+    description:
+      'Label for Mithril progress step 3 (mithril-client downloading-snapshot step).',
+  },
+  progressVerifyingDigests: {
+    id: 'loading.mithrilBootstrap.progress.verifyingDigests',
+    defaultMessage: '!!!Verifying snapshot digests',
+    description:
+      'Label for Mithril progress step 4 (mithril-client verifying-digests step).',
+  },
+  progressVerifyingDatabase: {
+    id: 'loading.mithrilBootstrap.progress.verifyingDatabase',
+    defaultMessage: '!!!Verifying database integrity',
+    description:
+      'Label for Mithril progress step 5 (mithril-client verifying-database step).',
+  },
+  progressComputingMessage: {
+    id: 'loading.mithrilBootstrap.progress.computingMessage',
+    defaultMessage: '!!!Computing verification message',
+    description:
+      'Label for Mithril progress step 6 (mithril-client computing-message step).',
+  },
+  progressVerifyingSignature: {
+    id: 'loading.mithrilBootstrap.progress.verifyingSignature',
+    defaultMessage: '!!!Verifying snapshot signature',
+    description:
+      'Label for Mithril progress step 7 (mithril-client verifying-signature step).',
+  },
+  progressInstallSnapshot: {
+    id: 'loading.mithrilBootstrap.progress.installSnapshot',
+    defaultMessage: '!!!Moving snapshot to storage',
+    description:
+      'Label for Mithril progress install-snapshot finalizing step (moving/restoring snapshot to blockchain storage).',
+  },
+  progressCleanup: {
+    id: 'loading.mithrilBootstrap.progress.cleanup',
+    defaultMessage: '!!!Cleaning up bootstrap files',
+    description:
+      'Label for Mithril progress cleanup finalizing step (removing bootstrap temporary files).',
+  },
+  progressConversion: {
+    id: 'loading.mithrilBootstrap.progress.conversion',
+    defaultMessage: '!!!Converting snapshot format',
+    description:
+      'Label for Mithril progress conversion finalizing step (only shown if format conversion is needed). Conversion-phase label only.',
+  },
+  progressSnapshotFilesLabel: {
+    id: 'loading.mithrilBootstrap.progress.snapshotFilesLabel',
+    defaultMessage: '!!!Snapshot files',
+    description:
+      'Label for snapshot files progress bar during main snapshot download.',
+  },
+  progressFastSyncLabel: {
+    id: 'loading.mithrilBootstrap.progress.fastSyncLabel',
+    defaultMessage: '!!!Fast State Sync',
+    description:
+      'Label for fast sync data progress bar during concurrent fast sync downloads.',
+  },
+  progressFastSyncDownloaded: {
+    id: 'loading.mithrilBootstrap.progress.fastSyncDownloaded',
+    defaultMessage: '!!!Fast State Sync downloaded',
+    description:
+      'Label for the amount of fast sync data downloaded metadata value.',
+  },
+  nodeStartingTitle: {
+    id: 'loading.mithrilBootstrap.progress.nodeStartingTitle',
+    defaultMessage: '!!!Starting cardano-node',
+    description:
+      'Title shown during the 3-second completion delay after Mithril snapshot restore, while cardano-node is starting to complete remaining sync.',
+  },
+  nodeStartingDetail: {
+    id: 'loading.mithrilBootstrap.progress.nodeStartingDetail',
+    defaultMessage:
+      '!!!The Mithril snapshot has been restored. Cardano-node is starting up to complete the remaining sync.',
+    description:
+      'Detail copy shown during the 3-second completion delay while cardano-node is starting after Mithril restore.',
+  },
 });

@@ -6,7 +6,9 @@ import translations from '../../../i18n/locales/en-US.json';
 import MithrilStepIndicator from './MithrilStepIndicator';
 
 describe('MithrilStepIndicator', () => {
-  const renderComponent = (status = 'finalizing' as const) =>
+  const renderComponent = (
+    status: import('../../../../../common/types/mithril-bootstrap.types').MithrilBootstrapStatus = 'finalizing'
+  ) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilStepIndicator status={status} />

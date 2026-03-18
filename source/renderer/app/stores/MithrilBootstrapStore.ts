@@ -7,6 +7,7 @@ import type {
   MithrilBootstrapError,
   MithrilBootstrapDecision,
   ChainStorageValidation,
+  MithrilProgressItem,
 } from '../../../common/types/mithril-bootstrap.types';
 import {
   mithrilBootstrapDecisionChannel,
@@ -31,6 +32,13 @@ const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
 
 const isDecisionCycleStatus = (status: MithrilBootstrapStatus) =>
   status === 'decision' || status === 'idle' || status === 'cancelled';
+
+const isWorkingStatus = (status: MithrilBootstrapStatus) =>
+  status === 'preparing' ||
+  status === 'downloading' ||
+  status === 'unpacking' ||
+  status === 'converting' ||
+  status === 'finalizing';
 
 export default class MithrilBootstrapStore extends Store {
   @observable status: MithrilBootstrapStatus = DEFAULT_STATUS.status;
@@ -60,6 +68,14 @@ export default class MithrilBootstrapStore extends Store {
   };
   @observable isChainStorageLoading = false;
   @observable storageLocationConfirmed = false;
+  @observable ancillaryBytesDownloaded: number | undefined = undefined;
+  @observable ancillaryBytesTotal: number | undefined = undefined;
+  @observable ancillaryElapsedSeconds: number | undefined = undefined;
+  @observable ancillaryRemainingSeconds: number | undefined = undefined;
+  @observable progressItems: MithrilProgressItem[] = [];
+  @observable bootstrapStartedAt: number | null = null;
+  @observable private _timerTick = 0;
+  private _timerInterval: ReturnType<typeof setInterval> | null = null;
 
   @computed
   get bytesDownloaded(): number | undefined {
@@ -97,6 +113,44 @@ export default class MithrilBootstrapStore extends Store {
     return this.bytesDownloaded / this.elapsedSeconds;
   }
 
+  @computed
+  get ancillaryProgress(): number | undefined {
+    if (
+      this.ancillaryBytesDownloaded == null ||
+      this.ancillaryBytesTotal == null ||
+      this.ancillaryBytesTotal <= 0
+    ) {
+      return undefined;
+    }
+    return (this.ancillaryBytesDownloaded / this.ancillaryBytesTotal) * 100;
+  }
+
+  @computed
+  get overallElapsedSeconds(): number | undefined {
+    if (this.bootstrapStartedAt == null) return undefined;
+    // Reference _timerTick to trigger recomputation every second
+    const now = this._timerTick || Date.now();
+    return Math.max(0, Math.floor((now - this.bootstrapStartedAt) / 1000));
+  }
+
+  private _startElapsedTimer() {
+    if (this._timerInterval != null) return;
+    this._timerInterval = setInterval(
+      action('elapsed-timer-tick', () => {
+        this._timerTick = Date.now();
+      }),
+      1000
+    );
+  }
+
+  private _stopElapsedTimer() {
+    if (this._timerInterval != null) {
+      clearInterval(this._timerInterval);
+      this._timerInterval = null;
+    }
+    this._timerTick = 0;
+  }
+
   setup() {
     mithrilBootstrapStatusChannel.onReceive(this._updateStatus);
     this.syncStatus().catch((error) => {
@@ -114,9 +168,7 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   syncStatus = async () => {
-    const status =
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
-      await mithrilBootstrapStatusChannel.request();
+    const status = await mithrilBootstrapStatusChannel.request();
     this._updateStatus(status);
   };
 
@@ -124,11 +176,53 @@ export default class MithrilBootstrapStore extends Store {
   _updateStatus = (update: MithrilBootstrapStatusUpdate): Promise<void> => {
     const previousStatus = this.status;
     this.status = update.status;
+    // Defense-in-depth: clear stale ancillary/progress state when starting a
+    // fresh bootstrap run after a terminal status (failed/completed).
+    // This handles the case where the decision-cycle guard does not fire
+    // (e.g. failed → preparing without going through idle/decision).
+    if (
+      this.status === 'preparing' &&
+      (previousStatus === 'failed' || previousStatus === 'completed')
+    ) {
+      this.ancillaryBytesDownloaded = undefined;
+      this.ancillaryBytesTotal = undefined;
+      this.ancillaryElapsedSeconds = undefined;
+      this.ancillaryRemainingSeconds = undefined;
+      this.progressItems = [];
+      this.bootstrapStartedAt = null;
+      this._stopElapsedTimer();
+    }
+    // Start elapsed timer when entering a working status
+    if (isWorkingStatus(this.status) && this.bootstrapStartedAt == null) {
+      const backendElapsed = update.elapsedSeconds;
+      this.bootstrapStartedAt =
+        typeof backendElapsed === 'number' &&
+        Number.isFinite(backendElapsed) &&
+        backendElapsed > 0
+          ? Date.now() - backendElapsed * 1000
+          : Date.now();
+      this._startElapsedTimer();
+    }
+    // Stop timer on terminal statuses
+    if (
+      this.status === 'completed' ||
+      this.status === 'failed' ||
+      this.status === 'cancelled'
+    ) {
+      this._stopElapsedTimer();
+    }
     if (
       isDecisionCycleStatus(this.status) &&
       !isDecisionCycleStatus(previousStatus)
     ) {
       this.storageLocationConfirmed = false;
+      this.ancillaryBytesDownloaded = undefined;
+      this.ancillaryBytesTotal = undefined;
+      this.ancillaryElapsedSeconds = undefined;
+      this.ancillaryRemainingSeconds = undefined;
+      this.progressItems = [];
+      this.bootstrapStartedAt = null;
+      this._stopElapsedTimer();
     }
     if (typeof update.progress === 'number') {
       this.progress = update.progress;
@@ -148,6 +242,21 @@ export default class MithrilBootstrapStore extends Store {
     if ('remainingSeconds' in update) {
       this.remainingSeconds = update.remainingSeconds;
     }
+    if ('ancillaryBytesDownloaded' in update) {
+      this.ancillaryBytesDownloaded = update.ancillaryBytesDownloaded;
+    }
+    if ('ancillaryBytesTotal' in update) {
+      this.ancillaryBytesTotal = update.ancillaryBytesTotal;
+    }
+    if ('ancillaryElapsedSeconds' in update) {
+      this.ancillaryElapsedSeconds = update.ancillaryElapsedSeconds;
+    }
+    if ('ancillaryRemainingSeconds' in update) {
+      this.ancillaryRemainingSeconds = update.ancillaryRemainingSeconds;
+    }
+    if ('progressItems' in update && update.progressItems != null) {
+      this.progressItems = update.progressItems;
+    }
     if ('error' in update) {
       this.error = update.error ?? null;
     }
@@ -158,9 +267,7 @@ export default class MithrilBootstrapStore extends Store {
   loadSnapshots = async () => {
     this.isFetchingSnapshots = true;
     try {
-      const snapshots =
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
-        await mithrilBootstrapSnapshotsChannel.request();
+      const snapshots = await mithrilBootstrapSnapshotsChannel.request();
       runInAction('load Mithril snapshots', () => {
         this.snapshots = snapshots || [];
       });
@@ -175,7 +282,6 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   setDecision = async (decision: MithrilBootstrapDecision) => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
     await mithrilBootstrapDecisionChannel.request({ decision });
   };
 
@@ -186,7 +292,6 @@ export default class MithrilBootstrapStore extends Store {
       wipeChain?: boolean;
     }
   ) => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
     await mithrilBootstrapStartChannel.request({
       digest,
       wipeChain: options?.wipeChain,
@@ -195,7 +300,6 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   cancelBootstrap = async () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
     await mithrilBootstrapCancelChannel.request();
   };
 
@@ -203,9 +307,7 @@ export default class MithrilBootstrapStore extends Store {
   loadChainStorageConfig = async () => {
     this.isChainStorageLoading = true;
     try {
-      const config =
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 0.
-        await getChainStorageDirectoryChannel.request();
+      const config = await getChainStorageDirectoryChannel.request();
 
       const defaultValidation: ChainStorageValidation = {
         isValid: true,
@@ -217,8 +319,7 @@ export default class MithrilBootstrapStore extends Store {
 
       const validation =
         config?.customPath != null
-          ? // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
-            await validateChainStorageDirectoryChannel.request({
+          ? await validateChainStorageDirectoryChannel.request({
               path: config.customPath,
             })
           : defaultValidation;
@@ -248,9 +349,9 @@ export default class MithrilBootstrapStore extends Store {
     this.isChainStorageLoading = true;
 
     try {
-      const validation =
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
-        await setChainStorageDirectoryChannel.request({ path });
+      const validation = await setChainStorageDirectoryChannel.request({
+        path,
+      });
 
       runInAction('set chain storage directory', () => {
         this.chainStorageValidation = validation;
@@ -279,10 +380,7 @@ export default class MithrilBootstrapStore extends Store {
   @action
   validateChainStorageDirectory = async (path: string) => {
     try {
-      return (
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1-3 arguments, but got 1.
-        await validateChainStorageDirectoryChannel.request({ path })
-      );
+      return await validateChainStorageDirectoryChannel.request({ path });
     } catch (error) {
       logger.warn(
         'MithrilBootstrapStore: failed to validate chain storage directory',

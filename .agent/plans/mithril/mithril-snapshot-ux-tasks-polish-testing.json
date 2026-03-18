@@ -1,0 +1,193 @@
+{
+  "metadata": {
+    "title": "Mithril Snapshot UX - Polish & Testing Tasks",
+    "created": "2026-03-03",
+    "updated": "2026-03-16",
+    "version": "2.0.0",
+    "totalTasks": 11,
+    "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
+    "description": "Theming, accessibility, Storybook stories, E2E tests, and final verification for Mithril snapshot UX"
+  },
+  "phases": [
+    {
+      "id": "phase-7",
+      "name": "Theming & Styling",
+      "description": "Migrate hardcoded colors to CSS theme variables. Follow theme-management skill.",
+      "skill": "theme-management",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-025",
+          "title": "Migrate SCSS to theme variables",
+          "description": "Replace hardcoded backdrop/card/text/button colors with --theme-mithril-* CSS custom properties",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-024e"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        },
+        {
+          "id": "task-026",
+          "title": "Add theme variables to createTheme",
+          "description": "Add --theme-mithril-* variables to createTheme with light and dark values. Do NOT manually edit theme output files.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-025"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/themes/utils/constants.ts"
+        },
+        {
+          "id": "task-027",
+          "title": "Run theme validation and update",
+          "description": "Run 'yarn themes:check:createTheme' then 'yarn themes:update' to propagate to all theme files",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-026"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/themes/daedalus/"
+        },
+        {
+          "id": "task-028",
+          "title": "Regenerate SCSS type definitions",
+          "description": "Run 'yarn typedef:sass' to regenerate .scss.d.ts files",
+          "status": "pending",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-025"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "name": "Accessibility & Storybook",
+      "description": "Add a11y attributes and Storybook coverage. Follow storybook-creation skill.",
+      "skill": "storybook-creation",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-029",
+          "title": "Add accessibility attributes",
+          "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live on step indicator, aria-label on interactive elements, keyboard nav",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-024e"],
+          "completedAt": null,
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        },
+        {
+          "id": "task-030a",
+          "title": "Storybook stories - Decision and Storage",
+          "description": "Stories for: Decision (loading, with snapshots, selected snapshot), Storage (default path, custom path, validation error, migrating). Follow storybook-creation skill.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-024e"],
+          "completedAt": null,
+          "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
+        },
+        {
+          "id": "task-030b",
+          "title": "Storybook stories - Progress and Error",
+          "description": "Stories for: Progress (preparing, downloading early/mid, downloading late-verifying copy, finalizing with local telemetry), Error (download, verify, convert, node-start). Follow storybook-creation skill.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-030a"],
+          "completedAt": null,
+          "targetPath": "storybook/stories/loading/MithrilBootstrap.stories.tsx"
+        },
+        {
+          "id": "task-031",
+          "title": "Register stories in barrel file",
+          "description": "Add loading/ domain directory and import to storybook/stories/index.ts",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-030b"],
+          "completedAt": null,
+          "targetPath": "storybook/stories/index.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "name": "E2E Tests",
+      "description": "Cucumber BDD tests for Mithril bootstrap flow using the repo's backend-integrated app-flow pattern. Follow e2e-test-creation skill.",
+      "skill": "e2e-test-creation",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-032",
+          "title": "Create E2E feature file",
+          "description": "Gherkin scenarios with @e2e tag covering decision screen (accept/decline bootstrap), progress stage advancement and cancel, error stage-specific messaging, and storage location (change, reset, insufficient space, disabled during sync). Exercise the real app/bootstrap flow using the repo's existing backend-integrated E2E pattern rather than direct Mithril store-state seeding.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": ["task-024e"],
+          "completedAt": null,
+          "targetPath": "tests/mithril/e2e/features/mithril-bootstrap.feature"
+        },
+        {
+          "id": "task-033",
+          "title": "Write E2E step definitions",
+          "description": "Step definitions with SELECTORS const for CSS classes, async functions, Chai assertions, and repo-style E2E helpers/browser-context execution where needed for setup or assertions. Avoid direct Mithril store-state forcing for the primary flow. Follow e2e-test-creation skill.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-032"],
+          "completedAt": null,
+          "targetPath": "tests/mithril/e2e/steps/mithril-bootstrap.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-10",
+      "name": "Verification",
+      "description": "Run all checks and verify correctness",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-034",
+          "title": "Run verification suite",
+          "description": "Run: yarn compile, yarn lint, yarn prettier:check, yarn themes:check:createTheme, yarn i18n:manage, yarn test:jest, yarn storybook, yarn typedef:sass",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-005",
+            "task-016",
+            "task-021a",
+            "task-024f",
+            "task-027",
+            "task-028",
+            "task-029",
+            "task-031",
+            "task-033",
+            "task-014"
+          ],
+          "completedAt": null,
+          "targetPath": null
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 11,
+    "criticalPath": [
+      "task-025",
+      "task-026",
+      "task-027",
+      "task-030a",
+      "task-030b",
+      "task-031",
+      "task-034"
+    ]
+  }
+}

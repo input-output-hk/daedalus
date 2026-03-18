@@ -15,8 +15,7 @@ import styles from './MithrilErrorView.scss';
 
 interface Props {
   error?: MithrilBootstrapError | null;
-  // eslint-disable-next-line no-unused-vars
-  onOpenExternalLink?: (url: string) => void;
+  onOpenExternalLink?: (_url: string) => void;
   onWipeRetry(): void;
   onDecline(): void;
 }

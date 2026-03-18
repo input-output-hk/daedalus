@@ -1,5 +1,18 @@
 export type MithrilBootstrapDecision = 'accept' | 'decline';
 
+export type MithrilProgressItemState =
+  | 'pending'
+  | 'active'
+  | 'completed'
+  | 'error';
+
+export type MithrilProgressItem = {
+  id: string;
+  label: string;
+  state: MithrilProgressItemState;
+  timestamp?: string;
+};
+
 export type MithrilBootstrapStatus =
   | 'idle'
   | 'decision'
@@ -42,6 +55,11 @@ export type MithrilBootstrapStatusUpdate = {
   elapsedSeconds?: number;
   remainingSeconds?: number;
   error?: MithrilBootstrapError | null;
+  ancillaryBytesDownloaded?: number;
+  ancillaryBytesTotal?: number;
+  ancillaryElapsedSeconds?: number;
+  ancillaryRemainingSeconds?: number;
+  progressItems?: MithrilProgressItem[];
 };
 
 export type ChainStorageConfig = {

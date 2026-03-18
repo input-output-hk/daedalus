@@ -1,7 +1,5 @@
-import path from 'path';
 import classNames from 'classnames';
 import React from 'react';
-import prettysize from 'prettysize';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -14,6 +12,13 @@ import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
 import messages from './MithrilBootstrap.messages';
 import styles from './BlockDataStorageLocationPicker.scss';
+import {
+  formatStorageSize,
+  formatAvailableSpace,
+  getValidationMessage,
+  pathsAreEqual,
+  createDefaultValidation,
+} from './storagePickerUtils';
 
 interface Props {
   customChainPath?: string | null;
@@ -38,85 +43,6 @@ type StorageCandidate = {
   path: string | null;
   validation: ChainStorageValidation;
 };
-
-const formatStorageSize = (sizeBytes?: number): string | null => {
-  if (sizeBytes == null || Number.isNaN(sizeBytes)) {
-    return null;
-  }
-
-  return prettysize(sizeBytes);
-};
-
-const formatAvailableSpace = (
-  intl: Intl,
-  availableSpaceBytes?: number
-): string => {
-  const formattedSize = formatStorageSize(availableSpaceBytes);
-
-  if (formattedSize == null) {
-    return intl.formatMessage(messages.storageAvailableSpaceUnknown);
-  }
-
-  return formattedSize;
-};
-
-const getValidationMessage = (
-  intl: Intl,
-  validation?: ChainStorageValidation
-): string | null => {
-  if (!validation || validation.isValid) {
-    return null;
-  }
-
-  switch (validation.reason) {
-    case 'path-not-found':
-      return intl.formatMessage(messages.storageValidationPathNotFound);
-    case 'not-writable':
-      return intl.formatMessage(messages.storageValidationNotWritable);
-    case 'inside-state-dir':
-      return intl.formatMessage(messages.storageValidationInsideStateDir);
-    case 'insufficient-space':
-      return intl.formatMessage(messages.storageValidationInsufficientSpace);
-    case 'unknown':
-    default:
-      return intl.formatMessage(messages.storageValidationUnknown);
-  }
-};
-
-const getComparablePath = (value?: string | null): string | null => {
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    return null;
-  }
-
-  const resolvedPath = path.resolve(value);
-  return process.platform === 'win32'
-    ? resolvedPath.toLowerCase()
-    : resolvedPath;
-};
-
-const pathsAreEqual = (
-  firstPath?: string | null,
-  secondPath?: string | null
-): boolean => {
-  const comparableFirstPath = getComparablePath(firstPath);
-  const comparableSecondPath = getComparablePath(secondPath);
-
-  return (
-    comparableFirstPath != null &&
-    comparableSecondPath != null &&
-    comparableFirstPath === comparableSecondPath
-  );
-};
-
-const createDefaultValidation = (
-  defaultChainPath?: string | null,
-  defaultChainStorageValidation?: ChainStorageValidation
-): ChainStorageValidation =>
-  defaultChainStorageValidation || {
-    isValid: true,
-    path: null,
-    resolvedPath: defaultChainPath || undefined,
-  };
 
 function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
   const {

@@ -7,6 +7,16 @@ import {
   ChainStorageValidation,
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
+import {
+  isSamePath,
+  validateChainStorageDirectory,
+} from './chainStorageValidation';
+import {
+  ResolvedStateDirectory,
+  resolveStateDirectoryPath,
+  resolveChainStoragePath as resolveChainStoragePathFn,
+  resolveMithrilWorkDir as resolveMithrilWorkDirFn,
+} from './chainStoragePathResolver';
 
 const CHAIN_STORAGE_CONFIG_FILE = 'chain-storage-config.json';
 const CHAIN_DIRECTORY_NAME = 'chain';
@@ -14,11 +24,6 @@ const CHAIN_DIRECTORY_NAME = 'chain';
 type ChainPathState = {
   type: 'missing' | 'directory' | 'symlink';
   resolvedPath?: string;
-};
-
-type ResolvedStateDirectory = {
-  exists: boolean;
-  resolvedPath: string;
 };
 
 export class ChainStorageManager {
@@ -199,52 +204,15 @@ export class ChainStorageManager {
   }
 
   async resolveChainStoragePath(): Promise<string> {
-    try {
-      const chainPathExists = await fs.pathExists(this._chainPath);
-      if (chainPathExists) {
-        return await fs.realpath(this._chainPath);
-      }
-    } catch (error) {
-      logger.warn('ChainStorageManager: failed to resolve chain path', {
-        error,
-        chainPath: this._chainPath,
-      });
-    }
-
-    const config = await this.getConfig();
-    if (config.customPath) {
-      try {
-        return await fs.realpath(config.customPath);
-      } catch (error) {
-        logger.warn(
-          'ChainStorageManager: failed to resolve configured custom path',
-          {
-            error,
-            customPath: config.customPath,
-          }
-        );
-      }
-    }
-
-    return this._stateDirectoryPath;
+    return resolveChainStoragePathFn(this._stateDirectoryPath, () =>
+      this.getConfig()
+    );
   }
 
   async resolveMithrilWorkDir(): Promise<string> {
-    const config = await this.getConfig();
-
-    if (!config.customPath) {
-      return this._stateDirectoryPath;
-    }
-
-    try {
-      return await fs.realpath(config.customPath);
-    } catch (error) {
-      logger.warn('ChainStorageManager: failed to resolve Mithril work dir', {
-        error,
-        customPath: config.customPath,
-      });
-      return this._stateDirectoryPath;
-    }
+    return resolveMithrilWorkDirFn(this._stateDirectoryPath, () =>
+      this.getConfig()
+    );
   }
 
   async migrateData(
@@ -366,161 +334,19 @@ export class ChainStorageManager {
   }
 
   async validate(targetDir: string | null): Promise<ChainStorageValidation> {
-    const normalizedPath =
-      typeof targetDir === 'string' && targetDir.trim().length > 0
-        ? targetDir.trim()
-        : null;
-
-    if (normalizedPath == null) {
-      return {
-        isValid: true,
-        path: null,
-      };
-    }
-
-    const defaultValidation: ChainStorageValidation = {
-      isValid: false,
-      path: normalizedPath,
-    };
-
-    try {
-      if (this._isSamePath(normalizedPath, this._chainPath)) {
-        const defaultStorageConfig = await this._getDefaultStorageConfig();
-
-        return {
-          isValid: true,
-          path: null,
-          resolvedPath: defaultStorageConfig.defaultPath,
-          availableSpaceBytes: defaultStorageConfig.availableSpaceBytes,
-          requiredSpaceBytes: defaultStorageConfig.requiredSpaceBytes,
-        };
-      }
-
-      const exists = await fs.pathExists(normalizedPath);
-      if (!exists) {
-        return {
-          ...defaultValidation,
-          reason: 'path-not-found',
-          message: 'Selected directory does not exist.',
-        };
-      }
-
-      const resolvedPath = await fs.realpath(normalizedPath);
-      const targetStats = await fs.stat(resolvedPath);
-      if (!targetStats.isDirectory()) {
-        return {
-          ...defaultValidation,
-          resolvedPath,
-          reason: 'not-writable',
-          message: 'Selected path must be a directory.',
-        };
-      }
-
-      const {
-        resolvedPath: statePath,
-      } = await this._resolveStateDirectoryPath();
-      if (this._isSubPath(resolvedPath, statePath)) {
-        return {
-          ...defaultValidation,
-          resolvedPath,
-          reason: 'inside-state-dir',
-          message: 'Selected directory cannot be inside Daedalus state dir.',
-        };
-      }
-
-      await fs.access(resolvedPath, fs.constants.W_OK);
-
-      const { free } = await checkDiskSpace(resolvedPath);
-      if (free < DISK_SPACE_REQUIRED) {
-        return {
-          ...defaultValidation,
-          resolvedPath,
-          availableSpaceBytes: free,
-          requiredSpaceBytes: DISK_SPACE_REQUIRED,
-          reason: 'insufficient-space',
-          message: 'Selected directory does not have enough free space.',
-        };
-      }
-
-      return {
-        isValid: true,
-        path: normalizedPath,
-        resolvedPath,
-        availableSpaceBytes: free,
-        requiredSpaceBytes: DISK_SPACE_REQUIRED,
-      };
-    } catch (error) {
-      logger.warn('ChainStorageManager: validation failed', {
-        error,
-        targetDir: normalizedPath,
-      });
-      return {
-        ...defaultValidation,
-        reason: 'unknown',
-        message: 'Unable to validate selected directory.',
-      };
-    }
-  }
-
-  _isSubPath(targetPath: string, basePath: string): boolean {
-    const normalizedTarget = path.resolve(targetPath);
-    const normalizedBase = path.resolve(basePath);
-
-    if (normalizedTarget === normalizedBase) {
-      return true;
-    }
-
-    return normalizedTarget.startsWith(`${normalizedBase}${path.sep}`);
+    return validateChainStorageDirectory(
+      targetDir,
+      this._stateDirectoryPath,
+      () => this._getDefaultStorageConfig()
+    );
   }
 
   _isSamePath(firstPath: string, secondPath: string): boolean {
-    const normalizedFirstPath = path.resolve(firstPath);
-    const normalizedSecondPath = path.resolve(secondPath);
-
-    if (process.platform === 'win32') {
-      return (
-        normalizedFirstPath.toLowerCase() === normalizedSecondPath.toLowerCase()
-      );
-    }
-
-    return normalizedFirstPath === normalizedSecondPath;
+    return isSamePath(firstPath, secondPath);
   }
 
   async _resolveStateDirectoryPath(): Promise<ResolvedStateDirectory> {
-    const exists = await fs.pathExists(this._stateDirectoryPath);
-
-    return {
-      exists,
-      resolvedPath: exists
-        ? await fs.realpath(this._stateDirectoryPath)
-        : path.resolve(this._stateDirectoryPath),
-    };
-  }
-
-  async _resolveCurrentChainSource(): Promise<string | null> {
-    const chainPathExists = await fs.pathExists(this._chainPath);
-    if (!chainPathExists) {
-      return null;
-    }
-
-    const chainStats = await fs.lstat(this._chainPath);
-    if (chainStats.isSymbolicLink()) {
-      try {
-        return await fs.realpath(this._chainPath);
-      } catch (error) {
-        logger.warn('ChainStorageManager: unable to resolve chain symlink', {
-          error,
-          chainPath: this._chainPath,
-        });
-        return null;
-      }
-    }
-
-    if (chainStats.isDirectory()) {
-      return this._chainPath;
-    }
-
-    return null;
+    return resolveStateDirectoryPath(this._stateDirectoryPath);
   }
 
   async _captureChainPathState(): Promise<ChainPathState> {

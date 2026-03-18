@@ -46,7 +46,7 @@ Before implementing a feature:
 2. Use past plans as templates for consistency
 3. Follow established patterns from successful implementations
 
-This folder uses subdirectories per major feature/task.
+This folder uses subdirectories per major feature/task. Subdirectories may also include companion design specs and research notes when a task needed deeper implementation detail or source-of-truth investigation.
 
 ---
 

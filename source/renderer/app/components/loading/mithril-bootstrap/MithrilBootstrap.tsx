@@ -5,6 +5,7 @@ import type {
   MithrilSnapshotItem,
   MithrilBootstrapError,
   ChainStorageValidation,
+  MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
 import MithrilDecisionView from './MithrilDecisionView';
 import MithrilErrorView from './MithrilErrorView';
@@ -48,6 +49,13 @@ interface Props {
   onDecline(): void;
   onWipeRetry(): void;
   onCancel(): void;
+  ancillaryBytesDownloaded?: number;
+  ancillaryBytesTotal?: number;
+  ancillaryElapsedSeconds?: number;
+  ancillaryRemainingSeconds?: number;
+  ancillaryProgress?: number;
+  progressItems?: MithrilProgressItem[];
+  overallElapsedSeconds?: number;
 }
 
 const DECISION_STATUSES: Array<MithrilBootstrapStatus> = [

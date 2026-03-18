@@ -1,7 +1,5 @@
 import path from 'path';
-import https from 'https';
 import fs from 'fs-extra';
-import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import EventEmitter from 'events';
 import type { WriteStream } from 'fs';
@@ -14,56 +12,20 @@ import type {
   MithrilBootstrapErrorStage,
   MithrilBootstrapStatusUpdate,
   MithrilSnapshotItem,
+  MithrilProgressItem,
 } from '../../common/types/mithril-bootstrap.types';
 import { parseMithrilProgressUpdate } from './mithrilProgress';
-
-type MithrilNetworkConfig = {
-  aggregatorEndpoint: string;
-  genesisKeyUrl: string;
-  ancillaryKeyUrl: string;
-  genesisKey?: string;
-  ancillaryKey?: string;
-};
-
-type RunCommandResult = {
-  stdout: string;
-  stderr: string;
-  exitCode: number | null;
-};
-
-type RunCommandOptions = {
-  onStdout?: (chunk: string) => void;
-  onStderr?: (chunk: string) => void;
-  allowJsonParseErrors?: boolean;
-  requireKeys?: boolean;
-};
-
-const MITHRIL_NETWORK_CONFIG: Record<string, MithrilNetworkConfig> = {
-  mainnet: {
-    aggregatorEndpoint:
-      'https://aggregator.release-mainnet.api.mithril.network/aggregator',
-    genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-mainnet/genesis.vkey',
-    ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-mainnet/ancillary.vkey',
-  },
-  preprod: {
-    aggregatorEndpoint:
-      'https://aggregator.release-preprod.api.mithril.network/aggregator',
-    genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-preprod/genesis.vkey',
-    ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/release-preprod/ancillary.vkey',
-  },
-  preview: {
-    aggregatorEndpoint:
-      'https://aggregator.pre-release-preview.api.mithril.network/aggregator',
-    genesisKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/pre-release-preview/genesis.vkey',
-    ancillaryKeyUrl:
-      'https://raw.githubusercontent.com/input-output-hk/mithril/main/mithril-infra/configuration/pre-release-preview/ancillary.vkey',
-  },
-};
+import type {
+  RunCommandResult,
+  RunCommandOptions,
+} from './mithrilCommandRunner';
+import { runCommand } from './mithrilCommandRunner';
+import {
+  MithrilBootstrapStageError,
+  buildMithrilError,
+  createStageError,
+  inferErrorStageFromStatus,
+} from './mithrilErrors';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -80,6 +42,16 @@ const STEP_PROGRESS = {
   finalizingProcessing: 95,
   finalizingEnd: 97.5,
   completed: 100,
+};
+
+const STEP_LABEL_MAP: Record<number, string> = {
+  1: 'disk-check',
+  2: 'certificate-chain',
+  3: 'downloading-snapshot',
+  4: 'verifying-digests',
+  5: 'verifying-database',
+  6: 'computing-message',
+  7: 'verifying-signature',
 };
 
 const normalizeSnapshotItem = (
@@ -109,22 +81,6 @@ const normalizeSnapshotItem = (
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === 'string' && value.trim().length > 0;
 
-class MithrilBootstrapStageError extends Error {
-  stage: MithrilBootstrapErrorStage;
-  code?: string;
-
-  constructor(
-    message: string,
-    stage: MithrilBootstrapErrorStage,
-    code?: string
-  ) {
-    super(message);
-    this.name = 'MithrilBootstrapStageError';
-    this.stage = stage;
-    this.code = code;
-  }
-}
-
 export class MithrilBootstrapService {
   _status: MithrilBootstrapStatusUpdate = { ...DEFAULT_STATUS };
   _statusEmitter = new EventEmitter();
@@ -134,6 +90,10 @@ export class MithrilBootstrapService {
   _lockFilePath: string;
   _workDir: string;
   _bootstrapStartedAt: number | null = null;
+  _progressItems: MithrilProgressItem[] = [];
+  _isCancelled = false;
+  _lastFilesDownloaded: number | undefined = undefined;
+  _lastFilesTotal: number | undefined = undefined;
 
   constructor(workDir: string = stateDirectoryPath) {
     this._workDir = workDir;
@@ -193,16 +153,26 @@ export class MithrilBootstrapService {
     if (options?.wipeChain) {
       await this.wipeChainAndSnapshots('bootstrap-request');
     }
+    this._isCancelled = false;
+    this._lastFilesDownloaded = undefined;
+    this._lastFilesTotal = undefined;
     this._bootstrapStartedAt = Date.now();
+    this._progressItems = [];
     await this._createLockFile();
 
+    this._addProgressItem('preparing', 'preparing', 'active');
     this._updateStatus({
       status: 'preparing',
       progress: STEP_PROGRESS.preparing,
       filesDownloaded: undefined,
       filesTotal: undefined,
       remainingSeconds: undefined,
+      ancillaryBytesDownloaded: undefined,
+      ancillaryBytesTotal: undefined,
+      ancillaryElapsedSeconds: undefined,
+      ancillaryRemainingSeconds: undefined,
       error: null,
+      progressItems: [...this._progressItems],
     });
 
     const snapshotDigest = isNonEmptyString(digest) ? digest : 'latest';
@@ -211,7 +181,10 @@ export class MithrilBootstrapService {
     try {
       snapshot = await this.showSnapshot(snapshotDigest);
       if (snapshot) {
-        this._updateStatus({ snapshot });
+        this._updateStatus({
+          snapshot,
+          progressItems: [...this._progressItems],
+        });
       }
     } catch (error) {
       logger.warn('MithrilBootstrapService: unable to fetch snapshot details', {
@@ -221,38 +194,63 @@ export class MithrilBootstrapService {
     }
 
     try {
+      // Mark preparing complete before beginning download
+      this._markActiveProgressItemAs('completed');
       await this._downloadSnapshot(snapshotDigest, snapshot);
-      // Skip conversion - Mithril provides in-memory format snapshots, no conversion needed
+
+      // Conversion would go here when needed:
+      // this._markActiveProgressItemAs('completed');
+      // this._addProgressItem('conversion', 'conversion', 'active');
       // await this._convertSnapshot(snapshot);
+      // Skip conversion - Mithril provides in-memory format snapshots, no conversion needed
+
       const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
 
+      // Mark final download step complete; begin installation
+      this._markActiveProgressItemAs('completed');
+      this._addProgressItem('install-snapshot', 'install-snapshot', 'active');
       this._updateStatus({
         status: 'unpacking',
         progress: STEP_PROGRESS.finalizingStart,
         filesDownloaded: undefined,
         filesTotal: undefined,
         remainingSeconds: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        ancillaryElapsedSeconds: undefined,
+        ancillaryRemainingSeconds: undefined,
+        progressItems: [...this._progressItems],
       });
 
       await this._installSnapshot(dbDirectory);
 
+      // Mark install complete; begin cleanup
+      this._markActiveProgressItemAs('completed');
+      this._addProgressItem('cleanup', 'cleanup', 'active');
       this._updateStatus({
         status: 'finalizing',
         progress: STEP_PROGRESS.finalizingProcessing,
         filesDownloaded: undefined,
         filesTotal: undefined,
         remainingSeconds: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        ancillaryElapsedSeconds: undefined,
+        ancillaryRemainingSeconds: undefined,
+        progressItems: [...this._progressItems],
       });
 
       await this._cleanupSnapshotArtifacts({ preserveDb: true });
       await this.clearLockFile();
 
+      this._markActiveProgressItemAs('completed');
       this._updateStatus({
         status: 'finalizing',
         progress: STEP_PROGRESS.finalizingEnd,
         filesDownloaded: undefined,
         filesTotal: undefined,
         remainingSeconds: undefined,
+        progressItems: [...this._progressItems],
       });
 
       this._updateStatus({
@@ -261,14 +259,24 @@ export class MithrilBootstrapService {
         filesDownloaded: undefined,
         filesTotal: undefined,
         remainingSeconds: undefined,
+        progressItems: [...this._progressItems],
       });
     } catch (error) {
+      if (this._isCancelled) {
+        throw error;
+      }
+      this._markActiveProgressItemAs('error');
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
         filesDownloaded: undefined,
         filesTotal: undefined,
         remainingSeconds: undefined,
+        ancillaryBytesDownloaded: undefined,
+        ancillaryBytesTotal: undefined,
+        ancillaryElapsedSeconds: undefined,
+        ancillaryRemainingSeconds: undefined,
+        progressItems: [...this._progressItems],
         error: this._buildError(
           error,
           this._inferErrorStageFromStatus(this._status.status)
@@ -279,8 +287,11 @@ export class MithrilBootstrapService {
   }
 
   async cancel(): Promise<void> {
+    this._isCancelled = true;
+    this._progressItems = [];
     this._updateStatus({
       status: 'cancelled',
+      progressItems: [],
     });
 
     try {
@@ -338,6 +349,42 @@ export class MithrilBootstrapService {
     return Math.max(0, (Date.now() - this._bootstrapStartedAt) / 1000);
   }
 
+  _updateProgressStep(stepNum: number): void {
+    const id = `step-${stepNum}`;
+    if (this._progressItems.some((item) => item.id === id)) return;
+    this._progressItems = this._progressItems.map((item) =>
+      item.state === 'active' ? { ...item, state: 'completed' as const } : item
+    );
+    const label = STEP_LABEL_MAP[stepNum] ?? `step-${stepNum}`;
+    this._progressItems = [
+      ...this._progressItems,
+      {
+        id,
+        label,
+        state: 'active' as const,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+  }
+
+  _markActiveProgressItemAs(state: 'completed' | 'error'): void {
+    this._progressItems = this._progressItems.map((item) =>
+      item.state === 'active' ? { ...item, state } : item
+    );
+  }
+
+  _addProgressItem(
+    id: string,
+    label: string,
+    state: MithrilProgressItem['state']
+  ): void {
+    if (this._progressItems.some((item) => item.id === id)) return;
+    this._progressItems = [
+      ...this._progressItems,
+      { id, label, state, timestamp: new Date().toISOString() },
+    ];
+  }
+
   async _resolveCardanoDbDownloadMode(): Promise<'download' | 'snapshot'> {
     if (this._cardanoDbDownloadMode) return this._cardanoDbDownloadMode;
     try {
@@ -358,132 +405,11 @@ export class MithrilBootstrapService {
     return this._cardanoDbDownloadMode;
   }
 
-  _resolveNetworkConfig(): MithrilNetworkConfig {
-    const network = String(environment.network);
-    const config = MITHRIL_NETWORK_CONFIG[network];
-    if (!config) {
-      throw new Error(`Mithril not supported for network: ${network}`);
-    }
-    return config;
-  }
-
-  async _fetchText(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const request = https.request(url, (response) => {
-        const { statusCode } = response;
-        if (!statusCode || statusCode < 200 || statusCode >= 300) {
-          response.resume();
-          reject(new Error(`Request failed with status ${statusCode}`));
-          return;
-        }
-
-        let data = '';
-        response.on('data', (chunk) => {
-          data += chunk.toString();
-        });
-        response.on('end', () => resolve(data.trim()));
-      });
-
-      request.on('error', reject);
-      request.end();
-    });
-  }
-
-  _normalizeVerificationKey(key: string): string {
-    const trimmed = key.trim();
-    if (/^[0-9a-fA-F]+$/.test(trimmed) && trimmed.length % 2 === 0) {
-      return trimmed;
-    }
-
-    if (trimmed.startsWith('[')) {
-      try {
-        const bytes = JSON.parse(trimmed);
-        if (Array.isArray(bytes)) {
-          return bytes
-            .map((value) => {
-              const byte = Number(value);
-              if (!Number.isFinite(byte) || byte < 0 || byte > 255) {
-                throw new Error('Invalid byte value');
-              }
-              return byte.toString(16).padStart(2, '0');
-            })
-            .join('');
-        }
-      } catch (error) {
-        logger.warn(
-          'MithrilBootstrapService: failed to parse verification key',
-          {
-            error,
-          }
-        );
-      }
-    }
-
-    return trimmed;
-  }
-
-  async _resolveVerificationKeys(config: MithrilNetworkConfig): Promise<void> {
-    if (!config.genesisKey) {
-      const raw = await this._fetchText(config.genesisKeyUrl);
-      config.genesisKey = this._normalizeVerificationKey(raw);
-    }
-    if (!config.ancillaryKey) {
-      const raw = await this._fetchText(config.ancillaryKeyUrl);
-      config.ancillaryKey = this._normalizeVerificationKey(raw);
-    }
-  }
-
-  async _buildMithrilEnv(requireKeys: boolean): Promise<NodeJS.ProcessEnv> {
-    const config = this._resolveNetworkConfig();
-    if (requireKeys) {
-      await this._resolveVerificationKeys(config);
-    }
-    const env = ({
-      ...process.env,
-      AGGREGATOR_ENDPOINT: config.aggregatorEndpoint,
-    } as unknown) as NodeJS.ProcessEnv;
-
-    if (requireKeys && config.genesisKey && config.ancillaryKey) {
-      env.GENESIS_VERIFICATION_KEY = config.genesisKey;
-      env.ANCILLARY_VERIFICATION_KEY = config.ancillaryKey;
-    } else {
-      delete env.GENESIS_VERIFICATION_KEY;
-      delete env.ANCILLARY_VERIFICATION_KEY;
-    }
-
-    return env;
-  }
-
-  _openLogStream(): WriteStream {
-    const logsDir = path.join(stateDirectoryPath, 'Logs');
-    ensureDirectoryExists(logsDir);
-    const logPath = path.join(logsDir, 'mithril-bootstrap.log');
-    return fs.createWriteStream(logPath, { flags: 'a' });
-  }
-
   _buildError(
     error: unknown,
     fallbackStage?: MithrilBootstrapErrorStage
   ): MithrilBootstrapError {
-    if (error instanceof MithrilBootstrapStageError) {
-      return {
-        message: error.message,
-        code: error.code,
-        stage: error.stage,
-      };
-    }
-
-    if (error instanceof Error) {
-      return {
-        message: error.message,
-        stage: fallbackStage,
-      };
-    }
-
-    return {
-      message: 'Mithril bootstrap failed',
-      stage: fallbackStage,
-    };
+    return buildMithrilError(error, fallbackStage);
   }
 
   _createStageError(
@@ -491,22 +417,13 @@ export class MithrilBootstrapService {
     message: string,
     code?: string
   ): MithrilBootstrapStageError {
-    return new MithrilBootstrapStageError(message, stage, code);
+    return createStageError(stage, message, code);
   }
 
   _inferErrorStageFromStatus(
     status: MithrilBootstrapStatusUpdate['status']
   ): MithrilBootstrapErrorStage | undefined {
-    switch (status) {
-      case 'downloading':
-        return 'download';
-      case 'unpacking':
-      case 'converting':
-      case 'finalizing':
-        return 'convert';
-      default:
-        return undefined;
-    }
+    return inferErrorStageFromStatus(status);
   }
 
   async _createLockFile(): Promise<void> {
@@ -552,64 +469,17 @@ export class MithrilBootstrapService {
     }
   }
 
-  _attachLogStream(child: ChildProcess, logStream: WriteStream) {
-    if (child.stdout) {
-      child.stdout.on('data', (chunk) => logStream.write(chunk));
-    }
-    if (child.stderr) {
-      child.stderr.on('data', (chunk) => logStream.write(chunk));
-    }
-  }
-
   async _runCommand(
     args: Array<string>,
     options: RunCommandOptions = {}
   ): Promise<RunCommandResult> {
-    const { onStdout, onStderr, requireKeys = true } = options;
-    const logStream = this._openLogStream();
-    this._logStream = logStream;
-
-    const env = await this._buildMithrilEnv(requireKeys);
-
-    return new Promise((resolve, reject) => {
-      const child = spawn('mithril-client', args, {
-        cwd: this._workDir,
-        env,
-      });
-
-      this._currentProcess = child;
-      this._attachLogStream(child, logStream);
-
-      let stdout = '';
-      let stderr = '';
-
-      if (child.stdout) {
-        child.stdout.on('data', (chunk) => {
-          const text = chunk.toString();
-          stdout += text;
-          if (onStdout) onStdout(text);
-        });
-      }
-
-      if (child.stderr) {
-        child.stderr.on('data', (chunk) => {
-          const text = chunk.toString();
-          stderr += text;
-          if (onStderr) onStderr(text);
-        });
-      }
-
-      child.on('error', (error) => {
-        this._currentProcess = null;
-        logStream.end();
-        reject(error);
-      });
-
-      child.on('close', (exitCode) => {
-        this._currentProcess = null;
-        logStream.end();
-        resolve({ stdout, stderr, exitCode });
-      });
+    return runCommand(args, this._workDir, options, {
+      onProcess: (child) => {
+        this._currentProcess = child;
+      },
+      onLogStream: (logStream) => {
+        this._logStream = logStream;
+      },
     });
   }
 
@@ -649,9 +519,11 @@ export class MithrilBootstrapService {
     snapshot: MithrilSnapshotItem | null
   ): Promise<void> {
     await this._cleanupSnapshotArtifacts({ preserveDb: false });
+    this._addProgressItem('downloading', 'downloading', 'active');
     this._updateStatus({
       status: 'downloading',
       progress: STEP_PROGRESS.downloadingStart,
+      progressItems: [...this._progressItems],
     });
 
     let stdoutBuffered = '';
@@ -671,6 +543,27 @@ export class MithrilBootstrapService {
     const applyProgressUpdate = (line: string) => {
       const update = parseMithrilProgressUpdate(line);
       if (!update) return;
+
+      // Track progress steps when mithril-client announces a step number
+      if (update.stepNum != null) {
+        this._updateProgressStep(update.stepNum);
+      }
+
+      // Route Ancillary progress to dedicated ancillary fields only
+      if (update.label === 'Ancillary') {
+        this._updateStatus({
+          status: 'downloading',
+          snapshot: snapshot || undefined,
+          ancillaryBytesDownloaded: update.bytesDownloaded,
+          ancillaryBytesTotal: update.bytesTotal,
+          ancillaryElapsedSeconds: update.elapsedSeconds,
+          ancillaryRemainingSeconds: update.remainingSeconds,
+          progressItems: [...this._progressItems],
+        });
+        return;
+      }
+
+      // Files stream or no label (graceful degradation for older mithril-client)
       const { progress } = update;
       if (progress != null && !Number.isNaN(progress)) {
         const mapped =
@@ -678,6 +571,8 @@ export class MithrilBootstrapService {
           ((STEP_PROGRESS.downloadingEnd - STEP_PROGRESS.downloadingStart) *
             Math.min(Math.max(progress, 0), 100)) /
             100;
+        this._lastFilesDownloaded = update.filesDownloaded;
+        this._lastFilesTotal = update.filesTotal;
         this._updateStatus({
           status: 'downloading',
           progress: mapped,
@@ -686,18 +581,24 @@ export class MithrilBootstrapService {
           filesTotal: update.filesTotal,
           elapsedSeconds: update.elapsedSeconds,
           remainingSeconds: update.remainingSeconds,
+          progressItems: [...this._progressItems],
         });
         return;
       }
 
-      if (update.elapsedSeconds != null || update.remainingSeconds != null) {
+      if (
+        update.elapsedSeconds != null ||
+        update.remainingSeconds != null ||
+        update.stepNum != null
+      ) {
         this._updateStatus({
           status: 'downloading',
           snapshot: snapshot || undefined,
-          filesDownloaded: update.filesDownloaded,
-          filesTotal: update.filesTotal,
+          filesDownloaded: update.filesDownloaded ?? this._lastFilesDownloaded,
+          filesTotal: update.filesTotal ?? this._lastFilesTotal,
           elapsedSeconds: update.elapsedSeconds,
           remainingSeconds: update.remainingSeconds,
+          progressItems: [...this._progressItems],
         });
       }
     };
@@ -729,6 +630,7 @@ export class MithrilBootstrapService {
       status: 'downloading',
       progress: STEP_PROGRESS.downloadingEnd,
       snapshot: snapshot || undefined,
+      progressItems: [...this._progressItems],
     });
   }
 
