@@ -15,13 +15,8 @@ import styles from './MithrilBootstrap.scss';
 
 interface Props {
   status: MithrilBootstrapStatus;
-  progress: number;
-  filesDownloaded?: number;
-  filesTotal?: number;
   bytesDownloaded?: number;
   snapshotSize?: number;
-  throughputBps?: number;
-  remainingSeconds?: number;
   customChainPath?: string | null;
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
@@ -42,7 +37,6 @@ interface Props {
   ) => Promise<ChainStorageValidation>;
   onConfirmStorageLocation?(): void;
   onReturnToStorageLocation?(): void;
-  onLoadChainStorageConfig?(): Promise<void>;
   onSelectSnapshot: (...args: [string | null]) => void;
   onAccept(): void;
   onDecline(): void;
@@ -50,7 +44,6 @@ interface Props {
   onCancel(): void;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
-  ancillaryRemainingSeconds?: number;
   ancillaryProgress?: number;
   progressItems?: MithrilProgressItem[];
   overallElapsedSeconds?: number;
@@ -65,6 +58,7 @@ const DECISION_STATUSES: Array<MithrilBootstrapStatus> = [
 const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
   'preparing',
   'downloading',
+  'verifying',
   'unpacking',
   'finalizing',
   'converting',
@@ -74,18 +68,12 @@ const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
 function MithrilBootstrap(props: Props) {
   const {
     status,
-    progress,
     progressItems,
-    filesDownloaded,
-    filesTotal,
     bytesDownloaded,
     snapshotSize,
-    throughputBps,
-    remainingSeconds,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
-    ancillaryRemainingSeconds,
     overallElapsedSeconds,
     customChainPath,
     defaultChainPath,
@@ -148,18 +136,12 @@ function MithrilBootstrap(props: Props) {
     content = (
       <MithrilProgressView
         status={status}
-        progress={progress}
         progressItems={progressItems}
-        filesDownloaded={filesDownloaded}
-        filesTotal={filesTotal}
         bytesDownloaded={bytesDownloaded}
         snapshotSize={snapshotSize}
-        throughputBps={throughputBps}
-        remainingSeconds={remainingSeconds}
         ancillaryBytesDownloaded={ancillaryBytesDownloaded}
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryProgress}
-        ancillaryRemainingSeconds={ancillaryRemainingSeconds}
         overallElapsedSeconds={overallElapsedSeconds}
         onCancel={onCancel}
       />

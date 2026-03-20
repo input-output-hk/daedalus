@@ -13,10 +13,8 @@ type TestProps = Partial<{
   ancillaryBytesDownloaded: number;
   ancillaryBytesTotal: number;
   ancillaryProgress: number;
-  ancillaryRemainingSeconds: number;
   bytesDownloaded: number;
   progressItems: MithrilProgressItem[];
-  remainingSeconds: number;
   snapshotSize: number;
 }>;
 
@@ -65,7 +63,6 @@ describe('MithrilStepIndicator', () => {
       ancillaryProgress: 12,
       bytesDownloaded: 1200 * 1024 * 1024,
       progressItems,
-      remainingSeconds: 872,
       snapshotSize: 1900 * 1024 * 1024,
     });
 
@@ -97,5 +94,62 @@ describe('MithrilStepIndicator', () => {
       fastStateSync.compareDocumentPosition(verifyingDigests) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+  });
+
+  it('does not render download progress bars before step-3 becomes active', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'step-1', label: 'Step 1', state: 'completed' },
+      { id: 'step-2', label: 'Step 2', state: 'active' },
+      { id: 'step-3', label: 'Step 3', state: 'pending' },
+      { id: 'step-4', label: 'Step 4', state: 'pending' },
+    ];
+
+    renderComponent('downloading', {
+      ancillaryBytesDownloaded: 24 * 1024 * 1024,
+      ancillaryBytesTotal: 195 * 1024 * 1024,
+      ancillaryProgress: 12,
+      bytesDownloaded: 1200 * 1024 * 1024,
+      progressItems,
+      snapshotSize: 1900 * 1024 * 1024,
+    });
+
+    const downloadingDetails = screen.getByRole('list', {
+      name: /downloading details/i,
+    });
+
+    expect(
+      within(downloadingDetails).queryByText(/snapshot files/i)
+    ).not.toBeInTheDocument();
+    expect(
+      within(downloadingDetails).queryByText(/fast state sync/i)
+    ).not.toBeInTheDocument();
+    expect(screen.queryAllByRole('progressbar')).toHaveLength(0);
+  });
+
+  it('renders verifying status without progress bars', () => {
+    const progressItems: MithrilProgressItem[] = [
+      { id: 'step-1', label: 'Step 1', state: 'completed' },
+      { id: 'step-2', label: 'Step 2', state: 'completed' },
+      { id: 'step-3', label: 'Step 3', state: 'completed' },
+      { id: 'step-4', label: 'Step 4', state: 'active' },
+    ];
+
+    renderComponent('verifying', {
+      progressItems,
+    });
+
+    const preparingStep = screen
+      .getByText(/preparing$/i)
+      .closest('[role="listitem"]');
+    const downloadingStep = screen
+      .getByText(/downloading$/i)
+      .closest('[role="listitem"]');
+
+    expect(preparingStep).toHaveClass('stepCompleted');
+    expect(preparingStep).not.toHaveClass('stepPending');
+    expect(downloadingStep).toHaveClass('stepActive');
+    expect(downloadingStep).not.toHaveClass('stepPending');
+    expect(screen.queryAllByRole('progressbar')).toHaveLength(0);
+    expect(screen.getByText(/verifying snapshot digests/i)).toBeInTheDocument();
   });
 });

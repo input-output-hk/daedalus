@@ -2,7 +2,7 @@
 
 **Feature:** Mithril bootstrap progress view composition  
 **Created:** 2026-03-18  
-**Revised:** 2026-03-18  
+**Revised:** 2026-03-20  
 **Status:** implemented  
 **Related design:** [Vertical Waterfall Step Indicator](design-waterfall-step-indicator.md)
 
@@ -10,6 +10,7 @@
 
 | Date | Change |
 |---|---|
+| 2026-03-20 | Updated the spec to match the shipped renderer: `verifying` stays mapped to the Downloading visual phase, the view exposes only the elapsed timer plus pass-through waterfall data, the completion spinner sits below the copy, and the cancel action is centered. |
 | 2026-03-18 | Established the progress-view layout around a header, single elapsed timer, scrollable waterfall container, completion handoff block, and cancel action. |
 | 2026-03-18 | Aligned the container sizing and non-interactive waterfall wrapper with the related step-indicator design. |
 | 2026-03-18 | Implemented the composed view through task-024i; broader phase-announcement accessibility remains deferred to the accessibility phase. |
@@ -20,7 +21,7 @@
 
 The recomposed `MithrilProgressView` renders inside the existing `.card` (720px max-width, 32px padding, `rgba(15,24,34,0.96)` background). All widths below are relative to the ~656px content area (720 − 32×2).
 
-### Active Progress State (preparing / downloading / finalizing)
+### Active Progress State (preparing / downloading / verifying / finalizing)
 
 ```
 ┌─ .card ──────────────────────────────────────────────────────────────┐
@@ -49,7 +50,7 @@ The recomposed `MithrilProgressView` renders inside the existing `.card` (720px 
 │                                            overflow-y: auto          │
 │                                            margin-bottom: 18px       │
 │  ┌─ .actions ─────────────────────────────────────────────────────┐  │
-│  │  [ Cancel ]                                                    │  │
+│  │                       [ Cancel ]                               │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
@@ -80,21 +81,19 @@ When `status === 'completed'`, the completion block appears between the waterfal
 │                                               margin-bottom: 18px    │
 │  ┌─ .completionBlock ────────────────────────────────────────────┐  │
 │  │                                                                │  │
-│  │  ┌───────────┐                                                 │  │
-│  │  │  [spinner] │   24px × 24px, centered above text             │  │
-│  │  └───────────┘                                                 │  │
-│  │                           8px gap                              │  │
 │  │  Starting cardano-node                                         │  │
 │  │  (16px medium, bright white)                                   │  │
 │  │                           4px gap                              │  │
 │  │  The Mithril snapshot has been restored.                       │  │
 │  │  Cardano-node is starting up to complete the remaining sync.   │  │
-│  │  (13px regular, muted)                                         │  │
+│  │  (14px regular, muted)                                         │  │
+│  │                           12px gap                             │  │
+│  │  [spinner] 32px × 32px, centered below text                    │  │
 │  │                                                                │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                               margin-bottom: 24px    │
 │  ┌─ .actions ─────────────────────────────────────────────────────┐  │
-│  │  [ Cancel ] ← disabled, 40% opacity                           │  │
+│  │                       [ Cancel ] ← disabled, 50% opacity       │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
@@ -106,27 +105,30 @@ When `status === 'completed'`, the completion block appears between the waterfal
 
 ### 2.1 Element Visibility by Status
 
-| Element | preparing | downloading | unpacking | converting | finalizing | completed |
-|---|---|---|---|---|---|---|
-| **Header** ("Fast sync with Mithril") | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible |
-| **Timer row** (Elapsed + value) | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ frozen |
-| **Waterfall container** | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible (collapsed — all steps completed) |
-| **Completion block** | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✓ visible (fade-in) |
-| **Cancel button** | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ visible, **disabled** |
-| **SR live region** | announces "Preparing" | announces "Downloading snapshot data" | (no new announcement) | (no new announcement) | announces "Finalizing" | announces "Starting cardano-node" |
+| Element | preparing | downloading | verifying | unpacking | converting | finalizing | completed |
+|---|---|---|---|---|---|---|---|
+| **Header** ("Fast sync with Mithril") | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible |
+| **Timer row** (Elapsed + value) | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ frozen |
+| **Waterfall container** | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible (collapsed — all steps completed) |
+| **Completion block** | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✓ visible (fade-in) |
+| **Cancel button** | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ visible, **disabled** |
+| **Completion live region** | — | — | — | — | — | — | announces "Starting cardano-node" |
 
 ### 2.2 Status → Visual Phase Mapping
 
-The cardano-wallet backend emits six status values. `MithrilStepIndicator` maps them to a 3-step visual model internally. This table is the canonical reference.
+The cardano-wallet backend emits working statuses that `MithrilStepIndicator` maps to a 3-step visual model internally. This table is the canonical reference.
 
 | Backend status | Visual step (StepIndicator) | Notes |
 |---|---|---|
 | `preparing` | **Preparing** step active | First phase |
 | `downloading` | **Downloading** step active | Waterfall sub-items and progress bars visible |
+| `verifying` | **Downloading** step active | Verification stays inside the Downloading visual phase; download bars are hidden while steps 4–7 advance |
 | `unpacking` | **Finalizing** step active | Mapped internally by `MithrilStepIndicator` — no separate visual step |
 | `converting` | **Finalizing** step active | Mapped internally by `MithrilStepIndicator` — no separate visual step |
 | `finalizing` | **Finalizing** step active | Final processing before completion |
 | `completed` | All steps completed (green checkmarks) | Completion block appears, cancel disabled |
+
+`cancelled` does not render this view. The outer loading page keeps the Mithril overlay mounted, and `MithrilBootstrap` routes `cancelled` back into the storage/decision cycle.
 
 ### Timer behavior by state
 
@@ -134,6 +136,7 @@ The cardano-wallet backend emits six status values. `MithrilStepIndicator` maps 
 |---|---|---|
 | preparing | Ticking from 0:00 | Store starts `elapsedTimer` interval on bootstrap begin |
 | downloading | Ticking | Continues from preparing |
+| verifying | Ticking | Continues while verification sub-items advance under the Downloading step |
 | finalizing | Ticking | Continues from downloading |
 | completed | **Frozen** | Store stops the `elapsedTimer` when status becomes `completed`. The view displays the last `overallElapsedSeconds` value. |
 
@@ -353,12 +356,12 @@ Reuses the existing `.secondaryAction` button style. Adds a disabled-state visua
 | Element | Size | Weight | Color | Line height | Notes |
 |---|---|---|---|---|---|
 | Header h1 | 22px | medium | `rgba(255,255,255,0.98)` | — | Unchanged |
-| Timer label | 12px | regular | `rgba(172,182,195,0.85)` | — | Uppercase, 0.08em spacing |
-| Timer value | 20px | medium | `rgba(233,237,242,0.95)` | — | `tabular-nums` |
+| Timer label | 13px | regular | `rgba(172,182,195,0.90)` | — | Uppercase, 0.04em spacing |
+| Timer value | 18px | medium | `rgba(236,241,247,0.95)` | — | `tabular-nums` |
 | Completion title | 16px | medium | `rgba(243,247,251,0.98)` | 1.35 | |
-| Completion detail | 13px | regular | `rgba(187,198,210,0.82)` | 1.55 | Max-width 480px |
+| Completion detail | 14px | regular | `rgba(187,198,210,0.92)` | 1.55 | Max-width 480px |
 | Cancel button | 14px | regular | `rgba(225,233,242,0.92)` | — | Unchanged |
-| Cancel disabled | 14px | regular | `rgba(225,233,242,0.40)` | — | 40% opacity on container |
+| Cancel disabled | 14px | regular | `rgba(225,233,242,0.50)` | — | 50% opacity on container |
 
 ---
 
@@ -385,13 +388,11 @@ Reuses the existing `.secondaryAction` button style. Adds a disabled-state visua
 
 ### Completion Spinner
 
-Reuses the existing global `loading-spin` keyframe:
+Uses the local `spin` keyframe defined in `MithrilProgressView.scss`:
 
 ```scss
 .completionSpinner {
-  :global {
-    animation: loading-spin 1.5s linear infinite;
-  }
+  animation: spin 1s linear infinite;
 }
 ```
 
@@ -427,7 +428,7 @@ All colors match the existing Mithril bootstrap dark theme. No new design tokens
 | Timer value | `rgba(233, 237, 242, 0.95)` | Matches `.metadataValue` family |
 | Completion block bg | `rgba(10, 18, 28, 0.52)` | Matches existing `.metadataItem` bg |
 | Completion block border | `rgba(46, 64, 82, 0.55)` | Matches existing border family |
-| Completion spinner | `rgba(122, 210, 188, 0.88)` | Green-tinted, from existing `.statusLabel` color family |
+| Completion spinner | `rgba(233, 237, 242, 0.92)` | Neutral spinner shown below the completion copy |
 | Completion title | `rgba(243, 247, 251, 0.98)` | Matches `.statusTitle` |
 | Completion detail | `rgba(187, 198, 210, 0.82)` | Matches `.statusDetail` family |
 | Scrollbar thumb | `rgba(92, 110, 128, 0.50)` | Matches the implemented waterfall container |
@@ -444,7 +445,7 @@ The following elements from the current `MithrilProgressView` are removed in the
 |---|---|
 | **ProgressBarLarge** | Replaced by inline progress bars inside the waterfall step indicator |
 | **Status panel** (`.statusPanel`) | Stage title/detail copy is now communicated via active waterfall step labels. The completion state uses the dedicated completion block. |
-| **Metadata grid** (`.metadataGrid`) | Downloaded, Transfer rate, Remaining fields are now inline in waterfall progress bars. Elapsed becomes the top-level timer row. |
+| **Metadata grid** (`.metadataGrid`) | Overall progress, transfer-rate, and remaining-time fields were removed. Determinate bar percent + transferred bytes live inline in the waterfall, and elapsed time is the only top-level timer row. |
 | **Status label** ("CURRENT ACTIVITY") | No longer needed — waterfall makes active step visually obvious |
 
 ---
@@ -464,14 +465,14 @@ Breakpoint: `@media (max-width: 720px)` — consistent with all Mithril componen
 | **Completion block padding** | `20px` | `20px` |
 | **Completion title font-size** | 16px | 16px |
 | **Completion detail font-size** | 14px | 14px |
-| **Cancel button** | Left-aligned | Full-width, centered |
+| **Cancel button** | Centered within the action row | Centered within a vertical action stack |
 
 ### SCSS skeleton
 
 ```scss
 @media (max-width: 720px) {
   .actions {
-    align-items: stretch;
+    align-items: center;
     flex-direction: column;
   }
 }
@@ -494,7 +495,7 @@ Breakpoint: `@media (max-width: 720px)` — consistent with all Mithril componen
 
 ### Phase announcements
 
-Broader top-level phase announcements are deferred to the accessibility phase. The implemented view limits live announcements to the completion block so the final handoff is announced once without re-announcing each waterfall sub-item or progress-bar update.
+Broader top-level phase announcements are deferred to the accessibility phase. The implemented view only live-announces the completion block so the final handoff is spoken once without re-announcing each waterfall sub-item or progress-bar update.
 
 ### Focus management
 
@@ -602,7 +603,7 @@ The following items are explicitly deferred and not part of this design spec:
 7. **Add** completion block JSX conditionally rendered when `status === 'completed'`
 8. **Add** disabled state to cancel button when `status === 'completed'`
 9. **Keep** the completion block as the only live-announced status region for this phase; broader phase-announcement a11y is deferred
-10. **Props simplification**: The view needs only `status`, `overallElapsedSeconds`, `onCancel`, plus pass-through props for `MithrilStepIndicator` (waterfall items, progress data). The metadata props (`bytesDownloaded`, `snapshotSize`, `throughputBps`, `remainingSeconds`) flow directly to the waterfall, not to the view's own UI.
+10. **Props simplification**: The view needs only `status`, `overallElapsedSeconds`, `onCancel`, plus pass-through props for `MithrilStepIndicator` (progress items and determinate progress data). The view does not own any overall percentage, throughput, or remaining-time UI.
 11. **Skip** scroll fade pseudo-elements (§3.3 optional enhancement) — not required for initial implementation
 12. **Focus management**: On completed transition, move focus to the completion heading (`<h2>`)
 13. **Keep** the 3-second delay orchestration outside the component; it belongs to the main-process handoff path

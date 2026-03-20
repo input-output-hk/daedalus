@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Snapshot UX - Component & UX Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-18",
+    "updated": "2026-03-20",
     "version": "2.0.0",
     "totalTasks": 26,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
@@ -222,7 +222,7 @@
         {
           "id": "task-024d",
           "title": "Extend mithril progress parser for label, step_num, and ancillary bytes",
-          "description": "Add label, stepNum, totalSteps, message, bytesDownloaded, bytesTotal to MithrilProgressUpdate. Update parseMithrilProgressUpdate() to extract label ('Files' | 'Ancillary'), step_num, total_steps, message, bytes_downloaded, bytes_total from mithril-client JSON. Add MithrilWaterfallItem type (id, label, state: 'active' | 'completed' | 'error', timestamp) to shared types. Extend MithrilBootstrapStatusUpdate with ancillaryBytesDownloaded, ancillaryBytesTotal, ancillaryElapsedSeconds, ancillaryRemainingSeconds, waterfallItems. Graceful degradation: if mithril-client doesn't emit label field, fall back to single-stream behavior.",
+          "description": "Add label, stepNum, totalSteps, message, bytesDownloaded, and bytesTotal to MithrilProgressUpdate. Update parseMithrilProgressUpdate() to extract label ('Files' | 'Ancillary'), step_num, total_steps, message, bytes_downloaded, and bytes_total from mithril-client JSON. Add MithrilProgressItem to shared types and extend MithrilBootstrapStatusUpdate with ancillaryBytesDownloaded, ancillaryBytesTotal, and progressItems. Graceful degradation: if mithril-client doesn't emit label field, fall back to single-stream behavior.",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
@@ -233,7 +233,7 @@
         {
           "id": "task-024e",
           "title": "Split download tracking and emit waterfall items in service",
-          "description": "Route Files vs Ancillary progress by label in _downloadSnapshot(). Track waterfall items for all mithril-client steps 1-7 under the downloading phase — each step exposed as a waterfall sub-item so users follow along. Emit separate ancillary progress fields (ancillaryBytesDownloaded/Total/ElapsedSeconds/RemainingSeconds) without overwriting main Files progress. Map step_num to localizable waterfall item IDs: step-1 (disk check), step-2 (certificate chain), step-3 (downloading snapshot data), step-4 (verifying digests), step-5 (verifying database), step-6 (computing message), step-7 (verifying signature). After mithril-client exits, append finalizing waterfall items for snapshot conversion (only if conversion runs) and DB install/move. Fast steps (sub-second) show as completed checkmarks immediately — no minimum display time. Use Preparing status only for the initial mithril-snapshot call to kick off the process; the actual download starts after the step process renders.",
+          "description": "Route Files vs Ancillary progress by label in _downloadSnapshot(). Track progress items for all mithril-client steps 1-7 under the downloading phase so users can follow along. Emit separate ancillary byte totals without overwriting main Files progress. Map step_num to localizable progress item IDs: step-1 (disk check), step-2 (certificate chain), step-3 (downloading snapshot data), step-4 (verifying digests), step-5 (verifying database), step-6 (computing message), step-7 (verifying signature). When step 4 starts, transition the backend status to `verifying`, synthesize known download totals to 100%, and drop late download-stream updates while the visible waterfall stays on the Downloading phase. After mithril-client exits, append finalizing progress items for snapshot conversion (only if conversion runs) and DB install/move. Fast steps (sub-second) show as completed checkmarks immediately — no minimum display time. Use Preparing status only for the initial mithril-snapshot call to kick off the process; the actual download starts after the step process renders.",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
@@ -244,7 +244,7 @@
         {
           "id": "task-024f",
           "title": "Extend store and container for waterfall and dual progress",
-          "description": "Add observables: ancillaryBytesDownloaded, ancillaryBytesTotal, ancillaryElapsedSeconds, ancillaryRemainingSeconds, waterfallItems (observable array), bootstrapStartedAt. Add @computed ancillaryProgress (bytes ratio * 100). Add @computed overallElapsedSeconds with 1-second tick interval timer started when bootstrapStartedAt is set, cleared on completed/failed/cancelled — this is the single elapsed timer for the whole 3-step process. Update _updateStatus() to assign ancillary and waterfall fields. Reset all new fields on idle/decision/cancelled. Update MithrilBootstrapPage container to pass new observables.",
+          "description": "Add observables: ancillaryBytesDownloaded, ancillaryBytesTotal, progressItems (observable array), and bootstrapStartedAt. Add @computed ancillaryProgress (bytes ratio * 100) and @computed overallElapsedSeconds with a 1-second tick interval timer started when bootstrapStartedAt is set, cleared on completed/failed/cancelled — this is the single elapsed timer for the whole 3-step process. Update _updateStatus() to assign ancillary and progress-item fields. Reset all new fields on idle/decision/cancelled. Update MithrilBootstrapPage container to pass the new observables.",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
@@ -288,7 +288,7 @@
         {
           "id": "task-024h",
           "title": "Vertical waterfall MithrilStepIndicator",
-          "description": "Replace horizontal 3-step layout with vertical waterfall. Each top-level step (Preparing, Downloading, Finalizing) renders: left icon column (spinner=active, checkmark=completed, red-X=error, grey-circle=pending) + right label + sub-content area + vertical connector line between steps. Downloading sub-content: all mithril-client steps 1-7 as individual waterfall sub-items with spinner/check icons that appear as they arrive. Two inline progress bars (snapshot files + ancillary) with labels, progress %, bytes, remaining time — both persist at 100% once complete. Finalizing sub-content: conversion waterfall item (only if conversion runs) + DB install/move + cleanup as individual waterfall sub-items. CSS transitions for smooth item appearance (opacity 0→1, translateY). Reuse existing error/close SVG tinted red for error state (per user preference). Auto-scroll to latest active item. Fast sub-second steps show as completed checkmarks immediately.",
+          "description": "Replace horizontal 3-step layout with vertical waterfall. Each top-level step (Preparing, Downloading, Finalizing) renders: left icon column (spinner=active, checkmark=completed, red-X=error, grey-circle=pending) + right label + sub-content area + vertical connector line between steps. Downloading sub-content: all mithril-client steps 1-7 as individual waterfall sub-items with spinner/check icons that appear as they arrive. Two inline progress bars (snapshot files + ancillary) render only while `Downloading snapshot data` is the active sub-item and show progress %, plus transferred bytes; once verification starts, the bars are hidden and the verification rows continue underneath. Finalizing sub-content: conversion waterfall item (only if conversion runs) + DB install/move + cleanup as individual waterfall sub-items. CSS transitions for smooth item appearance (opacity 0→1, translateY). Reuse existing error/close SVG tinted red for error state (per user preference). Auto-scroll to latest active item. Fast sub-second steps show as completed checkmarks immediately.",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
@@ -311,12 +311,12 @@
         {
           "id": "task-024j",
           "title": "Backend and renderer integration tests",
-          "description": "Parser tests: label/stepNum/bytesDownloaded extraction for Files lines, Ancillary lines, step announcements, mixed/interleaved lines, graceful degradation without label field. Service tests: split Files/Ancillary tracking payloads, waterfall item accumulation for steps 1-7 under downloading, post-download finalizing waterfall items (conversion if enabled + install + cleanup), error-state marks active waterfall item as 'error', interleaved stream test confirms no cross-contamination. Verify existing cancel tests still pass and that cancel remains cancelled instead of falling through to failed after mithril-client is intentionally killed. Store tests: overallElapsedSeconds timer lifecycle, ancillary computed progress, waterfall array reactivity, timer reseeding from backend elapsedSeconds on resync and reset on new run. Verify step-only announcements preserve the last Files payload so the Downloading bar stays at 100% through verification sub-steps, and ancillary metrics are cleared when leaving Downloading or starting a fresh run.",
-          "status": "pending",
+          "description": "Parser tests: label/stepNum/bytesDownloaded extraction for Files lines, Ancillary lines, step announcements, mixed/interleaved lines, graceful degradation without label field, and removal of stale remaining-time parsing. Service tests: split Files/Ancillary tracking payloads, verification transition into `verifying`, synthetic 100% completion at step 4, dropped late download-stream updates, post-download finalizing progress items (conversion if enabled + install + cleanup), error-state marks active progress item as `error`, extracted stderr summaries, and interleaved stream behavior. Renderer/store tests: overallElapsedSeconds timer lifecycle, ancillary computed progress, progress-item reactivity, timer reseeding from backend elapsedSeconds on resync and reset on new run, `verifying` as a working state, no download bars before step 3 or during verification, and loading-page overlay retention on `cancelled`.",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": ["task-024i"],
-          "completedAt": null,
+          "completedAt": "2026-03-20",
           "targetPath": "source/main/mithril/MithrilBootstrapService.spec.ts"
         }
       ]

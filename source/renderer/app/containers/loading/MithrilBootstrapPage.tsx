@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import MithrilBootstrap from '../../components/loading/mithril-bootstrap';
+import { MithrilBootstrap } from '../../components/loading/mithril-bootstrap';
 
 type Props = InjectedProps;
 
@@ -117,13 +117,8 @@ class MithrilBootstrapPage extends Component<Props> {
     return (
       <MithrilBootstrap
         status={mithrilBootstrap.status}
-        progress={mithrilBootstrap.progress}
-        filesDownloaded={mithrilBootstrap.filesDownloaded}
-        filesTotal={mithrilBootstrap.filesTotal}
         bytesDownloaded={mithrilBootstrap.bytesDownloaded}
         snapshotSize={mithrilBootstrap.snapshot?.size}
-        throughputBps={mithrilBootstrap.throughputBps}
-        remainingSeconds={mithrilBootstrap.remainingSeconds}
         customChainPath={mithrilBootstrap.customChainPath}
         defaultChainPath={mithrilBootstrap.defaultChainPath}
         defaultChainStorageValidation={
@@ -148,7 +143,6 @@ class MithrilBootstrapPage extends Component<Props> {
         }
         onConfirmStorageLocation={mithrilBootstrap.confirmStorageLocation}
         onReturnToStorageLocation={this.handleReturnToStorageLocation}
-        onLoadChainStorageConfig={mithrilBootstrap.loadChainStorageConfig}
         onSelectSnapshot={this.handleSelectSnapshot}
         onAccept={this.handleAccept}
         onDecline={this.handleDecline}
@@ -156,7 +150,6 @@ class MithrilBootstrapPage extends Component<Props> {
         onCancel={this.handleCancel}
         ancillaryBytesDownloaded={mithrilBootstrap.ancillaryBytesDownloaded}
         ancillaryBytesTotal={mithrilBootstrap.ancillaryBytesTotal}
-        ancillaryRemainingSeconds={mithrilBootstrap.ancillaryRemainingSeconds}
         ancillaryProgress={mithrilBootstrap.ancillaryProgress}
         progressItems={mithrilBootstrap.progressItems}
         overallElapsedSeconds={mithrilBootstrap.overallElapsedSeconds}

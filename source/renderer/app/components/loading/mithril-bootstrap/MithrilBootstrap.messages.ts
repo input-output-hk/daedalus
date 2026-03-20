@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
-export default defineMessages({
+const messages: Record<string, ReactIntlMessage> = defineMessages({
   title: {
     id: 'loading.mithrilBootstrap.title',
     defaultMessage: '!!!Fast sync with Mithril',
@@ -16,13 +17,6 @@ export default defineMessages({
     id: 'loading.mithrilBootstrap.storage.title',
     defaultMessage: '!!!Select blockchain data location',
     description: 'Headline for the preliminary chain storage picker screen.',
-  },
-  storageDescription: {
-    id: 'loading.mithrilBootstrap.storage.description',
-    defaultMessage:
-      '!!!Choose where Daedalus should keep blockchain data before you continue.',
-    description:
-      'Description shown on the preliminary chain storage picker screen.',
   },
   storageDescriptionWithSnapshotEstimate: {
     id: 'loading.mithrilBootstrap.storage.descriptionWithSnapshotEstimate',
@@ -88,122 +82,10 @@ export default defineMessages({
     defaultMessage: '!!!Digest',
     description: 'Label for snapshot digest metadata.',
   },
-  progressLabel: {
-    id: 'loading.mithrilBootstrap.progressLabel',
-    defaultMessage: '!!!Bootstrap progress',
-    description: 'Label for the Mithril progress bar.',
-  },
-  progressStatusLabel: {
-    id: 'loading.mithrilBootstrap.progress.statusLabel',
-    defaultMessage: '!!!Current status',
-    description: 'Label for the current Mithril progress status summary.',
-  },
-  progressPercentLabel: {
-    id: 'loading.mithrilBootstrap.progress.percentLabel',
-    defaultMessage: '!!!Progress',
-    description: 'Label for Mithril overall progress metadata.',
-  },
-  progressActivityLabel: {
-    id: 'loading.mithrilBootstrap.progress.activityLabel',
-    defaultMessage: '!!!Current activity',
-    description: 'Label for the active Mithril operation metadata row.',
-  },
   progressElapsedLabel: {
     id: 'loading.mithrilBootstrap.progress.elapsedLabel',
     defaultMessage: '!!!Elapsed',
     description: 'Label for Mithril elapsed time metadata.',
-  },
-  progressTimeRemainingLabel: {
-    id: 'loading.mithrilBootstrap.progress.timeRemainingLabel',
-    defaultMessage: '!!!Time remaining',
-    description: 'Label for Mithril remaining time metadata.',
-  },
-  progressPreparingTitle: {
-    id: 'loading.mithrilBootstrap.progress.preparingTitle',
-    defaultMessage: '!!!Preparing Mithril fast sync',
-    description: 'Title shown while Mithril bootstrap is preparing to start.',
-  },
-  progressPreparingDetail: {
-    id: 'loading.mithrilBootstrap.progress.preparingDetail',
-    defaultMessage:
-      '!!!Checking the selected snapshot and preparing your blockchain data location before the download starts.',
-    description: 'Detail copy shown while Mithril bootstrap is preparing.',
-  },
-  progressDownloadingTitle: {
-    id: 'loading.mithrilBootstrap.progress.downloadingTitle',
-    defaultMessage: '!!!Downloading the selected snapshot',
-    description: 'Title shown while Mithril bootstrap is actively downloading.',
-  },
-  progressDownloadingDetail: {
-    id: 'loading.mithrilBootstrap.progress.downloadingDetail',
-    defaultMessage:
-      '!!!Fetching a verified Mithril snapshot now. Transfer details update below as data arrives.',
-    description: 'Detail copy shown while the Mithril snapshot is downloading.',
-  },
-  progressDownloadVerifyingTitle: {
-    id: 'loading.mithrilBootstrap.progress.downloadVerifyingTitle',
-    defaultMessage: '!!!Verifying the downloaded snapshot',
-    description:
-      'Title shown when Mithril is verifying the downloaded snapshot before local restore begins.',
-  },
-  progressDownloadVerifyingDetail: {
-    id: 'loading.mithrilBootstrap.progress.downloadVerifyingDetail',
-    defaultMessage:
-      '!!!Checking the downloaded snapshot before Daedalus restores it into your blockchain data location.',
-    description:
-      'Detail copy shown when Mithril is still in download status while verification completes before local restore.',
-  },
-  progressUnpackingTitle: {
-    id: 'loading.mithrilBootstrap.progress.unpackingTitle',
-    defaultMessage: '!!!Unpacking snapshot data',
-    description:
-      'Title shown while Mithril is unpacking the restored snapshot.',
-  },
-  progressConvertingTitle: {
-    id: 'loading.mithrilBootstrap.progress.convertingTitle',
-    defaultMessage: '!!!Preparing snapshot for Daedalus',
-    description:
-      'Title shown while Mithril is converting the restored snapshot.',
-  },
-  progressConvertingDetail: {
-    id: 'loading.mithrilBootstrap.progress.convertingDetail',
-    defaultMessage:
-      '!!!Converting the restored data into the format Daedalus needs before the node starts again.',
-    description:
-      'Detail copy shown while Mithril is converting the restored snapshot.',
-  },
-  progressFinalizingTitle: {
-    id: 'loading.mithrilBootstrap.progress.finalizingTitle',
-    defaultMessage: '!!!Finalizing Mithril fast sync',
-    description: 'Title shown while Mithril is performing final cleanup.',
-  },
-  progressCompletedTitle: {
-    id: 'loading.mithrilBootstrap.progress.completedTitle',
-    defaultMessage: '!!!Starting Daedalus',
-    description:
-      'Title shown after Mithril restore completes while the node is starting.',
-  },
-  progressCompletedDetail: {
-    id: 'loading.mithrilBootstrap.progress.completedDetail',
-    defaultMessage:
-      '!!!The snapshot has been restored. Starting Daedalus with your blockchain data now.',
-    description:
-      'Detail copy shown after Mithril restore completes while the node is starting.',
-  },
-  progressTiming: {
-    id: 'loading.mithrilBootstrap.progressTiming',
-    defaultMessage: '!!!Elapsed {elapsed} • Remaining {remaining}',
-    description: 'Label for the Mithril elapsed and remaining time row.',
-  },
-  progressElapsed: {
-    id: 'loading.mithrilBootstrap.progressElapsed',
-    defaultMessage: '!!!Elapsed {elapsed}',
-    description: 'Label for the Mithril elapsed time row.',
-  },
-  progressRemaining: {
-    id: 'loading.mithrilBootstrap.progressRemaining',
-    defaultMessage: '!!!Remaining {remaining}',
-    description: 'Label for the Mithril remaining time row.',
   },
   cancel: {
     id: 'loading.mithrilBootstrap.cancel',
@@ -237,138 +119,10 @@ export default defineMessages({
     description:
       'Label for the downloading step in the Mithril step indicator.',
   },
-  stepUnpacking: {
-    id: 'loading.mithrilBootstrap.step.unpacking',
-    defaultMessage: '!!!Unpacking',
-    description:
-      'Label for the unpacking sub-phase in the Mithril progress flow.',
-  },
-  stepVerifying: {
-    id: 'loading.mithrilBootstrap.step.verifying',
-    defaultMessage: '!!!Verifying',
-    description: 'Label for the verifying step in the Mithril step indicator.',
-  },
   stepFinalizing: {
     id: 'loading.mithrilBootstrap.step.finalizing',
     defaultMessage: '!!!Finalizing',
     description: 'Label for the finalizing step in the Mithril step indicator.',
-  },
-  downloadBytesLabel: {
-    id: 'loading.mithrilBootstrap.download.bytesLabel',
-    defaultMessage: '!!!Downloaded',
-    description: 'Label for bytes transferred during Mithril download.',
-  },
-  downloadRateLabel: {
-    id: 'loading.mithrilBootstrap.download.rateLabel',
-    defaultMessage: '!!!Transfer rate',
-    description: 'Label for transfer speed during Mithril download.',
-  },
-  progressStageLabel: {
-    id: 'loading.mithrilBootstrap.progress.stageLabel',
-    defaultMessage: '!!!Current step',
-    description: 'Label for non-download progress stage details.',
-  },
-  progressTimingLabel: {
-    id: 'loading.mithrilBootstrap.progress.timingLabel',
-    defaultMessage: '!!!Timing',
-    description: 'Label for Mithril timing metadata.',
-  },
-  progressUnknownDurationValue: {
-    id: 'loading.mithrilBootstrap.progress.unknownDurationValue',
-    defaultMessage: '!!!Not available yet',
-    description:
-      'Fallback metadata value while duration estimates are unavailable.',
-  },
-  progressWaitingValue: {
-    id: 'loading.mithrilBootstrap.progress.waitingValue',
-    defaultMessage: '!!!Waiting for updates',
-    description:
-      'Fallback metadata value while Mithril has not emitted data yet.',
-  },
-  progressRatePendingValue: {
-    id: 'loading.mithrilBootstrap.progress.ratePendingValue',
-    defaultMessage: '!!!Available during download',
-    description:
-      'Fallback transfer-rate value shown before download throughput is known.',
-  },
-  progressTimingPendingValue: {
-    id: 'loading.mithrilBootstrap.progress.timingPendingValue',
-    defaultMessage: '!!!Estimate available after transfer starts',
-    description:
-      'Fallback timing value shown before timing estimates are available.',
-  },
-  progressLocalProcessingValue: {
-    id: 'loading.mithrilBootstrap.progress.localProcessingValue',
-    defaultMessage: '!!!Local processing',
-    description:
-      'Metadata value shown for fields that do not apply during local post-download work.',
-  },
-  progressFinalizingRemainingValue: {
-    id: 'loading.mithrilBootstrap.progress.finalizingRemainingValue',
-    defaultMessage:
-      '!!!Completing the final local restore. Exact time depends on disk speed.',
-    description:
-      'Fallback time-remaining value shown during local post-download processing.',
-  },
-  progressPreparingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.preparingActivityValue',
-    defaultMessage: '!!!Checking snapshot details and storage location',
-    description: 'Short activity label shown while Mithril is preparing.',
-  },
-  progressDownloadingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.downloadingActivityValue',
-    defaultMessage: '!!!Downloading snapshot data',
-    description: 'Short activity label shown while Mithril is downloading.',
-  },
-  progressDownloadVerifyingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.downloadVerifyingActivityValue',
-    defaultMessage: '!!!Verifying the downloaded snapshot',
-    description:
-      'Short activity label shown while Mithril verifies the downloaded snapshot before local restore.',
-  },
-  progressUnpackingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.unpackingActivityValue',
-    defaultMessage: '!!!Moving snapshot data into blockchain storage',
-    description:
-      'Short activity label shown while Mithril is unpacking locally.',
-  },
-  progressConvertingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.convertingActivityValue',
-    defaultMessage: '!!!Preparing restored data for Daedalus',
-    description:
-      'Short activity label shown while Mithril is converting locally.',
-  },
-  progressFinalizingActivityValue: {
-    id: 'loading.mithrilBootstrap.progress.finalizingActivityValue',
-    defaultMessage: '!!!Cleaning up bootstrap data and handing off to the node',
-    description:
-      'Short activity label shown while Mithril is in final cleanup.',
-  },
-  progressPercentValue: {
-    id: 'loading.mithrilBootstrap.progress.percentValue',
-    defaultMessage: '!!!{progress}% complete',
-    description:
-      'Formatted overall Mithril progress percentage metadata value.',
-  },
-  progressSnapshotSizeValue: {
-    id: 'loading.mithrilBootstrap.progress.snapshotSizeValue',
-    defaultMessage: '!!!Snapshot size {size}',
-    description:
-      'Fallback value for the downloaded amount field when only total snapshot size is known.',
-  },
-  progressUnpackingDetail: {
-    id: 'loading.mithrilBootstrap.progress.unpackingDetail',
-    defaultMessage:
-      '!!!Moving the restored snapshot into your blockchain data location and preparing it for use.',
-    description:
-      'Detail copy shown while the restored Mithril snapshot is being unpacked locally.',
-  },
-  progressFinalizingDetail: {
-    id: 'loading.mithrilBootstrap.progress.finalizingDetail',
-    defaultMessage:
-      '!!!Cleaning up bootstrap files and preparing to start the node with the restored blockchain data.',
-    description:
-      'Detail copy shown while Mithril bootstrap performs final local cleanup.',
   },
   errorDownloadTitle: {
     id: 'loading.mithrilBootstrap.error.download.title',
@@ -561,23 +315,19 @@ export default defineMessages({
     description:
       'Label for fast sync data progress bar during concurrent fast sync downloads.',
   },
-  progressFastSyncDownloaded: {
-    id: 'loading.mithrilBootstrap.progress.fastSyncDownloaded',
-    defaultMessage: '!!!Fast State Sync downloaded',
-    description:
-      'Label for the amount of fast sync data downloaded metadata value.',
-  },
   nodeStartingTitle: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingTitle',
     defaultMessage: '!!!Starting cardano-node',
     description:
-      'Title shown during the 3-second completion delay after Mithril snapshot restore, while cardano-node is starting to complete remaining sync.',
+      'Title shown during the completion delay after Mithril snapshot restore, while cardano-node is starting to complete remaining sync.',
   },
   nodeStartingDetail: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingDetail',
     defaultMessage:
       '!!!The Mithril snapshot has been restored. Cardano-node is starting up to complete the remaining sync.',
     description:
-      'Detail copy shown during the 3-second completion delay while cardano-node is starting after Mithril restore.',
+      'Detail copy shown during the completion delay while cardano-node is starting after Mithril restore.',
   },
 });
+
+export default messages;

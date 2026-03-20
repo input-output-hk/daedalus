@@ -15,18 +15,12 @@ import styles from './MithrilProgressView.scss';
 
 interface Props {
   status: MithrilBootstrapStatus;
-  progress: number;
   progressItems?: MithrilProgressItem[];
-  filesDownloaded?: number;
-  filesTotal?: number;
   bytesDownloaded?: number;
   snapshotSize?: number;
-  throughputBps?: number;
-  remainingSeconds?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
-  ancillaryRemainingSeconds?: number;
   overallElapsedSeconds?: number;
   onCancel(): void;
 }
@@ -55,18 +49,12 @@ const formatDuration = (value?: number) => {
 function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
-    progress,
     progressItems,
-    filesDownloaded,
-    filesTotal,
     bytesDownloaded,
     snapshotSize,
-    throughputBps,
-    remainingSeconds,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
-    ancillaryRemainingSeconds,
     overallElapsedSeconds,
     onCancel,
   } = props;
@@ -98,19 +86,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
       <div className={styles.waterfallContainer}>
         <MithrilStepIndicator
           status={status}
-          progress={progress}
           progressItems={progressItems}
-          filesDownloaded={filesDownloaded}
-          filesTotal={filesTotal}
           bytesDownloaded={bytesDownloaded}
           snapshotSize={snapshotSize}
-          throughputBps={throughputBps}
-          remainingSeconds={remainingSeconds}
           ancillaryBytesDownloaded={ancillaryBytesDownloaded}
           ancillaryBytesTotal={ancillaryBytesTotal}
           ancillaryProgress={ancillaryProgress}
-          ancillaryRemainingSeconds={ancillaryRemainingSeconds}
-          overallElapsedSeconds={overallElapsedSeconds}
         />
       </div>
 
@@ -121,7 +102,6 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           aria-live="polite"
           aria-atomic="true"
         >
-          <SVGInline svg={spinnerIcon} className={styles.completionSpinner} />
           <h2
             className={styles.completionTitle}
             ref={completionRef}
@@ -132,6 +112,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           <p className={styles.completionDetail}>
             {intl.formatMessage(messages.nodeStartingDetail)}
           </p>
+          <SVGInline svg={spinnerIcon} className={styles.completionSpinner} />
         </div>
       )}
 

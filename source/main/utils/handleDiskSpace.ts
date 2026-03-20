@@ -117,7 +117,6 @@ export const handleDiskSpace = (
   const emitMithrilDecisionStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
-      progress: 0,
       snapshot: null,
       error: null,
     };
@@ -128,7 +127,6 @@ export const handleDiskSpace = (
   const emitMithrilIdleStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'idle',
-      progress: 0,
       snapshot: null,
       error: null,
     };
@@ -143,7 +141,6 @@ export const handleDiskSpace = (
         : 'Cardano node failed to start after Mithril bootstrap. Wipe the chain data and try again.';
     const update: MithrilBootstrapStatusUpdate = {
       status: 'failed',
-      progress: 0,
       snapshot: null,
       error: {
         message,

@@ -18,6 +18,7 @@ export type MithrilBootstrapStatus =
   | 'decision'
   | 'preparing'
   | 'downloading'
+  | 'verifying'
   | 'unpacking'
   | 'finalizing'
   | 'converting'
@@ -48,17 +49,13 @@ export type MithrilBootstrapError = {
 
 export type MithrilBootstrapStatusUpdate = {
   status: MithrilBootstrapStatus;
-  progress: number;
   snapshot?: MithrilSnapshotItem | null;
   filesDownloaded?: number;
   filesTotal?: number;
   elapsedSeconds?: number;
-  remainingSeconds?: number;
   error?: MithrilBootstrapError | null;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
-  ancillaryElapsedSeconds?: number;
-  ancillaryRemainingSeconds?: number;
   progressItems?: MithrilProgressItem[];
 };
 

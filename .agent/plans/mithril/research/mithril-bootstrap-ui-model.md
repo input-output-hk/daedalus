@@ -25,10 +25,12 @@
   - Show the only determinate progress bar here.
   - Drive the bar from the exposed file download progress for this step and scale it from 0 to 100 inside the step.
   - Keep estimated bytes, rate, elapsed, and remaining metadata here only.
-- `Verifying`
-  - Transition when the exposed file download work is complete.
-  - No progress bar unless Mithril exposes a truthful verifying metric later.
-  - Use localized verifying copy only; do not surface Mithril JSON message strings.
+- `Verifying` (implemented — maps to the visible `Downloading` step)
+  - `verifying` status is emitted by the service when the CLI enters step 4 (digest verification).
+  - The service synthesizes both progress bars to 100% and drops late download-phase events.
+  - Both progress bars are hidden during verification; download sub-items collapse to a green checkmark.
+  - Verification-phase errors carry a distinct `verify` error stage.
+  - The 3-step visible waterfall (Preparing / Downloading / Finalizing) is preserved — `verifying` is not a 4th visible step.
 - `Finalizing`
   - Covers Daedalus local handoff after Mithril exits.
   - Reword Daedalus `unpacking` to `installing` for local DB placement work.

@@ -68,7 +68,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
   const hint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
-  const detailsHeader = error?.code || error?.message || '';
+  const detailsHeader = error?.message || error?.code || '';
   const logPath = error?.logPath;
 
   return (

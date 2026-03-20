@@ -8,11 +8,8 @@ import MithrilProgressView from './MithrilProgressView';
 describe('MithrilProgressView', () => {
   const renderComponent = ({
     status = 'unpacking' as const,
-    progress = 92.5,
     bytesDownloaded,
     snapshotSize,
-    throughputBps,
-    remainingSeconds,
     overallElapsedSeconds,
   }: {
     status?:
@@ -22,22 +19,16 @@ describe('MithrilProgressView', () => {
       | 'converting'
       | 'finalizing'
       | 'completed';
-    progress?: number;
     bytesDownloaded?: number;
     snapshotSize?: number;
-    throughputBps?: number;
-    remainingSeconds?: number;
     overallElapsedSeconds?: number;
   } = {}) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilProgressView
           status={status}
-          progress={progress}
           bytesDownloaded={bytesDownloaded}
           snapshotSize={snapshotSize}
-          throughputBps={throughputBps}
-          remainingSeconds={remainingSeconds}
           overallElapsedSeconds={overallElapsedSeconds}
           onCancel={jest.fn()}
         />
@@ -49,7 +40,6 @@ describe('MithrilProgressView', () => {
   it('renders the header and timer', () => {
     renderComponent({
       status: 'downloading',
-      progress: 49.9,
       overallElapsedSeconds: 65,
     });
 
@@ -60,13 +50,13 @@ describe('MithrilProgressView', () => {
   });
 
   it('shows default timer when no elapsed seconds provided', () => {
-    renderComponent({ status: 'preparing', progress: 0 });
+    renderComponent({ status: 'preparing' });
 
     expect(screen.getByText('0:00')).toBeInTheDocument();
   });
 
   it('shows the node startup handoff after bootstrap completes', () => {
-    renderComponent({ status: 'completed', progress: 100 });
+    renderComponent({ status: 'completed' });
 
     expect(
       screen.getByRole('heading', { name: /starting cardano-node/i })
@@ -77,7 +67,7 @@ describe('MithrilProgressView', () => {
   });
 
   it('does not show completion block when not completed', () => {
-    renderComponent({ status: 'downloading', progress: 50 });
+    renderComponent({ status: 'downloading' });
 
     expect(
       screen.queryByRole('heading', { name: /starting cardano-node/i })
@@ -85,7 +75,7 @@ describe('MithrilProgressView', () => {
   });
 
   it('disables the cancel button when bootstrap is completed', () => {
-    renderComponent({ status: 'completed', progress: 100 });
+    renderComponent({ status: 'completed' });
 
     expect(screen.getByRole('button', { name: /cancel/i })).toBeDisabled();
   });

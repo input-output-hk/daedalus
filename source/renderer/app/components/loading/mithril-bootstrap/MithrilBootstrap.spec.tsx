@@ -53,7 +53,6 @@ describe('MithrilBootstrap', () => {
       <IntlProvider locale="en-US" messages={translations}>
         <MithrilBootstrap
           status="decision"
-          progress={0}
           customChainPath="/mnt/current-chain"
           defaultChainPath="/tmp/state/chain"
           defaultChainStorageValidation={{
@@ -136,5 +135,13 @@ describe('MithrilBootstrap', () => {
 
     expect(screen.getByText('Error view')).toBeInTheDocument();
     expect(screen.queryByText('Progress view')).not.toBeInTheDocument();
+  });
+
+  it('renders progress view when status is verifying', () => {
+    renderComponent({ status: 'verifying' });
+
+    expect(screen.getByText('Progress view')).toBeInTheDocument();
+    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+    expect(screen.queryByText('Error view')).not.toBeInTheDocument();
   });
 });

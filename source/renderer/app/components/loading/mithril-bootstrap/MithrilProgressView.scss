@@ -83,6 +83,7 @@
 
 .completionSpinner {
   animation: spin 1s linear infinite;
+  color: rgba(233, 237, 242, 0.92);
   height: 32px;
   margin-bottom: 12px;
   width: 32px;
@@ -110,7 +111,7 @@
 .actions {
   display: flex;
   gap: 12px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .secondaryAction {
@@ -161,7 +162,7 @@
 
 @media (max-width: 720px) {
   .actions {
-    align-items: stretch;
+    align-items: center;
     flex-direction: column;
   }
 }

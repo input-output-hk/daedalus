@@ -14,8 +14,6 @@ import messages from './MithrilBootstrap.messages';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
 
-/* eslint-disable react/no-unused-prop-types -- Staged props for task-024i */
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -26,19 +24,12 @@ type SubItemState = 'completed' | 'active' | 'pending' | 'error';
 
 type Props = {
   status: MithrilBootstrapStatus;
-  progress?: number;
   progressItems?: MithrilProgressItem[];
-  filesDownloaded?: number;
-  filesTotal?: number;
   bytesDownloaded?: number;
   snapshotSize?: number;
-  throughputBps?: number;
-  remainingSeconds?: number;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
-  ancillaryRemainingSeconds?: number;
-  overallElapsedSeconds?: number;
 };
 
 interface Context {
@@ -54,6 +45,7 @@ const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 const STATUS_TO_STEP: Partial<Record<MithrilBootstrapStatus, StepId>> = {
   preparing: 'preparing',
   downloading: 'downloading',
+  verifying: 'downloading',
   unpacking: 'finalizing',
   converting: 'finalizing',
   finalizing: 'finalizing',
@@ -194,14 +186,6 @@ function splitSubItemsAroundAnchor(
   };
 }
 
-function formatRemainingTime(seconds?: number): string | null {
-  if (typeof seconds !== 'number' || seconds < 0) return null;
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  if (mins > 0) return `${mins}:${secs.toString().padStart(2, '0')}`;
-  return `${secs}s`;
-}
-
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
@@ -267,13 +251,11 @@ function InlineProgressBar({
   percent,
   downloaded,
   total,
-  remaining,
 }: {
   label: string;
   percent: number;
   downloaded?: number;
   total?: number;
-  remaining?: string | null;
 }) {
   const clamped = Math.min(100, Math.max(0, percent));
   const downloadedStr = formatTransferSize(downloaded) ?? '\u2014';
@@ -306,7 +288,6 @@ function InlineProgressBar({
         <span>
           {downloadedStr} / {totalStr}
         </span>
-        {remaining && <span>{remaining}</span>}
       </div>
     </div>
   );
@@ -322,11 +303,9 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     progressItems = [],
     bytesDownloaded,
     snapshotSize,
-    remainingSeconds,
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
-    ancillaryRemainingSeconds,
   } = props;
 
   const activeStepIndex = getActiveStepIndex(status);
@@ -415,10 +394,13 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
         const isLast = stepIndex === STEPS.length - 1;
 
         const subItems =
-          state !== 'pending'
+          state === 'active'
             ? groupSubItems(progressItems, stepId, activeStepId)
             : [];
-        const showBars = stepId === 'downloading' && state !== 'pending';
+        const showBars =
+          stepId === 'downloading' &&
+          state === 'active' &&
+          activeSubItemId === DOWNLOAD_PROGRESS_ANCHOR_ID;
         const {
           itemsBeforeAnchor: subItemsBeforeBars,
           itemsAfterAnchor: subItemsAfterBars,
@@ -483,28 +465,12 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       percent={snapshotPercent}
                       downloaded={bytesDownloaded}
                       total={snapshotSize}
-                      remaining={
-                        formatRemainingTime(remainingSeconds)
-                          ? intl.formatMessage(messages.progressRemaining, {
-                              remaining: formatRemainingTime(remainingSeconds),
-                            })
-                          : null
-                      }
                     />
                     <InlineProgressBar
                       label={intl.formatMessage(messages.progressFastSyncLabel)}
                       percent={ancPercent}
                       downloaded={ancillaryBytesDownloaded}
                       total={ancillaryBytesTotal}
-                      remaining={
-                        formatRemainingTime(ancillaryRemainingSeconds)
-                          ? intl.formatMessage(messages.progressRemaining, {
-                              remaining: formatRemainingTime(
-                                ancillaryRemainingSeconds
-                              ),
-                            })
-                          : null
-                      }
                     />
                   </div>
                 )}

@@ -59,6 +59,8 @@ export function inferErrorStageFromStatus(
   switch (status) {
     case 'downloading':
       return 'download';
+    case 'verifying':
+      return 'verify';
     case 'unpacking':
     case 'converting':
     case 'finalizing':

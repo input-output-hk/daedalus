@@ -3,7 +3,6 @@ export type MithrilProgressUpdate = {
   filesDownloaded?: number;
   filesTotal?: number;
   elapsedSeconds?: number;
-  remainingSeconds?: number;
   label?: 'Files' | 'Ancillary';
   stepNum?: number;
   totalSteps?: number;
@@ -48,9 +47,6 @@ export const parseMithrilProgressUpdate = (
     if (typeof parsed.seconds_elapsed === 'number') {
       update.elapsedSeconds = parsed.seconds_elapsed;
     }
-    if (typeof parsed.seconds_left === 'number') {
-      update.remainingSeconds = parsed.seconds_left;
-    }
 
     if (parsed.label === 'Files' || parsed.label === 'Ancillary') {
       update.label = parsed.label;
@@ -77,7 +73,6 @@ export const parseMithrilProgressUpdate = (
       update.filesDownloaded == null &&
       update.filesTotal == null &&
       update.elapsedSeconds == null &&
-      update.remainingSeconds == null &&
       update.stepNum == null &&
       update.bytesDownloaded == null &&
       update.bytesTotal == null &&
@@ -90,10 +85,4 @@ export const parseMithrilProgressUpdate = (
   } catch (error) {
     return null;
   }
-};
-
-export const parseMithrilProgressLine = (line: string): number | null => {
-  const update = parseMithrilProgressUpdate(line);
-  if (!update || update.progress == null) return null;
-  return update.progress;
 };

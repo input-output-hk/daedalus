@@ -2,7 +2,7 @@
 
 **Feature:** Mithril bootstrap waterfall step indicator  
 **Created:** 2026-03-18  
-**Revised:** 2026-03-18  
+**Revised:** 2026-03-20  
 **Status:** implemented  
 **Related design:** [Mithril Progress View Composition](design-progress-view-composition.md)
 
@@ -10,6 +10,7 @@
 
 | Date | Change |
 |---|---|
+| 2026-03-20 | Updated the spec to match the shipped waterfall: progress bars render only while `Downloading snapshot data` is active, verification uses sub-items without bars, and remaining-time copy was removed from the inline metadata rows. |
 | 2026-03-18 | Established the 3-step vertical waterfall structure for Preparing, Downloading, and Finalizing, including connector rules, icon states, and inline progress bars. |
 | 2026-03-18 | Finalized the component-level behavior and implemented it in `MithrilStepIndicator.tsx` through task-024h. |
 | 2026-03-18 | Parent composition into `MithrilProgressView` landed through task-024i, so the waterfall design now reflects the live feature rather than a staged child-only component. |
@@ -35,7 +36,6 @@
 │  │  │   │                                                                │    │
 │  │  │   │  Snapshot files                                               │    │
 │  │  │   │  ┤█████████████████░░░░░░░░░░░├  62%  │  1.2 GB / 1.9 GB   │    │
-│  │  │   │                                14:32 remaining               │    │
 │  │  │   │  Fast State Sync                                              │    │
 │  │  │   │  ┤██░░░░░░░░░░░░░░░░░░░░░░░░░├  12%  │  24 MB / 195 MB    │    │
 │  │  │   │                                                               │    │
@@ -187,7 +187,6 @@ Line-height: 1.4
 | Bar title (e.g. "Snapshot files") | 12px | regular | `rgba(172,182,195,0.85)` |
 | Percent value | 12px | bold (`var(--font-bold)`) | `rgba(233,237,242,0.92)` |
 | Bytes label (e.g. "1.2 GB / 1.9 GB") | 12px | regular | `rgba(172,182,195,0.80)` |
-| Remaining time | 12px | regular | `rgba(140,155,173,0.75)` |
 
 ---
 
@@ -272,7 +271,7 @@ Implementation: apply one class per connector `<div>` based on its parent step's
 
 ## 6. Progress Bars
 
-Two inline progress bars appear inside the Downloading sub-content area, immediately below the `Downloading snapshot data` row (`step-3`) and above the verification rows (`step-4` onward). They persist at 100% (solid green, no animation) once the download phase completes.
+Two inline progress bars appear inside the Downloading sub-content area immediately below the `Downloading snapshot data` row (`step-3`). They render only while `step-3` is the active sub-item. When the backend transitions into `verifying` at step 4, the service synthesizes known totals to 100% in state and the renderer hides the bars so the verification rows take over the vertical space.
 
 ### Bar Layout (per bar)
 
@@ -294,9 +293,9 @@ Both on same line, space-between.
 
 **Metadata row** (displayed below bar):
 ```
-[bytes downloaded / bytes total]           [time remaining]
+[bytes downloaded / bytes total]
 ```
-Both on same line, space-between.
+Single line, left-aligned on desktop and stacked naturally on narrow widths.
 
 ### Bar Visual Styling
 
@@ -372,7 +371,7 @@ No sub-items visible. No progress bars.
  │
  │   Snapshot files     62%
  │   ┤█████████░░░░░░░░░░░├
- │   1.2 GB / 1.9 GB             14:32 remaining
+│   1.2 GB / 1.9 GB
  │
  │   Fast State Sync    12%
  │   ┤██░░░░░░░░░░░░░░░░░├
@@ -398,14 +397,6 @@ No sub-items visible. No progress bars.
  │   [●] Checking local disk info
  │   [●] Fetching certificate chain
  │   [●] Downloading snapshot data
- │
- │   Snapshot files     100%
- │   ┤████████████████████├  (solid green, no stripes)
- │   1.9 GB / 1.9 GB
- │
- │   Fast State Sync    100%
- │   ┤████████████████████├  (solid green, no stripes)
- │   195 MB / 195 MB
  │
  │   [●] Verifying digests
  │   [⟳] Verifying database   ← active
@@ -666,9 +657,7 @@ activeItemRef.current?.scrollIntoView({
 
 ### Live Region
 
-The parent `MithrilProgressView` already provides `role="status" aria-live="polite" aria-atomic="true"` on the status panel. The waterfall step indicator itself does **not** need its own live region — the status panel handles announcements.
-
-Sub-item state changes (completed, error) should be announced via a visually hidden `aria-live="polite"` updater element managed by the parent view (out of scope for this component).
+The step indicator itself does **not** own a live region. In the shipped renderer, `MithrilProgressView` only live-announces the completion handoff block; the waterfall contributes list semantics and per-bar `progressbar` roles/labels. Broader phase-by-phase announcements remain deferred to the accessibility follow-up.
 
 ### Keyboard Considerations
 
@@ -746,7 +735,7 @@ Each scenario from §7 maps to a required Storybook story. Story implementation 
 |---|---|---|
 | A — Early Preparing | `Preparing Active` | Spinner on Preparing, all others pending grey circles, no sub-items |
 | B — Mid-Download | `Downloading Mid Progress` | Preparing completed, Download active with mixed sub-item states, two progress bars with partial fill + animated stripes |
-| C — Verification Phase | `Download Verification Active` | All download sub-items exist, bars at 100% solid green, one verification sub-item active spinner |
+| C — Verification Phase | `Download Verification Active` | All download sub-items exist, download bars are hidden, one verification sub-item is active |
 | D — Finalizing (with conversion) | `Finalizing With Conversion` | Preparing + Downloading completed, Finalizing active with conversion sub-item completed |
 | E — Finalizing (no conversion) | `Finalizing No Conversion` | Same as D but no conversion sub-item; first Finalizing sub-item is active |
 | F — Completed | `All Steps Completed` | All green checkmarks, all connectors green, no pending items |
@@ -797,7 +786,7 @@ All overrides are scoped under `.root` to avoid global bleed.
 |---|---|---|
 | `.inlineBarHeader` layout | flex row, space-between | flex row, space-between (unchanged) |
 | `.inlineBarMeta` layout | flex row, space-between | flex-direction: column; gap: 2px |
-| `.inlineBarMeta` items | single line: bytes ← → time | stacked: bytes on top, time below |
+| `.inlineBarMeta` items | single line: label/percent or transferred bytes | stacked vertically for narrow widths |
 | `.inlineBarTitle` font-size | 12px | 11px |
 | `.inlineBarPercent` font-size | 12px | 11px |
 | `.inlineBarMeta` font-size | 12px | 11px |
@@ -853,7 +842,7 @@ All overrides are scoped under `.root` to avoid global bleed.
 
 - **Labels wrap (`white-space: normal`)**: On a 360px viewport, the card has ~312px content width (`360 - 24*2 padding`). After the 32px icon column and 12px gap, the label column gets ~268px — enough for most labels, but long i18n strings (especially Japanese) need wrapping.
 - **Icon column stays fixed at 32px**: Provides visual anchor for the vertical connector line regardless of viewport width.
-- **Metadata stacks vertically**: At narrow widths, the bytes and time-remaining values on a single line become cramped. Stacking keeps each value readable.
+- **Inline bar metadata stacks vertically**: At narrow widths, both the label/percent row and the transferred-bytes row benefit from vertical stacking to avoid crowding.
 - **Sub-item font scales to 12px**: Dense sub-item rows at narrow widths benefit from the slightly smaller type, matching the information-density reduction pattern used elsewhere in the Mithril SCSS.
 
 ## Implementation Status

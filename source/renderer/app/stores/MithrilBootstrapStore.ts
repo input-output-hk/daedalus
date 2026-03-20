@@ -25,7 +25,6 @@ import { logger } from '../utils/logging';
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
-  progress: 0,
   snapshot: null,
   error: null,
 };
@@ -36,13 +35,13 @@ const isDecisionCycleStatus = (status: MithrilBootstrapStatus) =>
 const isWorkingStatus = (status: MithrilBootstrapStatus) =>
   status === 'preparing' ||
   status === 'downloading' ||
+  status === 'verifying' ||
   status === 'unpacking' ||
   status === 'converting' ||
   status === 'finalizing';
 
 export default class MithrilBootstrapStore extends Store {
   @observable status: MithrilBootstrapStatus = DEFAULT_STATUS.status;
-  @observable progress = DEFAULT_STATUS.progress;
   @observable snapshot: MithrilSnapshotItem | null =
     DEFAULT_STATUS.snapshot ?? null;
   @observable filesDownloaded: number | undefined =
@@ -50,8 +49,6 @@ export default class MithrilBootstrapStore extends Store {
   @observable filesTotal: number | undefined = DEFAULT_STATUS.filesTotal;
   @observable elapsedSeconds: number | undefined =
     DEFAULT_STATUS.elapsedSeconds;
-  @observable remainingSeconds: number | undefined =
-    DEFAULT_STATUS.remainingSeconds;
   @observable error: MithrilBootstrapError | null =
     DEFAULT_STATUS.error ?? null;
   @observable snapshots: Array<MithrilSnapshotItem> = [];
@@ -70,8 +67,6 @@ export default class MithrilBootstrapStore extends Store {
   @observable storageLocationConfirmed = false;
   @observable ancillaryBytesDownloaded: number | undefined = undefined;
   @observable ancillaryBytesTotal: number | undefined = undefined;
-  @observable ancillaryElapsedSeconds: number | undefined = undefined;
-  @observable ancillaryRemainingSeconds: number | undefined = undefined;
   @observable progressItems: MithrilProgressItem[] = [];
   @observable bootstrapStartedAt: number | null = null;
   @observable private _timerTick = 0;
@@ -98,19 +93,6 @@ export default class MithrilBootstrapStore extends Store {
     return Math.round(
       (normalizedFilesDownloaded / this.filesTotal) * this.snapshot.size
     );
-  }
-
-  @computed
-  get throughputBps(): number | undefined {
-    if (
-      this.bytesDownloaded == null ||
-      this.elapsedSeconds == null ||
-      this.elapsedSeconds <= 0
-    ) {
-      return undefined;
-    }
-
-    return this.bytesDownloaded / this.elapsedSeconds;
   }
 
   @computed
@@ -186,8 +168,6 @@ export default class MithrilBootstrapStore extends Store {
     ) {
       this.ancillaryBytesDownloaded = undefined;
       this.ancillaryBytesTotal = undefined;
-      this.ancillaryElapsedSeconds = undefined;
-      this.ancillaryRemainingSeconds = undefined;
       this.progressItems = [];
       this.bootstrapStartedAt = null;
       this._stopElapsedTimer();
@@ -218,14 +198,9 @@ export default class MithrilBootstrapStore extends Store {
       this.storageLocationConfirmed = false;
       this.ancillaryBytesDownloaded = undefined;
       this.ancillaryBytesTotal = undefined;
-      this.ancillaryElapsedSeconds = undefined;
-      this.ancillaryRemainingSeconds = undefined;
       this.progressItems = [];
       this.bootstrapStartedAt = null;
       this._stopElapsedTimer();
-    }
-    if (typeof update.progress === 'number') {
-      this.progress = update.progress;
     }
     if ('snapshot' in update) {
       this.snapshot = update.snapshot ?? null;
@@ -239,20 +214,11 @@ export default class MithrilBootstrapStore extends Store {
     if ('elapsedSeconds' in update) {
       this.elapsedSeconds = update.elapsedSeconds;
     }
-    if ('remainingSeconds' in update) {
-      this.remainingSeconds = update.remainingSeconds;
-    }
     if ('ancillaryBytesDownloaded' in update) {
       this.ancillaryBytesDownloaded = update.ancillaryBytesDownloaded;
     }
     if ('ancillaryBytesTotal' in update) {
       this.ancillaryBytesTotal = update.ancillaryBytesTotal;
-    }
-    if ('ancillaryElapsedSeconds' in update) {
-      this.ancillaryElapsedSeconds = update.ancillaryElapsedSeconds;
-    }
-    if ('ancillaryRemainingSeconds' in update) {
-      this.ancillaryRemainingSeconds = update.ancillaryRemainingSeconds;
     }
     if ('progressItems' in update && update.progressItems != null) {
       this.progressItems = update.progressItems;

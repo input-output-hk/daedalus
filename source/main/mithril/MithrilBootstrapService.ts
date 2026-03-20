@@ -29,19 +29,8 @@ import {
 
 const DEFAULT_STATUS: MithrilBootstrapStatusUpdate = {
   status: 'idle',
-  progress: 0,
   snapshot: null,
   error: null,
-};
-
-const STEP_PROGRESS = {
-  preparing: 5,
-  downloadingStart: 10,
-  downloadingEnd: 90,
-  finalizingStart: 92.5,
-  finalizingProcessing: 95,
-  finalizingEnd: 97.5,
-  completed: 100,
 };
 
 const STEP_LABEL_MAP: Record<number, string> = {
@@ -94,6 +83,7 @@ export class MithrilBootstrapService {
   _isCancelled = false;
   _lastFilesDownloaded: number | undefined = undefined;
   _lastFilesTotal: number | undefined = undefined;
+  _verifyingSynthesized = false;
 
   constructor(workDir: string = stateDirectoryPath) {
     this._workDir = workDir;
@@ -156,6 +146,7 @@ export class MithrilBootstrapService {
     this._isCancelled = false;
     this._lastFilesDownloaded = undefined;
     this._lastFilesTotal = undefined;
+    this._verifyingSynthesized = false;
     this._bootstrapStartedAt = Date.now();
     this._progressItems = [];
     await this._createLockFile();
@@ -163,14 +154,10 @@ export class MithrilBootstrapService {
     this._addProgressItem('preparing', 'preparing', 'active');
     this._updateStatus({
       status: 'preparing',
-      progress: STEP_PROGRESS.preparing,
       filesDownloaded: undefined,
       filesTotal: undefined,
-      remainingSeconds: undefined,
       ancillaryBytesDownloaded: undefined,
       ancillaryBytesTotal: undefined,
-      ancillaryElapsedSeconds: undefined,
-      ancillaryRemainingSeconds: undefined,
       error: null,
       progressItems: [...this._progressItems],
     });
@@ -211,14 +198,10 @@ export class MithrilBootstrapService {
       this._addProgressItem('install-snapshot', 'install-snapshot', 'active');
       this._updateStatus({
         status: 'unpacking',
-        progress: STEP_PROGRESS.finalizingStart,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        remainingSeconds: undefined,
         ancillaryBytesDownloaded: undefined,
         ancillaryBytesTotal: undefined,
-        ancillaryElapsedSeconds: undefined,
-        ancillaryRemainingSeconds: undefined,
         progressItems: [...this._progressItems],
       });
 
@@ -229,14 +212,10 @@ export class MithrilBootstrapService {
       this._addProgressItem('cleanup', 'cleanup', 'active');
       this._updateStatus({
         status: 'finalizing',
-        progress: STEP_PROGRESS.finalizingProcessing,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        remainingSeconds: undefined,
         ancillaryBytesDownloaded: undefined,
         ancillaryBytesTotal: undefined,
-        ancillaryElapsedSeconds: undefined,
-        ancillaryRemainingSeconds: undefined,
         progressItems: [...this._progressItems],
       });
 
@@ -246,41 +225,35 @@ export class MithrilBootstrapService {
       this._markActiveProgressItemAs('completed');
       this._updateStatus({
         status: 'finalizing',
-        progress: STEP_PROGRESS.finalizingEnd,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        remainingSeconds: undefined,
         progressItems: [...this._progressItems],
       });
 
       this._updateStatus({
         status: 'completed',
-        progress: STEP_PROGRESS.completed,
         filesDownloaded: undefined,
         filesTotal: undefined,
-        remainingSeconds: undefined,
         progressItems: [...this._progressItems],
       });
     } catch (error) {
       if (this._isCancelled) {
         throw error;
       }
+      const normalizedError = this._buildError(
+        error,
+        this._inferErrorStageFromStatus(this._status.status)
+      );
       this._markActiveProgressItemAs('error');
       await this._cleanupSnapshotArtifacts({ preserveDb: false });
       this._updateStatus({
         status: 'failed',
         filesDownloaded: undefined,
         filesTotal: undefined,
-        remainingSeconds: undefined,
         ancillaryBytesDownloaded: undefined,
         ancillaryBytesTotal: undefined,
-        ancillaryElapsedSeconds: undefined,
-        ancillaryRemainingSeconds: undefined,
         progressItems: [...this._progressItems],
-        error: this._buildError(
-          error,
-          this._inferErrorStageFromStatus(this._status.status)
-        ),
+        error: normalizedError,
       });
       throw error;
     }
@@ -409,7 +382,14 @@ export class MithrilBootstrapService {
     error: unknown,
     fallbackStage?: MithrilBootstrapErrorStage
   ): MithrilBootstrapError {
-    return buildMithrilError(error, fallbackStage);
+    return {
+      ...buildMithrilError(error, fallbackStage),
+      logPath: this._getBootstrapLogPath(),
+    };
+  }
+
+  _getBootstrapLogPath(): string {
+    return path.join(stateDirectoryPath, 'Logs', 'mithril-bootstrap.log');
   }
 
   _createStageError(
@@ -420,10 +400,64 @@ export class MithrilBootstrapService {
     return createStageError(stage, message, code);
   }
 
+  _buildCommandFailure(
+    stage: MithrilBootstrapErrorStage,
+    fallbackMessage: string,
+    stderr?: string
+  ): MithrilBootstrapStageError {
+    const detail = this._extractRelevantStderr(stderr);
+    const message =
+      this._extractRelevantStderrMessage(detail) || fallbackMessage;
+
+    return this._createStageError(stage, message, detail);
+  }
+
   _inferErrorStageFromStatus(
     status: MithrilBootstrapStatusUpdate['status']
   ): MithrilBootstrapErrorStage | undefined {
     return inferErrorStageFromStatus(status);
+  }
+
+  _extractRelevantStderr(stderr?: string): string | undefined {
+    const trimmed = stderr?.trim();
+    if (!trimmed) return undefined;
+
+    const errorIndex = trimmed.lastIndexOf('Error:');
+    if (errorIndex >= 0) {
+      return trimmed.slice(errorIndex).trim().slice(0, 4000);
+    }
+
+    const lines = trimmed
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .filter((line) => {
+        const normalized = line.trim();
+        return (
+          normalized.length > 0 &&
+          !normalized.startsWith('{') &&
+          !normalized.startsWith('src:')
+        );
+      });
+
+    if (lines.length === 0) return trimmed.slice(-4000);
+
+    return lines.slice(-8).join('\n').trim().slice(0, 4000);
+  }
+
+  _extractRelevantStderrMessage(detail?: string): string | undefined {
+    if (!detail) return undefined;
+
+    const lines = detail
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    const explicitError = lines.find((line) => line.startsWith('Error:'));
+    if (explicitError) {
+      return explicitError.replace(/^Error:\s*/, '').trim();
+    }
+
+    return lines[0];
   }
 
   async _createLockFile(): Promise<void> {
@@ -522,7 +556,6 @@ export class MithrilBootstrapService {
     this._addProgressItem('downloading', 'downloading', 'active');
     this._updateStatus({
       status: 'downloading',
-      progress: STEP_PROGRESS.downloadingStart,
       progressItems: [...this._progressItems],
     });
 
@@ -541,12 +574,53 @@ export class MithrilBootstrapService {
             '--json',
           ];
     const applyProgressUpdate = (line: string) => {
+      if (this._isCancelled) return;
+
       const update = parseMithrilProgressUpdate(line);
       if (!update) return;
 
       // Track progress steps when mithril-client announces a step number
       if (update.stepNum != null) {
         this._updateProgressStep(update.stepNum);
+      }
+
+      // Synthesize completion when CLI transitions to verification (step 4)
+      if (
+        update.stepNum != null &&
+        update.stepNum >= 4 &&
+        !this._verifyingSynthesized
+      ) {
+        this._verifyingSynthesized = true;
+        const verifyingUpdate: Partial<MithrilBootstrapStatusUpdate> = {
+          status: 'verifying',
+          snapshot: snapshot || undefined,
+          progressItems: [...this._progressItems],
+        };
+        if (this._lastFilesTotal != null) {
+          verifyingUpdate.filesDownloaded = this._lastFilesTotal;
+          verifyingUpdate.filesTotal = this._lastFilesTotal;
+        }
+        if (this._status.ancillaryBytesTotal != null) {
+          verifyingUpdate.ancillaryBytesDownloaded = this._status.ancillaryBytesTotal;
+          verifyingUpdate.ancillaryBytesTotal = this._status.ancillaryBytesTotal;
+        }
+        this._updateStatus(verifyingUpdate);
+        return;
+      }
+
+      // After verification started, drop late download-phase updates
+      if (this._verifyingSynthesized) {
+        if (update.label === 'Ancillary' || update.label === 'Files') return;
+
+        // Step-only updates during verification (steps 5-7)
+        if (update.stepNum != null) {
+          this._updateStatus({
+            status: 'verifying',
+            snapshot: snapshot || undefined,
+            progressItems: [...this._progressItems],
+          });
+        }
+        return;
       }
 
       // Route Ancillary progress to dedicated ancillary fields only
@@ -556,8 +630,6 @@ export class MithrilBootstrapService {
           snapshot: snapshot || undefined,
           ancillaryBytesDownloaded: update.bytesDownloaded,
           ancillaryBytesTotal: update.bytesTotal,
-          ancillaryElapsedSeconds: update.elapsedSeconds,
-          ancillaryRemainingSeconds: update.remainingSeconds,
           progressItems: [...this._progressItems],
         });
         return;
@@ -566,38 +638,26 @@ export class MithrilBootstrapService {
       // Files stream or no label (graceful degradation for older mithril-client)
       const { progress } = update;
       if (progress != null && !Number.isNaN(progress)) {
-        const mapped =
-          STEP_PROGRESS.downloadingStart +
-          ((STEP_PROGRESS.downloadingEnd - STEP_PROGRESS.downloadingStart) *
-            Math.min(Math.max(progress, 0), 100)) /
-            100;
         this._lastFilesDownloaded = update.filesDownloaded;
         this._lastFilesTotal = update.filesTotal;
         this._updateStatus({
           status: 'downloading',
-          progress: mapped,
           snapshot: snapshot || undefined,
           filesDownloaded: update.filesDownloaded,
           filesTotal: update.filesTotal,
           elapsedSeconds: update.elapsedSeconds,
-          remainingSeconds: update.remainingSeconds,
           progressItems: [...this._progressItems],
         });
         return;
       }
 
-      if (
-        update.elapsedSeconds != null ||
-        update.remainingSeconds != null ||
-        update.stepNum != null
-      ) {
+      if (update.elapsedSeconds != null || update.stepNum != null) {
         this._updateStatus({
           status: 'downloading',
           snapshot: snapshot || undefined,
           filesDownloaded: update.filesDownloaded ?? this._lastFilesDownloaded,
           filesTotal: update.filesTotal ?? this._lastFilesTotal,
           elapsedSeconds: update.elapsedSeconds,
-          remainingSeconds: update.remainingSeconds,
           progressItems: [...this._progressItems],
         });
       }
@@ -618,17 +678,18 @@ export class MithrilBootstrapService {
     });
 
     if (exitCode !== 0) {
-      const errorCode = stderr ? stderr.trim().slice(0, 200) : undefined;
-      throw this._createStageError(
-        'download',
-        `Mithril download failed with exit code ${exitCode}`,
-        errorCode
+      const errorStage = this._verifyingSynthesized ? 'verify' : 'download';
+      throw this._buildCommandFailure(
+        errorStage,
+        `Mithril ${
+          errorStage === 'verify' ? 'verification' : 'download'
+        } failed with exit code ${exitCode}`,
+        stderr
       );
     }
 
     this._updateStatus({
-      status: 'downloading',
-      progress: STEP_PROGRESS.downloadingEnd,
+      status: this._verifyingSynthesized ? 'verifying' : 'downloading',
       snapshot: snapshot || undefined,
       progressItems: [...this._progressItems],
     });
@@ -637,7 +698,6 @@ export class MithrilBootstrapService {
   async _convertSnapshot(snapshot: MithrilSnapshotItem | null): Promise<void> {
     this._updateStatus({
       status: 'converting',
-      progress: STEP_PROGRESS.finalizingProcessing,
     });
 
     const dbDirectory = await this._resolveDbDirectory(snapshot?.digest);
@@ -658,17 +718,15 @@ export class MithrilBootstrapService {
     ]);
 
     if (exitCode !== 0) {
-      const errorCode = stderr ? stderr.trim().slice(0, 200) : undefined;
-      throw this._createStageError(
+      throw this._buildCommandFailure(
         'convert',
         `Mithril snapshot conversion failed with exit code ${exitCode}`,
-        errorCode
+        stderr
       );
     }
 
     this._updateStatus({
       status: 'finalizing',
-      progress: STEP_PROGRESS.finalizingEnd,
     });
   }
 

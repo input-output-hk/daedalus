@@ -32,12 +32,11 @@ describe('MithrilBootstrapStore', () => {
     jest.clearAllMocks();
   });
 
-  it('derives bytes downloaded and throughput from file counts and snapshot size', async () => {
+  it('derives bytes downloaded from file counts and snapshot size', async () => {
     const store = setupStore();
 
     await store._updateStatus({
       status: 'downloading',
-      progress: 25,
       snapshot: {
         digest: 'snapshot-1',
         createdAt: '2026-03-06T12:00:00.000Z',
@@ -49,7 +48,6 @@ describe('MithrilBootstrapStore', () => {
     });
 
     expect(store.bytesDownloaded).toBe(200);
-    expect(store.throughputBps).toBe(40);
   });
 
   it('caps derived bytes when file counts exceed the reported total', async () => {
@@ -57,7 +55,6 @@ describe('MithrilBootstrapStore', () => {
 
     await store._updateStatus({
       status: 'downloading',
-      progress: 100,
       snapshot: {
         digest: 'snapshot-2',
         createdAt: '2026-03-06T12:00:00.000Z',
@@ -69,7 +66,6 @@ describe('MithrilBootstrapStore', () => {
     });
 
     expect(store.bytesDownloaded).toBe(1200);
-    expect(store.throughputBps).toBe(300);
   });
 
   it('clears transient progress metadata when download transitions into unpacking', async () => {
@@ -77,7 +73,6 @@ describe('MithrilBootstrapStore', () => {
 
     await store._updateStatus({
       status: 'downloading',
-      progress: 50,
       snapshot: {
         digest: 'snapshot-3',
         createdAt: '2026-03-06T12:00:00.000Z',
@@ -86,16 +81,13 @@ describe('MithrilBootstrapStore', () => {
       filesDownloaded: 2,
       filesTotal: 4,
       elapsedSeconds: 10,
-      remainingSeconds: 8,
     });
 
     await store._updateStatus({
       status: 'unpacking',
-      progress: 92.5,
       filesDownloaded: undefined,
       filesTotal: undefined,
       elapsedSeconds: undefined,
-      remainingSeconds: undefined,
       error: null,
     });
 
@@ -103,9 +95,7 @@ describe('MithrilBootstrapStore', () => {
     expect(store.filesDownloaded).toBeUndefined();
     expect(store.filesTotal).toBeUndefined();
     expect(store.elapsedSeconds).toBeUndefined();
-    expect(store.remainingSeconds).toBeUndefined();
     expect(store.bytesDownloaded).toBeUndefined();
-    expect(store.throughputBps).toBeUndefined();
   });
 
   it('loads chain storage config and tracks selected custom path', async () => {
@@ -329,15 +319,26 @@ describe('MithrilBootstrapStore', () => {
     store.confirmStorageLocation();
     await store._updateStatus({
       status: 'preparing',
-      progress: 0,
     });
     expect(store.storageLocationConfirmed).toBe(true);
 
     await store._updateStatus({
       status: 'decision',
-      progress: 0,
     });
 
     expect(store.storageLocationConfirmed).toBe(false);
+  });
+
+  it('treats verifying as a working status for elapsed timer', async () => {
+    const store = setupStore();
+
+    await store._updateStatus({
+      status: 'verifying',
+    });
+
+    expect(store.status).toBe('verifying');
+    expect(store.bootstrapStartedAt).not.toBeNull();
+    expect(typeof store.overallElapsedSeconds).toBe('number');
+    expect(store.overallElapsedSeconds).toBeGreaterThanOrEqual(0);
   });
 });
