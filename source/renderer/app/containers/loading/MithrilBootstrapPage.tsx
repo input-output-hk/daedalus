@@ -123,7 +123,6 @@ class MithrilBootstrapPage extends Component<Props> {
         bytesDownloaded={mithrilBootstrap.bytesDownloaded}
         snapshotSize={mithrilBootstrap.snapshot?.size}
         throughputBps={mithrilBootstrap.throughputBps}
-        elapsedSeconds={mithrilBootstrap.elapsedSeconds}
         remainingSeconds={mithrilBootstrap.remainingSeconds}
         customChainPath={mithrilBootstrap.customChainPath}
         defaultChainPath={mithrilBootstrap.defaultChainPath}
@@ -157,7 +156,6 @@ class MithrilBootstrapPage extends Component<Props> {
         onCancel={this.handleCancel}
         ancillaryBytesDownloaded={mithrilBootstrap.ancillaryBytesDownloaded}
         ancillaryBytesTotal={mithrilBootstrap.ancillaryBytesTotal}
-        ancillaryElapsedSeconds={mithrilBootstrap.ancillaryElapsedSeconds}
         ancillaryRemainingSeconds={mithrilBootstrap.ancillaryRemainingSeconds}
         ancillaryProgress={mithrilBootstrap.ancillaryProgress}
         progressItems={mithrilBootstrap.progressItems}

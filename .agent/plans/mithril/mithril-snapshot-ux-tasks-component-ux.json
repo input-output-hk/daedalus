@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Mithril Snapshot UX - Component & UX Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-16",
+    "updated": "2026-03-18",
     "version": "2.0.0",
     "totalTasks": 26,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
@@ -301,11 +301,11 @@
           "id": "task-024i",
           "title": "Recompose MithrilProgressView with waterfall, timer, and delay",
           "description": "Remove standalone ProgressBarLarge and 4-item metadata grid. Render vertical waterfall (MithrilStepIndicator) as primary content in a scrollable container. Add single overallElapsedSeconds timer display at top (H:MM:SS or M:SS format), visible from Preparing through completion. Add 3-second completion delay: when status=completed, show spinning circle + 'cardano-node is starting up to complete sync' message before yielding to parent. Cancel button disabled during delay. Pass all new props (waterfallItems, ancillary progress, files data) to waterfall indicator. Keep 'Fast sync with Mithril' header title.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": ["task-024h"],
-          "completedAt": null,
+          "completedAt": "2026-03-18",
           "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
         },
         {

@@ -2,6 +2,8 @@
 
 > Detailed implementation history for the [Mithril Snapshot UX Refinement](mithril-snapshot-ux.md) PRD. Consult this file for context on how and why completed tasks were implemented.
 
+- [2026-03-19] Refined the waterfall download layout so Snapshot Files and Fast State Sync bars render immediately below `Downloading snapshot data` and the verification rows continue underneath them. Hardened active-item auto-scroll for environments without `matchMedia` or `scrollIntoView`, and added focused `MithrilStepIndicator` coverage for the new DOM ordering.
+- [2026-03-18] Completed task-024i: Recomposed MithrilProgressView with waterfall layout (timer → scrollable MithrilStepIndicator → completion block). Centralized node-start handoff in handleDiskSpace.ts with 3-second delay. Forwarded all waterfall props through MithrilBootstrap boundary. Removed old ProgressBarLarge/statusPanel/metadataGrid UI.
 - [2026-03-18] Completed task-024h by rewriting `MithrilStepIndicator.tsx` from the horizontal 3-step row into a vertical waterfall with Preparing, Downloading, and Finalizing phases.
 - [2026-03-18] Added animated Mithril download/finalization sub-items, inline Snapshot Files and Fast State Sync progress bars, and active-sub-item auto-scroll with reduced-motion fallback.
 - [2026-03-18] Added structural/sub-item error propagation, waterfall i18n/accessibility support, responsive SCSS updates, and staged task-024i prop support on the step indicator contract.

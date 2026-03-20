@@ -1,47 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import type { MithrilBootstrapStatus } from '../../../../../common/types/mithril-bootstrap.types';
-import ProgressBarLarge from '../../widgets/ProgressBarLarge';
+import type {
+  MithrilBootstrapStatus,
+  MithrilProgressItem,
+} from '../../../../../common/types/mithril-bootstrap.types';
+import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
 import MithrilStepIndicator from './MithrilStepIndicator';
 import styles from './MithrilProgressView.scss';
-import { formatTransferSize } from './snapshotFormatting';
 
 interface Props {
   status: MithrilBootstrapStatus;
   progress: number;
+  progressItems?: MithrilProgressItem[];
+  filesDownloaded?: number;
+  filesTotal?: number;
   bytesDownloaded?: number;
   snapshotSize?: number;
   throughputBps?: number;
-  elapsedSeconds?: number;
   remainingSeconds?: number;
+  ancillaryBytesDownloaded?: number;
+  ancillaryBytesTotal?: number;
+  ancillaryProgress?: number;
+  ancillaryRemainingSeconds?: number;
+  overallElapsedSeconds?: number;
   onCancel(): void;
 }
 
 interface Context {
   intl: Intl;
 }
-
-type StageCopy = {
-  title: string;
-  detail: string;
-};
-
-type MetadataItem = {
-  label: string;
-  value: string;
-};
-
-const DOWNLOAD_VERIFICATION_THRESHOLD = 89.5;
-const LOCAL_PROCESSING_STATUSES: Array<MithrilBootstrapStatus> = [
-  'unpacking',
-  'converting',
-  'finalizing',
-  'completed',
-];
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -60,152 +52,35 @@ const formatDuration = (value?: number) => {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 };
 
-const getStageDetail = (intl: Intl, status: MithrilBootstrapStatus) => {
-  switch (status) {
-    case 'preparing':
-      return {
-        title: intl.formatMessage(messages.progressPreparingTitle),
-        detail: intl.formatMessage(messages.progressPreparingDetail),
-      };
-    case 'downloading':
-      return null;
-    case 'unpacking':
-      return {
-        title: intl.formatMessage(messages.progressUnpackingTitle),
-        detail: intl.formatMessage(messages.progressUnpackingDetail),
-      };
-    case 'converting':
-      return {
-        title: intl.formatMessage(messages.progressConvertingTitle),
-        detail: intl.formatMessage(messages.progressConvertingDetail),
-      };
-    case 'finalizing':
-      return {
-        title: intl.formatMessage(messages.progressFinalizingTitle),
-        detail: intl.formatMessage(messages.progressFinalizingDetail),
-      };
-    case 'completed':
-      return {
-        title: intl.formatMessage(messages.progressCompletedTitle),
-        detail: intl.formatMessage(messages.progressCompletedDetail),
-      };
-    default:
-      return null;
-  }
-};
-
-const getFallbackDownloadedValue = (
-  intl: Intl,
-  status: MithrilBootstrapStatus,
-  snapshotSize?: number
-) => {
-  const snapshotSizeLabel =
-    snapshotSize != null && snapshotSize > 0
-      ? formatTransferSize(snapshotSize)
-      : null;
-
-  if (snapshotSizeLabel && LOCAL_PROCESSING_STATUSES.includes(status)) {
-    return `${snapshotSizeLabel} / ${snapshotSizeLabel}`;
-  }
-
-  return snapshotSizeLabel
-    ? intl.formatMessage(messages.progressSnapshotSizeValue, {
-        size: snapshotSizeLabel,
-      })
-    : intl.formatMessage(messages.progressWaitingValue);
-};
-
 function MithrilProgressView(props: Props, { intl }: Context) {
   const {
     status,
     progress,
+    progressItems,
+    filesDownloaded,
+    filesTotal,
     bytesDownloaded,
     snapshotSize,
     throughputBps,
-    elapsedSeconds,
     remainingSeconds,
+    ancillaryBytesDownloaded,
+    ancillaryBytesTotal,
+    ancillaryProgress,
+    ancillaryRemainingSeconds,
+    overallElapsedSeconds,
     onCancel,
   } = props;
 
-  const normalizedProgress = Math.min(Math.max(progress, 0), 100);
-  const progressLabel = normalizedProgress.toFixed(1);
-  const isDownloadStage = status === 'downloading';
-  const isLocalProcessingStage = LOCAL_PROCESSING_STATUSES.includes(status);
-  const isNearDownloadPlateau =
-    isDownloadStage && normalizedProgress >= DOWNLOAD_VERIFICATION_THRESHOLD;
-  const stageDetail = getStageDetail(intl, status);
-  const totalSizeLabel =
-    snapshotSize != null && snapshotSize > 0
-      ? formatTransferSize(snapshotSize)
-      : null;
-  const downloadedLabel =
-    bytesDownloaded != null
-      ? [formatTransferSize(bytesDownloaded), totalSizeLabel]
-          .filter(Boolean)
-          .join(' / ')
-      : getFallbackDownloadedValue(intl, status, snapshotSize);
-  const transferRateLabel =
-    isDownloadStage && throughputBps != null
-      ? `${formatTransferSize(throughputBps)}/s`
-      : intl.formatMessage(
-          isDownloadStage
-            ? messages.progressRatePendingValue
-            : messages.progressLocalProcessingValue
-        );
-  const elapsedLabel =
-    formatDuration(elapsedSeconds) ||
-    intl.formatMessage(
-      isDownloadStage
-        ? messages.progressTimingPendingValue
-        : messages.progressUnknownDurationValue
-    );
-  let remainingFallbackMessage = messages.progressWaitingValue;
-  if (isDownloadStage) {
-    remainingFallbackMessage = messages.progressTimingPendingValue;
-  } else if (isLocalProcessingStage) {
-    remainingFallbackMessage = messages.progressFinalizingRemainingValue;
-  }
-  const remainingLabel =
-    formatDuration(remainingSeconds) ||
-    (status === 'completed'
-      ? formatDuration(0)
-      : intl.formatMessage(remainingFallbackMessage));
-  const statusCopy: StageCopy = isDownloadStage
-    ? {
-        title: intl.formatMessage(
-          isNearDownloadPlateau
-            ? messages.progressDownloadVerifyingTitle
-            : messages.progressDownloadingTitle
-        ),
-        detail: intl.formatMessage(
-          isNearDownloadPlateau
-            ? messages.progressDownloadVerifyingDetail
-            : messages.progressDownloadingDetail
-        ),
-      }
-    : stageDetail || {
-        title: intl.formatMessage(messages.progressPreparingTitle),
-        detail: intl.formatMessage(messages.progressPreparingDetail),
-      };
-  const metadataItems: Array<MetadataItem> = [
-    {
-      label: intl.formatMessage(messages.downloadBytesLabel),
-      value: downloadedLabel,
-    },
-    {
-      label: intl.formatMessage(messages.downloadRateLabel),
-      value: transferRateLabel,
-    },
-    {
-      label: intl.formatMessage(messages.progressElapsedLabel),
-      value: elapsedLabel,
-    },
-    {
-      label: intl.formatMessage(messages.progressTimeRemainingLabel),
-      value:
-        remainingLabel || intl.formatMessage(messages.progressWaitingValue),
-    },
-  ];
+  const isCompleted = status === 'completed';
+  const completionRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (isCompleted && completionRef.current) {
+      completionRef.current.focus();
+    }
+  }, [isCompleted]);
+
+  const elapsedLabel = formatDuration(overallElapsedSeconds) ?? '0:00';
 
   return (
     <div className={styles.root}>
@@ -213,42 +88,52 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         <h1>{intl.formatMessage(messages.title)}</h1>
       </div>
 
-      <div className={styles.stepIndicator}>
-        <MithrilStepIndicator status={status} />
+      <div className={styles.timerDisplay}>
+        <span className={styles.timerLabel}>
+          {intl.formatMessage(messages.progressElapsedLabel)}
+        </span>
+        <span className={styles.timerValue}>{elapsedLabel}</span>
       </div>
 
-      <div className={styles.progressBar}>
-        <ProgressBarLarge
-          progress={normalizedProgress}
-          leftLabel={intl.formatMessage(messages.progressLabel)}
-          rightLabel1={`${progressLabel}%`}
-          isDarkMode
+      <div className={styles.waterfallContainer}>
+        <MithrilStepIndicator
+          status={status}
+          progress={progress}
+          progressItems={progressItems}
+          filesDownloaded={filesDownloaded}
+          filesTotal={filesTotal}
+          bytesDownloaded={bytesDownloaded}
+          snapshotSize={snapshotSize}
+          throughputBps={throughputBps}
+          remainingSeconds={remainingSeconds}
+          ancillaryBytesDownloaded={ancillaryBytesDownloaded}
+          ancillaryBytesTotal={ancillaryBytesTotal}
+          ancillaryProgress={ancillaryProgress}
+          ancillaryRemainingSeconds={ancillaryRemainingSeconds}
+          overallElapsedSeconds={overallElapsedSeconds}
         />
       </div>
 
-      <div
-        className={styles.statusPanel}
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <div className={styles.statusCopy}>
-          <span className={styles.statusLabel}>
-            {intl.formatMessage(messages.progressStatusLabel)}
-          </span>
-          <h2 className={styles.statusTitle}>{statusCopy.title}</h2>
-          <p className={styles.statusDetail}>{statusCopy.detail}</p>
+      {isCompleted && (
+        <div
+          className={styles.completionBlock}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <SVGInline svg={spinnerIcon} className={styles.completionSpinner} />
+          <h2
+            className={styles.completionTitle}
+            ref={completionRef}
+            tabIndex={-1}
+          >
+            {intl.formatMessage(messages.nodeStartingTitle)}
+          </h2>
+          <p className={styles.completionDetail}>
+            {intl.formatMessage(messages.nodeStartingDetail)}
+          </p>
         </div>
-      </div>
-
-      <div className={styles.metadataGrid}>
-        {metadataItems.map(({ label, value }) => (
-          <div key={label} className={styles.metadataItem}>
-            <span className={styles.metadataLabel}>{label}</span>
-            <span className={styles.metadataValue}>{value}</span>
-          </div>
-        ))}
-      </div>
+      )}
 
       <div className={styles.actions}>
         <Button
@@ -256,6 +141,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           skin={ButtonSkin}
           label={intl.formatMessage(messages.cancel)}
           onClick={onCancel}
+          disabled={isCompleted}
         />
       </div>
     </div>

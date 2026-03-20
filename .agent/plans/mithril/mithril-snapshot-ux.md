@@ -18,7 +18,7 @@ Task tracking is split by context to reduce agent context overhead. Load only th
 | File | Phases | Tasks | Status |
 |------|--------|-------|--------|
 | [backend tasks](mithril-snapshot-ux-tasks-backend.json) | 1–3: Types, Store, Chain Storage | 21 | All completed |
-| [component & UX tasks](mithril-snapshot-ux-tasks-component-ux.json) | 4–6: i18n, Decomposition, Waterfall | 26 | 2 pending |
+| [component & UX tasks](mithril-snapshot-ux-tasks-component-ux.json) | 4–6: i18n, Decomposition, Waterfall | 26 | 1 pending |
 | [polish & testing tasks](mithril-snapshot-ux-tasks-polish-testing.json) | 7–10: Theming, A11y, Storybook, E2E, Verification | 11 | All pending |
 
 For detailed implementation history, see the [changelog](mithril-snapshot-ux-changelog.md).
@@ -68,7 +68,7 @@ For detailed implementation history, see the [changelog](mithril-snapshot-ux-cha
   - Replace install wording in post-download progress/detail copy so it matches snapshot materialization more closely
 - [x] Derive localized step labels from `status` in the renderer; do not transport user-facing copy in `currentStep`
 - [x] Implement 3-step vertical waterfall UX for `preparing -> downloading -> finalizing`
-  - Task-024h completed the `MithrilStepIndicator` implementation and met the design-024h requirements; task-024i still needs to wire the new props through `MithrilProgressView`
+  - The waterfall step indicator and parent progress-view composition are implemented and wired through `MithrilProgressView`
   - Preparing is the initial mithril-snapshot call; actual download waits until the step process renders
   - All mithril-client steps 1-7 are exposed as individual waterfall sub-items under `Downloading` so users follow along
   - Two progress bars during Downloading: primary for snapshot files (files_downloaded/files_total with bytes estimate and remaining time), secondary for ancillary files (bytes_downloaded/bytes_total with remaining time); both persist at 100% once complete
@@ -83,8 +83,8 @@ For detailed implementation history, see the [changelog](mithril-snapshot-ux-cha
 - [x] Extend mithril progress parser for `label`, `step_num`, `bytes_downloaded`/`bytes_total` fields
   - Distinguish Files vs Ancillary progress by `label` field; graceful degradation if `label` absent
 - [x] Split download tracking in service: separate Files and Ancillary streams, waterfall item accumulation
-- [ ] Add single elapsed timer for the whole 3-step process (not per-step), displayed throughout
-- [ ] Add 3-second completion delay with spinning circle showing "cardano-node is starting up to complete sync" before yielding
+- [x] Add single elapsed timer for the whole 3-step process (not per-step), displayed throughout
+- [x] Add 3-second completion delay with spinning circle showing "cardano-node is starting up to complete sync" before yielding
 - [x] Add ~15 new i18n messages for waterfall step labels, ancillary progress, and node-starting delay
   - Do not route Mithril JSON step messages into the renderer as user-facing copy; map step_num to localized labels
 - [ ] Show conversion waterfall item in Finalizing only if snapshot conversion actually runs
@@ -143,7 +143,7 @@ For detailed implementation history, see the [changelog](mithril-snapshot-ux-cha
 - `MithrilBootstrap.tsx` - Root: overlay + view delegation (slimmed down)
 - `BlockDataStorageLocationPicker.tsx` - Preliminary blockchain-data storage screen
 - `MithrilDecisionView.tsx` - Snapshot selector + accept/decline
-- `MithrilProgressView.tsx` - Stepper + progress bar + metadata + cancel
+- `MithrilProgressView.tsx` - Header + elapsed timer + scrollable waterfall + completion handoff + cancel
 - `MithrilErrorView.tsx` - Stage-specific error screens
 - `MithrilStepIndicator.tsx` - Reusable step list
 - `MithrilSnapshotSelector.tsx` - Snapshot dropdown
@@ -362,7 +362,7 @@ Manages symlink-based redirection of `{stateDir}/chain` to a user-chosen directo
 31a. Harden service cancellation and progress-state retention
 31b. Reseed elapsed timer across resync and retry
 31c. Add waterfall and ancillary i18n messages
-31d. Vertical waterfall MithrilStepIndicator with two inline progress bars (implemented 2026-03-18; task-024i still wires it into MithrilProgressView)
+31d. Vertical waterfall MithrilStepIndicator with two inline progress bars
 31e. Recompose MithrilProgressView with waterfall, single elapsed timer, and 3-second completion delay
 31f. Backend and renderer integration tests
 

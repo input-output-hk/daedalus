@@ -154,6 +154,30 @@ export const handleDiskSpace = (
     await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
   };
 
+  const MITHRIL_COMPLETION_DELAY_MS = 3000;
+
+  const startNodeAfterMithrilCompletion = async (): Promise<void> => {
+    if (mithrilStartInFlight) return;
+    mithrilStartInFlight = true;
+    try {
+      await cardanoNode.start();
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
+      });
+      await emitMithrilIdleStatus();
+      mithrilDecision = null;
+      mithrilDecisionPrompted = false;
+    } catch (error) {
+      logger.error('[MITHRIL] Failed to start cardano-node after bootstrap', {
+        error,
+      });
+      mithrilBootstrapCompleted = false;
+      await emitMithrilStartFailure(error);
+    } finally {
+      mithrilStartInFlight = false;
+    }
+  };
+
   const handleMithrilFailureDecline = async (source: string) => {
     if (mithrilFailureDeclineInFlight) return false;
     const pendingDecision = getPendingMithrilBootstrapDecision();
@@ -216,22 +240,8 @@ export const handleDiskSpace = (
   onMithrilBootstrapStatus(async (status) => {
     if (status.status !== 'completed' || mithrilStartInFlight) return;
     if (cardanoNode.state !== CardanoNodeStates.STOPPED) return;
-    mithrilStartInFlight = true;
     mithrilBootstrapCompleted = true;
-    try {
-      await cardanoNode.start();
-      await emitMithrilIdleStatus();
-      mithrilDecision = null;
-      mithrilDecisionPrompted = false;
-    } catch (error) {
-      logger.error('[MITHRIL] Failed to start cardano-node after bootstrap', {
-        error,
-      });
-      mithrilBootstrapCompleted = false;
-      await emitMithrilStartFailure(error);
-    } finally {
-      mithrilStartInFlight = false;
-    }
+    await startNodeAfterMithrilCompletion();
   });
 
   onMithrilBootstrapStatus((status) => {
@@ -374,10 +384,7 @@ export const handleDiskSpace = (
               }
 
               if (mithrilBootstrapCompleted) {
-                await emitMithrilIdleStatus();
-                await cardanoNode.start();
-                mithrilDecision = null;
-                mithrilDecisionPrompted = false;
+                await startNodeAfterMithrilCompletion();
                 break;
               }
               if (mithrilDecision === 'accept') {

@@ -100,6 +100,8 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
   conversion: 'progressConversion',
 };
 
+const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -168,6 +170,28 @@ function groupSubItems(
     }
     return false;
   });
+}
+
+function splitSubItemsAroundAnchor(
+  items: MithrilProgressItem[],
+  anchorId: string
+): {
+  itemsBeforeAnchor: MithrilProgressItem[];
+  itemsAfterAnchor: MithrilProgressItem[];
+} {
+  const anchorIndex = items.findIndex((item) => item.id === anchorId);
+
+  if (anchorIndex === -1) {
+    return {
+      itemsBeforeAnchor: items,
+      itemsAfterAnchor: [],
+    };
+  }
+
+  return {
+    itemsBeforeAnchor: items.slice(0, anchorIndex + 1),
+    itemsAfterAnchor: items.slice(anchorIndex + 1),
+  };
 }
 
 function formatRemainingTime(seconds?: number): string | null {
@@ -320,10 +344,13 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
   useEffect(() => {
     if (activeSubItemId && activeSubItemId !== prevActiveIdRef.current) {
       prevActiveIdRef.current = activeSubItemId;
-      if (activeRef.current) {
-        const prefersReducedMotion = window.matchMedia(
-          '(prefers-reduced-motion: reduce)'
-        ).matches;
+      if (
+        activeRef.current &&
+        typeof activeRef.current.scrollIntoView === 'function'
+      ) {
+        const prefersReducedMotion =
+          typeof window.matchMedia === 'function' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         activeRef.current.scrollIntoView({
           behavior: prefersReducedMotion ? 'auto' : 'smooth',
           block: 'nearest',
@@ -339,6 +366,39 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
       : 0;
   const ancPercent =
     typeof ancillaryProgress === 'number' ? ancillaryProgress : 0;
+
+  const renderSubItem = (
+    item: MithrilProgressItem,
+    extraClassName?: string
+  ) => {
+    const itemState = item.state as SubItemState;
+    const isActive = itemState === 'active';
+    const msgKey = ITEM_ID_TO_MESSAGE[item.id];
+    const itemLabel = msgKey
+      ? intl.formatMessage(messages[msgKey])
+      : item.label;
+
+    return (
+      <div
+        key={item.id}
+        ref={isActive ? activeRef : undefined}
+        role="listitem"
+        aria-current={isActive ? 'step' : undefined}
+        className={classNames(styles.subItem, extraClassName, {
+          [styles.subItemCompleted]: itemState === 'completed',
+          [styles.subItemActive]: itemState === 'active',
+          [styles.subItemPending]: itemState === 'pending',
+          [styles.subItemError]: itemState === 'error',
+          [styles.subItemNoAnimate]: itemState === 'completed',
+        })}
+      >
+        <div className={styles.subItemIconContainer}>
+          <SubItemIcon state={itemState} />
+        </div>
+        <span className={styles.subItemLabel}>{itemLabel}</span>
+      </div>
+    );
+  };
 
   return (
     <div className={styles.root} role="list" aria-label="Mithril sync progress">
@@ -358,8 +418,18 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
           state !== 'pending'
             ? groupSubItems(progressItems, stepId, activeStepId)
             : [];
-        const hasSubContent = subItems.length > 0;
         const showBars = stepId === 'downloading' && state !== 'pending';
+        const {
+          itemsBeforeAnchor: subItemsBeforeBars,
+          itemsAfterAnchor: subItemsAfterBars,
+        } =
+          stepId === 'downloading'
+            ? splitSubItemsAroundAnchor(subItems, DOWNLOAD_PROGRESS_ANCHOR_ID)
+            : {
+                itemsBeforeAnchor: subItems,
+                itemsAfterAnchor: [],
+              };
+        const hasSubContent = subItems.length > 0 || showBars;
 
         const connectorCls = classNames(styles.connector, {
           [styles.connectorCompleted]: state === 'completed',
@@ -395,39 +465,17 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                 role="list"
                 aria-label={`${label} details`}
               >
-                {subItems.map((item) => {
-                  const itemState = item.state as SubItemState;
-                  const isActive = itemState === 'active';
-                  const msgKey = ITEM_ID_TO_MESSAGE[item.id];
-                  const itemLabel = msgKey
-                    ? intl.formatMessage(messages[msgKey])
-                    : item.label;
-
-                  return (
-                    <div
-                      key={item.id}
-                      ref={isActive ? activeRef : undefined}
-                      role="listitem"
-                      aria-current={isActive ? 'step' : undefined}
-                      className={classNames(styles.subItem, {
-                        [styles.subItemCompleted]: itemState === 'completed',
-                        [styles.subItemActive]: itemState === 'active',
-                        [styles.subItemPending]: itemState === 'pending',
-                        [styles.subItemError]: itemState === 'error',
-                        [styles.subItemNoAnimate]: itemState === 'completed',
-                      })}
-                    >
-                      <div className={styles.subItemIconContainer}>
-                        <SubItemIcon state={itemState} />
-                      </div>
-                      <span className={styles.subItemLabel}>{itemLabel}</span>
-                    </div>
-                  );
-                })}
+                {subItemsBeforeBars.map((item) => renderSubItem(item))}
 
                 {/* Progress bars inside Downloading */}
                 {showBars && (
-                  <div className={styles.progressBars} role="listitem">
+                  <div
+                    className={classNames(styles.progressBars, {
+                      [styles.progressBarsAfterSubItems]:
+                        subItemsBeforeBars.length > 0,
+                    })}
+                    role="listitem"
+                  >
                     <InlineProgressBar
                       label={intl.formatMessage(
                         messages.progressSnapshotFilesLabel
@@ -459,6 +507,13 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                       }
                     />
                   </div>
+                )}
+
+                {subItemsAfterBars.map((item, index) =>
+                  renderSubItem(
+                    item,
+                    index === 0 ? styles.subItemAfterBars : undefined
+                  )
                 )}
               </div>
             )}

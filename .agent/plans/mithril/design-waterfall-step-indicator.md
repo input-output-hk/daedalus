@@ -1,11 +1,18 @@
-# Design Spec: Vertical Waterfall MithrilStepIndicator
+# Design Spec: Vertical Waterfall Step Indicator
 
-**taskId:** design-024h  
+**Feature:** Mithril bootstrap waterfall step indicator  
 **Created:** 2026-03-18  
-**Revised:** 2026-03-18 (iteration 3 — final)  
-**Status:** completed  
-**Implements:** task-024h (vertical waterfall MithrilStepIndicator)  
-**Follows:** task-024g (i18n messages), task-024f2 (store/timer)
+**Revised:** 2026-03-18  
+**Status:** implemented  
+**Related design:** [Mithril Progress View Composition](design-progress-view-composition.md)
+
+### Design Changelog
+
+| Date | Change |
+|---|---|
+| 2026-03-18 | Established the 3-step vertical waterfall structure for Preparing, Downloading, and Finalizing, including connector rules, icon states, and inline progress bars. |
+| 2026-03-18 | Finalized the component-level behavior and implemented it in `MithrilStepIndicator.tsx` through task-024h. |
+| 2026-03-18 | Parent composition into `MithrilProgressView` landed through task-024i, so the waterfall design now reflects the live feature rather than a staged child-only component. |
 
 ---
 
@@ -265,7 +272,7 @@ Implementation: apply one class per connector `<div>` based on its parent step's
 
 ## 6. Progress Bars
 
-Two inline progress bars appear inside the Downloading sub-content area, below the sub-items that have appeared so far and above any remaining pending sub-items. They persist at 100% (solid green, no animation) once the download phase completes.
+Two inline progress bars appear inside the Downloading sub-content area, immediately below the `Downloading snapshot data` row (`step-3`) and above the verification rows (`step-4` onward). They persist at 100% (solid green, no animation) once the download phase completes.
 
 ### Bar Layout (per bar)
 
@@ -852,6 +859,6 @@ All overrides are scoped under `.root` to avoid global bleed.
 ## Implementation Status
 
 - Status: Implemented (2026-03-18)
-- TSX: 479 lines; all design spec requirements met
-- Pending: Prop wiring from parent (task-024i), unit test expansion
+- Renderer: Implemented in `MithrilStepIndicator.tsx` and composed into `MithrilProgressView.tsx`
+- Follow-up: Unit and integration expansion remains tracked in the Mithril task ledger
 - ReviewerCouncil: PASS (Sonnet 0.92, Gemini 0.95, Codex 0.89 FAST-FIX)

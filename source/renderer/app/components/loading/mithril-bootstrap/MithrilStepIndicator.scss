@@ -171,6 +171,10 @@
   transform: none;
 }
 
+.subItemAfterBars {
+  margin-top: 12px;
+}
+
 .subItemIconContainer {
   align-items: center;
   display: flex;
@@ -242,6 +246,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.progressBarsAfterSubItems {
   margin-top: 12px;
 }
 

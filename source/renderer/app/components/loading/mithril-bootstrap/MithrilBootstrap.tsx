@@ -21,7 +21,6 @@ interface Props {
   bytesDownloaded?: number;
   snapshotSize?: number;
   throughputBps?: number;
-  elapsedSeconds?: number;
   remainingSeconds?: number;
   customChainPath?: string | null;
   defaultChainPath?: string | null;
@@ -51,7 +50,6 @@ interface Props {
   onCancel(): void;
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
-  ancillaryElapsedSeconds?: number;
   ancillaryRemainingSeconds?: number;
   ancillaryProgress?: number;
   progressItems?: MithrilProgressItem[];
@@ -77,11 +75,18 @@ function MithrilBootstrap(props: Props) {
   const {
     status,
     progress,
+    progressItems,
+    filesDownloaded,
+    filesTotal,
     bytesDownloaded,
     snapshotSize,
     throughputBps,
-    elapsedSeconds,
     remainingSeconds,
+    ancillaryBytesDownloaded,
+    ancillaryBytesTotal,
+    ancillaryProgress,
+    ancillaryRemainingSeconds,
+    overallElapsedSeconds,
     customChainPath,
     defaultChainPath,
     defaultChainStorageValidation,
@@ -144,11 +149,18 @@ function MithrilBootstrap(props: Props) {
       <MithrilProgressView
         status={status}
         progress={progress}
+        progressItems={progressItems}
+        filesDownloaded={filesDownloaded}
+        filesTotal={filesTotal}
         bytesDownloaded={bytesDownloaded}
         snapshotSize={snapshotSize}
         throughputBps={throughputBps}
-        elapsedSeconds={elapsedSeconds}
         remainingSeconds={remainingSeconds}
+        ancillaryBytesDownloaded={ancillaryBytesDownloaded}
+        ancillaryBytesTotal={ancillaryBytesTotal}
+        ancillaryProgress={ancillaryProgress}
+        ancillaryRemainingSeconds={ancillaryRemainingSeconds}
+        overallElapsedSeconds={overallElapsedSeconds}
         onCancel={onCancel}
       />
     );
