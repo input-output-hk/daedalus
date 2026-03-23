@@ -9,6 +9,7 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
+import { isMithrilBootstrapRestoreCompleteStatus as isRestoreCompleteStatus } from '../../../../../common/types/mithril-bootstrap.types';
 import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
 import { formatTransferSize } from './snapshotFormatting';
@@ -110,7 +111,7 @@ const isVerificationOrLater = (status: MithrilBootstrapStatus) =>
   status === 'unpacking' ||
   status === 'converting' ||
   status === 'finalizing' ||
-  status === 'completed';
+  isRestoreCompleteStatus(status);
 
 function deriveCombinedDownloadPercent({
   status,
@@ -205,7 +206,7 @@ function synthesizeVerifyingDigestProgress(
 }
 
 function getActiveStepIndex(status: MithrilBootstrapStatus): number {
-  if (status === 'completed') return STEPS.length;
+  if (isRestoreCompleteStatus(status)) return STEPS.length;
   if (status === 'failed') return -1;
   const activeStep = STATUS_TO_STEP[status];
   return activeStep ? STEPS.indexOf(activeStep) : -1;
@@ -226,7 +227,7 @@ function deriveTopLevelState(
   activeStepIndex: number,
   status: MithrilBootstrapStatus
 ): StepState {
-  if (status === 'completed') return 'completed';
+  if (isRestoreCompleteStatus(status)) return 'completed';
   if (activeStepIndex < 0) return 'pending';
   if (stepIndex < activeStepIndex) return 'completed';
   if (stepIndex === activeStepIndex) return 'active';

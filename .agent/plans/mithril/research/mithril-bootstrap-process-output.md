@@ -89,6 +89,14 @@ After all 7 steps complete successfully, the CLI emits a final JSON object with:
 
 This tells the caller where the downloaded DB lives and provides ready-made commands to convert the UTxO HD storage format if needed.
 
+## Daedalus handoff note
+
+After Mithril exits successfully, any additional `cardano-node` / `cardano-wallet` restart noise seen in the Daedalus developer console is not emitted by `mithril-client`; it comes from Daedalus' own Cardano lifecycle management.
+
+- `completed` now means Mithril restore work is done.
+- `starting-node` is the explicit Daedalus-owned handoff phase while Cardano is being started against the restored chain.
+- Unexpected Cardano exits during this handoff are treated as Mithril `node-start` failures, and the generic Cardano crash-restart loop is suppressed while Mithril is active so startup cannot bypass the bootstrap gate.
+
 ## Snapshot Metadata (from `snapshot show`)
 
 Before download, `mithril-client cardano-db snapshot show <digest> --json` returns metadata including:

@@ -18,7 +18,8 @@ describe('MithrilProgressView', () => {
       | 'unpacking'
       | 'converting'
       | 'finalizing'
-      | 'completed';
+      | 'completed'
+      | 'starting-node';
     bytesDownloaded?: number;
     snapshotSize?: number;
     bootstrapStartedAt?: number | null;
@@ -60,8 +61,8 @@ describe('MithrilProgressView', () => {
     expect(screen.getByText('0:00')).toBeInTheDocument();
   });
 
-  it('shows the node startup handoff after bootstrap completes', () => {
-    renderComponent({ status: 'completed' });
+  it('shows the node startup handoff while cardano-node is starting', () => {
+    renderComponent({ status: 'starting-node' });
 
     expect(
       screen.getByRole('heading', { name: /starting cardano-node/i })
@@ -71,7 +72,15 @@ describe('MithrilProgressView', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not show completion block when not completed', () => {
+  it('does not show completion block for restore-complete state alone', () => {
+    renderComponent({ status: 'completed' });
+
+    expect(
+      screen.queryByRole('heading', { name: /starting cardano-node/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not show completion block when still downloading', () => {
     renderComponent({ status: 'downloading' });
 
     expect(
@@ -79,9 +88,15 @@ describe('MithrilProgressView', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('disables the cancel button when bootstrap is completed', () => {
-    renderComponent({ status: 'completed' });
+  it('disables the cancel button while cardano-node is starting', () => {
+    renderComponent({ status: 'starting-node' });
 
     expect(screen.getByRole('button', { name: /cancel/i })).toBeDisabled();
+  });
+
+  it('keeps the cancel button enabled in completed restore state', () => {
+    renderComponent({ status: 'completed' });
+
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeEnabled();
   });
 });

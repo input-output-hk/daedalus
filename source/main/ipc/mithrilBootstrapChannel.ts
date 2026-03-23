@@ -23,6 +23,7 @@ import type {
   MithrilBootstrapDecision,
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
+import { isMithrilBootstrapBlockingNodeStart } from '../../common/types/mithril-bootstrap.types';
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { ChainStorageManager } from '../utils/chainStorageManager';
 import { logger } from '../utils/logging';
@@ -61,6 +62,8 @@ let lastStatus: MithrilBootstrapStatusUpdate = {
 
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
 export const getMithrilBootstrapStatus = () => lastStatus;
+export const isMithrilBootstrapNodeStartBlocked = () =>
+  isMithrilBootstrapBlockingNodeStart(lastStatus.status);
 export const onMithrilBootstrapStatus = (
   handler: (status: MithrilBootstrapStatusUpdate) => void
 ) => {

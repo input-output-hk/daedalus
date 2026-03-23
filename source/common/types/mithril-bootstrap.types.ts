@@ -23,8 +23,28 @@ export type MithrilBootstrapStatus =
   | 'finalizing'
   | 'converting'
   | 'completed'
+  | 'starting-node'
   | 'failed'
   | 'cancelled';
+
+export const isMithrilBootstrapRestoreCompleteStatus = (
+  status: MithrilBootstrapStatus
+): boolean => status === 'completed' || status === 'starting-node';
+
+export const isMithrilBootstrapBlockingNodeStart = (
+  status: MithrilBootstrapStatus
+): boolean =>
+  [
+    'decision',
+    'preparing',
+    'downloading',
+    'verifying',
+    'unpacking',
+    'finalizing',
+    'converting',
+    'completed',
+    'starting-node',
+  ].includes(status);
 
 export type MithrilSnapshotItem = {
   digest: string;

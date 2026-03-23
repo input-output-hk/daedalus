@@ -38,7 +38,8 @@ const isWorkingStatus = (status: MithrilBootstrapStatus) =>
   status === 'verifying' ||
   status === 'unpacking' ||
   status === 'converting' ||
-  status === 'finalizing';
+  status === 'finalizing' ||
+  status === 'starting-node';
 
 export default class MithrilBootstrapStore extends Store {
   @observable status: MithrilBootstrapStatus = DEFAULT_STATUS.status;

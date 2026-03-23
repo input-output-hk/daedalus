@@ -20,7 +20,10 @@ import {
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoNode } from '../cardano/CardanoNode';
 import type { CheckDiskSpaceResponse } from '../../common/types/no-disk-space.types';
-import type { MithrilBootstrapStatusUpdate } from '../../common/types/mithril-bootstrap.types';
+import {
+  isMithrilBootstrapRestoreCompleteStatus,
+  MithrilBootstrapStatusUpdate,
+} from '../../common/types/mithril-bootstrap.types';
 import {
   getPendingMithrilBootstrapDecision,
   getMithrilBootstrapStatus,
@@ -151,17 +154,42 @@ export const handleDiskSpace = (
     await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
   };
 
+  const emitMithrilStartingNodeStatus = async () => {
+    const currentStatus = getMithrilBootstrapStatus();
+    const update: MithrilBootstrapStatusUpdate = {
+      ...currentStatus,
+      status: 'starting-node',
+      error: null,
+    };
+    setMithrilBootstrapStatus(update);
+    await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
+  };
+
+  const canStartNodeAfterMithrilCompletion = () =>
+    [
+      CardanoNodeStates.STOPPED,
+      CardanoNodeStates.CRASHED,
+      CardanoNodeStates.ERRORED,
+    ].includes(cardanoNode.state);
+
   const MITHRIL_COMPLETION_DELAY_MS = 6000;
 
   const startNodeAfterMithrilCompletion = async (): Promise<void> => {
     if (mithrilStartInFlight) return;
     mithrilStartInFlight = true;
     try {
+      await emitMithrilStartingNodeStatus();
       await cardanoNode.start();
       await new Promise<void>((resolve) => {
         setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
       });
+      if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
+        throw new Error(
+          'Cardano node stopped responding during startup after Mithril bootstrap.'
+        );
+      }
       await emitMithrilIdleStatus();
+      mithrilBootstrapCompleted = false;
       mithrilDecision = null;
       mithrilDecisionPrompted = false;
     } catch (error) {
@@ -236,7 +264,7 @@ export const handleDiskSpace = (
 
   onMithrilBootstrapStatus(async (status) => {
     if (status.status !== 'completed' || mithrilStartInFlight) return;
-    if (cardanoNode.state !== CardanoNodeStates.STOPPED) return;
+    if (!canStartNodeAfterMithrilCompletion()) return;
     mithrilBootstrapCompleted = true;
     await startNodeAfterMithrilCompletion();
   });
@@ -370,7 +398,9 @@ export const handleDiskSpace = (
             const chainEmpty = await isChainEmpty();
             if (chainEmpty) {
               const mithrilStatus = getMithrilBootstrapStatus();
-              if (mithrilStatus.status === 'completed') {
+              if (
+                isMithrilBootstrapRestoreCompleteStatus(mithrilStatus.status)
+              ) {
                 mithrilBootstrapCompleted = true;
               }
 

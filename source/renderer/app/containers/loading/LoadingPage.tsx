@@ -56,6 +56,7 @@ class LoadingPage extends Component<InjectedProps> {
       'finalizing',
       'converting',
       'completed',
+      'starting-node',
       'failed',
       'cancelled',
     ];

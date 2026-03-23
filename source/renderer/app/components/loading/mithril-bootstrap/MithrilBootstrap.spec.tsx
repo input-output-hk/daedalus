@@ -130,6 +130,13 @@ describe('MithrilBootstrap', () => {
     expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
   });
 
+  it('keeps the progress view mounted while cardano-node is starting', () => {
+    renderComponent({ status: 'starting-node' });
+
+    expect(screen.getByText('Progress view')).toBeInTheDocument();
+    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+  });
+
   it('shows the error view when bootstrap fails', () => {
     renderComponent({ status: 'failed' });
 

@@ -30,7 +30,6 @@ interface Context {
 }
 
 const TERMINAL_STATUSES: ReadonlySet<MithrilBootstrapStatus> = new Set([
-  'completed',
   'failed',
   'cancelled',
 ]);
@@ -65,7 +64,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     onCancel,
   } = props;
 
-  const isCompleted = status === 'completed';
+  const isStartingNode = status === 'starting-node';
   const completionRef = useRef<HTMLHeadingElement>(null);
 
   // Local elapsed-seconds timer — only this component re-renders each second
@@ -89,10 +88,10 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   }, [bootstrapStartedAt, status]);
 
   useEffect(() => {
-    if (isCompleted && completionRef.current) {
+    if (isStartingNode && completionRef.current) {
       completionRef.current.focus();
     }
-  }, [isCompleted]);
+  }, [isStartingNode]);
 
   const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
@@ -122,7 +121,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
         />
       </div>
 
-      {isCompleted && (
+      {isStartingNode && (
         <div
           className={styles.completionBlock}
           role="status"
@@ -149,7 +148,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           skin={ButtonSkin}
           label={intl.formatMessage(messages.cancel)}
           onClick={onCancel}
-          disabled={isCompleted}
+          disabled={isStartingNode}
         />
       </div>
     </div>

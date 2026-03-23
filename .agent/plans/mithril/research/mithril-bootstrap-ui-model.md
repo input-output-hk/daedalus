@@ -48,3 +48,6 @@
 - Add an explicit visible `verifying` state after file download completion.
 - Rename local post-download `unpacking` wording to `installing` where it describes Daedalus-side file placement.
 - Treat `_installSnapshot()` progress exposure as opportunistic: instrument it if the result is honest, otherwise keep the finalizing UX activity-only.
+- Keep Mithril restore completion and Cardano startup handoff as separate statuses: `completed` for restore done, `starting-node` for the live post-restore Cardano startup phase.
+- Generic Cardano crash recovery must not restart the backend while Mithril is active; Mithril owns the first post-restore startup attempt and any immediate retry/error handling.
+- If Cardano exits during the `starting-node` handoff, surface that as Mithril `node-start` failure rather than leaving the UI in a terminal-looking completed state.

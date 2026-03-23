@@ -31,6 +31,10 @@ import {
   setCachedCardanoStatusChannel,
   exportWalletsChannel,
 } from '../ipc/cardano.ipc';
+import {
+  getMithrilBootstrapStatus,
+  isMithrilBootstrapNodeStartBlocked,
+} from '../ipc/mithrilBootstrapChannel';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
 const restartCardanoNode = async (node: CardanoNode) => {
@@ -117,6 +121,16 @@ export const setupCardanoNode = (
       onUpdating: () => {},
       onUpdated: () => {},
       onCrashed: (code) => {
+        if (isMithrilBootstrapNodeStartBlocked()) {
+          logger.info(
+            'Cardano backend exited while Mithril bootstrap was active. Suppressing automatic restart.',
+            {
+              code,
+              mithrilStatus: getMithrilBootstrapStatus().status,
+            }
+          );
+          return;
+        }
         const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,

@@ -9,7 +9,7 @@ import {
   waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import type { ChainStorageValidation } from '../../../../../common/types/mithril-bootstrap.types';
+import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
 import translations from '../../i18n/locales/en-US.json';
 import { showOpenDialogChannel } from '../../ipc/show-file-dialog-channels';
 import ChainStorageLocationPicker from './ChainStorageLocationPicker';

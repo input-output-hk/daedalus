@@ -62,6 +62,7 @@ const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
   'finalizing',
   'converting',
   'completed',
+  'starting-node',
 ];
 
 function MithrilBootstrap(props: Props) {

@@ -98,6 +98,18 @@ describe('MithrilBootstrapStore', () => {
     expect(store.bytesDownloaded).toBeUndefined();
   });
 
+  it('tracks elapsed time state through the node-start handoff', async () => {
+    const store = setupStore();
+
+    await store._updateStatus({
+      status: 'starting-node',
+      elapsedSeconds: 12,
+    });
+
+    expect(store.status).toBe('starting-node');
+    expect(store.bootstrapStartedAt).not.toBeNull();
+  });
+
   it('loads chain storage config and tracks selected custom path', async () => {
     const store = setupStore();
     mockGetChainStorageDirectoryRequest.mockResolvedValue({

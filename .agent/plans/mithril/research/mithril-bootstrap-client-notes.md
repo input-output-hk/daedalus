@@ -74,3 +74,6 @@
 - Added `parseMithrilProgressLine` helper to keep progress parsing isolated from `MithrilBootstrapService` so Jest tests can run without requiring nix-shell.
 - Added a Mithril retry path that can optionally wipe `stateDir/chain` and Mithril snapshot artifacts when the node fails to start after bootstrap; the renderer sends `wipeChain` on retry to trigger the wipe before re-downloading.
 - Added persistent Mithril decision listeners in main so decline-after-failure reliably wipes chain/snapshot artifacts and starts the node.
+- Daedalus also had a separate generic Cardano crash-restart path in `source/main/cardano/setup.ts`; during Mithril bootstrap that path could restart Cardano outside `handleDiskSpace`, so bootstrap now explicitly blocks generic restarts while Mithril is active.
+- Mithril status now distinguishes restore completion from node handoff with a dedicated `starting-node` state. `completed` means the snapshot restore finished; `starting-node` means Daedalus is currently attempting the post-restore Cardano startup.
+- Post-restore node startup is now treated as part of the Mithril flow: if Cardano exits or fails to stay running during the handoff window, main emits a Mithril `failed` update with `error.stage = 'node-start'` instead of leaving the overlay in a completed spinner state.
