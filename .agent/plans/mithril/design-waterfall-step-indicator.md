@@ -2,7 +2,7 @@
 
 **Feature:** Mithril bootstrap waterfall step indicator  
 **Created:** 2026-03-18  
-**Revised:** 2026-03-20  
+**Revised:** 2026-03-23  
 **Status:** implemented  
 **Related design:** [Mithril Progress View Composition](design-progress-view-composition.md)
 
@@ -10,6 +10,7 @@
 
 | Date | Change |
 |---|---|
+| 2026-03-23 | Merged the two progress bars ("Snapshot files" + "Fast State Sync") into a single combined "Snapshot Files and Fast Sync" bar (85 % snapshot / 15 % ancillary weighting). Extracted `InlineProgressBar` to its own component. Added 500 ms verification-handoff delay before synthesizing the verifying-digests active row. Top-level active icon changed from spinner to 12 px open dot (`activeCircle`). Updated completion delay from 3 s to 6 s. Colors now reference `mithrilBootstrap` theme tokens. |
 | 2026-03-20 | Updated the spec to match the shipped waterfall: progress bars render only while `Downloading snapshot data` is active, verification uses sub-items without bars, and remaining-time copy was removed from the inline metadata rows. |
 | 2026-03-18 | Established the 3-step vertical waterfall structure for Preparing, Downloading, and Finalizing, including connector rules, icon states, and inline progress bars. |
 | 2026-03-18 | Finalized the component-level behavior and implemented it in `MithrilStepIndicator.tsx` through task-024h. |
@@ -34,10 +35,9 @@
 │  │  │   │ [◌] Fetching certificate chain           │                    │    │
 │  │  │   │ [⟳] Downloading snapshot data  ← active (spinner)            │    │
 │  │  │   │                                                                │    │
-│  │  │   │  Snapshot files                                               │    │
-│  │  │   │  ┤█████████████████░░░░░░░░░░░├  62%  │  1.2 GB / 1.9 GB   │    │
-│  │  │   │  Fast State Sync                                              │    │
-│  │  │   │  ┤██░░░░░░░░░░░░░░░░░░░░░░░░░├  12%  │  24 MB / 195 MB    │    │
+│  │  │   │  Snapshot Files and Fast Sync                                  │    │
+│  │  │   │  ┤█████████████████░░░░░░░░░░░├  56%                           │    │
+│  │  │   │  Snapshot files: 1.2 GB / 1.9 GB | Fast sync: 24 MB / 195 MB  │    │
 │  │  │   │                                                               │    │
 │  │  │   │ [○] Verifying digests                                        │    │
 │  │  │   │ [○] Verifying database                                       │    │
@@ -129,7 +129,7 @@ Connector line x-position:
 | Padding bottom | 14px (space between last sub-item and next step icon) |
 | Gap between sub-items | 7px |
 | Gap between sub-items and progress bars | 12px |
-| Gap between the two progress bars | 10px |
+| Combined progress bar bottom margin | 10px |
 
 ### Sub-Item Row
 
@@ -199,7 +199,7 @@ All icons use `SVGInline` with `currentColor` fill. Color is set via CSS `color`
 | State | Icon | Size | Color | Notes |
 |---|---|---|---|---|
 | completed | `check-mark-universal.inline.svg` | 20px | `rgba(30,164,126,0.95)` | |
-| active | `spinner-universal.inline.svg` | 20px | `rgba(233,237,242,0.92)` | Animated (see §8) |
+| active | `<div>` (no SVG) | — | — | Solid 12px open dot (`.activeCircle`), same size as pending circle but using the active label color `rgba(233,237,242,0.98)` as border.
 | error | `close-cross.inline.svg` | 20px | `rgba(220,60,60,0.95)` | Asset: `source/renderer/app/assets/images/close-cross.inline.svg`. Tinted red via `color` |
 | pending | `<div>` (no SVG) | — | — | Solid 12px circle |
 
@@ -271,17 +271,28 @@ Implementation: apply one class per connector `<div>` based on its parent step's
 
 ## 6. Progress Bars
 
-Two inline progress bars appear inside the Downloading sub-content area immediately below the `Downloading snapshot data` row (`step-3`). They render only while `step-3` is the active sub-item. When the backend transitions into `verifying` at step 4, the service synthesizes known totals to 100% in state and the renderer hides the bars so the verification rows take over the vertical space.
+A single combined inline progress bar appears inside the Downloading sub-content area immediately below the `Downloading snapshot data` row (`step-3`). It renders only while `step-3` is the active sub-item. The bar merges snapshot-file download progress (85 % weight) with fast-sync ancillary progress (15 % weight) into one unified percentage. When both transfers complete or the backend transitions into `verifying`, the combined bar shows 100 % and, after a **500 ms** verification-handoff delay, the renderer synthesizes the `Verifying snapshot digests` row as active and hides the bar.
 
-### Bar Layout (per bar)
+The `InlineProgressBar` component has been extracted to its own file (`InlineProgressBar.tsx`) for reuse.
+
+### Combined Percentage Formula
+
+```
+combinedPercent = (snapshotPercent / 100) × 85 + (ancillaryPercent / 100) × 15
+```
+
+Clamps to 100 when either transfer is complete or the status is `verifying` or later.
+
+### Bar Layout
 
 ```
 ┌─ bar wrapper ──────────────────────────────────────────────────┐
-│  [label row]                                                    │
+│  [label row]  Snapshot Files and Fast Sync           56%      │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │ ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  │  ← 6px track
 │  └──────────────────────────────────────────────────────────┘  │
-│  [metadata row]                                                 │
+│  [details row]  Snapshot files: 1.2 GB / 1.9 GB |             │
+│                 Fast sync: 24 MB / 195 MB                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -291,11 +302,11 @@ Two inline progress bars appear inside the Downloading sub-content area immediat
 ```
 Both on same line, space-between.
 
-**Metadata row** (displayed below bar):
+**Details row** (displayed below bar):
 ```
-[bytes downloaded / bytes total]
+Snapshot files: {downloaded} / {total} | Fast sync: {downloaded} / {total}
 ```
-Single line, left-aligned on desktop and stacked naturally on narrow widths.
+Single line on desktop; wraps naturally on narrow widths.
 
 ### Bar Visual Styling
 
@@ -369,13 +380,9 @@ No sub-items visible. No progress bars.
  │   [●] Fetching certificate chain    ← completed
  │   [⟳] Downloading snapshot data    ← active
  │
- │   Snapshot files     62%
+ │   Snapshot Files and Fast Sync  56%
  │   ┤█████████░░░░░░░░░░░├
-│   1.2 GB / 1.9 GB
- │
- │   Fast State Sync    12%
- │   ┤██░░░░░░░░░░░░░░░░░├
- │   24 MB / 195 MB
+ │   Snapshot files: 1.2 GB / 1.9 GB | Fast sync: 24 MB / 195 MB
  │
  │   [○] Verifying digests
  │   [○] Verifying database
@@ -452,7 +459,7 @@ No sub-items visible. No progress bars.
  │   [●] Cleaning up files
 ```
 
-All steps completed. Green checkmarks throughout. No pending items, all connector lines green. (MithrilProgressView then shows the 3-second node-starting delay — outside this component's scope.)
+All steps completed. Green checkmarks throughout. No pending items, all connector lines green. (MithrilProgressView then shows the 6-second node-starting delay — outside this component's scope.)
 
 ---
 
@@ -467,9 +474,9 @@ All steps completed. Green checkmarks throughout. No pending items, all connecto
  │   [●] Fetching certificate chain
  │   [✕] Downloading snapshot data   ← failed sub-item, red
  │
- │   Snapshot files     37%          ← bars remain frozen at last value
+ │   Snapshot Files and Fast Sync  37%  ← bar remains frozen at last value
  │   ┤████░░░░░░░░░░░░░░░├
- │   720 MB / 1.9 GB
+ │   Snapshot files: 720 MB / 1.9 GB | Fast sync: — / —
  │
 [○] Finalizing
 ```
@@ -638,18 +645,12 @@ activeItemRef.current?.scrollIntoView({
       </div>
     </div>
 
-    <!-- Progress bars -->
+    <!-- Progress bar -->
     <div role="progressbar"
          aria-valuenow="{percent}"
          aria-valuemin="0"
          aria-valuemax="100"
-         aria-label="Snapshot files: {percent}%">
-    </div>
-    <div role="progressbar"
-         aria-valuenow="{percent}"
-         aria-valuemin="0"
-         aria-valuemax="100"
-         aria-label="Fast State Sync: {percent}%">
+         aria-label="Snapshot Files and Fast Sync: {percent}%">
     </div>
   </div>
 </div>
@@ -688,7 +689,8 @@ All text elements meet WCAG AA 4.5:1 minimum for normal-sized text (< 18px regul
   .stepRow                     — flex row: iconContainer + labelContainer
   .iconContainer               — 32×32px, flex center, flex-shrink: 0
   .icon                        — font-size: 20px, SVGInline wrapper
-  .iconCheck / .iconSpinner / .iconError — color overrides
+  .iconCheck / .iconError      — color overrides
+  .activeCircle                — 12px dot div for active top-level step
   .pendingCircle               — 12px circle div
   .labelContainer              — flex col, min-height: 32px, justify-center
   .label                       — 14–15px text, state-colored
@@ -722,8 +724,9 @@ All text elements meet WCAG AA 4.5:1 minimum for normal-sized text (< 18px regul
 - Sub-items enter without animation if they arrive in `completed` state (fast sub-second steps); detect via initial render vs. subsequent prop update using `useRef` or class component `prevProps`
 - Auto-scroll: `useRef` on each sub-item, trigger `scrollIntoView` inside `componentDidUpdate`/`useEffect` when the `active` sub-item id changes
 - Connector color: solid color per-step based on step state (completed → green, error → red, active/pending → grey). No gradients in phase 1
-- Progress bars are inline custom elements, not `ProgressBarLarge` (the 24px tall large bar would be too heavy in sub-content)
+- Progress bars are extracted into `InlineProgressBar.tsx`, not `ProgressBarLarge` (the 24px tall large bar would be too heavy in sub-content)
 - The `animatedStripesBackground` keyframe from `ProgressBarLarge.scss` and the `loading-spin` keyframe from mixins are already global; reference with `:global {}` blocks
+- Colors reference `mithrilBootstrap` theme tokens from `createTheme.ts` (e.g. `var(--theme-mithril-progress-track-color)`) rather than raw `rgba()` values
 
 ---
 
@@ -734,19 +737,19 @@ Each scenario from §7 maps to a required Storybook story. Story implementation 
 | Scenario | Story Name | Key Visual Checkpoint |
 |---|---|---|
 | A — Early Preparing | `Preparing Active` | Spinner on Preparing, all others pending grey circles, no sub-items |
-| B — Mid-Download | `Downloading Mid Progress` | Preparing completed, Download active with mixed sub-item states, two progress bars with partial fill + animated stripes |
+| B — Mid-Download | `Downloading Mid Progress` | Preparing completed, Download active with mixed sub-item states, one combined progress bar with partial fill + animated stripes |
 | C — Verification Phase | `Download Verification Active` | All download sub-items exist, download bars are hidden, one verification sub-item is active |
 | D — Finalizing (with conversion) | `Finalizing With Conversion` | Preparing + Downloading completed, Finalizing active with conversion sub-item completed |
 | E — Finalizing (no conversion) | `Finalizing No Conversion` | Same as D but no conversion sub-item; first Finalizing sub-item is active |
 | F — Completed | `All Steps Completed` | All green checkmarks, all connectors green, no pending items |
-| G — Error During Download | `Download Error` | Red X on Downloading + failed sub-item, frozen progress bars, red connector from Download step |
+| G — Error During Download | `Download Error` | Red X on Downloading + failed sub-item, frozen combined progress bar, red connector from Download step |
 
 ### Additional Stories (edge cases)
 
 | Story Name | Description |
 |---|---|
 | `Reduced Motion` | Same as Scenario B but rendered with `prefers-reduced-motion: reduce` — verify no translateY animation, no spinner rotation, instant scroll |
-| `Loading Bars Unknown Size` | Scenario B variant where `bytes_total` is null — bars show loading state with "—" byte values |
+| `Loading Bars Unknown Size` | Scenario B variant where `bytes_total` is null — bar shows loading state with "—" byte values |
 | `Overflow Scroll` | All steps expanded with many sub-items — verify scrollable container and custom scrollbar styling |
 | `Narrow Viewport` | Render at 360px width — verify labels wrap, metadata stacks, icon column stays 32px, no horizontal overflow |
 
@@ -786,7 +789,7 @@ All overrides are scoped under `.root` to avoid global bleed.
 |---|---|---|
 | `.inlineBarHeader` layout | flex row, space-between | flex row, space-between (unchanged) |
 | `.inlineBarMeta` layout | flex row, space-between | flex-direction: column; gap: 2px |
-| `.inlineBarMeta` items | single line: label/percent or transferred bytes | stacked vertically for narrow widths |
+| `.inlineBarMeta` items | single line: transferred bytes detail | stacked vertically for narrow widths |
 | `.inlineBarTitle` font-size | 12px | 11px |
 | `.inlineBarPercent` font-size | 12px | 11px |
 | `.inlineBarMeta` font-size | 12px | 11px |

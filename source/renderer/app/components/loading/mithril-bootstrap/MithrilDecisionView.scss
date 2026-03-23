@@ -8,14 +8,14 @@
   text-align: left;
 
   h1 {
-    color: rgba(255, 255, 255, 0.98);
+    color: var(--theme-mithril-heading-color);
     font-family: var(--font-medium);
     font-size: 22px;
     margin-bottom: 8px;
   }
 
   p {
-    color: rgba(199, 208, 219, 0.9);
+    color: var(--theme-mithril-body-text-color);
     font-size: 15px;
     line-height: 1.5;
   }
@@ -23,8 +23,8 @@
 
 .locationContext {
   align-items: center;
-  background: rgba(10, 18, 28, 0.42);
-  border: 1px solid rgba(46, 64, 82, 0.6);
+  background: var(--theme-mithril-context-panel-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
   border-radius: 10px;
   display: flex;
   gap: 16px;
@@ -42,14 +42,14 @@
 }
 
 .locationLabel {
-  color: rgba(172, 182, 195, 0.9);
+  color: var(--theme-mithril-secondary-text-color);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .locationValue {
-  color: rgba(236, 241, 247, 0.95);
+  color: var(--theme-mithril-bright-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.4;
@@ -57,14 +57,14 @@
 }
 
 .locationAction {
-  color: rgba(129, 219, 194, 0.96);
+  color: var(--theme-mithril-link-color);
   flex: 0 0 auto;
   font-family: var(--font-medium);
   font-size: 13px;
   text-decoration: none;
 
   &:hover {
-    color: rgba(180, 240, 221, 0.98);
+    color: var(--theme-mithril-link-color-hover);
   }
 }
 
@@ -75,30 +75,30 @@
 }
 
 .primaryAction {
-  background-color: #1ea47e;
+  background-color: var(--theme-mithril-button-primary-background);
   border: none;
-  color: #071017;
+  color: var(--theme-mithril-button-primary-text-color);
   font-family: var(--font-medium);
   font-size: 14px;
   padding: 12px 24px;
 
   &:hover {
-    background-color: #29b58c;
-    color: #071017;
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
   }
 }
 
 .secondaryAction {
   background-color: transparent;
-  border: 1px solid rgba(92, 110, 128, 0.6);
-  color: rgba(225, 233, 242, 0.92);
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
   padding: 12px 24px;
 
   &:hover {
-    border-color: rgba(129, 147, 166, 0.9);
-    color: rgba(255, 255, 255, 0.98);
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
   }
 }
 

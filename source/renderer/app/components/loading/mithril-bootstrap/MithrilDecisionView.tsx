@@ -6,6 +6,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
+import chainStorageMessages from '../../chain-storage/ChainStorageMessages';
 import messages from './MithrilBootstrap.messages';
 import MithrilSnapshotDetails from './MithrilSnapshotDetails';
 import MithrilSnapshotSelector from './MithrilSnapshotSelector';
@@ -44,7 +45,7 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
   const currentStoragePath =
     customChainPath ||
     defaultChainPath ||
-    intl.formatMessage(messages.storageDefaultLocationLabel);
+    intl.formatMessage(chainStorageMessages.defaultLocationLabel);
 
   return (
     <div className={styles.root}>
@@ -57,7 +58,7 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
         <div className={styles.locationContext}>
           <div className={styles.locationSummary}>
             <span className={styles.locationLabel}>
-              {intl.formatMessage(messages.storageDirectoryLabel)}
+              {intl.formatMessage(chainStorageMessages.directoryLabel)}
             </span>
             <span className={styles.locationValue}>{currentStoragePath}</span>
           </div>
@@ -66,7 +67,7 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
             skin={LinkSkin}
             isUnderlined={false}
             underlineOnHover
-            label={intl.formatMessage(messages.storageChangeLocation)}
+            label={intl.formatMessage(chainStorageMessages.changeLocation)}
             onClick={onReturnToStorageLocation}
           />
         </div>

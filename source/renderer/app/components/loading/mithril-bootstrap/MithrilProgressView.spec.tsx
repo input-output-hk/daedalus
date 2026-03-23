@@ -10,7 +10,7 @@ describe('MithrilProgressView', () => {
     status = 'unpacking' as const,
     bytesDownloaded,
     snapshotSize,
-    overallElapsedSeconds,
+    bootstrapStartedAt,
   }: {
     status?:
       | 'preparing'
@@ -21,7 +21,7 @@ describe('MithrilProgressView', () => {
       | 'completed';
     bytesDownloaded?: number;
     snapshotSize?: number;
-    overallElapsedSeconds?: number;
+    bootstrapStartedAt?: number | null;
   } = {}) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
@@ -29,7 +29,7 @@ describe('MithrilProgressView', () => {
           status={status}
           bytesDownloaded={bytesDownloaded}
           snapshotSize={snapshotSize}
-          overallElapsedSeconds={overallElapsedSeconds}
+          bootstrapStartedAt={bootstrapStartedAt}
           onCancel={jest.fn()}
         />
       </IntlProvider>
@@ -40,11 +40,16 @@ describe('MithrilProgressView', () => {
   it('renders the header and timer', () => {
     renderComponent({
       status: 'downloading',
-      overallElapsedSeconds: 65,
+      bootstrapStartedAt: Date.now() - 65_000,
     });
 
     expect(
       screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /snapshot download and verification time can vary based on your network connection and storage performance/i
+      )
     ).toBeInTheDocument();
     expect(screen.getByText('1:05')).toBeInTheDocument();
   });

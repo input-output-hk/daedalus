@@ -338,7 +338,5 @@ describe('MithrilBootstrapStore', () => {
 
     expect(store.status).toBe('verifying');
     expect(store.bootstrapStartedAt).not.toBeNull();
-    expect(typeof store.overallElapsedSeconds).toBe('number');
-    expect(store.overallElapsedSeconds).toBeGreaterThanOrEqual(0);
   });
 });

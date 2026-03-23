@@ -1,5 +1,7 @@
+// @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
+
 //  ==== flight-candidate theme output for Daedalus and react-polymorph components === //
 export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   aboutWindow: {
@@ -174,6 +176,34 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-data-migration-layer-text-color': '#ffffff',
     '--theme-data-migration-layer-text-color-hover': '#36374d',
     '--theme-data-migration-layer-text-opacity-color': '#000000',
+    chainStorage: {
+      '--theme-chain-storage-heading-color': 'rgba(255, 255, 255, 0.98)',
+      '--theme-chain-storage-body-text-color': 'rgba(199, 208, 219, 0.9)',
+      '--theme-chain-storage-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
+      '--theme-chain-storage-bright-text-color': 'rgba(236, 241, 247, 0.95)',
+      '--theme-chain-storage-card-text-color': 'rgba(233, 237, 242, 0.92)',
+      '--theme-chain-storage-panel-background': 'rgba(10, 18, 28, 0.6)',
+      '--theme-chain-storage-panel-border-color': 'rgba(46, 64, 82, 0.6)',
+      '--theme-chain-storage-button-primary-background': '#1ea47e',
+      '--theme-chain-storage-button-primary-background-hover': '#29b58c',
+      '--theme-chain-storage-button-primary-text-color': '#071017',
+      '--theme-chain-storage-button-secondary-text-color':
+        'rgba(225, 233, 242, 0.92)',
+      '--theme-chain-storage-button-secondary-text-color-hover':
+        'rgba(255, 255, 255, 0.98)',
+      '--theme-chain-storage-button-secondary-text-color-disabled':
+        'rgba(143, 157, 173, 0.7)',
+      '--theme-chain-storage-selector-button-background':
+        'rgba(34, 52, 70, 0.95)',
+      '--theme-chain-storage-selector-button-background-hover':
+        'rgba(48, 69, 90, 0.98)',
+      '--theme-chain-storage-icon-color': 'rgba(236, 241, 247, 0.95)',
+      '--theme-chain-storage-error-background': 'rgba(110, 37, 44, 0.26)',
+      '--theme-chain-storage-error-border-color': 'rgba(201, 96, 103, 0.38)',
+      '--theme-chain-storage-error-input-border-color':
+        'rgba(201, 96, 103, 0.75)',
+      '--theme-chain-storage-error-text-color': 'rgba(255, 219, 223, 0.96)',
+    },
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#ffffff',
@@ -358,6 +388,76 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
+  },
+  mithrilBootstrap: {
+    '--theme-mithril-overlay-backdrop-start': 'rgba(9, 18, 28, 0.92)',
+    '--theme-mithril-overlay-backdrop-end': 'rgba(23, 33, 45, 0.92)',
+    '--theme-mithril-card-background': 'rgba(15, 24, 34, 0.96)',
+    '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
+    '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
+    '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',
+    '--theme-mithril-body-text-color': 'rgba(199, 208, 219, 0.9)',
+    '--theme-mithril-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
+    '--theme-mithril-bright-text-color': 'rgba(236, 241, 247, 0.95)',
+    '--theme-mithril-detail-label-color': 'rgba(158, 173, 189, 0.85)',
+    '--theme-mithril-panel-background': 'rgba(10, 18, 28, 0.6)',
+    '--theme-mithril-panel-border-color': 'rgba(46, 64, 82, 0.6)',
+    '--theme-mithril-context-panel-background': 'rgba(10, 18, 28, 0.42)',
+    '--theme-mithril-button-primary-background': '#1ea47e',
+    '--theme-mithril-button-primary-background-hover': '#29b58c',
+    '--theme-mithril-button-primary-text-color': '#071017',
+    '--theme-mithril-button-secondary-border-color': 'rgba(92, 110, 128, 0.6)',
+    '--theme-mithril-button-secondary-border-color-hover':
+      'rgba(129, 147, 166, 0.9)',
+    '--theme-mithril-button-secondary-text-color': 'rgba(225, 233, 242, 0.92)',
+    '--theme-mithril-button-secondary-text-color-hover':
+      'rgba(255, 255, 255, 0.98)',
+    '--theme-mithril-link-color': 'rgba(129, 219, 194, 0.96)',
+    '--theme-mithril-link-color-hover': 'rgba(180, 240, 221, 0.98)',
+    '--theme-mithril-completion-title-color': 'rgba(243, 247, 251, 0.98)',
+    '--theme-mithril-completion-detail-color': 'rgba(187, 198, 210, 0.92)',
+    '--theme-mithril-step-active-label-color': 'rgba(233, 237, 242, 0.98)',
+    '--theme-mithril-step-pending-label-color': 'rgba(158, 173, 189, 0.75)',
+    '--theme-mithril-step-completed-label-color': 'rgba(30, 164, 126, 0.85)',
+    '--theme-mithril-step-error-label-color': 'rgba(220, 60, 60, 0.95)',
+    '--theme-mithril-step-icon-success-color': 'rgba(30, 164, 126, 0.95)',
+    '--theme-mithril-step-icon-error-color': 'rgba(220, 60, 60, 0.95)',
+    '--theme-mithril-step-icon-spinner-color': 'rgba(233, 237, 242, 0.92)',
+    '--theme-mithril-step-icon-pending-background': 'rgba(92, 110, 128, 0.35)',
+    '--theme-mithril-step-connector-color': 'rgba(92, 110, 128, 0.22)',
+    '--theme-mithril-step-connector-completed-color':
+      'rgba(30, 164, 126, 0.55)',
+    '--theme-mithril-step-connector-error-color': 'rgba(220, 60, 60, 0.35)',
+    '--theme-mithril-sub-item-active-color': 'rgba(210, 220, 232, 0.9)',
+    '--theme-mithril-sub-item-pending-color': 'rgba(158, 173, 189, 0.72)',
+    '--theme-mithril-sub-item-completed-color': 'rgba(140, 175, 161, 0.8)',
+    '--theme-mithril-sub-item-error-color': 'rgba(220, 60, 60, 0.85)',
+    '--theme-mithril-sub-item-icon-success-color': 'rgba(30, 164, 126, 0.8)',
+    '--theme-mithril-sub-item-icon-spinner-color': 'rgba(210, 220, 232, 0.88)',
+    '--theme-mithril-sub-item-icon-error-color': 'rgba(220, 60, 60, 0.88)',
+    '--theme-mithril-sub-item-pending-background': 'rgba(92, 110, 128, 0.3)',
+    '--theme-mithril-progress-track-color': 'rgba(92, 110, 128, 0.2)',
+    '--theme-mithril-progress-complete-color': 'rgba(30, 164, 126, 0.7)',
+    '--theme-mithril-progress-meta-color': 'rgba(140, 155, 173, 0.75)',
+    '--theme-mithril-scrollbar-thumb-color': 'rgba(92, 110, 128, 0.5)',
+    '--theme-mithril-scrollbar-thumb-color-hover': 'rgba(129, 147, 166, 0.7)',
+    '--theme-mithril-selector-background': 'rgba(22, 33, 46, 0.9)',
+    '--theme-mithril-selector-option-background': 'rgba(34, 52, 70, 0.96)',
+    '--theme-mithril-selector-border-color': 'rgba(92, 110, 128, 0.6)',
+    '--theme-mithril-selector-button-background': 'rgba(34, 52, 70, 0.95)',
+    '--theme-mithril-selector-button-background-hover':
+      'rgba(48, 69, 90, 0.98)',
+    '--theme-mithril-icon-color': 'rgba(236, 241, 247, 0.95)',
+    '--theme-mithril-error-background': 'rgba(110, 37, 44, 0.26)',
+    '--theme-mithril-error-border-color': 'rgba(201, 96, 103, 0.38)',
+    '--theme-mithril-error-input-border-color': 'rgba(201, 96, 103, 0.75)',
+    '--theme-mithril-error-text-color': 'rgba(255, 219, 223, 0.96)',
+    '--theme-mithril-button-secondary-text-color-disabled':
+      'rgba(143, 157, 173, 0.7)',
+    '--theme-mithril-progress-active-stripe-color-strong':
+      'rgba(233, 237, 242, 0.3)',
+    '--theme-mithril-progress-active-stripe-color-soft':
+      'rgba(233, 237, 242, 0.15)',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': '#414251',
@@ -1118,8 +1218,41 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-widgets-monospace-text-block-background-color':
       'rgba(255, 255, 255, 0.05)',
   },
+  chainStorage: {
+    '--theme-chain-storage-heading-color': 'rgba(255, 255, 255, 0.98)',
+    '--theme-chain-storage-body-text-color': 'rgba(199, 208, 219, 0.9)',
+    '--theme-chain-storage-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
+    '--theme-chain-storage-bright-text-color': 'rgba(236, 241, 247, 0.95)',
+    '--theme-chain-storage-card-text-color': 'rgba(233, 237, 242, 0.92)',
+    '--theme-chain-storage-panel-background': 'rgba(10, 18, 28, 0.6)',
+    '--theme-chain-storage-panel-border-color': 'rgba(46, 64, 82, 0.6)',
+    '--theme-chain-storage-button-primary-background': '#1ea47e',
+    '--theme-chain-storage-button-primary-background-hover': '#29b58c',
+    '--theme-chain-storage-button-primary-text-color': '#071017',
+    '--theme-chain-storage-button-secondary-text-color':
+      'rgba(225, 233, 242, 0.92)',
+    '--theme-chain-storage-button-secondary-text-color-hover':
+      'rgba(255, 255, 255, 0.98)',
+    '--theme-chain-storage-button-secondary-text-color-disabled':
+      'rgba(143, 157, 173, 0.7)',
+    '--theme-chain-storage-selector-button-background':
+      'rgba(34, 52, 70, 0.95)',
+    '--theme-chain-storage-selector-button-background-hover':
+      'rgba(48, 69, 90, 0.98)',
+    '--theme-chain-storage-icon-color': 'rgba(236, 241, 247, 0.95)',
+    '--theme-chain-storage-error-background': 'rgba(110, 37, 44, 0.26)',
+    '--theme-chain-storage-error-border-color': 'rgba(201, 96, 103, 0.38)',
+    '--theme-chain-storage-error-input-border-color':
+      'rgba(201, 96, 103, 0.75)',
+    '--theme-chain-storage-error-text-color': 'rgba(255, 219, 223, 0.96)',
+  },
+  walletSettings: {
+    '--theme-wallet-settings-section-separator-color': '#ffffff1a',
+  },
 };
+
 const FLIGHT_CANDIDATE_THEME_PARAMS: CreateThemeParams = {
   config: FLIGHT_CANDIDATE_THEME_OUTPUT,
 };
+
 export default createTheme(FLIGHT_CANDIDATE_THEME_PARAMS);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -21,13 +21,19 @@ interface Props {
   ancillaryBytesDownloaded?: number;
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
-  overallElapsedSeconds?: number;
+  bootstrapStartedAt?: number | null;
   onCancel(): void;
 }
 
 interface Context {
   intl: Intl;
 }
+
+const TERMINAL_STATUSES: ReadonlySet<MithrilBootstrapStatus> = new Set([
+  'completed',
+  'failed',
+  'cancelled',
+]);
 
 const formatDuration = (value?: number) => {
   if (value == null || Number.isNaN(value)) return null;
@@ -55,12 +61,32 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
-    overallElapsedSeconds,
+    bootstrapStartedAt,
     onCancel,
   } = props;
 
   const isCompleted = status === 'completed';
   const completionRef = useRef<HTMLHeadingElement>(null);
+
+  // Local elapsed-seconds timer — only this component re-renders each second
+  const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    if (bootstrapStartedAt == null || TERMINAL_STATUSES.has(status)) {
+      // Freeze value on terminal status; clear on null start
+      if (bootstrapStartedAt == null) setElapsedSeconds(undefined);
+      return undefined;
+    }
+    const tick = () =>
+      setElapsedSeconds(
+        Math.max(0, Math.floor((Date.now() - bootstrapStartedAt) / 1000))
+      );
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [bootstrapStartedAt, status]);
 
   useEffect(() => {
     if (isCompleted && completionRef.current) {
@@ -68,12 +94,13 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     }
   }, [isCompleted]);
 
-  const elapsedLabel = formatDuration(overallElapsedSeconds) ?? '0:00';
+  const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
         <h1>{intl.formatMessage(messages.title)}</h1>
+        <p>{intl.formatMessage(messages.progressSubtitle)}</p>
       </div>
 
       <div className={styles.timerDisplay}>

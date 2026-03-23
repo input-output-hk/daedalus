@@ -16,7 +16,6 @@ class LoadingPage extends Component<InjectedProps> {
   };
 
   get activeOverlay() {
-    if (this.shouldShowMithrilBootstrap) return <MithrilBootstrapPage />;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     return null;
@@ -72,6 +71,14 @@ class LoadingPage extends Component<InjectedProps> {
   }
 
   render() {
+    if (this.shouldShowMithrilBootstrap) {
+      return (
+        <CenteredLayout>
+          <MithrilBootstrapPage />
+        </CenteredLayout>
+      );
+    }
+
     return (
       <CenteredLayout>
         <SyncingConnectingPage />

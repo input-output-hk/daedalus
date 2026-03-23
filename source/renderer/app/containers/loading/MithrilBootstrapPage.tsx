@@ -3,6 +3,16 @@ import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { MithrilBootstrap } from '../../components/loading/mithril-bootstrap';
 
+const PROGRESS_VIEW_STATUSES = [
+  'preparing',
+  'downloading',
+  'verifying',
+  'unpacking',
+  'finalizing',
+  'converting',
+  'completed',
+] as const;
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -16,6 +26,9 @@ class MithrilBootstrapPage extends Component<Props> {
   state = {
     selectedDigest: 'latest',
   };
+
+  private _cachedLatestSnapshot: any = null;
+  private _cachedSnapshotsRef: any = null;
 
   componentDidMount() {
     const { mithrilBootstrap } = this.props.stores;
@@ -95,8 +108,14 @@ class MithrilBootstrapPage extends Component<Props> {
 
   getLatestSnapshot = () => {
     const { snapshots } = this.props.stores.mithrilBootstrap;
-    if (!snapshots.length) return null;
-    return snapshots.reduce((latest, snapshot) => {
+    if (snapshots === this._cachedSnapshotsRef)
+      return this._cachedLatestSnapshot;
+    this._cachedSnapshotsRef = snapshots;
+    if (!snapshots.length) {
+      this._cachedLatestSnapshot = null;
+      return null;
+    }
+    this._cachedLatestSnapshot = snapshots.reduce((latest, snapshot) => {
       if (!latest) return snapshot;
       const latestTime = Date.parse(latest.createdAt);
       const nextTime = Date.parse(snapshot.createdAt);
@@ -104,28 +123,43 @@ class MithrilBootstrapPage extends Component<Props> {
       if (Number.isNaN(latestTime) || nextTime > latestTime) return snapshot;
       return latest;
     }, null as any);
+    return this._cachedLatestSnapshot;
   };
 
   render() {
     const { mithrilBootstrap } = this.props.stores;
+    const latestSnapshot = this.getLatestSnapshot();
+    const isProgressVisible = PROGRESS_VIEW_STATUSES.includes(
+      mithrilBootstrap.status
+    );
     const selectedSnapshot =
       this.state.selectedDigest === 'latest'
-        ? this.getLatestSnapshot()
+        ? latestSnapshot
         : mithrilBootstrap.snapshots.find(
             (snapshot) => snapshot.digest === this.state.selectedDigest
           );
+    const progressProps = isProgressVisible
+      ? {
+          bytesDownloaded: mithrilBootstrap.bytesDownloaded,
+          snapshotSize: mithrilBootstrap.snapshot?.size,
+          ancillaryBytesDownloaded: mithrilBootstrap.ancillaryBytesDownloaded,
+          ancillaryBytesTotal: mithrilBootstrap.ancillaryBytesTotal,
+          ancillaryProgress: mithrilBootstrap.ancillaryProgress,
+          progressItems: mithrilBootstrap.progressItems,
+          bootstrapStartedAt: mithrilBootstrap.bootstrapStartedAt,
+        }
+      : {};
+
     return (
       <MithrilBootstrap
         status={mithrilBootstrap.status}
-        bytesDownloaded={mithrilBootstrap.bytesDownloaded}
-        snapshotSize={mithrilBootstrap.snapshot?.size}
         customChainPath={mithrilBootstrap.customChainPath}
         defaultChainPath={mithrilBootstrap.defaultChainPath}
         defaultChainStorageValidation={
           mithrilBootstrap.defaultChainStorageValidation
         }
         chainStorageValidation={mithrilBootstrap.chainStorageValidation}
-        latestSnapshotSize={this.getLatestSnapshot()?.size}
+        latestSnapshotSize={latestSnapshot?.size}
         isChainStorageLoading={mithrilBootstrap.isChainStorageLoading}
         storageLocationConfirmed={mithrilBootstrap.storageLocationConfirmed}
         snapshots={mithrilBootstrap.snapshots}
@@ -148,11 +182,7 @@ class MithrilBootstrapPage extends Component<Props> {
         onDecline={this.handleDecline}
         onWipeRetry={this.handleWipeRetry}
         onCancel={this.handleCancel}
-        ancillaryBytesDownloaded={mithrilBootstrap.ancillaryBytesDownloaded}
-        ancillaryBytesTotal={mithrilBootstrap.ancillaryBytesTotal}
-        ancillaryProgress={mithrilBootstrap.ancillaryProgress}
-        progressItems={mithrilBootstrap.progressItems}
-        overallElapsedSeconds={mithrilBootstrap.overallElapsedSeconds}
+        {...progressProps}
       />
     );
   }

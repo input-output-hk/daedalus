@@ -2,7 +2,7 @@
 
 **Feature:** Mithril bootstrap progress view composition  
 **Created:** 2026-03-18  
-**Revised:** 2026-03-20  
+**Revised:** 2026-03-23  
 **Status:** implemented  
 **Related design:** [Vertical Waterfall Step Indicator](design-waterfall-step-indicator.md)
 
@@ -10,6 +10,7 @@
 
 | Date | Change |
 |---|---|
+| 2026-03-23 | Added subtitle under header; changed completion delay from 3 s to 6 s; enlarged completion spinner to 64 px; moved elapsed timer from store-driven `overallElapsedSeconds` to renderer-local state derived from `bootstrapStartedAt`; added `progressSubtitle` i18n message; noted theme-token migration (no longer deferred). |
 | 2026-03-20 | Updated the spec to match the shipped renderer: `verifying` stays mapped to the Downloading visual phase, the view exposes only the elapsed timer plus pass-through waterfall data, the completion spinner sits below the copy, and the cancel action is centered. |
 | 2026-03-18 | Established the progress-view layout around a header, single elapsed timer, scrollable waterfall container, completion handoff block, and cancel action. |
 | 2026-03-18 | Aligned the container sizing and non-interactive waterfall wrapper with the related step-indicator design. |
@@ -28,6 +29,9 @@ The recomposed `MithrilProgressView` renders inside the existing `.card` (720px 
 │                                                                       │
 │  ┌─ .header ──────────────────────────────────────────────────────┐  │
 │  │  Fast sync with Mithril                          22px medium   │  │
+│  │  <p> Snapshot download and verification time can vary based    │  │
+│  │      on your network connection and storage performance.       │  │
+│  │      (14px regular, secondary-text color)                      │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                               margin-bottom: 24px    │
 │  ┌─ .timerDisplay ────────────────────────────────────────────────┐  │
@@ -56,7 +60,7 @@ The recomposed `MithrilProgressView` renders inside the existing `.card` (720px 
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-### Completed State (3-second delay)
+### Completed State (6-second delay)
 
 When `status === 'completed'`, the completion block appears between the waterfall and the cancel button. The cancel button becomes disabled.
 
@@ -88,7 +92,7 @@ When `status === 'completed'`, the completion block appears between the waterfal
 │  │  Cardano-node is starting up to complete the remaining sync.   │  │
 │  │  (14px regular, muted)                                         │  │
 │  │                           12px gap                             │  │
-│  │  [spinner] 32px × 32px, centered below text                    │  │
+│  │  [spinner] 64px × 64px, centered below text                    │  │
 │  │                                                                │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                               margin-bottom: 24px    │
@@ -108,6 +112,7 @@ When `status === 'completed'`, the completion block appears between the waterfal
 | Element | preparing | downloading | verifying | unpacking | converting | finalizing | completed |
 |---|---|---|---|---|---|---|---|
 | **Header** ("Fast sync with Mithril") | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible |
+| **Subtitle** (network/storage note) | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible |
 | **Timer row** (Elapsed + value) | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ ticking | ✓ frozen |
 | **Waterfall container** | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible (collapsed — all steps completed) |
 | **Completion block** | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✓ visible (fade-in) |
@@ -134,11 +139,11 @@ The cardano-wallet backend emits working statuses that `MithrilStepIndicator` ma
 
 | State | Timer | Notes |
 |---|---|---|
-| preparing | Ticking from 0:00 | Store starts `elapsedTimer` interval on bootstrap begin |
+| preparing | Ticking from 0:00 | Renderer derives elapsed seconds locally from `bootstrapStartedAt` via `useState` + `setInterval` |
 | downloading | Ticking | Continues from preparing |
 | verifying | Ticking | Continues while verification sub-items advance under the Downloading step |
 | finalizing | Ticking | Continues from downloading |
-| completed | **Frozen** | Store stops the `elapsedTimer` when status becomes `completed`. The view displays the last `overallElapsedSeconds` value. |
+| completed | **Frozen** | Renderer stops the local interval when `status === 'completed'`. The frozen value is the elapsed seconds at the moment of status change. |
 
 ---
 
@@ -146,7 +151,7 @@ The cardano-wallet backend emits working statuses that `MithrilStepIndicator` ma
 
 ### 3.1 Header
 
-Unchanged from current design. No subtitle.
+Title followed by a subtitle `<p>` element.
 
 | Property | Value |
 |---|---|
@@ -154,8 +159,20 @@ Unchanged from current design. No subtitle.
 | Content | `messages.title` ("Fast sync with Mithril") |
 | Font size | 22px |
 | Font weight | medium (`var(--font-medium)`) |
-| Color | `rgba(255, 255, 255, 0.98)` |
-| Margin bottom | 24px |
+| Color | `var(--theme-mithril-heading-color)` |
+| Margin bottom | 6px |
+
+**Subtitle:**
+
+| Property | Value |
+|---|---|
+| Tag | `<p>` (child of `.header`) |
+| Content | `messages.progressSubtitle` ("Snapshot download and verification time can vary based on your network connection and storage performance.") |
+| Font size | 14px |
+| Font weight | regular (`var(--font-regular)`) |
+| Color | `var(--theme-mithril-secondary-text-color)` |
+| Line height | 1.5 |
+| Margin bottom | 24px (on the header block) |
 
 ### 3.2 Timer Display
 
@@ -190,7 +207,7 @@ A compact inline row showing the elapsed label and formatted duration together.
 
 | Property | Value |
 |---|---|
-| Content | Formatted duration from `overallElapsedSeconds` prop |
+| Content | Formatted duration from renderer-local `elapsedSeconds` state (derived from `bootstrapStartedAt` prop) |
 | Format | `H:MM:SS` when ≥1 hour, `M:SS` when <1 hour (reuse existing `formatDuration` helper) |
 | Font size | 18px |
 | Font weight | medium (`var(--font-medium)`) |
@@ -199,7 +216,7 @@ A compact inline row showing the elapsed label and formatted duration together.
 | Color | `rgba(236, 241, 247, 0.95)` |
 
 **Frozen state (completed):**
-- The timer value stops updating (store responsibility)
+- The renderer stops its local `setInterval` when `status === 'completed'`
 - Visual appearance is identical — no gray-out or special treatment. The frozen value is the final elapsed time
 
 ### 3.3 Waterfall Container
@@ -283,7 +300,7 @@ Appears only when `status === 'completed'`. Centered content with a spinner abov
 | Property | Value |
 |---|---|
 | Icon | `spinner-universal.inline.svg` (same as waterfall active spinner) |
-| Size | 24px × 24px (`font-size: 24px`) |
+| Size | 64px × 64px (`font-size: 64px`) |
 | Color | `rgba(122, 210, 188, 0.88)` (green-tinted, matching the completion theme) |
 | Animation | `loading-spin 1.5s linear infinite` (existing global keyframe) |
 | Margin bottom | `8px` |
@@ -355,7 +372,8 @@ Reuses the existing `.secondaryAction` button style. Adds a disabled-state visua
 
 | Element | Size | Weight | Color | Line height | Notes |
 |---|---|---|---|---|---|
-| Header h1 | 22px | medium | `rgba(255,255,255,0.98)` | — | Unchanged |
+| Header h1 | 22px | medium | `var(--theme-mithril-heading-color)` | — | Unchanged |
+| Subtitle p | 14px | regular | `var(--theme-mithril-secondary-text-color)` | 1.5 | Below title |
 | Timer label | 13px | regular | `rgba(172,182,195,0.90)` | — | Uppercase, 0.04em spacing |
 | Timer value | 18px | medium | `rgba(236,241,247,0.95)` | — | `tabular-nums` |
 | Completion title | 16px | medium | `rgba(243,247,251,0.98)` | 1.35 | |
@@ -416,7 +434,7 @@ Uses the local `spin` keyframe defined in `MithrilProgressView.scss`:
 
 ## 6. Color Palette Reference
 
-All colors match the existing Mithril bootstrap dark theme. No new design tokens introduced.
+Colors reference the `mithrilBootstrap` theme token map defined in `createTheme.ts` and all per-theme output files (e.g. `--theme-mithril-heading-color`). Raw `rgba()` values below are the dark-theme defaults; the actual runtime values come from CSS custom properties.
 
 | Usage | Color | Source |
 |---|---|---|
@@ -509,15 +527,15 @@ See §5 for animation overrides under `prefers-reduced-motion: reduce`.
 
 ## 10. Behavior Notes
 
-### 3-Second Completion Delay
+### 6-Second Completion Delay
 
-1. When `status` changes to `'completed'`, the store freezes `overallElapsedSeconds` (stops the timer interval)
+1. When `status` changes to `'completed'`, the renderer freezes the local elapsed timer
 2. The view renders the completion block with fade-in animation
 3. The waterfall shows all steps as completed (green checkmarks)
 4. The cancel button becomes disabled
-5. After 3 seconds, the main-process handoff helper in `handleDiskSpace.ts` emits Mithril idle and yields to the normal node-sync loading screen
+5. After 6 seconds, the main-process handoff helper in `handleDiskSpace.ts` emits Mithril idle and yields to the normal node-sync loading screen
 
-The 3-second delay is a UX grace period so the user sees confirmation that Mithril restore succeeded before the overlay disappears. The component does not own the timeout — it simply renders the completed state while the main process delays the idle handoff.
+The 6-second delay is a UX grace period so the user sees confirmation that Mithril restore succeeded before the overlay disappears. The component does not own the timeout — it simply renders the completed state while the main process delays the idle handoff.
 
 ### Timer Format
 
@@ -540,12 +558,13 @@ New/changed classes in `MithrilProgressView.scss`:
 .root                          — flex-col container (unchanged)
 .header                        — title block (margin-bottom adjusted)
   h1                           — unchanged
+  p                            — subtitle (progressSubtitle message)
 .timerDisplay                  — NEW: inline elapsed label/value row
   .timerLabel                  — NEW: uppercase muted label
   .timerValue                  — NEW: monospace-like digit value, tabular-nums
 .waterfallContainer            — Scrollable wrapper around the step indicator
 .completionBlock               — NEW: centered card, fade-in animation
-  .completionSpinner           — NEW: 32px spinning icon
+  .completionSpinner           — NEW: 64px spinning icon
   .completionTitle             — NEW: 16px medium h2, tabindex=-1 for programmatic focus
   .completionDetail            — NEW: 14px muted paragraph
 .actions                       — unchanged
@@ -575,8 +594,7 @@ REMOVED:
 | `messages.nodeStartingTitle` | ✓ | Completion block title |
 | `messages.nodeStartingDetail` | ✓ | Completion block detail |
 | `messages.cancel` | ✓ | Cancel button label |
-
-No new i18n messages required. All messages already exist in `MithrilBootstrap.messages.ts`.
+| `messages.progressSubtitle` | ✓ | Subtitle below header |
 
 ---
 
@@ -587,7 +605,7 @@ The following items are explicitly deferred and not part of this design spec:
 | Item | Deferred to | Notes |
 |---|---|---|
 | **Storybook stories** | Phase 8 | Visual regression stories for all MithrilProgressView states (preparing, downloading, unpacking, converting, finalizing, completed, narrow viewport, overflow scroll, keyboard focus). Story acceptance matrix will be defined in the Phase 8 design task. |
-| **Theme variable migration** | Phase 7 | All hardcoded `rgba()` values will be migrated to CSS custom properties / design tokens. |
+| **Theme variable migration** | ✅ Done | Migrated to CSS custom properties via `mithrilBootstrap` and `chainStorage` token maps in `createTheme.ts` and all per-theme output files. |
 | **Scroll fade hints** | Future enhancement | Gradient fade pseudo-elements on waterfall overflow edges (see §3.3 optional note). |
 
 ---
@@ -603,7 +621,7 @@ The following items are explicitly deferred and not part of this design spec:
 7. **Add** completion block JSX conditionally rendered when `status === 'completed'`
 8. **Add** disabled state to cancel button when `status === 'completed'`
 9. **Keep** the completion block as the only live-announced status region for this phase; broader phase-announcement a11y is deferred
-10. **Props simplification**: The view needs only `status`, `overallElapsedSeconds`, `onCancel`, plus pass-through props for `MithrilStepIndicator` (progress items and determinate progress data). The view does not own any overall percentage, throughput, or remaining-time UI.
+10. **Props simplification**: The view receives `status`, `bootstrapStartedAt`, `onCancel`, plus pass-through props for `MithrilStepIndicator` (progress items and determinate progress data). Timer is derived locally from `bootstrapStartedAt` via `useState` + `setInterval`. The view does not own any overall percentage, throughput, or remaining-time UI.
 11. **Skip** scroll fade pseudo-elements (§3.3 optional enhancement) — not required for initial implementation
 12. **Focus management**: On completed transition, move focus to the completion heading (`<h2>`)
-13. **Keep** the 3-second delay orchestration outside the component; it belongs to the main-process handoff path
+13. **Keep** the 6-second delay orchestration outside the component; it belongs to the main-process handoff path

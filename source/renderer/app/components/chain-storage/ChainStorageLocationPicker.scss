@@ -8,14 +8,14 @@
   text-align: left;
 
   h1 {
-    color: rgba(255, 255, 255, 0.98);
+    color: var(--theme-chain-storage-heading-color);
     font-family: var(--font-medium);
     font-size: 22px;
     margin-bottom: 8px;
   }
 
   p {
-    color: rgba(199, 208, 219, 0.9);
+    color: var(--theme-chain-storage-body-text-color);
     font-size: 15px;
     line-height: 1.5;
   }
@@ -33,10 +33,10 @@
   display: flex;
 
   .storageInput {
-    background: rgba(10, 18, 28, 0.6);
-    border: 1px solid rgba(46, 64, 82, 0.6);
+    background: var(--theme-chain-storage-panel-background);
+    border: 1px solid var(--theme-chain-storage-panel-border-color);
     border-radius: 10px;
-    color: rgba(236, 241, 247, 0.95);
+    color: var(--theme-chain-storage-bright-text-color);
     flex: 1 1 auto;
 
     font-family: var(--font-regular);
@@ -50,18 +50,18 @@
     width: 100%;
 
     &::-webkit-input-placeholder {
-      color: rgba(172, 182, 195, 0.8);
+      color: var(--theme-chain-storage-secondary-text-color);
     }
   }
 
   .error {
-    border-color: rgba(201, 96, 103, 0.75);
+    border-color: var(--theme-chain-storage-error-input-border-color);
   }
 }
 
 .selectDirectoryButton {
   align-items: center;
-  background-color: rgba(34, 52, 70, 0.95);
+  background-color: var(--theme-chain-storage-selector-button-background);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -73,7 +73,9 @@
   width: 32px;
 
   &:hover:enabled {
-    background-color: rgba(48, 69, 90, 0.98);
+    background-color: var(
+      --theme-chain-storage-selector-button-background-hover
+    );
   }
 
   &:disabled {
@@ -91,13 +93,13 @@
     width: 12px;
 
     path {
-      stroke: rgba(236, 241, 247, 0.95);
+      stroke: var(--theme-chain-storage-icon-color);
     }
   }
 }
 
 .storageSubtext {
-  color: rgba(172, 182, 195, 0.9);
+  color: var(--theme-chain-storage-secondary-text-color);
   font-family: var(--font-regular);
   font-size: 13px;
   line-height: 1.45;
@@ -117,7 +119,7 @@
 .inlineAction {
   background: transparent;
   border: none;
-  color: rgba(214, 223, 234, 0.94);
+  color: var(--theme-chain-storage-button-secondary-text-color);
   cursor: pointer;
   flex: 0 0 auto;
   font-family: var(--font-medium);
@@ -128,21 +130,21 @@
   white-space: nowrap;
 
   &:disabled {
-    color: rgba(143, 157, 173, 0.7);
+    color: var(--theme-chain-storage-button-secondary-text-color-disabled);
     cursor: default;
     text-decoration: none;
   }
 
   &:hover:enabled {
-    color: rgba(255, 255, 255, 0.98);
+    color: var(--theme-chain-storage-button-secondary-text-color-hover);
   }
 }
 
 .validationMessage {
-  background: rgba(110, 37, 44, 0.26);
-  border: 1px solid rgba(201, 96, 103, 0.38);
+  background: var(--theme-chain-storage-error-background);
+  border: 1px solid var(--theme-chain-storage-error-border-color);
   border-radius: 10px;
-  color: rgba(255, 219, 223, 0.96);
+  color: var(--theme-chain-storage-error-text-color);
   font-size: 13px;
   line-height: 1.5;
   margin-bottom: 16px;
@@ -151,7 +153,7 @@
 
 .statusMessage {
   align-items: center;
-  color: rgba(199, 208, 219, 0.9);
+  color: var(--theme-chain-storage-body-text-color);
   display: flex;
   font-size: 13px;
   gap: 10px;
@@ -159,22 +161,26 @@
 }
 
 .spinnerIcon {
-  color: rgba(233, 237, 242, 0.92);
+  color: var(--theme-chain-storage-card-text-color);
   display: inline-flex;
   font-size: 18px;
+  transform: translateZ(0);
+  transform-origin: center;
+  will-change: transform;
 
   > svg {
+    backface-visibility: hidden;
     display: block;
     fill: currentColor;
     height: 1em;
+    transform: translateZ(0);
     width: 1em;
   }
 }
 
 .spinnerActive {
   :global {
-    animation: loading-spin 1.5s linear;
-    animation-iteration-count: infinite;
+    animation: loading-spin 1.2s linear infinite;
   }
 }
 
@@ -185,9 +191,9 @@
 }
 
 .primaryAction {
-  background-color: #1ea47e;
+  background-color: var(--theme-chain-storage-button-primary-background);
   border: none;
-  color: #071017;
+  color: var(--theme-chain-storage-button-primary-text-color);
   font-family: var(--font-medium);
   font-size: 14px;
   max-width: 280px;
@@ -195,8 +201,10 @@
   width: 100%;
 
   &:hover {
-    background-color: #29b58c;
-    color: #071017;
+    background-color: var(
+      --theme-chain-storage-button-primary-background-hover
+    );
+    color: var(--theme-chain-storage-button-primary-text-color);
   }
 }
 

@@ -1,13 +1,13 @@
 .details {
-  background: rgba(10, 18, 28, 0.6);
-  border: 1px solid rgba(46, 64, 82, 0.6);
+  background: var(--theme-mithril-panel-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
   border-radius: 10px;
   margin-bottom: 24px;
   padding: 16px 20px;
 }
 
 .detailsHeader {
-  color: rgba(225, 233, 242, 0.9);
+  color: var(--theme-mithril-button-secondary-text-color);
   font-size: 12px;
   letter-spacing: 0.12em;
   margin-bottom: 12px;
@@ -27,12 +27,12 @@
 }
 
 .detailLabel {
-  color: rgba(158, 173, 189, 0.85);
+  color: var(--theme-mithril-detail-label-color);
   font-size: 13px;
 }
 
 .detailValue {
-  color: rgba(236, 241, 247, 0.95);
+  color: var(--theme-mithril-bright-text-color);
   font-size: 14px;
   word-break: break-word;
 }
@@ -42,7 +42,7 @@
 }
 
 .detailsFallback {
-  color: rgba(158, 173, 189, 0.8);
+  color: var(--theme-mithril-detail-label-color);
   font-size: 14px;
 }
 

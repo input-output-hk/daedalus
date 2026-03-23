@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
@@ -9,14 +9,11 @@ import type {
   MithrilBootstrapStatus,
   MithrilProgressItem,
 } from '../../../../../common/types/mithril-bootstrap.types';
-import { formatTransferSize } from './snapshotFormatting';
+import InlineProgressBar from './InlineProgressBar';
 import messages from './MithrilBootstrap.messages';
+import { formatTransferSize } from './snapshotFormatting';
 import styles from './MithrilStepIndicator.scss';
 import type { Intl } from '../../../types/i18nTypes';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 type StepId = 'preparing' | 'downloading' | 'finalizing';
 type StepState = 'completed' | 'active' | 'pending' | 'error';
@@ -35,10 +32,6 @@ type Props = {
 interface Context {
   intl: Intl;
 }
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 
 const STEPS: ReadonlyArray<StepId> = ['preparing', 'downloading', 'finalizing'];
 
@@ -93,10 +86,123 @@ const ITEM_ID_TO_MESSAGE: Record<string, keyof typeof messages> = {
 };
 
 const DOWNLOAD_PROGRESS_ANCHOR_ID = 'step-3';
+const VERIFYING_DIGESTS_ID = 'step-4';
+const SNAPSHOT_PROGRESS_WEIGHT = 85;
+const FAST_SYNC_PROGRESS_WEIGHT = 15;
+const VERIFYING_TRANSITION_DELAY_MS = 500;
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+const clampPercent = (value?: number) => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return undefined;
+  }
+
+  return Math.min(100, Math.max(0, value));
+};
+
+const isTransferComplete = (downloaded?: number, total?: number) =>
+  typeof downloaded === 'number' &&
+  typeof total === 'number' &&
+  total > 0 &&
+  downloaded >= total;
+
+const isVerificationOrLater = (status: MithrilBootstrapStatus) =>
+  status === 'verifying' ||
+  status === 'unpacking' ||
+  status === 'converting' ||
+  status === 'finalizing' ||
+  status === 'completed';
+
+function deriveCombinedDownloadPercent({
+  status,
+  snapshotPercent,
+  ancillaryPercent,
+  bytesDownloaded,
+  snapshotSize,
+  ancillaryBytesDownloaded,
+  ancillaryBytesTotal,
+}: {
+  status: MithrilBootstrapStatus;
+  snapshotPercent?: number;
+  ancillaryPercent?: number;
+  bytesDownloaded?: number;
+  snapshotSize?: number;
+  ancillaryBytesDownloaded?: number;
+  ancillaryBytesTotal?: number;
+}) {
+  const normalizedSnapshotPercent = clampPercent(snapshotPercent) ?? 0;
+  const normalizedAncillaryPercent = clampPercent(ancillaryPercent) ?? 0;
+
+  if (
+    isVerificationOrLater(status) ||
+    isTransferComplete(bytesDownloaded, snapshotSize) ||
+    isTransferComplete(ancillaryBytesDownloaded, ancillaryBytesTotal) ||
+    normalizedAncillaryPercent >= 100
+  ) {
+    return 100;
+  }
+
+  return (
+    (normalizedSnapshotPercent / 100) * SNAPSHOT_PROGRESS_WEIGHT +
+    (normalizedAncillaryPercent / 100) * FAST_SYNC_PROGRESS_WEIGHT
+  );
+}
+
+function formatCombinedProgressDetails({
+  intl,
+  bytesDownloaded,
+  snapshotSize,
+  ancillaryBytesDownloaded,
+  ancillaryBytesTotal,
+}: {
+  intl: Intl;
+  bytesDownloaded?: number;
+  snapshotSize?: number;
+  ancillaryBytesDownloaded?: number;
+  ancillaryBytesTotal?: number;
+}) {
+  return intl.formatMessage(messages.progressCombinedDetail, {
+    snapshotDownloaded: formatTransferSize(bytesDownloaded) ?? '\u2014',
+    snapshotTotal: formatTransferSize(snapshotSize) ?? '\u2014',
+    fastSyncDownloaded:
+      formatTransferSize(ancillaryBytesDownloaded) ?? '\u2014',
+    fastSyncTotal: formatTransferSize(ancillaryBytesTotal) ?? '\u2014',
+  });
+}
+
+function synthesizeVerifyingDigestProgress(
+  items: MithrilProgressItem[]
+): MithrilProgressItem[] {
+  let hasVerifyingDigest = false;
+
+  const nextItems = items.map((item) => {
+    if (item.id === DOWNLOAD_PROGRESS_ANCHOR_ID && item.state === 'active') {
+      return { ...item, state: 'completed' as const };
+    }
+
+    if (item.id === VERIFYING_DIGESTS_ID) {
+      hasVerifyingDigest = true;
+      if (item.state === 'completed' || item.state === 'error') {
+        return item;
+      }
+      return { ...item, state: 'active' as const };
+    }
+
+    return item;
+  });
+
+  if (hasVerifyingDigest) {
+    return nextItems;
+  }
+
+  return [
+    ...nextItems,
+    {
+      id: VERIFYING_DIGESTS_ID,
+      label: 'verifying-digests',
+      state: 'active' as const,
+    },
+  ];
+}
 
 function getActiveStepIndex(status: MithrilBootstrapStatus): number {
   if (status === 'completed') return STEPS.length;
@@ -186,10 +292,6 @@ function splitSubItemsAroundAnchor(
   };
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
 function TopLevelIcon({ state }: { state: StepState }) {
   if (state === 'completed') {
     return (
@@ -200,12 +302,7 @@ function TopLevelIcon({ state }: { state: StepState }) {
     );
   }
   if (state === 'active') {
-    return (
-      <SVGInline
-        svg={spinnerIcon}
-        className={classNames(styles.icon, styles.iconSpinner)}
-      />
-    );
+    return <div className={styles.activeCircle} />;
   }
   if (state === 'error') {
     return (
@@ -246,57 +343,6 @@ function SubItemIcon({ state }: { state: SubItemState }) {
   return <div className={styles.subItemPendingCircle} />;
 }
 
-function InlineProgressBar({
-  label,
-  percent,
-  downloaded,
-  total,
-}: {
-  label: string;
-  percent: number;
-  downloaded?: number;
-  total?: number;
-}) {
-  const clamped = Math.min(100, Math.max(0, percent));
-  const downloadedStr = formatTransferSize(downloaded) ?? '\u2014';
-  const totalStr = formatTransferSize(total) ?? '\u2014';
-
-  return (
-    <div className={styles.inlineBar}>
-      <div
-        role="progressbar"
-        aria-valuenow={Math.round(clamped)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${label}: ${Math.round(clamped)}%`}
-      >
-        <div className={styles.inlineBarMeta}>
-          <span>{label}</span>
-          <span>{Math.round(clamped)}%</span>
-        </div>
-        <div className={styles.inlineBarTrack}>
-          <div
-            className={classNames(styles.inlineBarFill, {
-              [styles.inlineBarFillActive]: clamped < 100,
-              [styles.inlineBarFillComplete]: clamped >= 100,
-            })}
-            style={{ width: `${clamped}%` }}
-          />
-        </div>
-      </div>
-      <div className={styles.inlineBarMeta}>
-        <span>
-          {downloadedStr} / {totalStr}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
 function MithrilStepIndicator(props: Props, { intl }: Context) {
   const {
     status,
@@ -314,10 +360,61 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
       ? STEPS[activeStepIndex]
       : undefined;
 
-  // ---------- Auto-scroll ----------
+  const snapshotPercent =
+    typeof snapshotSize === 'number' && snapshotSize > 0
+      ? ((bytesDownloaded ?? 0) / snapshotSize) * 100
+      : 0;
+  const ancPercent =
+    typeof ancillaryProgress === 'number' ? ancillaryProgress : 0;
+  const combinedDownloadPercent = deriveCombinedDownloadPercent({
+    status,
+    snapshotPercent,
+    ancillaryPercent: ancPercent,
+    bytesDownloaded,
+    snapshotSize,
+    ancillaryBytesDownloaded,
+    ancillaryBytesTotal,
+  });
+  const combinedProgressDetails = formatCombinedProgressDetails({
+    intl,
+    bytesDownloaded,
+    snapshotSize,
+    ancillaryBytesDownloaded,
+    ancillaryBytesTotal,
+  });
+
+  const [showVerifyingTransition, setShowVerifyingTransition] = useState(false);
+
+  const actualActiveSubItem = progressItems.find((i) => i.state === 'active');
+  const shouldDelayVerifyingTransition =
+    status === 'downloading' &&
+    actualActiveSubItem?.id === DOWNLOAD_PROGRESS_ANCHOR_ID &&
+    combinedDownloadPercent >= 100;
+
+  useEffect(() => {
+    if (!shouldDelayVerifyingTransition) {
+      setShowVerifyingTransition(false);
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowVerifyingTransition(true);
+    }, VERIFYING_TRANSITION_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [shouldDelayVerifyingTransition]);
+
+  const displayedProgressItems = showVerifyingTransition
+    ? synthesizeVerifyingDigestProgress(progressItems)
+    : progressItems;
+
   const activeRef = useRef<HTMLDivElement | null>(null);
   const prevActiveIdRef = useRef<string | null>(null);
-  const activeSubItem = progressItems.find((i) => i.state === 'active');
+  const activeSubItem = displayedProgressItems.find(
+    (i) => i.state === 'active'
+  );
   const activeSubItemId = activeSubItem?.id ?? null;
 
   useEffect(() => {
@@ -337,14 +434,6 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
       }
     }
   }, [activeSubItemId]);
-
-  // ---------- Progress bar values ----------
-  const snapshotPercent =
-    typeof snapshotSize === 'number' && snapshotSize > 0
-      ? ((bytesDownloaded ?? 0) / snapshotSize) * 100
-      : 0;
-  const ancPercent =
-    typeof ancillaryProgress === 'number' ? ancillaryProgress : 0;
 
   const renderSubItem = (
     item: MithrilProgressItem,
@@ -383,11 +472,11 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
     <div className={styles.root} role="list" aria-label="Mithril sync progress">
       {STEPS.map((stepId, stepIndex) => {
         const hasError =
-          status === 'failed' && hasPhaseError(progressItems, stepId);
+          status === 'failed' && hasPhaseError(displayedProgressItems, stepId);
 
         const state =
           status === 'failed'
-            ? deriveFailedStepState(stepId, progressItems, hasError)
+            ? deriveFailedStepState(stepId, displayedProgressItems, hasError)
             : deriveTopLevelState(stepIndex, activeStepIndex, status);
 
         const label = intl.formatMessage(messages[STEP_MESSAGES[stepId]]);
@@ -395,7 +484,7 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
 
         const subItems =
           state === 'active'
-            ? groupSubItems(progressItems, stepId, activeStepId)
+            ? groupSubItems(displayedProgressItems, stepId, activeStepId)
             : [];
         const showBars =
           stepId === 'downloading' &&
@@ -430,7 +519,6 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               [styles.stepError]: state === 'error',
             })}
           >
-            {/* Step row: icon + label */}
             <div className={styles.stepRow}>
               <div className={styles.iconContainer}>
                 <TopLevelIcon state={state} />
@@ -440,7 +528,6 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               </div>
             </div>
 
-            {/* Sub-content */}
             {hasSubContent && (
               <div
                 className={styles.subContent}
@@ -449,7 +536,6 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               >
                 {subItemsBeforeBars.map((item) => renderSubItem(item))}
 
-                {/* Progress bars inside Downloading */}
                 {showBars && (
                   <div
                     className={classNames(styles.progressBars, {
@@ -459,18 +545,9 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
                     role="listitem"
                   >
                     <InlineProgressBar
-                      label={intl.formatMessage(
-                        messages.progressSnapshotFilesLabel
-                      )}
-                      percent={snapshotPercent}
-                      downloaded={bytesDownloaded}
-                      total={snapshotSize}
-                    />
-                    <InlineProgressBar
-                      label={intl.formatMessage(messages.progressFastSyncLabel)}
-                      percent={ancPercent}
-                      downloaded={ancillaryBytesDownloaded}
-                      total={ancillaryBytesTotal}
+                      label={intl.formatMessage(messages.progressCombinedLabel)}
+                      percent={combinedDownloadPercent}
+                      details={combinedProgressDetails}
                     />
                   </div>
                 )}
@@ -484,7 +561,6 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               </div>
             )}
 
-            {/* Connector line */}
             {!isLast && <div className={connectorCls} />}
           </div>
         );

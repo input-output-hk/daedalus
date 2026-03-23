@@ -69,8 +69,6 @@ export default class MithrilBootstrapStore extends Store {
   @observable ancillaryBytesTotal: number | undefined = undefined;
   @observable progressItems: MithrilProgressItem[] = [];
   @observable bootstrapStartedAt: number | null = null;
-  @observable private _timerTick = 0;
-  private _timerInterval: ReturnType<typeof setInterval> | null = null;
 
   @computed
   get bytesDownloaded(): number | undefined {
@@ -105,32 +103,6 @@ export default class MithrilBootstrapStore extends Store {
       return undefined;
     }
     return (this.ancillaryBytesDownloaded / this.ancillaryBytesTotal) * 100;
-  }
-
-  @computed
-  get overallElapsedSeconds(): number | undefined {
-    if (this.bootstrapStartedAt == null) return undefined;
-    // Reference _timerTick to trigger recomputation every second
-    const now = this._timerTick || Date.now();
-    return Math.max(0, Math.floor((now - this.bootstrapStartedAt) / 1000));
-  }
-
-  private _startElapsedTimer() {
-    if (this._timerInterval != null) return;
-    this._timerInterval = setInterval(
-      action('elapsed-timer-tick', () => {
-        this._timerTick = Date.now();
-      }),
-      1000
-    );
-  }
-
-  private _stopElapsedTimer() {
-    if (this._timerInterval != null) {
-      clearInterval(this._timerInterval);
-      this._timerInterval = null;
-    }
-    this._timerTick = 0;
   }
 
   setup() {
@@ -170,9 +142,8 @@ export default class MithrilBootstrapStore extends Store {
       this.ancillaryBytesTotal = undefined;
       this.progressItems = [];
       this.bootstrapStartedAt = null;
-      this._stopElapsedTimer();
     }
-    // Start elapsed timer when entering a working status
+    // Record start timestamp when entering a working status
     if (isWorkingStatus(this.status) && this.bootstrapStartedAt == null) {
       const backendElapsed = update.elapsedSeconds;
       this.bootstrapStartedAt =
@@ -181,15 +152,6 @@ export default class MithrilBootstrapStore extends Store {
         backendElapsed > 0
           ? Date.now() - backendElapsed * 1000
           : Date.now();
-      this._startElapsedTimer();
-    }
-    // Stop timer on terminal statuses
-    if (
-      this.status === 'completed' ||
-      this.status === 'failed' ||
-      this.status === 'cancelled'
-    ) {
-      this._stopElapsedTimer();
     }
     if (
       isDecisionCycleStatus(this.status) &&
@@ -200,7 +162,6 @@ export default class MithrilBootstrapStore extends Store {
       this.ancillaryBytesTotal = undefined;
       this.progressItems = [];
       this.bootstrapStartedAt = null;
-      this._stopElapsedTimer();
     }
     if ('snapshot' in update) {
       this.snapshot = update.snapshot ?? null;
@@ -221,7 +182,16 @@ export default class MithrilBootstrapStore extends Store {
       this.ancillaryBytesTotal = update.ancillaryBytesTotal;
     }
     if ('progressItems' in update && update.progressItems != null) {
-      this.progressItems = update.progressItems;
+      const next = update.progressItems;
+      const prev = this.progressItems;
+      const changed =
+        next.length !== prev.length ||
+        next.some(
+          (item, i) => item.id !== prev[i]?.id || item.state !== prev[i]?.state
+        );
+      if (changed) {
+        this.progressItems = next;
+      }
     }
     if ('error' in update) {
       this.error = update.error ?? null;

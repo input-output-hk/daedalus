@@ -8,10 +8,17 @@
   text-align: left;
 
   h1 {
-    color: rgba(255, 255, 255, 0.98);
+    color: var(--theme-mithril-heading-color);
     font-family: var(--font-medium);
     font-size: 22px;
     margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--theme-mithril-secondary-text-color);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
   }
 }
 
@@ -23,14 +30,14 @@
 }
 
 .timerLabel {
-  color: rgba(172, 182, 195, 0.9);
+  color: var(--theme-mithril-secondary-text-color);
   font-size: 13px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .timerValue {
-  color: rgba(236, 241, 247, 0.95);
+  color: var(--theme-mithril-bright-text-color);
   font-family: var(
     --font-mono,
     'SF Mono',
@@ -50,7 +57,7 @@
   padding-right: 4px;
 
   /* Thin scrollbar */
-  scrollbar-color: rgba(92, 110, 128, 0.5) transparent;
+  scrollbar-color: var(--theme-mithril-scrollbar-thumb-color) transparent;
   scrollbar-width: thin;
 
   &::-webkit-scrollbar {
@@ -62,11 +69,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(92, 110, 128, 0.5);
+    background: var(--theme-mithril-scrollbar-thumb-color);
     border-radius: 3px;
 
     &:hover {
-      background: rgba(129, 147, 166, 0.7);
+      background: var(--theme-mithril-scrollbar-thumb-color-hover);
     }
   }
 }
@@ -82,15 +89,27 @@
 }
 
 .completionSpinner {
-  animation: spin 1s linear infinite;
-  color: rgba(233, 237, 242, 0.92);
-  height: 32px;
+  animation: spin 1.2s linear infinite;
+  backface-visibility: hidden;
+  color: var(--theme-mithril-step-icon-spinner-color);
+  height: 64px;
+  line-height: 0;
   margin-bottom: 12px;
-  width: 32px;
+  transform: translateZ(0);
+  transform-origin: center;
+  width: 64px;
+  will-change: transform;
+
+  svg {
+    display: block;
+    fill: currentColor;
+    height: 100%;
+    width: 100%;
+  }
 }
 
 .completionTitle {
-  color: rgba(243, 247, 251, 0.98);
+  color: var(--theme-mithril-completion-title-color);
   font-family: var(--font-medium);
   font-size: 16px;
   line-height: 1.35;
@@ -102,7 +121,7 @@
 }
 
 .completionDetail {
-  color: rgba(187, 198, 210, 0.92);
+  color: var(--theme-mithril-completion-detail-color);
   font-size: 14px;
   line-height: 1.55;
   margin: 0;
@@ -116,15 +135,15 @@
 
 .secondaryAction {
   background-color: transparent;
-  border: 1px solid rgba(92, 110, 128, 0.6);
-  color: rgba(225, 233, 242, 0.92);
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
   font-family: var(--font-regular);
   font-size: 14px;
   padding: 12px 24px;
 
   &:hover {
-    border-color: rgba(129, 147, 166, 0.9);
-    color: rgba(255, 255, 255, 0.98);
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
   }
 
   &:disabled {
@@ -132,8 +151,8 @@
     opacity: 0.5;
 
     &:hover {
-      border-color: rgba(92, 110, 128, 0.6);
-      color: rgba(225, 233, 242, 0.92);
+      border-color: var(--theme-mithril-button-secondary-border-color);
+      color: var(--theme-mithril-button-secondary-text-color);
     }
   }
 }

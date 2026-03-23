@@ -151,7 +151,7 @@ export const handleDiskSpace = (
     await mithrilBootstrapStatusChannel.send(update, mainWindow.webContents);
   };
 
-  const MITHRIL_COMPLETION_DELAY_MS = 3000;
+  const MITHRIL_COMPLETION_DELAY_MS = 6000;
 
   const startNodeAfterMithrilCompletion = async (): Promise<void> => {
     if (mithrilStartInFlight) return;

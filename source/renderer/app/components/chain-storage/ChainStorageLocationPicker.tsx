@@ -4,28 +4,28 @@ import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SVGInline from 'react-svg-inline';
-import type { ChainStorageValidation } from '../../../../../common/types/mithril-bootstrap.types';
-import type { FileDialogRequestParams } from '../../../../../common/types/file-dialog.types';
-import type { Intl } from '../../../types/i18nTypes';
-import penIcon from '../../../assets/images/pen.inline.svg';
-import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
-import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
-import messages from './MithrilBootstrap.messages';
-import styles from './BlockDataStorageLocationPicker.scss';
+import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
+import type { FileDialogRequestParams } from '../../../../common/types/file-dialog.types';
+import type { Intl } from '../../types/i18nTypes';
+import penIcon from '../../assets/images/pen.inline.svg';
+import spinnerIcon from '../../assets/images/spinner-universal.inline.svg';
+import { showOpenDialogChannel } from '../../ipc/show-file-dialog-channels';
+import messages from './ChainStorageMessages';
+import styles from './ChainStorageLocationPicker.scss';
 import {
   formatStorageSize,
   formatAvailableSpace,
   getValidationMessage,
   pathsAreEqual,
   createDefaultValidation,
-} from './storagePickerUtils';
+} from './chainStorageUtils';
 
 interface Props {
   customChainPath?: string | null;
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
-  latestSnapshotSize?: number;
+  estimatedRequiredSpaceBytes?: number;
   isChainStorageLoading?: boolean;
   onSetChainStorageDirectory?: (...args: [string | null]) => Promise<unknown>;
   onResetChainStorageDirectory?(): Promise<unknown>;
@@ -44,13 +44,13 @@ type StorageCandidate = {
   validation: ChainStorageValidation;
 };
 
-function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
+function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   const {
     customChainPath,
     defaultChainPath,
     defaultChainStorageValidation,
     chainStorageValidation,
-    latestSnapshotSize,
+    estimatedRequiredSpaceBytes,
     isChainStorageLoading,
     onSetChainStorageDirectory,
     onResetChainStorageDirectory,
@@ -110,15 +110,16 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
     selectionValidation != null && !selectionValidation.isValid
       ? selectionValidation
       : effectiveSelection.validation;
-  const estimatedSnapshotStorageSpace =
-    typeof latestSnapshotSize === 'number' && latestSnapshotSize > 0
-      ? formatStorageSize(latestSnapshotSize)
+  const estimatedRequiredSpace =
+    typeof estimatedRequiredSpaceBytes === 'number' &&
+    estimatedRequiredSpaceBytes > 0
+      ? formatStorageSize(estimatedRequiredSpaceBytes)
       : null;
   const storageDescription =
-    estimatedSnapshotStorageSpace == null
-      ? intl.formatMessage(messages.storageDescriptionLargeRequirement)
-      : intl.formatMessage(messages.storageDescriptionWithSnapshotEstimate, {
-          requiredSpace: estimatedSnapshotStorageSpace,
+    estimatedRequiredSpace == null
+      ? intl.formatMessage(messages.descriptionLargeRequirement)
+      : intl.formatMessage(messages.descriptionWithRequiredSpaceEstimate, {
+          requiredSpace: estimatedRequiredSpace,
         });
   const validationMessage = getValidationMessage(intl, displayedValidation);
   const isCurrentStorageInvalid =
@@ -140,7 +141,7 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
     [styles.error]: validationMessage != null,
   });
   const displayedPath =
-    currentPath || intl.formatMessage(messages.storageDefaultLocationLabel);
+    currentPath || intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
     intl,
     effectiveSelection.validation.availableSpaceBytes
@@ -155,10 +156,10 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
 
     try {
       const params: FileDialogRequestParams = {
-        buttonLabel: intl.formatMessage(messages.storageChooseDirectory),
+        buttonLabel: intl.formatMessage(messages.chooseDirectory),
         defaultPath: effectiveSelection.path || undefined,
         properties: ['openDirectory'],
-        title: intl.formatMessage(messages.storageChooseDirectory),
+        title: intl.formatMessage(messages.chooseDirectory),
       };
       const { canceled, filePaths } = await showOpenDialogChannel.send(params);
 
@@ -283,13 +284,13 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1>{intl.formatMessage(messages.storageTitle)}</h1>
+        <h1>{intl.formatMessage(messages.title)}</h1>
         <p>{storageDescription}</p>
       </div>
 
       <div className={styles.storageField}>
         <p className={styles.storageSubtext}>
-          {intl.formatMessage(messages.storageAvailableSpaceSubtext, {
+          {intl.formatMessage(messages.availableSpaceSubtext, {
             availableSpace,
           })}
         </p>
@@ -300,7 +301,7 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
             value={displayedPath}
             placeholder={
               defaultChainPath ||
-              intl.formatMessage(messages.storageDefaultLocationLabel)
+              intl.formatMessage(messages.defaultLocationLabel)
             }
             readOnly
           />
@@ -309,8 +310,8 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
             className={styles.selectDirectoryButton}
             disabled={isBusy}
             onClick={handleChooseDirectory}
-            aria-label={intl.formatMessage(messages.storageChooseDirectory)}
-            title={intl.formatMessage(messages.storageChooseDirectory)}
+            aria-label={intl.formatMessage(messages.chooseDirectory)}
+            title={intl.formatMessage(messages.chooseDirectory)}
           >
             <SVGInline svg={penIcon} className={styles.penIcon} />
           </button>
@@ -323,7 +324,7 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
               disabled={isBusy}
               onClick={handleResetToDefault}
             >
-              {intl.formatMessage(messages.storageResetToDefault)}
+              {intl.formatMessage(messages.resetToDefault)}
             </button>
           )}
         </div>
@@ -339,7 +340,7 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
             svg={spinnerIcon}
             className={classNames(styles.spinnerIcon, styles.spinnerActive)}
           />
-          <span>{intl.formatMessage(messages.storageUpdating)}</span>
+          <span>{intl.formatMessage(messages.updating)}</span>
         </div>
       )}
 
@@ -348,7 +349,7 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
           className={styles.primaryAction}
           skin={ButtonSkin}
           disabled={isContinueDisabled}
-          label={intl.formatMessage(messages.storageContinue)}
+          label={intl.formatMessage(messages.continue)}
           onClick={handleContinue}
         />
       </div>
@@ -356,8 +357,8 @@ function BlockDataStorageLocationPicker(props: Props, { intl }: Context) {
   );
 }
 
-BlockDataStorageLocationPicker.contextTypes = {
+ChainStorageLocationPicker.contextTypes = {
   intl: intlShape.isRequired,
 };
 
-export default BlockDataStorageLocationPicker;
+export default ChainStorageLocationPicker;

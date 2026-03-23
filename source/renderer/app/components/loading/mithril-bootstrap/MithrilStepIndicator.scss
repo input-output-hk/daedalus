@@ -52,32 +52,41 @@
   font-size: 20px;
 
   > svg {
+    backface-visibility: hidden;
     display: block;
     fill: currentColor;
     height: 1em;
+    transform: translateZ(0);
     width: 1em;
   }
 }
 
 .iconCheck {
-  color: rgba(30, 164, 126, 0.95);
+  color: var(--theme-mithril-step-icon-success-color);
+  font-size: 24px;
 }
 
 .iconSpinner {
-  color: rgba(233, 237, 242, 0.92);
+  color: var(--theme-mithril-step-icon-spinner-color);
 
   :global {
-    animation: loading-spin 1.5s linear;
-    animation-iteration-count: infinite;
+    animation: loading-spin 1.2s linear infinite;
   }
 }
 
+.activeCircle {
+  background: var(--theme-mithril-step-icon-spinner-color);
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+}
+
 .iconError {
-  color: rgba(220, 60, 60, 0.95);
+  color: var(--theme-mithril-step-icon-error-color);
 }
 
 .pendingCircle {
-  background: rgba(92, 110, 128, 0.35);
+  background: var(--theme-mithril-step-icon-pending-background);
   border-radius: 50%;
   height: 12px;
   width: 12px;
@@ -100,25 +109,25 @@
 }
 
 .stepPending .label {
-  color: rgba(158, 173, 189, 0.75);
+  color: var(--theme-mithril-step-pending-label-color);
   font-family: var(--font-regular);
   font-size: 14px;
 }
 
 .stepActive .label {
-  color: rgba(233, 237, 242, 0.98);
+  color: var(--theme-mithril-step-active-label-color);
   font-family: var(--font-medium);
   font-size: 15px;
 }
 
 .stepError .label {
-  color: rgba(220, 60, 60, 0.95);
+  color: var(--theme-mithril-step-error-label-color);
   font-family: var(--font-medium);
   font-size: 15px;
 }
 
 .stepCompleted .label {
-  color: rgba(30, 164, 126, 0.85);
+  color: var(--theme-mithril-step-completed-label-color);
   font-family: var(--font-regular);
   font-size: 14px;
 }
@@ -126,7 +135,7 @@
 /* ── Vertical connector line ─────────────────────────────────────────── */
 
 .connector {
-  background: rgba(92, 110, 128, 0.22);
+  background: var(--theme-mithril-step-connector-color);
   bottom: 0;
   left: 15px;
   position: absolute;
@@ -136,11 +145,11 @@
 }
 
 .connectorCompleted {
-  background: rgba(30, 164, 126, 0.55);
+  background: var(--theme-mithril-step-connector-completed-color);
 }
 
 .connectorError {
-  background: rgba(220, 60, 60, 0.35);
+  background: var(--theme-mithril-step-connector-error-color);
 }
 
 /* ── Sub-content area ───────────────────────────────────────────────── */
@@ -188,32 +197,37 @@
   font-size: 16px;
 
   > svg {
+    backface-visibility: hidden;
     display: block;
     fill: currentColor;
     height: 1em;
+    transform: translateZ(0);
     width: 1em;
   }
 }
 
 .subItemIconCheck {
-  color: rgba(30, 164, 126, 0.8);
+  color: var(--theme-mithril-sub-item-icon-success-color);
 }
 
 .subItemIconSpinner {
-  color: rgba(210, 220, 232, 0.88);
+  backface-visibility: hidden;
+  color: var(--theme-mithril-sub-item-icon-spinner-color);
+  transform: translateZ(0);
+  transform-origin: center;
+  will-change: transform;
 
   :global {
-    animation: loading-spin 1.5s linear;
-    animation-iteration-count: infinite;
+    animation: loading-spin 1.2s linear infinite;
   }
 }
 
 .subItemIconError {
-  color: rgba(220, 60, 60, 0.88);
+  color: var(--theme-mithril-sub-item-icon-error-color);
 }
 
 .subItemPendingCircle {
-  background: rgba(92, 110, 128, 0.3);
+  background: var(--theme-mithril-sub-item-pending-background);
   border-radius: 50%;
   height: 8px;
   width: 8px;
@@ -225,19 +239,19 @@
 }
 
 .subItemPending .subItemLabel {
-  color: rgba(158, 173, 189, 0.72);
+  color: var(--theme-mithril-sub-item-pending-color);
 }
 
 .subItemActive .subItemLabel {
-  color: rgba(210, 220, 232, 0.9);
+  color: var(--theme-mithril-sub-item-active-color);
 }
 
 .subItemError .subItemLabel {
-  color: rgba(220, 60, 60, 0.85);
+  color: var(--theme-mithril-sub-item-error-color);
 }
 
 .subItemCompleted .subItemLabel {
-  color: rgba(140, 175, 161, 0.8);
+  color: var(--theme-mithril-sub-item-completed-color);
 }
 
 /* ── Inline progress bars ───────────────────────────────────────────── */
@@ -250,54 +264,6 @@
 
 .progressBarsAfterSubItems {
   margin-top: 12px;
-}
-
-.inlineBar {
-  /* wrapper for ProgressBarLarge */
-}
-
-.inlineBarMeta {
-  color: rgba(140, 155, 173, 0.75);
-  display: flex;
-  font-size: 12px;
-  justify-content: space-between;
-  line-height: 1.2;
-  margin-top: 2px;
-}
-
-.inlineBarTrack {
-  background: rgba(92, 110, 128, 0.2);
-  border-radius: 3px;
-  height: 6px;
-  margin: 4px 0;
-  overflow: hidden;
-}
-
-.inlineBarFill {
-  border-radius: 3px;
-  height: 100%;
-  transition: width 0.24s ease;
-}
-
-.inlineBarFillActive {
-  background: linear-gradient(
-    135deg,
-    rgba(233, 237, 242, 0.3) 25%,
-    rgba(233, 237, 242, 0.15) 25%,
-    rgba(233, 237, 242, 0.15) 50%,
-    rgba(233, 237, 242, 0.3) 50%,
-    rgba(233, 237, 242, 0.3) 75%,
-    rgba(233, 237, 242, 0.15) 75%
-  );
-  background-size: 20px 20px;
-
-  :global {
-    animation: animatedStripesBackground 1s linear infinite;
-  }
-}
-
-.inlineBarFillComplete {
-  background: rgba(30, 164, 126, 0.7);
 }
 
 /* ── Responsive: ≤720px ─────────────────────────────────────────────── */
@@ -324,12 +290,6 @@
     font-size: 12px;
     white-space: normal;
   }
-
-  .inlineBarMeta {
-    flex-direction: column;
-    font-size: 11px;
-    gap: 2px;
-  }
 }
 
 /* ── Reduced motion ─────────────────────────────────────────────────── */
@@ -343,16 +303,6 @@
 
   .iconSpinner,
   .subItemIconSpinner {
-    :global {
-      animation: none;
-    }
-  }
-
-  .inlineBarFill {
-    transition: none;
-  }
-
-  .inlineBarFillActive {
     :global {
       animation: none;
     }

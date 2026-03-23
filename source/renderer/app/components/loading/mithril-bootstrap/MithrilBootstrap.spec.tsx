@@ -6,8 +6,8 @@ import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bo
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilBootstrap from './MithrilBootstrap';
 
-jest.mock('./BlockDataStorageLocationPicker', () => {
-  return function BlockDataStorageLocationPickerMock() {
+jest.mock('../../chain-storage/ChainStorageLocationPicker', () => {
+  return function ChainStorageLocationPickerMock() {
     return <h1>Choose blockchain data location</h1>;
   };
 });

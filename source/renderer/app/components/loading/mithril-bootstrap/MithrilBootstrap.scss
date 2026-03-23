@@ -1,5 +1,3 @@
-@import '../../../themes/mixins/animations';
-
 .component {
   bottom: 0;
   left: 0;
@@ -10,13 +8,9 @@
 }
 
 .backdrop {
-  backdrop-filter: blur(6px);
-  background: linear-gradient(
-    135deg,
-    rgba(9, 18, 28, 0.92),
-    rgba(23, 33, 45, 0.92)
-  );
+  background: var(--theme-mithril-overlay-backdrop-start);
   height: 100%;
+  opacity: 0.97;
   position: absolute;
   width: 100%;
 }
@@ -32,10 +26,10 @@
 }
 
 .card {
-  background: rgba(15, 24, 34, 0.96);
+  background: var(--theme-mithril-card-background);
   border-radius: 12px;
-  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.35);
-  color: rgba(233, 237, 242, 0.92);
+  box-shadow: 0 12px 42px var(--theme-mithril-card-shadow);
+  color: var(--theme-mithril-card-text-color);
   max-width: 720px;
   padding: 32px;
   width: 100%;

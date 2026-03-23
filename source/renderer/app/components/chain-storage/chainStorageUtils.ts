@@ -1,8 +1,8 @@
 import path from 'path';
 import prettysize from 'prettysize';
-import type { ChainStorageValidation } from '../../../../../common/types/mithril-bootstrap.types';
-import type { Intl } from '../../../types/i18nTypes';
-import messages from './MithrilBootstrap.messages';
+import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
+import type { Intl } from '../../types/i18nTypes';
+import messages from './ChainStorageMessages';
 
 export const formatStorageSize = (sizeBytes?: number): string | null => {
   if (sizeBytes == null || Number.isNaN(sizeBytes)) {
@@ -19,7 +19,7 @@ export const formatAvailableSpace = (
   const formattedSize = formatStorageSize(availableSpaceBytes);
 
   if (formattedSize == null) {
-    return intl.formatMessage(messages.storageAvailableSpaceUnknown);
+    return intl.formatMessage(messages.availableSpaceUnknown);
   }
 
   return formattedSize;
@@ -35,16 +35,16 @@ export const getValidationMessage = (
 
   switch (validation.reason) {
     case 'path-not-found':
-      return intl.formatMessage(messages.storageValidationPathNotFound);
+      return intl.formatMessage(messages.validationPathNotFound);
     case 'not-writable':
-      return intl.formatMessage(messages.storageValidationNotWritable);
+      return intl.formatMessage(messages.validationNotWritable);
     case 'inside-state-dir':
-      return intl.formatMessage(messages.storageValidationInsideStateDir);
+      return intl.formatMessage(messages.validationInsideStateDir);
     case 'insufficient-space':
-      return intl.formatMessage(messages.storageValidationInsufficientSpace);
+      return intl.formatMessage(messages.validationInsufficientSpace);
     case 'unknown':
     default:
-      return intl.formatMessage(messages.storageValidationUnknown);
+      return intl.formatMessage(messages.validationUnknown);
   }
 };
 

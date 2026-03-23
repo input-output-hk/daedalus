@@ -1,5 +1,4 @@
 import React from 'react';
-import { observer } from 'mobx-react';
 import type {
   MithrilBootstrapStatus,
   MithrilSnapshotItem,
@@ -10,7 +9,7 @@ import type {
 import MithrilDecisionView from './MithrilDecisionView';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
-import BlockDataStorageLocationPicker from './BlockDataStorageLocationPicker';
+import ChainStorageLocationPicker from '../../chain-storage/ChainStorageLocationPicker';
 import styles from './MithrilBootstrap.scss';
 
 interface Props {
@@ -46,7 +45,7 @@ interface Props {
   ancillaryBytesTotal?: number;
   ancillaryProgress?: number;
   progressItems?: MithrilProgressItem[];
-  overallElapsedSeconds?: number;
+  bootstrapStartedAt?: number | null;
 }
 
 const DECISION_STATUSES: Array<MithrilBootstrapStatus> = [
@@ -74,7 +73,7 @@ function MithrilBootstrap(props: Props) {
     ancillaryBytesDownloaded,
     ancillaryBytesTotal,
     ancillaryProgress,
-    overallElapsedSeconds,
+    bootstrapStartedAt,
     customChainPath,
     defaultChainPath,
     defaultChainStorageValidation,
@@ -104,12 +103,12 @@ function MithrilBootstrap(props: Props) {
 
   if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
     content = (
-      <BlockDataStorageLocationPicker
+      <ChainStorageLocationPicker
         customChainPath={customChainPath}
         defaultChainPath={defaultChainPath}
         defaultChainStorageValidation={defaultChainStorageValidation}
         chainStorageValidation={chainStorageValidation}
-        latestSnapshotSize={latestSnapshotSize}
+        estimatedRequiredSpaceBytes={latestSnapshotSize}
         isChainStorageLoading={isChainStorageLoading}
         onSetChainStorageDirectory={onSetChainStorageDirectory}
         onResetChainStorageDirectory={onResetChainStorageDirectory}
@@ -142,7 +141,7 @@ function MithrilBootstrap(props: Props) {
         ancillaryBytesDownloaded={ancillaryBytesDownloaded}
         ancillaryBytesTotal={ancillaryBytesTotal}
         ancillaryProgress={ancillaryProgress}
-        overallElapsedSeconds={overallElapsedSeconds}
+        bootstrapStartedAt={bootstrapStartedAt}
         onCancel={onCancel}
       />
     );
@@ -167,4 +166,4 @@ function MithrilBootstrap(props: Props) {
   );
 }
 
-export default observer(MithrilBootstrap);
+export default MithrilBootstrap;

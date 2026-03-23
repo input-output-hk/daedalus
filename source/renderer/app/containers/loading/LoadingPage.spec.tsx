@@ -52,10 +52,19 @@ const makeProps = (mithrilStatus = 'idle') => ({
 });
 
 describe('LoadingPage', () => {
-  it('keeps the Mithril overlay mounted when bootstrap is cancelled', () => {
+  it('renders Mithril instead of the syncing page when bootstrap is cancelled', () => {
     render(<LoadingPage {...(makeProps('cancelled') as any)} />);
 
-    expect(screen.getByText('Syncing page')).toBeInTheDocument();
     expect(screen.getByText('Mithril bootstrap overlay')).toBeInTheDocument();
+    expect(screen.queryByText('Syncing page')).not.toBeInTheDocument();
+  });
+
+  it('renders the syncing page when Mithril is inactive', () => {
+    render(<LoadingPage {...(makeProps() as any)} />);
+
+    expect(screen.getByText('Syncing page')).toBeInTheDocument();
+    expect(
+      screen.queryByText('Mithril bootstrap overlay')
+    ).not.toBeInTheDocument();
   });
 });

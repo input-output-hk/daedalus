@@ -2,88 +2,88 @@
   "metadata": {
     "title": "Mithril Snapshot UX - Polish & Testing Tasks",
     "created": "2026-03-03",
-    "updated": "2026-03-16",
-    "version": "2.0.0",
+    "updated": "2026-03-23",
+    "version": "2.1.0",
     "totalTasks": 11,
     "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
-    "description": "Theming, accessibility, Storybook stories, E2E tests, and final verification for Mithril snapshot UX"
+    "description": "Theming, accessibility, Storybook stories, E2E tests, and final verification for Mithril snapshot UX and the standalone chain-storage picker"
   },
   "phases": [
     {
       "id": "phase-7",
       "name": "Theming & Styling",
-      "description": "Migrate hardcoded colors to CSS theme variables. Follow theme-management skill.",
+      "description": "Migrate Mithril and standalone chain-storage UI colors to CSS theme variables, then sync the runtime Daedalus theme outputs. Follow theme-management skill.",
       "skill": "theme-management",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-025",
           "title": "Migrate SCSS to theme variables",
-          "description": "Replace hardcoded backdrop/card/text/button colors with --theme-mithril-* CSS custom properties",
-          "status": "pending",
+          "description": "Replace hardcoded Mithril bootstrap and standalone chain-storage picker colors with semantic --theme-mithril-* and --theme-chain-storage-* CSS custom properties.",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": ["task-024e"],
-          "completedAt": null,
-          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+          "completedAt": "2026-03-23",
+          "targetPath": "source/renderer/app/components/"
         },
         {
           "id": "task-026",
           "title": "Add theme variables to createTheme",
-          "description": "Add --theme-mithril-* variables to createTheme with light and dark values. Do NOT manually edit theme output files.",
-          "status": "pending",
+          "description": "Add `mithrilBootstrap` and `chainStorage` theme sections to `createTheme.ts` with light and dark values. Runtime Daedalus `.ts` theme outputs remain the authoritative frontend assets.",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 1.5,
           "dependencies": ["task-025"],
-          "completedAt": null,
-          "targetPath": "source/renderer/app/themes/utils/constants.ts"
+          "completedAt": "2026-03-23",
+          "targetPath": "source/renderer/app/themes/utils/createTheme.ts"
         },
         {
           "id": "task-027",
           "title": "Run theme validation and update",
-          "description": "Run 'yarn themes:check:createTheme' then 'yarn themes:update' to propagate to all theme files",
-          "status": "pending",
+          "description": "Run `yarn themes:check:createTheme` and `yarn themes:update`, then ensure the checked-in Daedalus runtime `.ts` theme files include the `mithrilBootstrap` and `chainStorage` tokens used by the app.",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.5,
           "dependencies": ["task-026"],
-          "completedAt": null,
+          "completedAt": "2026-03-23",
           "targetPath": "source/renderer/app/themes/daedalus/"
         },
         {
           "id": "task-028",
           "title": "Regenerate SCSS type definitions",
-          "description": "Run 'yarn typedef:sass' to regenerate .scss.d.ts files",
-          "status": "pending",
+          "description": "Run `yarn typedef:sass` to regenerate `.scss.d.ts` files for the Mithril bootstrap and standalone chain-storage stylesheets.",
+          "status": "completed",
           "priority": "low",
           "estimatedHours": 0.5,
           "dependencies": ["task-025"],
-          "completedAt": null,
-          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+          "completedAt": "2026-03-23",
+          "targetPath": "source/renderer/app/components/"
         }
       ]
     },
     {
       "id": "phase-8",
       "name": "Accessibility & Storybook",
-      "description": "Add a11y attributes and Storybook coverage. Follow storybook-creation skill.",
+      "description": "Add a11y attributes and Storybook coverage for Mithril bootstrap and the standalone chain-storage picker. Follow storybook-creation skill.",
       "skill": "storybook-creation",
       "riskLevel": "low",
       "tasks": [
         {
           "id": "task-029",
           "title": "Add accessibility attributes",
-          "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live on step indicator, aria-label on interactive elements, keyboard nav",
+          "description": "Add role='progressbar' with aria-valuenow/min/max, aria-live on step indicator, aria-label on Mithril and standalone chain-storage interactive elements, and keyboard navigation where needed.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": ["task-024e"],
           "completedAt": null,
-          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+          "targetPath": "source/renderer/app/components/"
         },
         {
           "id": "task-030a",
           "title": "Storybook stories - Decision and Storage",
-          "description": "Stories for: Decision (loading, with snapshots, selected snapshot), Storage (default path, custom path, validation error, migrating). Follow storybook-creation skill.",
+          "description": "Stories for: Decision (loading, with snapshots, selected snapshot), Storage (standalone chain-storage picker default path, custom path, validation error, migrating). Follow storybook-creation skill.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
@@ -118,14 +118,14 @@
     {
       "id": "phase-9",
       "name": "E2E Tests",
-      "description": "Cucumber BDD tests for Mithril bootstrap flow using the repo's backend-integrated app-flow pattern. Follow e2e-test-creation skill.",
+      "description": "Cucumber BDD tests for the Mithril bootstrap flow and standalone chain-storage picker using the repo's backend-integrated app-flow pattern. Follow e2e-test-creation skill.",
       "skill": "e2e-test-creation",
       "riskLevel": "medium",
       "tasks": [
         {
           "id": "task-032",
           "title": "Create E2E feature file",
-          "description": "Gherkin scenarios with @e2e tag covering decision screen (accept/decline bootstrap), progress stage advancement and cancel, error stage-specific messaging, and storage location (change, reset, insufficient space, disabled during sync). Exercise the real app/bootstrap flow using the repo's existing backend-integrated E2E pattern rather than direct Mithril store-state seeding.",
+          "description": "Gherkin scenarios with @e2e tag covering decision screen (accept/decline bootstrap), progress stage advancement and cancel, error stage-specific messaging, and the standalone chain-storage picker flows (change, reset, insufficient space, disabled during sync). Exercise the real app/bootstrap flow using the repo's existing backend-integrated E2E pattern rather than direct Mithril store-state seeding.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
@@ -136,7 +136,7 @@
         {
           "id": "task-033",
           "title": "Write E2E step definitions",
-          "description": "Step definitions with SELECTORS const for CSS classes, async functions, Chai assertions, and repo-style E2E helpers/browser-context execution where needed for setup or assertions. Avoid direct Mithril store-state forcing for the primary flow. Follow e2e-test-creation skill.",
+          "description": "Step definitions with SELECTORS const for CSS classes, async functions, Chai assertions, and repo-style E2E helpers/browser-context execution where needed for setup or assertions. Cover both Mithril flow assertions and standalone chain-storage picker interactions without direct Mithril store-state forcing for the primary flow. Follow e2e-test-creation skill.",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
@@ -155,7 +155,7 @@
         {
           "id": "task-034",
           "title": "Run verification suite",
-          "description": "Run: yarn compile, yarn lint, yarn prettier:check, yarn themes:check:createTheme, yarn i18n:manage, yarn test:jest, yarn storybook, yarn typedef:sass",
+          "description": "Run: yarn compile, yarn lint, yarn prettier:check, yarn themes:check:createTheme, yarn i18n:manage, yarn test:jest, yarn storybook, yarn typedef:sass; include standalone chain-storage picker and runtime theme output coverage in the review.",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,

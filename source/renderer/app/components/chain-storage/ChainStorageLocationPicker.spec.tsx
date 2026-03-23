@@ -10,17 +10,17 @@ import {
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import type { ChainStorageValidation } from '../../../../../common/types/mithril-bootstrap.types';
-import translations from '../../../i18n/locales/en-US.json';
-import { showOpenDialogChannel } from '../../../ipc/show-file-dialog-channels';
-import BlockDataStorageLocationPicker from './BlockDataStorageLocationPicker';
+import translations from '../../i18n/locales/en-US.json';
+import { showOpenDialogChannel } from '../../ipc/show-file-dialog-channels';
+import ChainStorageLocationPicker from './ChainStorageLocationPicker';
 
-jest.mock('../../../ipc/show-file-dialog-channels', () => ({
+jest.mock('../../ipc/show-file-dialog-channels', () => ({
   showOpenDialogChannel: {
     send: jest.fn(),
   },
 }));
 
-describe('BlockDataStorageLocationPicker', () => {
+describe('ChainStorageLocationPicker', () => {
   const defaultValidation: ChainStorageValidation = {
     isValid: true,
     path: null,
@@ -39,7 +39,7 @@ describe('BlockDataStorageLocationPicker', () => {
   const renderComponent = (overrides = {}) =>
     render(
       <IntlProvider locale="en-US" messages={translations}>
-        <BlockDataStorageLocationPicker
+        <ChainStorageLocationPicker
           customChainPath="/mnt/current-chain"
           defaultChainPath="/tmp/state/chain"
           defaultChainStorageValidation={defaultValidation}
@@ -62,7 +62,7 @@ describe('BlockDataStorageLocationPicker', () => {
 
   it('shows generic blockchain data copy and the recommended free space', () => {
     renderComponent({
-      latestSnapshotSize: 2048,
+      estimatedRequiredSpaceBytes: 2048,
     });
 
     expect(
@@ -75,9 +75,9 @@ describe('BlockDataStorageLocationPicker', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows a large-space warning when no snapshot estimate is available', () => {
+  it('shows a large-space warning when no estimate is available', () => {
     renderComponent({
-      latestSnapshotSize: undefined,
+      estimatedRequiredSpaceBytes: undefined,
     });
 
     expect(
