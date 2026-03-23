@@ -2447,6 +2447,11 @@
         "id": "loading.mithrilBootstrap.title"
       },
       {
+        "defaultMessage": "!!!Snapshot download and verification time can vary based on your network connection and storage performance.",
+        "description": "Supporting copy shown under the Mithril progress view title.",
+        "id": "loading.mithrilBootstrap.progress.subtitle"
+      },
+      {
         "defaultMessage": "!!!Mithril can download a verified snapshot to sync your blockchain data faster. Choose a snapshot and continue, or sync from genesis.",
         "description": "Description for the Mithril bootstrap prompt.",
         "id": "loading.mithrilBootstrap.description"
@@ -2627,14 +2632,14 @@
         "id": "loading.mithrilBootstrap.progress.conversion"
       },
       {
-        "defaultMessage": "!!!Snapshot files",
-        "description": "Label for snapshot files progress bar during main snapshot download.",
-        "id": "loading.mithrilBootstrap.progress.snapshotFilesLabel"
+        "defaultMessage": "!!!Snapshot Files and Fast Sync",
+        "description": "Label for the combined Mithril download progress bar that merges snapshot files and fast sync progress.",
+        "id": "loading.mithrilBootstrap.progress.combinedLabel"
       },
       {
-        "defaultMessage": "!!!Fast State Sync",
-        "description": "Label for fast sync data progress bar during concurrent fast sync downloads.",
-        "id": "loading.mithrilBootstrap.progress.fastSyncLabel"
+        "defaultMessage": "!!!Snapshot files: {snapshotDownloaded} / {snapshotTotal} | Fast sync: {fastSyncDownloaded} / {fastSyncTotal}",
+        "description": "Detail line for the combined Mithril download progress bar showing snapshot and fast sync transfer totals.",
+        "id": "loading.mithrilBootstrap.progress.combinedDetail"
       },
       {
         "defaultMessage": "!!!Starting cardano-node",
