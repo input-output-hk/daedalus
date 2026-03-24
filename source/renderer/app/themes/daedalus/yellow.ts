@@ -181,34 +181,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-data-migration-layer-button-label-color': '#2d2d2d',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
     '--theme-data-migration-layer-text-color-hover': '#ffffff',
-    chainStorage: {
-      '--theme-chain-storage-heading-color': 'rgba(255, 255, 255, 0.98)',
-      '--theme-chain-storage-body-text-color': 'rgba(199, 208, 219, 0.9)',
-      '--theme-chain-storage-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
-      '--theme-chain-storage-bright-text-color': 'rgba(236, 241, 247, 0.95)',
-      '--theme-chain-storage-card-text-color': 'rgba(233, 237, 242, 0.92)',
-      '--theme-chain-storage-panel-background': 'rgba(10, 18, 28, 0.6)',
-      '--theme-chain-storage-panel-border-color': 'rgba(46, 64, 82, 0.6)',
-      '--theme-chain-storage-button-primary-background': '#1ea47e',
-      '--theme-chain-storage-button-primary-background-hover': '#29b58c',
-      '--theme-chain-storage-button-primary-text-color': '#071017',
-      '--theme-chain-storage-button-secondary-text-color':
-        'rgba(225, 233, 242, 0.92)',
-      '--theme-chain-storage-button-secondary-text-color-hover':
-        'rgba(255, 255, 255, 0.98)',
-      '--theme-chain-storage-button-secondary-text-color-disabled':
-        'rgba(143, 157, 173, 0.7)',
-      '--theme-chain-storage-selector-button-background':
-        'rgba(34, 52, 70, 0.95)',
-      '--theme-chain-storage-selector-button-background-hover':
-        'rgba(48, 69, 90, 0.98)',
-      '--theme-chain-storage-icon-color': 'rgba(236, 241, 247, 0.95)',
-      '--theme-chain-storage-error-background': 'rgba(110, 37, 44, 0.26)',
-      '--theme-chain-storage-error-border-color': 'rgba(201, 96, 103, 0.38)',
-      '--theme-chain-storage-error-input-border-color':
-        'rgba(201, 96, 103, 0.75)',
-      '--theme-chain-storage-error-text-color': 'rgba(255, 219, 223, 0.96)',
-    },
     '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
   },
   delegationSetupWizard: {

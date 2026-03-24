@@ -2,6 +2,12 @@
 
 > Detailed implementation history for the [Mithril Snapshot UX Refinement](mithril-snapshot-ux.md) PRD. Consult this file for context on how and why completed tasks were implemented.
 
+- [2026-03-24] Completed task-034 verification closeout by running the full Mithril review suite across compile, lint, prettier, Jest, SCSS typedefs, stylelint, i18n review, and theme-structure checks.
+- [2026-03-24] Verified all Mithril-scope checks passed, with the `chainStorage` theme structure confirmed correct across all 9 Daedalus runtime theme files.
+- [2026-03-24] Recorded pre-existing out-of-scope verification failures: `yarn themes:check:createTheme` still requires the missing `dist/scripts/check.js` build artifact, and `yarn storybook --smoke-test` still fails on the existing news utility import issue.
+- [2026-03-24] Completed task-033 by implementing Mithril bootstrap E2E step definitions with atomic MobX store seeding, neutralized polling timers, stubbed `loadChainStorageConfig`/`syncStatus`/`loadSnapshots`, IPC listener guards, and deterministic cleanup that waits for `isSynced` before restoring state.
+- [2026-03-24] Review fixes for task-033 stubbed `loadChainStorageConfig()` to avoid a chain-storage async race, replaced the hardcoded IPC channel string with the shared constant, and clarified the `SELECTED_CHAIN_PATH` test fixture comment.
+- [2026-03-24] Completed task-032 by adding a 9-scenario Mithril bootstrap E2E feature covering accept/decline flows, progress-stage advancement, cancel, staged failures via Scenario Outline, and chain-storage change/reset/insufficient-space/busy-state coverage.
 - [2026-03-24] Split the Mithril loading Storybook coverage into focused `loading/mithril/` and `loading/chain-storage/` story folders, replacing the old monolithic story file with a loading barrel import.
 - [2026-03-24] Added shared Mithril Storybook fixtures and local harnesses so snapshot picker, chain storage, progress, and error stories can be exercised with knobs instead of fixed inline props only.
 - [2026-03-24] Added accessibility semantics to the Mithril bootstrap views and standalone chain-storage picker, including localized step-indicator labels and decorative icon hiding.

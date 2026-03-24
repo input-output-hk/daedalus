@@ -72,6 +72,21 @@
 - The centralized `accessibilityIds` pattern is the stable way to keep dialog labeling, heading ids, field descriptions, and validation relationships consistent across Mithril views.
 - `react-polymorph` can be brittle under jsdom, so Mithril accessibility specs are more reliable when they assert semantic roles and attributes instead of deep component internals.
 
+## Final verification insights
+- Final verification confirmed the Mithril bootstrap flow and standalone chain-storage picker pass the automated Mithril-scope checks.
+- Theme structure is correct in all 9 Daedalus runtime theme files, with `chainStorage` and `mithrilBootstrap` tokens at the expected nesting level.
+- Jest passed with 37 suites and 295 tests, including `MithrilBootstrapService.spec.ts`, `MithrilBootstrapStore.spec.ts`, `MithrilBootstrap.spec.tsx`, `MithrilProgressView.spec.tsx`, `MithrilStepIndicator.spec.tsx`, `ChainStorageLocationPicker.spec.tsx`, `chainStorageChannel.spec.ts`, and `chainStorageManager.spec.ts`.
+- Mithril loading and chain-storage Storybook stories compile successfully; the remaining `yarn storybook --smoke-test` failure is the pre-existing unrelated news utility import issue.
+- i18n review confirmed about 62 new Mithril and chain-storage message keys are ready for Japanese translation.
+- E2E coverage now includes the Mithril bootstrap feature file and step definitions, and the added test files are lint-clean.
+
+## Long-term E2E insights
+- Seeded Mithril E2E helpers should neutralize every async path started by `MithrilBootstrapStore.setup()`, not only `syncStatus()` and `loadSnapshots()`; `loadChainStorageConfig()` was a concrete missed path that could repopulate seeded state.
+- Treat IPC listener guarding for the Mithril status broadcast channel as part of the seeded-test contract so asynchronous pushes cannot overwrite seeded renderer state mid-scenario.
+- Keep teardown ordering strict: restore polling and original Mithril store methods before waiting for `networkStatus.isSynced`, or cleanup can deadlock with sync still disabled.
+- Chain-storage E2E coverage still has a fidelity limit because the dialog stub returns a filesystem path that can behave like a file path rather than a true directory selection.
+- CSS module selectors that follow the verified `[name]_[local]` convention remain acceptable durable E2E targets for Mithril views and chain-storage controls when accessibility IDs are not the active selector surface.
+
 ## Current gaps
 - `BlockDataStorageLocationPicker` is the generic blockchain-data location picker; keep future copy and file references aligned to that name instead of Mithril-specific wording.
 - Chain-storage UI state already lives in `MithrilBootstrapStore`; keep it there as the block-data storage picker evolves.
