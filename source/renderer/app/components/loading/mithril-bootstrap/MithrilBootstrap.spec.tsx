@@ -5,35 +5,36 @@ import '@testing-library/jest-dom';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilBootstrap from './MithrilBootstrap';
+import {
+  MITHRIL_CHAIN_STORAGE_HEADING_ID,
+  MITHRIL_DECISION_HEADING_ID,
+  MITHRIL_ERROR_HEADING_ID,
+  MITHRIL_PROGRESS_HEADING_ID,
+  MITHRIL_SNAPSHOT_DETAILS_HEADING_ID,
+  MITHRIL_SNAPSHOT_SELECTOR_HEADING_ID,
+} from './accessibilityIds';
 
-jest.mock('../../chain-storage/ChainStorageLocationPicker', () => {
-  return function ChainStorageLocationPickerMock() {
-    return <h1>Choose blockchain data location</h1>;
-  };
-});
-
-jest.mock('./MithrilDecisionView', () => {
-  return function MithrilDecisionViewMock(props) {
+jest.mock('./MithrilSnapshotSelector', () => {
+  return function MithrilSnapshotSelectorMock() {
     return (
-      <div>
-        <button type="button" onClick={props.onReturnToStorageLocation}>
-          Change location
-        </button>
-        <span>Decision view</span>
+      <div role="group" aria-label="Snapshot selection">
+        <h2 id={MITHRIL_SNAPSHOT_SELECTOR_HEADING_ID} tabIndex={-1}>
+          Snapshot
+        </h2>
       </div>
     );
   };
 });
 
-jest.mock('./MithrilProgressView', () => {
-  return function MithrilProgressViewMock() {
-    return <div>Progress view</div>;
-  };
-});
-
-jest.mock('./MithrilErrorView', () => {
-  return function MithrilErrorViewMock() {
-    return <div>Error view</div>;
+jest.mock('./MithrilSnapshotDetails', () => {
+  return function MithrilSnapshotDetailsMock() {
+    return (
+      <section aria-labelledby={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID}>
+        <h2 id={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID} tabIndex={-1}>
+          Snapshot details
+        </h2>
+      </section>
+    );
   };
 });
 
@@ -94,23 +95,51 @@ describe('MithrilBootstrap', () => {
 
     renderComponent({ onReturnToStorageLocation });
 
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /change location/i,
-      })
-    );
+    fireEvent.click(screen.getByText(/change location/i));
 
     expect(onReturnToStorageLocation).toHaveBeenCalledTimes(1);
+  });
+
+  it('adds dialog semantics and labels the decision view from the active heading', () => {
+    renderComponent();
+
+    const dialog = screen.getByRole('dialog', {
+      name: /fast sync with mithril/i,
+    });
+    const heading = screen.getByRole('heading', {
+      name: /fast sync with mithril/i,
+    });
+
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      MITHRIL_DECISION_HEADING_ID
+    );
+    expect(heading).toHaveAttribute('id', MITHRIL_DECISION_HEADING_ID);
+    expect(
+      screen.getByRole('group', { name: /snapshot selection/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: /snapshot details/i })
+    ).toBeInTheDocument();
   });
 
   it('shows the storage picker when storage location is not confirmed', () => {
     renderComponent({ storageLocationConfirmed: false });
 
+    const dialog = screen.getByRole('dialog', {
+      name: /select blockchain data location/i,
+    });
+
     expect(
       screen.getByRole('heading', {
-        name: /choose blockchain data location/i,
+        name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      MITHRIL_CHAIN_STORAGE_HEADING_ID
+    );
     expect(
       screen.queryByRole('button', { name: /use mithril fast sync/i })
     ).not.toBeInTheDocument();
@@ -119,36 +148,56 @@ describe('MithrilBootstrap', () => {
   it('shows the progress view for active bootstrap statuses', () => {
     renderComponent({ status: 'downloading' });
 
-    expect(screen.getByText('Progress view')).toBeInTheDocument();
-    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', {
+      name: /fast sync with mithril/i,
+    });
+
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toHaveAttribute('id', MITHRIL_PROGRESS_HEADING_ID);
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      MITHRIL_PROGRESS_HEADING_ID
+    );
   });
 
   it('keeps the progress view mounted through bootstrap completion handoff', () => {
     renderComponent({ status: 'completed' });
 
-    expect(screen.getByText('Progress view')).toBeInTheDocument();
-    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
   });
 
   it('keeps the progress view mounted while cardano-node is starting', () => {
     renderComponent({ status: 'starting-node' });
 
-    expect(screen.getByText('Progress view')).toBeInTheDocument();
-    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /starting cardano-node/i })
+    ).toBeInTheDocument();
   });
 
   it('shows the error view when bootstrap fails', () => {
     renderComponent({ status: 'failed' });
 
-    expect(screen.getByText('Error view')).toBeInTheDocument();
-    expect(screen.queryByText('Progress view')).not.toBeInTheDocument();
+    const dialog = screen.getByRole('dialog');
+    const alert = screen.getByRole('alert');
+
+    expect(alert).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /mithril bootstrap failed/i })
+    ).toHaveAttribute('id', MITHRIL_ERROR_HEADING_ID);
+    expect(dialog).toHaveAttribute('aria-labelledby', MITHRIL_ERROR_HEADING_ID);
   });
 
   it('renders progress view when status is verifying', () => {
     renderComponent({ status: 'verifying' });
 
-    expect(screen.getByText('Progress view')).toBeInTheDocument();
-    expect(screen.queryByText('Decision view')).not.toBeInTheDocument();
-    expect(screen.queryByText('Error view')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /fast sync with mithril/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /mithril bootstrap failed/i })
+    ).not.toBeInTheDocument();
   });
 });

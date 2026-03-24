@@ -10,6 +10,12 @@ import MithrilDecisionView from './MithrilDecisionView';
 import MithrilErrorView from './MithrilErrorView';
 import MithrilProgressView from './MithrilProgressView';
 import ChainStorageLocationPicker from '../../chain-storage/ChainStorageLocationPicker';
+import {
+  MITHRIL_CHAIN_STORAGE_HEADING_ID,
+  MITHRIL_DECISION_HEADING_ID,
+  MITHRIL_ERROR_HEADING_ID,
+  MITHRIL_PROGRESS_HEADING_ID,
+} from './accessibilityIds';
 import styles from './MithrilBootstrap.scss';
 
 interface Props {
@@ -28,15 +34,15 @@ interface Props {
   selectedSnapshot?: MithrilSnapshotItem | null;
   error?: MithrilBootstrapError | null;
   isFetchingSnapshots: boolean;
-  onOpenExternalLink?: (...args: [string]) => void;
-  onSetChainStorageDirectory?: (...args: [string | null]) => Promise<unknown>;
+  onOpenExternalLink?: (arg: string) => void;
+  onSetChainStorageDirectory?: (arg: string | null) => Promise<unknown>;
   onResetChainStorageDirectory?(): Promise<unknown>;
   onValidateChainStorageDirectory?: (
-    ...args: [string]
+    arg: string
   ) => Promise<ChainStorageValidation>;
   onConfirmStorageLocation?(): void;
   onReturnToStorageLocation?(): void;
-  onSelectSnapshot: (...args: [string | null]) => void;
+  onSelectSnapshot: (arg: string | null) => void;
   onAccept(): void;
   onDecline(): void;
   onWipeRetry(): void;
@@ -64,6 +70,29 @@ const WORKING_STATUSES: Array<MithrilBootstrapStatus> = [
   'completed',
   'starting-node',
 ];
+
+const getActiveHeadingId = (
+  status: MithrilBootstrapStatus,
+  storageLocationConfirmed?: boolean
+) => {
+  if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
+    return MITHRIL_CHAIN_STORAGE_HEADING_ID;
+  }
+
+  if (DECISION_STATUSES.includes(status)) {
+    return MITHRIL_DECISION_HEADING_ID;
+  }
+
+  if (WORKING_STATUSES.includes(status)) {
+    return MITHRIL_PROGRESS_HEADING_ID;
+  }
+
+  if (status === 'failed') {
+    return MITHRIL_ERROR_HEADING_ID;
+  }
+
+  return undefined;
+};
 
 function MithrilBootstrap(props: Props) {
   const {
@@ -101,6 +130,7 @@ function MithrilBootstrap(props: Props) {
   } = props;
 
   let content = null;
+  const activeHeadingId = getActiveHeadingId(status, storageLocationConfirmed);
 
   if (DECISION_STATUSES.includes(status) && !storageLocationConfirmed) {
     content = (
@@ -161,7 +191,16 @@ function MithrilBootstrap(props: Props) {
     <div className={styles.component}>
       <div className={styles.backdrop} />
       <div className={styles.content}>
-        {content && <div className={styles.card}>{content}</div>}
+        {content && (
+          <div
+            className={styles.card}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={activeHeadingId}
+          >
+            {content}
+          </div>
+        )}
       </div>
     </div>
   );

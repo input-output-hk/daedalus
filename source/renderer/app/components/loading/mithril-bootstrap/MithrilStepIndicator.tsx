@@ -298,6 +298,7 @@ function TopLevelIcon({ state }: { state: StepState }) {
     return (
       <SVGInline
         svg={checkMarkIcon}
+        aria-hidden="true"
         className={classNames(styles.icon, styles.iconCheck)}
       />
     );
@@ -309,6 +310,7 @@ function TopLevelIcon({ state }: { state: StepState }) {
     return (
       <SVGInline
         svg={closeCrossIcon}
+        aria-hidden="true"
         className={classNames(styles.icon, styles.iconError)}
       />
     );
@@ -321,6 +323,7 @@ function SubItemIcon({ state }: { state: SubItemState }) {
     return (
       <SVGInline
         svg={checkMarkIcon}
+        aria-hidden="true"
         className={classNames(styles.subItemIcon, styles.subItemIconCheck)}
       />
     );
@@ -329,6 +332,7 @@ function SubItemIcon({ state }: { state: SubItemState }) {
     return (
       <SVGInline
         svg={spinnerIcon}
+        aria-hidden="true"
         className={classNames(styles.subItemIcon, styles.subItemIconSpinner)}
       />
     );
@@ -337,6 +341,7 @@ function SubItemIcon({ state }: { state: SubItemState }) {
     return (
       <SVGInline
         svg={closeCrossIcon}
+        aria-hidden="true"
         className={classNames(styles.subItemIcon, styles.subItemIconError)}
       />
     );
@@ -470,7 +475,11 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
   };
 
   return (
-    <div className={styles.root} role="list" aria-label="Mithril sync progress">
+    <div
+      className={styles.root}
+      role="list"
+      aria-label={intl.formatMessage(messages.stepIndicatorLabel)}
+    >
       {STEPS.map((stepId, stepIndex) => {
         const hasError =
           status === 'failed' && hasPhaseError(displayedProgressItems, stepId);
@@ -533,7 +542,10 @@ function MithrilStepIndicator(props: Props, { intl }: Context) {
               <div
                 className={styles.subContent}
                 role="list"
-                aria-label={`${label} details`}
+                aria-label={intl.formatMessage(
+                  messages.stepIndicatorDetailsLabel,
+                  { stepName: label }
+                )}
               >
                 {subItemsBeforeBars.map((item) => renderSubItem(item))}
 

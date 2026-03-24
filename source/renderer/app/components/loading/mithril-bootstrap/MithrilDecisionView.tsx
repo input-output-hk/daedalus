@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -6,8 +6,9 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
-import chainStorageMessages from '../../chain-storage/ChainStorageMessages';
+import chainStorageMessages from '../../chain-storage/ChainStorage.messages';
 import messages from './MithrilBootstrap.messages';
+import { MITHRIL_DECISION_HEADING_ID } from './accessibilityIds';
 import MithrilSnapshotDetails from './MithrilSnapshotDetails';
 import MithrilSnapshotSelector from './MithrilSnapshotSelector';
 import styles from './MithrilDecisionView.scss';
@@ -19,7 +20,7 @@ interface Props {
   isFetchingSnapshots: boolean;
   customChainPath?: string | null;
   defaultChainPath?: string | null;
-  onSelectSnapshot: (...args: [string | null]) => void;
+  onSelectSnapshot: (arg: string | null) => void;
   onReturnToStorageLocation?(): void;
   onAccept(): void;
   onDecline(): void;
@@ -46,11 +47,18 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
     customChainPath ||
     defaultChainPath ||
     intl.formatMessage(chainStorageMessages.defaultLocationLabel);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1>{intl.formatMessage(messages.title)}</h1>
+        <h1 id={MITHRIL_DECISION_HEADING_ID} ref={headingRef} tabIndex={-1}>
+          {intl.formatMessage(messages.title)}
+        </h1>
         <p>{intl.formatMessage(messages.description)}</p>
       </div>
 

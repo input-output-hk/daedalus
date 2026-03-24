@@ -2,9 +2,12 @@
 
 ## Sources
 - `source/renderer/app/components/loading/mithril-bootstrap/`
+- `source/renderer/app/components/chain-storage/ChainStorageLocationPicker.tsx`
 - `source/renderer/app/containers/loading/MithrilBootstrapPage.tsx`
 - `source/renderer/app/components/loading/syncing-connecting/SyncingProgress/SyncingProgress.tsx`
 - `source/renderer/app/components/widgets/collapsible-section/CollapsibleSection.tsx`
+- `storybook/stories/loading/MithrilBootstrap.stories.tsx`
+- `storybook/stories/index.ts`
 - `.agent/plans/mithril/mithril-snapshot-ux.md`
 - `.agent/plans/mithril/research/mithril-bootstrap-client-notes.md`
 
@@ -52,6 +55,22 @@
 - Mithril loading components should follow the same image-import depth as `SyncingProgress.tsx`; from `components/loading/mithril-bootstrap/`, shared loading icons live under `../../../assets/images/`.
 - If Mithril UI strings change, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, and `translations/ja-JP.json`.
 - `.scss.d.ts` files are regenerated during `yarn compile`; do not hand-edit them unless tooling is unavailable.
+
+## Accessibility and Storybook reminders
+- `MithrilBootstrap` is the accessibility shell for the overlay: dialog semantics belong at the root, while the active child view owns the visible heading referenced by `aria-labelledby`.
+- `MithrilDecisionView`, `MithrilProgressView`, and `MithrilErrorView` should each own a focus target on mount so view changes move assistive-technology focus to the active heading instead of leaving users in the background page.
+- `MithrilSnapshotSelector` owns snapshot-picking semantics and should expose a grouped, labeled control even if the underlying select implementation does not provide a stable input id.
+- `MithrilSnapshotDetails` is metadata, not layout-only chrome; semantic description-list markup is the durable contract for digest, size, time, and version rows.
+- `BlockDataStorageLocationPicker` owns label association, validation messaging, and status feedback for blockchain-data directory selection; keep those accessibility relationships local to the picker.
+- Preserve the existing `InlineProgressBar` contract: `role='progressbar'` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` is already correct.
+- `MithrilStepIndicator` should remain a semantic list/listitem structure with `aria-current` on the active step, but its region labels must come from `react-intl` message keys rather than hard-coded English strings.
+- Decorative Mithril status SVGs should stay hidden from assistive technology with `aria-hidden='true'`.
+- Live regions should stay scoped to meaningful state changes such as error messaging and chain-storage validation or apply feedback, not the entire waterfall step list.
+- Mithril loading stories live in the loading domain, use the repo's legacy `storiesOf` registration pattern, and rely on `StoryDecorator` without extra provider scaffolding.
+- Keep Mithril stories props-driven and visual: chain-storage browsing depends on IPC and should not be exercised directly inside Storybook.
+- Maintain Mithril Storybook coverage for decision, storage, progress, and error states so loading regressions remain inspectable outside the full runtime flow.
+- The centralized `accessibilityIds` pattern is the stable way to keep dialog labeling, heading ids, field descriptions, and validation relationships consistent across Mithril views.
+- `react-polymorph` can be brittle under jsdom, so Mithril accessibility specs are more reliable when they assert semantic roles and attributes instead of deep component internals.
 
 ## Current gaps
 - `BlockDataStorageLocationPicker` is the generic blockchain-data location picker; keep future copy and file references aligned to that name instead of Mithril-specific wording.

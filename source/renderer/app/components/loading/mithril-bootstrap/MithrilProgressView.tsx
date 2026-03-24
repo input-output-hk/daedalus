@@ -10,6 +10,7 @@ import type {
 import spinnerIcon from '../../../assets/images/spinner-universal.inline.svg';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
+import { MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
 import MithrilStepIndicator from './MithrilStepIndicator';
 import styles from './MithrilProgressView.scss';
 
@@ -65,6 +66,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   } = props;
 
   const isStartingNode = status === 'starting-node';
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const completionRef = useRef<HTMLHeadingElement>(null);
 
   // Local elapsed-seconds timer — only this component re-renders each second
@@ -88,6 +90,10 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   }, [bootstrapStartedAt, status]);
 
   useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
     if (isStartingNode && completionRef.current) {
       completionRef.current.focus();
     }
@@ -98,7 +104,9 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1>{intl.formatMessage(messages.title)}</h1>
+        <h1 id={MITHRIL_PROGRESS_HEADING_ID} ref={headingRef} tabIndex={-1}>
+          {intl.formatMessage(messages.title)}
+        </h1>
         <p>{intl.formatMessage(messages.progressSubtitle)}</p>
       </div>
 
@@ -138,7 +146,11 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           <p className={styles.completionDetail}>
             {intl.formatMessage(messages.nodeStartingDetail)}
           </p>
-          <SVGInline svg={spinnerIcon} className={styles.completionSpinner} />
+          <SVGInline
+            svg={spinnerIcon}
+            className={styles.completionSpinner}
+            aria-hidden="true"
+          />
         </div>
       )}
 

@@ -2,7 +2,7 @@ import path from 'path';
 import prettysize from 'prettysize';
 import type { ChainStorageValidation } from '../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../types/i18nTypes';
-import messages from './ChainStorageMessages';
+import messages from './ChainStorage.messages';
 
 export const formatStorageSize = (sizeBytes?: number): string | null => {
   if (sizeBytes == null || Number.isNaN(sizeBytes)) {

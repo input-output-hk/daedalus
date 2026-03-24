@@ -4,6 +4,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import translations from '../../../i18n/locales/en-US.json';
 import MithrilProgressView from './MithrilProgressView';
+import { MITHRIL_PROGRESS_HEADING_ID } from './accessibilityIds';
 
 describe('MithrilProgressView', () => {
   const renderComponent = ({
@@ -44,9 +45,14 @@ describe('MithrilProgressView', () => {
       bootstrapStartedAt: Date.now() - 65_000,
     });
 
-    expect(
-      screen.getByRole('heading', { name: /fast sync with mithril/i })
-    ).toBeInTheDocument();
+    const heading = screen.getByRole('heading', {
+      name: /fast sync with mithril/i,
+    });
+
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveAttribute('id', MITHRIL_PROGRESS_HEADING_ID);
+    expect(heading).toHaveAttribute('tabindex', '-1');
+    expect(heading).toHaveFocus();
     expect(
       screen.getByText(
         /snapshot download and verification time can vary based on your network connection and storage performance/i
@@ -64,9 +70,15 @@ describe('MithrilProgressView', () => {
   it('shows the node startup handoff while cardano-node is starting', () => {
     renderComponent({ status: 'starting-node' });
 
-    expect(
-      screen.getByRole('heading', { name: /starting cardano-node/i })
-    ).toBeInTheDocument();
+    const statusRegion = screen.getByRole('status');
+    const completionHeading = screen.getByRole('heading', {
+      name: /starting cardano-node/i,
+    });
+
+    expect(completionHeading).toBeInTheDocument();
+    expect(completionHeading).toHaveFocus();
+    expect(statusRegion).toHaveAttribute('aria-live', 'polite');
+    expect(statusRegion).toHaveAttribute('aria-atomic', 'true');
     expect(
       screen.getByText(/mithril snapshot has been restored/i)
     ).toBeInTheDocument();

@@ -28,6 +28,19 @@
   margin-bottom: 14px;
 }
 
+.screenReaderOnly {
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .storageInputWrapper {
   align-items: center;
   display: flex;
@@ -151,13 +164,16 @@
   padding: 14px 16px;
 }
 
+.feedbackRegion {
+  margin-bottom: 16px;
+}
+
 .statusMessage {
   align-items: center;
   color: var(--theme-chain-storage-body-text-color);
   display: flex;
   font-size: 13px;
   gap: 10px;
-  margin-bottom: 18px;
 }
 
 .spinnerIcon {

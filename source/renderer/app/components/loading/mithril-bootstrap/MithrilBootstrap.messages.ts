@@ -111,6 +111,22 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Finalizing',
     description: 'Label for the finalizing step in the Mithril step indicator.',
   },
+  stepIndicatorLabel: {
+    id: 'loading.mithrilBootstrap.stepIndicatorLabel',
+    defaultMessage: '!!!Mithril sync progress',
+    description: 'Accessible label for the Mithril step indicator list.',
+  },
+  stepIndicatorDetailsLabel: {
+    id: 'loading.mithrilBootstrap.stepIndicatorDetailsLabel',
+    defaultMessage: '!!!{stepName} details',
+    description:
+      'Accessible label for nested Mithril step indicator details lists.',
+  },
+  snapshotSelectorGroupLabel: {
+    id: 'loading.mithrilBootstrap.snapshotSelectorGroupLabel',
+    defaultMessage: '!!!Snapshot selection',
+    description: 'Accessible label for the Mithril snapshot selector group.',
+  },
   errorDownloadTitle: {
     id: 'loading.mithrilBootstrap.error.download.title',
     defaultMessage: '!!!Snapshot download failed',

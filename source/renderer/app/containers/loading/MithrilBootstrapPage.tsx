@@ -117,8 +117,8 @@ class MithrilBootstrapPage extends Component<Props> {
     }
     this._cachedLatestSnapshot = snapshots.reduce((latest, snapshot) => {
       if (!latest) return snapshot;
-      const latestTime = Date.parse(latest.createdAt);
-      const nextTime = Date.parse(snapshot.createdAt);
+      const latestTime = new Date(latest.createdAt).getTime();
+      const nextTime = new Date(snapshot.createdAt).getTime();
       if (Number.isNaN(nextTime)) return latest;
       if (Number.isNaN(latestTime) || nextTime > latestTime) return snapshot;
       return latest;

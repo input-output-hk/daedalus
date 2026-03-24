@@ -65,11 +65,14 @@ describe('ChainStorageLocationPicker', () => {
       estimatedRequiredSpaceBytes: 2048,
     });
 
+    const input = screen.getByLabelText(/blockchain data location/i);
+
     expect(
       screen.getByRole('heading', {
         name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
+    expect(input).toHaveDisplayValue('/mnt/current-chain');
     expect(
       screen.getByText(/the latest available snapshot is about 2 kB/i)
     ).toBeInTheDocument();
@@ -166,7 +169,7 @@ describe('ChainStorageLocationPicker', () => {
 
   it('does not update local state after unmount while applying a storage change', async () => {
     let resolveStorageChange:
-      | ((value: ChainStorageValidation) => void)
+      | React.Dispatch<ChainStorageValidation>
       | undefined;
     const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
       isValid: true,
@@ -183,7 +186,7 @@ describe('ChainStorageLocationPicker', () => {
     );
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
 
     const { unmount } = renderComponent({
       onValidateChainStorageDirectory,
@@ -227,5 +230,62 @@ describe('ChainStorageLocationPicker', () => {
     );
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it('links validation feedback to the input and announces it politely', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: false,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 10,
+        requiredSpaceBytes: 1024,
+        reason: 'insufficient-space',
+      },
+    });
+
+    const input = screen.getByLabelText(/blockchain data location/i);
+    const statusRegion = screen.getByRole('status');
+    const describedById = input.getAttribute('aria-describedby');
+
+    expect(statusRegion).toHaveAttribute('aria-live', 'polite');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(describedById).toBeTruthy();
+    expect(document.getElementById(describedById || '')).toHaveTextContent(
+      /does not have enough free space/i
+    );
+  });
+
+  it('announces apply feedback in a polite status region while updating', async () => {
+    let resolveStorageChange:
+      | React.Dispatch<ChainStorageValidation>
+      | undefined;
+    const onResetChainStorageDirectory = jest.fn(
+      () =>
+        new Promise<ChainStorageValidation>((resolve) => {
+          resolveStorageChange = resolve;
+        })
+    );
+
+    renderComponent({
+      onResetChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /reset to default/i }));
+
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      /updating blockchain data location/i
+    );
+
+    await act(async () => {
+      resolveStorageChange?.({
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+      });
+      await Promise.resolve();
+    });
   });
 });

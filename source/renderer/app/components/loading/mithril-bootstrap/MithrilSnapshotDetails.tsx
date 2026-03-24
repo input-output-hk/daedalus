@@ -3,6 +3,7 @@ import { intlShape } from 'react-intl';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
+import { MITHRIL_SNAPSHOT_DETAILS_HEADING_ID } from './accessibilityIds';
 import {
   formatSnapshotDate,
   formatSnapshotSize,
@@ -23,14 +24,21 @@ function MithrilSnapshotDetails(props: Props, { intl }: Context) {
 
   if (!selectedSnapshot) {
     return (
-      <div className={styles.details}>
-        <div className={styles.detailsHeader}>
+      <section
+        className={styles.details}
+        aria-labelledby={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID}
+      >
+        <h2
+          className={styles.detailsHeader}
+          id={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID}
+          tabIndex={-1}
+        >
           {intl.formatMessage(messages.snapshotDetailsTitle)}
-        </div>
-        <div className={styles.detailsFallback}>
+        </h2>
+        <p className={styles.detailsFallback}>
           {intl.formatMessage(messages.snapshotDetailsUnavailable)}
-        </div>
-      </div>
+        </p>
+      </section>
     );
   }
 
@@ -39,44 +47,51 @@ function MithrilSnapshotDetails(props: Props, { intl }: Context) {
   const digest = truncateDigest(selectedSnapshot.digest);
 
   return (
-    <div className={styles.details}>
-      <div className={styles.detailsHeader}>
+    <section
+      className={styles.details}
+      aria-labelledby={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID}
+    >
+      <h2
+        className={styles.detailsHeader}
+        id={MITHRIL_SNAPSHOT_DETAILS_HEADING_ID}
+        tabIndex={-1}
+      >
         {intl.formatMessage(messages.snapshotDetailsTitle)}
-      </div>
-      <div className={styles.detailsGrid}>
-        <div className={styles.detailRow}>
-          <div className={styles.detailLabel}>
+      </h2>
+      <dl className={styles.detailsList}>
+        <div className={styles.detailGroup}>
+          <dt className={styles.detailTerm}>
             {intl.formatMessage(messages.snapshotDigestLabel)}
-          </div>
-          <div
-            className={`${styles.detailValue} ${styles.detailValueDigest}`}
+          </dt>
+          <dd
+            className={`${styles.detailDescription} ${styles.detailValueDigest}`}
             title={selectedSnapshot.digest}
           >
             {digest}
-          </div>
+          </dd>
         </div>
-        <div className={styles.detailRow}>
-          <div className={styles.detailLabel}>
+        <div className={styles.detailGroup}>
+          <dt className={styles.detailTerm}>
             {intl.formatMessage(messages.snapshotCreatedLabel)}
-          </div>
-          <div className={styles.detailValue}>{createdAt || 'n/a'}</div>
+          </dt>
+          <dd className={styles.detailDescription}>{createdAt || 'n/a'}</dd>
         </div>
-        <div className={styles.detailRow}>
-          <div className={styles.detailLabel}>
+        <div className={styles.detailGroup}>
+          <dt className={styles.detailTerm}>
             {intl.formatMessage(messages.snapshotSizeLabel)}
-          </div>
-          <div className={styles.detailValue}>{size || 'n/a'}</div>
+          </dt>
+          <dd className={styles.detailDescription}>{size || 'n/a'}</dd>
         </div>
-        <div className={styles.detailRow}>
-          <div className={styles.detailLabel}>
+        <div className={styles.detailGroup}>
+          <dt className={styles.detailTerm}>
             {intl.formatMessage(messages.snapshotNodeVersionLabel)}
-          </div>
-          <div className={styles.detailValue}>
+          </dt>
+          <dd className={styles.detailDescription}>
             {selectedSnapshot.cardanoNodeVersion || 'n/a'}
-          </div>
+          </dd>
         </div>
-      </div>
-    </div>
+      </dl>
+    </section>
   );
 }
 

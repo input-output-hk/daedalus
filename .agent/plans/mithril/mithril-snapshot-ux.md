@@ -19,7 +19,7 @@ Task tracking is split by context to reduce agent context overhead. Load only th
 |------|--------|-------|--------|
 | [backend tasks](mithril-snapshot-ux-tasks-backend.json) | 1–3: Types, Store, Chain Storage | 21 | All completed |
 | [component & UX tasks](mithril-snapshot-ux-tasks-component-ux.json) | 4–6: i18n, Decomposition, Waterfall | 26 | All completed |
-| [polish & testing tasks](mithril-snapshot-ux-tasks-polish-testing.json) | 7–10: Theming, A11y, Storybook, E2E, Verification | 11 | Phase 7 completed; Phases 8–10 pending |
+| [polish & testing tasks](mithril-snapshot-ux-tasks-polish-testing.json) | 7–10: Theming, A11y, Storybook, E2E, Verification | 11 | Phases 7–8 completed; Phases 9–10 pending |
 
 For detailed implementation history, see the [changelog](mithril-snapshot-ux-changelog.md).
 
@@ -93,7 +93,7 @@ For detailed implementation history, see the [changelog](mithril-snapshot-ux-cha
 - [x] Add ~15 new i18n messages for waterfall step labels, ancillary progress, and node-starting delay
   - Do not route Mithril JSON step messages into the renderer as user-facing copy; map step_num to localized labels
 - [ ] Show conversion waterfall item in Finalizing only if snapshot conversion actually runs
-- [ ] Add a11y attributes (`role="progressbar"`, `aria-live`, `aria-label`, keyboard nav)
+- [x] Add a11y attributes (`role="dialog"`, `role="progressbar"`, `aria-live`, localized `aria-label`, dialog labeling, input associations, and validation descriptions)
 - [x] Standalone `ChainStorageLocationPicker` as the first screen in bootstrap flow (before decision view)
   - Shows current path, available space, validation feedback
   - Uses the latest available snapshot size as the storage estimate when that metadata is already loaded; otherwise falls back to a generic large-space warning
@@ -114,8 +114,8 @@ For detailed implementation history, see the [changelog](mithril-snapshot-ux-cha
 - [x] Run `yarn typedef:sass` after SCSS changes
 
 ### Storybook (follow storybook-creation skill)
-- [ ] Create `storybook/stories/loading/` domain with 16 stories
-- [ ] Register in `storybook/stories/index.ts`
+- [x] Create `storybook/stories/loading/` domain coverage with 16 Mithril stories across decision, storage, progress, and error states
+- [x] Register the Mithril loading stories in `storybook/stories/index.ts`
 
 ### E2E Tests (follow e2e-test-creation skill)
 - [ ] Create `tests/mithril/` domain with Gherkin features and step definitions
@@ -431,23 +431,21 @@ E2E coverage should follow the repo's backend-integrated pattern: drive the real
 | Story | State |
 |---|---|
 | Decision - Loading | `isFetchingSnapshots: true`, empty snapshots |
-| Decision - With Snapshots | 3 snapshots, "latest" selected |
-| Decision - Specific Snapshot | Specific digest selected, details visible |
+| Decision - Latest Snapshot | 3 snapshots, latest snapshot resolved and visible |
+| Decision - Explicit Snapshot Selection | Specific digest selected, details visible |
+| Storage - Default Path | `storageLocationConfirmed: false`, default path validation visible |
+| Storage - Custom Path | Custom path selected with available-space metadata |
+| Storage - Validation Error | Invalid custom path with validation feedback |
+| Storage - Migrating | `isChainStorageLoading: true` during apply flow |
 | Progress - Preparing | `status: preparing` |
-| Progress - Downloading (early) | `status: downloading`, step-3 not yet active |
-| Progress - Downloading (mid) | `status: downloading`, step-3 active with partial snapshot + ancillary bytes |
-| Progress - Downloading (combined bar active) | `status: downloading`, step-3 active, combined snapshot-files + fast-sync bar at mid-progress |
-| Progress - Downloading (verification steps) | `status: verifying`, steps 4-7 visible as waterfall sub-items cascading, no progress bars |
-| Progress - Finalizing (install active) | `status: finalizing`, DB install waterfall item active with spinner |
-| Progress - Completion delay | `status: completed`, 6-second delay with spinner and node-starting message |
-| Error - Download Failed | `error.stage: 'download'` |
-| Error - Verify Failed | `error.stage: 'verify'` |
-| Error - Convert Failed | `error.stage: 'convert'` |
-| Error - Node Start Failed | `error.stage: 'node-start'` |
-| Storage - Default Path | `customChainPath: null` |
-| Storage - Custom Path | Custom path + available space |
-| Storage - Validation Error | `isValid: false, error: 'Insufficient space'` |
-| Storage - Migrating | `isChainStorageLoading: true` |
+| Progress - Downloading Early | `status: downloading`, early combined transfer progress |
+| Progress - Downloading Mid | `status: downloading`, mid combined transfer progress |
+| Progress - Downloading Late With Verifying Copy | `status: verifying`, transfer totals complete and verification rows active |
+| Progress - Finalizing With Local Telemetry | `status: finalizing`, post-download local work active |
+| Error - Download | `error.stage: 'download'` |
+| Error - Verify | `error.stage: 'verify'` |
+| Error - Convert | `error.stage: 'convert'` |
+| Error - Node Start | `error.stage: 'node-start'` |
 
 ### Manual QA
 Walk through full bootstrap flow in dev mode (`yarn dev`):

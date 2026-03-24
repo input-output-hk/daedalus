@@ -16,10 +16,11 @@ export const formatSnapshotDate = (
 ) => {
   if (!value) return null;
 
-  const parsed = Date.parse(value);
+  const parsedDate = new Date(value);
+  const parsed = parsedDate.getTime();
   if (Number.isNaN(parsed)) return value;
 
-  return new Date(parsed).toLocaleString(locale, {
+  return parsedDate.toLocaleString(locale, {
     year: 'numeric',
     month: 'short',
     day: '2-digit',

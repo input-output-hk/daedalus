@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -11,11 +11,12 @@ import type {
 import { CollapsibleSection } from '../../widgets/collapsible-section/CollapsibleSection';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
+import { MITHRIL_ERROR_HEADING_ID } from './accessibilityIds';
 import styles from './MithrilErrorView.scss';
 
 interface Props {
   error?: MithrilBootstrapError | null;
-  onOpenExternalLink?: (_url: string) => void;
+  onOpenExternalLink?: (arg: string) => void;
   onWipeRetry(): void;
   onDecline(): void;
 }
@@ -70,11 +71,18 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const hint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
   const detailsHeader = error?.message || error?.code || '';
   const logPath = error?.logPath;
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} role="alert">
       <div className={styles.header}>
-        <h1>{intl.formatMessage(messages[copy.title])}</h1>
+        <h1 id={MITHRIL_ERROR_HEADING_ID} ref={headingRef} tabIndex={-1}>
+          {intl.formatMessage(messages[copy.title])}
+        </h1>
         {error?.message && <p>{error.message}</p>}
         {hint && <div className={styles.errorHint}>{hint}</div>}
         {logPath && onOpenExternalLink && (

@@ -2,6 +2,12 @@
 
 > Detailed implementation history for the [Mithril Snapshot UX Refinement](mithril-snapshot-ux.md) PRD. Consult this file for context on how and why completed tasks were implemented.
 
+- [2026-03-24] Split the Mithril loading Storybook coverage into focused `loading/mithril/` and `loading/chain-storage/` story folders, replacing the old monolithic story file with a loading barrel import.
+- [2026-03-24] Added shared Mithril Storybook fixtures and local harnesses so snapshot picker, chain storage, progress, and error stories can be exercised with knobs instead of fixed inline props only.
+- [2026-03-24] Added accessibility semantics to the Mithril bootstrap views and standalone chain-storage picker, including localized step-indicator labels and decorative icon hiding.
+- [2026-03-24] Added Storybook decision and storage stories for Mithril bootstrap and the standalone chain-storage picker.
+- [2026-03-24] Added Storybook progress and error stories covering Mithril bootstrap working and failure states.
+- [2026-03-24] Registered the Mithril loading stories in the Storybook index.
 - [2026-03-23] Fixed a Mithril startup-handoff race where unexpected `cardano-node`/`cardano-wallet` exits during bootstrap could trigger the generic Cardano crash-restart path, bypass the Mithril gate, and strand the overlay on `completed`. Added a dedicated `starting-node` Mithril status, suppressed automatic crash restarts while Mithril is active, and now surface post-restore node-start instability as Mithril `node-start` failures instead of leaving the progress view stuck.
 - [2026-03-23] Merged the Snapshot Files and Fast Sync download bars into one combined Mithril progress bar, removed the legacy per-bar copy, weighted snapshot and ancillary transfer progress as an overlap-friendly 85/15 blend, and force-completed the bar when the final snapshot transfer finishes, fast sync completes, or verification begins.
 - [2026-03-23] Smoothed the download-to-verification handoff by briefly holding the completed combined bar, then promoting `Verifying snapshot digests` into an active spinner before the backend step arrives; also switched the visible elapsed timer to a renderer-local clock derived from `bootstrapStartedAt` and extended the Mithril completion handoff delay in `handleDiskSpace.ts` from 3 seconds to 6 seconds.

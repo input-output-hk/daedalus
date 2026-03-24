@@ -957,7 +957,7 @@
         "id": "chainStorage.locationPicker.validation.unknown"
       }
     ],
-    "path": "source/renderer/app/components/chain-storage/ChainStorageMessages.ts"
+    "path": "source/renderer/app/components/chain-storage/ChainStorage.messages.ts"
   },
   {
     "descriptors": [
@@ -2545,6 +2545,21 @@
         "defaultMessage": "!!!Finalizing",
         "description": "Label for the finalizing step in the Mithril step indicator.",
         "id": "loading.mithrilBootstrap.step.finalizing"
+      },
+      {
+        "defaultMessage": "!!!Mithril sync progress",
+        "description": "Accessible label for the Mithril step indicator list.",
+        "id": "loading.mithrilBootstrap.stepIndicatorLabel"
+      },
+      {
+        "defaultMessage": "!!!{stepName} details",
+        "description": "Accessible label for nested Mithril step indicator details lists.",
+        "id": "loading.mithrilBootstrap.stepIndicatorDetailsLabel"
+      },
+      {
+        "defaultMessage": "!!!Snapshot selection",
+        "description": "Accessible label for the Mithril snapshot selector group.",
+        "id": "loading.mithrilBootstrap.snapshotSelectorGroupLabel"
       },
       {
         "defaultMessage": "!!!Snapshot download failed",

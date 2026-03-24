@@ -5,6 +5,7 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
 import messages from './MithrilBootstrap.messages';
+import { MITHRIL_SNAPSHOT_SELECTOR_HEADING_ID } from './accessibilityIds';
 import {
   formatSnapshotDate,
   formatSnapshotSize,
@@ -16,7 +17,7 @@ interface Props {
   snapshots: Array<MithrilSnapshotItem>;
   selectedDigest?: string | null;
   isFetchingSnapshots: boolean;
-  onSelectSnapshot(arg0: string | null): void;
+  onSelectSnapshot: (arg: string | null) => void;
 }
 
 type SnapshotOption = {
@@ -66,10 +67,18 @@ function MithrilSnapshotSelector(props: Props, { intl }: Context) {
   ];
 
   return (
-    <div className={styles.selectorRow}>
-      <div className={styles.label}>
+    <div
+      className={styles.selectorRow}
+      role="group"
+      aria-label={intl.formatMessage(messages.snapshotSelectorGroupLabel)}
+    >
+      <h2
+        className={styles.label}
+        id={MITHRIL_SNAPSHOT_SELECTOR_HEADING_ID}
+        tabIndex={-1}
+      >
         {intl.formatMessage(messages.selectLabel)}
-      </div>
+      </h2>
       <div>
         <Select
           skin={SelectSkin}

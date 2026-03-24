@@ -10,7 +10,7 @@ import type { Intl } from '../../types/i18nTypes';
 import penIcon from '../../assets/images/pen.inline.svg';
 import spinnerIcon from '../../assets/images/spinner-universal.inline.svg';
 import { showOpenDialogChannel } from '../../ipc/show-file-dialog-channels';
-import messages from './ChainStorageMessages';
+import messages from './ChainStorage.messages';
 import styles from './ChainStorageLocationPicker.scss';
 import {
   formatStorageSize,
@@ -19,6 +19,7 @@ import {
   pathsAreEqual,
   createDefaultValidation,
 } from './chainStorageUtils';
+import { MITHRIL_CHAIN_STORAGE_HEADING_ID } from '../loading/mithril-bootstrap/accessibilityIds';
 
 interface Props {
   customChainPath?: string | null;
@@ -27,10 +28,10 @@ interface Props {
   chainStorageValidation?: ChainStorageValidation;
   estimatedRequiredSpaceBytes?: number;
   isChainStorageLoading?: boolean;
-  onSetChainStorageDirectory?: (...args: [string | null]) => Promise<unknown>;
+  onSetChainStorageDirectory?: (arg: string | null) => Promise<unknown>;
   onResetChainStorageDirectory?(): Promise<unknown>;
   onValidateChainStorageDirectory?: (
-    ...args: [string]
+    arg: string
   ) => Promise<ChainStorageValidation>;
   onConfirmStorageLocation?(): void;
 }
@@ -43,6 +44,10 @@ type StorageCandidate = {
   path: string | null;
   validation: ChainStorageValidation;
 };
+
+const STORAGE_LOCATION_INPUT_ID = 'chain-storage-location-input';
+const STORAGE_LOCATION_VALIDATION_MESSAGE_ID =
+  'chain-storage-location-validation-message';
 
 function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   const {
@@ -68,6 +73,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     selectionValidation,
     setSelectionValidation,
   ] = React.useState<ChainStorageValidation | null>(null);
+  const headingRef = React.useRef<HTMLHeadingElement>(null);
   const isMountedRef = React.useRef(true);
 
   React.useEffect(
@@ -76,6 +82,10 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     },
     []
   );
+
+  React.useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
 
   const defaultValidation = React.useMemo(
     () =>
@@ -140,6 +150,9 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   const inputClasses = classNames(styles.storageInput, {
     [styles.error]: validationMessage != null,
   });
+  const validationMessageId = validationMessage
+    ? STORAGE_LOCATION_VALIDATION_MESSAGE_ID
+    : undefined;
   const displayedPath =
     currentPath || intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
@@ -284,11 +297,23 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1>{intl.formatMessage(messages.title)}</h1>
+        <h1
+          id={MITHRIL_CHAIN_STORAGE_HEADING_ID}
+          ref={headingRef}
+          tabIndex={-1}
+        >
+          {intl.formatMessage(messages.title)}
+        </h1>
         <p>{storageDescription}</p>
       </div>
 
       <div className={styles.storageField}>
+        <label
+          className={styles.screenReaderOnly}
+          htmlFor={STORAGE_LOCATION_INPUT_ID}
+        >
+          {intl.formatMessage(messages.directoryLabel)}
+        </label>
         <p className={styles.storageSubtext}>
           {intl.formatMessage(messages.availableSpaceSubtext, {
             availableSpace,
@@ -296,9 +321,12 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
         </p>
         <div className={styles.storageInputWrapper}>
           <input
+            id={STORAGE_LOCATION_INPUT_ID}
             type="text"
             className={inputClasses}
             value={displayedPath}
+            aria-describedby={validationMessageId}
+            aria-invalid={validationMessage != null}
             placeholder={
               defaultChainPath ||
               intl.formatMessage(messages.defaultLocationLabel)
@@ -313,7 +341,11 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             aria-label={intl.formatMessage(messages.chooseDirectory)}
             title={intl.formatMessage(messages.chooseDirectory)}
           >
-            <SVGInline svg={penIcon} className={styles.penIcon} />
+            <SVGInline
+              svg={penIcon}
+              className={styles.penIcon}
+              aria-hidden="true"
+            />
           </button>
         </div>
         <div className={styles.resetActionRow}>
@@ -330,17 +362,32 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
         </div>
       </div>
 
-      {validationMessage && (
-        <div className={styles.validationMessage}>{validationMessage}</div>
-      )}
+      {(validationMessage || isApplyingStorageChange) && (
+        <div
+          className={styles.feedbackRegion}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {validationMessage && (
+            <div
+              className={styles.validationMessage}
+              id={STORAGE_LOCATION_VALIDATION_MESSAGE_ID}
+            >
+              {validationMessage}
+            </div>
+          )}
 
-      {isApplyingStorageChange && (
-        <div className={styles.statusMessage}>
-          <SVGInline
-            svg={spinnerIcon}
-            className={classNames(styles.spinnerIcon, styles.spinnerActive)}
-          />
-          <span>{intl.formatMessage(messages.updating)}</span>
+          {isApplyingStorageChange && (
+            <div className={styles.statusMessage}>
+              <SVGInline
+                svg={spinnerIcon}
+                className={classNames(styles.spinnerIcon, styles.spinnerActive)}
+                aria-hidden="true"
+              />
+              <span>{intl.formatMessage(messages.updating)}</span>
+            </div>
+          )}
         </div>
       )}
 
