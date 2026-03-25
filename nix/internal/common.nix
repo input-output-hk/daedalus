@@ -227,7 +227,8 @@
       ))
       # Exclude specific files
       && !(baseName == ".envrc")
-      && !(pkgs.lib.hasSuffix ".md" name && type == "regular");
+      # Exclude markdown docs but keep terms-of-use .md files (runtime assets loaded by webpack)
+      && !(pkgs.lib.hasSuffix ".md" name && type == "regular" && !(pkgs.lib.hasInfix "/terms-of-use/" name));
   };
 
   # This is the only thing we use the original `yarn2nix` for:
