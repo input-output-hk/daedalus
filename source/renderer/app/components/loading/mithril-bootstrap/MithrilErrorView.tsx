@@ -53,9 +53,14 @@ const ERROR_COPY_BY_STAGE: Partial<Record<
 };
 
 const getLogPathHref = (logPath: string) => {
+  const normalizedPath = logPath.replace(/\\/g, '/');
+
+  if (/^[A-Za-z]:\//.test(normalizedPath)) {
+    return encodeURI(`file:///${normalizedPath}`);
+  }
+
   if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(logPath)) return logPath;
 
-  const normalizedPath = logPath.replace(/\\/g, '/');
   const filePath = normalizedPath.startsWith('/')
     ? normalizedPath
     : `/${normalizedPath}`;

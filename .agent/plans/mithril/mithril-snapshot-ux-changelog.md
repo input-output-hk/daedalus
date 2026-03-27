@@ -2,6 +2,7 @@
 
 > Detailed implementation history for the [Mithril Snapshot UX Refinement](mithril-snapshot-ux.md) PRD. Consult this file for context on how and why completed tasks were implemented.
 
+- [2026-03-26] Addressed 4 Copilot PR review follow-ups for Mithril UX: removed dead `allowJsonParseErrors` plumbing from `RunCommandOptions`, made `isSubPath()` case-insensitive on Windows to match `isSamePath()`, fixed `MithrilErrorView.getLogPathHref()` so Windows drive-letter paths normalize to `file:///` URLs, and kept Mithril progress data mounted through the `starting-node` handoff by adding that status to `MithrilBootstrapPage` progress routing. QAReviewer and ReviewerSonnet both passed the fixes; deferred follow-up coverage remains limited to `getLogPathHref()` and Windows-specific `isSubPath()` unit tests.
 - [2026-03-24] Completed task-034 verification closeout by running the full Mithril review suite across compile, lint, prettier, Jest, SCSS typedefs, stylelint, i18n review, and theme-structure checks.
 - [2026-03-24] Verified all Mithril-scope checks passed, with the `chainStorage` theme structure confirmed correct across all 9 Daedalus runtime theme files.
 - [2026-03-24] Recorded pre-existing out-of-scope verification failures: `yarn themes:check:createTheme` still requires the missing `dist/scripts/check.js` build artifact, and `yarn storybook --smoke-test` still fails on the existing news utility import issue.

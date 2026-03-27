@@ -23,12 +23,20 @@ type GetDefaultConfig = () => Promise<
 export function isSubPath(parent: string, child: string): boolean {
   const normalizedParent = path.resolve(parent);
   const normalizedChild = path.resolve(child);
+  const comparableParent =
+    process.platform === 'win32'
+      ? normalizedParent.toLowerCase()
+      : normalizedParent;
+  const comparableChild =
+    process.platform === 'win32'
+      ? normalizedChild.toLowerCase()
+      : normalizedChild;
 
-  if (normalizedChild === normalizedParent) {
+  if (comparableChild === comparableParent) {
     return true;
   }
 
-  return normalizedChild.startsWith(`${normalizedParent}${path.sep}`);
+  return comparableChild.startsWith(`${comparableParent}${path.sep}`);
 }
 
 /**

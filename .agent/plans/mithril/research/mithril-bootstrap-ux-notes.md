@@ -51,7 +51,7 @@
 - The picker treats the default chain path as a first-class selection, validates custom candidates locally after `SHOW_OPEN_DIALOG_CHANNEL`, and defers all on-disk changes until `Continue`; this keeps browsing/reset actions side-effect free.
 - The decision view now includes a storage-context row with the selected blockchain-data location and a "Back to directory location" action so users can change storage without leaving the Mithril decision cycle.
 - `MithrilErrorView` maps backend `error.stage` values onto the extracted Mithril error-title/hint messages and keeps raw `error.message`/`error.code` in a collapsible diagnostic section.
-- Local `error.logPath` values should be converted to `file://` URLs with a renderer-safe helper before sending them through `stores.app.openExternalLink`; do not import Node `url.pathToFileURL()` in the browser bundle.
+- Local `error.logPath` values should be converted with a renderer-safe helper before sending them through `stores.app.openExternalLink`; Windows drive-letter paths must normalize to `file:///...` URLs so they are not misread as URI schemes. Do not import Node `url.pathToFileURL()` in the browser bundle.
 - Mithril loading components should follow the same image-import depth as `SyncingProgress.tsx`; from `components/loading/mithril-bootstrap/`, shared loading icons live under `../../../assets/images/`.
 - If Mithril UI strings change, run `yarn i18n:manage` to update `translations/messages.json`, `translations/en-US.json`, and `translations/ja-JP.json`.
 - `.scss.d.ts` files are regenerated during `yarn compile`; do not hand-edit them unless tooling is unavailable.

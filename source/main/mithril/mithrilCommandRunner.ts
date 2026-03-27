@@ -16,7 +16,6 @@ export type RunCommandResult = {
 export type RunCommandOptions = {
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
-  allowJsonParseErrors?: boolean;
   requireKeys?: boolean;
 };
 

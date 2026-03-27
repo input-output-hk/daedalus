@@ -11,6 +11,7 @@ const PROGRESS_VIEW_STATUSES = [
   'finalizing',
   'converting',
   'completed',
+  'starting-node',
 ] as const;
 
 type Props = InjectedProps;
