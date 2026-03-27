@@ -165,13 +165,13 @@
           "id": "task-202",
           "title": "Create core knowledge tables",
           "description": "Add documents, code chunks, GitHub entities, project items, and sync-state tables",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
           "dependencies": [
             "task-201"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-27",
           "targetPath": "agentic/schema/init.sql"
         },
         {
