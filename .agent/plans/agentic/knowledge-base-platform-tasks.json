@@ -1,0 +1,698 @@
+{
+  "metadata": {
+    "title": "Agentic Knowledge Base and Workflow Platform Tasks",
+    "created": "2026-03-27",
+    "updated": "2026-03-27",
+    "version": "1.0.0",
+    "totalTasks": 42,
+    "prdReference": ".agent/plans/agentic/knowledge-base-platform.md",
+    "description": "Implement the Docker Compose-based Daedalus knowledge base, search stack, sync workflow, and read-only MCP tooling"
+  },
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Planning and Coordination",
+      "description": "Create the implementation plan and establish GitHub Project tracking",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Create agentic platform plan and tasks JSON",
+          "description": "Add the implementation plan and machine-readable task tracker under .agent/plans/agentic/",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [],
+          "completedAt": "2026-03-27",
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+        },
+        {
+          "id": "task-002",
+          "title": "Create GitHub epic issue",
+          "description": "Open a GitHub issue in DripDropz/daedalus that mirrors the implementation plan and acts as the top-level coordination artifact",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-001"
+          ],
+          "completedAt": "2026-03-27",
+          "targetPath": "https://github.com/DripDropz/daedalus/issues"
+        },
+        {
+          "id": "task-003",
+          "title": "Add epic issue to Project 5",
+          "description": "Add the epic issue to GitHub Project 5 and confirm the issue is visible in the Daedalus Maintenance board",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-002"
+          ],
+          "completedAt": "2026-03-27",
+          "targetPath": "https://github.com/orgs/DripDropz/projects/5"
+        },
+        {
+          "id": "task-004",
+          "title": "Define project field conventions",
+          "description": "Document how status, priority, type, area, and phase will be represented for agentic platform work in GitHub Projects",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-003"
+          ],
+          "completedAt": "2026-03-27",
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Compose Infrastructure",
+      "description": "Create the isolated Docker Compose stack and service skeleton",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-101",
+          "title": "Add agentic docker compose file",
+          "description": "Create docker-compose.agentic.yml with ParadeDB, Ollama, init, tools, and Search MCP services",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-001"
+          ],
+          "completedAt": "",
+          "targetPath": "docker-compose.agentic.yml"
+        },
+        {
+          "id": "task-102",
+          "title": "Add agentic environment examples",
+          "description": "Create env examples and volume/path conventions for the local knowledge stack",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-101"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/.env.example"
+        },
+        {
+          "id": "task-103",
+          "title": "Build kb-tools service image",
+          "description": "Create the tools container image and CLI entrypoint for ingest, sync, snapshot, and status commands",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-101"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/Dockerfile"
+        },
+        {
+          "id": "task-104",
+          "title": "Build search MCP service container",
+          "description": "Add a dedicated container entrypoint for the read-only Search MCP server",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-103"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/mcp"
+        },
+        {
+          "id": "task-105",
+          "title": "Add helper wrappers for compose tasks",
+          "description": "Expose developer-friendly commands for booting the stack and running sync/snapshot operations",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-101",
+            "task-103"
+          ],
+          "completedAt": "",
+          "targetPath": "package.json"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Schema and Search Foundation",
+      "description": "Create the base database schema, indexes, and operational commands",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-201",
+          "title": "Create schema and version tables",
+          "description": "Define the core knowledge schema and schema-version tracking for future upgrades",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-101",
+            "task-103"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/schema/init.sql"
+        },
+        {
+          "id": "task-202",
+          "title": "Create core knowledge tables",
+          "description": "Add documents, code chunks, GitHub entities, project items, and sync-state tables",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [
+            "task-201"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/schema/init.sql"
+        },
+        {
+          "id": "task-203",
+          "title": "Create BM25 and HNSW indexes",
+          "description": "Add pg_search BM25 indexes and pgvector HNSW indexes for all searchable tables",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-202"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/schema/create_indexes.sql"
+        },
+        {
+          "id": "task-204",
+          "title": "Add search config registry and filters",
+          "description": "Define search configuration for each entity type and the supported filter set",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-202"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/search/config.py"
+        },
+        {
+          "id": "task-205",
+          "title": "Add DB status and snapshot commands",
+          "description": "Provide status, snapshot export, and snapshot restore commands for the knowledge database",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-202"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/cli.py"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Docs and Plan Ingestion",
+      "description": "Populate the knowledge base from Daedalus documentation and planning artifacts",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-301",
+          "title": "Ingest agent and repo documentation",
+          "description": "Index AGENTS.md, CLAUDE.md, .agent docs, repo READMEs, and selected subsystem docs",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-202",
+            "task-501"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/docs.py"
+        },
+        {
+          "id": "task-302",
+          "title": "Implement markdown chunking",
+          "description": "Split markdown sources on heading boundaries and preserve section hierarchy for search and previews",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-301"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/markdown_chunker.py"
+        },
+        {
+          "id": "task-303",
+          "title": "Extract structured plan and workflow metadata",
+          "description": "Capture doc kind, domain, workflow descriptions, and task-plan metadata as searchable filters",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-301"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/doc_metadata.py"
+        },
+        {
+          "id": "task-304",
+          "title": "Add idempotency and content hashing",
+          "description": "Skip unchanged docs on re-ingest by using content hashes and stored watermarks",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-301"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/base.py"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Code, GitHub, and Project Ingestion",
+      "description": "Index source code and GitHub coordination history",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-401",
+          "title": "Implement TypeScript symbol chunking",
+          "description": "Use a TypeScript-aware parser to extract symbols from the most agent-relevant code areas",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": [
+            "task-202",
+            "task-501"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/code.py"
+        },
+        {
+          "id": "task-402",
+          "title": "Index entire Daedalus repository",
+          "description": "Ingest the full repository immediately, with metadata and filters that still make the most agent-relevant areas fast to navigate",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [
+            "task-401"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/code.py"
+        },
+        {
+          "id": "task-403",
+          "title": "Ingest GitHub issues, PRs, and comments",
+          "description": "Fetch repository issues, pull requests, and discussion threads for searchable history",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [
+            "task-202",
+            "task-501"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/github.py"
+        },
+        {
+          "id": "task-404",
+          "title": "Ingest Project 5 items and field values",
+          "description": "Fetch GitHub Project 5 items and store project-specific status, priority, work type, area, phase, and KB impact metadata",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-403"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/ingest/project.py"
+        },
+        {
+          "id": "task-405",
+          "title": "Track sync cursors and watermarks",
+          "description": "Persist repo commits, GitHub updatedAt values, and project cursors so all sources can refresh incrementally",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-304",
+            "task-403",
+            "task-404"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/sync/state.py"
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Search and CLI",
+      "description": "Implement embeddings, RRF search, and local developer commands",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-501",
+          "title": "Implement Ollama embedding client",
+          "description": "Create the embedding client used by ingestion, search, and MCP commands",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-101"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/embed/client.py"
+        },
+        {
+          "id": "task-502",
+          "title": "Implement BM25, vector, and RRF search queries",
+          "description": "Build the hybrid ranking layer that fuses BM25 and vector results into a single ranked list",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": [
+            "task-203",
+            "task-204",
+            "task-501",
+            "task-301",
+            "task-402",
+            "task-403"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/search/query.py"
+        },
+        {
+          "id": "task-503",
+          "title": "Add search CLI and status commands",
+          "description": "Expose search, status, and entity-inspection commands for local users and scripts",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-205",
+            "task-502"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/cli.py"
+        },
+        {
+          "id": "task-504",
+          "title": "Add search quality fixtures",
+          "description": "Create a regression set of known queries so ranking quality can be checked as the KB evolves",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-502",
+            "task-503"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/config/search-fixtures.yaml"
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Snapshot Sharing",
+      "description": "Support export, import, and team distribution of the knowledge base",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-601",
+          "title": "Define snapshot manifest format",
+          "description": "Specify the metadata format that accompanies exported database snapshots",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-205",
+            "task-405"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/config/snapshot-manifest.schema.json"
+        },
+        {
+          "id": "task-602",
+          "title": "Implement snapshot export and import commands",
+          "description": "Create commands that export ParadeDB with a manifest and restore it on another developer machine",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-601"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/snapshot/commands.py"
+        },
+        {
+          "id": "task-603",
+          "title": "Add shared snapshot publication workflow",
+          "description": "Document and automate publication and consumption of baseline KB snapshots as GitHub Actions artifacts",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-602"
+          ],
+          "completedAt": "",
+          "targetPath": ".github/workflows/agentic-kb-sync.yml"
+        },
+        {
+          "id": "task-604",
+          "title": "Implement import-then-sync-changed bootstrap flow",
+          "description": "After import, refresh only local branch deltas and new GitHub/project updates so developers get current results quickly",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-405",
+            "task-602"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/sync/commands.py"
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "Freshness and Automation",
+      "description": "Keep the knowledge base current as the repo and project change over time",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-701",
+          "title": "Implement sync commands for all sources",
+          "description": "Add sync docs, sync code, sync github, sync project, sync changed, and sync all commands",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-301",
+            "task-402",
+            "task-403",
+            "task-404",
+            "task-405"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/sync/commands.py"
+        },
+        {
+          "id": "task-702",
+          "title": "Add stale-index detection",
+          "description": "Detect when docs/code are behind local HEAD or when GitHub/project data is behind its latest watermark",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-405",
+            "task-701"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/sync/staleness.py"
+        },
+        {
+          "id": "task-703",
+          "title": "Add scheduled refresh and snapshot workflow",
+          "description": "Run a scheduled GitHub Action that refreshes remote knowledge and optionally publishes a fresh shared snapshot",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-603",
+            "task-701"
+          ],
+          "completedAt": "",
+          "targetPath": ".github/workflows/agentic-kb-sync.yml"
+        },
+        {
+          "id": "task-704",
+          "title": "Add incremental update smoke checks",
+          "description": "Verify that small repo and GitHub changes update only the affected entities instead of forcing a full rebuild",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-701",
+            "task-702"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_incremental_sync.py"
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "name": "MCP and Agent Documentation",
+      "description": "Expose the KB to agents and document how to use it",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-801",
+          "title": "Implement read-only Search MCP server",
+          "description": "Expose search, entity lookup, related results, and KB status tools over MCP",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-502",
+            "task-503"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/mcp/search_server.py"
+        },
+        {
+          "id": "task-802",
+          "title": "Write OpenCode and Claude Code setup docs",
+          "description": "Document how to connect local agents to the Search MCP service, including example configs and environment variables",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-801"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/README.md"
+        },
+        {
+          "id": "task-803",
+          "title": "Add agentic knowledge base workflow doc",
+          "description": "Create a Daedalus workflow document for booting, syncing, snapshotting, and troubleshooting the KB stack",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-503",
+            "task-602",
+            "task-701",
+            "task-802"
+          ],
+          "completedAt": "2026-03-27",
+          "targetPath": ".agent/workflows/agentic-kb.md"
+        },
+        {
+          "id": "task-804",
+          "title": "Update core agent indexes",
+          "description": "Update AGENTS.md, CLAUDE.md, and .agent/readme.md to point agents at the new KB workflow and MCP setup",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-803"
+          ],
+          "completedAt": "2026-03-27",
+          "targetPath": ".agent/readme.md"
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "name": "Validation and Rollout",
+      "description": "Validate the platform end to end and capture team onboarding learnings",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-901",
+          "title": "Validate clean-machine bootstrap",
+          "description": "Confirm a developer can clone the repo, start the KB stack, import a snapshot, and search successfully",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-602",
+            "task-801",
+            "task-802",
+            "task-803"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/README.md"
+        },
+        {
+          "id": "task-902",
+          "title": "Review security and artifact boundaries",
+          "description": "Verify tokens, DB snapshots, and MCP tools stay read-only and developer-only",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-801",
+            "task-901"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/README.md"
+        },
+        {
+          "id": "task-903",
+          "title": "Pilot with multiple developers",
+          "description": "Run a small team pilot, validate snapshot sharing and incremental sync, and capture follow-up SOPs",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-901",
+            "task-902"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/SOPs/agentic"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 10,
+    "totalTasks": 42,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-101",
+      "task-103",
+      "task-201",
+      "task-202",
+      "task-501",
+      "task-301",
+      "task-401",
+      "task-403",
+      "task-404",
+      "task-405",
+      "task-502",
+      "task-503",
+      "task-601",
+      "task-602",
+      "task-604",
+      "task-701",
+      "task-801",
+      "task-802",
+      "task-803",
+      "task-901"
+    ]
+  }
+}

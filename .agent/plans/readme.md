@@ -55,6 +55,15 @@ Each PRD must have a dedicated tasks JSON file alongside the markdown plan. Use 
 
 **When updating status:** update both the markdown checklist and the JSON entry for the same task.
 
+**Task ID convention (default for new plans):** use phase-scoped numbering so task IDs remain stable when tasks are inserted later.
+
+- Phase 0 -> `task-001` to `task-099`
+- Phase 1 -> `task-101` to `task-199`
+- Phase 2 -> `task-201` to `task-299`
+- Continue the same pattern for later phases (`task-301`, `task-401`, etc.)
+
+This avoids renumbering tasks across the full plan when you add new work inside a single phase.
+
 **Schema guidance (aligns to existing task files):**
 
 ```json
@@ -70,19 +79,38 @@ Each PRD must have a dedicated tasks JSON file alongside the markdown plan. Use 
   },
   "phases": [
     {
-      "id": "phase-1",
-      "name": "Phase Name",
-      "description": "Phase goal",
+      "id": "phase-0",
+      "name": "Planning",
+      "description": "Initial planning and setup",
       "riskLevel": "low",
       "tasks": [
         {
           "id": "task-001",
+          "title": "Create plan",
+          "description": "Write the implementation plan",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1,
+          "dependencies": [],
+          "completedAt": "YYYY-MM-DD",
+          "targetPath": ".agent/plans/{domain}/{feature-name}.md"
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Implementation",
+      "description": "First implementation phase",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-101",
           "title": "Task title",
           "description": "Task detail",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 1,
-          "dependencies": ["task-000"],
+          "dependencies": ["task-001"],
           "completedAt": "YYYY-MM-DD",
           "targetPath": "path/to/file"
         }
@@ -92,7 +120,7 @@ Each PRD must have a dedicated tasks JSON file alongside the markdown plan. Use 
   "summary": {
     "totalPhases": 1,
     "totalTasks": 1,
-    "criticalPath": ["task-001"]
+    "criticalPath": ["task-001", "task-101"]
   }
 }
 ```
@@ -157,6 +185,7 @@ Any unresolved decisions.
 
 | Domain | Plan | Status | Date |
 |--------|------|--------|------|
+| agentic | knowledge-base-platform | 🚧 In Progress | 2026-03-27 |
 | mithril | bootstrap-cardano-node | 🚧 In Progress | 2026-02-10 |
 | mithril | mithril-snapshot-ux | 🚧 In Progress | 2026-03-03 |
 

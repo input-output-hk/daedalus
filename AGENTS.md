@@ -34,6 +34,7 @@ Use these slash commands to access workflows:
 | `/hardware-wallets` | Ledger/Trezor hardware wallet development |
 | `/ipc`        | IPC channel development                       |
 | `/nix`        | Nix environment setup                         |
+| `/agentic-kb` | Agentic knowledge base, sync, and MCP setup   |
 | `/update-doc` | Update this documentation                    |
 
 ---

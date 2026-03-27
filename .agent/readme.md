@@ -118,6 +118,7 @@ Available workflows:
 | [`ipc.md`](./workflows/ipc.md)            | IPC channel development            | `/ipc`        |
 | [`nix.md`](./workflows/nix.md)            | Nix environment setup              | `/nix`        |
 | [`storybook.md`](./workflows/storybook.md) | Storybook component work          | `/storybook`  |
+| [`agentic-kb.md`](./workflows/agentic-kb.md) | Knowledge base and MCP workflow | `/agentic-kb` |
 | [`update-doc.md`](./workflows/update-doc.md) | Update documentation            | `/update-doc` |
 
 ---
