@@ -12,6 +12,8 @@ This workflow documents the planned Daedalus agentic platform described in `.age
 
 Until implementation lands, use this file as the source of truth for how the platform is expected to work and how future agents should think about its responsibilities.
 
+Current implementation note: `docker-compose.agentic.yml` now exists and boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. The `kb-tools` and `mcp-search` services are still placeholders at this stage, so the sync, search, snapshot, and MCP commands documented below remain planned behavior until later tasks land.
+
 ## Goals
 
 - Start the whole platform with Docker Compose

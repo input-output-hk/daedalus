@@ -77,13 +77,13 @@
           "id": "task-101",
           "title": "Add agentic docker compose file",
           "description": "Create docker-compose.agentic.yml with ParadeDB, Ollama, init, tools, and Search MCP services",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-001"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-27",
           "targetPath": "docker-compose.agentic.yml"
         },
         {
