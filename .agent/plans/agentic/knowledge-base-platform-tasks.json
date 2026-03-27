@@ -151,14 +151,14 @@
           "id": "task-201",
           "title": "Create schema and version tables",
           "description": "Define the core knowledge schema and schema-version tracking for future upgrades",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-101",
             "task-103"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-27",
           "targetPath": "agentic/schema/init.sql"
         },
         {

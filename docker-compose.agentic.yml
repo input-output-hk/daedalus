@@ -9,6 +9,7 @@ services:
       - POSTGRES_PASSWORD=${AGENTIC_DB_PASSWORD:-agentic}
     volumes:
       - paradedb_data:/var/lib/postgresql
+      - ./agentic/schema/init.sql:/docker-entrypoint-initdb.d/999-agentic-init.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
