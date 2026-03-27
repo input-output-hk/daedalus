@@ -395,4 +395,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, named volumes, and placeholder `kb-tools` / `mcp-search` services for later replacement.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`.

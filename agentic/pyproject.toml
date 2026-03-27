@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-kb"
+version = "0.1.0"
+description = "Daedalus agentic knowledge-base bootstrap tools"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "OpenCode" }
+]
+dependencies = []
+
+[project.scripts]
+agentic-kb = "agentic_kb.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -103,13 +103,13 @@
           "id": "task-103",
           "title": "Build kb-tools service image",
           "description": "Create the tools container image and CLI entrypoint for ingest, sync, snapshot, and status commands",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-101"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-27",
           "targetPath": "agentic/Dockerfile"
         },
         {

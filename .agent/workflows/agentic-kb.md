@@ -12,7 +12,7 @@ This workflow documents the planned Daedalus agentic platform described in `.age
 
 Until implementation lands, use this file as the source of truth for how the platform is expected to work and how future agents should think about its responsibilities.
 
-Current implementation note: `docker-compose.agentic.yml` now exists and boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. The `kb-tools` and `mcp-search` services are still placeholders at this stage, so the sync, search, snapshot, and MCP commands documented below remain planned behavior until later tasks land.
+Current implementation note: `docker-compose.agentic.yml` now boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` is now a real built Python service with a packaged `agentic-kb` CLI, implemented `status` and `service` commands, and placeholder `sync` / `snapshot` subcommands reserved for later tasks. `mcp-search` remains a placeholder service until its follow-up task lands.
 
 ## Goals
 
@@ -34,7 +34,7 @@ The planned stack consists of:
 
 ## Planned Commands
 
-The exact command names may evolve, but the supported workflow should converge on this shape:
+The CLI surface has started to land and should stay on this shape as later tasks add real behavior:
 
 ```bash
 # Start the stack
@@ -42,6 +42,7 @@ docker compose -f docker-compose.agentic.yml up -d
 
 # Check status
 docker compose -f docker-compose.agentic.yml ps
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status
 
 # Sync the whole knowledge base
 docker compose -f docker-compose.agentic.yml run --rm kb-tools sync all
@@ -58,6 +59,8 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export
 # Restore a shared snapshot
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump
 ```
+
+Today, only `status` is implemented in `kb-tools`. The listed `sync`, `search`, and `snapshot` flows remain planned behavior until their owning tasks land.
 
 ## Team Sharing Workflow
 

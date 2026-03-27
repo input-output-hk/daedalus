@@ -52,32 +52,28 @@ services:
     restart: "no"
 
   kb-tools:
-    image: python:3.12-alpine@sha256:7747d47f92cfca63a6e2b50275e23dba8407c30d8ae929a88ddd49a5d3f2d331
+    build:
+      context: ./agentic
     environment:
       - DATABASE_URL=postgresql://${AGENTIC_DB_USER:-agentic}:${AGENTIC_DB_PASSWORD:-agentic}@paradedb:5432/${AGENTIC_DB_NAME:-agentic_kb}
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_EMBED_MODEL=${OLLAMA_EMBED_MODEL:-all-minilm}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
     volumes:
-      - kb_tools_data:/var/lib/agentic
+      - .:/workspace
+      - ./agentic/snapshots:/workspace/agentic/snapshots
     depends_on:
       paradedb:
         condition: service_healthy
       ollama-init:
         condition: service_completed_successfully
-    command:
-      - /bin/sh
-      - -ec
-      - |
-        mkdir -p /var/lib/agentic
-        printf 'kb-tools placeholder service; replace in task-103\n' > /var/lib/agentic/README.txt
-        touch /tmp/kb-tools.ready
-        trap 'exit 0' TERM INT
-        while :; do sleep 3600; done
+    working_dir: /workspace
     healthcheck:
       test:
-        - CMD-SHELL
-        - test -f /tmp/kb-tools.ready
+        - CMD
+        - agentic-kb
+        - status
+        - --healthcheck
       interval: 30s
       timeout: 5s
       retries: 3
@@ -120,8 +116,6 @@ volumes:
   paradedb_data:
     driver: local
   ollama_data:
-    driver: local
-  kb_tools_data:
     driver: local
   mcp_search_data:
     driver: local
