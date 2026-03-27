@@ -584,9 +584,9 @@
         },
         {
           "id": "task-803",
-          "title": "Add agentic knowledge base workflow doc",
-          "description": "Create a Daedalus workflow document for booting, syncing, snapshotting, and troubleshooting the KB stack",
-          "status": "completed",
+          "title": "Update agentic knowledge base workflow doc",
+          "description": "Review and update the Daedalus workflow document for booting, syncing, snapshotting, and troubleshooting the KB stack once the supporting commands and setup are implemented",
+          "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -595,20 +595,20 @@
             "task-701",
             "task-802"
           ],
-          "completedAt": "2026-03-27",
+          "completedAt": "",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {
           "id": "task-804",
-          "title": "Update core agent indexes",
-          "description": "Update AGENTS.md, CLAUDE.md, and .agent/readme.md to point agents at the new KB workflow and MCP setup",
-          "status": "completed",
+          "title": "Check core agent indexes",
+          "description": "Verify and update AGENTS.md, CLAUDE.md, and .agent/readme.md so they accurately point agents at the finalized KB workflow and MCP setup",
+          "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-803"
           ],
-          "completedAt": "2026-03-27",
+          "completedAt": "",
           "targetPath": ".agent/readme.md"
         }
       ]
