@@ -191,14 +191,14 @@
           "id": "task-204",
           "title": "Add search config registry and filters",
           "description": "Define search configuration for each entity type and the supported filter set",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-202"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/search/config.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/search/config.py"
         },
         {
           "id": "task-205",
