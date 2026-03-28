@@ -48,16 +48,50 @@ Project anchors
 - planning status (`draft`, `in_review`, `approved`)
 - build status (`in_progress`, `in_review`, `completed`)
 - Review-log format rules (mandatory):
-- both review-log docs are append-only; never delete or rewrite prior entries
-- each appended entry must include speaker label, iteration number, and outcome
+- both review-log docs are append-only chronological transcripts; every new entry must be appended at end-of-file only
+- never insert, reorder, delete, or rewrite prior entries, even to fix mistakes or add missing context
+- if a prior entry is incomplete, incorrect, or out of order, append a new entry that corrects or supersedes it; do not edit history
+- before appending, the subagent must read the full relevant review-log doc and inspect the final entry to determine the only valid next speaker and iteration number
+- each iteration must remain contiguous in the file; never append any `Iteration N+1` entry until the matching `Iteration N` response from the other speaker has already been appended or the loop has stopped on approval
+- each appended entry must include speaker label, iteration number, UTC datetime stamp in ISO 8601 format (`Timestamp: YYYY-MM-DDTHH:MM:SSZ`), and outcome
 - planning review entries use `Planner:` and `Critiquer:` speaker labels
 - implementation review entries use `Implementation:` and `Code Review:` speaker labels
 - Critiquer and Code Review entries must end with a machine-readable decision: `Decision: approved` or `Decision: requires_changes`
 - Planner and Implementation subagents must re-read the full relevant review-log doc before appending a new response so prior critique context is preserved
+- allowed planning-log transitions:
+  - empty file -> `Planner: Iteration 1`
+  - `Planner: Iteration N` -> `Critiquer: Iteration N`
+  - `Critiquer: Iteration N` with `Decision: requires_changes` -> `Planner: Iteration N+1`
+  - `Critiquer: Iteration N` with `Decision: approved` -> planning loop stops; no further planning-log entries
+- allowed implementation-log transitions:
+  - empty file -> `Implementation: Iteration 1`
+  - `Implementation: Iteration N` -> `Code Review: Iteration N`
+  - `Code Review: Iteration N` with `Decision: requires_changes` -> `Implementation: Iteration N+1`
+  - `Code Review: Iteration N` with `Decision: approved` -> build loop stops; no further implementation-log entries
+- no other review-log transitions are valid
+- if an existing review-log doc already violates ordering or iteration sequencing, do not repair it by rewriting history
+- instead, append a new end-of-file entry that notes the sequencing problem and resumes from the next valid iteration number
 - Example planning review log flow:
 - iteration 1 Planner entry adds the initial plan summary
 - iteration 1 Critiquer entry appends review findings and decision
 - later Planner and Critiquer iterations append replies in order; never replace earlier entries
+- Example entry format:
+  ```md
+  Planner: Iteration 2
+  Timestamp: 2026-03-28T14:56:52Z
+  Outcome: revised_plan_addresses_review_feedback
+
+  - Updated the canonical plan to narrow scope and align verification with the approved schema contract.
+  - Clarified remaining risks and preserved prior review-log history without modification.
+
+  Critiquer: Iteration 2
+  Timestamp: 2026-03-28T15:04:11Z
+  Outcome: requires_changes
+
+  - The schema mismatch is resolved, but the build-status value still does not match the allowed vocabulary.
+
+  Decision: requires_changes
+  ```
 - Example implementation review log flow:
 - iteration 1 Implementation entry adds change summary plus verification
 - iteration 1 Code Review entry appends findings and decision
@@ -66,8 +100,8 @@ Project anchors
   A) Planning loop (must converge before implementation; max 5 iterations; subagents run in series, not parallel)
 0. Orchestrator does not create the canonical task plan doc or planning review log.
 1. Planning subagent creates or revises the canonical task plan doc and creates or appends `.agent/plans/agentic/task-plans/<task-id>-plan-review.md`.
-2. The first entry in `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` must be the Planner's plan summary for the current iteration.
-3. After Planning subagent has drafted or revised the canonical task plan doc, Critique subagent stress-tests that exact plan and appends its review to `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` (gaps, complexity, scope creep, missing tests/docs/automation).
+2. The first entry in `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` must be the Planner's plan summary for the current iteration, appended at end-of-file.
+3. After Planning subagent has drafted or revised the canonical task plan doc, Critique subagent stress-tests that exact plan and appends its review immediately after the Planner entry for the same iteration in `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` (gaps, complexity, scope creep, missing tests/docs/automation).
 4. Critique subagent must end its appended entry with `Decision: approved` or `Decision: requires_changes`.
 5. If critique requires changes, Planning subagent must re-read the full planning review log, revise the canonical task plan doc, and append its response to the same `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` file.
 6. Repeat steps 1-5 up to 5 total planning iterations.
@@ -82,8 +116,8 @@ Project anchors
 - ask user for a decision before implementation
   B) Build loop (must converge before signoff; max 5 iterations; subagents run in series, not parallel)
 1. Implementation subagent executes the approved canonical task plan doc, runs verification, and creates or appends `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
-2. The first Implementation entry for each build-review iteration must summarize changes made, files touched, verification run, and any deviations from the approved plan.
-3. After Implementation subagent is complete, Code Review subagent reviews diff/results against the approved canonical task plan doc and appends its review to `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
+2. The first Implementation entry for each build-review iteration must summarize changes made, files touched, verification run, and any deviations from the approved plan, and must be appended at end-of-file.
+3. After Implementation subagent is complete, Code Review subagent reviews diff/results against the approved canonical task plan doc and appends its review immediately after the Implementation entry for the same iteration in `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
 4. Code Review subagent must end its appended entry with `Decision: approved` or `Decision: requires_changes`.
 5. If review requires fixes, Implementation subagent must re-read the full implementation review log, make the required changes, update the canonical task plan doc if the approved plan itself changed, and append its response to the same `.agent/plans/agentic/task-plans/<task-id>-impl-review.md` file.
 6. Repeat steps 1-5 up to 5 total build-review iterations.
