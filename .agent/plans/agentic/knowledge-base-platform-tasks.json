@@ -225,15 +225,15 @@
           "id": "task-301",
           "title": "Ingest agent and repo documentation",
           "description": "Index AGENTS.md, CLAUDE.md, .agent docs, repo READMEs, and selected subsystem docs",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-202",
             "task-501"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/docs.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/ingest/docs.py"
         },
         {
           "id": "task-302",

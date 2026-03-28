@@ -11,7 +11,9 @@ requires-python = ">=3.12"
 authors = [
   { name = "OpenCode" }
 ]
-dependencies = []
+dependencies = [
+  "psycopg[binary]>=3.2,<4"
+]
 
 [project.scripts]
 agentic-kb = "agentic_kb.cli:main"
