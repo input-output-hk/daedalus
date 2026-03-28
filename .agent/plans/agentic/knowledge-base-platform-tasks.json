@@ -327,14 +327,14 @@
           "id": "task-404",
           "title": "Ingest Project 5 items and field values",
           "description": "Fetch GitHub Project 5 items and store project-specific status, priority, work type, area, phase, and KB impact metadata",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-403"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/project.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/ingest/project.py"
         },
         {
           "id": "task-405",

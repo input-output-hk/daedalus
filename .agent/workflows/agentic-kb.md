@@ -128,6 +128,8 @@ Required environment variables will likely include:
 - `OLLAMA_BASE_URL`
 - `GITHUB_TOKEN`
 
+For project ingestion, `GITHUB_TOKEN` must be able to read organization ProjectV2 data for `DripDropz` Project 5, not just repository issues and pull requests.
+
 ## GitHub Coordination
 
 Use GitHub Issues and Project 5 for planning and execution tracking.
