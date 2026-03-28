@@ -63,16 +63,14 @@ def parse_database_endpoint(database_url: str) -> DatabaseEndpoint:
     parsed = urlparse(database_url)
 
     if parsed.scheme not in {"postgres", "postgresql"}:
-        raise ValueError(
-            "DATABASE_URL must use postgres or postgresql scheme for task-103 bootstrap checks"
-        )
+        raise ValueError("DATABASE_URL must use postgres or postgresql scheme")
 
     if not parsed.hostname:
-        raise ValueError("DATABASE_URL must include a host for task-103 bootstrap checks")
+        raise ValueError("DATABASE_URL must include a host")
 
     database = parsed.path.lstrip("/")
     if not database:
-        raise ValueError("DATABASE_URL must include a database name for task-103 bootstrap checks")
+        raise ValueError("DATABASE_URL must include a database name")
 
     return DatabaseEndpoint(
         scheme=parsed.scheme,

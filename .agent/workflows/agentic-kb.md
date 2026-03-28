@@ -8,11 +8,9 @@ This workflow guides booting the Daedalus agentic knowledge base, syncing local 
 
 ## Status
 
-This workflow documents the planned Daedalus agentic platform described in `.agent/plans/agentic/knowledge-base-platform.md`.
+This workflow documents the current Daedalus agentic platform shape described in `.agent/plans/agentic/knowledge-base-platform.md`.
 
-Until implementation lands, use this file as the source of truth for how the platform is expected to work and how future agents should think about its responsibilities.
-
-Current implementation note: `docker-compose.agentic.yml` now boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` is now a real built Python service with a packaged `agentic-kb` CLI, implemented `status` and `service` commands, and placeholder `sync` / `snapshot` subcommands reserved for later tasks. `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and now delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `service`, `snapshot export`, and destructive `snapshot import` behavior. `sync` remains reserved for later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 
@@ -32,7 +30,7 @@ The planned stack consists of:
 - `mcp-search` — read-only Search MCP server
 - GitHub Issues + Project 5 — coordination layer via `gh` CLI
 
-## Planned Commands
+## Commands
 
 The CLI surface has started to land and should stay on this shape as later tasks add real behavior:
 
@@ -56,11 +54,30 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools search "mithril b
 # Export a portable snapshot for another developer
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export
 
-# Restore a shared snapshot
-docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump
+# Restore a shared snapshot into a disposable KB database
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump --yes
 ```
 
-Today, only `status` is implemented in `kb-tools`. The listed `sync`, `search`, and `snapshot` flows remain planned behavior until their owning tasks land.
+Today:
+
+- `status` reports runtime config, mount visibility, dependency reachability, and live KB database inspection when `DATABASE_URL` is usable.
+- `status --healthcheck` stays lightweight and exit-code-oriented for Compose healthchecks; it does not require schema inspection.
+- `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema and writes to `/workspace/agentic/snapshots` by default.
+- `snapshot import` performs a destructive `agentic`-schema restore from a prior export and requires `--yes` acknowledgement.
+- `sync`, `search`, and richer MCP behavior still belong to later tasks.
+
+## Status Behavior
+
+Use `status` for a quick operator view of both service readiness and KB DB readiness:
+
+- runtime config summary for `DATABASE_URL`, `OLLAMA_BASE_URL`, `OLLAMA_EMBED_MODEL`, and optional `GITHUB_TOKEN`
+- mount visibility for `/workspace` and `/workspace/agentic/snapshots`
+- dependency reachability for ParadeDB TCP plus Ollama API/model checks
+- KB DB inspection for migration versions `1`, `2`, and `3`
+- presence of the current `agentic` tables, the seven searchable tables, and their BM25/HNSW indexes
+- searchable row counts and grouped `kb_sync_state` summaries
+
+`status` is intentionally limited to current repo-backed contracts; it does not require sync orchestration, GitHub API calls, or MCP readiness.
 
 ## Team Sharing Workflow
 
@@ -69,7 +86,7 @@ The platform is designed for multiple human developers, not just one local machi
 ### Recommended Team Pattern
 
 1. One developer or CI publishes a fresh baseline snapshot from `develop`
-2. Another developer imports that snapshot locally
+2. Another developer imports that snapshot into a fresh or otherwise disposable KB database
 3. The developer runs `sync changed` to add branch-local docs/code changes and any new GitHub updates
 4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time
 
@@ -78,7 +95,7 @@ The platform is designed for multiple human developers, not just one local machi
 The default publication channel for shared baseline snapshots should be GitHub Actions artifacts.
 
 - CI publishes the latest baseline snapshot from `develop`
-- developers download that artifact, import it locally, and then run `sync changed`
+- developers download that artifact, import it into a disposable KB database with `snapshot import ... --yes`, and then run `sync changed`
 - GitHub Releases assets are out of scope for KB snapshot sharing
 
 ### Why Snapshot Sharing Matters
@@ -87,6 +104,13 @@ The default publication channel for shared baseline snapshots should be GitHub A
 - GitHub history grows over time
 - Shared snapshots keep teams aligned on a common baseline
 - Developers can still index local branch deltas after import
+
+### Snapshot Safety Boundary
+
+- `snapshot export` is schema-scoped to `agentic`; it is not a full-cluster backup.
+- `snapshot import` drops and recreates the `agentic` schema before restore.
+- Only run import against fresh, isolated, or otherwise disposable KB databases.
+- Manifest-file schema design and publication polish remain later tasks; task-205 does not define a new external manifest contract.
 
 ## Freshness Rules
 

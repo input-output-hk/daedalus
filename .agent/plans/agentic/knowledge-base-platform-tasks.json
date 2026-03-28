@@ -204,14 +204,14 @@
           "id": "task-205",
           "title": "Add DB status and snapshot commands",
           "description": "Provide status, snapshot export, and snapshot restore commands for the knowledge database",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-202"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/cli.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/cli.py"
         }
       ]
     },

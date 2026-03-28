@@ -11,13 +11,13 @@ from agentic_kb.commands.sync import add_sync_subcommands
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="agentic-kb",
-        description="Daedalus agentic knowledge-base bootstrap CLI",
+        description="Daedalus agentic knowledge-base CLI",
     )
     subparsers = parser.add_subparsers(dest="command")
 
     status_parser = subparsers.add_parser(
         "status",
-        help="Show bootstrap configuration and dependency readiness",
+        help="Show runtime, dependency, and KB database readiness",
     )
     status_parser.add_argument(
         "--healthcheck",
@@ -34,7 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     snapshot_parser = subparsers.add_parser(
         "snapshot",
-        help="Grouped snapshot commands reserved for later tasks",
+        help="Export and import KB database snapshots",
     )
     add_snapshot_subcommands(snapshot_parser)
 
