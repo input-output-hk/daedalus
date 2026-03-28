@@ -163,6 +163,7 @@ __all__ = [
 try:
     from agentic_kb.ingest.code import (
         CODE_SOURCE_PATTERNS,
+        CodeDiscoveryOptions,
         CodeIngestResult,
         InMemoryCodeChunksStore,
         PostgresCodeChunksStore,
@@ -172,6 +173,7 @@ try:
         deterministic_code_chunk_id,
         deterministic_code_content_hash,
         discover_code_source_paths,
+        extract_code_symbol_chunks,
         extract_typescript_symbol_chunks,
         ingest_code,
         ingest_code_from_config,
@@ -186,6 +188,7 @@ else:
     __all__.extend(
         [
             "CODE_SOURCE_PATTERNS",
+            "CodeDiscoveryOptions",
             "CodeIngestResult",
             "InMemoryCodeChunksStore",
             "PostgresCodeChunksStore",
@@ -195,6 +198,7 @@ else:
             "deterministic_code_chunk_id",
             "deterministic_code_content_hash",
             "discover_code_source_paths",
+            "extract_code_symbol_chunks",
             "extract_typescript_symbol_chunks",
             "ingest_code",
             "ingest_code_from_config",

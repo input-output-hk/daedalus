@@ -30,13 +30,139 @@ from agentic_kb.sync.state import (
 )
 
 
-CODE_SOURCE_PATTERNS: tuple[str, ...] = (
-    "source/common/**/*.ts",
-    "source/main/**/*.ts",
-    "source/renderer/app/**/*.ts",
-    "source/renderer/app/**/*.tsx",
-)
+CODE_SOURCE_PATTERNS: tuple[str, ...] = ("**/*",)
 CODE_PREVIEW_LENGTH = 280
+CODE_MAX_FILE_BYTES = 512 * 1024
+CODE_MAX_FILE_LINES = 10_000
+FALLBACK_MAX_LINES = 120
+FALLBACK_MAX_CHARS = 6000
+FALLBACK_OVERLAP_LINES = 15
+FALLBACK_OVERLAP_CHARS = 600
+FALLBACK_MAX_CHUNKS_PER_FILE = 128
+SUPPORTED_CODE_EXTENSIONS = {
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".json",
+    ".yml",
+    ".yaml",
+    ".sql",
+    ".nix",
+    ".py",
+    ".sh",
+    ".bash",
+    ".zsh",
+    ".feature",
+    ".toml",
+    ".ini",
+    ".cfg",
+    ".conf",
+    ".xml",
+    ".html",
+    ".css",
+    ".scss",
+}
+SYMBOL_AWARE_EXTENSIONS = {".ts", ".tsx", ".js", ".jsx"}
+ANY_DEPTH_OPERATIONAL_BASENAMES = {
+    "Dockerfile",
+    "Brewfile",
+    "Brewfile.netlify",
+    "Makefile",
+    "Procfile",
+}
+REPO_ROOT_HIDDEN_CONFIG_BASENAMES = {
+    ".dockerignore",
+    ".editorconfig",
+    ".envrc",
+    ".eslintignore",
+    ".eslintrc",
+    ".gitattributes",
+    ".gitignore",
+    ".ignore",
+    ".prettierignore",
+    ".prettierrc",
+    ".prettierrc.json",
+    ".prettierrc.js",
+    ".stylelintrc",
+    ".tm_properties",
+}
+REPO_ROOT_EXCLUDED_PREFIXES = (
+    ".agent",
+    ".claude",
+    ".git",
+    ".idea",
+    ".opencode",
+    ".ralph",
+    "tests-report",
+    "dummy-certs",
+    "agentic/snapshots",
+)
+ANY_SEGMENT_EXCLUDED_NAMES = {
+    "node_modules",
+    ".yarn",
+    "dist",
+    "build",
+    "coverage",
+    "logs",
+    "Release",
+    "Debug",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+}
+EXCLUDED_CODE_BASENAMES = {
+    "yarn.lock",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "flake.lock",
+}
+EXCLUDED_CODE_SUFFIXES = (
+    ".md",
+    ".mdx",
+    ".d.ts",
+    ".scss.d.ts",
+    ".min.js",
+    ".map",
+    ".log",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".ico",
+    ".icns",
+    ".pdf",
+    ".wasm",
+    ".zip",
+    ".tar",
+    ".gz",
+    ".lock",
+)
+LANGUAGE_BY_EXTENSION = {
+    ".ts": "typescript",
+    ".tsx": "typescriptreact",
+    ".js": "javascript",
+    ".jsx": "javascriptreact",
+    ".json": "json",
+    ".yml": "yaml",
+    ".yaml": "yaml",
+    ".sql": "sql",
+    ".nix": "nix",
+    ".py": "python",
+    ".sh": "shell",
+    ".bash": "shell",
+    ".zsh": "shell",
+    ".feature": "gherkin",
+    ".toml": "toml",
+    ".ini": "ini",
+    ".cfg": "ini",
+    ".conf": "ini",
+    ".xml": "xml",
+    ".html": "html",
+    ".css": "css",
+    ".scss": "scss",
+}
 SUPPORTED_DECLARATION_TYPES = {
     "class_declaration",
     "function_declaration",
@@ -61,6 +187,9 @@ class CodeChunksStore(Protocol):
     def replace_chunks_for_path(
         self, repo_path: str, chunks: Sequence["PreparedCodeChunk"]
     ) -> int:
+        ...
+
+    def delete_missing_paths(self, repo_paths: Sequence[str]) -> int:
         ...
 
 
@@ -90,6 +219,38 @@ class CodeIngestResult:
     processed_file_count: int
     chunk_count: int
     repo_commit_hash: str
+
+
+@dataclass(frozen=True)
+class CodeDiscoveryOptions:
+    run_mode: str = "targeted"
+    prune_missing: bool = False
+
+    def validate(self) -> None:
+        if self.run_mode not in {"targeted", "full_repository"}:
+            raise ValueError(
+                "run_mode must be either 'targeted' or 'full_repository'"
+            )
+        if self.prune_missing and self.run_mode != "full_repository":
+            raise ValueError(
+                "prune_missing requires run_mode='full_repository'"
+            )
+
+    @property
+    def is_full_repository(self) -> bool:
+        return self.run_mode == "full_repository"
+
+
+def _validate_run_request(
+    *,
+    source_paths: Sequence[str] | None,
+    options: CodeDiscoveryOptions,
+) -> None:
+    options.validate()
+    if source_paths is not None and options.is_full_repository:
+        raise ValueError(
+            "caller-supplied source_paths require run_mode='targeted'"
+        )
 
 
 @dataclass(frozen=True)
@@ -130,7 +291,9 @@ def discover_code_source_paths(workspace_root: str | Path) -> list[str]:
             if not matched_path.is_file():
                 continue
             repo_path = normalize_source_path(root, matched_path)
-            if is_supported_code_path(repo_path):
+            if is_supported_code_path(repo_path) and _is_ingestable_code_file(
+                root, repo_path
+            ):
                 matches.add(repo_path)
 
     return sorted(matches)
@@ -138,16 +301,25 @@ def discover_code_source_paths(workspace_root: str | Path) -> list[str]:
 
 def is_supported_code_path(repo_path: str) -> bool:
     path = PurePosixPath(repo_path)
-    suffixes = path.suffixes
-    if suffixes[-2:] == [".d", ".ts"]:
+    if not repo_path or repo_path == ".":
         return False
-    if suffixes[-3:] == [".scss", ".d", ".ts"]:
+    if _is_excluded_repo_path(path):
         return False
-    return path.suffix in {".ts", ".tsx"}
+    if _is_repo_root_hidden_config(path):
+        return True
+    if path.name in ANY_DEPTH_OPERATIONAL_BASENAMES:
+        return True
+    return path.suffix.lower() in SUPPORTED_CODE_EXTENSIONS
 
 
 def classify_code_language(repo_path: str) -> str:
-    return "typescriptreact" if repo_path.endswith(".tsx") else "typescript"
+    path = PurePosixPath(repo_path)
+    if _is_repo_root_hidden_config(path) or path.name in ANY_DEPTH_OPERATIONAL_BASENAMES:
+        return "config"
+    suffix = path.suffix.lower()
+    if suffix not in LANGUAGE_BY_EXTENSION:
+        raise ValueError(f"Unsupported code path language for {repo_path}")
+    return LANGUAGE_BY_EXTENSION[suffix]
 
 
 def parse_codebase_source_paths(
@@ -156,9 +328,15 @@ def parse_codebase_source_paths(
     source_paths: Sequence[str] | None = None,
 ) -> tuple[str, ...]:
     root = Path(workspace_root).resolve()
-    resolved_source_paths = _resolve_source_paths(root, source_paths)
+    options = CodeDiscoveryOptions(
+        run_mode="full_repository" if source_paths is None else "targeted",
+        prune_missing=False,
+    )
+    resolved_source_paths = _resolve_source_paths(root, source_paths, options=options)
 
     for repo_path in resolved_source_paths:
+        if PurePosixPath(repo_path).suffix.lower() not in SYMBOL_AWARE_EXTENSIONS:
+            continue
         content = _read_source_content(root, repo_path)
         parse_typescript_source(
             repo_path,
@@ -167,6 +345,70 @@ def parse_codebase_source_paths(
         )
 
     return tuple(resolved_source_paths)
+
+
+def build_fallback_text_chunks(
+    repo_path: str,
+    content: str,
+    *,
+    reason: str,
+) -> list[ExtractedCodeSymbol]:
+    normalized_content = _normalize_content(content)
+    if not normalized_content.strip():
+        return []
+    lines = normalized_content.split("\n")
+    chunks: list[ExtractedCodeSymbol] = []
+    start_index = 0
+
+    while start_index < len(lines):
+        end_index = start_index
+        chunk_line_count = 0
+        chunk_char_count = 0
+        while end_index < len(lines):
+            next_line = lines[end_index]
+            next_line_len = len(next_line)
+            next_line_count = chunk_line_count + 1
+            separator_len = 1 if chunk_line_count > 0 else 0
+            next_char_count = chunk_char_count + separator_len + next_line_len
+            if chunk_line_count > 0 and (
+                next_line_count > FALLBACK_MAX_LINES
+                or next_char_count > FALLBACK_MAX_CHARS
+            ):
+                break
+            chunk_line_count = next_line_count
+            chunk_char_count = next_char_count
+            end_index += 1
+            if chunk_line_count == 1 and next_line_len > FALLBACK_MAX_CHARS:
+                break
+
+        chunk_text = "\n".join(lines[start_index:end_index])
+        chunks.append(
+            ExtractedCodeSymbol(
+                symbol_name=None,
+                symbol_kind="file_chunk",
+                parent_symbol_name=None,
+                parent_symbol_kind=None,
+                start_line=start_index + 1,
+                end_line=end_index,
+                content=chunk_text,
+                metadata={
+                    "chunk_strategy": "fallback_text",
+                    "parse_status": "fallback",
+                    "fallback_reason": reason,
+                    "file_extension": PurePosixPath(repo_path).suffix.lower(),
+                },
+                sort_key=(start_index, 2, len(chunks)),
+            )
+        )
+        if len(chunks) > FALLBACK_MAX_CHUNKS_PER_FILE:
+            raise ValueError(
+                f"Fallback chunk count exceeded for {repo_path}: > {FALLBACK_MAX_CHUNKS_PER_FILE}"
+            )
+        if end_index >= len(lines):
+            break
+        start_index = _fallback_next_start(lines, start_index, end_index)
+
+    return chunks
 
 
 def extract_typescript_symbol_chunks(
@@ -246,19 +488,29 @@ def prepare_code_chunks(
     repo_commit_hash: str | None = None,
 ) -> list[PreparedCodeChunk]:
     root = Path(workspace_root).resolve()
-    resolved_source_paths = _resolve_source_paths(root, source_paths)
+    options = CodeDiscoveryOptions(
+        run_mode="full_repository" if source_paths is None else "targeted",
+        prune_missing=False,
+    )
+    _validate_run_request(source_paths=source_paths, options=options)
+    resolved_source_paths = _resolve_source_paths(root, source_paths, options=options)
     resolved_repo_commit_hash = repo_commit_hash or get_repo_commit_hash(root)
     prepared_chunks: list[PreparedCodeChunk] = []
 
     for repo_path in resolved_source_paths:
-        prepared_chunks.extend(
-            _prepare_file_code_chunks(
-                root,
-                repo_path,
-                embedding_client=embedding_client,
-                repo_commit_hash=resolved_repo_commit_hash,
+        try:
+            prepared_chunks.extend(
+                _prepare_file_code_chunks(
+                    root,
+                    repo_path,
+                    embedding_client=embedding_client,
+                    repo_commit_hash=resolved_repo_commit_hash,
+                )
             )
-        )
+        except ValueError as error:
+            if "exceeds" in str(error):
+                continue
+            raise
 
     return prepared_chunks
 
@@ -270,21 +522,33 @@ def ingest_code(
     code_store: CodeChunksStore,
     source_paths: Sequence[str] | None = None,
     repo_commit_hash: str | None = None,
+    run_mode: str = "targeted",
+    prune_missing: bool = False,
 ) -> CodeIngestResult:
     root = Path(workspace_root).resolve()
-    resolved_source_paths = _resolve_source_paths(root, source_paths)
+    options = CodeDiscoveryOptions(run_mode=run_mode, prune_missing=prune_missing)
+    _validate_run_request(source_paths=source_paths, options=options)
+    resolved_source_paths = _resolve_source_paths(root, source_paths, options=options)
     resolved_repo_commit_hash = repo_commit_hash or get_repo_commit_hash(root)
     chunk_count = 0
 
     for repo_path in resolved_source_paths:
-        prepared_chunks = _prepare_file_code_chunks(
-            root,
-            repo_path,
-            embedding_client=embedding_client,
-            repo_commit_hash=resolved_repo_commit_hash,
-        )
+        try:
+            prepared_chunks = _prepare_file_code_chunks(
+                root,
+                repo_path,
+                embedding_client=embedding_client,
+                repo_commit_hash=resolved_repo_commit_hash,
+            )
+        except ValueError as error:
+            if "exceeds" in str(error):
+                continue
+            raise
         code_store.replace_chunks_for_path(repo_path, prepared_chunks)
         chunk_count += len(prepared_chunks)
+
+    if options.prune_missing:
+        code_store.delete_missing_paths(resolved_source_paths)
 
     return CodeIngestResult(
         source_paths=tuple(resolved_source_paths),
@@ -406,7 +670,10 @@ def build_code_preview_text(content: str, *, max_length: int = CODE_PREVIEW_LENG
 def _resolve_source_paths(
     workspace_root: Path,
     source_paths: Sequence[str] | None,
+    *,
+    options: CodeDiscoveryOptions,
 ) -> list[str]:
+    _validate_run_request(source_paths=source_paths, options=options)
     candidates = source_paths or discover_code_source_paths(workspace_root)
     resolved = []
     for source_path in candidates:
@@ -416,8 +683,10 @@ def _resolve_source_paths(
         )
         if not is_supported_code_path(repo_path):
             continue
+        if not _is_ingestable_code_file(workspace_root, repo_path):
+            continue
         resolved.append(repo_path)
-    return resolved
+    return sorted(dict.fromkeys(resolved))
 
 
 def _prepare_file_code_chunks(
@@ -428,7 +697,7 @@ def _prepare_file_code_chunks(
     repo_commit_hash: str,
 ) -> list[PreparedCodeChunk]:
     content = _read_source_content(workspace_root, repo_path)
-    extracted_symbols = extract_typescript_symbol_chunks(repo_path, content)
+    extracted_symbols = _extract_code_symbols(repo_path, content)
     if not extracted_symbols:
         return []
 
@@ -551,6 +820,25 @@ def _collect_declarations(root_node: Node, source_bytes: bytes) -> list[_Declara
             declaration.exports.append(export_binding)
 
     return declarations
+
+
+def _extract_code_symbols(repo_path: str, content: str) -> list[ExtractedCodeSymbol]:
+    path = PurePosixPath(repo_path)
+    suffix = path.suffix.lower()
+    if suffix not in SYMBOL_AWARE_EXTENSIONS:
+        return build_fallback_text_chunks(repo_path, content, reason="non_symbol_aware_family")
+    try:
+        return extract_typescript_symbol_chunks(
+            repo_path,
+            content,
+            language=classify_code_language(repo_path),
+        ) or build_fallback_text_chunks(repo_path, content, reason="no_supported_symbols")
+    except ValueError:
+        return build_fallback_text_chunks(repo_path, content, reason="parse_error")
+
+
+def extract_code_symbol_chunks(repo_path: str, content: str) -> list[ExtractedCodeSymbol]:
+    return _extract_code_symbols(repo_path, content)
 
 
 def _extract_declaration_candidates(
@@ -705,6 +993,29 @@ def _extract_class_member_symbols(
     return members
 
 
+def _fallback_next_start(lines: Sequence[str], start_index: int, end_index: int) -> int:
+    overlap_start = end_index
+    overlap_lines = 0
+    overlap_chars = 0
+    while overlap_start > start_index:
+        candidate_index = overlap_start - 1
+        candidate_line = lines[candidate_index]
+        separator_len = 1 if overlap_start < end_index else 0
+        next_overlap_chars = overlap_chars + separator_len + len(candidate_line)
+        next_overlap_lines = overlap_lines + 1
+        overlap_start = candidate_index
+        overlap_lines = next_overlap_lines
+        overlap_chars = next_overlap_chars
+        if (
+            overlap_lines >= FALLBACK_OVERLAP_LINES
+            and overlap_chars >= FALLBACK_OVERLAP_CHARS
+        ):
+            break
+    if overlap_start == start_index:
+        return end_index
+    return overlap_start
+
+
 def _build_extracted_symbol(
     *,
     node: Node,
@@ -727,6 +1038,22 @@ def _build_extracted_symbol(
         metadata=metadata,
         sort_key=sort_key,
     )
+
+
+def _is_repo_root_hidden_config(path: PurePosixPath) -> bool:
+    return len(path.parts) == 1 and path.name in REPO_ROOT_HIDDEN_CONFIG_BASENAMES
+
+
+def _is_excluded_repo_path(path: PurePosixPath) -> bool:
+    repo_path = path.as_posix()
+    for excluded_prefix in REPO_ROOT_EXCLUDED_PREFIXES:
+        if repo_path == excluded_prefix or repo_path.startswith(f"{excluded_prefix}/"):
+            return True
+    if any(segment in ANY_SEGMENT_EXCLUDED_NAMES for segment in path.parts[:-1]):
+        return True
+    if path.name in EXCLUDED_CODE_BASENAMES:
+        return True
+    return repo_path.endswith(EXCLUDED_CODE_SUFFIXES)
 
 
 def _class_method_kind(member: Node) -> str:
@@ -760,7 +1087,22 @@ def _dedupe_export_bindings(bindings: Sequence[_ExportBinding]) -> list[_ExportB
 
 def _read_source_content(workspace_root: Path, repo_path: str) -> str:
     file_path = workspace_root / PurePosixPath(repo_path)
-    return _normalize_content(file_path.read_text(encoding="utf-8"))
+    if file_path.stat().st_size > CODE_MAX_FILE_BYTES:
+        raise ValueError(f"Code source exceeds size limit: {repo_path}")
+    content = _normalize_content(file_path.read_text(encoding="utf-8"))
+    if content.count("\n") + 1 > CODE_MAX_FILE_LINES:
+        raise ValueError(f"Code source exceeds line limit: {repo_path}")
+    return content
+
+
+def _is_ingestable_code_file(workspace_root: Path, repo_path: str) -> bool:
+    try:
+        _read_source_content(workspace_root, repo_path)
+    except ValueError as error:
+        if "exceeds" in str(error):
+            return False
+        raise
+    return True
 
 
 def _node_text(node: Node, source_bytes: bytes) -> str:
@@ -790,7 +1132,14 @@ def _first_child_of_type(node: Node, child_type: str) -> Node | None:
 
 @lru_cache(maxsize=2)
 def _get_parser(language: str) -> Any:
-    parser_name = "tsx" if language == "typescriptreact" else "typescript"
+    parser_name = {
+        "typescript": "typescript",
+        "typescriptreact": "tsx",
+        "javascript": "javascript",
+        "javascriptreact": "jsx",
+    }.get(language)
+    if parser_name is None:
+        raise ValueError(f"No parser configured for language {language}")
     return get_parser(parser_name)
 
 
@@ -888,6 +1237,15 @@ class PostgresCodeChunksStore:
                     )
         return len(chunks)
 
+    def delete_missing_paths(self, repo_paths: Sequence[str]) -> int:
+        with self._connection.transaction():
+            with self._connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM agentic.kb_code_chunks WHERE NOT (repo_path = ANY(%s))",
+                    (list(repo_paths),),
+                )
+                return cursor.rowcount
+
 
 class InMemoryCodeChunksStore:
     def __init__(self):
@@ -925,3 +1283,10 @@ class InMemoryCodeChunksStore:
             }
 
         return len(chunks)
+
+    def delete_missing_paths(self, repo_paths: Sequence[str]) -> int:
+        allowed = set(repo_paths)
+        to_delete = [key for key in self.rows_by_key if key[0] not in allowed]
+        for key in to_delete:
+            del self.rows_by_key[key]
+        return len(to_delete)

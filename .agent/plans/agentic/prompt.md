@@ -180,4 +180,3 @@ Project anchors
 - Scribe updates (canonical task plan doc + review logs + docs + research + tracking + project)
 - Commit hash + message
 - Next task
-- **IMPORTANT**: Add the Next task to ralph-tasks.md or skip if all tasks are complete. Do not forget to add the next task or explicitly state that there are no more tasks.

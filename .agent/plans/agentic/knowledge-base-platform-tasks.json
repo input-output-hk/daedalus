@@ -300,14 +300,14 @@
           "id": "task-402",
           "title": "Index entire Daedalus repository",
           "description": "Ingest the full repository immediately, with metadata and filters that still make the most agent-relevant areas fast to navigate",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
           "dependencies": [
             "task-401"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/code.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/ingest/code.py"
         },
         {
           "id": "task-403",
