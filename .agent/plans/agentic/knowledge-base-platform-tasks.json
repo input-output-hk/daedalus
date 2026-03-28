@@ -286,15 +286,15 @@
           "id": "task-401",
           "title": "Implement TypeScript symbol chunking",
           "description": "Use a TypeScript-aware parser to extract symbols from the most agent-relevant code areas",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 6,
           "dependencies": [
             "task-202",
             "task-501"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/code.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/ingest/code.py"
         },
         {
           "id": "task-402",
