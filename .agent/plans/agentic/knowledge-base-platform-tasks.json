@@ -313,15 +313,15 @@
           "id": "task-403",
           "title": "Ingest GitHub issues, PRs, and comments",
           "description": "Fetch repository issues, pull requests, and discussion threads for searchable history",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
           "dependencies": [
             "task-202",
             "task-501"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/github.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/ingest/github.py"
         },
         {
           "id": "task-404",
