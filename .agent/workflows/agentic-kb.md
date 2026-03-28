@@ -12,7 +12,7 @@ This workflow documents the planned Daedalus agentic platform described in `.age
 
 Until implementation lands, use this file as the source of truth for how the platform is expected to work and how future agents should think about its responsibilities.
 
-Current implementation note: `docker-compose.agentic.yml` now boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` is now a real built Python service with a packaged `agentic-kb` CLI, implemented `status` and `service` commands, and placeholder `sync` / `snapshot` subcommands reserved for later tasks. `mcp-search` remains a placeholder service until its follow-up task lands.
+Current implementation note: `docker-compose.agentic.yml` now boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` is now a real built Python service with a packaged `agentic-kb` CLI, implemented `status` and `service` commands, and placeholder `sync` / `snapshot` subcommands reserved for later tasks. `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and now delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 

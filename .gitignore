@@ -102,6 +102,7 @@ result*
 # AI Agents
 
 .agent/settings.local.json
+.ralph
 
 # Npm
 package-lock.json

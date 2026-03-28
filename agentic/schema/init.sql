@@ -232,3 +232,7 @@ ON CONFLICT (version) DO NOTHING;
 INSERT INTO agentic.kb_schema_migrations (version, description)
 VALUES (2, 'create core knowledge tables')
 ON CONFLICT (version) DO NOTHING;
+
+-- task-203 bootstrap delegation: keep init.sql as the single root entrypoint
+-- while sourcing the standalone task-owned index SQL exactly once on fresh DB init.
+\ir includes/create_indexes.task-203.sql

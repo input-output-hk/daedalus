@@ -140,8 +140,8 @@ Project anchors
 2. Orchestrator checks consistency across code + canonical task plan doc + planning review log + implementation review log + docs + tracking + research + project
    D) Final task signoff and commit
 - Only after orchestrator final signoff:
-- create exactly one commit for the task
-- Conventional Commit required
+- create exactly one commit for the task using git-commit-formatter skill
+- Conventional Commit required about the actual task, not the ralph-loop information.
 - commit only task-relevant files
 - message format:
   - `<type>(agentic): <task-id> <short imperative summary>`
@@ -180,3 +180,4 @@ Project anchors
 - Scribe updates (canonical task plan doc + review logs + docs + research + tracking + project)
 - Commit hash + message
 - Next task
+- **IMPORTANT**: Add the Next task to ralph-tasks.md or skip if all tasks are complete. Do not forget to add the next task or explicitly state that there are no more tasks.

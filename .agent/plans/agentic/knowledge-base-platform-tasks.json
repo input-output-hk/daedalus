@@ -178,13 +178,13 @@
           "id": "task-203",
           "title": "Create BM25 and HNSW indexes",
           "description": "Add pg_search BM25 indexes and pgvector HNSW indexes for all searchable tables",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-202"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-28",
           "targetPath": "agentic/schema/create_indexes.sql"
         },
         {

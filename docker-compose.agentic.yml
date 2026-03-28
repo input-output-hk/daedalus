@@ -10,6 +10,7 @@ services:
     volumes:
       - paradedb_data:/var/lib/postgresql
       - ./agentic/schema/init.sql:/docker-entrypoint-initdb.d/999-agentic-init.sql:ro
+      - ./agentic/schema/create_indexes.sql:/docker-entrypoint-initdb.d/includes/create_indexes.task-203.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
