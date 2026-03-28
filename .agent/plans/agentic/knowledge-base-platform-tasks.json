@@ -377,7 +377,7 @@
           "id": "task-502",
           "title": "Implement BM25, vector, and RRF search queries",
           "description": "Build the hybrid ranking layer that fuses BM25 and vector results into a single ranked list",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5,
           "dependencies": [
@@ -386,10 +386,11 @@
             "task-501",
             "task-301",
             "task-402",
-            "task-403"
+            "task-403",
+            "task-404"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/search/query.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/search/query.py"
         },
         {
           "id": "task-503",
