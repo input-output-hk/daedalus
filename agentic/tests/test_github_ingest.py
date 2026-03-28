@@ -491,6 +491,22 @@ class GithubIngestTests(unittest.TestCase):
             def __exit__(self, exc_type, exc, tb):
                 return False
 
+        class FakeSyncContextStore:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                return len(states)
+
+            def record_failures(self, failures):
+                return len(failures)
+
         def fake_from_config(config):
             captured["embed_model"] = config.ollama_embed_model
             return embedding_client
@@ -498,6 +514,10 @@ class GithubIngestTests(unittest.TestCase):
         def fake_store_from_database_url(database_url):
             captured["database_url"] = database_url
             return FakeContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            captured["sync_database_url"] = database_url
+            return FakeSyncContextStore()
 
         def fake_ingest_github(**kwargs):
             captured.update(kwargs)
@@ -534,20 +554,213 @@ class GithubIngestTests(unittest.TestCase):
         original_from_config = github.OllamaEmbeddingClient.from_config
         original_store_factory = github.PostgresGithubStore.from_database_url
         original_ingest = github.ingest_github
+        original_sync_store_factory = github.PostgresSyncStateStore.from_database_url
         try:
             github.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
             github.PostgresGithubStore.from_database_url = staticmethod(fake_store_from_database_url)
+            github.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
+            )
             github.ingest_github = fake_ingest_github
             result = github.ingest_github_from_config(config=config, bounds=bounds)
         finally:
             github.OllamaEmbeddingClient.from_config = original_from_config
             github.PostgresGithubStore.from_database_url = original_store_factory
+            github.PostgresSyncStateStore.from_database_url = original_sync_store_factory
             github.ingest_github = original_ingest
 
         self.assertEqual(result.bounds, bounds)
         self.assertEqual(captured["database_url"], "postgresql://localhost/task403")
+        self.assertEqual(captured["sync_database_url"], "postgresql://localhost/task403")
         self.assertEqual(captured["github_token"], "secret-token")
         self.assertIs(captured["embedding_client"], embedding_client)
+
+    def test_ingest_github_from_config_records_sync_state_attempts_and_success(self):
+        embedding_client = FakeEmbeddingClient()
+        captured: dict[str, object] = {}
+
+        class FakeGithubContextStore:
+            def __enter__(self):
+                return github.InMemoryGithubStore()
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        class FakeSyncContextStore:
+            def __init__(self):
+                self.attempts = []
+                self.states = []
+                self.failures = []
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                self.attempts.extend(attempts)
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                self.states.extend(states)
+                return len(states)
+
+            def record_failures(self, failures):
+                self.failures.extend(failures)
+                return len(failures)
+
+        sync_store = FakeSyncContextStore()
+
+        def fake_from_config(config):
+            return embedding_client
+
+        def fake_store_from_database_url(database_url):
+            captured["database_url"] = database_url
+            return FakeGithubContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            captured["sync_database_url"] = database_url
+            return sync_store
+
+        def fake_ingest_github(**kwargs):
+            return github.GithubIngestResult(
+                repo="DripDropz/daedalus",
+                bounds=kwargs["bounds"],
+                stream_progress={
+                    name: github.GithubStreamProgress(
+                        stream_name=name,
+                        pages_fetched=1,
+                        hit_bound=False,
+                        latest_source_updated_at=datetime(2026, 3, 28, 12, 0, tzinfo=timezone.utc)
+                        if name == "issues"
+                        else None,
+                        issues_written=1 if name == "issues" else 0,
+                        issue_comments_written=0,
+                        prs_written=0,
+                        pr_comments_written=0,
+                    )
+                    for name in github.STREAM_ORDER
+                },
+                issues_written=1,
+                issue_comments_written=0,
+                prs_written=0,
+                pr_comments_written=0,
+            )
+
+        config = AgenticConfig(
+            database_url="postgresql://localhost/task403",
+            ollama_base_url="http://ollama:11434",
+            ollama_embed_model="all-minilm",
+            github_token="secret-token",
+        )
+        bounds = github.GithubFetchBounds(repo="DripDropz/daedalus", max_pages=1)
+
+        original_from_config = github.OllamaEmbeddingClient.from_config
+        original_store_factory = github.PostgresGithubStore.from_database_url
+        original_sync_store_factory = github.PostgresSyncStateStore.from_database_url
+        original_ingest = github.ingest_github
+        try:
+            github.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
+            github.PostgresGithubStore.from_database_url = staticmethod(fake_store_from_database_url)
+            github.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
+            )
+            github.ingest_github = fake_ingest_github
+            result = github.ingest_github_from_config(config=config, bounds=bounds)
+        finally:
+            github.OllamaEmbeddingClient.from_config = original_from_config
+            github.PostgresGithubStore.from_database_url = original_store_factory
+            github.PostgresSyncStateStore.from_database_url = original_sync_store_factory
+            github.ingest_github = original_ingest
+
+        self.assertEqual(result.issues_written, 1)
+        self.assertEqual(captured["sync_database_url"], "postgresql://localhost/task403")
+        self.assertEqual(len(sync_store.attempts), len(github.STREAM_ORDER))
+        self.assertEqual(len(sync_store.states), len(github.STREAM_ORDER))
+        self.assertEqual(sync_store.failures, [])
+        issues_attempt = next(
+            attempt for attempt in sync_store.attempts if attempt.scope_key.endswith(":issues")
+        )
+        self.assertEqual(issues_attempt.source_name, "github")
+        issues_state = next(
+            persisted for persisted in sync_store.states if persisted.scope_key.endswith(":issues")
+        )
+        self.assertEqual(issues_state.watermark_text, "2026-03-28T12:00:00Z")
+
+    def test_ingest_github_from_config_records_sync_failure_before_reraising(self):
+        class FakeGithubContextStore:
+            def __enter__(self):
+                return github.InMemoryGithubStore()
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        class FakeSyncContextStore:
+            def __init__(self):
+                self.attempts = []
+                self.failures = []
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                self.attempts.extend(attempts)
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                raise AssertionError("should not persist success state on failure")
+
+            def record_failures(self, failures):
+                self.failures.extend(failures)
+                return len(failures)
+
+        sync_store = FakeSyncContextStore()
+
+        def fake_from_config(config):
+            return FakeEmbeddingClient()
+
+        def fake_store_from_database_url(database_url):
+            return FakeGithubContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            return sync_store
+
+        def fake_ingest_github(**kwargs):
+            raise RuntimeError("boom from github ingest")
+
+        config = AgenticConfig(
+            database_url="postgresql://localhost/task403",
+            ollama_base_url="http://ollama:11434",
+            ollama_embed_model="all-minilm",
+            github_token="secret-token",
+        )
+
+        original_from_config = github.OllamaEmbeddingClient.from_config
+        original_store_factory = github.PostgresGithubStore.from_database_url
+        original_sync_store_factory = github.PostgresSyncStateStore.from_database_url
+        original_ingest = github.ingest_github
+        try:
+            github.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
+            github.PostgresGithubStore.from_database_url = staticmethod(fake_store_from_database_url)
+            github.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
+            )
+            github.ingest_github = fake_ingest_github
+            with self.assertRaisesRegex(RuntimeError, "boom from github ingest"):
+                github.ingest_github_from_config(config=config)
+        finally:
+            github.OllamaEmbeddingClient.from_config = original_from_config
+            github.PostgresGithubStore.from_database_url = original_store_factory
+            github.PostgresSyncStateStore.from_database_url = original_sync_store_factory
+            github.ingest_github = original_ingest
+
+        self.assertEqual(len(sync_store.attempts), len(github.STREAM_ORDER))
+        self.assertEqual(len(sync_store.failures), len(github.STREAM_ORDER))
+        self.assertTrue(all("boom from github ingest" in failure.error for failure in sync_store.failures))
 
     def _issue_payload(
         self,

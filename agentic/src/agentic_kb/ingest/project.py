@@ -21,6 +21,13 @@ from agentic_kb.ingest.github import (
     deterministic_github_issue_id,
     deterministic_github_pr_id,
 )
+from agentic_kb.sync.state import (
+    PostgresSyncStateStore,
+    build_project_sync_state,
+    build_sync_attempt,
+    build_sync_failure,
+    project_scope_key,
+)
 
 
 DEFAULT_GITHUB_PROJECT_OWNER = "DripDropz"
@@ -660,14 +667,62 @@ def ingest_project_items_from_config(
         )
 
     embedding_client = OllamaEmbeddingClient.from_config(active_config)
+    active_bounds = bounds or ProjectFetchBounds()
+    attempted_at = datetime.now(timezone.utc)
+    scope_key = project_scope_key(
+        active_bounds.project_owner,
+        active_bounds.project_number,
+    )
     with PostgresProjectItemsStore.from_database_url(active_config.database_url) as project_store:
-        return ingest_project_items(
-            embedding_client=embedding_client,
-            project_store=project_store,
-            bounds=bounds,
-            github_token=active_config.github_token,
-            request_timeout_seconds=request_timeout_seconds,
-        )
+        with PostgresSyncStateStore.from_database_url(active_config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "project",
+                        scope_key,
+                        attempted_at=attempted_at,
+                        metadata={
+                            "project_owner": active_bounds.project_owner,
+                            "project_number": active_bounds.project_number,
+                        },
+                    )
+                ]
+            )
+            try:
+                result = ingest_project_items(
+                    embedding_client=embedding_client,
+                    project_store=project_store,
+                    bounds=active_bounds,
+                    github_token=active_config.github_token,
+                    request_timeout_seconds=request_timeout_seconds,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "project",
+                            scope_key,
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={
+                                "project_owner": active_bounds.project_owner,
+                                "project_number": active_bounds.project_number,
+                            },
+                        )
+                    ]
+                )
+                raise
+
+            sync_store.upsert_sync_states(
+                [
+                    build_project_sync_state(
+                        result,
+                        attempted_at=attempted_at,
+                        succeeded_at=datetime.now(timezone.utc),
+                    )
+                ]
+            )
+            return result
 
 
 def _prepare_project_item(

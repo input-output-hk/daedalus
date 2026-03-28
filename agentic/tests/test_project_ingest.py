@@ -373,6 +373,22 @@ class ProjectIngestTests(unittest.TestCase):
             def __exit__(self, exc_type, exc, tb):
                 return False
 
+        class FakeSyncContextStore:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                return len(states)
+
+            def record_failures(self, failures):
+                return len(failures)
+
         def fake_from_config(config):
             captured["embed_model"] = config.ollama_embed_model
             return embedding_client
@@ -380,6 +396,10 @@ class ProjectIngestTests(unittest.TestCase):
         def fake_store_from_database_url(database_url):
             captured["database_url"] = database_url
             return FakeContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            captured["sync_database_url"] = database_url
+            return FakeSyncContextStore()
 
         def fake_ingest_project_items(**kwargs):
             captured.update(kwargs)
@@ -407,22 +427,202 @@ class ProjectIngestTests(unittest.TestCase):
         original_from_config = project.OllamaEmbeddingClient.from_config
         original_store_factory = project.PostgresProjectItemsStore.from_database_url
         original_ingest = project.ingest_project_items
+        original_sync_store_factory = project.PostgresSyncStateStore.from_database_url
         try:
             project.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
             project.PostgresProjectItemsStore.from_database_url = staticmethod(
                 fake_store_from_database_url
+            )
+            project.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
             )
             project.ingest_project_items = fake_ingest_project_items
             result = project.ingest_project_items_from_config(config=config, bounds=bounds)
         finally:
             project.OllamaEmbeddingClient.from_config = original_from_config
             project.PostgresProjectItemsStore.from_database_url = original_store_factory
+            project.PostgresSyncStateStore.from_database_url = original_sync_store_factory
             project.ingest_project_items = original_ingest
 
         self.assertEqual(result.bounds, bounds)
         self.assertEqual(captured["database_url"], "postgresql://localhost/task404")
+        self.assertEqual(captured["sync_database_url"], "postgresql://localhost/task404")
         self.assertEqual(captured["github_token"], "secret-token")
         self.assertIs(captured["embedding_client"], embedding_client)
+
+    def test_ingest_project_items_from_config_records_sync_state_attempt_and_success(self):
+        embedding_client = FakeEmbeddingClient()
+        captured: dict[str, object] = {}
+
+        class FakeProjectContextStore:
+            def __enter__(self):
+                return project.InMemoryProjectItemsStore()
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        class FakeSyncContextStore:
+            def __init__(self):
+                self.attempts = []
+                self.states = []
+                self.failures = []
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                self.attempts.extend(attempts)
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                self.states.extend(states)
+                return len(states)
+
+            def record_failures(self, failures):
+                self.failures.extend(failures)
+                return len(failures)
+
+        sync_store = FakeSyncContextStore()
+
+        def fake_from_config(config):
+            return embedding_client
+
+        def fake_store_from_database_url(database_url):
+            captured["database_url"] = database_url
+            return FakeProjectContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            captured["sync_database_url"] = database_url
+            return sync_store
+
+        def fake_ingest_project_items(**kwargs):
+            return project.ProjectIngestResult(
+                project_owner="DripDropz",
+                project_number=5,
+                project_title="Daedalus Maintenance",
+                project_url="https://github.com/orgs/DripDropz/projects/5",
+                bounds=kwargs["bounds"],
+                pages_fetched=1,
+                hit_bound=False,
+                final_cursor="cursor-123",
+                latest_source_updated_at=datetime(2026, 3, 28, 16, 0, tzinfo=timezone.utc),
+                rows_written=1,
+            )
+
+        config = AgenticConfig(
+            database_url="postgresql://localhost/task404",
+            ollama_base_url="http://ollama:11434",
+            ollama_embed_model="all-minilm",
+            github_token="secret-token",
+        )
+        bounds = project.ProjectFetchBounds(project_owner="DripDropz", project_number=5)
+
+        original_from_config = project.OllamaEmbeddingClient.from_config
+        original_store_factory = project.PostgresProjectItemsStore.from_database_url
+        original_sync_store_factory = project.PostgresSyncStateStore.from_database_url
+        original_ingest = project.ingest_project_items
+        try:
+            project.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
+            project.PostgresProjectItemsStore.from_database_url = staticmethod(
+                fake_store_from_database_url
+            )
+            project.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
+            )
+            project.ingest_project_items = fake_ingest_project_items
+            result = project.ingest_project_items_from_config(config=config, bounds=bounds)
+        finally:
+            project.OllamaEmbeddingClient.from_config = original_from_config
+            project.PostgresProjectItemsStore.from_database_url = original_store_factory
+            project.PostgresSyncStateStore.from_database_url = original_sync_store_factory
+            project.ingest_project_items = original_ingest
+
+        self.assertEqual(result.final_cursor, "cursor-123")
+        self.assertEqual(captured["sync_database_url"], "postgresql://localhost/task404")
+        self.assertEqual(len(sync_store.attempts), 1)
+        self.assertEqual(len(sync_store.states), 1)
+        self.assertEqual(sync_store.failures, [])
+        self.assertEqual(sync_store.states[0].cursor_text, "cursor-123")
+        self.assertEqual(sync_store.states[0].watermark_text, "2026-03-28T16:00:00Z")
+
+    def test_ingest_project_items_from_config_records_sync_failure_before_reraising(self):
+        class FakeProjectContextStore:
+            def __enter__(self):
+                return project.InMemoryProjectItemsStore()
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        class FakeSyncContextStore:
+            def __init__(self):
+                self.attempts = []
+                self.failures = []
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def record_attempts(self, attempts):
+                self.attempts.extend(attempts)
+                return len(attempts)
+
+            def upsert_sync_states(self, states):
+                raise AssertionError("should not persist success state on failure")
+
+            def record_failures(self, failures):
+                self.failures.extend(failures)
+                return len(failures)
+
+        sync_store = FakeSyncContextStore()
+
+        def fake_from_config(config):
+            return FakeEmbeddingClient()
+
+        def fake_store_from_database_url(database_url):
+            return FakeProjectContextStore()
+
+        def fake_sync_store_from_database_url(database_url):
+            return sync_store
+
+        def fake_ingest_project_items(**kwargs):
+            raise RuntimeError("boom from project ingest")
+
+        config = AgenticConfig(
+            database_url="postgresql://localhost/task404",
+            ollama_base_url="http://ollama:11434",
+            ollama_embed_model="all-minilm",
+            github_token="secret-token",
+        )
+
+        original_from_config = project.OllamaEmbeddingClient.from_config
+        original_store_factory = project.PostgresProjectItemsStore.from_database_url
+        original_sync_store_factory = project.PostgresSyncStateStore.from_database_url
+        original_ingest = project.ingest_project_items
+        try:
+            project.OllamaEmbeddingClient.from_config = staticmethod(fake_from_config)
+            project.PostgresProjectItemsStore.from_database_url = staticmethod(
+                fake_store_from_database_url
+            )
+            project.PostgresSyncStateStore.from_database_url = staticmethod(
+                fake_sync_store_from_database_url
+            )
+            project.ingest_project_items = fake_ingest_project_items
+            with self.assertRaisesRegex(RuntimeError, "boom from project ingest"):
+                project.ingest_project_items_from_config(config=config)
+        finally:
+            project.OllamaEmbeddingClient.from_config = original_from_config
+            project.PostgresProjectItemsStore.from_database_url = original_store_factory
+            project.PostgresSyncStateStore.from_database_url = original_sync_store_factory
+            project.ingest_project_items = original_ingest
+
+        self.assertEqual(len(sync_store.attempts), 1)
+        self.assertEqual(len(sync_store.failures), 1)
+        self.assertIn("boom from project ingest", sync_store.failures[0].error)
 
     def test_helpers_cover_ids_preview_and_http_error_detail(self):
         self.assertEqual(

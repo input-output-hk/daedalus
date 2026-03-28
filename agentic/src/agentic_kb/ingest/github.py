@@ -18,6 +18,13 @@ from agentic_kb.ingest.docs import (
     _vector_literal,
     build_preview_text,
 )
+from agentic_kb.sync.state import (
+    PostgresSyncStateStore,
+    build_github_sync_state_updates,
+    build_sync_attempt,
+    build_sync_failure,
+    github_scope_key,
+)
 
 
 DEFAULT_GITHUB_REPO = "DripDropz/daedalus"
@@ -552,14 +559,52 @@ def ingest_github_from_config(
         raise MissingGithubTokenError("GITHUB_TOKEN is required for GitHub ingestion")
 
     embedding_client = OllamaEmbeddingClient.from_config(active_config)
+    active_bounds = bounds or GithubFetchBounds()
+    attempted_at = datetime.now(timezone.utc)
     with PostgresGithubStore.from_database_url(active_config.database_url) as github_store:
-        return ingest_github(
-            embedding_client=embedding_client,
-            github_store=github_store,
-            bounds=bounds,
-            github_token=active_config.github_token,
-            request_timeout_seconds=request_timeout_seconds,
-        )
+        with PostgresSyncStateStore.from_database_url(active_config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "github",
+                        github_scope_key(stream_name, repo=active_bounds.repo),
+                        attempted_at=attempted_at,
+                        metadata={"repo": active_bounds.repo, "stream_name": stream_name},
+                    )
+                    for stream_name in STREAM_ORDER
+                ]
+            )
+            try:
+                result = ingest_github(
+                    embedding_client=embedding_client,
+                    github_store=github_store,
+                    bounds=active_bounds,
+                    github_token=active_config.github_token,
+                    request_timeout_seconds=request_timeout_seconds,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "github",
+                            github_scope_key(stream_name, repo=active_bounds.repo),
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={"repo": active_bounds.repo, "stream_name": stream_name},
+                        )
+                        for stream_name in STREAM_ORDER
+                    ]
+                )
+                raise
+
+            sync_store.upsert_sync_states(
+                build_github_sync_state_updates(
+                    result,
+                    attempted_at=attempted_at,
+                    succeeded_at=datetime.now(timezone.utc),
+                )
+            )
+            return result
 
 
 def _prepare_page_batch(

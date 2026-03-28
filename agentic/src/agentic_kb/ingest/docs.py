@@ -10,6 +10,14 @@ from typing import Any, Protocol, Sequence
 
 from agentic_kb.config import AgenticConfig
 from agentic_kb.embed import EmbeddingResponseError, OllamaEmbeddingClient
+from agentic_kb.sync.state import (
+    DEFAULT_SYNC_REPO,
+    PostgresSyncStateStore,
+    build_docs_sync_state,
+    build_sync_attempt,
+    build_sync_failure,
+    repo_scope_key,
+)
 
 
 DOC_SOURCE_PATTERNS: tuple[str, ...] = (
@@ -166,13 +174,52 @@ def ingest_docs_from_config(
         raise ValueError("DATABASE_URL is required for docs ingestion")
 
     embedding_client = OllamaEmbeddingClient.from_config(active_config)
+    attempted_at = datetime.now(timezone.utc)
+    scope_key = repo_scope_key(DEFAULT_SYNC_REPO)
     with PostgresDocsStore.from_database_url(active_config.database_url) as docs_store:
-        return ingest_docs(
-            workspace_root,
-            embedding_client=embedding_client,
-            docs_store=docs_store,
-            repo_commit_hash=repo_commit_hash,
-        )
+        with PostgresSyncStateStore.from_database_url(active_config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "docs",
+                        scope_key,
+                        attempted_at=attempted_at,
+                        metadata={"repo": DEFAULT_SYNC_REPO},
+                    )
+                ]
+            )
+            try:
+                result = ingest_docs(
+                    workspace_root,
+                    embedding_client=embedding_client,
+                    docs_store=docs_store,
+                    repo_commit_hash=repo_commit_hash,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "docs",
+                            scope_key,
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={"repo": DEFAULT_SYNC_REPO},
+                        )
+                    ]
+                )
+                raise
+
+            sync_store.upsert_sync_states(
+                [
+                    build_docs_sync_state(
+                        result,
+                        attempted_at=attempted_at,
+                        succeeded_at=datetime.now(timezone.utc),
+                        repo=DEFAULT_SYNC_REPO,
+                    )
+                ]
+            )
+            return result
 
 
 def normalize_source_path(workspace_root: str | Path, file_path: str | Path) -> str:

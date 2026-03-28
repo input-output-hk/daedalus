@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path, PurePosixPath
 from typing import Any, Protocol, Sequence
@@ -18,6 +19,14 @@ from agentic_kb.ingest.docs import (
     _vector_literal,
     get_repo_commit_hash,
     normalize_source_path,
+)
+from agentic_kb.sync.state import (
+    DEFAULT_SYNC_REPO,
+    PostgresSyncStateStore,
+    build_code_sync_state,
+    build_sync_attempt,
+    build_sync_failure,
+    repo_scope_key,
 )
 
 
@@ -297,14 +306,53 @@ def ingest_code_from_config(
         raise ValueError("DATABASE_URL is required for code ingestion")
 
     embedding_client = OllamaEmbeddingClient.from_config(active_config)
+    attempted_at = datetime.now(timezone.utc)
+    scope_key = repo_scope_key(DEFAULT_SYNC_REPO)
     with PostgresCodeChunksStore.from_database_url(active_config.database_url) as code_store:
-        return ingest_code(
-            workspace_root,
-            embedding_client=embedding_client,
-            code_store=code_store,
-            source_paths=source_paths,
-            repo_commit_hash=repo_commit_hash,
-        )
+        with PostgresSyncStateStore.from_database_url(active_config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "code",
+                        scope_key,
+                        attempted_at=attempted_at,
+                        metadata={"repo": DEFAULT_SYNC_REPO},
+                    )
+                ]
+            )
+            try:
+                result = ingest_code(
+                    workspace_root,
+                    embedding_client=embedding_client,
+                    code_store=code_store,
+                    source_paths=source_paths,
+                    repo_commit_hash=repo_commit_hash,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "code",
+                            scope_key,
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={"repo": DEFAULT_SYNC_REPO},
+                        )
+                    ]
+                )
+                raise
+
+            sync_store.upsert_sync_states(
+                [
+                    build_code_sync_state(
+                        result,
+                        attempted_at=attempted_at,
+                        succeeded_at=datetime.now(timezone.utc),
+                        repo=DEFAULT_SYNC_REPO,
+                    )
+                ]
+            )
+            return result
 
 
 def parse_typescript_source(repo_path: str, content: str, *, language: str) -> Any:

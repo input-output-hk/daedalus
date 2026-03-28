@@ -340,16 +340,15 @@
           "id": "task-405",
           "title": "Track sync cursors and watermarks",
           "description": "Persist repo commits, GitHub updatedAt values, and project cursors so all sources can refresh incrementally",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
-            "task-304",
             "task-403",
             "task-404"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/sync/state.py"
+          "completedAt": "2026-03-28",
+          "targetPath": "agentic/src/agentic_kb/sync/state.py"
         }
       ]
     },
