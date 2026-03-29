@@ -230,7 +230,7 @@
           "id": "task-207",
           "title": "Add schema bootstrap and index creation regression check",
           "description": "Prove that a fresh KB can initialize the schema, version tables, and search indexes exactly as the documented bootstrap contract requires",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -238,7 +238,7 @@
             "task-203",
             "task-205"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/tests/test_schema_bootstrap.py"
         }
       ]
