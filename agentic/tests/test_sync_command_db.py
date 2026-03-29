@@ -56,7 +56,10 @@ class SyncCommandDbTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             self._git_init(workspace)
-            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(
+                workspace / "README.md",
+                "# Readme\n\nintro\n\n## Section\nbaseline\n",
+            )
             self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
             baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
 
@@ -117,7 +120,7 @@ class SyncCommandDbTests(unittest.TestCase):
 
             with self.connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT source_path, content, repo_commit_hash FROM agentic.kb_documents ORDER BY source_path"
+                    "SELECT source_path, chunk_index, content, repo_commit_hash FROM agentic.kb_documents ORDER BY source_path, chunk_index"
                 )
                 doc_rows = cursor.fetchall()
                 cursor.execute(
@@ -138,9 +141,9 @@ class SyncCommandDbTests(unittest.TestCase):
         self.assertEqual(result["docs"]["deleted_paths"], ("README.md",))
         self.assertEqual(result["code"]["changed_paths"], ("source/common/renamedAlpha.ts",))
         self.assertEqual(result["code"]["deleted_paths"], ("source/common/alpha.ts",))
-        self.assertEqual([row[0] for row in doc_rows], ["AGENTS.md"])
-        self.assertIn("changed after import", doc_rows[0][1])
-        self.assertEqual(doc_rows[0][2], head_commit)
+        self.assertEqual([(row[0], row[1]) for row in doc_rows], [("AGENTS.md", 0)])
+        self.assertIn("changed after import", doc_rows[0][2])
+        self.assertEqual(doc_rows[0][3], head_commit)
         self.assertEqual([row[0] for row in code_rows], ["source/common/renamedAlpha.ts"])
         self.assertEqual(code_rows[0][1], head_commit)
         self.assertEqual(
@@ -227,14 +230,13 @@ class SyncCommandDbTests(unittest.TestCase):
         self.addCleanup(code_store.close)
         self.addCleanup(sync_store.close)
 
-        docs_store.upsert_documents(
-            docs.prepare_documents(
-                workspace,
-                source_paths=["README.md"],
-                embedding_client=FakeEmbeddingClient(),
-                repo_commit_hash=baseline_commit,
-            )
+        prepared_docs = docs.prepare_documents(
+            workspace,
+            source_paths=["README.md"],
+            embedding_client=FakeEmbeddingClient(),
+            repo_commit_hash=baseline_commit,
         )
+        docs_store.replace_documents_for_paths(["README.md"], prepared_docs)
         code.ingest_code(
             workspace,
             embedding_client=FakeEmbeddingClient(),

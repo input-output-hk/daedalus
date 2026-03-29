@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import hashlib
 import re
 import subprocess
@@ -41,6 +42,8 @@ EMBED_BATCH_MAX_CHARS = 16000
 EMBED_SEGMENT_TARGET_CHARS = 600
 EMBED_SEGMENT_MIN_CHARS = 100
 FIRST_H1_PATTERN = re.compile(r"^\s*#(?!#)\s+(.+?)\s*$", re.MULTILINE)
+ATX_HEADING_PATTERN = re.compile(r"^[ \t]{0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$")
+FENCED_CODE_BLOCK_PATTERN = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
 
 
 class EmbeddingClient(Protocol):
@@ -50,6 +53,13 @@ class EmbeddingClient(Protocol):
 
 class DocsStore(Protocol):
     def upsert_documents(self, documents: Sequence["PreparedDocument"]) -> int:
+        ...
+
+    def replace_documents_for_paths(
+        self,
+        source_paths: Sequence[str],
+        documents: Sequence["PreparedDocument"],
+    ) -> int:
         ...
 
     def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:
@@ -86,6 +96,13 @@ class DocsIngestResult:
     repo_commit_hash: str
 
 
+@dataclass(frozen=True)
+class _MarkdownHeading:
+    line_index: int
+    level: int
+    title: str
+
+
 def discover_docs_source_paths(workspace_root: str | Path) -> list[str]:
     root = Path(workspace_root).resolve()
     matches: set[str] = set()
@@ -112,43 +129,58 @@ def prepare_documents(
     repo_commit_hash: str | None = None,
 ) -> list[PreparedDocument]:
     root = Path(workspace_root).resolve()
+    candidate_source_paths = source_paths if source_paths is not None else discover_docs_source_paths(root)
     resolved_source_paths = [
         normalize_source_path(root, root / PurePosixPath(source_path))
-        for source_path in (source_paths or discover_docs_source_paths(root))
+        for source_path in candidate_source_paths
     ]
+    resolved_source_paths = list(dict.fromkeys(resolved_source_paths))
     resolved_repo_commit_hash = repo_commit_hash or get_repo_commit_hash(root)
 
     document_payloads = [
         _load_document_payload(root, source_path, repo_commit_hash=resolved_repo_commit_hash)
         for source_path in resolved_source_paths
     ]
-    embeddings = [
-        _embed_document_content(payload["content"], embedding_client=embedding_client)
-        for payload in document_payloads
-    ]
 
     documents: list[PreparedDocument] = []
-    for payload, embedding in zip(document_payloads, embeddings, strict=True):
-        documents.append(
-            PreparedDocument(
-                id=payload["id"],
-                source_domain="docs",
-                doc_kind=payload["doc_kind"],
-                source_path=payload["source_path"],
-                title=payload["title"],
-                section_title=None,
-                subsection_title=None,
-                heading_path=[],
-                chunk_index=0,
-                content=payload["content"],
-                preview_text=payload["preview_text"],
-                content_hash=payload["content_hash"],
-                repo_commit_hash=payload["repo_commit_hash"],
-                source_updated_at=payload["source_updated_at"],
-                embedding=embedding,
-                metadata=payload["metadata"],
-            )
+    for payload in document_payloads:
+        chunks = _chunk_markdown_document(
+            payload["content"],
+            title=payload["title"],
+            title_from_h1=payload["metadata"]["title_from_h1"],
         )
+        embeddings = [
+            _embed_document_content(chunk["content"], embedding_client=embedding_client)
+            for chunk in chunks
+        ]
+        for chunk, embedding in zip(chunks, embeddings, strict=True):
+            documents.append(
+                PreparedDocument(
+                    id=deterministic_document_id(
+                        payload["source_path"],
+                        chunk_index=chunk["chunk_index"],
+                    ),
+                    source_domain="docs",
+                    doc_kind=payload["doc_kind"],
+                    source_path=payload["source_path"],
+                    title=payload["title"],
+                    section_title=chunk["section_title"],
+                    subsection_title=chunk["subsection_title"],
+                    heading_path=chunk["heading_path"],
+                    chunk_index=chunk["chunk_index"],
+                    content=chunk["content"],
+                    preview_text=build_preview_text(chunk["content"]),
+                    content_hash=deterministic_content_hash(
+                        payload["source_path"],
+                        chunk["content"],
+                        chunk_index=chunk["chunk_index"],
+                    ),
+                    repo_commit_hash=payload["repo_commit_hash"],
+                    source_updated_at=payload["source_updated_at"],
+                    embedding=embedding,
+                    metadata=dict(payload["metadata"]),
+                )
+            )
 
     return documents
 
@@ -165,10 +197,11 @@ def ingest_docs(
         embedding_client=embedding_client,
         repo_commit_hash=repo_commit_hash,
     )
-    docs_store.upsert_documents(documents)
+    source_paths = _unique_source_paths(document.source_path for document in documents)
+    docs_store.replace_documents_for_paths(source_paths, documents)
 
     return DocsIngestResult(
-        source_paths=tuple(document.source_path for document in documents),
+        source_paths=tuple(source_paths),
         processed_count=len(documents),
         repo_commit_hash=documents[0].repo_commit_hash if documents else (repo_commit_hash or get_repo_commit_hash(workspace_root)),
     )
@@ -279,9 +312,16 @@ def deterministic_document_id(source_path: str, *, chunk_index: int = 0) -> str:
     return f"docs:{source_path}#{chunk_index}"
 
 
-def deterministic_content_hash(source_path: str, content: str) -> str:
+def deterministic_content_hash(
+    source_path: str,
+    content: str,
+    *,
+    chunk_index: int = 0,
+) -> str:
     digest = hashlib.sha256()
     digest.update(source_path.encode("utf-8"))
+    digest.update(b"\0")
+    digest.update(str(chunk_index).encode("utf-8"))
     digest.update(b"\0")
     digest.update(content.encode("utf-8"))
     return digest.hexdigest()
@@ -317,7 +357,6 @@ def _load_document_payload(
     source_updated_at = datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc)
 
     return {
-        "id": deterministic_document_id(source_path),
         "doc_kind": classify_doc_kind(source_path),
         "source_path": source_path,
         "title": title,
@@ -334,6 +373,135 @@ def _load_document_payload(
             "title_from_h1": title_from_h1,
         },
     }
+
+
+def _chunk_markdown_document(
+    content: str,
+    *,
+    title: str,
+    title_from_h1: bool,
+) -> list[dict[str, Any]]:
+    lines = content.splitlines(keepends=True)
+    headings = _parse_markdown_headings(lines)
+    title_heading = _resolve_document_title_heading(lines, headings, title=title, title_from_h1=title_from_h1)
+    section_headings = [heading for heading in headings if heading != title_heading]
+
+    if not section_headings:
+        return [_build_chunk_payload(content=content, chunk_index=0, heading_path=[])]
+
+    chunks: list[dict[str, Any]] = []
+    intro_end = section_headings[0].line_index
+    intro_content = _build_intro_chunk_content(lines, title_heading=title_heading, intro_end=intro_end)
+    if intro_content is not None:
+        chunks.append(_build_chunk_payload(content=intro_content, chunk_index=len(chunks), heading_path=[]))
+
+    stack: list[_MarkdownHeading] = []
+    for index, heading in enumerate(section_headings):
+        while stack and stack[-1].level >= heading.level:
+            stack.pop()
+        stack.append(heading)
+        end_line = section_headings[index + 1].line_index if index + 1 < len(section_headings) else len(lines)
+        chunk_content = "".join(lines[heading.line_index:end_line]).strip()
+        if not chunk_content:
+            continue
+        chunks.append(
+            _build_chunk_payload(
+                content=chunk_content,
+                chunk_index=len(chunks),
+                heading_path=[entry.title for entry in stack],
+            )
+        )
+
+    return chunks or [_build_chunk_payload(content=content, chunk_index=0, heading_path=[])]
+
+
+def _parse_markdown_headings(lines: Sequence[str]) -> list[_MarkdownHeading]:
+    headings: list[_MarkdownHeading] = []
+    fence_marker: str | None = None
+    fence_length = 0
+
+    for index, line in enumerate(lines):
+        stripped_line = line.rstrip("\n")
+        fence_match = FENCED_CODE_BLOCK_PATTERN.match(stripped_line)
+        if fence_match is not None:
+            marker = fence_match.group(1)
+            marker_char = marker[0]
+            if fence_marker is None:
+                fence_marker = marker_char
+                fence_length = len(marker)
+                continue
+
+            if marker_char == fence_marker and len(marker) >= fence_length:
+                fence_marker = None
+                fence_length = 0
+                continue
+
+        if fence_marker is not None:
+            continue
+
+        match = ATX_HEADING_PATTERN.match(stripped_line)
+        if match is None:
+            continue
+        headings.append(
+            _MarkdownHeading(
+                line_index=index,
+                level=len(match.group(1)),
+                title=match.group(2).strip(),
+            )
+        )
+    return headings
+
+
+def _resolve_document_title_heading(
+    lines: Sequence[str],
+    headings: Sequence[_MarkdownHeading],
+    *,
+    title: str,
+    title_from_h1: bool,
+) -> _MarkdownHeading | None:
+    if not title_from_h1 or not headings:
+        return None
+    candidate = headings[0]
+    if candidate.level != 1 or candidate.title != title:
+        return None
+    return candidate
+
+
+def _build_intro_chunk_content(
+    lines: Sequence[str],
+    *,
+    title_heading: _MarkdownHeading | None,
+    intro_end: int,
+) -> str | None:
+    intro_content = "".join(lines[:intro_end]).strip()
+    if not intro_content:
+        return None
+    if title_heading is None:
+        return intro_content
+    intro_prefix = "".join(lines[:title_heading.line_index]).strip()
+    intro_body = "".join(lines[title_heading.line_index + 1:intro_end]).strip()
+    if not intro_prefix and not intro_body:
+        return None
+    return intro_content
+
+
+def _build_chunk_payload(
+    *,
+    content: str,
+    chunk_index: int,
+    heading_path: list[str],
+) -> dict[str, Any]:
+    return {
+        "chunk_index": chunk_index,
+        "content": content,
+        "heading_path": list(heading_path),
+        "section_title": heading_path[0] if heading_path else None,
+        "subsection_title": heading_path[1] if len(heading_path) > 1 else None,
+    }
+
+
+def _unique_source_paths(source_paths: Iterable[str]) -> list[str]:
+    return list(dict.fromkeys(source_paths))
 
 
 def _fallback_title(source_path: str) -> str:
@@ -559,84 +727,27 @@ class PostgresDocsStore:
         _, Json = _load_psycopg()
         with self._connection.transaction():
             with self._connection.cursor() as cursor:
-                cursor.executemany(
-                    """
-                    INSERT INTO agentic.kb_documents (
-                        id,
-                        source_domain,
-                        doc_kind,
-                        source_path,
-                        title,
-                        section_title,
-                        subsection_title,
-                        heading_path,
-                        chunk_index,
-                        content,
-                        preview_text,
-                        content_hash,
-                        repo_commit_hash,
-                        source_updated_at,
-                        embedding,
-                        metadata,
-                        updated_at
-                    ) VALUES (
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s,
-                        %s::vector,
-                        %s,
-                        NOW()
-                    )
-                    ON CONFLICT (source_path, chunk_index) DO UPDATE SET
-                        id = EXCLUDED.id,
-                        source_domain = EXCLUDED.source_domain,
-                        doc_kind = EXCLUDED.doc_kind,
-                        title = EXCLUDED.title,
-                        section_title = EXCLUDED.section_title,
-                        subsection_title = EXCLUDED.subsection_title,
-                        heading_path = EXCLUDED.heading_path,
-                        content = EXCLUDED.content,
-                        preview_text = EXCLUDED.preview_text,
-                        content_hash = EXCLUDED.content_hash,
-                        repo_commit_hash = EXCLUDED.repo_commit_hash,
-                        source_updated_at = EXCLUDED.source_updated_at,
-                        embedding = EXCLUDED.embedding,
-                        metadata = EXCLUDED.metadata,
-                        updated_at = NOW()
-                    """,
-                    [
-                        (
-                            document.id,
-                            document.source_domain,
-                            document.doc_kind,
-                            document.source_path,
-                            document.title,
-                            document.section_title,
-                            document.subsection_title,
-                            Json(document.heading_path),
-                            document.chunk_index,
-                            document.content,
-                            document.preview_text,
-                            document.content_hash,
-                            document.repo_commit_hash,
-                            document.source_updated_at,
-                            _vector_literal(document.embedding),
-                            Json(document.metadata),
-                        )
-                        for document in documents
-                    ],
+                self._upsert_documents(cursor, documents, Json=Json)
+
+        return len(documents)
+
+    def replace_documents_for_paths(
+        self,
+        source_paths: Sequence[str],
+        documents: Sequence[PreparedDocument],
+    ) -> int:
+        normalized_paths = _unique_source_paths(source_paths)
+        if not normalized_paths:
+            return 0
+
+        _, Json = _load_psycopg()
+        with self._connection.transaction():
+            with self._connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM agentic.kb_documents WHERE source_path = ANY(%s)",
+                    (normalized_paths,),
                 )
+                self._upsert_documents(cursor, documents, Json=Json)
 
         return len(documents)
 
@@ -658,6 +769,89 @@ class PostgresDocsStore:
                 "SELECT DISTINCT source_path FROM agentic.kb_documents ORDER BY source_path"
             )
             return [row[0] for row in cursor.fetchall()]
+
+    @staticmethod
+    def _upsert_documents(cursor: Any, documents: Sequence[PreparedDocument], *, Json: Any) -> None:
+        if not documents:
+            return
+        cursor.executemany(
+            """
+            INSERT INTO agentic.kb_documents (
+                id,
+                source_domain,
+                doc_kind,
+                source_path,
+                title,
+                section_title,
+                subsection_title,
+                heading_path,
+                chunk_index,
+                content,
+                preview_text,
+                content_hash,
+                repo_commit_hash,
+                source_updated_at,
+                embedding,
+                metadata,
+                updated_at
+            ) VALUES (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s::vector,
+                %s,
+                NOW()
+            )
+            ON CONFLICT (source_path, chunk_index) DO UPDATE SET
+                id = EXCLUDED.id,
+                source_domain = EXCLUDED.source_domain,
+                doc_kind = EXCLUDED.doc_kind,
+                title = EXCLUDED.title,
+                section_title = EXCLUDED.section_title,
+                subsection_title = EXCLUDED.subsection_title,
+                heading_path = EXCLUDED.heading_path,
+                content = EXCLUDED.content,
+                preview_text = EXCLUDED.preview_text,
+                content_hash = EXCLUDED.content_hash,
+                repo_commit_hash = EXCLUDED.repo_commit_hash,
+                source_updated_at = EXCLUDED.source_updated_at,
+                embedding = EXCLUDED.embedding,
+                metadata = EXCLUDED.metadata,
+                updated_at = NOW()
+            """,
+            [
+                (
+                    document.id,
+                    document.source_domain,
+                    document.doc_kind,
+                    document.source_path,
+                    document.title,
+                    document.section_title,
+                    document.subsection_title,
+                    Json(document.heading_path),
+                    document.chunk_index,
+                    document.content,
+                    document.preview_text,
+                    document.content_hash,
+                    document.repo_commit_hash,
+                    document.source_updated_at,
+                    _vector_literal(document.embedding),
+                    Json(document.metadata),
+                )
+                for document in documents
+            ],
+        )
 
 
 class InMemoryDocsStore:
@@ -688,6 +882,27 @@ class InMemoryDocsStore:
                 "metadata": dict(document.metadata),
                 "updated_at_token": self.write_count,
             }
+        return len(documents)
+
+    def replace_documents_for_paths(
+        self,
+        source_paths: Sequence[str],
+        documents: Sequence[PreparedDocument],
+    ) -> int:
+        normalized_paths = set(_unique_source_paths(source_paths))
+        if not normalized_paths:
+            return 0
+
+        original_rows = {key: dict(value) for key, value in self.rows_by_key.items()}
+        original_write_count = self.write_count
+        try:
+            self.delete_documents_for_paths(tuple(normalized_paths))
+            self.upsert_documents(documents)
+        except Exception:
+            self.rows_by_key = original_rows
+            self.write_count = original_write_count
+            raise
+
         return len(documents)
 
     def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:

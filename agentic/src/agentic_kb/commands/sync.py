@@ -10,6 +10,7 @@ from agentic_kb.commands.output import print_stderr
 from agentic_kb.config import AgenticConfig
 from agentic_kb.embed import OllamaEmbeddingClient
 from agentic_kb.ingest.docs import (
+    DocsIngestResult,
     PostgresDocsStore,
     discover_docs_source_paths,
     is_allowlisted_doc_path,
@@ -237,31 +238,29 @@ def sync_docs(
                     for path in existing_paths
                     if is_allowlisted_doc_path(path) and path not in discovered_path_set
                 )
-                if stale_paths:
-                    docs_store.delete_documents_for_paths(stale_paths)
                 documents = prepare_documents(
                     root,
                     source_paths=discovered_paths,
                     embedding_client=embedding_client,
                     repo_commit_hash=repo_commit_hash,
                 )
-                docs_store.upsert_documents(documents)
+                docs_store.replace_documents_for_paths(
+                    (*discovered_paths, *stale_paths),
+                    documents,
+                )
             except Exception as error:
                 sync_store.record_failures(
                     [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
                 )
                 raise
 
+            result = DocsIngestResult(
+                source_paths=discovered_paths,
+                processed_count=len(documents),
+                repo_commit_hash=repo_commit_hash,
+            )
             state = build_docs_sync_state(
-                type(
-                    "DocsSyncResult",
-                    (),
-                    {
-                        "source_paths": discovered_paths,
-                        "processed_count": len(documents),
-                        "repo_commit_hash": repo_commit_hash,
-                    },
-                )(),
+                result,
                 attempted_at=attempted_at,
                 succeeded_at=succeeded_at,
                 repo=DEFAULT_SYNC_REPO,
@@ -270,8 +269,8 @@ def sync_docs(
 
     return {
         "mode": "explicit",
-        "source_paths": discovered_paths,
-        "processed_count": len(documents),
+        "source_paths": result.source_paths,
+        "processed_count": result.processed_count,
         "deleted_paths": stale_paths,
         "repo_commit_hash": repo_commit_hash,
     }
@@ -915,41 +914,39 @@ def _sync_docs_changed(
     )
 
     try:
-        if delta.deleted_paths:
-            docs_store.delete_documents_for_paths(delta.deleted_paths)
         documents = prepare_documents(
             workspace_root,
             source_paths=delta.changed_paths,
             embedding_client=embedding_client,
             repo_commit_hash=delta.head_commit,
         )
-        if documents:
-            docs_store.upsert_documents(documents)
+        if delta.changed_paths or delta.deleted_paths:
+            docs_store.replace_documents_for_paths(
+                (*delta.changed_paths, *delta.deleted_paths),
+                documents,
+            )
     except Exception as error:
         sync_store.record_failures(
             [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
         )
         raise
 
+    result = DocsIngestResult(
+        source_paths=delta.changed_paths,
+        processed_count=len(documents),
+        repo_commit_hash=delta.head_commit,
+    )
     state = build_docs_sync_state(
-        type(
-            "DocsChangedResult",
-            (),
-            {
-                "source_paths": delta.changed_paths,
-                "processed_count": len(documents),
-                "repo_commit_hash": delta.head_commit,
-            },
-        )(),
+        result,
         attempted_at=attempted_at,
         succeeded_at=datetime.now(timezone.utc),
         repo=DEFAULT_SYNC_REPO,
     )
     sync_store.upsert_sync_states([state])
     return {
-        "changed_paths": delta.changed_paths,
+        "changed_paths": result.source_paths,
         "deleted_paths": delta.deleted_paths,
-        "processed_count": len(documents),
+        "processed_count": result.processed_count,
         "repo_commit_hash": state.repo_commit_hash,
         "baseline_commit": delta.baseline_commit,
     }

@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import time
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -32,6 +33,24 @@ class ContextLimitFakeEmbeddingClient:
                     "the input length exceeds the context length"
                 )
         return [[float(len(text))] * 384 for text in texts]
+
+
+class FailingReplaceDocsStore(docs.InMemoryDocsStore):
+    def __init__(self):
+        super().__init__()
+        self.fail_on_upsert = False
+
+    def upsert_documents(self, documents):
+        if self.fail_on_upsert:
+            raise RuntimeError("simulated replace failure")
+        return super().upsert_documents(documents)
+
+    def replace_documents_for_paths(self, source_paths, documents):
+        self.fail_on_upsert = True
+        try:
+            return super().replace_documents_for_paths(source_paths, documents)
+        finally:
+            self.fail_on_upsert = False
 
 
 class DocsIngestTests(unittest.TestCase):
@@ -89,6 +108,7 @@ class DocsIngestTests(unittest.TestCase):
                 "description: Example workflow\n"
                 "---\n\n"
                 "# Agentic Knowledge Base Workflow\n\n"
+                "## Usage\n"
                 "Use this workflow to exercise the docs ingestor.\n",
             )
 
@@ -100,9 +120,11 @@ class DocsIngestTests(unittest.TestCase):
                 repo_commit_hash="abc123",
             )
 
-        self.assertEqual(len(prepared), 1)
-        document = prepared[0]
-        self.assertEqual(document.id, "docs:.agent/workflows/agentic-kb.md#0")
+        self.assertEqual(len(prepared), 2)
+        intro_document, section_document = prepared
+        self.assertEqual(intro_document.id, "docs:.agent/workflows/agentic-kb.md#0")
+        self.assertEqual(section_document.id, "docs:.agent/workflows/agentic-kb.md#1")
+        document = intro_document
         self.assertEqual(document.source_domain, "docs")
         self.assertEqual(document.doc_kind, "workflow")
         self.assertEqual(document.source_path, ".agent/workflows/agentic-kb.md")
@@ -116,11 +138,17 @@ class DocsIngestTests(unittest.TestCase):
         self.assertEqual(document.metadata["source_group"], "agent")
         self.assertEqual(document.metadata["title_source"], "h1")
         self.assertTrue(document.metadata["title_from_h1"])
-        self.assertIn("Use this workflow", document.preview_text)
+        self.assertIn("description: Example workflow", document.preview_text)
         self.assertEqual(len(document.embedding), 384)
         self.assertEqual(document.embedding[0], 1.0)
         self.assertIsNotNone(document.source_updated_at.tzinfo)
-        self.assertEqual(["".join(call) for call in embedding_client.calls], [document.content.strip()])
+        self.assertEqual(section_document.heading_path, ["Usage"])
+        self.assertEqual(section_document.section_title, "Usage")
+        self.assertEqual(section_document.subsection_title, None)
+        self.assertEqual(
+            ["".join(call) for call in embedding_client.calls],
+            [document.content, section_document.content],
+        )
 
     def test_prepare_documents_falls_back_to_basename_title_without_h1(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -142,15 +170,103 @@ class DocsIngestTests(unittest.TestCase):
         self.assertFalse(document.metadata["title_from_h1"])
         self.assertEqual(
             document.content_hash,
-            docs.deterministic_content_hash("installers/README.md", "Installers and packaging notes.\n"),
+            docs.deterministic_content_hash("installers/README.md", "Installers and packaging notes.\n", chunk_index=0),
         )
+
+    def test_prepare_documents_chunks_markdown_headings_with_intro_and_nested_paths(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(
+                workspace / "README.md",
+                "# Title\n\n"
+                "Intro paragraph.\n\n"
+                "## First Section\n"
+                "Alpha body.\n\n"
+                "### Deep Detail\n"
+                "Nested body.\n\n"
+                "## Second Section\n"
+                "Omega body.\n",
+            )
+
+            prepared = docs.prepare_documents(
+                workspace,
+                source_paths=["README.md"],
+                embedding_client=FakeEmbeddingClient(),
+                repo_commit_hash="chunked-commit",
+            )
+
+        self.assertEqual([document.chunk_index for document in prepared], [0, 1, 2, 3])
+        self.assertEqual([document.id for document in prepared], [
+            "docs:README.md#0",
+            "docs:README.md#1",
+            "docs:README.md#2",
+            "docs:README.md#3",
+        ])
+        self.assertEqual(prepared[0].heading_path, [])
+        self.assertEqual(prepared[0].content, "# Title\n\nIntro paragraph.")
+        self.assertEqual(prepared[1].heading_path, ["First Section"])
+        self.assertEqual(prepared[1].section_title, "First Section")
+        self.assertEqual(prepared[1].subsection_title, None)
+        self.assertTrue(prepared[1].content.startswith("## First Section\n"))
+        self.assertEqual(prepared[2].heading_path, ["First Section", "Deep Detail"])
+        self.assertEqual(prepared[2].section_title, "First Section")
+        self.assertEqual(prepared[2].subsection_title, "Deep Detail")
+        self.assertEqual(prepared[3].heading_path, ["Second Section"])
+        self.assertEqual(prepared[3].section_title, "Second Section")
+        self.assertEqual(prepared[3].subsection_title, None)
+
+    def test_prepare_documents_keeps_headingless_docs_as_single_row(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "README.md", "Plain intro\n\nStill no headings.\n")
+
+            prepared = docs.prepare_documents(
+                workspace,
+                source_paths=["README.md"],
+                embedding_client=FakeEmbeddingClient(),
+                repo_commit_hash="single-row",
+            )
+
+        self.assertEqual(len(prepared), 1)
+        self.assertEqual(prepared[0].heading_path, [])
+        self.assertEqual(prepared[0].section_title, None)
+        self.assertEqual(prepared[0].subsection_title, None)
+        self.assertEqual(prepared[0].chunk_index, 0)
+
+    def test_prepare_documents_ignores_atx_like_lines_inside_fenced_code_blocks(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(
+                workspace / ".agent/workflows/agentic-kb.md",
+                "# Agentic Knowledge Base Workflow\n\n"
+                "```bash\n"
+                "# Start the stack\n"
+                "docker compose -f docker-compose.agentic.yml up -d\n"
+                "```\n\n"
+                "## Real Section\n"
+                "Use this workflow after the stack is ready.\n",
+            )
+
+            prepared = docs.prepare_documents(
+                workspace,
+                source_paths=[".agent/workflows/agentic-kb.md"],
+                embedding_client=FakeEmbeddingClient(),
+                repo_commit_hash="fenced-code",
+            )
+
+        self.assertEqual(len(prepared), 2)
+        self.assertEqual(prepared[0].heading_path, [])
+        self.assertIn("# Start the stack", prepared[0].content)
+        self.assertEqual(prepared[1].heading_path, ["Real Section"])
+        self.assertEqual(prepared[1].section_title, "Real Section")
+        self.assertNotIn("Start the stack", prepared[1].heading_path)
 
     def test_ingest_docs_upserts_changed_content_without_duplication(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             agents_path = workspace / "AGENTS.md"
             readme_path = workspace / "README.md"
-            self._write_file(agents_path, "# Agents\n\nInitial content.\n")
+            self._write_file(agents_path, "# Agents\n\nIntro\n\n## Rules\nInitial content.\n")
             self._write_file(readme_path, "# Daedalus\n\nRoot notes.\n")
 
             embedding_client = FakeEmbeddingClient()
@@ -163,7 +279,7 @@ class DocsIngestTests(unittest.TestCase):
                 repo_commit_hash="commit-a",
             )
 
-            first_agents_row = dict(store.rows_by_key[("AGENTS.md", 0)])
+            first_agents_chunk_keys = sorted(key for key in store.rows_by_key if key[0] == "AGENTS.md")
             time.sleep(0.02)
             self._write_file(agents_path, "# Agents\n\nUpdated content for rerun.\n")
 
@@ -174,21 +290,68 @@ class DocsIngestTests(unittest.TestCase):
                 repo_commit_hash="commit-b",
             )
 
-        self.assertEqual(first_result.processed_count, 2)
+        self.assertEqual(first_result.processed_count, 3)
         self.assertEqual(second_result.processed_count, 2)
         self.assertEqual(first_result.source_paths, ("AGENTS.md", "README.md"))
         self.assertEqual(second_result.source_paths, ("AGENTS.md", "README.md"))
         self.assertEqual(len(store.rows_by_key), 2)
+        self.assertEqual(first_agents_chunk_keys, [("AGENTS.md", 0), ("AGENTS.md", 1)])
         second_agents_row = store.rows_by_key[("AGENTS.md", 0)]
         self.assertEqual(second_agents_row["repo_commit_hash"], "commit-b")
         self.assertIn("Updated content for rerun", second_agents_row["content"])
-        self.assertNotEqual(second_agents_row["content_hash"], first_agents_row["content_hash"])
-        self.assertGreater(second_agents_row["updated_at_token"], first_agents_row["updated_at_token"])
-        self.assertEqual(len(embedding_client.calls), 4)
-        self.assertEqual("".join(embedding_client.calls[0]), "# Agents\n\nInitial content.")
-        self.assertEqual("".join(embedding_client.calls[1]), "# Daedalus\n\nRoot notes.")
-        self.assertEqual("".join(embedding_client.calls[2]), "# Agents\n\nUpdated content for rerun.")
-        self.assertEqual("".join(embedding_client.calls[3]), "# Daedalus\n\nRoot notes.")
+        self.assertNotIn(("AGENTS.md", 1), store.rows_by_key)
+        self.assertEqual(len(embedding_client.calls), 5)
+        self.assertEqual("".join(embedding_client.calls[0]), "# Agents\n\nIntro")
+        self.assertEqual("".join(embedding_client.calls[1]), "## Rules\nInitial content.")
+        self.assertEqual("".join(embedding_client.calls[2]), "# Daedalus\n\nRoot notes.")
+        self.assertEqual("".join(embedding_client.calls[3]), "# Agents\n\nUpdated content for rerun.")
+        self.assertEqual("".join(embedding_client.calls[4]), "# Daedalus\n\nRoot notes.")
+
+    def test_replace_documents_for_paths_rolls_back_in_memory_on_failure(self):
+        store = FailingReplaceDocsStore()
+        baseline_document = docs.PreparedDocument(
+            id="docs:README.md#0",
+            source_domain="docs",
+            doc_kind="readme",
+            source_path="README.md",
+            title="README",
+            section_title=None,
+            subsection_title=None,
+            heading_path=[],
+            chunk_index=0,
+            content="baseline",
+            preview_text="baseline",
+            content_hash="hash-a",
+            repo_commit_hash="commit-a",
+            source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={},
+        )
+        store.upsert_documents([baseline_document])
+
+        replacement_document = docs.PreparedDocument(
+            id="docs:README.md#0",
+            source_domain="docs",
+            doc_kind="readme",
+            source_path="README.md",
+            title="README",
+            section_title=None,
+            subsection_title=None,
+            heading_path=[],
+            chunk_index=0,
+            content="replacement",
+            preview_text="replacement",
+            content_hash="hash-b",
+            repo_commit_hash="commit-b",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[2.0] * 384,
+            metadata={},
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "simulated replace failure"):
+            store.replace_documents_for_paths(("README.md",), [replacement_document])
+
+        self.assertEqual(store.rows_by_key[("README.md", 0)]["content"], "baseline")
 
     def test_helper_contracts_cover_classification_preview_and_path_normalization(self):
         self.assertEqual(docs.classify_doc_kind(".agent/readme.md"), "agent_index")

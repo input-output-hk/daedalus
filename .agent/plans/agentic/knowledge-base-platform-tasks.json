@@ -239,14 +239,14 @@
           "id": "task-302",
           "title": "Implement markdown chunking",
           "description": "Split markdown sources on heading boundaries and preserve section hierarchy for search and previews",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-301"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/ingest/markdown_chunker.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/ingest/docs.py"
         },
         {
           "id": "task-303",

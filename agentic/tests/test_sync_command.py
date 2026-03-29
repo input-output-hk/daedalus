@@ -163,6 +163,160 @@ class SyncCommandTests(unittest.TestCase):
         self.assertNotIn(("README.md", 0), docs_store.rows_by_key)
         self.assertEqual(docs_store.rows_by_key[("AGENTS.md", 0)]["repo_commit_hash"], "head-commit")
 
+    def test_sync_docs_changed_replaces_shrinking_chunked_doc_and_keeps_unique_path_metadata(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(
+                workspace / "AGENTS.md",
+                "# Agents\n\nupdated intro\n",
+            )
+            docs_store = docs.InMemoryDocsStore()
+            docs_store.upsert_documents(
+                docs.prepare_documents(
+                    workspace,
+                    source_paths=["AGENTS.md"],
+                    embedding_client=FakeEmbeddingClient(),
+                    repo_commit_hash="baseline-commit",
+                )
+            )
+            docs_store.upsert_documents([
+                docs.PreparedDocument(
+                    id="docs:AGENTS.md#1",
+                    source_domain="docs",
+                    doc_kind="agent_instruction",
+                    source_path="AGENTS.md",
+                    title="Agents",
+                    section_title="Rules",
+                    subsection_title=None,
+                    heading_path=["Rules"],
+                    chunk_index=1,
+                    content="## Rules\nold body",
+                    preview_text="old body",
+                    content_hash="hash-1",
+                    repo_commit_hash="baseline-commit",
+                    source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                    embedding=[1.0] * 384,
+                    metadata={},
+                )
+            ])
+
+            sync_store = InMemorySyncStateStore()
+            baseline = self._seed_docs_baseline(sync_store, repo_commit_hash="baseline-commit")
+            attempted_at = datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc)
+            result = sync._sync_docs_changed(
+                workspace,
+                embedding_client=FakeEmbeddingClient(),
+                docs_store=docs_store,
+                sync_store=sync_store,
+                baseline=baseline,
+                delta=sync.LocalDelta(
+                    changed_paths=("AGENTS.md",),
+                    deleted_paths=(),
+                    baseline_commit="baseline-commit",
+                    head_commit="head-commit",
+                ),
+                attempted_at=attempted_at,
+            )
+
+        self.assertEqual(result["changed_paths"], ("AGENTS.md",))
+        self.assertEqual(result["processed_count"], 1)
+        self.assertEqual(sorted(docs_store.rows_by_key), [("AGENTS.md", 0)])
+        state = sync_store.get_sync_state("docs", repo_scope_key())
+        self.assertEqual(state.metadata["source_paths"], ["AGENTS.md"])
+        self.assertEqual(state.metadata["processed_count"], 1)
+
+    def test_sync_docs_explicit_replaces_shrinking_docs_and_reports_chunk_count(self):
+        docs_store = docs.InMemoryDocsStore()
+        sync_store = InMemorySyncStateStore()
+
+        docs_store.upsert_documents([
+            docs.PreparedDocument(
+                id="docs:AGENTS.md#0",
+                source_domain="docs",
+                doc_kind="agent_instruction",
+                source_path="AGENTS.md",
+                title="Agents",
+                section_title=None,
+                subsection_title=None,
+                heading_path=[],
+                chunk_index=0,
+                content="# Agents\n\nold intro",
+                preview_text="old intro",
+                content_hash="hash-0",
+                repo_commit_hash="baseline-commit",
+                source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                embedding=[1.0] * 384,
+                metadata={},
+            ),
+            docs.PreparedDocument(
+                id="docs:AGENTS.md#1",
+                source_domain="docs",
+                doc_kind="agent_instruction",
+                source_path="AGENTS.md",
+                title="Agents",
+                section_title="Rules",
+                subsection_title=None,
+                heading_path=["Rules"],
+                chunk_index=1,
+                content="## Rules\nold rules",
+                preview_text="old rules",
+                content_hash="hash-1",
+                repo_commit_hash="baseline-commit",
+                source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                embedding=[1.0] * 384,
+                metadata={},
+            ),
+            docs.PreparedDocument(
+                id="docs:README.md#0",
+                source_domain="docs",
+                doc_kind="readme",
+                source_path="README.md",
+                title="README",
+                section_title=None,
+                subsection_title=None,
+                heading_path=[],
+                chunk_index=0,
+                content="# README\n\nold readme",
+                preview_text="old readme",
+                content_hash="hash-2",
+                repo_commit_hash="baseline-commit",
+                source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                embedding=[1.0] * 384,
+                metadata={},
+            ),
+        ])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "AGENTS.md", "# Agents\n\nnew intro\n")
+
+            with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+                with patch("agentic_kb.commands.sync.get_head_commit", return_value="head-commit"):
+                    with patch("agentic_kb.commands.sync.discover_docs_source_paths", return_value=["AGENTS.md"]):
+                        with patch("agentic_kb.commands.sync.PostgresDocsStore.from_database_url") as docs_store_factory:
+                            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                                docs_store_factory.return_value.__enter__.return_value = docs_store
+                                docs_store_factory.return_value.__exit__.return_value = False
+                                sync_store_factory.return_value.__enter__.return_value = sync_store
+                                sync_store_factory.return_value.__exit__.return_value = False
+                                result = sync.sync_docs(
+                                    workspace,
+                                    config=AgenticConfig(
+                                        database_url="postgresql://localhost/test",
+                                        ollama_base_url="http://ollama:11434",
+                                        ollama_embed_model="all-minilm",
+                                        github_token="token",
+                                    ),
+                                )
+
+        self.assertEqual(result["source_paths"], ("AGENTS.md",))
+        self.assertEqual(result["deleted_paths"], ("README.md",))
+        self.assertEqual(result["processed_count"], 1)
+        self.assertEqual(sorted(docs_store.rows_by_key), [("AGENTS.md", 0)])
+        state = sync_store.get_sync_state("docs", repo_scope_key())
+        self.assertEqual(state.metadata["source_paths"], ["AGENTS.md"])
+        self.assertEqual(state.metadata["processed_count"], 1)
+
     def test_sync_github_explicit_initial_run_seeds_all_stream_rows(self):
         sync_store = InMemorySyncStateStore()
         github_result = self._fake_github_result(updated_since=None)
