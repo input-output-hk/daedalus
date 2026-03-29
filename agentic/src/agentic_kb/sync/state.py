@@ -175,6 +175,10 @@ def build_docs_sync_state(
             "repo": repo,
             "processed_count": getattr(result, "processed_count", 0),
             "source_paths": list(getattr(result, "source_paths", ()) or ()),
+            "candidate_paths": list(getattr(result, "candidate_paths", ()) or ()),
+            "updated_paths": list(getattr(result, "updated_paths", ()) or ()),
+            "skipped_paths": list(getattr(result, "skipped_paths", ()) or ()),
+            "deleted_paths": list(getattr(result, "deleted_paths", ()) or ()),
         },
     )
 

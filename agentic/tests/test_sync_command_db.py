@@ -179,6 +179,80 @@ class SyncCommandDbTests(unittest.TestCase):
                         ),
                     )
 
+    def test_sync_changed_docs_skips_unchanged_candidate_without_rewriting_row_metadata(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._git_init(workspace)
+            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
+            baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
+            self._seed_imported_baseline(workspace, baseline_commit)
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT repo_commit_hash, source_updated_at, updated_at FROM agentic.kb_documents WHERE source_path = %s AND chunk_index = 0",
+                    ("README.md",),
+                )
+                baseline_row = cursor.fetchone()
+
+            subprocess.run(
+                ["chmod", "+x", "README.md"],
+                cwd=workspace,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+            head_commit = self._git_commit_all(workspace, "mode-only docs delta")
+
+            with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+                with patch.object(
+                    docs.PostgresDocsStore,
+                    "list_document_versions",
+                    autospec=True,
+                    wraps=docs.PostgresDocsStore.list_document_versions,
+                ) as list_versions:
+                    with patch(
+                        "agentic_kb.commands.sync.ingest_github",
+                        side_effect=lambda **kwargs: self._fake_github_result(kwargs["bounds"]),
+                    ):
+                        with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=self._noop_project_ingest):
+                            result = sync.sync_changed(
+                                workspace,
+                                config=AgenticConfig(
+                                    database_url=self.database_url,
+                                    ollama_base_url="http://ollama:11434",
+                                    ollama_embed_model="all-minilm",
+                                    github_token="token",
+                                ),
+                            )
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT repo_commit_hash, source_updated_at, updated_at FROM agentic.kb_documents WHERE source_path = %s AND chunk_index = 0",
+                    ("README.md",),
+                )
+                row = cursor.fetchone()
+                cursor.execute(
+                    "SELECT repo_commit_hash, metadata FROM agentic.kb_sync_state WHERE source_name = 'docs' AND scope_key = %s",
+                    (repo_scope_key(),),
+                )
+                docs_state = cursor.fetchone()
+
+        list_versions.assert_called_once()
+        self.assertEqual(list_versions.call_args.args[1], ("README.md",))
+        self.assertEqual(result["docs"]["changed_paths"], ("README.md",))
+        self.assertEqual(result["docs"]["updated_paths"], ())
+        self.assertEqual(result["docs"]["skipped_paths"], ("README.md",))
+        self.assertEqual(result["docs"]["processed_count"], 0)
+        self.assertEqual(row[0], baseline_commit)
+        self.assertEqual(row[1], baseline_row[1])
+        self.assertEqual(row[2], baseline_row[2])
+        self.assertEqual(docs_state[0], head_commit)
+        self.assertEqual(docs_state[1]["candidate_paths"], ["README.md"])
+        self.assertEqual(docs_state[1]["updated_paths"], [])
+        self.assertEqual(docs_state[1]["skipped_paths"], ["README.md"])
+
     def test_sync_all_stops_after_first_failure_and_persists_only_attempted_sources(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
@@ -376,6 +450,20 @@ class SyncCommandDbTests(unittest.TestCase):
             issue_comments_written=1,
             prs_written=1,
             pr_comments_written=1,
+        )
+
+    def _noop_project_ingest(self, **kwargs):
+        return project.ProjectIngestResult(
+            project_owner=DEFAULT_PROJECT_OWNER,
+            project_number=DEFAULT_PROJECT_NUMBER,
+            project_title="Daedalus Maintenance",
+            project_url="https://github.com/orgs/DripDropz/projects/5",
+            bounds=kwargs["bounds"],
+            pages_fetched=0,
+            hit_bound=False,
+            final_cursor=kwargs["bounds"].after_cursor,
+            latest_source_updated_at=None,
+            rows_written=0,
         )
 
     def _git_init(self, workspace: Path) -> None:

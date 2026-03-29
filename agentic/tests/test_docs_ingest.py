@@ -54,6 +54,32 @@ class FailingReplaceDocsStore(docs.InMemoryDocsStore):
 
 
 class DocsIngestTests(unittest.TestCase):
+    def test_plan_docs_updates_skips_unchanged_paths_by_chunk_hash_before_embedding(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "README.md", "# Title\n\nBody\n")
+            store = docs.InMemoryDocsStore()
+            store.upsert_documents(
+                docs.prepare_documents(
+                    workspace,
+                    source_paths=["README.md"],
+                    embedding_client=FakeEmbeddingClient(),
+                    repo_commit_hash="baseline-commit",
+                )
+            )
+
+            plan = docs.plan_docs_updates(
+                workspace,
+                docs_store=store,
+                source_paths=["README.md"],
+                repo_commit_hash="head-commit",
+            )
+
+        self.assertEqual(plan.candidate_paths, ("README.md",))
+        self.assertEqual(plan.updated_paths, ())
+        self.assertEqual(plan.skipped_paths, ("README.md",))
+        self.assertEqual(plan.drafts, ())
+
     def test_discover_docs_source_paths_matches_allowlist_only(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
@@ -291,21 +317,56 @@ class DocsIngestTests(unittest.TestCase):
             )
 
         self.assertEqual(first_result.processed_count, 3)
-        self.assertEqual(second_result.processed_count, 2)
+        self.assertEqual(second_result.processed_count, 1)
         self.assertEqual(first_result.source_paths, ("AGENTS.md", "README.md"))
-        self.assertEqual(second_result.source_paths, ("AGENTS.md", "README.md"))
+        self.assertEqual(second_result.candidate_paths, ("AGENTS.md", "README.md"))
+        self.assertEqual(second_result.source_paths, ("AGENTS.md",))
+        self.assertEqual(second_result.updated_paths, ("AGENTS.md",))
+        self.assertEqual(second_result.skipped_paths, ("README.md",))
         self.assertEqual(len(store.rows_by_key), 2)
         self.assertEqual(first_agents_chunk_keys, [("AGENTS.md", 0), ("AGENTS.md", 1)])
         second_agents_row = store.rows_by_key[("AGENTS.md", 0)]
         self.assertEqual(second_agents_row["repo_commit_hash"], "commit-b")
         self.assertIn("Updated content for rerun", second_agents_row["content"])
         self.assertNotIn(("AGENTS.md", 1), store.rows_by_key)
-        self.assertEqual(len(embedding_client.calls), 5)
+        self.assertEqual(len(embedding_client.calls), 4)
         self.assertEqual("".join(embedding_client.calls[0]), "# Agents\n\nIntro")
         self.assertEqual("".join(embedding_client.calls[1]), "## Rules\nInitial content.")
         self.assertEqual("".join(embedding_client.calls[2]), "# Daedalus\n\nRoot notes.")
         self.assertEqual("".join(embedding_client.calls[3]), "# Agents\n\nUpdated content for rerun.")
-        self.assertEqual("".join(embedding_client.calls[4]), "# Daedalus\n\nRoot notes.")
+
+    def test_ingest_docs_skips_unchanged_docs_without_embedding_or_row_rewrite(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "README.md", "# Title\n\nBody\n")
+            store = docs.InMemoryDocsStore()
+
+            first_embedding_client = FakeEmbeddingClient()
+            first_result = docs.ingest_docs(
+                workspace,
+                embedding_client=first_embedding_client,
+                docs_store=store,
+                repo_commit_hash="commit-a",
+            )
+            first_row = dict(store.rows_by_key[("README.md", 0)])
+            second_embedding_client = FakeEmbeddingClient()
+
+            second_result = docs.ingest_docs(
+                workspace,
+                embedding_client=second_embedding_client,
+                docs_store=store,
+                repo_commit_hash="commit-b",
+            )
+
+        self.assertEqual(first_result.updated_paths, ("README.md",))
+        self.assertEqual(first_result.skipped_paths, ())
+        self.assertEqual(second_result.candidate_paths, ("README.md",))
+        self.assertEqual(second_result.updated_paths, ())
+        self.assertEqual(second_result.skipped_paths, ("README.md",))
+        self.assertEqual(second_result.processed_count, 0)
+        self.assertEqual(second_embedding_client.calls, [])
+        self.assertEqual(store.rows_by_key[("README.md", 0)], first_row)
+        self.assertEqual(store.rows_by_key[("README.md", 0)]["repo_commit_hash"], "commit-a")
 
     def test_replace_documents_for_paths_rolls_back_in_memory_on_failure(self):
         store = FailingReplaceDocsStore()

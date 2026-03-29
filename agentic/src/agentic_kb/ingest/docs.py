@@ -55,6 +55,12 @@ class DocsStore(Protocol):
     def upsert_documents(self, documents: Sequence["PreparedDocument"]) -> int:
         ...
 
+    def list_document_versions(
+        self,
+        source_paths: Sequence[str],
+    ) -> dict[str, list["StoredDocumentVersion"]]:
+        ...
+
     def replace_documents_for_paths(
         self,
         source_paths: Sequence[str],
@@ -90,10 +96,51 @@ class PreparedDocument:
 
 
 @dataclass(frozen=True)
+class PreparedDocumentDraft:
+    id: str
+    source_domain: str
+    doc_kind: str
+    source_path: str
+    title: str
+    section_title: str | None
+    subsection_title: str | None
+    heading_path: list[str]
+    chunk_index: int
+    content: str
+    preview_text: str
+    content_hash: str
+    repo_commit_hash: str
+    source_updated_at: datetime
+    metadata: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class StoredDocumentVersion:
+    source_path: str
+    chunk_index: int
+    content_hash: str
+    repo_commit_hash: str
+    source_updated_at: datetime
+
+
+@dataclass(frozen=True)
+class PlannedDocsUpdate:
+    candidate_paths: tuple[str, ...]
+    updated_paths: tuple[str, ...]
+    skipped_paths: tuple[str, ...]
+    drafts: tuple[PreparedDocumentDraft, ...]
+    repo_commit_hash: str
+
+
+@dataclass(frozen=True)
 class DocsIngestResult:
     source_paths: tuple[str, ...]
     processed_count: int
     repo_commit_hash: str
+    candidate_paths: tuple[str, ...] = ()
+    updated_paths: tuple[str, ...] = ()
+    skipped_paths: tuple[str, ...] = ()
+    deleted_paths: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -128,6 +175,20 @@ def prepare_documents(
     embedding_client: EmbeddingClient,
     repo_commit_hash: str | None = None,
 ) -> list[PreparedDocument]:
+    drafts = prepare_document_drafts(
+        workspace_root,
+        source_paths=source_paths,
+        repo_commit_hash=repo_commit_hash,
+    )
+    return embed_prepared_document_drafts(drafts, embedding_client=embedding_client)
+
+
+def prepare_document_drafts(
+    workspace_root: str | Path,
+    *,
+    source_paths: Sequence[str] | None = None,
+    repo_commit_hash: str | None = None,
+) -> list[PreparedDocumentDraft]:
     root = Path(workspace_root).resolve()
     candidate_source_paths = source_paths if source_paths is not None else discover_docs_source_paths(root)
     resolved_source_paths = [
@@ -142,20 +203,16 @@ def prepare_documents(
         for source_path in resolved_source_paths
     ]
 
-    documents: list[PreparedDocument] = []
+    documents: list[PreparedDocumentDraft] = []
     for payload in document_payloads:
         chunks = _chunk_markdown_document(
             payload["content"],
             title=payload["title"],
             title_from_h1=payload["metadata"]["title_from_h1"],
         )
-        embeddings = [
-            _embed_document_content(chunk["content"], embedding_client=embedding_client)
-            for chunk in chunks
-        ]
-        for chunk, embedding in zip(chunks, embeddings, strict=True):
+        for chunk in chunks:
             documents.append(
-                PreparedDocument(
+                PreparedDocumentDraft(
                     id=deterministic_document_id(
                         payload["source_path"],
                         chunk_index=chunk["chunk_index"],
@@ -177,12 +234,87 @@ def prepare_documents(
                     ),
                     repo_commit_hash=payload["repo_commit_hash"],
                     source_updated_at=payload["source_updated_at"],
-                    embedding=embedding,
                     metadata=dict(payload["metadata"]),
                 )
             )
 
     return documents
+
+
+def embed_prepared_document_drafts(
+    drafts: Sequence[PreparedDocumentDraft],
+    *,
+    embedding_client: EmbeddingClient,
+) -> list[PreparedDocument]:
+    embeddings = [
+        _embed_document_content(draft.content, embedding_client=embedding_client)
+        for draft in drafts
+    ]
+    return [
+        PreparedDocument(
+            id=draft.id,
+            source_domain=draft.source_domain,
+            doc_kind=draft.doc_kind,
+            source_path=draft.source_path,
+            title=draft.title,
+            section_title=draft.section_title,
+            subsection_title=draft.subsection_title,
+            heading_path=list(draft.heading_path),
+            chunk_index=draft.chunk_index,
+            content=draft.content,
+            preview_text=draft.preview_text,
+            content_hash=draft.content_hash,
+            repo_commit_hash=draft.repo_commit_hash,
+            source_updated_at=draft.source_updated_at,
+            embedding=embedding,
+            metadata=dict(draft.metadata),
+        )
+        for draft, embedding in zip(drafts, embeddings, strict=True)
+    ]
+
+
+def plan_docs_updates(
+    workspace_root: str | Path,
+    *,
+    docs_store: DocsStore,
+    source_paths: Sequence[str] | None = None,
+    repo_commit_hash: str | None = None,
+) -> PlannedDocsUpdate:
+    drafts = prepare_document_drafts(
+        workspace_root,
+        source_paths=source_paths,
+        repo_commit_hash=repo_commit_hash,
+    )
+    candidate_paths = tuple(
+        _unique_source_paths(draft.source_path for draft in drafts)
+        if drafts
+        else _unique_source_paths(source_paths or ())
+    )
+    existing_versions = docs_store.list_document_versions(candidate_paths)
+    drafts_by_path = _group_documents_by_path(drafts)
+    updated_paths: list[str] = []
+    skipped_paths: list[str] = []
+    updated_drafts: list[PreparedDocumentDraft] = []
+
+    for source_path in candidate_paths:
+        path_drafts = drafts_by_path.get(source_path, [])
+        if _document_drafts_match_versions(path_drafts, existing_versions.get(source_path, [])):
+            skipped_paths.append(source_path)
+            continue
+        updated_paths.append(source_path)
+        updated_drafts.extend(path_drafts)
+
+    resolved_repo_commit_hash = repo_commit_hash or get_repo_commit_hash(workspace_root)
+    if drafts:
+        resolved_repo_commit_hash = drafts[0].repo_commit_hash
+
+    return PlannedDocsUpdate(
+        candidate_paths=candidate_paths,
+        updated_paths=tuple(updated_paths),
+        skipped_paths=tuple(skipped_paths),
+        drafts=tuple(updated_drafts),
+        repo_commit_hash=resolved_repo_commit_hash,
+    )
 
 
 def ingest_docs(
@@ -192,18 +324,25 @@ def ingest_docs(
     docs_store: DocsStore,
     repo_commit_hash: str | None = None,
 ) -> DocsIngestResult:
-    documents = prepare_documents(
+    plan = plan_docs_updates(
         workspace_root,
-        embedding_client=embedding_client,
+        docs_store=docs_store,
         repo_commit_hash=repo_commit_hash,
     )
-    source_paths = _unique_source_paths(document.source_path for document in documents)
-    docs_store.replace_documents_for_paths(source_paths, documents)
+    documents = embed_prepared_document_drafts(
+        plan.drafts,
+        embedding_client=embedding_client,
+    )
+    if plan.updated_paths:
+        docs_store.replace_documents_for_paths(plan.updated_paths, documents)
 
     return DocsIngestResult(
-        source_paths=tuple(source_paths),
+        source_paths=plan.updated_paths,
         processed_count=len(documents),
-        repo_commit_hash=documents[0].repo_commit_hash if documents else (repo_commit_hash or get_repo_commit_hash(workspace_root)),
+        repo_commit_hash=plan.repo_commit_hash,
+        candidate_paths=plan.candidate_paths,
+        updated_paths=plan.updated_paths,
+        skipped_paths=plan.skipped_paths,
     )
 
 
@@ -504,6 +643,31 @@ def _unique_source_paths(source_paths: Iterable[str]) -> list[str]:
     return list(dict.fromkeys(source_paths))
 
 
+def _group_documents_by_path(
+    documents: Sequence[PreparedDocumentDraft],
+) -> dict[str, list[PreparedDocumentDraft]]:
+    grouped: dict[str, list[PreparedDocumentDraft]] = {}
+    for document in documents:
+        grouped.setdefault(document.source_path, []).append(document)
+    return grouped
+
+
+def _document_drafts_match_versions(
+    drafts: Sequence[PreparedDocumentDraft],
+    versions: Sequence[StoredDocumentVersion],
+) -> bool:
+    if len(drafts) != len(versions):
+        return False
+
+    normalized_versions = sorted(versions, key=lambda version: version.chunk_index)
+    for draft, version in zip(drafts, normalized_versions, strict=True):
+        if draft.chunk_index != version.chunk_index:
+            return False
+        if draft.content_hash != version.content_hash:
+            return False
+    return True
+
+
 def _fallback_title(source_path: str) -> str:
     stem = PurePosixPath(source_path).stem
     if stem.upper() == stem:
@@ -770,6 +934,39 @@ class PostgresDocsStore:
             )
             return [row[0] for row in cursor.fetchall()]
 
+    def list_document_versions(
+        self,
+        source_paths: Sequence[str],
+    ) -> dict[str, list[StoredDocumentVersion]]:
+        normalized_paths = _unique_source_paths(source_paths)
+        if not normalized_paths:
+            return {}
+
+        with self._connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at
+                FROM agentic.kb_documents
+                WHERE source_path = ANY(%s)
+                ORDER BY source_path, chunk_index
+                """,
+                (normalized_paths,),
+            )
+            rows = cursor.fetchall()
+
+        versions_by_path: dict[str, list[StoredDocumentVersion]] = {}
+        for source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at in rows:
+            versions_by_path.setdefault(source_path, []).append(
+                StoredDocumentVersion(
+                    source_path=source_path,
+                    chunk_index=chunk_index,
+                    content_hash=content_hash,
+                    repo_commit_hash=repo_commit_hash,
+                    source_updated_at=source_updated_at,
+                )
+            )
+        return versions_by_path
+
     @staticmethod
     def _upsert_documents(cursor: Any, documents: Sequence[PreparedDocument], *, Json: Any) -> None:
         if not documents:
@@ -914,3 +1111,27 @@ class InMemoryDocsStore:
 
     def list_document_paths(self) -> list[str]:
         return sorted({key[0] for key in self.rows_by_key})
+
+    def list_document_versions(
+        self,
+        source_paths: Sequence[str],
+    ) -> dict[str, list[StoredDocumentVersion]]:
+        versions_by_path: dict[str, list[StoredDocumentVersion]] = {}
+        for source_path in _unique_source_paths(source_paths):
+            rows_for_path = []
+            for chunk_index in sorted(
+                key[1] for key in self.rows_by_key if key[0] == source_path
+            ):
+                row = self.rows_by_key[(source_path, chunk_index)]
+                rows_for_path.append(
+                    StoredDocumentVersion(
+                        source_path=source_path,
+                        chunk_index=chunk_index,
+                        content_hash=row["content_hash"],
+                        repo_commit_hash=row["repo_commit_hash"],
+                        source_updated_at=row["source_updated_at"],
+                    )
+                )
+            if rows_for_path:
+                versions_by_path[source_path] = rows_for_path
+        return versions_by_path

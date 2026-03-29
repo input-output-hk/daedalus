@@ -13,8 +13,9 @@ from agentic_kb.ingest.docs import (
     DocsIngestResult,
     PostgresDocsStore,
     discover_docs_source_paths,
+    embed_prepared_document_drafts,
     is_allowlisted_doc_path,
-    prepare_documents,
+    plan_docs_updates,
 )
 from agentic_kb.ingest.github import (
     GithubFetchBounds,
@@ -238,16 +239,20 @@ def sync_docs(
                     for path in existing_paths
                     if is_allowlisted_doc_path(path) and path not in discovered_path_set
                 )
-                documents = prepare_documents(
+                plan = plan_docs_updates(
                     root,
+                    docs_store=docs_store,
                     source_paths=discovered_paths,
-                    embedding_client=embedding_client,
                     repo_commit_hash=repo_commit_hash,
                 )
-                docs_store.replace_documents_for_paths(
-                    (*discovered_paths, *stale_paths),
-                    documents,
+                documents = embed_prepared_document_drafts(
+                    plan.drafts,
+                    embedding_client=embedding_client,
                 )
+                if plan.updated_paths:
+                    docs_store.replace_documents_for_paths(plan.updated_paths, documents)
+                if stale_paths:
+                    docs_store.delete_documents_for_paths(stale_paths)
             except Exception as error:
                 sync_store.record_failures(
                     [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
@@ -255,9 +260,13 @@ def sync_docs(
                 raise
 
             result = DocsIngestResult(
-                source_paths=discovered_paths,
+                source_paths=plan.updated_paths,
                 processed_count=len(documents),
                 repo_commit_hash=repo_commit_hash,
+                candidate_paths=plan.candidate_paths,
+                updated_paths=plan.updated_paths,
+                skipped_paths=plan.skipped_paths,
+                deleted_paths=stale_paths,
             )
             state = build_docs_sync_state(
                 result,
@@ -269,7 +278,10 @@ def sync_docs(
 
     return {
         "mode": "explicit",
+        "candidate_paths": result.candidate_paths,
         "source_paths": result.source_paths,
+        "updated_paths": result.updated_paths,
+        "skipped_paths": result.skipped_paths,
         "processed_count": result.processed_count,
         "deleted_paths": stale_paths,
         "repo_commit_hash": repo_commit_hash,
@@ -560,6 +572,8 @@ def format_sync_source_output(command_name: str, result: dict[str, Any]) -> list
             (
                 "docs: "
                 f"mode={result['mode']}, "
+                f"updated={len(result.get('updated_paths', result.get('source_paths', ())))}, "
+                f"skipped={len(result.get('skipped_paths', ()))}, "
                 f"processed={result['processed_count']}, "
                 f"deleted={len(result.get('deleted_paths', ()))}, "
                 f"commit={result['repo_commit_hash']}"
@@ -611,7 +625,8 @@ def _format_changed_local_output(source_name: str, result: dict[str, Any]) -> li
     return [
         (
             f"{source_name}: "
-            f"updated={len(result['changed_paths'])}, "
+            f"updated={len(result.get('updated_paths', result['changed_paths']))}, "
+            f"skipped={len(result.get('skipped_paths', ()))}, "
             f"deleted={len(result['deleted_paths'])}, "
             f"{count_key}={result[count_key]}, "
             f"baseline={result['baseline_commit']} -> {result['repo_commit_hash']}"
@@ -914,17 +929,20 @@ def _sync_docs_changed(
     )
 
     try:
-        documents = prepare_documents(
+        plan = plan_docs_updates(
             workspace_root,
+            docs_store=docs_store,
             source_paths=delta.changed_paths,
-            embedding_client=embedding_client,
             repo_commit_hash=delta.head_commit,
         )
-        if delta.changed_paths or delta.deleted_paths:
-            docs_store.replace_documents_for_paths(
-                (*delta.changed_paths, *delta.deleted_paths),
-                documents,
-            )
+        documents = embed_prepared_document_drafts(
+            plan.drafts,
+            embedding_client=embedding_client,
+        )
+        if plan.updated_paths:
+            docs_store.replace_documents_for_paths(plan.updated_paths, documents)
+        if delta.deleted_paths:
+            docs_store.delete_documents_for_paths(delta.deleted_paths)
     except Exception as error:
         sync_store.record_failures(
             [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
@@ -932,9 +950,13 @@ def _sync_docs_changed(
         raise
 
     result = DocsIngestResult(
-        source_paths=delta.changed_paths,
+        source_paths=plan.updated_paths,
         processed_count=len(documents),
         repo_commit_hash=delta.head_commit,
+        candidate_paths=plan.candidate_paths,
+        updated_paths=plan.updated_paths,
+        skipped_paths=plan.skipped_paths,
+        deleted_paths=delta.deleted_paths,
     )
     state = build_docs_sync_state(
         result,
@@ -944,7 +966,10 @@ def _sync_docs_changed(
     )
     sync_store.upsert_sync_states([state])
     return {
-        "changed_paths": result.source_paths,
+        "changed_paths": delta.changed_paths,
+        "candidate_paths": result.candidate_paths,
+        "updated_paths": result.updated_paths,
+        "skipped_paths": result.skipped_paths,
         "deleted_paths": delta.deleted_paths,
         "processed_count": result.processed_count,
         "repo_commit_hash": state.repo_commit_hash,
