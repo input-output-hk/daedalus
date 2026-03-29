@@ -113,7 +113,7 @@ The default publication channel for shared baseline snapshots should be GitHub A
 - `snapshot export` is schema-scoped to `agentic`; it is not a full-cluster backup.
 - `snapshot import` drops and recreates the `agentic` schema before restore.
 - Only run import against fresh, isolated, or otherwise disposable KB databases.
-- Manifest-file schema design and publication polish remain later tasks; task-205 does not define a new external manifest contract.
+- The canonical manifest contract now exists at `agentic/config/snapshot-manifest.schema.json`; manifest file generation, import validation, and publication workflow wiring remain later tasks.
 
 ## Freshness Rules
 

@@ -12,6 +12,7 @@ authors = [
   { name = "OpenCode" }
 ]
 dependencies = [
+  "jsonschema>=4.10,<5",
   "psycopg[binary]>=3.2,<4",
   "tree-sitter>=0.25,<0.26",
   "tree-sitter-language-pack>=1.3,<2"

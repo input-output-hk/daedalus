@@ -1,0 +1,61 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json",
+  "schema_version": 1,
+  "snapshot_name": "agentic-kb-20260329T020000Z",
+  "snapshot_created_at": "2026-03-29T02:00:00Z",
+  "artifact": {
+    "filename": "agentic-kb-20260329T020000Z.dump",
+    "dump_format": "postgresql_custom",
+    "compression": {
+      "algorithm": "gzip",
+      "level": 6
+    },
+    "size_bytes": 1234567,
+    "content_hash": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "repo": {
+    "name": "DripDropz/daedalus",
+    "docs_commit_hash": "0123456789abcdef0123456789abcdef01234567",
+    "code_commit_hash": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "embedding_model": "all-minilm:l6-v2",
+  "entity_counts": {
+    "documents": 128,
+    "code_chunks": 512,
+    "github_issues": 24,
+    "github_issue_comments": 80,
+    "github_prs": 12,
+    "github_pr_comments": 44,
+    "project_items": 19
+  },
+  "sync_state": {
+    "docs": {
+      "repo_commit_hash": "0123456789abcdef0123456789abcdef01234567",
+      "last_synced_at": "2026-03-29T01:30:00Z"
+    },
+    "code": {
+      "repo_commit_hash": "0123456789abcdef0123456789abcdef01234567",
+      "last_synced_at": "2026-03-29T01:35:00Z"
+    },
+    "github": {
+      "issues": {
+        "updated_at_watermark": "2026-03-29T01:40:00Z"
+      },
+      "pulls": {
+        "updated_at_watermark": "2026-03-29T01:41:00Z"
+      },
+      "issue_comments": {
+        "updated_at_watermark": "2026-03-29T01:42:00Z"
+      },
+      "review_comments": {
+        "updated_at_watermark": "2026-03-29T01:43:00Z"
+      }
+    },
+    "project": {
+      "owner": "DripDropz",
+      "number": 5,
+      "cursor": "Y3Vyc29yOnYyOpHOAAABk_project_cursor",
+      "updated_at_watermark": "2026-03-29T01:45:00Z"
+    }
+  }
+}

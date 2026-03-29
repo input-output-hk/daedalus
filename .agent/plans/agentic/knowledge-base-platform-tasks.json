@@ -432,14 +432,14 @@
           "id": "task-601",
           "title": "Define snapshot manifest format",
           "description": "Specify the metadata format that accompanies exported database snapshots",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": [
             "task-205",
             "task-405"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/config/snapshot-manifest.schema.json"
         },
         {

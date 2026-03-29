@@ -213,14 +213,15 @@ This is required for team use, not optional polish.
 
 Each export should produce:
 
-- a compressed ParadeDB dump (`pg_dump --format=custom --compress=zstd`)
+- a PostgreSQL custom-format `agentic` schema dump matching the current task-205 export contract (`pg_dump --format=custom --compress=6`)
 - a manifest JSON containing:
   - schema version
   - snapshot creation timestamp
-  - repo commit used for docs/code ingestion
-  - GitHub sync cursors and watermarks
+  - basename-only sibling dump filename plus immutable artifact identity (`dump_format`, explicit compression metadata, exact byte size, and `sha256:<lowercase-hex>` content hash)
+  - repo name plus docs/code commit baselines
+  - GitHub per-stream watermarks and Project 5 cursor/watermark state
   - embedding model name
-  - row counts by entity type
+  - row counts for the current seven entity types
 
 #### Team Workflow
 
