@@ -10,7 +10,7 @@ This workflow guides booting the Daedalus agentic knowledge base, syncing local 
 
 This workflow documents the current Daedalus agentic platform shape described in `.agent/plans/agentic/knowledge-base-platform.md`.
 
-Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, and destructive `snapshot import` behavior. `sync` remains reserved for later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, destructive `snapshot import`, and the bootstrap-only `sync changed` flow. The other `sync` verbs remain deferred to later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 
@@ -67,7 +67,8 @@ Today:
 - `entity get <entity_type> <id>` fetches one indexed row by stable id, returns exit code `2` for invalid entity types, and returns exit code `4` for not-found rows.
 - `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema, writes to `/workspace/agentic/snapshots` by default, and emits a schema-valid sibling `.manifest.json` sidecar.
 - `snapshot import` accepts either the dump path or the sibling manifest path, validates the manifest plus dump size/hash before restore, and still requires `--yes` acknowledgement.
-- `sync` and richer MCP behavior still belong to later tasks.
+- `sync changed` is now the supported post-import bootstrap path: it requires restored `kb_sync_state` baseline rows, syncs only changed local docs/code since their own baseline commits including deletions, refreshes GitHub only for bounded `issues` and `issue_comments`, defers bounded `pulls` and `review_comments`, and resumes Project 5 from the stored cursor.
+- `sync all`, `sync docs`, `sync code`, `sync github`, and `sync project` still belong to later tasks.
 
 ## Status Behavior
 
@@ -92,6 +93,13 @@ The platform is designed for multiple human developers, not just one local machi
 2. Another developer imports that snapshot into a fresh or otherwise disposable KB database
 3. The developer runs `sync changed` to add branch-local docs/code changes and any new GitHub updates
 4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time
+
+Bootstrap caveats for `sync changed`:
+
+- it is intentionally not a first-sync substitute on an empty KB; import a validated snapshot first
+- docs and code deltas are computed from the restored baseline commits to current `HEAD`, so rebases can include broader catch-up than purely branch-local edits
+- GitHub bounded guarantees in this bootstrap flow apply only to `issues` and `issue_comments`
+- Project refresh is cursor continuation only from stored `after_cursor`; it does not detect updates to already-seen items yet
 
 ### Snapshot Publication
 

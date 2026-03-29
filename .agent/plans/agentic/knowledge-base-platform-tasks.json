@@ -472,15 +472,15 @@
           "id": "task-604",
           "title": "Implement import-then-sync-changed bootstrap flow",
           "description": "After import, refresh only local branch deltas and new GitHub/project updates so developers get current results quickly",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-405",
             "task-602"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/sync/commands.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/commands/sync.py"
         }
       ]
     },

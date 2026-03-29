@@ -52,6 +52,9 @@ class DocsStore(Protocol):
     def upsert_documents(self, documents: Sequence["PreparedDocument"]) -> int:
         ...
 
+    def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:
+        ...
+
 
 @dataclass(frozen=True)
 class PreparedDocument:
@@ -91,6 +94,11 @@ def discover_docs_source_paths(workspace_root: str | Path) -> list[str]:
             matches.add(normalize_source_path(root, matched_path))
 
     return sorted(matches)
+
+
+def is_allowlisted_doc_path(source_path: str) -> bool:
+    path = PurePosixPath(source_path)
+    return any(path.match(pattern) for pattern in DOC_SOURCE_PATTERNS)
 
 
 def prepare_documents(
@@ -629,6 +637,18 @@ class PostgresDocsStore:
 
         return len(documents)
 
+    def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:
+        if not source_paths:
+            return 0
+
+        with self._connection.transaction():
+            with self._connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM agentic.kb_documents WHERE source_path = ANY(%s)",
+                    (list(source_paths),),
+                )
+                return cursor.rowcount
+
 
 class InMemoryDocsStore:
     def __init__(self):
@@ -659,3 +679,10 @@ class InMemoryDocsStore:
                 "updated_at_token": self.write_count,
             }
         return len(documents)
+
+    def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:
+        source_path_set = set(source_paths)
+        to_delete = [key for key in self.rows_by_key if key[0] in source_path_set]
+        for key in to_delete:
+            del self.rows_by_key[key]
+        return len(to_delete)
