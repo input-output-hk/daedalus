@@ -118,8 +118,10 @@ Available workflows:
 | [`ipc.md`](./workflows/ipc.md)            | IPC channel development            | `/ipc`        |
 | [`nix.md`](./workflows/nix.md)            | Nix environment setup              | `/nix`        |
 | [`storybook.md`](./workflows/storybook.md) | Storybook component work          | `/storybook`  |
-| [`agentic-kb.md`](./workflows/agentic-kb.md) | Knowledge base and MCP workflow | `/agentic-kb` |
+| [`agentic-kb.md`](./workflows/agentic-kb.md) | KB workflow for Compose boot, sync, snapshots, and read-only MCP | `/agentic-kb` |
 | [`update-doc.md`](./workflows/update-doc.md) | Update documentation            | `/update-doc` |
+
+Use [`/workflows/agentic-kb.md`](./workflows/agentic-kb.md) as the operator source of truth for KB boot, status, sync, snapshots, and GitHub coordination. Use [`../agentic/README.md`](../agentic/README.md) for copy-paste OpenCode, Claude Code, and local `.mcp.json` MCP client setup examples.
 
 ---
 

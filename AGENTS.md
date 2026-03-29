@@ -34,8 +34,10 @@ Use these slash commands to access workflows:
 | `/hardware-wallets` | Ledger/Trezor hardware wallet development |
 | `/ipc`        | IPC channel development                       |
 | `/nix`        | Nix environment setup                         |
-| `/agentic-kb` | Agentic knowledge base, sync, and MCP setup   |
+| `/agentic-kb` | KB workflow for Compose boot, sync, snapshots, and read-only MCP |
 | `/update-doc` | Update this documentation                    |
+
+For KB operations, use [`.agent/workflows/agentic-kb.md`](./.agent/workflows/agentic-kb.md) as the workflow source of truth. Use [`agentic/README.md`](./agentic/README.md) for copy-paste OpenCode, Claude Code, and local `.mcp.json` MCP client setup examples.
 
 ---
 

@@ -604,13 +604,13 @@
           "id": "task-804",
           "title": "Check core agent indexes",
           "description": "Verify and update AGENTS.md, CLAUDE.md, and .agent/readme.md so they accurately point agents at the finalized KB workflow and MCP setup",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-803"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".agent/readme.md"
         }
       ]

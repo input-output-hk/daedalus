@@ -27,9 +27,11 @@ All agent documentation is centralized in the [`.agent/`](./.agent/) directory.
 - [/hardware-wallets](./.agent/workflows/hardware-wallets.md) — Ledger/Trezor development
 - [/ipc](./.agent/workflows/ipc.md) — IPC channel development
 - [/nix](./.agent/workflows/nix.md) — Nix environment setup
-- [/agentic-kb](./.agent/workflows/agentic-kb.md) — Knowledge base and MCP workflow
+- [/agentic-kb](./.agent/workflows/agentic-kb.md) — KB workflow for Compose boot, sync, snapshots, and read-only MCP
 - [/storybook](./.agent/workflows/storybook.md) — Storybook component development
 - [/update-doc](./.agent/workflows/update-doc.md) — Update documentation
+
+For KB operations, use [`.agent/workflows/agentic-kb.md`](./.agent/workflows/agentic-kb.md) as the workflow source of truth. For Claude Code MCP setup and local `.mcp.json` examples, use [`agentic/README.md`](./agentic/README.md).
 
 ### Learning Resources
 - [Task History](./.agent/plans/) — Past implementation plans
