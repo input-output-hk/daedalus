@@ -35,12 +35,40 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools --help
 # Check bootstrap status without claiming schema readiness
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status
 
+# Emit machine-readable readiness for scripts
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
 # Start the long-running service mode used by compose
 docker compose -f docker-compose.agentic.yml up -d kb-tools
 
 # Run the packaged stdio MCP server in a client-spawned session
 docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
 ```
+
+## Clean Bootstrap
+
+The currently validated clean-machine bootstrap path is intentionally narrow:
+
+```bash
+# Start a fresh stack
+docker compose -f docker-compose.agentic.yml up -d
+
+# Import a valid snapshot into a disposable KB database
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
+
+# Prove readiness
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
+# Prove imported data is queryable without waiting on hybrid/vector readiness
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json "mithril bootstrap"
+```
+
+`agentic/.env.example` contains optional Compose overrides only. The default bootstrap path works without creating a local env file.
+
+Current boundaries:
+
+- shared snapshot publication from CI is still pending
+- `sync changed` is available as an incremental command after a seeded baseline, but it is not part of the clean bootstrap acceptance path
 
 ## MCP Setup
 

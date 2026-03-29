@@ -625,7 +625,7 @@
           "id": "task-901",
           "title": "Validate clean-machine bootstrap",
           "description": "Confirm a developer can clone the repo, start the KB stack, import a snapshot, and search successfully",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -634,7 +634,7 @@
             "task-802",
             "task-803"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/README.md"
         },
         {

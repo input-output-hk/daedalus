@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json",
+  "title": "Daedalus Agentic KB Snapshot Manifest",
+  "description": "Canonical external manifest for exported agentic KB snapshot dumps.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "snapshot_name",
+    "snapshot_created_at",
+    "artifact",
+    "repo",
+    "embedding_model",
+    "entity_counts",
+    "sync_state"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "snapshot_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "snapshot_created_at": {
+      "$ref": "#/$defs/utcTimestamp"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filename",
+        "dump_format",
+        "compression",
+        "size_bytes",
+        "content_hash"
+      ],
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^/\\\\]+$",
+          "description": "Basename-only sibling dump filename resolved relative to the manifest path."
+        },
+        "dump_format": {
+          "const": "postgresql_custom"
+        },
+        "compression": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "algorithm",
+            "level"
+          ],
+          "properties": {
+            "algorithm": {
+              "const": "gzip"
+            },
+            "level": {
+              "const": 6
+            }
+          }
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Artifact digest stored in algorithm-prefixed lowercase hexadecimal form."
+        }
+      }
+    },
+    "repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "docs_commit_hash",
+        "code_commit_hash"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "docs_commit_hash": {
+          "$ref": "#/$defs/nullableGitCommitHash"
+        },
+        "code_commit_hash": {
+          "$ref": "#/$defs/nullableGitCommitHash"
+        }
+      }
+    },
+    "embedding_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entity_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "documents",
+        "code_chunks",
+        "github_issues",
+        "github_issue_comments",
+        "github_prs",
+        "github_pr_comments",
+        "project_items"
+      ],
+      "properties": {
+        "documents": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "code_chunks": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "github_issues": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "github_issue_comments": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "github_prs": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "github_pr_comments": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "project_items": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "sync_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "docs",
+        "code",
+        "github",
+        "project"
+      ],
+      "properties": {
+        "docs": {
+          "$ref": "#/$defs/repoSyncState"
+        },
+        "code": {
+          "$ref": "#/$defs/repoSyncState"
+        },
+        "github": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issues",
+            "pulls",
+            "issue_comments",
+            "review_comments"
+          ],
+          "properties": {
+            "issues": {
+              "$ref": "#/$defs/githubStreamSyncState"
+            },
+            "pulls": {
+              "$ref": "#/$defs/githubStreamSyncState"
+            },
+            "issue_comments": {
+              "$ref": "#/$defs/githubStreamSyncState"
+            },
+            "review_comments": {
+              "$ref": "#/$defs/githubStreamSyncState"
+            }
+          }
+        },
+        "project": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "owner",
+            "number",
+            "cursor",
+            "updated_at_watermark"
+          ],
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "number": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "cursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updated_at_watermark": {
+              "$ref": "#/$defs/nullableUtcTimestamp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?Z$"
+    },
+    "nullableUtcTimestamp": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/utcTimestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "gitCommitHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{7,40}$"
+    },
+    "nullableGitCommitHash": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/gitCommitHash"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "repoSyncState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repo_commit_hash",
+        "last_synced_at"
+      ],
+      "properties": {
+        "repo_commit_hash": {
+          "$ref": "#/$defs/nullableGitCommitHash"
+        },
+        "last_synced_at": {
+          "$ref": "#/$defs/nullableUtcTimestamp"
+        }
+      }
+    },
+    "githubStreamSyncState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "updated_at_watermark"
+      ],
+      "properties": {
+        "updated_at_watermark": {
+          "$ref": "#/$defs/nullableUtcTimestamp"
+        }
+      }
+    }
+  }
+}

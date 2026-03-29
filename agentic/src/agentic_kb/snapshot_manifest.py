@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from functools import lru_cache
-from pathlib import Path
+from importlib.resources import files
 from typing import Any, Iterable
 
 from jsonschema import Draft202012Validator
@@ -221,7 +221,7 @@ def _format_manifest_timestamp(value: datetime | None) -> str | None:
 
 @lru_cache(maxsize=1)
 def _snapshot_manifest_validator() -> Draft202012Validator:
-    schema_path = Path(__file__).resolve().parents[2] / "config" / "snapshot-manifest.schema.json"
+    schema_path = files("agentic_kb").joinpath("config", "snapshot-manifest.schema.json")
     with schema_path.open("r", encoding="utf-8") as handle:
         schema = json.load(handle)
     return Draft202012Validator(schema)

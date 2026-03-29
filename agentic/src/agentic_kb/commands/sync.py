@@ -883,7 +883,7 @@ def _ensure_commit_exists(workspace_root: Path, commit_hash: str) -> None:
 def _run_git_command(workspace_root: Path, args: Sequence[str]) -> str:
     try:
         completed = run(
-            ["git", *args],
+            ["git", "-c", f"safe.directory={workspace_root}", *args],
             check=True,
             capture_output=True,
             text=True,

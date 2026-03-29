@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
+    && apt-get install -y --no-install-recommends ca-certificates curl git gnupg \
     && install -d /usr/share/postgresql-common/pgdg \
     && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
         | gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg \

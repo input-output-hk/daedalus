@@ -44,11 +44,11 @@ docker compose -f docker-compose.agentic.yml up -d
 docker compose -f docker-compose.agentic.yml ps
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status
 
+# Machine-readable readiness proof
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
 # Sync the whole knowledge base
 docker compose -f docker-compose.agentic.yml run --rm kb-tools sync all
-
-# Sync only changes since last update
-docker compose -f docker-compose.agentic.yml run --rm kb-tools sync changed
 
 # Search locally
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search "mithril bootstrap"
@@ -56,9 +56,14 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools search "mithril b
 # Export a portable snapshot for another developer
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export
 
-# Restore a shared snapshot into a disposable KB database
+# Restore a snapshot into a disposable KB database
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump --yes
+
+# Prove imported data is queryable without waiting on hybrid/vector readiness
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json "mithril bootstrap"
 ```
+
+`agentic/.env.example` now documents the optional Compose overrides. The supported clean-bootstrap path works with the defaults in `docker-compose.agentic.yml`; copying an env file is optional unless you need custom ports, credentials, model selection, or a `GITHUB_TOKEN` for GitHub-backed sync commands.
 
 Today:
 
@@ -76,11 +81,11 @@ Today:
 - `sync changed` is now the general incremental command for an already-seeded KB. It still supports the post-import fast-start workflow, but it now requires successful existing baselines for docs, code, all four GitHub stream rows, and Project cursor state before it does any work.
 - `sync all` runs only `sync docs`, `sync code`, `sync github`, and `sync project` in that fixed order and stops on the first failure.
 
-`sync changed` caveat for the shipped container path:
+`sync changed` caveats:
 
-- `agentic/src/agentic_kb/commands/sync.py` shells out to `git` for docs/code delta calculation
-- the current `kb-tools` image built from `agentic/Dockerfile` does not install `git`
-- because of that, `docker compose -f docker-compose.agentic.yml run --rm kb-tools sync changed` should be treated as a documented current limitation for the shipped container path, not as a fully working in-container flow
+- `agentic/src/agentic_kb/commands/sync.py` shells out to `git` for docs/code delta calculation, and the shipped `kb-tools` image now includes `git` plus a per-command safe-directory override for the bind-mounted `/workspace` checkout
+- `sync changed` still is not part of the clean-machine bootstrap acceptance path for this workflow; use it only after the KB already has successful docs, code, GitHub, and Project baselines
+- even with the container-path git fix, the broader import-then-`sync changed` team fast-start story remains distinct from the narrower task-901 clean-bootstrap contract and from the still-pending CI snapshot publication workflow
 
 ## Status Behavior
 
@@ -95,16 +100,29 @@ Use `status` for a quick operator view of both service readiness and KB DB readi
 
 `status` is intentionally limited to current repo-backed contracts; it does not require sync orchestration, GitHub API calls, or MCP readiness.
 
+## Clean-Machine Bootstrap
+
+The currently validated narrow bootstrap contract is:
+
+1. Start a fresh isolated stack with `docker compose -f docker-compose.agentic.yml up -d`
+2. Import a valid snapshot with `docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import <dump-or-manifest> --yes`
+3. Prove readiness with `docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json`
+4. Prove imported data is searchable with `docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json <deterministic-query>`
+
+This is the current clean-machine acceptance path. It intentionally does not require `sync changed`.
+
 ## Team Sharing Workflow
 
 The platform is designed for multiple human developers, not just one local machine.
 
 ### Recommended Team Pattern
 
-1. One developer or CI publishes a fresh baseline snapshot from `develop`
-2. Another developer imports that snapshot into a fresh or otherwise disposable KB database
-3. The developer runs `sync changed` to add branch-local docs/code changes and any new GitHub updates
-4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time
+The broader team-sharing story is only partially shipped today.
+
+1. Today, one developer can create a snapshot locally with `snapshot export` and another developer can import it into a fresh or otherwise disposable KB database
+2. After import, use `status --json` plus a deterministic BM25 `search --json` query to validate the imported KB
+3. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
+4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time when a trusted snapshot artifact is available
 
 Incremental caveats for `sync changed`:
 
@@ -115,10 +133,10 @@ Incremental caveats for `sync changed`:
 
 ### Snapshot Publication
 
-The default publication channel for shared baseline snapshots should be GitHub Actions artifacts.
+CI-published baseline snapshot distribution is still pending follow-up automation work.
 
-- CI publishes the latest baseline snapshot from `develop`
-- developers download that artifact, import it into a disposable KB database with `snapshot import ... --yes`, and then run `sync changed`
+- the intended publication channel remains GitHub Actions artifacts
+- until that workflow lands, task-local or developer-local `snapshot export` output is the available snapshot source for clean bootstrap validation
 - GitHub Releases assets are out of scope for KB snapshot sharing
 
 ### Why Snapshot Sharing Matters

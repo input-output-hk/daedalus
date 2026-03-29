@@ -24,5 +24,8 @@ agentic-kb = "agentic_kb.cli:main"
 [tool.setuptools]
 package-dir = {"" = "src"}
 
+[tool.setuptools.package-data]
+agentic_kb = ["config/*.json"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
