@@ -35,7 +35,7 @@
   - `task-801` - read-only stdio Search MCP server in `agentic/src/agentic_kb/cli.py` and the packaged MCP module.
   - `task-802` - finalized user-facing client launcher/setup contract in `agentic/README.md`.
 - Planning and research sources reviewed for this task:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `agentic/README.md`

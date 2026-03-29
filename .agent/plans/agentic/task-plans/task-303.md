@@ -38,7 +38,7 @@
   - `task-304` - unchanged-doc detection and content-versioned row metadata stay unchanged
   - `task-502` / `task-503` / `task-801` - should consume the resulting filter surface, not be reimplemented here
 - Reviewed references:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`

@@ -42,7 +42,7 @@
 - Tracking mismatch to correct during implementation:
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` still points `task-401.targetPath` at `agentic/src/ingest/code.py`, but repo reality after `task-103` is `agentic/src/agentic_kb/ingest/code.py`. Correct that path before code lands.
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -167,7 +167,7 @@
 - Update this task plan doc during implementation with final build status, implementation notes, verification notes, and outcome.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` before implementation to correct `task-401.targetPath`, then update it again when the task is completed.
 - Add a research note under `.agent/plans/agentic/research/` capturing durable findings such as the accepted parser package choice, supported symbol kinds, export-list handling, per-file replace semantics, and any syntax/embedding caveats discovered in live verification.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable platform-contract change beyond this task's internal library behavior.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable platform-contract change beyond this task's internal library behavior.
 
 ## Implementation Notes
 

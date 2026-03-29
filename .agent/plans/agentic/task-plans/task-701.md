@@ -54,7 +54,7 @@ Historical note: this task plan predates the retirement of the GitHub Actions-ba
 - Tracker drift to reconcile when implementation lands:
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` currently lists `task-701.targetPath` as `agentic/src/sync/commands.py`, but repo reality uses `agentic/src/agentic_kb/commands/sync.py`.
 - Primary references reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`

@@ -44,7 +44,7 @@
 - Current tracking mismatch to correct during implementation:
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` currently points `task-301.targetPath` at `agentic/src/ingest/docs.py`, but repo reality after `task-103` / `task-501` is the `agentic/src/agentic_kb/` package. The first implementation step should update the tracker to the real package path before code lands.
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -152,7 +152,7 @@
 - Update this task plan doc during implementation with final build status, implementation notes, verification notes, and outcome.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` before implementation to fix the real `task-301` target path, verify that correction explicitly during task validation, and update it again when the task is completed.
 - Add a research note under `.agent/plans/agentic/research/` capturing durable findings such as the final doc allowlist, chosen `doc_kind` mapping, any DB-client decision, and any embedding-size / oversized-document constraints discovered in live verification.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable operator-facing contract change beyond this task's internal library behavior.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable operator-facing contract change beyond this task's internal library behavior.
 
 ## Planning Status Rationale
 

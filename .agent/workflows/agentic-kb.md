@@ -12,7 +12,7 @@ This workflow documents the current shipped Daedalus agentic KB behavior.
 
 `docker-compose.agentic.yml` boots `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` ships the packaged `agentic-kb` CLI with `status`, `search`, `entity get`, `sync <subcommand>`, `snapshot <subcommand>`, `service`, and the stdio MCP entrypoint `mcp-search`. The Compose `mcp-search` service is a parity/smoke harness for that same stdio process and is not a separate daemon or network endpoint.
 
-For schema bootstrap, `agentic/schema/init.sql` remains the first-boot entrypoint and delegates index creation to `agentic/schema/create_indexes.sql`. Existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+For schema bootstrap, `agentic/schema/init.sql` remains the first-boot entrypoint and delegates index creation to `agentic/schema/create_indexes.sql`. Existing initialized DB volumes are treated as disposable in v1: when schema contracts change, recreate the KB volume and import a compatible snapshot or rebuild locally instead of attempting manual retrofit.
 
 ## Goals
 
@@ -87,6 +87,16 @@ Today:
 - `sync changed` still is not part of the clean-machine bootstrap acceptance path for this workflow; use it only after the KB already has successful docs, code, GitHub, and Project baselines
 - even with the container-path git fix, the broader import-then-`sync changed` team fast-start story remains distinct from the narrower task-901 clean-bootstrap contract and from the separate manual shared-baseline publication workflow
 
+## Canonical Embedding Contract
+
+Shared baselines use one canonical embedding contract at a time. In v1, that is not a per-developer preference.
+
+- the canonical contract is the tuple of embedding model name, expected vector dimensionality, and versioned contract identifier recorded in snapshot metadata and enforced by the tooling
+- developers must treat the checked-in/default embedding configuration as the shared-baseline contract unless rollout docs explicitly announce a new one
+- changing the canonical contract requires a deliberate republish from `develop` on the trusted baseline-publisher machine before team handoff resumes
+- local `OLLAMA_EMBED_MODEL` overrides are acceptable only for disposable local rebuild experiments; they are out of contract for publishing or extending the shared team baseline
+- mismatch handling must be operator-visible: snapshot import should fail fast, `status` should distinguish readiness from sync-safe compatibility, and post-import incremental sync should refuse to mix incompatible embeddings
+
 ## Status Behavior
 
 Use `status` for a quick operator view of both service readiness and KB DB readiness:
@@ -141,7 +151,7 @@ The canonical shared baseline is published locally, not through GitHub Actions.
 - publication builds a fresh baseline with `sync all`, exports a snapshot pair, validates it locally, and uploads it to the chosen private shared storage backend
 - the portable payload remains exactly the exported `.dump` plus sibling `.manifest.json` pair; no extra repo-specific archive layer is required
 - GitHub Actions artifacts and GitHub Releases assets are both out of scope for KB snapshot sharing in v1
-- the exact storage backend, naming, retention, and helper commands are still tracked as pending rollout work
+- the exact storage backend, authentication/bootstrap path, artifact discovery path, retention, outage recovery behavior, and helper commands are still tracked as pending rollout work
 
 Consumption path after download from the shared private storage backend:
 
@@ -187,6 +197,11 @@ Current shipped freshness handling is status-driven rather than automatic sync:
 - `sync changed` remains the follow-on command to refresh stale baselines after a seeded or imported KB, but Project freshness still cannot guarantee replay of edits to already-seen items under the current cursor-only sync contract
 - eventual freshness for Project 5 items is acceptable in v1, and the remaining rollout work includes documenting a manual full Project refresh path for re-convergence
 
+Bootstrap and broader team rollout remain separate acceptance contracts:
+
+- clean-machine bootstrap succeeds when the documented import, `status --json`, and deterministic BM25 proof succeed on a fresh stack
+- team-ready rollout additionally requires the private shared-storage handoff, canonical embedding-contract guidance, Project token guidance, helper commands, and the manual full Project refresh path
+
 ## MCP Setup
 
 `agentic-kb mcp-search` is the shipped read-only Search MCP server over stdio.
@@ -217,6 +232,7 @@ Environment notes:
 
 - `DATABASE_URL` and `OLLAMA_BASE_URL` are required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires them automatically
 - `OLLAMA_EMBED_MODEL` is an optional override and should stay aligned with the embedding model used for the indexed KB
+- for shared baseline publication and post-import sync, `OLLAMA_EMBED_MODEL` must match the current canonical embedding contract; treat ad hoc overrides as disposable local-only experiments
 - `GITHUB_TOKEN` is optional for read-only MCP search and `status`
 - `GITHUB_TOKEN` is still required for `sync github` and `sync project`
 
@@ -235,7 +251,7 @@ Use GitHub Issues and Project 5 for planning and execution tracking.
 
 ## Related Files
 
-- Plan: `.agent/plans/agentic/knowledge-base-platform.md`
+- Plan: `.agent/plans/agentic/knowledge-base-platform-prd.md`
 - Tasks: `.agent/plans/agentic/knowledge-base-platform-tasks.json`
 - Agent index: `.agent/readme.md`
 - Root agent instructions: `AGENTS.md`

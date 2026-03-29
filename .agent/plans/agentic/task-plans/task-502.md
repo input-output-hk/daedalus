@@ -48,7 +48,7 @@
   - The tracker dependency list for `task-502` omits `task-404` even though the current registry and platform plan treat `project_items` as a first-class searchable entity in this task. This does not block planning because `task-404` is already completed, but the mismatch should be corrected so tracker metadata matches actual search scope.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-203-bm25-hnsw-indexes.md`

@@ -41,7 +41,7 @@
   - `task-403` - GitHub issues, PRs, and comments ingestion
   - `task-502` - hybrid BM25/vector/RRF search queries
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -120,7 +120,7 @@
 - Correct `.agent/plans/agentic/knowledge-base-platform-tasks.json` as the first implementation step for `task-501` so `task-501` points at `agentic/src/agentic_kb/embed/client.py` and includes the upstream dependency reality captured by this plan before the embedding client code lands.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` again when `task-501` is completed so status and completion metadata stay aligned with the corrected target path and dependencies.
 - Add a research note under `.agent/plans/agentic/research/` capturing the exact Ollama embedding endpoint contract, observed response normalization needs, confirmed vector dimension behavior, and any durable gotchas discovered during live verification.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable platform-contract change rather than a task-local client detail.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable platform-contract change rather than a task-local client detail.
 
 ## Planning Status Rationale
 

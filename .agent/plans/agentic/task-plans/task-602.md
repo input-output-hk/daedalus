@@ -48,7 +48,7 @@ Historical note: this task plan predates the retirement of the GitHub Actions-ba
   - `.agent/plans/agentic/research/task-601-snapshot-manifest-format.md`
   - `.agent/plans/agentic/research/task-205-db-status-and-snapshot-commands.md`
   - `.agent/plans/agentic/research/task-405-sync-state.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `agentic/src/agentic_kb/cli.py`
@@ -145,7 +145,7 @@ Historical note: this task plan predates the retirement of the GitHub Actions-ba
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` only for `task-602` metadata, including the packaged command `targetPath` correction and final task status.
 - Add `.agent/plans/agentic/research/task-602-snapshot-export-import-commands.md` with durable findings about manifest-aware export/import behavior, import validation order, `kb_snapshot_manifest` mapping, and verification caveats.
 - Update `.agent/workflows/agentic-kb.md` so it no longer says manifest generation and import validation are pending later tasks.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md` if the final implementation reveals a meaningful contract clarification that the higher-level plan currently states inaccurately.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md` if the final implementation reveals a meaningful contract clarification that the higher-level plan currently states inaccurately.
 
 ## Implementation Notes
 

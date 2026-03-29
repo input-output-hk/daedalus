@@ -39,7 +39,7 @@ Historical note: this task plan was written before the GitHub Actions-based snap
   - `task-802` - finalized OpenCode, Claude Code, and `.mcp.json` setup docs in `agentic/README.md`.
   - `task-803` - current-state workflow doc in `.agent/workflows/agentic-kb.md`.
 - Current repo/doc/runtime sources reviewed for planning:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-602-snapshot-export-import-commands.md`

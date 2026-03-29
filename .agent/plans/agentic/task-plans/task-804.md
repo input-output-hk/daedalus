@@ -44,7 +44,7 @@
   - `CLAUDE.md`
   - `.agent/workflows/agentic-kb.md`
   - `agentic/README.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
 
 ## Current Repo State To Reconcile

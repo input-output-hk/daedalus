@@ -45,7 +45,7 @@
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` currently points `task-402.targetPath` at `agentic/src/ingest/code.py`, but the existing packaged module path is `agentic/src/agentic_kb/ingest/code.py`.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-401-typescript-symbol-chunking.md`
@@ -159,7 +159,7 @@
 - Update this canonical task plan with the final approved plan, implementation notes, verification notes, and outcome after the build loop.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` to correct `task-402.targetPath` and later mark `task-402` completed.
 - Add a task-402 research note under `.agent/plans/agentic/research/` capturing the accepted repository exclusions, supported file families, fallback chunking contract, declaration-file decision, and stale-row prune boundary.
-- Update `.agent/plans/agentic/knowledge-base-platform.md` or `.agent/workflows/agentic-kb.md` only if implementation reveals a durable platform-level contract change for repository-wide code ingestion, especially if the approved inclusion/exclusion policy or prune safety contract must become user-facing.
+- Update `.agent/plans/agentic/knowledge-base-platform-prd.md` or `.agent/workflows/agentic-kb.md` only if implementation reveals a durable platform-level contract change for repository-wide code ingestion, especially if the approved inclusion/exclusion policy or prune safety contract must become user-facing.
 
 ## Implementation Notes
 

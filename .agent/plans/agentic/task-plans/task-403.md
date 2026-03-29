@@ -49,7 +49,7 @@
   - The same tracker still points `task-404.targetPath` at `agentic/src/ingest/project.py` and `task-405.targetPath` at `agentic/src/sync/state.py`; those look like the same pre-package-layout mismatch and should be reconciled when those tasks start.
   - The same tracker likely has the same stale package-layout problem for `task-502.targetPath` (`agentic/src/search/query.py`) and `task-701.targetPath` (`agentic/src/sync/commands.py`), which should be reconciled to the packaged `agentic/src/agentic_kb/...` layout when those tasks begin.
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`

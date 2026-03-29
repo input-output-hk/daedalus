@@ -47,7 +47,7 @@
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` now points `task-405.targetPath` at `agentic/src/agentic_kb/sync/state.py`, matching the packaged module layout.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-103-kb-tools-service-image.md`

@@ -3,7 +3,7 @@ Project anchors
 - Repo: `DripDropz/daedalus`
 - Epic: `DripDropz/daedalus#22`
 - Project: `DripDropz` Project 5 (`Daedalus Maintenance`)
-- Plan: `.agent/plans/agentic/knowledge-base-platform.md`
+- Plan PRD: `.agent/plans/agentic/knowledge-base-platform-prd.md`
 - Tasks: `.agent/plans/agentic/knowledge-base-platform-tasks.json`
 - Task plans: `.agent/plans/agentic/task-plans/`
 - Workflow: `.agent/workflows/agentic-kb.md`
@@ -170,6 +170,7 @@ Project anchors
 1. Scribe subagent updates:
 - canonical task plan doc with final approved plan, final implementation/review outcome, and references to both review-log docs
 - tasks JSON (`status`, `completedAt`, deps/critical path if changed)
+- prd
 - plan/workflow/docs as needed
 - research brain notes
 - project metadata updates needed for this task

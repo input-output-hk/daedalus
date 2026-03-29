@@ -45,7 +45,7 @@ Historical note: this task plan describes a GitHub Actions-based publication pat
 - Planning nuance to keep explicit:
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` points both `task-603` and `task-703` at `.github/workflows/agentic-kb-sync.yml`. That overlap is intentional only if `task-603` establishes the manual/on-demand baseline workflow and `task-703` later extends that same file with scheduled automation rather than creating a parallel workflow.
 - Primary references reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`
   - `.agent/workflows/agentic-kb.md`
@@ -66,7 +66,7 @@ Historical note: this task plan describes a GitHub Actions-based publication pat
 - `agentic/README.md` - document where the published artifact comes from and how to consume it with the existing import-and-validate commands.
 - `.agent/plans/agentic/knowledge-base-platform-tasks.json` - update only `task-603` status metadata when implementation lands.
 - `.agent/plans/agentic/research/task-603-shared-snapshot-publication-workflow.md` - capture durable findings about the accepted workflow trigger shape, artifact contract, token/permissions requirements, and verification behavior.
-- `.agent/plans/agentic/knowledge-base-platform.md` - only if implementation reveals a meaningful contract clarification about publication versus scheduled refresh that the higher-level plan currently states ambiguously.
+- `.agent/plans/agentic/knowledge-base-platform-prd.md` - only if implementation reveals a meaningful contract clarification about publication versus scheduled refresh that the higher-level plan currently states ambiguously.
 
 ## Implementation Approach
 
@@ -141,7 +141,7 @@ Historical note: this task plan describes a GitHub Actions-based publication pat
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` only for `task-603` metadata when implementation lands.
 - Add `.agent/plans/agentic/research/task-603-shared-snapshot-publication-workflow.md` with durable findings about workflow triggers, artifact contract, permissions, retention, and verification behavior.
 - Update `.agent/workflows/agentic-kb.md` and `agentic/README.md` so the published snapshot consumption path matches the implemented workflow.
-- Update `.agent/plans/agentic/knowledge-base-platform.md` only if implementation shows that the higher-level plan needs a clearer distinction between baseline publication in `task-603` and scheduled automation in `task-703`.
+- Update `.agent/plans/agentic/knowledge-base-platform-prd.md` only if implementation shows that the higher-level plan needs a clearer distinction between baseline publication in `task-603` and scheduled automation in `task-703`.
 
 ## Final Implementation Notes
 

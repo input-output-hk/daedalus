@@ -44,7 +44,7 @@
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` still points `task-205.targetPath` at `agentic/src/cli.py`, but repo reality uses the packaged path `agentic/src/agentic_kb/cli.py`.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`

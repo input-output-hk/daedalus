@@ -79,6 +79,7 @@ Current contract:
 - the portable payload is exactly one `.dump` plus its sibling `.manifest.json`
 - snapshots are shared through a private storage backend outside git history
 - GitHub Actions artifacts are retired and are not a supported publication channel
+- the shared baseline uses one canonical embedding contract at a time; local model overrides are out of contract for team publication and handoff
 
 Current local publication shape:
 
@@ -111,6 +112,22 @@ Validation expectations after import:
 
 The exact backend selection, naming, retention, publish helpers, and fetch helpers are still tracked as pending rollout work.
 
+Pending rollout work also includes the backend authentication/bootstrap path, artifact discovery path, and outage recovery behavior.
+
+## Canonical Embedding Contract
+
+Shared baseline publication is pinned to one canonical embedding contract at a time rather than being a per-developer preference.
+
+- the contract is the embedding model name plus the compatibility metadata recorded in the snapshot manifest and enforced by the tooling
+- if the canonical contract changes, the trusted publisher must rebuild and republish from `develop` before the team resumes snapshot handoff
+- `OLLAMA_EMBED_MODEL` overrides are acceptable for disposable local experiments only; do not use them when publishing or extending the shared baseline
+- operators should expect incompatible contracts to fail fast during snapshot import and to block post-import incremental sync
+
+Clean-machine bootstrap and full team rollout are separate acceptance levels:
+
+- bootstrap only requires stack start, compatible snapshot import, `status --json`, and the deterministic BM25 proof query
+- broader team rollout additionally requires the documented shared-storage handoff, Project token guidance, helper commands, and post-import sync workflow
+
 ## MCP Setup
 
 `agentic-kb mcp-search` is a stdio MCP server. MCP clients should spawn it as a no-TTY child process and communicate over stdin/stdout.
@@ -128,6 +145,7 @@ Do not point MCP clients at `docker compose -f docker-compose.agentic.yml up -d 
 - `DATABASE_URL`: required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires it automatically.
 - `OLLAMA_BASE_URL`: required for direct local launches and needed for vector/hybrid MCP queries; the Compose launcher wires it automatically.
 - `OLLAMA_EMBED_MODEL`: optional override. Keep it aligned with the embedding model used to index the current KB.
+- `OLLAMA_EMBED_MODEL`: optional for disposable local rebuild experiments, but shared baseline publication and post-import sync must match the current canonical embedding contract.
 - `GITHUB_TOKEN`: optional for read-only MCP search/status. It is still required for `sync github` and `sync project`, and Project 5 reads need a token that can read `DripDropz` ProjectV2 data.
 
 ### OpenCode

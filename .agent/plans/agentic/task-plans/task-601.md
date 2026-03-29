@@ -41,7 +41,7 @@
   - `task-603`, `task-701`, `task-801`, `task-802`, `task-803`, `task-901` - all depend on a stable snapshot-sharing contract for docs, automation, and onboarding.
 - Current repo realities this plan must reconcile:
   - `agentic/config/` does not exist yet, so task-601 will need to create that directory instead of only editing an existing file.
-  - `.agent/plans/agentic/knowledge-base-platform.md` still describes snapshot contents at a high level only; task-601 must tighten that into an exact field contract without forcing the full task-602 implementation.
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md` still describes snapshot contents at a high level only; task-601 must tighten that into an exact field contract without forcing the full task-602 implementation.
   - `task-205` uses `pg_dump --format=custom --compress=6` today, so the manifest contract must describe that dump identity precisely enough for later validation while still keeping checksum generation and enforcement out of scope until `task-602`.
 
 ## Files Expected To Change
@@ -50,7 +50,7 @@
 - `agentic/config/snapshot-manifest.example.json` - schema-aligned example fixture that downstream tasks and docs can copy from.
 - `agentic/tests/test_snapshot_manifest_schema.py` - focused automated coverage for required fields, strictness, and example-manifest validity.
 - `.agent/plans/agentic/research/task-601-snapshot-manifest-format.md` - durable findings about the approved manifest shape, task-205/task-405 mapping rules, and any implementation caveats.
-- `.agent/plans/agentic/knowledge-base-platform.md` - only if the final schema naming or boundaries materially refine the current high-level snapshot-format bullets.
+- `.agent/plans/agentic/knowledge-base-platform-prd.md` - only if the final schema naming or boundaries materially refine the current high-level snapshot-format bullets.
 - `.agent/workflows/agentic-kb.md` - only if a narrow note is needed so the workflow stops implying the manifest contract is still undefined; broader workflow reconciliation still belongs to `task-803`.
 - `.agent/plans/agentic/knowledge-base-platform-tasks.json` - update only `task-601` status/completion metadata when the implementation lands; no target-path correction is currently required.
 - `agentic/src/agentic_kb/commands/snapshot.py` or a small schema-helper module - only if implementation adds narrowly scoped constants or schema-loading helpers needed by tests, while still deferring manifest-aware command behavior to `task-602`.
@@ -121,7 +121,7 @@
 
 - Update this canonical task-plan doc during implementation with final planning status, build status, implementation notes, verification notes, and outcome.
 - Create `.agent/plans/agentic/research/task-601-snapshot-manifest-format.md` with the accepted field contract, task-205/task-405 mapping rules, and any durable schema-versioning decisions.
-- Update `.agent/plans/agentic/knowledge-base-platform.md` only if the final field names or validation boundary materially refine the current high-level snapshot-format bullets.
+- Update `.agent/plans/agentic/knowledge-base-platform-prd.md` only if the final field names or validation boundary materially refine the current high-level snapshot-format bullets.
 - Update `.agent/workflows/agentic-kb.md` only if the repo needs a narrow note that the manifest contract now exists; keep the broader operator workflow pass deferred to `task-803`.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` only for `task-601` status/completion metadata when implementation is done.
 

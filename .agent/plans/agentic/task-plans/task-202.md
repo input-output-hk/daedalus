@@ -36,7 +36,7 @@
   - `task-203`, `task-204`, `task-205`
   - `task-301`, `task-401`, `task-403`, `task-404`, `task-405`
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -160,7 +160,7 @@
 - Update this task plan doc during implementation with final build status, implementation notes, verification notes, and outcome.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` when `task-202` is completed.
 - Add a research note under `.agent/plans/agentic/research/` for durable findings such as accepted vector column syntax, useful constraint choices, and any first-boot/manual-apply caveats discovered during implementation.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable design or workflow change beyond the already documented bootstrap and manual-apply boundary.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md`, `.agent/workflows/agentic-kb.md`, or `agentic/README.md` if implementation reveals a durable design or workflow change beyond the already documented bootstrap and manual-apply boundary.
 
 ## Implementation Notes
 

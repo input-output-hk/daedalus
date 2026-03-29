@@ -42,7 +42,7 @@
   - `task-703` and `task-704` - scheduled refresh and incremental smoke checks should rely on a real ranking-regression corpus instead of one-off search strings
   - `task-902` and `task-903` - security review and multi-developer pilot work benefit from a repeatable way to prove search quality has not regressed
 - Research and plan inputs reviewed for this task:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-502-search-queries.md`

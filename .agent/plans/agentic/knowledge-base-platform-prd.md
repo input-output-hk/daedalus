@@ -29,24 +29,30 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 
 - [x] Track the work as a GitHub issue in `DripDropz/daedalus` and add it to Project 5.
 - [x] Store the implementation plan and machine-readable tasks in `.agent/plans/agentic/`.
-- [ ] Start the full knowledge stack with Docker Compose from the repo root.
-- [ ] Ingest and index agent documentation from `.agent/`, top-level repo docs, selected subsystem READMEs, and implementation plans.
-- [ ] Ingest and index Daedalus source code with symbol-aware chunking for TypeScript/TSX-heavy areas.
-- [ ] Ingest and index GitHub issues, pull requests, comments, and Project 5 item metadata.
-- [ ] Support BM25 keyword search, vector search, and RRF fusion across all indexed entity types.
-- [ ] Provide read-only Search MCP tools and setup instructions for OpenCode and Claude Code.
-- [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers.
-- [ ] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
+- [x] Start the full knowledge stack with Docker Compose from the repo root.
+- [x] Ingest and index agent documentation from `.agent/`, top-level repo docs, selected subsystem READMEs, and implementation plans.
+- [x] Ingest and index Daedalus source code with symbol-aware chunking for TypeScript/TSX-heavy areas.
+- [x] Ingest and index GitHub issues, pull requests, comments, and Project 5 item metadata.
+- [x] Support BM25 keyword search, vector search, and RRF fusion across all indexed entity types.
+- [x] Provide read-only Search MCP tools and setup instructions for OpenCode and Claude Code.
+- [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers, including a selected private shared-storage backend.
+- [ ] Enforce snapshot/embed-model compatibility checks so import and post-import sync cannot silently mix incompatible embedding contracts.
+- [x] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
+- [ ] Add an automated Compose boot smoke/regression check for the repo-root stack contract.
 - [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
 - [ ] Provide a manual full Project 5 refresh path so eventual freshness converges even when edits land on already-seen items.
-- [ ] Document the v1 disposable-volume policy for schema changes and snapshot restore targets.
+- [x] Document the v1 disposable-volume policy for schema changes and snapshot restore targets.
+- [ ] Document ProjectV2 token scope requirements and the expected failure mode when repo reads work but org project reads do not.
+- [ ] Enforce that snapshot import only targets fresh, isolated, or otherwise disposable KB databases.
+- [ ] Define and validate convergence rules for deleted or renamed repo content and removed or cleared Project 5 state, while treating GitHub history as append-only in v1.
+- [ ] Add automated ingest fixtures, snapshot round-trip coverage, and MCP smoke tests so the documented v1 validation contract is executable.
 
 ## Technical Design
 
 ### Coordination Model
 
 - GitHub Issues and Project 5 remain the source of truth for active work coordination.
-- `.agent/plans/agentic/knowledge-base-platform.md` is the durable implementation plan.
+- `.agent/plans/agentic/knowledge-base-platform-prd.md` is the durable implementation plan.
 - `.agent/plans/agentic/knowledge-base-platform-tasks.json` tracks dependencies and implementation status in a machine-readable form.
 - `gh` CLI is the supported interface for issue/project updates by humans and agents.
 - The initial rollout should use a single epic issue in Project 5. Follow-up issues can be created from the task phases once implementation starts.
@@ -226,14 +232,31 @@ This is required for team use, not optional polish.
 Each export should produce:
 
 - a PostgreSQL custom-format `agentic` schema dump matching the current task-205 export contract (`pg_dump --format=custom --compress=6`)
+- a manifest validated against the canonical checked-in schema at `agentic/config/snapshot-manifest.schema.json`; if runtime packaging needs an installed copy inside the Python package, that packaged copy must stay mechanically derived from the canonical root-level file rather than becoming a second independently edited source of truth
 - a manifest JSON containing:
   - schema version
   - snapshot creation timestamp
   - basename-only sibling dump filename plus immutable artifact identity (`dump_format`, explicit compression metadata, exact byte size, and `sha256:<lowercase-hex>` content hash)
   - repo name plus docs/code commit baselines
   - GitHub per-stream watermarks and Project 5 cursor/watermark state
-  - embedding model name
+  - embedding contract metadata: embedding model name, expected vector dimensionality, and any versioned contract identifier needed to reject incompatible imports
   - row counts for the current seven entity types
+
+#### Snapshot Compatibility Rules
+
+- Snapshot import must fail fast when the manifest's embedding contract does not match the local KB contract expected by the running tooling.
+- `status` should surface embedding-contract mismatches explicitly so operators can distinguish "imported successfully" from "safe to keep syncing".
+- Post-import incremental commands such as `sync changed` must refuse to mix embeddings from incompatible contracts in the same KB.
+- Snapshot import must also refuse restore targets that are not fresh, isolated, or otherwise explicitly disposable. The supported operator path is restore-into-empty, not merge-into-existing.
+- The supported recovery path for an incompatible snapshot remains: recreate the disposable KB volume, then import a compatible snapshot or rebuild locally.
+
+#### Canonical Embedding Contract
+
+- v1 must define one canonical embedding contract for the shared team baseline rather than treating the embedding model as a per-developer preference.
+- That contract must include at least the embedding model name, expected vector dimensionality, and a versioned contract identifier that changes whenever compatibility is intentionally broken.
+- The canonical baseline publisher is responsible for republishing from `develop` whenever the embedding contract changes.
+- Operator docs must state how developers discover the current canonical contract before import or sync, and what mismatch signals they should expect from `status`, snapshot import, and post-import sync commands.
+- Ad hoc local overrides to `OLLAMA_EMBED_MODEL` are acceptable only for disposable local rebuild experiments; they are out of contract for shared baseline publication and team handoff.
 
 #### Team Workflow
 
@@ -243,6 +266,8 @@ Each export should produce:
 - Build and publish the canonical baseline on one of the trusted GPU-equipped developer machines.
 - Store shared snapshots in durable private artifact storage outside git history.
 - Prefer object storage or another private shared artifact store; avoid Git LFS for rotating KB dumps.
+- Selecting and documenting that private shared storage backend is a rollout gate for the team-sharing workflow, not optional follow-up polish.
+- The selected backend must also document artifact discovery, authentication/bootstrap, integrity expectations after download, and the operator recovery path when the backend or latest artifact is unavailable.
 
 This gives the team two supported modes:
 
@@ -263,6 +288,7 @@ Provide commands for:
 - `sync code`
 - `sync github`
 - `sync project`
+- `sync project --full` (or an equivalent explicit full-refresh mode) so Project 5 state can re-converge after edits to already-seen items
 - `sync changed`
 - `sync all`
 
@@ -272,11 +298,20 @@ Provide commands for:
 - Compare GitHub watermarks (`updatedAt`, comment counts, project cursors) against last sync state.
 - Warn agents and humans when local results are older than the current branch or GitHub state.
 - For GitHub Project 5 items, eventual freshness is acceptable in v1. Cursor-based incremental sync does not need to guarantee immediate replay of edits to already-seen items as long as the platform also provides a manual full refresh path that re-converges project state.
+- The manual full Project refresh path must be validated against an already-seeded KB by proving that an edit to a previously seen Project item is reflected after the explicit full refresh.
+
+#### Convergence Rules For Removals
+
+- Incremental repo sync must converge not only on changed content but also on removed or renamed tracked sources. Deleted docs or code files must not remain queryable as live KB records after the relevant sync scope completes.
+- Project sync must define how removals or field clears are represented. At minimum, removed Project items and cleared field values must stop surfacing stale prior metadata after a full refresh.
+- GitHub issue and pull-request history is append-only in v1. The platform does not need to retroactively delete previously ingested GitHub records as part of normal convergence, but it must still refresh newer comments, bodies, and metadata through the supported sync paths.
+- Validation must cover already-seeded KBs so the platform proves it converges toward current source truth for repo and Project data rather than only appending new records.
 
 #### Automation
 
 - No GitHub-hosted scheduled rebuild or publication flow is required in v1.
 - Canonical baseline refresh and publication should run as an explicit local workflow from `develop` on a trusted GPU-equipped developer machine.
+- The repo should still carry an automated Compose boot smoke/regression check for `docker compose -f docker-compose.agentic.yml up -d`, `kb-tools status --healthcheck`, and basic teardown so the local stack contract does not silently drift.
 - The shared storage backend should be durable, private, and independently discoverable by the two developers using the platform.
 - Optional future automation should be evaluated only if it preserves GPU access, artifact durability, and the current security boundary.
 - Local developers should not be forced through expensive indexing on every commit.
@@ -296,7 +331,7 @@ Recommended tools:
 - `find_related`
 - `kb_status`
 
-The supported MCP client contract is stdio via `docker compose -f docker-compose.agentic.yml run --rm -T mcp-search`. The Compose `mcp-search` service exists only as a parity or smoke harness for that same stdio process and is not a network daemon that clients connect to.
+The supported MCP client contract is stdio via `docker compose -f docker-compose.agentic.yml run --rm -T mcp-search`. The Compose `mcp-search` entry exists only as a parity or smoke harness for that same stdio process and is not a network daemon that clients connect to. Task and implementation wording should consistently describe it as a stdio tool container, not a long-lived service API.
 
 Required documentation:
 
@@ -304,6 +339,7 @@ Required documentation:
 - Claude Code setup example
 - local `.mcp.json` example
 - environment variable reference for `DATABASE_URL`, `OLLAMA_BASE_URL`, `GITHUB_TOKEN`
+- ProjectV2 token scope expectations and the operator-visible failure behavior when `GITHUB_TOKEN` can read repo issues/PRs but cannot read `DripDropz` Project 5 metadata
 
 ### Security and Operational Boundaries
 
@@ -313,7 +349,7 @@ Required documentation:
 - Treat snapshots as internal developer artifacts because they may contain copied GitHub discussions and project metadata.
 - Keep shared snapshots out of normal git history and out of Git LFS in v1.
 - Snapshot import is supported only against fresh, isolated, or otherwise disposable KB databases.
-- In-place schema upgrades are not a v1 requirement. When schema contracts change, the supported recovery path is to recreate the KB volume and import a compatible snapshot or rebuild locally.
+- In-place schema upgrades and manual retrofit procedures are not part of the supported v1 operator path. When schema contracts change, the supported recovery path is to recreate the KB volume and import a compatible snapshot or rebuild locally.
 
 ## Implementation Phases
 
@@ -356,13 +392,18 @@ Required documentation:
 
 - Add snapshot manifest format.
 - Add snapshot export/import commands.
+- Add embedding-contract compatibility checks for import, status, and post-import sync safety.
+- Add import-target safety checks so snapshot restore refuses non-disposable KB databases.
 - Add a shared team workflow for locally publishing and consuming baseline snapshots through private shared storage.
 
 ### Phase 7 - Freshness and Automation
 
 - Add `sync` commands.
 - Add stale-index detection.
+- Add deletion and field-clear reconciliation for docs/code/project entities so sync converges on source truth instead of stale supersets.
+- Add an automated Compose boot smoke/regression check for the repo-root stack contract.
 - Add a manual full Project 5 refresh path so eventual freshness can re-converge after edits to already-seen items.
+- Add validation that the manual full Project 5 refresh path really replays edits to already-seen items.
 - Add local baseline refresh/publication workflow docs, shared-storage fetch helpers, and smoke checks.
 
 ### Phase 8 - MCP and Agent Documentation
@@ -373,7 +414,7 @@ Required documentation:
 
 ### Phase 9 - Validation and Rollout
 
-- Validate clean-machine setup.
+- Validate the narrow clean-machine bootstrap contract separately from the broader two-developer publication and handoff workflow.
 - Validate snapshot import/export round-trips.
 - Pilot with multiple developers and document SOPs for common failure modes.
 
@@ -382,19 +423,24 @@ Required documentation:
 ### Automated
 
 - Compose boot smoke test
-- Schema and migration test
+- Schema bootstrap and index creation test
 - Docs/code/GitHub ingest fixtures
-- Search regression tests for BM25, vector, and RRF ranking
+- Search regression tests for BM25, vector, and RRF ranking, backed by checked-in query fixtures and enforced as an automated regression gate
 - Snapshot export/import round-trip tests
+- Snapshot compatibility guard tests for embedding model/vector contract mismatches
+- Snapshot import target-safety tests proving restore is refused for non-empty or non-disposable KBs
+- Project full-refresh regression test proving replay of edits to already-seen items
+- Repo/project removal reconciliation tests proving deleted content and cleared metadata stop surfacing after sync/full refresh
 - MCP smoke tests against a seeded database
 
 ### Manual
 
 - Fresh developer setup from clone
 - Import latest shared snapshot
-- Run `sync changed` on a local feature branch
+- Run `sync changed` on a local feature branch after the imported-baseline bootstrap succeeds
 - Query the KB through CLI and MCP
 - Confirm agent setup works in OpenCode and Claude Code
+- Confirm repo-only `GITHUB_TOKEN` failures surface clearly for Project 5 reads and docs point operators to the required ProjectV2 scopes
 
 ## Rollout Plan
 
@@ -410,7 +456,9 @@ Required documentation:
 - Project 5 is new enough that we can shape its metadata to fit this workflow; the initial field conventions are `Status`, `Priority`, `Size`, `Work Type`, `Area`, `Phase`, `KB Impact`, `Start date`, and `Target date`.
 - The first code ingestor should cover the entire repository immediately, with metadata and filters preserving fast access to the most agent-relevant areas.
 - Eventual freshness is acceptable for Project 5 items in v1 as long as the platform provides a manual full refresh path.
+- GitHub issue and pull-request history is append-only in v1; repo and Project data still need explicit removal reconciliation.
 - Disposable KB volumes are acceptable in v1; in-place schema upgrade support is not required.
+- The shared baseline uses one canonical embedding contract at a time; changing that contract requires a deliberate republish from `develop` and explicit mismatch handling in import, status, and sync flows.
 
 ## References
 
@@ -424,4 +472,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`. The first schema bootstrap now lives in `agentic/schema/init.sql`, enabling `pg_search` and `vector`, creating the `agentic` schema, and seeding `agentic.kb_schema_migrations` for future upgrades on fresh DB volumes. After review of the remaining rollout work, the publication strategy has pivoted away from GitHub-hosted Actions toward trusted local GPU-backed baseline publication with private shared snapshot storage; any existing Actions-based publication workflow is now out of target state and should be removed rather than retained as a fallback.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, and primary KB workflow docs are all in place. Snapshot export/import exists, but rollout is still blocked on embedding-contract enforcement, explicit import-target safety for disposable DB restores, private shared-storage selection, validated repo/Project removal reconciliation, Project 5 full re-convergence, explicit status surfacing for embedding mismatches, and the remaining automated smoke/regression coverage promised by this plan, especially the schema/bootstrap and search-quality gates.

@@ -25,7 +25,7 @@
 - Do not add BM25 indexes, vector indexes, or search configuration; that remains `task-203` and later search tasks.
 - Do not implement a general migration runner, `kb-tools` migration command, or schema-aware status command in this task.
 - Do not change the MCP service, sync commands, snapshot commands, or wrapper scripts.
-- Do not redesign the overall database model already documented in `.agent/plans/agentic/knowledge-base-platform.md`.
+- Do not redesign the overall database model already documented in `.agent/plans/agentic/knowledge-base-platform-prd.md`.
 
 ## Relevant Dependencies
 
@@ -35,7 +35,7 @@
 - Direct downstream task unblocked by this work:
   - `task-202` - core knowledge tables
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -99,7 +99,7 @@
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` when `task-201` is completed.
 - Add a research note under `.agent/plans/agentic/research/` capturing any durable findings about ParadeDB extension names, init-script behavior, or version-table design chosen during implementation.
 - If later schema tasks continue to extend `agentic/schema/init.sql` before migration tooling exists, document the expected existing-volume behavior in their task plans and implementation notes instead of implying automatic upgrades.
-- Only update `.agent/workflows/agentic-kb.md`, `agentic/README.md`, or `.agent/plans/agentic/knowledge-base-platform.md` if implementation reveals a durable workflow/design change beyond the currently planned Compose bootstrap path.
+- Only update `.agent/workflows/agentic-kb.md`, `agentic/README.md`, or `.agent/plans/agentic/knowledge-base-platform-prd.md` if implementation reveals a durable workflow/design change beyond the currently planned Compose bootstrap path.
 
 ## Implementation Notes
 

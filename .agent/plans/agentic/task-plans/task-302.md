@@ -38,7 +38,7 @@
   - `task-304` - generalized idempotency / unchanged-content skip behavior
   - `task-502` and later search tasks - benefit from better chunked docs rows but are not part of this implementation
 - Reviewed references:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`

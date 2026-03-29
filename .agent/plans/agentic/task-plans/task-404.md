@@ -45,7 +45,7 @@
   - The implementation should treat `agentic/src/agentic_kb/ingest/project.py` as the canonical destination and correct the tasks JSON before production code lands.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-403-github-ingestion.md`

@@ -32,7 +32,7 @@
 - Adjacent task to preserve boundaries with: `task-102` (`agentic/.env.example`)
 - Downstream tasks unblocked by this work: `task-104`, `task-105`, `task-201`, `task-205`, `task-501`
 - Reference docs reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-101-compose-foundation.md`
@@ -103,7 +103,7 @@
 ## Required Docs / Tracking / Research Updates
 - Update this task plan doc during implementation so build status, decisions, verification notes, and final outcome match the actual work.
 - Update `.agent/plans/agentic/knowledge-base-platform-tasks.json` when `task-103` is completed.
-- Only update `.agent/plans/agentic/knowledge-base-platform.md` if implementation requires a durable change to the documented tools-container or Compose design; no design update is expected from this task as currently planned.
+- Only update `.agent/plans/agentic/knowledge-base-platform-prd.md` if implementation requires a durable change to the documented tools-container or Compose design; no design update is expected from this task as currently planned.
 - Update `.agent/workflows/agentic-kb.md` to reflect that `kb-tools` is now a real built service even though most task-specific commands remain placeholder scaffolding.
 
 ## Implementation Notes

@@ -49,7 +49,7 @@
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` currently lists `task-604.targetPath` as `agentic/src/sync/commands.py`, but the live packaged command surface is `agentic/src/agentic_kb/commands/sync.py`.
   - Nearby `task-701.targetPath` also still points at the stale un-packaged path; note that drift, but keep tracker cleanup scoped to `task-604` unless adjacent correction is required for consistency.
 - Reference materials reviewed for this plan:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-602-snapshot-export-import-commands.md`

@@ -33,7 +33,7 @@
   - `task-701` - shipped the packaged sync surface that setup docs may need to reference when explaining why `GITHUB_TOKEN` exists in the shared env contract.
   - `task-601` and `task-602` - shipped the snapshot contract and commands already described in the surrounding KB docs, which setup text must not contradict.
 - Required planning and research context reviewed for this task:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `agentic/README.md`

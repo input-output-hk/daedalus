@@ -3,9 +3,9 @@
     "title": "Agentic Knowledge Base and Workflow Platform Tasks",
     "created": "2026-03-27",
     "updated": "2026-03-29",
-    "version": "1.2.1",
-    "totalTasks": 51,
-    "prdReference": ".agent/plans/agentic/knowledge-base-platform.md",
+    "version": "1.7.0",
+    "totalTasks": 68,
+    "prdReference": ".agent/plans/agentic/knowledge-base-platform-prd.md",
     "description": "Implement the Docker Compose-based Daedalus knowledge base, search stack, sync workflow, and read-only MCP tooling"
   },
   "phases": [
@@ -24,7 +24,7 @@
           "estimatedHours": 2,
           "dependencies": [],
           "completedAt": "2026-03-28",
-          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform-prd.md"
         },
         {
           "id": "task-002",
@@ -63,7 +63,7 @@
             "task-003"
           ],
           "completedAt": "2026-03-27",
-          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform-prd.md"
         }
       ]
     },
@@ -114,8 +114,8 @@
         },
         {
           "id": "task-104",
-          "title": "Build search MCP service container",
-          "description": "Add a dedicated container entrypoint for the read-only Search MCP server",
+          "title": "Build Search MCP stdio container entrypoint",
+          "description": "Add a dedicated container entrypoint for the read-only Search MCP stdio process used by local clients and smoke checks",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
@@ -185,7 +185,7 @@
             "task-205"
           ],
           "completedAt": "2026-03-29",
-          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform-prd.md"
         },
         {
           "id": "task-203",
@@ -225,6 +225,21 @@
           ],
           "completedAt": "2026-03-28",
           "targetPath": "agentic/src/agentic_kb/cli.py"
+        },
+        {
+          "id": "task-207",
+          "title": "Add schema bootstrap and index creation regression check",
+          "description": "Prove that a fresh KB can initialize the schema, version tables, and search indexes exactly as the documented bootstrap contract requires",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-201",
+            "task-203",
+            "task-205"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_schema_bootstrap.py"
         }
       ]
     },
@@ -432,6 +447,21 @@
           ],
           "completedAt": "2026-03-29",
           "targetPath": "agentic/config/search-fixtures.yaml"
+        },
+        {
+          "id": "task-505",
+          "title": "Add automated search ranking regression gate",
+          "description": "Turn the checked-in search fixtures into an automated BM25, vector, and RRF regression suite so ranking quality remains a release-blocking contract rather than a manual check",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-502",
+            "task-503",
+            "task-504"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_search_regression.py"
         }
       ]
     },
@@ -469,6 +499,88 @@
           "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
         },
         {
+          "id": "task-608",
+          "title": "Enforce snapshot embedding-contract compatibility",
+          "description": "Reject incompatible snapshot imports, surface the mismatch clearly in status output, and block post-import sync when the snapshot's embedding model or vector contract does not match the local KB contract",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-601",
+            "task-602",
+            "task-503",
+            "task-701"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
+        },
+        {
+          "id": "task-612",
+          "title": "Enforce disposable import target safety",
+          "description": "Make snapshot import fail fast when the target KB is not fresh, isolated, or otherwise explicitly disposable so restore cannot silently merge into an existing seeded database",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-602"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
+        },
+        {
+          "id": "task-611",
+          "title": "Define canonical embedding contract and republish policy",
+          "description": "Document the single supported v1 embedding contract for shared baselines, how operators discover it, when canonical snapshots must be republished from develop, and how mismatch handling surfaces in import, status, and sync flows",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-601",
+            "task-608"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/workflows/agentic-kb.md"
+        },
+        {
+          "id": "task-610",
+          "title": "Clarify canonical snapshot manifest schema source of truth",
+          "description": "Document that agentic/config/snapshot-manifest.schema.json is the canonical checked-in contract and any packaged runtime copy must be mechanically derived so the schema cannot drift silently.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": [
+            "task-601"
+          ],
+          "completedAt": "2026-03-29",
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform-prd.md"
+        },
+        {
+          "id": "task-609",
+          "title": "Add snapshot compatibility guard tests",
+          "description": "Prove that import, status, and post-import sync fail safely when a snapshot's embedding contract does not match the running KB contract",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-608"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_snapshot_compatibility.py"
+        },
+        {
+          "id": "task-613",
+          "title": "Add snapshot import target-safety tests",
+          "description": "Prove that snapshot restore is refused for non-empty or otherwise non-disposable KB targets and only succeeds against the supported fresh-database restore path",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-612"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_snapshot_import_safety.py"
+        },
+        {
           "id": "task-603",
           "title": "Retired GitHub Actions snapshot publication workflow",
           "description": "Historical work item for the removed GitHub Actions publication path. It is no longer part of the supported rollout and exists only so the tracker can record that the path was superseded and removed.",
@@ -484,7 +596,7 @@
         {
           "id": "task-605",
           "title": "Select private shared snapshot storage backend",
-          "description": "Choose and document the durable private storage location for shared KB snapshots, including naming, retention, and access expectations for the two developers",
+          "description": "Choose and document the durable private storage location for shared KB snapshots, including artifact discovery, authentication/bootstrap, naming, retention, integrity expectations after download, and outage recovery for the two developers",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
@@ -492,7 +604,7 @@
             "task-602"
           ],
           "completedAt": "",
-          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform-prd.md"
         },
         {
           "id": "task-606",
@@ -502,7 +614,9 @@
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
-            "task-605"
+            "task-605",
+            "task-608",
+            "task-611"
           ],
           "completedAt": "",
           "targetPath": ".agent/workflows/agentic-kb.md"
@@ -514,9 +628,7 @@
           "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
-          "dependencies": [
-            "task-603"
-          ],
+          "dependencies": [],
           "completedAt": "2026-03-29",
           "targetPath": ".github/workflows/agentic-kb-sync.yml"
         },
@@ -581,7 +693,6 @@
           "priority": "medium",
           "estimatedHours": 4,
           "dependencies": [
-            "task-603",
             "task-701"
           ],
           "completedAt": "",
@@ -602,6 +713,19 @@
           "targetPath": "agentic/src/agentic_kb/commands/sync.py"
         },
         {
+          "id": "task-708",
+          "title": "Add Project full-refresh replay regression check",
+          "description": "Verify that an edit to an already-seen Project 5 item becomes visible after the explicit full-refresh path so eventual freshness really re-converges",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-707"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_project_full_refresh.py"
+        },
+        {
           "id": "task-704",
           "title": "Add incremental update smoke checks",
           "description": "Verify that small repo and GitHub changes update only the affected entities instead of forcing a full rebuild, and cover the imported-baseline local refresh path used by the two developers",
@@ -616,6 +740,93 @@
           "targetPath": "agentic/tests/test_incremental_sync.py"
         },
         {
+          "id": "task-711",
+          "title": "Handle repo and project removals during sync",
+          "description": "Make sync converge on source truth by removing or invalidating stale KB records for deleted or renamed repo content and for removed Project items or cleared Project field values",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-701",
+            "task-707"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/src/agentic_kb/commands/sync.py"
+        },
+        {
+          "id": "task-712",
+          "title": "Add ingest fixture coverage",
+          "description": "Create automated docs, code, GitHub, and Project ingest fixtures so canonical metadata extraction, chunking, and idempotent re-ingest behavior stay regression-tested",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-301",
+            "task-402",
+            "task-403",
+            "task-404"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_ingest_fixtures.py"
+        },
+        {
+          "id": "task-713",
+          "title": "Add removal reconciliation regression tests",
+          "description": "Verify that deleted docs/code and removed or cleared Project metadata stop surfacing after the relevant sync or explicit full-refresh path runs against an already-seeded KB",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-711"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_removal_reconciliation.py"
+        },
+        {
+          "id": "task-709",
+          "title": "Add Compose boot smoke regression check",
+          "description": "Automate the repo-root stack contract by proving docker compose up, lightweight kb-tools readiness, and teardown continue to work as the platform evolves.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-101",
+            "task-103",
+            "task-205"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_compose_bootstrap.py"
+        },
+        {
+          "id": "task-710",
+          "title": "Document and validate ProjectV2 token failure handling",
+          "description": "Spell out the required ProjectV2 token scopes and verify the operator-facing error path when GitHub repo reads work but organization Project 5 reads are denied.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-404",
+            "task-701",
+            "task-803"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/workflows/agentic-kb.md"
+        },
+        {
+          "id": "task-714",
+          "title": "Add snapshot round-trip regression tests",
+          "description": "Verify that a seeded KB can be exported and restored on the supported disposable-target path without losing manifest integrity, row counts, or deterministic query behavior",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-602",
+            "task-612"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_snapshot_roundtrip.py"
+        },
+        {
           "id": "task-705",
           "title": "Add local publish and fetch helper commands",
           "description": "Provide developer-friendly helper commands or scripts for building the canonical baseline locally, exporting the snapshot pair, and downloading/importing the latest shared baseline from the chosen private storage backend",
@@ -625,7 +836,7 @@
           "dependencies": [
             "task-105",
             "task-605",
-            "task-606"
+            "task-608"
           ],
           "completedAt": "",
           "targetPath": "package.json"
@@ -670,46 +881,57 @@
           "id": "task-802",
           "title": "Write OpenCode and Claude Code setup docs",
           "description": "Document how to connect local agents to the Search MCP service, including example configs and environment variables",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
-            "task-801",
-            "task-606"
+            "task-801"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/README.md"
         },
         {
           "id": "task-803",
           "title": "Update agentic knowledge base workflow doc",
           "description": "Review and update the Daedalus workflow document for booting, syncing, snapshotting, and troubleshooting the KB stack once the supporting commands and setup are implemented",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-503",
             "task-602",
             "task-701",
-            "task-802",
-            "task-606",
-            "task-707"
+            "task-802"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {
           "id": "task-804",
           "title": "Check core agent indexes",
           "description": "Verify and update AGENTS.md, CLAUDE.md, and .agent/readme.md so they accurately point agents at the finalized KB workflow and MCP setup",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-803"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".agent/readme.md"
+        },
+        {
+          "id": "task-805",
+          "title": "Add MCP smoke tests against seeded KB",
+          "description": "Exercise the stdio Search MCP against a seeded database so search, entity lookup, related-results, and status calls stay wired to the documented non-daemon client contract",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-801",
+            "task-803"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_mcp_smoke.py"
         }
       ]
     },
@@ -722,20 +944,18 @@
         {
           "id": "task-901",
           "title": "Validate clean-machine bootstrap",
-          "description": "Confirm a developer can clone the repo, start the KB stack, import a snapshot, and search successfully",
+          "description": "Confirm the narrow clean-machine bootstrap contract: clone the repo, start the KB stack, import a compatible snapshot, run status --json, and prove a deterministic BM25 documents query succeeds",
           "status": "pending",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-602",
+            "task-612",
+            "task-608",
             "task-801",
             "task-802",
             "task-803",
-            "task-606",
-            "task-607",
-            "task-705",
-            "task-706",
-            "task-707"
+            "task-709"
           ],
           "completedAt": "",
           "targetPath": "agentic/README.md"
@@ -751,7 +971,7 @@
             "task-801",
             "task-901",
             "task-605",
-            "task-607"
+            "task-710"
           ],
           "completedAt": "",
           "targetPath": "agentic/README.md"
@@ -766,11 +986,29 @@
           "dependencies": [
             "task-901",
             "task-902",
-            "task-705",
-            "task-607"
+            "task-705"
           ],
           "completedAt": "",
           "targetPath": ".agent/SOPs/agentic"
+        },
+        {
+          "id": "task-906",
+          "title": "Validate team-ready publication and handoff workflow",
+          "description": "Confirm the broader two-developer rollout contract after bootstrap validation: canonical publish from develop, private storage handoff, import on a second machine, explicit mismatch handling, Project token guidance, and post-import incremental refresh behavior",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-606",
+            "task-705",
+            "task-706",
+            "task-707",
+            "task-710",
+            "task-611",
+            "task-901"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/README.md"
         },
         {
           "id": "task-904",
@@ -782,8 +1020,8 @@
           "dependencies": [
             "task-605",
             "task-606",
-            "task-902",
-            "task-607"
+            "task-611",
+            "task-902"
           ],
           "completedAt": "",
           "targetPath": ".agent/SOPs/agentic"
@@ -798,8 +1036,11 @@
           "dependencies": [
             "task-705",
             "task-706",
+            "task-704",
             "task-707",
+            "task-708",
             "task-903",
+            "task-906",
             "task-904"
           ],
           "completedAt": "",
@@ -810,7 +1051,7 @@
   ],
   "summary": {
     "totalPhases": 10,
-    "totalTasks": 51,
+    "totalTasks": 68,
     "criticalPath": [
       "task-001",
       "task-002",
@@ -819,6 +1060,7 @@
       "task-103",
       "task-201",
       "task-202",
+      "task-207",
       "task-206",
       "task-501",
       "task-301",
@@ -828,19 +1070,30 @@
       "task-405",
       "task-502",
       "task-503",
+      "task-504",
+      "task-505",
       "task-601",
       "task-602",
+      "task-612",
+      "task-610",
+      "task-608",
+      "task-611",
       "task-605",
-      "task-606",
-      "task-607",
       "task-604",
       "task-701",
-      "task-707",
+      "task-711",
+      "task-709",
       "task-705",
+      "task-606",
+      "task-710",
+      "task-707",
+      "task-708",
       "task-801",
       "task-802",
       "task-803",
+      "task-805",
       "task-901",
+      "task-906",
       "task-902",
       "task-903",
       "task-904",

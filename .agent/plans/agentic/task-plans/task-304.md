@@ -38,7 +38,7 @@
   - `task-303` - structured doc metadata extraction remains separate
   - later freshness tasks should be able to rely on docs sync-state, but they are not part of this task
 - Reviewed references:
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`

@@ -47,7 +47,7 @@
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json` still points `task-204.targetPath` at `agentic/src/search/config.py`, but current repo reality and prior completed tasks use the packaged layout under `agentic/src/agentic_kb/`. Implementation should reconcile this to `agentic/src/agentic_kb/search/config.py` before production code lands.
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/workflows/agentic-kb.md`
   - `.agent/plans/agentic/research/task-202-core-knowledge-tables.md`

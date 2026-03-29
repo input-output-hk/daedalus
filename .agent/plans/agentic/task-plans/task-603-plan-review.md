@@ -14,7 +14,7 @@ Critiquer: Iteration 1
 Timestamp: 2026-03-29T16:49:37Z
 Outcome: requires_changes
 
-- The plan still leaves the trusted publication source too loose. `knowledge-base-platform.md` says the team baseline should be generated from `develop`, but this plan only says to prefer `workflow_dispatch` and maybe allow another non-scheduled trigger. It should explicitly lock which ref is allowed to publish the canonical baseline artifact, or require the workflow to reject non-baseline refs, so `task-603` does not normalize ad hoc snapshots from arbitrary branches as the shared team baseline.
+- The plan still leaves the trusted publication source too loose. `knowledge-base-platform-prd.md` says the team baseline should be generated from `develop`, but this plan only says to prefer `workflow_dispatch` and maybe allow another non-scheduled trigger. It should explicitly lock which ref is allowed to publish the canonical baseline artifact, or require the workflow to reject non-baseline refs, so `task-603` does not normalize ad hoc snapshots from arbitrary branches as the shared team baseline.
 - The verification contract is not deterministic enough yet for CI. The plan repeatedly requires a "deterministic BM25 search" but never pins the exact query, filters, or expected hit shape. For this task, the plan should name one repo-controlled query/assertion that is expected to survive a fresh `sync all` run so implementation and docs do not invent different proofs.
 
 Decision: requires_changes

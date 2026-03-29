@@ -42,7 +42,7 @@
   - `task-503`, `task-701`, `task-801` - search/status/agent surfaces can build on the finalized index layout
 - Reference materials reviewed for this plan:
   - `.agent/plans/agentic/prompt.md`
-  - `.agent/plans/agentic/knowledge-base-platform.md`
+  - `.agent/plans/agentic/knowledge-base-platform-prd.md`
   - `.agent/plans/agentic/knowledge-base-platform-tasks.json`
   - `.agent/plans/agentic/research/task-202-core-knowledge-tables.md`
   - `.agent/plans/agentic/research/task-301-docs-ingestion.md`
