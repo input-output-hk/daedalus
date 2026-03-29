@@ -258,7 +258,7 @@
           "dependencies": [
             "task-301"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/src/ingest/doc_metadata.py"
         },
         {
@@ -588,7 +588,7 @@
           "id": "task-803",
           "title": "Update agentic knowledge base workflow doc",
           "description": "Review and update the Daedalus workflow document for booting, syncing, snapshotting, and troubleshooting the KB stack once the supporting commands and setup are implemented",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -597,7 +597,7 @@
             "task-701",
             "task-802"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {

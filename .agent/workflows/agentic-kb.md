@@ -8,9 +8,11 @@ This workflow guides booting the Daedalus agentic knowledge base, syncing local 
 
 ## Status
 
-This workflow documents the current Daedalus agentic platform shape described in `.agent/plans/agentic/knowledge-base-platform.md`.
+This workflow documents the current shipped Daedalus agentic KB behavior.
 
-Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, destructive `snapshot import`, the full packaged `sync` command family (`sync docs`, `sync code`, `sync github`, `sync project`, `sync changed`, and `sync all`), and the packaged stdio MCP entrypoint `agentic-kb mcp-search`. The Compose `mcp-search` service is now a parity/smoke harness for that same stdio server and reuses `agentic-kb status --healthcheck` for readiness instead of exposing a separate daemon protocol. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+`docker-compose.agentic.yml` boots `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` ships the packaged `agentic-kb` CLI with `status`, `search`, `entity get`, `sync <subcommand>`, `snapshot <subcommand>`, `service`, and the stdio MCP entrypoint `mcp-search`. The Compose `mcp-search` service is a parity/smoke harness for that same stdio process and is not a separate daemon or network endpoint.
+
+For schema bootstrap, `agentic/schema/init.sql` remains the first-boot entrypoint and delegates index creation to `agentic/schema/create_indexes.sql`. Existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 
@@ -22,7 +24,7 @@ Current implementation note: `docker-compose.agentic.yml` boots the infrastructu
 
 ## Core Components
 
-The planned stack consists of:
+The shipped stack consists of:
 
 - `paradedb` — PostgreSQL 18 + `pg_search` + `pgvector`
 - `ollama` — local embedding service
@@ -32,7 +34,7 @@ The planned stack consists of:
 
 ## Commands
 
-The current CLI surface for these task-owned commands is:
+The current operator-facing Compose path is:
 
 ```bash
 # Start the stack
@@ -73,6 +75,12 @@ Today:
 - `sync project` seeds from `after_cursor=None` on its first explicit run and later continues only from the stored Project cursor. Repeated runs at the current end cursor succeed as no-op continuation and still do not guarantee replay of edits to already-seen items.
 - `sync changed` is now the general incremental command for an already-seeded KB. It still supports the post-import fast-start workflow, but it now requires successful existing baselines for docs, code, all four GitHub stream rows, and Project cursor state before it does any work.
 - `sync all` runs only `sync docs`, `sync code`, `sync github`, and `sync project` in that fixed order and stops on the first failure.
+
+`sync changed` caveat for the shipped container path:
+
+- `agentic/src/agentic_kb/commands/sync.py` shells out to `git` for docs/code delta calculation
+- the current `kb-tools` image built from `agentic/Dockerfile` does not install `git`
+- because of that, `docker compose -f docker-compose.agentic.yml run --rm kb-tools sync changed` should be treated as a documented current limitation for the shipped container path, not as a fully working in-container flow
 
 ## Status Behavior
 
@@ -127,23 +135,21 @@ The default publication channel for shared baseline snapshots should be GitHub A
 - Only run import against fresh, isolated, or otherwise disposable KB databases.
 - The canonical manifest contract lives at `agentic/config/snapshot-manifest.schema.json`; export now writes that manifest beside the dump, and import validates the manifest contract plus dump identity before any destructive restore.
 
-## Freshness Rules
+## Freshness Guidance
 
-The knowledge base should not quietly drift stale.
+Current shipped freshness handling is operational rather than automatic:
 
-It should detect:
+- use `status` to inspect current sync-state summaries and indexed row counts
+- use `sync changed` only after successful source baselines already exist
+- use `sync all` or explicit source syncs when the KB needs reseeding
 
-- local docs/code indexed from an older commit than current `HEAD`
-- GitHub issues/PRs behind their latest `updatedAt`
-- project items behind their latest project field updates
-
-Agents should prefer the knowledge base when it is current and fall back to direct repo reads when the KB reports staleness.
+Automatic stale-index detection is not part of the current shipped workflow.
 
 ## MCP Setup
 
-The first version should only expose read-only search tools.
+`agentic-kb mcp-search` is the shipped read-only Search MCP server over stdio.
 
-Expected tools:
+Implemented tool surface:
 
 - `search`
 - `search_docs`
@@ -155,17 +161,22 @@ Expected tools:
 
 ### OpenCode / Claude Code Setup
 
-The implementation should ship copy-pasteable examples for:
+Use this repo-supported launcher contract for MCP clients:
 
-- local `.mcp.json`
-- OpenCode service configuration
-- Claude Code MCP configuration
+```bash
+docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+```
 
-Required environment variables will likely include:
+Do not use `docker compose -f docker-compose.agentic.yml up -d mcp-search` as a client setup path. That service is only a parity/smoke harness for the same stdio process.
 
-- `DATABASE_URL`
-- `OLLAMA_BASE_URL`
-- `GITHUB_TOKEN`
+Copy-pasteable OpenCode, Claude Code, and local `.mcp.json` examples live in `agentic/README.md`.
+
+Environment notes:
+
+- `DATABASE_URL` and `OLLAMA_BASE_URL` are required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires them automatically
+- `OLLAMA_EMBED_MODEL` is an optional override and should stay aligned with the embedding model used for the indexed KB
+- `GITHUB_TOKEN` is optional for read-only MCP search and `status`
+- `GITHUB_TOKEN` is still required for `sync github` and `sync project`
 
 For project ingestion, `GITHUB_TOKEN` must be able to read organization ProjectV2 data for `DripDropz` Project 5, not just repository issues and pull requests.
 
