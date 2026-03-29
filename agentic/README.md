@@ -4,14 +4,20 @@ This package provides the `kb-tools` container for the Daedalus agentic knowledg
 
 Current command surface:
 
-- `agentic-kb status` - implemented bootstrap and dependency status checks
+- `agentic-kb status` - implemented bootstrap, dependency, and KB DB status checks
+- `agentic-kb search` - implemented local BM25/vector/hybrid KB search
+- `agentic-kb entity get` - implemented generic entity inspection by type and id
 - `agentic-kb sync <subcommand>` - placeholder surface for later sync tasks
-- `agentic-kb snapshot <subcommand>` - placeholder surface for later snapshot tasks
+- `agentic-kb snapshot <subcommand>` - implemented export/import snapshot commands
 - `agentic-kb service` - long-running service mode used by `docker compose up -d kb-tools`
 
 Implemented now:
 
 - `status`
+- `search`
+- `entity get`
+- `snapshot export`
+- `snapshot import`
 - `service`
 
 Placeholder only in `task-103`:
@@ -22,8 +28,6 @@ Placeholder only in `task-103`:
 - `sync code`
 - `sync github`
 - `sync project`
-- `snapshot export`
-- `snapshot import`
 
 Examples:
 

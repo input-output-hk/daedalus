@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import unittest
+import json
 from datetime import datetime, timezone
+from argparse import Namespace
+from contextlib import redirect_stdout
+import io
 from unittest.mock import patch
 
 from agentic_kb.commands import status
@@ -119,6 +123,63 @@ class StatusCommandTests(unittest.TestCase):
             item_by_name["sync docs"].detail,
             "rows=1, errors=1, last_attempted=2026-03-28T12:00:00Z, last_succeeded=never",
         )
+
+    def test_serialize_status_report_returns_stable_json_shape(self):
+        report = status.StatusReport(
+            healthcheck=False,
+            ok=True,
+            config_items=(status.CheckResult(name="DATABASE_URL", ok=True, detail="db:5432/agentic_kb"),),
+            environment_items=(),
+            dependency_items=(),
+            database_items=(),
+            notes=("note one",),
+        )
+
+        payload = status.serialize_status_report(report)
+
+        self.assertEqual(list(payload.keys()), [
+            "healthcheck",
+            "ok",
+            "config_items",
+            "environment_items",
+            "dependency_items",
+            "database_items",
+            "notes",
+        ])
+        self.assertEqual(payload["config_items"][0], {
+            "name": "DATABASE_URL",
+            "ok": True,
+            "detail": "db:5432/agentic_kb",
+        })
+
+    @patch("agentic_kb.commands.status.collect_status_report")
+    @patch("agentic_kb.commands.status.AgenticConfig.from_env")
+    def test_run_status_json_emits_only_json(self, from_env, collect_status_report):
+        from_env.return_value = object()
+        collect_status_report.return_value = status.StatusReport(
+            healthcheck=True,
+            ok=True,
+            config_items=(),
+            environment_items=(),
+            dependency_items=(),
+            database_items=(),
+            notes=("healthcheck mode",),
+        )
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            exit_code = status.run_status(Namespace(healthcheck=True, json=True))
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(json.loads(stdout.getvalue()), {
+            "healthcheck": True,
+            "ok": True,
+            "config_items": [],
+            "environment_items": [],
+            "dependency_items": [],
+            "database_items": [],
+            "notes": ["healthcheck mode"],
+        })
 
 
 if __name__ == "__main__":

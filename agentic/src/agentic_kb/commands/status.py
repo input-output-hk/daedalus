@@ -10,6 +10,7 @@ from urllib.error import URLError
 from urllib.parse import urljoin
 from urllib.request import urlopen
 
+from agentic_kb.commands.output import print_json
 from agentic_kb.config import AgenticConfig, parse_database_endpoint
 from agentic_kb.search.config import list_search_entity_configs
 
@@ -75,7 +76,10 @@ class StatusCommandError(RuntimeError):
 def run_status(args) -> int:
     config = AgenticConfig.from_env()
     report = collect_status_report(config, healthcheck=bool(args.healthcheck))
-    print_status_report(report)
+    if getattr(args, "json", False):
+        print_json(serialize_status_report(report))
+    else:
+        print_status_report(report)
     return 0 if report.ok or not args.healthcheck else 1
 
 
@@ -286,6 +290,22 @@ def print_status_report(report: StatusReport) -> None:
     print("notes:")
     for note in report.notes:
         print(f"- {note}")
+
+
+def serialize_status_report(report: StatusReport) -> dict[str, Any]:
+    return {
+        "healthcheck": report.healthcheck,
+        "ok": report.ok,
+        "config_items": [serialize_check_result(item) for item in report.config_items],
+        "environment_items": [serialize_check_result(item) for item in report.environment_items],
+        "dependency_items": [serialize_check_result(item) for item in report.dependency_items],
+        "database_items": [serialize_check_result(item) for item in report.database_items],
+        "notes": list(report.notes),
+    }
+
+
+def serialize_check_result(item: CheckResult) -> dict[str, Any]:
+    return {"name": item.name, "ok": item.ok, "detail": item.detail}
 
 
 def _print_section(title: str, items: Iterable[CheckResult]) -> None:

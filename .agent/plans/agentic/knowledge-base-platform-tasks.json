@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Agentic Knowledge Base and Workflow Platform Tasks",
     "created": "2026-03-27",
-    "updated": "2026-03-28",
+    "updated": "2026-03-29",
     "version": "1.0.0",
     "totalTasks": 42,
     "prdReference": ".agent/plans/agentic/knowledge-base-platform.md",
@@ -396,15 +396,15 @@
           "id": "task-503",
           "title": "Add search CLI and status commands",
           "description": "Expose search, status, and entity-inspection commands for local users and scripts",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-205",
             "task-502"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/cli.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/cli.py"
         },
         {
           "id": "task-504",

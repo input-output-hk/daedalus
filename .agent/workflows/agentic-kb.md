@@ -10,7 +10,7 @@ This workflow guides booting the Daedalus agentic knowledge base, syncing local 
 
 This workflow documents the current Daedalus agentic platform shape described in `.agent/plans/agentic/knowledge-base-platform.md`.
 
-Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `service`, `snapshot export`, and destructive `snapshot import` behavior. `sync` remains reserved for later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, and destructive `snapshot import` behavior. `sync` remains reserved for later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 
@@ -62,9 +62,12 @@ Today:
 
 - `status` reports runtime config, mount visibility, dependency reachability, and live KB database inspection when `DATABASE_URL` is usable.
 - `status --healthcheck` stays lightweight and exit-code-oriented for Compose healthchecks; it does not require schema inspection.
+- `status --json` emits one machine-readable JSON object on stdout for scripts.
+- `search` runs real BM25, vector, or hybrid KB queries with optional `--entity-type`, repeated `--filter key=value`, and `--json`.
+- `entity get <entity_type> <id>` fetches one indexed row by stable id, returns exit code `2` for invalid entity types, and returns exit code `4` for not-found rows.
 - `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema and writes to `/workspace/agentic/snapshots` by default.
 - `snapshot import` performs a destructive `agentic`-schema restore from a prior export and requires `--yes` acknowledgement.
-- `sync`, `search`, and richer MCP behavior still belong to later tasks.
+- `sync` and richer MCP behavior still belong to later tasks.
 
 ## Status Behavior
 

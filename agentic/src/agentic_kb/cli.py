@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 
+from agentic_kb.commands.entity import add_entity_subcommands
+from agentic_kb.commands.search import add_search_arguments, run_search
 from agentic_kb.commands.service import run_service
 from agentic_kb.commands.snapshot import add_snapshot_subcommands
 from agentic_kb.commands.status import run_status
@@ -24,7 +26,25 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Exit non-zero when required runtime config or dependencies are unavailable",
     )
+    status_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit one JSON object to stdout on success",
+    )
     status_parser.set_defaults(handler=run_status)
+
+    search_parser = subparsers.add_parser(
+        "search",
+        help="Run KB search queries against the configured database",
+    )
+    add_search_arguments(search_parser)
+    search_parser.set_defaults(handler=run_search)
+
+    entity_parser = subparsers.add_parser(
+        "entity",
+        help="Inspect one indexed KB entity",
+    )
+    add_entity_subcommands(entity_parser)
 
     sync_parser = subparsers.add_parser(
         "sync",
