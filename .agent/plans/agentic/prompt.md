@@ -15,7 +15,7 @@ Project anchors
 - ParadeDB on PostgreSQL 18
 - Ollama embeddings
 - BM25 + vector + RRF
-- Shared snapshots via GitHub Actions artifacts (not Releases)
+- Shared snapshots are published from trusted local GPU-equipped developer machines to private shared artifact storage outside git history
 - First code ingestor covers entire repo
 - MCP v1 is read-only search
 - Project field uses `Work Type` (not `Type`)
@@ -97,6 +97,29 @@ Project anchors
 - iteration 1 Code Review entry appends findings and decision
 - later Implementation and Code Review iterations append replies in order; never replace earlier entries
   Execution loop per task
+  Task interaction mode (mandatory)
+- Before planning each task, classify it as one of:
+  - `autonomous` - can be completed end-to-end by subagents without user input
+  - `interactive_decision` - requires a user choice, approval, or missing product/process decision before implementation can proceed
+  - `interactive_validation` - implementation can proceed, but final verification requires the orchestrator to give the user manual test steps and wait for results
+  - `manual_execution` - the task is primarily documentation, operator-run procedure, or another human-executed workflow that the agent cannot truthfully complete alone
+- The canonical task plan doc must record the chosen interaction mode.
+- The planning subagent must explicitly identify:
+  - required user inputs
+  - required manual test steps
+  - what evidence is needed back from the user
+  - whether implementation can proceed before that user interaction
+- Critique must reject any plan that hides a required human checkpoint inside an autonomous implementation loop.
+  Orchestrator-owned user interaction policy (mandatory)
+- Subagents do not communicate with the user directly. The orchestrator is the only component that asks the user questions, requests decisions, or presents manual test instructions.
+- If a selected task is `interactive_decision`, the orchestrator must stop before build implementation and ask the user the minimum blocking question set.
+- If a selected task is `interactive_validation`, the implementation subagent may complete all agent-executable work first, but must then produce a concise manual-validation handoff for the orchestrator.
+- If a selected task is `manual_execution`, the orchestrator must not force the task through a fake autonomous build loop. Instead:
+  - planning still runs
+  - implementation produces the operator-facing instructions, expected outputs, and rollback notes
+  - orchestrator presents those steps to the user and waits for results
+- Waiting for user input is a valid in-progress state, not a failure and not a reason to recurse into more subagents.
+- A pause for user interaction does not count against planning-loop or build-loop iteration limits.
   A) Planning loop (must converge before implementation; max 5 iterations; subagents run in series, not parallel)
 0. Orchestrator does not create the canonical task plan doc or planning review log.
 1. Planning subagent creates or revises the canonical task plan doc and creates or appends `.agent/plans/agentic/task-plans/<task-id>-plan-review.md`.
@@ -114,13 +137,26 @@ Project anchors
 - risk/tradeoff for each option
 - orchestrator recommended default
 - ask user for a decision before implementation
-  B) Build loop (must converge before signoff; max 5 iterations; subagents run in series, not parallel)
-1. Implementation subagent executes the approved canonical task plan doc, runs verification, and creates or appends `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
-2. The first Implementation entry for each build-review iteration must summarize changes made, files touched, verification run, and any deviations from the approved plan, and must be appended at end-of-file.
-3. After Implementation subagent is complete, Code Review subagent reviews diff/results against the approved canonical task plan doc and appends its review immediately after the Implementation entry for the same iteration in `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
-4. Code Review subagent must end its appended entry with `Decision: approved` or `Decision: requires_changes`.
-5. If review requires fixes, Implementation subagent must re-read the full implementation review log, make the required changes, update the canonical task plan doc if the approved plan itself changed, and append its response to the same `.agent/plans/agentic/task-plans/<task-id>-impl-review.md` file.
-6. Repeat steps 1-5 up to 5 total build-review iterations.
+  B) Build loop (must converge before signoff; max 5 review iterations; subagents run in series, not parallel)
+1. Implementation subagent executes the approved canonical task plan doc for all agent-executable work, runs available verification, and creates or appends `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
+2. The first Implementation entry for each build-review iteration must summarize:
+  - changes made
+  - files touched
+  - verification run
+  - any deviations from the approved plan
+  - whether user interaction is now required
+3. If implementation reaches a required human checkpoint, the Implementation entry must append a `User Handoff` section containing:
+  - why user interaction is required now
+  - exact manual steps
+  - expected results
+  - what output or decision the user should return
+  - whether work is blocked or can continue in parallel
+4. When a `User Handoff` is present, the orchestrator must stop the subagent loop, present the handoff to the user in interactive mode, and wait for the user's response before starting the next build-review iteration.
+5. After the user responds, Implementation subagent must re-read the full implementation review log, incorporate the user result, and continue the task.
+6. After Implementation subagent is complete for the current iteration and no user handoff is pending, Code Review subagent reviews diff/results against the approved canonical task plan doc and appends its review immediately after the Implementation entry for the same iteration in `.agent/plans/agentic/task-plans/<task-id>-impl-review.md`.
+7. Code Review subagent must end its appended entry with `Decision: approved` or `Decision: requires_changes`.
+8. If review requires fixes, Implementation subagent must re-read the full implementation review log, make the required changes, update the canonical task plan doc if the approved plan itself changed, and append its response to the same `.agent/plans/agentic/task-plans/<task-id>-impl-review.md` file.
+9. Repeat until approved or the max-iteration guard is reached.
     Build max-iteration guard
 - If review is still not clean after 5 iterations:
 - STOP the loop
@@ -149,24 +185,28 @@ Project anchors
     Definition of done (all required)
 - Acceptance criteria satisfied
 - Verification executed and reported
+- If manual verification was required, the orchestrator presented the steps to the user, captured the user's result, and recorded it in task docs/review logs
 - Review loop clean (or user-approved escalation resolution)
 - Canonical task plan doc updated with final approved plan and outcome
 - Planning review log exists at `.agent/plans/agentic/task-plans/<task-id>-plan-review.md` and preserves the full Planner/Critiquer conversation
-- Implementation review log exists at `.agent/plans/agentic/task-plans/<task-id>-impl-review.md` and preserves the full Implementation/Code Review conversation
+- Implementation review log exists at `.agent/plans/agentic/task-plans/<task-id>-impl-review.md` and preserves the full Implementation/Code Review conversation, including any user handoff checkpoints
 - Scribe updates completed
 - Research brain updated (or explicit no-new-research note)
 - Tasks/plan/project state synchronized
 - Final orchestrator signoff complete
-- Task commit created
+- Task commit created only when the task reached a truthful completion point and the user interaction requirements, if any, have been satisfied
   Task selection
 - Always pick next unblocked critical-path task unless justified otherwise
 - Reconcile inconsistencies between repo/docs/tasks/project/research before starting
-  Ask user only when truly blocked
+  Ask user when required for correctness or truthful completion
 - Material architecture tradeoff
 - Missing secret/credential
 - Destructive/irreversible action
 - Governance/process change beyond current conventions
 - Max-iteration guard triggered (planning or build loop)
+- Required product or operational decision that the repo/docs do not already answer
+- Required manual validation or operator-run procedure
+- Any task whose truthful completion depends on user-observed behavior, external environment state, or approval of a subjective outcome
   Default report after each task
 - Task + why chosen
 - Research consulted
@@ -174,8 +214,11 @@ Project anchors
 - Planning review log path
 - Implementation review log path
 - Final approved plan (from the canonical task plan doc)
+- Interaction mode (`autonomous`, `interactive_decision`, `interactive_validation`, or `manual_execution`)
 - Changes made
 - Verification
+- Any user handoff issued during implementation
+- User feedback received and how it affected the final outcome
 - Final review result
 - Scribe updates (canonical task plan doc + review logs + docs + research + tracking + project)
 - Commit hash + message

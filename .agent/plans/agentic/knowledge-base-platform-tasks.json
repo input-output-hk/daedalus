@@ -3,8 +3,8 @@
     "title": "Agentic Knowledge Base and Workflow Platform Tasks",
     "created": "2026-03-27",
     "updated": "2026-03-29",
-    "version": "1.0.0",
-    "totalTasks": 42,
+    "version": "1.1.0",
+    "totalTasks": 48,
     "prdReference": ".agent/plans/agentic/knowledge-base-platform.md",
     "description": "Implement the Docker Compose-based Daedalus knowledge base, search stack, sync workflow, and read-only MCP tooling"
   },
@@ -425,7 +425,7 @@
     {
       "id": "phase-6",
       "name": "Snapshot Sharing",
-      "description": "Support export, import, and team distribution of the knowledge base",
+      "description": "Support export, import, and private team distribution of the knowledge base",
       "riskLevel": "medium",
       "tasks": [
         {
@@ -457,8 +457,8 @@
         },
         {
           "id": "task-603",
-          "title": "Add shared snapshot publication workflow",
-          "description": "Document and automate publication and consumption of baseline KB snapshots as GitHub Actions artifacts",
+          "title": "Add initial GitHub Actions-based snapshot publication workflow (superseded)",
+          "description": "Document and automate publication and consumption of baseline KB snapshots as GitHub Actions artifacts; retained only as historical implementation to unwind after the local-publication pivot",
           "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
@@ -466,6 +466,46 @@
             "task-602"
           ],
           "completedAt": "2026-03-29",
+          "targetPath": ".github/workflows/agentic-kb-sync.yml"
+        },
+        {
+          "id": "task-605",
+          "title": "Select private shared snapshot storage backend",
+          "description": "Choose and document the durable private storage location for shared KB snapshots, including naming, retention, and access expectations for the two developers",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-602"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/plans/agentic/knowledge-base-platform.md"
+        },
+        {
+          "id": "task-606",
+          "title": "Document local baseline publish and download workflow",
+          "description": "Replace the GitHub Actions artifact workflow in operator docs with the real local GPU-backed publication, upload, download, and import workflow for two developers",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-605"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/workflows/agentic-kb.md"
+        },
+        {
+          "id": "task-607",
+          "title": "Unwind GitHub Actions snapshot publication path",
+          "description": "Remove or clearly retire the existing GitHub Actions snapshot publication workflow and any remaining docs that present Actions artifacts as the canonical shared baseline",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-603",
+            "task-606"
+          ],
+          "completedAt": "",
           "targetPath": ".github/workflows/agentic-kb-sync.yml"
         },
         {
@@ -487,7 +527,7 @@
     {
       "id": "phase-7",
       "name": "Freshness and Automation",
-      "description": "Keep the knowledge base current as the repo and project change over time",
+      "description": "Keep the knowledge base current as the repo and project change over time through local refresh and publication workflows",
       "riskLevel": "medium",
       "tasks": [
         {
@@ -524,8 +564,8 @@
         {
           "id": "task-703",
           "title": "Add scheduled refresh and snapshot workflow",
-          "description": "Run a scheduled GitHub Action that refreshes remote knowledge and optionally publishes a fresh shared snapshot",
-          "status": "pending",
+          "description": "Cancelled after the publication strategy pivot away from GitHub-hosted Actions and toward explicit local GPU-backed baseline publication",
+          "status": "cancelled",
           "priority": "medium",
           "estimatedHours": 4,
           "dependencies": [
@@ -538,7 +578,7 @@
         {
           "id": "task-704",
           "title": "Add incremental update smoke checks",
-          "description": "Verify that small repo and GitHub changes update only the affected entities instead of forcing a full rebuild",
+          "description": "Verify that small repo and GitHub changes update only the affected entities instead of forcing a full rebuild, and cover the imported-baseline local refresh path used by the two developers",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 3,
@@ -548,6 +588,35 @@
           ],
           "completedAt": "",
           "targetPath": "agentic/tests/test_incremental_sync.py"
+        },
+        {
+          "id": "task-705",
+          "title": "Add local publish and fetch helper commands",
+          "description": "Provide developer-friendly helper commands or scripts for building the canonical baseline locally, exporting the snapshot pair, and downloading/importing the latest shared baseline from the chosen private storage backend",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": [
+            "task-105",
+            "task-605",
+            "task-606"
+          ],
+          "completedAt": "",
+          "targetPath": "package.json"
+        },
+        {
+          "id": "task-706",
+          "title": "Add local baseline publication smoke checks",
+          "description": "Verify the end-to-end local publication path from develop: sync all, snapshot export, manifest validation, upload to shared storage, download, import, and deterministic post-import search proof",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-605",
+            "task-705"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/tests/test_snapshot_publication_workflow.py"
         }
       ]
     },
@@ -639,14 +708,15 @@
         },
         {
           "id": "task-902",
-          "title": "Review security and artifact boundaries",
-          "description": "Verify tokens, DB snapshots, and MCP tools stay read-only and developer-only",
+          "title": "Review security and shared-storage boundaries",
+          "description": "Verify tokens, private snapshot storage, DB snapshots, and MCP tools stay read-only where intended and remain limited to the two-developer workflow",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-801",
-            "task-901"
+            "task-901",
+            "task-605"
           ],
           "completedAt": "",
           "targetPath": "agentic/README.md"
@@ -654,23 +724,55 @@
         {
           "id": "task-903",
           "title": "Pilot with multiple developers",
-          "description": "Run a small team pilot, validate snapshot sharing and incremental sync, and capture follow-up SOPs",
+          "description": "Run the real two-developer pilot, validate local publication to shared storage plus import and incremental sync on the second machine, and capture follow-up SOPs",
           "status": "pending",
           "priority": "medium",
           "estimatedHours": 4,
           "dependencies": [
             "task-901",
+            "task-902",
+            "task-705"
+          ],
+          "completedAt": "",
+          "targetPath": ".agent/SOPs/agentic"
+        },
+        {
+          "id": "task-904",
+          "title": "Document canonical baseline ownership and fallback",
+          "description": "Define who is allowed to publish the canonical baseline, when to republish from develop, and how the second developer recovers if the latest shared snapshot is stale, missing, or incompatible",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2,
+          "dependencies": [
+            "task-605",
+            "task-606",
             "task-902"
           ],
           "completedAt": "",
           "targetPath": ".agent/SOPs/agentic"
+        },
+        {
+          "id": "task-905",
+          "title": "Validate two-developer publish-download-import handoff",
+          "description": "Prove that developer A can publish a baseline from develop on a GPU-equipped machine and developer B can fetch, import, validate, and continue with sync changed on another machine using only the documented workflow",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": [
+            "task-705",
+            "task-706",
+            "task-903",
+            "task-904"
+          ],
+          "completedAt": "",
+          "targetPath": "agentic/README.md"
         }
       ]
     }
   ],
   "summary": {
     "totalPhases": 10,
-    "totalTasks": 42,
+    "totalTasks": 48,
     "criticalPath": [
       "task-001",
       "task-002",
@@ -689,12 +791,19 @@
       "task-503",
       "task-601",
       "task-602",
+      "task-605",
+      "task-606",
       "task-604",
       "task-701",
+      "task-705",
       "task-801",
       "task-802",
       "task-803",
-      "task-901"
+      "task-901",
+      "task-902",
+      "task-903",
+      "task-904",
+      "task-905"
     ]
   }
 }

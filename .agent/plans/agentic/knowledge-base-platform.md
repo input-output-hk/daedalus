@@ -13,7 +13,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - Build a local knowledge base using ParadeDB + Ollama with BM25 keyword search, vector similarity search, and RRF ranking fusion.
 - Ingest Daedalus-specific knowledge: docs, workflows, plans, SOPs, code, issues, pull requests, comments, and Project 5 items.
 - Provide snapshot export/import so multiple developers can share a current knowledge base instead of re-ingesting everything from scratch.
-- Keep the knowledge base fresh with explicit sync commands, staleness detection, and scheduled automation.
+- Keep the knowledge base fresh with explicit sync commands, staleness detection, and a lightweight local publication workflow for the shared baseline.
 - Expose the knowledge base to agents through a read-only Search MCP and documented setup for OpenCode, Claude Code, and similar tools.
 
 ## Non-Goals
@@ -22,6 +22,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - Do not make this part of the Daedalus runtime, wallet startup path, installer, or production build artifacts.
 - Do not require pre-commit indexing or any other always-on local background daemon in v1.
 - Do not give MCP write access to GitHub, the repository, or the knowledge database in v1.
+- Do not treat GitHub-hosted Actions runners as the canonical embedding or snapshot publication environment in v1.
 
 ## Requirements
 
@@ -35,6 +36,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [ ] Provide read-only Search MCP tools and setup instructions for OpenCode and Claude Code.
 - [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers.
 - [ ] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
+- [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
 
 ## Technical Design
 
@@ -79,8 +81,6 @@ daedalus/
 ├── .agent/
 │   ├── plans/agentic/
 │   └── workflows/agentic-kb.md
-└── .github/workflows/
-    └── agentic-kb-sync.yml
 ```
 
 Implementation tooling should live in an isolated developer-tools package/service so it can evolve independently of the wallet runtime. The preferred default is a dedicated Python-based tools container because it stays decoupled from the Electron/webpack toolchain and matches the shape of the ParadeDB/Ollama/MCP stack well.
@@ -205,6 +205,14 @@ Search should support filters by:
 - project status / area
 - source domain (`docs`, `code`, `github`, `project`)
 
+### Compute Placement
+
+- The canonical KB build and baseline snapshot publication flow should run on trusted developer machines, not on GitHub-hosted Actions runners.
+- The expected team shape for v1 is two developers with local GPU access; the platform should take advantage of that instead of assuming CPU-only CI runners are the primary embedding environment.
+- GPU is preferred for full rebuilds and canonical baseline publication because it keeps embedding latency practical as the corpus grows.
+- CPU-only local operation must still work for import, status checks, BM25 queries, and targeted sync operations, even if full rebuilds are slower.
+- GitHub-hosted Actions may remain useful later for lightweight verification, but they are not the source of truth for canonical KB snapshots in v1.
+
 ### Export / Import and Multi-Developer Sharing
 
 This is required for team use, not optional polish.
@@ -228,12 +236,14 @@ Each export should produce:
 - Maintain a baseline team snapshot generated from `develop`.
 - Developers can import the latest snapshot instead of re-running every ingest task from scratch.
 - After import, developers run `sync changed` to capture local branch changes and any recent GitHub updates.
-- Snapshot publication should be automatable from CI so the team can share a current baseline.
+- Build and publish the canonical baseline on one of the trusted GPU-equipped developer machines.
+- Store shared snapshots in durable private artifact storage outside git history.
+- Prefer object storage or another private shared artifact store; avoid Git LFS for rotating KB dumps.
 
 This gives the team two supported modes:
 
 1. **Fast start** - import latest shared snapshot, then sync deltas
-2. **Full rebuild** - ingest from scratch when validating the pipeline itself
+2. **Full rebuild** - ingest from scratch on a local developer machine when validating the pipeline itself or republishing the canonical baseline
 
 ### Freshness and Update Strategy
 
@@ -258,8 +268,10 @@ Provide commands for:
 
 #### Automation
 
-- Scheduled GitHub Action refreshes GitHub and project metadata.
-- CI can publish a new shared snapshot on a regular cadence or after selected merges to `develop`.
+- No GitHub-hosted scheduled rebuild or publication flow is required in v1.
+- Canonical baseline refresh and publication should run as an explicit local workflow from `develop` on a trusted GPU-equipped developer machine.
+- The shared storage backend should be durable, private, and independently discoverable by the two developers using the platform.
+- Optional future automation should be evaluated only if it preserves GPU access, artifact durability, and the current security boundary.
 - Local developers should not be forced through expensive indexing on every commit.
 
 ### MCP and Agent Integration
@@ -289,6 +301,7 @@ Required documentation:
 - Keep GitHub tokens in environment variables or local env files that are gitignored.
 - Do not couple KB credentials or services to the wallet runtime.
 - Treat snapshots as internal developer artifacts because they may contain copied GitHub discussions and project metadata.
+- Keep shared snapshots out of normal git history and out of Git LFS in v1.
 
 ## Implementation Phases
 
@@ -331,13 +344,13 @@ Required documentation:
 
 - Add snapshot manifest format.
 - Add snapshot export/import commands.
-- Add a shared team workflow for publishing and consuming baseline snapshots.
+- Add a shared team workflow for locally publishing and consuming baseline snapshots through private shared storage.
 
 ### Phase 7 - Freshness and Automation
 
 - Add `sync` commands.
 - Add stale-index detection.
-- Add scheduled GitHub automation and smoke checks.
+- Add local baseline refresh/publication workflow docs, shared-storage fetch helpers, and smoke checks.
 
 ### Phase 8 - MCP and Agent Documentation
 
@@ -375,12 +388,12 @@ Required documentation:
 1. Ship the plan, task tracking, and GitHub epic
 2. Build the local stack and docs/code ingestion first
 3. Add GitHub/project ingestion and search
-4. Add snapshot sharing and freshness automation
+4. Add local snapshot sharing and baseline refresh workflow
 5. Onboard a small set of developers before wider rollout
 
 ## Decisions Confirmed
 
-- Shared snapshots should be published as GitHub Actions artifacts, not GitHub Releases assets.
+- Shared snapshots should be published from trusted local GPU-equipped developer machines to private shared artifact storage outside git history.
 - Project 5 is new enough that we can shape its metadata to fit this workflow; the initial field conventions are `Status`, `Priority`, `Size`, `Work Type`, `Area`, `Phase`, `KB Impact`, `Start date`, and `Target date`.
 - The first code ingestor should cover the entire repository immediately, with metadata and filters preserving fast access to the most agent-relevant areas.
 
@@ -396,4 +409,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`. The first schema bootstrap now lives in `agentic/schema/init.sql`, enabling `pg_search` and `vector`, creating the `agentic` schema, and seeding `agentic.kb_schema_migrations` for future upgrades on fresh DB volumes.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`. The first schema bootstrap now lives in `agentic/schema/init.sql`, enabling `pg_search` and `vector`, creating the `agentic` schema, and seeding `agentic.kb_schema_migrations` for future upgrades on fresh DB volumes. After review of the remaining rollout work, the publication strategy has pivoted away from GitHub-hosted Actions toward trusted local GPU-backed baseline publication with private shared snapshot storage; the existing Actions workflow is now treated as transitional implementation to unwind rather than the target operating model.
