@@ -101,6 +101,7 @@ class McpSearchServerDbTests(unittest.TestCase):
 
         self.assertEqual(entity_payload["structuredContent"]["row"]["title"], "mithril bootstrap workflow")
         self.assertIn("database_items", status_payload["structuredContent"])
+        self.assertIn("freshness", status_payload["structuredContent"])
         self.assertTrue(any(item["name"] == "rows agentic.kb_documents" for item in status_payload["structuredContent"]["database_items"]))
 
     def test_find_related_returns_bounded_hits_without_the_seed_entity(self):

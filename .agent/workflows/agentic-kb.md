@@ -98,7 +98,7 @@ Use `status` for a quick operator view of both service readiness and KB DB readi
 - presence of the current `agentic` tables, the seven searchable tables, and their BM25/HNSW indexes
 - searchable row counts and grouped `kb_sync_state` summaries
 
-`status` is intentionally limited to current repo-backed contracts; it does not require sync orchestration, GitHub API calls, or MCP readiness.
+`status` is intentionally limited to current repo-backed contracts and does not require sync orchestration or MCP readiness. GitHub and Project freshness probes run only on normal `status` when `GITHUB_TOKEN` is configured; without a token, those remote freshness entries report `skipped` and status remains usable.
 
 ## Clean-Machine Bootstrap
 
@@ -175,13 +175,16 @@ Expected validation shape after import:
 
 ## Freshness Guidance
 
-Current shipped freshness handling is operational rather than automatic:
+Current shipped freshness handling is status-driven rather than automatic sync:
 
-- use `status` to inspect current sync-state summaries and indexed row counts
-- use `sync changed` only after successful source baselines already exist
-- use `sync all` or explicit source syncs when the KB needs reseeding
-
-Automatic stale-index detection is not part of the current shipped workflow.
+- normal `status` and `status --json` now report a separate `freshness` section alongside readiness
+- top-level `status.ok` still means runtime/dependency/database readiness only; stale or skipped freshness does not turn imported-baseline readiness into failure
+- docs and code are `fresh` only when their last successful stored `repo_commit_hash` matches local `HEAD`; if the baseline is missing they report `missing_baseline`
+- GitHub stream freshness compares the stored per-stream watermarks for `issues`, `pulls`, `issue_comments`, and `review_comments` against lightweight latest-watermark API probes when `GITHUB_TOKEN` is available
+- Project freshness compares the stored project watermark against the latest observed Project item update when `GITHUB_TOKEN` is available
+- if `GITHUB_TOKEN` is absent, GitHub and Project freshness report `skipped` instead of pretending those sources are fresh
+- `status --healthcheck` remains lightweight and does not run git or GitHub freshness checks
+- `sync changed` remains the follow-on command to refresh stale baselines after a seeded or imported KB, but Project freshness still cannot guarantee replay of edits to already-seen items under the current cursor-only sync contract
 
 ## MCP Setup
 

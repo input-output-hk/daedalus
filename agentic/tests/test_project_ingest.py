@@ -39,6 +39,21 @@ class FakeGithubProjectApiClient:
             ) from error
 
 
+class FakeProjectWatermarkClient:
+    def __init__(self, watermark: datetime | None):
+        self.watermark = watermark
+        self.calls: list[tuple[str, int]] = []
+
+    def fetch_latest_project_watermark(
+        self,
+        *,
+        project_owner: str,
+        project_number: int,
+    ) -> datetime | None:
+        self.calls.append((project_owner, project_number))
+        return self.watermark
+
+
 class ProjectIngestTests(unittest.TestCase):
     def test_iter_project_item_pages_paginates_and_tracks_cursor(self):
         embedding_client = FakeEmbeddingClient()
@@ -651,6 +666,31 @@ class ProjectIngestTests(unittest.TestCase):
             project._read_http_error_detail(FakeHttpError()),
             "project scope missing",
         )
+
+    def test_fetch_latest_project_watermark_returns_metadata_only_timestamp(self):
+        client = FakeProjectWatermarkClient(datetime(2026, 3, 29, 14, 0, tzinfo=timezone.utc))
+
+        watermark = project.fetch_latest_project_watermark(
+            github_token="secret-token",
+            project_owner="DripDropz",
+            project_number=5,
+            github_client=client,
+        )
+
+        self.assertEqual(client.calls, [("DripDropz", 5)])
+        self.assertEqual(watermark, datetime(2026, 3, 29, 14, 0, tzinfo=timezone.utc))
+
+    def test_fetch_latest_project_watermark_allows_no_remote_items(self):
+        client = FakeProjectWatermarkClient(None)
+
+        watermark = project.fetch_latest_project_watermark(
+            github_token="secret-token",
+            project_owner="DripDropz",
+            project_number=5,
+            github_client=client,
+        )
+
+        self.assertIsNone(watermark)
 
     def _project_item_payload(
         self,

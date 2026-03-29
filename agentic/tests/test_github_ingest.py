@@ -52,6 +52,55 @@ class FakeGithubApiClient:
         return self.pull_payloads[(repo, pr_number)]
 
 
+class FakeGithubWatermarkClient:
+    def __init__(self, payloads: dict[str, list[dict]]):
+        self.payloads = payloads
+        self.calls: list[str] = []
+
+    def fetch_latest_stream_watermarks(self, *, repo: str) -> dict[str, datetime | None]:
+        self.calls.append(repo)
+        return {
+            stream_name: github._latest_stream_watermark_from_payloads(stream_name, self.payloads[stream_name])
+            for stream_name in github.STREAM_ORDER
+        }
+
+
+class FakeGithubLatestWatermarkApiClient:
+    def __init__(self, *, responses: dict[tuple[str, int], tuple[list[dict], bool]]):
+        self.responses = responses
+        self.calls: list[tuple[str, int, str]] = []
+        self._base_url = github.GITHUB_API_BASE_URL
+
+    def _request_json(self, url: str) -> tuple[object, dict[str, str]]:
+        parsed = urlparse(url)
+        page_number = int(parse_qs(parsed.query)["page"][0])
+        if parsed.path.endswith("/issues/comments"):
+            stream_name = "issue_comments"
+        elif parsed.path.endswith("/pulls/comments"):
+            stream_name = "review_comments"
+        elif parsed.path.endswith("/pulls"):
+            stream_name = "pulls"
+        elif parsed.path.endswith("/issues"):
+            stream_name = "issues"
+        else:
+            raise AssertionError(f"Unexpected latest-watermark URL: {url}")
+        self.calls.append((stream_name, page_number, url))
+        try:
+            payload, has_next = self.responses[(stream_name, page_number)]
+        except KeyError as error:
+            raise AssertionError(f"Missing fake latest-watermark response for {(stream_name, page_number)!r}") from error
+        headers = {}
+        if has_next:
+            headers["Link"] = f'<https://api.github.com/resource?page={page_number + 1}>; rel="next"'
+        return payload, headers
+
+    def _require_object(self, payload, *, context: str):
+        return github.GithubApiClient._require_object(payload, context=context)
+
+    def _fetch_latest_stream_watermark(self, stream_name: str, *, repo: str):
+        return github.GithubApiClient._fetch_latest_stream_watermark(self, stream_name, repo=repo)
+
+
 class GithubIngestTests(unittest.TestCase):
     def test_iter_github_pages_filters_pr_stubs_from_issue_stream(self):
         embedding_client = FakeEmbeddingClient()
@@ -761,6 +810,46 @@ class GithubIngestTests(unittest.TestCase):
         self.assertEqual(len(sync_store.attempts), len(github.STREAM_ORDER))
         self.assertEqual(len(sync_store.failures), len(github.STREAM_ORDER))
         self.assertTrue(all("boom from github ingest" in failure.error for failure in sync_store.failures))
+
+    def test_fetch_latest_github_stream_watermarks_extracts_all_streams(self):
+        client = FakeGithubWatermarkClient(
+            payloads={
+                "issues": [self._issue_payload(7, updated_at="2026-03-29T12:00:00Z")],
+                "pulls": [self._pull_payload(11, updated_at="2026-03-29T12:30:00Z")],
+                "issue_comments": [self._issue_comment_payload(comment_id=1001, issue_number=7, updated_at="2026-03-29T13:00:00Z")],
+                "review_comments": [self._review_comment_payload(comment_id=2001, pr_number=11, updated_at="2026-03-29T13:30:00Z")],
+            }
+        )
+
+        watermarks = github.fetch_latest_github_stream_watermarks(
+            repo="DripDropz/daedalus",
+            github_token="secret-token",
+            github_client=client,
+        )
+
+        self.assertEqual(client.calls, ["DripDropz/daedalus"])
+        self.assertEqual(watermarks["issues"], datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc))
+        self.assertEqual(watermarks["pulls"], datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc))
+        self.assertEqual(watermarks["issue_comments"], datetime(2026, 3, 29, 13, 0, tzinfo=timezone.utc))
+        self.assertEqual(watermarks["review_comments"], datetime(2026, 3, 29, 13, 30, tzinfo=timezone.utc))
+
+    def test_issue_latest_watermark_probe_skips_pr_stub_and_uses_next_page_issue(self):
+        client = FakeGithubLatestWatermarkApiClient(
+            responses={
+                ("issues", 1): ([self._issue_stub_for_pr(11)], True),
+                ("issues", 2): ([self._issue_payload(7, updated_at="2026-03-29T12:00:00Z")], False),
+            }
+        )
+
+        watermark = client._fetch_latest_stream_watermark("issues", repo="DripDropz/daedalus")
+
+        self.assertEqual(watermark, datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc))
+        self.assertEqual(client.calls[0][0:2], ("issues", 1))
+        self.assertEqual(client.calls[1][0:2], ("issues", 2))
+
+    def test_latest_stream_watermark_helper_rejects_malformed_payload(self):
+        with self.assertRaises(github.GithubApiResponseError):
+            github._latest_stream_watermark_from_payloads("issues", [{"updated_at": None}])
 
     def _issue_payload(
         self,

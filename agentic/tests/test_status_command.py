@@ -10,6 +10,8 @@ from unittest.mock import patch
 
 from agentic_kb.commands import status
 from agentic_kb.config import AgenticConfig
+from agentic_kb.sync.state import InMemorySyncStateStore, PreparedSyncState, deterministic_sync_state_id, github_scope_key, project_scope_key, repo_scope_key
+from agentic_kb.sync.staleness import FreshnessItem, FreshnessReport
 
 
 class StatusCommandTests(unittest.TestCase):
@@ -47,6 +49,7 @@ class StatusCommandTests(unittest.TestCase):
         report = status.collect_status_report(self.config, healthcheck=False)
 
         self.assertTrue(report.ok)
+        self.assertIsNotNone(report.freshness)
         self.assertTrue(any(item.name == "schema migrations" and item.ok for item in report.database_items))
         self.assertTrue(any(item.name == "search indexes" and item.ok for item in report.database_items))
         self.assertTrue(any(item.name == "sync state summary" and item.detail == "0 rows recorded" for item in report.database_items))
@@ -91,7 +94,51 @@ class StatusCommandTests(unittest.TestCase):
 
         self.assertTrue(report.ok)
         self.assertEqual(report.database_items, ())
+        self.assertIsNone(report.freshness)
         inspect_database.assert_not_called()
+
+    @patch("agentic_kb.commands.status._collect_freshness")
+    @patch("agentic_kb.commands.status._path_exists", return_value=True)
+    @patch(
+        "agentic_kb.commands.status._check_ollama",
+        return_value=(True, "reachable via http://ollama:11434/api/tags", True, "configured model available"),
+    )
+    @patch("agentic_kb.commands.status._check_tcp")
+    @patch("agentic_kb.commands.status.inspect_database")
+    def test_stale_freshness_does_not_change_top_level_readiness(
+        self,
+        inspect_database,
+        _check_tcp,
+        _check_ollama,
+        _path_exists,
+        collect_freshness,
+    ):
+        inspect_database.return_value = status.DatabaseInspection(
+            current_database="agentic_kb",
+            applied_versions=(1, 2, 3),
+            tables=status.EXPECTED_AGENTIC_TABLES,
+            indexes=status.expected_searchable_indexes(),
+            row_counts={table_name: 0 for table_name in status.expected_searchable_tables()},
+            sync_summaries=(),
+        )
+        collect_freshness.return_value = FreshnessReport(
+            up_to_date=False,
+            items=(
+                FreshnessItem(
+                    name="docs",
+                    status="stale",
+                    detail="baseline commit differs from local HEAD",
+                    baseline="abc",
+                    observed="def",
+                ),
+            ),
+        )
+
+        report = status.collect_status_report(self.config, healthcheck=False)
+
+        self.assertTrue(report.ok)
+        self.assertFalse(report.freshness.up_to_date)
+        self.assertEqual(report.freshness.items[0].status, "stale")
 
     def test_build_database_items_marks_missing_schema_objects(self):
         inspection = status.DatabaseInspection(
@@ -132,6 +179,16 @@ class StatusCommandTests(unittest.TestCase):
             environment_items=(),
             dependency_items=(),
             database_items=(),
+            freshness=FreshnessReport(
+                up_to_date=False,
+                items=(
+                    FreshnessItem(
+                        name="project",
+                        status="skipped",
+                        detail="skipped because GITHUB_TOKEN is not configured",
+                    ),
+                ),
+            ),
             notes=("note one",),
         )
 
@@ -144,6 +201,7 @@ class StatusCommandTests(unittest.TestCase):
             "environment_items",
             "dependency_items",
             "database_items",
+            "freshness",
             "notes",
         ])
         self.assertEqual(payload["config_items"][0], {
@@ -151,6 +209,168 @@ class StatusCommandTests(unittest.TestCase):
             "ok": True,
             "detail": "db:5432/agentic_kb",
         })
+        self.assertEqual(payload["freshness"], {
+            "up_to_date": False,
+            "items": [
+                {
+                    "name": "project",
+                    "status": "skipped",
+                    "detail": "skipped because GITHUB_TOKEN is not configured",
+                    "baseline": None,
+                    "observed": None,
+                }
+            ],
+        })
+
+    def test_collect_freshness_report_covers_fresh_stale_missing_and_skipped_sources(self):
+        sync_store = InMemorySyncStateStore()
+        timestamp = datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc)
+        sync_store.upsert_sync_states(
+            [
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("docs", repo_scope_key()),
+                    source_name="docs",
+                    scope_key=repo_scope_key(),
+                    repo_commit_hash="head123",
+                    cursor_text=None,
+                    watermark_text=None,
+                    watermark_timestamp=None,
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("code", repo_scope_key()),
+                    source_name="code",
+                    scope_key=repo_scope_key(),
+                    repo_commit_hash="old456",
+                    cursor_text=None,
+                    watermark_text=None,
+                    watermark_timestamp=None,
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+            ]
+        )
+
+        report = status.collect_freshness_report(
+            workspace_root="/tmp",
+            sync_store=sync_store,
+            github_token=None,
+            head_commit_getter=lambda _root: "head123",
+        )
+
+        item_by_name = {item.name: item for item in report.items}
+        self.assertEqual(item_by_name["docs"].status, "fresh")
+        self.assertEqual(item_by_name["code"].status, "stale")
+        self.assertEqual(item_by_name["github issues"].status, "skipped")
+        self.assertEqual(item_by_name["project"].status, "skipped")
+
+    def test_collect_freshness_report_covers_remote_and_imported_baseline_boundaries(self):
+        sync_store = InMemorySyncStateStore()
+        timestamp = datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc)
+        sync_store.upsert_sync_states(
+            [
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("docs", repo_scope_key()),
+                    source_name="docs",
+                    scope_key=repo_scope_key(),
+                    repo_commit_hash="old-head",
+                    cursor_text=None,
+                    watermark_text=None,
+                    watermark_timestamp=None,
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("code", repo_scope_key()),
+                    source_name="code",
+                    scope_key=repo_scope_key(),
+                    repo_commit_hash="old-head",
+                    cursor_text=None,
+                    watermark_text=None,
+                    watermark_timestamp=None,
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("github", github_scope_key("issues")),
+                    source_name="github",
+                    scope_key=github_scope_key("issues"),
+                    repo_commit_hash=None,
+                    cursor_text=None,
+                    watermark_text="2026-03-29T10:00:00Z",
+                    watermark_timestamp=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("github", github_scope_key("pulls")),
+                    source_name="github",
+                    scope_key=github_scope_key("pulls"),
+                    repo_commit_hash=None,
+                    cursor_text=None,
+                    watermark_text="2026-03-29T12:00:00Z",
+                    watermark_timestamp=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("project", project_scope_key()),
+                    source_name="project",
+                    scope_key=project_scope_key(),
+                    repo_commit_hash=None,
+                    cursor_text="cursor-123",
+                    watermark_text="2026-03-29T09:00:00Z",
+                    watermark_timestamp=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                    schema_version=None,
+                    last_attempted_at=timestamp,
+                    last_succeeded_at=timestamp,
+                    last_error=None,
+                    metadata={},
+                ),
+            ]
+        )
+
+        report = status.collect_freshness_report(
+            workspace_root="/tmp",
+            sync_store=sync_store,
+            github_token="secret-token",
+            head_commit_getter=lambda _root: "new-head",
+            github_watermarks_fetcher=lambda **_kwargs: {
+                "issues": datetime(2026, 3, 29, 11, 0, tzinfo=timezone.utc),
+                "pulls": datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                "issue_comments": None,
+                "review_comments": None,
+            },
+            project_watermark_fetcher=lambda **_kwargs: datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+        )
+
+        item_by_name = {item.name: item for item in report.items}
+        self.assertFalse(report.up_to_date)
+        self.assertEqual(item_by_name["docs"].status, "stale")
+        self.assertEqual(item_by_name["code"].status, "stale")
+        self.assertEqual(item_by_name["github issues"].status, "stale")
+        self.assertEqual(item_by_name["github pulls"].status, "fresh")
+        self.assertEqual(item_by_name["github issue_comments"].status, "missing_baseline")
+        self.assertEqual(item_by_name["project"].status, "stale")
 
     @patch("agentic_kb.commands.status.collect_status_report")
     @patch("agentic_kb.commands.status.AgenticConfig.from_env")
@@ -163,6 +383,7 @@ class StatusCommandTests(unittest.TestCase):
             environment_items=(),
             dependency_items=(),
             database_items=(),
+            freshness=None,
             notes=("healthcheck mode",),
         )
 
@@ -178,6 +399,7 @@ class StatusCommandTests(unittest.TestCase):
             "environment_items": [],
             "dependency_items": [],
             "database_items": [],
+            "freshness": None,
             "notes": ["healthcheck mode"],
         })
 

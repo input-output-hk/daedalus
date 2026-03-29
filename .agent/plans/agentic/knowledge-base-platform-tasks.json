@@ -129,14 +129,14 @@
           "id": "task-105",
           "title": "Add helper wrappers for compose tasks",
           "description": "Expose developer-friendly commands for booting the stack and running sync/snapshot operations",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-101",
             "task-103"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "package.json"
         }
       ]
@@ -511,15 +511,15 @@
           "id": "task-702",
           "title": "Add stale-index detection",
           "description": "Detect when docs/code are behind local HEAD or when GitHub/project data is behind its latest watermark",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-405",
             "task-701"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/sync/staleness.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/sync/staleness.py"
         },
         {
           "id": "task-703",

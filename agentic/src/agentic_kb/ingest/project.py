@@ -66,6 +66,23 @@ FIELD_SUMMARY_ORDER: tuple[str, ...] = (
 )
 SNAKE_CASE_BOUNDARY = re.compile(r"(?<!^)(?=[A-Z])")
 
+PROJECT_WATERMARK_QUERY = """
+query AgenticProjectLatestWatermark(
+  $projectOwner: String!
+  $projectNumber: Int!
+) {
+  organization(login: $projectOwner) {
+    projectV2(number: $projectNumber) {
+      items(first: 1, orderBy: {field: UPDATED_AT, direction: DESC}) {
+        nodes {
+          updatedAt
+        }
+      }
+    }
+  }
+}
+""".strip()
+
 PROJECT_ITEMS_QUERY = """
 query AgenticProjectItems(
   $projectOwner: String!
@@ -469,6 +486,38 @@ class GithubProjectApiClient:
             "end_cursor": _string_or_none(page_info.get("endCursor")),
         }
 
+    def fetch_latest_project_watermark(
+        self,
+        *,
+        project_owner: str,
+        project_number: int,
+    ) -> datetime | None:
+        payload = self._request_json(
+            PROJECT_WATERMARK_QUERY,
+            {
+                "projectOwner": project_owner,
+                "projectNumber": project_number,
+            },
+        )
+        data = _require_graphql_data(payload)
+        organization = _require_object(data.get("organization"), context="organization")
+        project = _require_object(
+            organization.get("projectV2"),
+            context=(
+                f"organization projectV2 for {project_owner}#{project_number}; "
+                "verify the project exists and GITHUB_TOKEN can read organization projects"
+            ),
+        )
+        items = _require_object(project.get("items"), context="project items connection")
+        nodes = _require_list(items.get("nodes"), context="project items nodes")
+        if not nodes:
+            return None
+        latest_node = _require_object(nodes[0], context="latest project item node")
+        return _parse_timestamp(
+            latest_node.get("updatedAt"),
+            context="latest project item updatedAt",
+        )
+
     def _request_json(self, query: str, variables: dict[str, Any]) -> Any:
         request = Request(
             self._endpoint,
@@ -723,6 +772,24 @@ def ingest_project_items_from_config(
                 ]
             )
             return result
+
+
+def fetch_latest_project_watermark(
+    *,
+    github_token: str,
+    project_owner: str = DEFAULT_GITHUB_PROJECT_OWNER,
+    project_number: int = DEFAULT_GITHUB_PROJECT_NUMBER,
+    github_client: GithubProjectApiClient | None = None,
+    request_timeout_seconds: int = DEFAULT_REQUEST_TIMEOUT_SECONDS,
+) -> datetime | None:
+    client = github_client or GithubProjectApiClient(
+        token=github_token,
+        timeout_seconds=request_timeout_seconds,
+    )
+    return client.fetch_latest_project_watermark(
+        project_owner=project_owner,
+        project_number=project_number,
+    )
 
 
 def _prepare_project_item(

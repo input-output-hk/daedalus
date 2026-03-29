@@ -13,6 +13,13 @@ from urllib.request import urlopen
 from agentic_kb.commands.output import print_json
 from agentic_kb.config import AgenticConfig, parse_database_endpoint
 from agentic_kb.search.config import list_search_entity_configs
+from agentic_kb.sync import PostgresSyncStateStore
+from agentic_kb.sync.staleness import (
+    FreshnessItem,
+    FreshnessReport,
+    collect_freshness_report,
+    serialize_freshness_report,
+)
 
 
 WORKSPACE_PATH = "/workspace"
@@ -66,6 +73,7 @@ class StatusReport:
     environment_items: tuple[CheckResult, ...]
     dependency_items: tuple[CheckResult, ...]
     database_items: tuple[CheckResult, ...]
+    freshness: FreshnessReport | None
     notes: tuple[str, ...]
 
 
@@ -88,6 +96,7 @@ def collect_status_report(config: AgenticConfig, healthcheck: bool) -> StatusRep
     dependency_items = list(_dependency_results(config, healthcheck=healthcheck))
     environment_items = list(_environment_results())
     database_items = list(_database_results(config, healthcheck=healthcheck))
+    freshness = _collect_freshness(config, healthcheck=healthcheck)
     ok = all(
         item.ok
         for item in config_items
@@ -113,6 +122,7 @@ def collect_status_report(config: AgenticConfig, healthcheck: bool) -> StatusRep
         environment_items=tuple(environment_items),
         dependency_items=tuple(dependency_items),
         database_items=tuple(database_items),
+        freshness=freshness,
         notes=notes,
     )
 
@@ -286,6 +296,8 @@ def print_status_report(report: StatusReport) -> None:
     _print_section("dependencies", report.dependency_items)
     if report.database_items:
         _print_section("database", report.database_items)
+    if report.freshness is not None:
+        _print_freshness_section(report.freshness)
 
     print("notes:")
     for note in report.notes:
@@ -300,6 +312,7 @@ def serialize_status_report(report: StatusReport) -> dict[str, Any]:
         "environment_items": [serialize_check_result(item) for item in report.environment_items],
         "dependency_items": [serialize_check_result(item) for item in report.dependency_items],
         "database_items": [serialize_check_result(item) for item in report.database_items],
+        "freshness": serialize_freshness_report(report.freshness) if report.freshness is not None else None,
         "notes": list(report.notes),
     }
 
@@ -313,6 +326,20 @@ def _print_section(title: str, items: Iterable[CheckResult]) -> None:
     for item in items:
         marker = "ok" if item.ok else "warn"
         print(f"- [{marker}] {item.name}: {item.detail}")
+
+
+def _print_freshness_section(report: FreshnessReport) -> None:
+    state = "up_to_date" if report.up_to_date else "stale"
+    print(f"freshness: {state}")
+    for item in report.items:
+        marker = item.status
+        extra_parts = []
+        if item.baseline is not None:
+            extra_parts.append(f"baseline={item.baseline}")
+        if item.observed is not None:
+            extra_parts.append(f"observed={item.observed}")
+        suffix = f" ({', '.join(extra_parts)})" if extra_parts else ""
+        print(f"- [{marker}] {item.name}: {item.detail}{suffix}")
 
 
 def _config_results(config: AgenticConfig) -> Iterable[CheckResult]:
@@ -424,6 +451,29 @@ def _database_results(config: AgenticConfig, healthcheck: bool) -> Iterable[Chec
         )
 
     return build_database_items(inspection, endpoint_detail=endpoint_detail)
+
+
+def _collect_freshness(config: AgenticConfig, *, healthcheck: bool) -> FreshnessReport | None:
+    if healthcheck or not config.database_url:
+        return None
+    try:
+        with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
+            return collect_freshness_report(
+                workspace_root=Path.cwd(),
+                sync_store=sync_store,
+                github_token=config.github_token,
+            )
+    except Exception as error:
+        return FreshnessReport(
+            up_to_date=False,
+            items=(
+                FreshnessItem(
+                    name="freshness inspection",
+                    status="unavailable",
+                    detail=str(error),
+                ),
+            ),
+        )
 
 
 def _fetch_current_database(cursor: Any) -> str:

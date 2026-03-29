@@ -337,6 +337,40 @@ class GithubApiClient:
         payload, _ = self._request_json(f"repos/{repo}/pulls/{pr_number}")
         return self._require_object(payload, context=f"pull request {repo}#{pr_number}")
 
+    def fetch_latest_stream_watermarks(self, *, repo: str) -> dict[str, datetime | None]:
+        watermarks: dict[str, datetime | None] = {}
+        for stream_name in STREAM_ORDER:
+            watermarks[stream_name] = self._fetch_latest_stream_watermark(
+                stream_name,
+                repo=repo,
+            )
+        return watermarks
+
+    def _fetch_latest_stream_watermark(self, stream_name: str, *, repo: str) -> datetime | None:
+        page_number = 1
+        while True:
+            payload, headers = self._request_json(
+                _latest_stream_watermark_url(
+                    self._base_url,
+                    stream_name,
+                    repo=repo,
+                    page_number=page_number,
+                )
+            )
+            if not isinstance(payload, list):
+                raise GithubApiResponseError(
+                    f"GitHub stream {stream_name!r} latest-watermark probe returned a non-list payload"
+                )
+            watermark = _latest_stream_watermark_from_payloads(
+                stream_name,
+                [self._require_object(item, context=f"{stream_name} latest-watermark item") for item in payload],
+            )
+            if watermark is not None:
+                return watermark
+            if stream_name != "issues" or not _parse_next_link(headers.get("Link")):
+                return None
+            page_number += 1
+
     def _stream_page_url(
         self,
         stream_name: str,
@@ -607,6 +641,47 @@ def ingest_github_from_config(
             return result
 
 
+def fetch_latest_github_stream_watermarks(
+    *,
+    repo: str = DEFAULT_GITHUB_REPO,
+    github_token: str,
+    github_client: GithubApiClient | None = None,
+    request_timeout_seconds: int = DEFAULT_REQUEST_TIMEOUT_SECONDS,
+) -> dict[str, datetime | None]:
+    client = github_client or GithubApiClient(
+        token=github_token,
+        timeout_seconds=request_timeout_seconds,
+    )
+    return client.fetch_latest_stream_watermarks(repo=repo)
+
+
+def _latest_stream_watermark_url(
+    base_url: str,
+    stream_name: str,
+    *,
+    repo: str,
+    page_number: int = 1,
+) -> str:
+    endpoint = {
+        "issues": f"repos/{repo}/issues",
+        "pulls": f"repos/{repo}/pulls",
+        "issue_comments": f"repos/{repo}/issues/comments",
+        "review_comments": f"repos/{repo}/pulls/comments",
+    }.get(stream_name)
+    if endpoint is None:
+        raise GithubPaginationError(f"Unknown GitHub stream {stream_name!r}")
+    query = {
+        "state": "all",
+        "sort": "updated",
+        "direction": "desc",
+        "per_page": "1",
+        "page": str(page_number),
+    }
+    if stream_name in {"issue_comments", "review_comments"}:
+        query.pop("state", None)
+    return urljoin(base_url, endpoint) + "?" + urlencode(query)
+
+
 def _prepare_page_batch(
     stream_name: str,
     *,
@@ -733,6 +808,24 @@ def _prepare_page_batch(
         issue_comments=tuple(issue_comments),
         pull_requests=tuple(pull_requests),
         pr_comments=tuple(pr_comments),
+    )
+
+
+def _latest_stream_watermark_from_payloads(
+    stream_name: str,
+    payloads: Sequence[dict[str, Any]],
+) -> datetime | None:
+    if stream_name == "issues":
+        relevant_payloads = [payload for payload in payloads if "pull_request" not in payload]
+    else:
+        relevant_payloads = list(payloads)
+    if not relevant_payloads:
+        return None
+    return _max_datetime(
+        *(
+            _parse_timestamp(payload.get("updated_at"), context=f"{stream_name} updated_at")
+            for payload in relevant_payloads
+        )
     )
 
 

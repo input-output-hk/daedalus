@@ -150,6 +150,18 @@ class SearchMcpServerTests(unittest.TestCase):
             environment_items=(),
             dependency_items=(status_command.CheckResult(name="ollama api", ok=False, detail="down"),),
             database_items=(),
+            freshness=status_command.FreshnessReport(
+                up_to_date=False,
+                items=(
+                    status_command.FreshnessItem(
+                        name="github issues",
+                        status="stale",
+                        detail="stored watermark lags behind the latest GitHub update",
+                        baseline="2026-03-28T12:00:00Z",
+                        observed="2026-03-29T12:00:00Z",
+                    ),
+                ),
+            ),
             notes=("degraded",),
         )
 
@@ -157,6 +169,7 @@ class SearchMcpServerTests(unittest.TestCase):
 
         self.assertFalse(result["structuredContent"]["ok"])
         self.assertEqual(result["structuredContent"]["dependency_items"][0]["detail"], "down")
+        self.assertEqual(result["structuredContent"]["freshness"]["items"][0]["status"], "stale")
 
     @patch("agentic_kb.mcp.search_server.PostgresSearchStore.from_config")
     @patch("agentic_kb.mcp.search_server.get_entity_payload")
