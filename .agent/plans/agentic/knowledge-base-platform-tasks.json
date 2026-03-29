@@ -446,14 +446,14 @@
           "id": "task-602",
           "title": "Implement snapshot export and import commands",
           "description": "Create commands that export ParadeDB with a manifest and restore it on another developer machine",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-601"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/snapshot/commands.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
         },
         {
           "id": "task-603",

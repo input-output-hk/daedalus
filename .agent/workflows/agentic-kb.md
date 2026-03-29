@@ -65,8 +65,8 @@ Today:
 - `status --json` emits one machine-readable JSON object on stdout for scripts.
 - `search` runs real BM25, vector, or hybrid KB queries with optional `--entity-type`, repeated `--filter key=value`, and `--json`.
 - `entity get <entity_type> <id>` fetches one indexed row by stable id, returns exit code `2` for invalid entity types, and returns exit code `4` for not-found rows.
-- `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema and writes to `/workspace/agentic/snapshots` by default.
-- `snapshot import` performs a destructive `agentic`-schema restore from a prior export and requires `--yes` acknowledgement.
+- `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema, writes to `/workspace/agentic/snapshots` by default, and emits a schema-valid sibling `.manifest.json` sidecar.
+- `snapshot import` accepts either the dump path or the sibling manifest path, validates the manifest plus dump size/hash before restore, and still requires `--yes` acknowledgement.
 - `sync` and richer MCP behavior still belong to later tasks.
 
 ## Status Behavior
@@ -113,7 +113,7 @@ The default publication channel for shared baseline snapshots should be GitHub A
 - `snapshot export` is schema-scoped to `agentic`; it is not a full-cluster backup.
 - `snapshot import` drops and recreates the `agentic` schema before restore.
 - Only run import against fresh, isolated, or otherwise disposable KB databases.
-- The canonical manifest contract now exists at `agentic/config/snapshot-manifest.schema.json`; manifest file generation, import validation, and publication workflow wiring remain later tasks.
+- The canonical manifest contract lives at `agentic/config/snapshot-manifest.schema.json`; export now writes that manifest beside the dump, and import validates the manifest contract plus dump identity before any destructive restore.
 
 ## Freshness Rules
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
@@ -29,6 +30,9 @@ class SnapshotCommandDbTests(unittest.TestCase):
         import psycopg
 
         self.database_url = os.environ[TEST_DATABASE_URL_ENV]
+        self.original_embed_model = os.environ.get("OLLAMA_EMBED_MODEL")
+        os.environ["OLLAMA_EMBED_MODEL"] = "all-minilm:l6-v2"
+        self.addCleanup(self._restore_embed_model)
         self.connection = psycopg.connect(self.database_url)
         self.addCleanup(self.connection.close)
         _bootstrap_database(self.connection)
@@ -40,26 +44,134 @@ class SnapshotCommandDbTests(unittest.TestCase):
         self.assertEqual(before.row_counts["agentic.kb_documents"], 1)
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            dump_path = Path(temp_dir) / "task-205-roundtrip.dump"
+            dump_path = Path(temp_dir) / "task-602-roundtrip.dump"
             export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = Path(temp_dir) / "task-602-roundtrip.manifest.json"
+
             self.assertEqual(export_result.path, dump_path)
+            self.assertEqual(export_result.manifest_path, manifest_path)
             self.assertTrue(dump_path.exists())
+            self.assertTrue(manifest_path.exists())
+
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(manifest["artifact"]["filename"], dump_path.name)
+            self.assertEqual(manifest["artifact"]["size_bytes"], dump_path.stat().st_size)
+            self.assertEqual(manifest["artifact"]["content_hash"], snapshot.compute_file_sha256(dump_path))
+            self.assertEqual(manifest["entity_counts"]["documents"], 1)
+            self.assertEqual(manifest["repo"]["docs_commit_hash"], "cafebabe")
+            self.assertIsNone(manifest["repo"]["code_commit_hash"])
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT repo_commit_hash, embedding_model, content_hash, manifest, source_path, imported_at "
+                    "FROM agentic.kb_snapshot_manifest WHERE snapshot_name = %s",
+                    (manifest["snapshot_name"],),
+                )
+                export_row = cursor.fetchone()
+
+            self.assertIsNotNone(export_row)
+            self.assertIsNone(export_row[0])
+            self.assertEqual(export_row[1], "all-minilm:l6-v2")
+            self.assertEqual(export_row[2], manifest["artifact"]["content_hash"])
+            self.assertEqual(export_row[3]["snapshot_name"], manifest["snapshot_name"])
+            self.assertEqual(export_row[4], str(manifest_path))
+            self.assertIsNone(export_row[5])
+            self.connection.commit()
 
             with self.connection.transaction():
                 with self.connection.cursor() as cursor:
-                    cursor.execute("TRUNCATE TABLE agentic.kb_sync_state, agentic.kb_documents")
+                    cursor.execute(
+                        """
+                        UPDATE agentic.kb_sync_state
+                        SET repo_commit_hash = %s
+                        WHERE source_name = 'code' AND scope_key = 'repo:DripDropz/daedalus'
+                        """,
+                        ("cafebabe",),
+                    )
+            self.connection.commit()
+
+            shared_dump_path = Path(temp_dir) / "task-602-shared-commit.dump"
+            shared_result = snapshot.export_snapshot(self.database_url, shared_dump_path)
+            shared_manifest_path = shared_result.manifest_path
+            self.assertIsNotNone(shared_manifest_path)
+            shared_manifest = json.loads(shared_manifest_path.read_text(encoding="utf-8"))
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT repo_commit_hash FROM agentic.kb_snapshot_manifest WHERE snapshot_name = %s",
+                    (shared_manifest["snapshot_name"],),
+                )
+                shared_repo_commit_row = cursor.fetchone()
+
+            self.assertEqual(shared_manifest["repo"]["docs_commit_hash"], "cafebabe")
+            self.assertEqual(shared_manifest["repo"]["code_commit_hash"], "cafebabe")
+            self.assertEqual(shared_repo_commit_row[0], "cafebabe")
+            self.connection.commit()
+
+            with self.connection.transaction():
+                with self.connection.cursor() as cursor:
+                    cursor.execute(
+                        "TRUNCATE TABLE agentic.kb_snapshot_manifest, agentic.kb_sync_state, agentic.kb_documents CASCADE"
+                    )
 
             mutated = status.inspect_database(self.database_url)
             self.assertEqual(mutated.row_counts["agentic.kb_documents"], 0)
 
-            import_result = snapshot.import_snapshot(self.database_url, dump_path, confirmed=True)
+            import_result = snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
             self.assertEqual(import_result.path, dump_path)
+            self.assertEqual(import_result.manifest_path, manifest_path)
 
         restored = status.inspect_database(self.database_url)
         self.assertEqual(restored.applied_versions, (1, 2, 3))
         self.assertEqual(restored.row_counts["agentic.kb_documents"], 1)
         docs_summary = next(summary for summary in restored.sync_summaries if summary.source_name == "docs")
         self.assertEqual(docs_summary.row_count, 1)
+
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT content_hash, source_path, imported_at FROM agentic.kb_snapshot_manifest ORDER BY created_at DESC LIMIT 1"
+            )
+            import_row = cursor.fetchone()
+
+        self.assertEqual(import_row[0], manifest["artifact"]["content_hash"])
+        self.assertEqual(import_row[1], str(manifest_path))
+        self.assertIsNotNone(import_row[2])
+        self.connection.commit()
+
+    def test_import_fails_before_restore_when_dump_hash_does_not_match_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-602-tampered.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            before_counts = status.inspect_database(self.database_url).row_counts.copy()
+            dump_path.write_bytes(b"x" * dump_path.stat().st_size)
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "content hash mismatch"):
+                snapshot.import_snapshot(self.database_url, dump_path, confirmed=True)
+
+            after_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(after_counts["agentic.kb_documents"], before_counts["agentic.kb_documents"])
+
+    def test_import_fails_before_restore_when_manifest_size_is_tampered(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-602-size-tampered.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["artifact"]["size_bytes"] += 1
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            before_counts = status.inspect_database(self.database_url).row_counts.copy()
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "size mismatch"):
+                snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+            after_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(after_counts["agentic.kb_documents"], before_counts["agentic.kb_documents"])
 
     def test_import_restricts_restore_to_agentic_schema_for_nonconforming_dump(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -86,12 +198,59 @@ class SnapshotCommandDbTests(unittest.TestCase):
                 text=True,
             )
 
+            manifest_path = Path(temp_dir) / "task-205-full-db.manifest.json"
+            manifest = {
+                "$schema": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json",
+                "schema_version": 1,
+                "snapshot_name": "task-205-full-db",
+                "snapshot_created_at": "2026-03-29T02:00:00Z",
+                "artifact": {
+                    "filename": dump_path.name,
+                    "dump_format": "postgresql_custom",
+                    "compression": {"algorithm": "gzip", "level": 6},
+                    "size_bytes": dump_path.stat().st_size,
+                    "content_hash": snapshot.compute_file_sha256(dump_path),
+                },
+                "repo": {
+                    "name": "DripDropz/daedalus",
+                    "docs_commit_hash": None,
+                    "code_commit_hash": None,
+                },
+                "embedding_model": "all-minilm:l6-v2",
+                "entity_counts": {
+                    "documents": 1,
+                    "code_chunks": 0,
+                    "github_issues": 0,
+                    "github_issue_comments": 0,
+                    "github_prs": 0,
+                    "github_pr_comments": 0,
+                    "project_items": 0,
+                },
+                "sync_state": {
+                    "docs": {"repo_commit_hash": None, "last_synced_at": None},
+                    "code": {"repo_commit_hash": None, "last_synced_at": None},
+                    "github": {
+                        "issues": {"updated_at_watermark": None},
+                        "pulls": {"updated_at_watermark": None},
+                        "issue_comments": {"updated_at_watermark": None},
+                        "review_comments": {"updated_at_watermark": None},
+                    },
+                    "project": {
+                        "owner": "DripDropz",
+                        "number": 5,
+                        "cursor": None,
+                        "updated_at_watermark": None,
+                    },
+                },
+            }
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
             with self.connection.transaction():
                 with self.connection.cursor() as cursor:
                     cursor.execute("DROP TABLE public.task205_external_restore")
                     cursor.execute("TRUNCATE TABLE agentic.kb_sync_state, agentic.kb_documents")
 
-            snapshot.import_snapshot(self.database_url, dump_path, confirmed=True)
+            snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
 
             restored = status.inspect_database(self.database_url)
             self.assertEqual(restored.row_counts["agentic.kb_documents"], 1)
@@ -103,6 +262,12 @@ class SnapshotCommandDbTests(unittest.TestCase):
                 public_table_present = bool(cursor.fetchone()[0])
 
             self.assertFalse(public_table_present)
+
+    def _restore_embed_model(self):
+        if self.original_embed_model is None:
+            os.environ.pop("OLLAMA_EMBED_MODEL", None)
+        else:
+            os.environ["OLLAMA_EMBED_MODEL"] = self.original_embed_model
 
 
 def _bootstrap_database(connection) -> None:
@@ -118,7 +283,9 @@ def _bootstrap_database(connection) -> None:
 def _seed_snapshot_fixture(connection) -> None:
     with connection.transaction():
         with connection.cursor() as cursor:
-            cursor.execute("TRUNCATE TABLE agentic.kb_sync_state, agentic.kb_documents CASCADE")
+            cursor.execute(
+                "TRUNCATE TABLE agentic.kb_snapshot_manifest, agentic.kb_sync_state, agentic.kb_documents CASCADE"
+            )
             cursor.execute(
                 """
                 INSERT INTO agentic.kb_documents (
@@ -157,9 +324,9 @@ def _seed_snapshot_fixture(connection) -> None:
                     last_succeeded_at,
                     metadata
                 ) VALUES (
-                    'sync-state:docs:repo:DripDropz/daedalus:snapshot-db',
+                    'sync-state:docs:repo:DripDropz/daedalus',
                     'docs',
-                    'repo:DripDropz/daedalus:snapshot-db',
+                    'repo:DripDropz/daedalus',
                     'cafebabe',
                     %s,
                     %s,
@@ -169,6 +336,31 @@ def _seed_snapshot_fixture(connection) -> None:
                 (
                     datetime(2026, 3, 28, 23, 20, tzinfo=timezone.utc),
                     datetime(2026, 3, 28, 23, 21, tzinfo=timezone.utc),
+                ),
+            )
+            cursor.execute(
+                """
+                INSERT INTO agentic.kb_sync_state (
+                    id,
+                    source_name,
+                    scope_key,
+                    repo_commit_hash,
+                    last_attempted_at,
+                    last_succeeded_at,
+                    metadata
+                ) VALUES (
+                    'sync-state:code:repo:DripDropz/daedalus',
+                    'code',
+                    'repo:DripDropz/daedalus',
+                    NULL,
+                    %s,
+                    %s,
+                    '{"repo": "DripDropz/daedalus"}'::jsonb
+                )
+                """,
+                (
+                    datetime(2026, 3, 28, 23, 22, tzinfo=timezone.utc),
+                    datetime(2026, 3, 28, 23, 23, tzinfo=timezone.utc),
                 ),
             )
 
