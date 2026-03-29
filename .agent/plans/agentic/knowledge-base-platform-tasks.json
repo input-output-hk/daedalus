@@ -90,7 +90,7 @@
           "id": "task-102",
           "title": "Add agentic environment examples",
           "description": "Create env examples and volume/path conventions for the local knowledge stack",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 1,
           "dependencies": [
@@ -116,7 +116,7 @@
           "id": "task-104",
           "title": "Build search MCP service container",
           "description": "Add a dedicated container entrypoint for the read-only Search MCP server",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -494,7 +494,7 @@
           "id": "task-701",
           "title": "Implement sync commands for all sources",
           "description": "Add sync docs, sync code, sync github, sync project, sync changed, and sync all commands",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
@@ -504,8 +504,8 @@
             "task-404",
             "task-405"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/sync/commands.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/commands/sync.py"
         },
         {
           "id": "task-702",

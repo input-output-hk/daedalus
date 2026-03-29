@@ -10,7 +10,7 @@ This workflow guides booting the Daedalus agentic knowledge base, syncing local 
 
 This workflow documents the current Daedalus agentic platform shape described in `.agent/plans/agentic/knowledge-base-platform.md`.
 
-Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, destructive `snapshot import`, and the bootstrap-only `sync changed` flow. The other `sync` verbs remain deferred to later tasks, and `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
+Current implementation note: `docker-compose.agentic.yml` boots the infrastructure scaffold for `paradedb`, `ollama`, `ollama-init`, `kb-tools`, and `mcp-search`. `kb-tools` now ships as a packaged `agentic-kb` CLI with implemented `status`, `status --json`, local `search`, generic `entity get`, `service`, `snapshot export`, destructive `snapshot import`, and the full packaged `sync` command family (`sync docs`, `sync code`, `sync github`, `sync project`, `sync changed`, and `sync all`). `mcp-search` remains a placeholder service until its follow-up task lands. For schema bootstrap, `agentic/schema/init.sql` remains the single first-boot entrypoint and delegates the task-203 search-index phase to `agentic/schema/create_indexes.sql`; existing initialized DB volumes still require a manual `psql -f agentic/schema/create_indexes.sql` apply because Docker init scripts do not retrofit existing volumes.
 
 ## Goals
 
@@ -32,7 +32,7 @@ The planned stack consists of:
 
 ## Commands
 
-The CLI surface has started to land and should stay on this shape as later tasks add real behavior:
+The current CLI surface for these task-owned commands is:
 
 ```bash
 # Start the stack
@@ -67,8 +67,12 @@ Today:
 - `entity get <entity_type> <id>` fetches one indexed row by stable id, returns exit code `2` for invalid entity types, and returns exit code `4` for not-found rows.
 - `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema, writes to `/workspace/agentic/snapshots` by default, and emits a schema-valid sibling `.manifest.json` sidecar.
 - `snapshot import` accepts either the dump path or the sibling manifest path, validates the manifest plus dump size/hash before restore, and still requires `--yes` acknowledgement.
-- `sync changed` is now the supported post-import bootstrap path: it requires restored `kb_sync_state` baseline rows, syncs only changed local docs/code since their own baseline commits including deletions, refreshes GitHub only for bounded `issues` and `issue_comments`, defers bounded `pulls` and `review_comments`, and resumes Project 5 from the stored cursor.
-- `sync all`, `sync docs`, `sync code`, `sync github`, and `sync project` still belong to later tasks.
+- `sync docs` refreshes the allowlisted docs corpus from the current checkout and removes stale indexed rows for allowlisted docs that are no longer discovered.
+- `sync code` refreshes the supported code corpus from the current checkout and prunes stale indexed rows for supported files that are now deleted or excluded.
+- `sync github` runs the existing four-stream GitHub ingest path for `issues`, `pulls`, `issue_comments`, and `review_comments`. Incremental runs reuse the earliest stored GitHub watermark as one shared lower bound; upstream `since` still applies only to `issues` and `issue_comments`, while `pulls` and `review_comments` remain client-filtered after fetch.
+- `sync project` seeds from `after_cursor=None` on its first explicit run and later continues only from the stored Project cursor. Repeated runs at the current end cursor succeed as no-op continuation and still do not guarantee replay of edits to already-seen items.
+- `sync changed` is now the general incremental command for an already-seeded KB. It still supports the post-import fast-start workflow, but it now requires successful existing baselines for docs, code, all four GitHub stream rows, and Project cursor state before it does any work.
+- `sync all` runs only `sync docs`, `sync code`, `sync github`, and `sync project` in that fixed order and stops on the first failure.
 
 ## Status Behavior
 
@@ -94,11 +98,11 @@ The platform is designed for multiple human developers, not just one local machi
 3. The developer runs `sync changed` to add branch-local docs/code changes and any new GitHub updates
 4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time
 
-Bootstrap caveats for `sync changed`:
+Incremental caveats for `sync changed`:
 
-- it is intentionally not a first-sync substitute on an empty KB; import a validated snapshot first
-- docs and code deltas are computed from the restored baseline commits to current `HEAD`, so rebases can include broader catch-up than purely branch-local edits
-- GitHub bounded guarantees in this bootstrap flow apply only to `issues` and `issue_comments`
+- it is intentionally not a first-sync substitute on an empty or partially seeded KB; run `sync docs`, `sync code`, `sync github`, `sync project`, or `sync all` first when baselines are missing
+- docs and code deltas are computed from each source's stored baseline commit to current `HEAD`, so rebases can include broader catch-up than purely branch-local edits
+- GitHub incremental runs use one shared lower bound across all four streams, but upstream `since` still applies only to `issues` and `issue_comments`; `pulls` and `review_comments` remain ordered-fetch streams with client-side filtering
 - Project refresh is cursor continuation only from stored `after_cursor`; it does not detect updates to already-seen items yet
 
 ### Snapshot Publication

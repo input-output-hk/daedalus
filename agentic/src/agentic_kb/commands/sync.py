@@ -11,17 +11,15 @@ from agentic_kb.config import AgenticConfig
 from agentic_kb.embed import OllamaEmbeddingClient
 from agentic_kb.ingest.docs import (
     PostgresDocsStore,
+    discover_docs_source_paths,
     is_allowlisted_doc_path,
+    prepare_documents,
 )
 from agentic_kb.ingest.github import (
-    GithubApiClient,
     GithubFetchBounds,
     PostgresGithubStore,
-    GithubIngestResult,
-    _GithubParentCache,
-    _MutableStreamProgress,
-    _prepare_page_batch,
-    write_github_page_batch,
+    STREAM_ORDER,
+    ingest_github,
 )
 from agentic_kb.ingest.project import (
     PostgresProjectItemsStore,
@@ -50,7 +48,11 @@ from agentic_kb.sync.state import (
 )
 
 try:
-    from agentic_kb.ingest.code import PostgresCodeChunksStore, ingest_code, is_supported_code_path
+    from agentic_kb.ingest.code import (
+        PostgresCodeChunksStore,
+        ingest_code,
+        is_supported_code_path,
+    )
 except ModuleNotFoundError as error:
     if error.name not in {"tree_sitter", "tree_sitter_language_pack"}:
         raise
@@ -59,20 +61,27 @@ except ModuleNotFoundError as error:
     is_supported_code_path = None
 
 
-SYNC_TASK_GUIDANCE = {
-    "all": "task-701 will implement the real sync orchestration after schema and ingestion foundations land.",
-    "changed": "task-604 implements only the post-import bootstrap flow backed by restored sync state.",
-    "docs": "task-701 will implement docs sync on top of the docs ingestion work from task-301.",
-    "code": "task-701 will implement code sync on top of the code ingestion work from task-401 and task-402.",
-    "github": "task-701 will implement GitHub sync after task-403 is available.",
-    "project": "task-701 will implement project sync after task-404 is available.",
-}
-SUPPORTED_GITHUB_BOOTSTRAP_STREAMS = ("issues", "issue_comments")
-DEFERRED_GITHUB_BOOTSTRAP_STREAMS = ("pulls", "review_comments")
+UPSTREAM_SINCE_GITHUB_STREAMS = ("issues", "issue_comments")
+CLIENT_FILTERED_GITHUB_STREAMS = ("pulls", "review_comments")
+SYNC_ALL_ORDER = ("docs", "code", "github", "project")
 
 
 class SyncCommandError(RuntimeError):
     pass
+
+
+class SyncAllFailure(SyncCommandError):
+    def __init__(
+        self,
+        *,
+        source_name: str,
+        partial_results: dict[str, dict[str, Any]],
+        cause: Exception,
+    ):
+        self.source_name = source_name
+        self.partial_results = partial_results
+        self.cause = cause
+        super().__init__(f"sync all stopped on {source_name}: {cause}")
 
 
 @dataclass(frozen=True)
@@ -93,32 +102,382 @@ class RepoDeltaEntry:
 def add_sync_subcommands(parser) -> None:
     subparsers = parser.add_subparsers(dest="sync_command", required=True)
 
-    for name in ("all", "docs", "code", "github", "project"):
-        command_parser = subparsers.add_parser(name, help=f"Placeholder for sync {name}")
-        command_parser.set_defaults(handler=_run_sync_placeholder, placeholder_name=name)
+    all_parser = subparsers.add_parser("all", help="Sync docs, code, GitHub, and project in order")
+    all_parser.set_defaults(handler=run_sync_all)
+
+    docs_parser = subparsers.add_parser("docs", help="Sync the allowlisted docs corpus")
+    docs_parser.set_defaults(handler=run_sync_docs)
+
+    code_parser = subparsers.add_parser("code", help="Sync the supported repository code corpus")
+    code_parser.set_defaults(handler=run_sync_code)
+
+    github_parser = subparsers.add_parser("github", help="Sync GitHub issues, PRs, and comments")
+    github_parser.set_defaults(handler=run_sync_github)
+
+    project_parser = subparsers.add_parser("project", help="Sync GitHub Project 5 items")
+    project_parser.set_defaults(handler=run_sync_project)
 
     changed_parser = subparsers.add_parser(
         "changed",
-        help="Sync only local changes and bounded remote continuation after snapshot import",
+        help="Sync only incremental changes from existing source baselines",
     )
     changed_parser.set_defaults(handler=run_sync_changed)
 
 
+def run_sync_docs(args) -> int:
+    return _run_single_source_command("docs", sync_docs)
+
+
+def run_sync_code(args) -> int:
+    return _run_single_source_command("code", sync_code)
+
+
+def run_sync_github(args) -> int:
+    return _run_single_source_command("github", sync_github)
+
+
+def run_sync_project(args) -> int:
+    return _run_single_source_command("project", sync_project)
+
+
 def run_sync_changed(args) -> int:
+    return _run_single_source_command("changed", sync_changed)
+
+
+def run_sync_all(args) -> int:
     try:
         config = AgenticConfig.from_env()
-        workspace_root = Path.cwd()
-        result = sync_changed(workspace_root, config=config)
+        result = sync_all(Path.cwd(), config=config)
+    except SyncAllFailure as error:
+        for source_name in SYNC_ALL_ORDER:
+            source_result = error.partial_results.get(source_name)
+            if source_result is None:
+                break
+            for line in format_sync_source_output(source_name, source_result):
+                print(line)
+        print_stderr(str(error))
+        return 1
     except SyncCommandError as error:
-        print_stderr(f"sync changed failed: {error}")
+        print_stderr(f"sync all failed: {error}")
         return 1
     except Exception as error:
-        print_stderr(f"sync changed failed: {error}")
+        print_stderr(f"sync all failed: {error}")
         return 1
 
-    for line in format_sync_changed_output(result):
+    for source_name in SYNC_ALL_ORDER:
+        for line in format_sync_source_output(source_name, result[source_name]):
+            print(line)
+    return 0
+
+
+def _run_single_source_command(command_name: str, handler) -> int:
+    try:
+        config = AgenticConfig.from_env()
+        result = handler(Path.cwd(), config=config)
+    except SyncCommandError as error:
+        print_stderr(f"sync {command_name} failed: {error}")
+        return 1
+    except Exception as error:
+        print_stderr(f"sync {command_name} failed: {error}")
+        return 1
+
+    for line in format_sync_source_output(command_name, result):
         print(line)
     return 0
+
+
+def sync_all(workspace_root: str | Path, *, config: AgenticConfig) -> dict[str, dict[str, Any]]:
+    root = Path(workspace_root).resolve()
+    results: dict[str, dict[str, Any]] = {}
+
+    for source_name, handler in (
+        ("docs", sync_docs),
+        ("code", sync_code),
+        ("github", sync_github),
+        ("project", sync_project),
+    ):
+        try:
+            results[source_name] = handler(root, config=config)
+        except Exception as error:
+            raise SyncAllFailure(
+                source_name=source_name,
+                partial_results=results,
+                cause=error,
+            ) from error
+
+    return results
+
+
+def sync_docs(
+    workspace_root: str | Path,
+    *,
+    config: AgenticConfig,
+) -> dict[str, Any]:
+    if not config.database_url:
+        raise SyncCommandError("DATABASE_URL is required for sync docs")
+
+    root = Path(workspace_root).resolve()
+    attempted_at = datetime.now(timezone.utc)
+    succeeded_at = datetime.now(timezone.utc)
+    embedding_client = OllamaEmbeddingClient.from_config(config)
+    repo_commit_hash = get_head_commit(root)
+    discovered_paths = tuple(discover_docs_source_paths(root))
+    discovered_path_set = set(discovered_paths)
+    scope_key = repo_scope_key(DEFAULT_SYNC_REPO)
+
+    with PostgresDocsStore.from_database_url(config.database_url) as docs_store:
+        with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [build_sync_attempt("docs", scope_key, attempted_at=attempted_at, metadata={"repo": DEFAULT_SYNC_REPO})]
+            )
+            try:
+                existing_paths = docs_store.list_document_paths()
+                stale_paths = tuple(
+                    path
+                    for path in existing_paths
+                    if is_allowlisted_doc_path(path) and path not in discovered_path_set
+                )
+                if stale_paths:
+                    docs_store.delete_documents_for_paths(stale_paths)
+                documents = prepare_documents(
+                    root,
+                    source_paths=discovered_paths,
+                    embedding_client=embedding_client,
+                    repo_commit_hash=repo_commit_hash,
+                )
+                docs_store.upsert_documents(documents)
+            except Exception as error:
+                sync_store.record_failures(
+                    [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
+                )
+                raise
+
+            state = build_docs_sync_state(
+                type(
+                    "DocsSyncResult",
+                    (),
+                    {
+                        "source_paths": discovered_paths,
+                        "processed_count": len(documents),
+                        "repo_commit_hash": repo_commit_hash,
+                    },
+                )(),
+                attempted_at=attempted_at,
+                succeeded_at=succeeded_at,
+                repo=DEFAULT_SYNC_REPO,
+            )
+            sync_store.upsert_sync_states([state])
+
+    return {
+        "mode": "explicit",
+        "source_paths": discovered_paths,
+        "processed_count": len(documents),
+        "deleted_paths": stale_paths,
+        "repo_commit_hash": repo_commit_hash,
+    }
+
+
+def sync_code(
+    workspace_root: str | Path,
+    *,
+    config: AgenticConfig,
+) -> dict[str, Any]:
+    if not config.database_url:
+        raise SyncCommandError("DATABASE_URL is required for sync code")
+    _require_code_ingest_dependencies("sync code")
+
+    root = Path(workspace_root).resolve()
+    attempted_at = datetime.now(timezone.utc)
+    succeeded_at = datetime.now(timezone.utc)
+    embedding_client = OllamaEmbeddingClient.from_config(config)
+    repo_commit_hash = get_head_commit(root)
+    scope_key = repo_scope_key(DEFAULT_SYNC_REPO)
+
+    with PostgresCodeChunksStore.from_database_url(config.database_url) as code_store:
+        with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
+            sync_store.record_attempts(
+                [build_sync_attempt("code", scope_key, attempted_at=attempted_at, metadata={"repo": DEFAULT_SYNC_REPO})]
+            )
+            try:
+                result = ingest_code(
+                    root,
+                    embedding_client=embedding_client,
+                    code_store=code_store,
+                    repo_commit_hash=repo_commit_hash,
+                    run_mode="full_repository",
+                    prune_missing=True,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [build_sync_failure("code", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
+                )
+                raise
+
+            state = build_code_sync_state(
+                result,
+                attempted_at=attempted_at,
+                succeeded_at=succeeded_at,
+                repo=DEFAULT_SYNC_REPO,
+            )
+            sync_store.upsert_sync_states([state])
+
+    return {
+        "mode": "explicit",
+        "source_paths": result.source_paths,
+        "processed_file_count": result.processed_file_count,
+        "chunk_count": result.chunk_count,
+        "repo_commit_hash": result.repo_commit_hash,
+    }
+
+
+def sync_github(
+    workspace_root: str | Path,
+    *,
+    config: AgenticConfig,
+) -> dict[str, Any]:
+    del workspace_root
+    if not config.database_url:
+        raise SyncCommandError("DATABASE_URL is required for sync github")
+    if not config.github_token:
+        raise SyncCommandError("GITHUB_TOKEN is required for sync github")
+
+    attempted_at = datetime.now(timezone.utc)
+    succeeded_at = datetime.now(timezone.utc)
+    embedding_client = OllamaEmbeddingClient.from_config(config)
+
+    with PostgresGithubStore.from_database_url(config.database_url) as github_store:
+        with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
+            baselines = load_github_sync_baselines(sync_store, allow_empty=True)
+            updated_since, mode = derive_github_updated_since_for_explicit_sync(baselines)
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "github",
+                        github_scope_key(stream_name, repo=DEFAULT_SYNC_REPO),
+                        attempted_at=attempted_at,
+                        metadata={"repo": DEFAULT_SYNC_REPO, "stream_name": stream_name},
+                    )
+                    for stream_name in STREAM_ORDER
+                ]
+            )
+            try:
+                result = ingest_github(
+                    embedding_client=embedding_client,
+                    github_store=github_store,
+                    bounds=GithubFetchBounds(repo=DEFAULT_SYNC_REPO, updated_since=updated_since),
+                    github_token=config.github_token,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "github",
+                            github_scope_key(stream_name, repo=DEFAULT_SYNC_REPO),
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={"repo": DEFAULT_SYNC_REPO, "stream_name": stream_name},
+                        )
+                        for stream_name in STREAM_ORDER
+                    ]
+                )
+                raise
+
+            states = merge_github_sync_states(
+                build_github_sync_state_updates(
+                    result,
+                    attempted_at=attempted_at,
+                    succeeded_at=succeeded_at,
+                ),
+                baselines=baselines,
+                succeeded_at=succeeded_at,
+                seed_empty_streams=mode == "initial",
+            )
+            sync_store.upsert_sync_states(states)
+
+    return {
+        "mode": mode,
+        "updated_since": updated_since,
+        "stream_progress": result.stream_progress,
+        "upstream_since_streams": UPSTREAM_SINCE_GITHUB_STREAMS,
+        "client_filtered_streams": CLIENT_FILTERED_GITHUB_STREAMS,
+    }
+
+
+def sync_project(
+    workspace_root: str | Path,
+    *,
+    config: AgenticConfig,
+) -> dict[str, Any]:
+    del workspace_root
+    if not config.database_url:
+        raise SyncCommandError("DATABASE_URL is required for sync project")
+    if not config.github_token:
+        raise SyncCommandError("GITHUB_TOKEN is required for sync project")
+
+    attempted_at = datetime.now(timezone.utc)
+    succeeded_at = datetime.now(timezone.utc)
+    embedding_client = OllamaEmbeddingClient.from_config(config)
+
+    with PostgresProjectItemsStore.from_database_url(config.database_url) as project_store:
+        with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
+            baseline = load_project_sync_baseline(sync_store, allow_empty=True)
+            starting_cursor, mode = derive_project_cursor_for_explicit_sync(baseline)
+            scope_key = project_scope_key(DEFAULT_PROJECT_OWNER, DEFAULT_PROJECT_NUMBER)
+            sync_store.record_attempts(
+                [
+                    build_sync_attempt(
+                        "project",
+                        scope_key,
+                        attempted_at=attempted_at,
+                        metadata={
+                            "project_owner": DEFAULT_PROJECT_OWNER,
+                            "project_number": DEFAULT_PROJECT_NUMBER,
+                        },
+                    )
+                ]
+            )
+            try:
+                result = ingest_project_items(
+                    embedding_client=embedding_client,
+                    project_store=project_store,
+                    bounds=ProjectFetchBounds(
+                        project_owner=DEFAULT_PROJECT_OWNER,
+                        project_number=DEFAULT_PROJECT_NUMBER,
+                        after_cursor=starting_cursor,
+                    ),
+                    github_token=config.github_token,
+                )
+            except Exception as error:
+                sync_store.record_failures(
+                    [
+                        build_sync_failure(
+                            "project",
+                            scope_key,
+                            attempted_at=attempted_at,
+                            error=error,
+                            metadata={
+                                "project_owner": DEFAULT_PROJECT_OWNER,
+                                "project_number": DEFAULT_PROJECT_NUMBER,
+                            },
+                        )
+                    ]
+                )
+                raise
+
+            state = merge_project_sync_state(
+                build_project_sync_state(result, attempted_at=attempted_at, succeeded_at=succeeded_at),
+                baseline=baseline,
+            )
+            sync_store.upsert_sync_states([state])
+
+    return {
+        "mode": mode,
+        "starting_cursor": starting_cursor,
+        "final_cursor": result.final_cursor,
+        "pages_fetched": result.pages_fetched,
+        "rows_written": result.rows_written,
+        "limitation": "cursor_continuation_only",
+    }
 
 
 def sync_changed(
@@ -128,17 +487,17 @@ def sync_changed(
 ) -> dict[str, Any]:
     if not config.database_url:
         raise SyncCommandError("DATABASE_URL is required for sync changed")
-    if PostgresCodeChunksStore is None or ingest_code is None or is_supported_code_path is None:
-        raise SyncCommandError(
-            "sync changed requires the optional tree-sitter code-ingest dependencies to be installed"
-        )
+    if not config.github_token:
+        raise SyncCommandError("GITHUB_TOKEN is required for sync changed")
+    _require_code_ingest_dependencies("sync changed")
 
     root = Path(workspace_root).resolve()
     attempted_at = datetime.now(timezone.utc)
+    succeeded_at = datetime.now(timezone.utc)
     embedding_client = OllamaEmbeddingClient.from_config(config)
 
     with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
-        baselines = load_required_baselines(sync_store)
+        baselines = load_required_incremental_baselines(sync_store)
         docs_delta = compute_docs_delta(root, baselines["docs"].repo_commit_hash or "")
         code_delta = compute_code_delta(root, baselines["code"].repo_commit_hash or "")
 
@@ -182,9 +541,11 @@ def sync_changed(
                 sync_store=sync_store,
                 baseline=baselines["project"],
                 attempted_at=attempted_at,
+                succeeded_at=succeeded_at,
             )
 
     return {
+        "mode": "incremental",
         "docs": docs_result,
         "code": code_result,
         "github": github_result,
@@ -193,110 +554,229 @@ def sync_changed(
     }
 
 
-def format_sync_changed_output(result: dict[str, Any]) -> list[str]:
-    docs_result = result["docs"]
-    code_result = result["code"]
-    github_result = result["github"]
-    project_result = result["project"]
-    lines = [
-        "sync changed completed for the post-import bootstrap path",
+def format_sync_source_output(command_name: str, result: dict[str, Any]) -> list[str]:
+    if command_name == "docs":
+        return [
+            "sync docs completed",
+            (
+                "docs: "
+                f"mode={result['mode']}, "
+                f"processed={result['processed_count']}, "
+                f"deleted={len(result.get('deleted_paths', ()))}, "
+                f"commit={result['repo_commit_hash']}"
+            ),
+        ]
+    if command_name == "code":
+        return [
+            "sync code completed",
+            (
+                "code: "
+                f"mode={result['mode']}, "
+                f"files={result['processed_file_count']}, "
+                f"chunks={result['chunk_count']}, "
+                f"commit={result['repo_commit_hash']}"
+            ),
+        ]
+    if command_name == "github":
+        return _format_github_output("sync github completed", result)
+    if command_name == "project":
+        return [
+            "sync project completed",
+            (
+                "project: "
+                f"mode={result['mode']}, "
+                f"cursor={result['starting_cursor'] or '<start>'} -> {result['final_cursor'] or '<unchanged>'}, "
+                f"pages={result['pages_fetched']}, rows={result['rows_written']}"
+            ),
+            "note: Project sync is cursor continuation only and can still miss edits to already-seen items.",
+        ]
+    if command_name == "changed":
+        lines = ["sync changed completed"]
+        lines.extend(_format_changed_local_output("docs", result["docs"]))
+        lines.extend(_format_changed_local_output("code", result["code"]))
+        lines.extend(_format_github_output("github incremental refresh completed", result["github"]))
+        lines.append(
+            "project: "
+            f"cursor={result['project']['starting_cursor'] or '<start>'} -> {result['project']['final_cursor'] or '<unchanged>'}, "
+            f"pages={result['project']['pages_fetched']}, rows={result['project']['rows_written']}"
+        )
+        lines.append(
+            "note: Project sync remains cursor continuation only and can still miss edits to already-seen items."
+        )
+        return lines
+    raise SyncCommandError(f"unsupported sync output formatter for {command_name}")
+
+
+def _format_changed_local_output(source_name: str, result: dict[str, Any]) -> list[str]:
+    count_key = "processed_count" if source_name == "docs" else "processed_file_count"
+    return [
         (
-            "docs: "
-            f"updated={len(docs_result['changed_paths'])}, "
-            f"deleted={len(docs_result['deleted_paths'])}, "
-            f"baseline={docs_result['baseline_commit']} -> {docs_result['repo_commit_hash']}"
-        ),
-        (
-            "code: "
-            f"updated={len(code_result['changed_paths'])}, "
-            f"deleted={len(code_result['deleted_paths'])}, "
-            f"baseline={code_result['baseline_commit']} -> {code_result['repo_commit_hash']}"
-        ),
-        (
-            "github: "
-            f"bounded streams synced={', '.join(github_result['synced_streams'])}; "
-            f"deferred streams={', '.join(github_result['deferred_streams'])}"
-        ),
-        (
-            "project: cursor continuation synced "
-            f"from {project_result['starting_cursor'] or '<start>'} "
-            f"to {project_result['final_cursor'] or '<unchanged>'}"
-        ),
-        "note: GitHub bounded guarantees in task-604 apply only to issues and issue_comments; pulls and review_comments remain deferred.",
-        "note: Project task-604 behavior is cursor continuation only and does not detect updates to already-seen items.",
+            f"{source_name}: "
+            f"updated={len(result['changed_paths'])}, "
+            f"deleted={len(result['deleted_paths'])}, "
+            f"{count_key}={result[count_key]}, "
+            f"baseline={result['baseline_commit']} -> {result['repo_commit_hash']}"
+        )
     ]
+
+
+def _format_github_output(title: str, result: dict[str, Any]) -> list[str]:
+    lines = [title]
+    lines.append(
+        "github: "
+        f"mode={result['mode']}, "
+        f"updated_since={_format_timestamp(result['updated_since']) or '<full>'}"
+    )
+    for stream_name in STREAM_ORDER:
+        progress = result["stream_progress"][stream_name]
+        lines.append(
+            f"github {stream_name}: pages={progress.pages_fetched}, hit_bound={progress.hit_bound}, "
+            f"latest={_format_timestamp(progress.latest_source_updated_at) or '<none>'}"
+        )
+    lines.append(
+        "note: GitHub uses one four-stream ingest; upstream `since` applies only to issues and issue_comments."
+    )
+    lines.append(
+        "note: pulls and review_comments reuse the same lower bound but rely on ordered fetch plus client-side filtering."
+    )
     return lines
 
 
-def load_required_baselines(sync_store: PostgresSyncStateStore) -> dict[str, Any]:
-    required: dict[str, SyncStateRecord | dict[str, SyncStateRecord]] = {
-        "docs": require_sync_state(sync_store, "docs", repo_scope_key(DEFAULT_SYNC_REPO)),
-        "code": require_sync_state(sync_store, "code", repo_scope_key(DEFAULT_SYNC_REPO)),
-        "project": require_sync_state(
-            sync_store,
-            "project",
-            project_scope_key(DEFAULT_PROJECT_OWNER, DEFAULT_PROJECT_NUMBER),
-        ),
-        "github": {
-            stream_name: require_sync_state(
-                sync_store,
-                "github",
-                github_scope_key(stream_name, repo=DEFAULT_SYNC_REPO),
-            )
-            for stream_name in GITHUB_STREAM_NAMES
-        },
+def load_required_incremental_baselines(sync_store: PostgresSyncStateStore) -> dict[str, Any]:
+    docs_record = require_successful_repo_baseline(sync_store, "docs")
+    code_record = require_successful_repo_baseline(sync_store, "code")
+    project_record = require_successful_project_baseline(sync_store)
+    github_records = load_github_sync_baselines(sync_store, allow_empty=False)
+
+    if github_records is None:
+        raise SyncCommandError("sync changed requires existing successful GitHub stream baselines; run `agentic-kb sync github` first")
+    for stream_name in GITHUB_STREAM_NAMES:
+        record = github_records[stream_name]
+        require_successful_github_watermark(record, stream_name)
+
+    return {
+        "docs": docs_record,
+        "code": code_record,
+        "project": project_record,
+        "github": github_records,
     }
 
-    for source_name in ("docs", "code"):
-        record = required[source_name]
-        if not isinstance(record, SyncStateRecord) or not record.repo_commit_hash:
-            raise SyncCommandError(
-                f"sync changed requires a restored {source_name} baseline repo commit; import a validated snapshot first"
-            )
 
-    project_baseline = required["project"]
-    if not isinstance(project_baseline, SyncStateRecord):
-        raise SyncCommandError("sync changed requires a restored Project baseline")
-    require_project_cursor_baseline(project_baseline)
-
-    github_baselines = required["github"]
-    if not isinstance(github_baselines, dict):
-        raise SyncCommandError("sync changed requires restored GitHub stream baselines")
-    for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS:
-        watermark = github_stream_updated_since(github_baselines[stream_name])
-        if watermark is None:
-            raise SyncCommandError(
-                "sync changed requires restored GitHub updated_since watermarks for bounded bootstrap refresh; "
-                f"missing github:{github_scope_key(stream_name, repo=DEFAULT_SYNC_REPO)} watermark. "
-                "Import a validated snapshot first instead of widening to an unbounded replay."
-            )
-
-    return required
-
-
-def require_sync_state(
+def require_successful_repo_baseline(
     sync_store: PostgresSyncStateStore,
     source_name: str,
-    scope_key: str,
 ) -> SyncStateRecord:
+    scope_key = repo_scope_key(DEFAULT_SYNC_REPO)
     record = sync_store.get_sync_state(source_name, scope_key)
-    if record is None:
+    if record is None or record.last_succeeded_at is None or not record.repo_commit_hash:
         raise SyncCommandError(
-            "sync changed requires imported sync-state baselines for docs, code, github streams, and project; "
-            f"missing {source_name}:{scope_key}. Import a validated snapshot first."
+            f"sync changed requires an existing successful {source_name} baseline with repo_commit_hash; "
+            f"run `agentic-kb sync {source_name}` or `agentic-kb sync all` first"
         )
     return record
 
 
-def require_project_cursor_baseline(record: SyncStateRecord) -> str:
+def require_successful_project_baseline(sync_store: PostgresSyncStateStore) -> SyncStateRecord:
+    scope_key = project_scope_key(DEFAULT_PROJECT_OWNER, DEFAULT_PROJECT_NUMBER)
+    record = sync_store.get_sync_state("project", scope_key)
+    if record is None or record.last_succeeded_at is None:
+        raise SyncCommandError(
+            "sync changed requires an existing successful project baseline; run `agentic-kb sync project` or `agentic-kb sync all` first"
+        )
     cursor = project_cursor(record)
     if cursor is None or not cursor.strip():
         raise SyncCommandError(
-            "sync changed requires a restored non-empty Project cursor baseline for cursor continuation; "
-            f"missing project:{record.scope_key} cursor_text. "
-            "Import a validated snapshot first instead of widening to after_cursor=None."
+            "sync changed requires an existing successful project baseline with non-empty cursor_text; "
+            "run `agentic-kb sync project` first"
         )
-    return cursor
+    return record
+
+
+def load_github_sync_baselines(
+    sync_store: PostgresSyncStateStore,
+    *,
+    allow_empty: bool,
+) -> dict[str, SyncStateRecord] | None:
+    records: dict[str, SyncStateRecord] = {}
+    missing_streams: list[str] = []
+    for stream_name in GITHUB_STREAM_NAMES:
+        record = sync_store.get_sync_state("github", github_scope_key(stream_name, repo=DEFAULT_SYNC_REPO))
+        if record is None:
+            missing_streams.append(stream_name)
+            continue
+        records[stream_name] = record
+
+    if not records and allow_empty:
+        return None
+    if missing_streams:
+        raise SyncCommandError(
+            "GitHub sync state is incomplete; expected all four stream rows (issues, pulls, issue_comments, review_comments). "
+            "Run `agentic-kb sync github` to seed them."
+        )
+    return records
+
+
+def derive_github_updated_since_for_explicit_sync(
+    baselines: dict[str, SyncStateRecord] | None,
+) -> tuple[datetime | None, str]:
+    if baselines is None:
+        return None, "initial"
+    watermarks = []
+    for stream_name in GITHUB_STREAM_NAMES:
+        record = baselines[stream_name]
+        require_successful_github_watermark(record, stream_name, command_name="sync github")
+        watermark = github_stream_updated_since(record)
+        if watermark is None:
+            raise SyncCommandError(
+                f"sync github requires an existing successful github baseline with watermark for {stream_name}; "
+                "run `agentic-kb sync github` first"
+            )
+        watermarks.append(watermark)
+    return min(watermarks), "incremental"
+
+
+def require_successful_github_watermark(
+    record: SyncStateRecord,
+    stream_name: str,
+    *,
+    command_name: str = "sync changed",
+) -> None:
+    if record.last_succeeded_at is None or github_stream_updated_since(record) is None:
+        raise SyncCommandError(
+            f"{command_name} requires an existing successful github baseline with watermark for {stream_name}; "
+            "run `agentic-kb sync github` first"
+        )
+
+
+def derive_project_cursor_for_explicit_sync(
+    baseline: SyncStateRecord | None,
+) -> tuple[str | None, str]:
+    if baseline is None:
+        return None, "initial"
+    if baseline.last_succeeded_at is None:
+        raise SyncCommandError(
+            "sync project requires a successful existing baseline before cursor continuation can resume"
+        )
+    cursor = project_cursor(baseline)
+    if cursor is None or not cursor.strip():
+        raise SyncCommandError(
+            "sync project found an incomplete existing baseline without cursor_text; reseed it with a clean initial `agentic-kb sync project` run"
+        )
+    return cursor, "incremental"
+
+
+def load_project_sync_baseline(
+    sync_store: PostgresSyncStateStore,
+    *,
+    allow_empty: bool,
+) -> SyncStateRecord | None:
+    record = sync_store.get_sync_state(
+        "project",
+        project_scope_key(DEFAULT_PROJECT_OWNER, DEFAULT_PROJECT_NUMBER),
+    )
+    if record is None and allow_empty:
+        return None
+    return record
 
 
 def compute_docs_delta(workspace_root: Path, baseline_commit: str) -> LocalDelta:
@@ -374,16 +854,7 @@ def list_repo_delta_entries(workspace_root: Path, baseline_commit: str) -> list[
                 )
             )
             continue
-        if status == "C" and len(parts) >= 3:
-            entries.append(
-                RepoDeltaEntry(
-                    status=status,
-                    old_path=parts[1].strip(),
-                    new_path=parts[2].strip(),
-                )
-            )
-            continue
-        if status == "R" and len(parts) >= 3:
+        if status in {"C", "R"} and len(parts) >= 3:
             entries.append(
                 RepoDeltaEntry(
                     status=status,
@@ -405,7 +876,7 @@ def _ensure_commit_exists(workspace_root: Path, commit_hash: str) -> None:
         _run_git_command(workspace_root, ["cat-file", "-e", f"{commit_hash}^{{commit}}"])
     except SyncCommandError as error:
         raise SyncCommandError(
-            f"baseline commit {commit_hash} is not available in the local clone; fetch full history or import a newer snapshot"
+            f"baseline commit {commit_hash} is not available in the local clone; fetch full history or reseed the KB"
         ) from error
 
 
@@ -419,7 +890,7 @@ def _run_git_command(workspace_root: Path, args: Sequence[str]) -> str:
             cwd=workspace_root,
         )
     except FileNotFoundError as error:
-        raise SyncCommandError("git is required for sync changed") from error
+        raise SyncCommandError("git is required for sync commands") from error
     except CalledProcessError as error:
         stderr = (error.stderr or "").strip()
         stdout = (error.stdout or "").strip()
@@ -446,24 +917,14 @@ def _sync_docs_changed(
     try:
         if delta.deleted_paths:
             docs_store.delete_documents_for_paths(delta.deleted_paths)
-        if delta.changed_paths:
-            result = _ingest_selected_docs(
-                workspace_root,
-                embedding_client=embedding_client,
-                docs_store=docs_store,
-                source_paths=delta.changed_paths,
-                repo_commit_hash=delta.head_commit,
-            )
-        else:
-            result = type(
-                "DocsChangedResult",
-                (),
-                {
-                    "source_paths": (),
-                    "processed_count": 0,
-                    "repo_commit_hash": delta.head_commit,
-                },
-            )()
+        documents = prepare_documents(
+            workspace_root,
+            source_paths=delta.changed_paths,
+            embedding_client=embedding_client,
+            repo_commit_hash=delta.head_commit,
+        )
+        if documents:
+            docs_store.upsert_documents(documents)
     except Exception as error:
         sync_store.record_failures(
             [build_sync_failure("docs", scope_key, attempted_at=attempted_at, error=error, metadata={"repo": DEFAULT_SYNC_REPO})]
@@ -471,7 +932,15 @@ def _sync_docs_changed(
         raise
 
     state = build_docs_sync_state(
-        result,
+        type(
+            "DocsChangedResult",
+            (),
+            {
+                "source_paths": delta.changed_paths,
+                "processed_count": len(documents),
+                "repo_commit_hash": delta.head_commit,
+            },
+        )(),
         attempted_at=attempted_at,
         succeeded_at=datetime.now(timezone.utc),
         repo=DEFAULT_SYNC_REPO,
@@ -480,38 +949,10 @@ def _sync_docs_changed(
     return {
         "changed_paths": delta.changed_paths,
         "deleted_paths": delta.deleted_paths,
-        "processed_count": getattr(result, "processed_count", 0),
+        "processed_count": len(documents),
         "repo_commit_hash": state.repo_commit_hash,
         "baseline_commit": delta.baseline_commit,
     }
-
-
-def _ingest_selected_docs(
-    workspace_root: Path,
-    *,
-    embedding_client,
-    docs_store,
-    source_paths: Sequence[str],
-    repo_commit_hash: str,
-):
-    from agentic_kb.ingest.docs import prepare_documents
-
-    documents = prepare_documents(
-        workspace_root,
-        source_paths=source_paths,
-        embedding_client=embedding_client,
-        repo_commit_hash=repo_commit_hash,
-    )
-    docs_store.upsert_documents(documents)
-    return type(
-        "DocsChangedResult",
-        (),
-        {
-            "source_paths": tuple(document.source_path for document in documents),
-            "processed_count": len(documents),
-            "repo_commit_hash": repo_commit_hash,
-        },
-    )()
 
 
 def _sync_code_changed(
@@ -586,8 +1027,11 @@ def _sync_github_changed(
     baselines: dict[str, Any],
     attempted_at: datetime,
 ) -> dict[str, Any]:
-    if not config.github_token:
-        raise SyncCommandError("GITHUB_TOKEN is required for sync changed GitHub bootstrap refresh")
+    succeeded_at = datetime.now(timezone.utc)
+    updated_since = min(
+        github_stream_updated_since(baselines["github"][stream_name])
+        for stream_name in GITHUB_STREAM_NAMES
+    )
 
     sync_store.record_attempts(
         [
@@ -597,21 +1041,16 @@ def _sync_github_changed(
                 attempted_at=attempted_at,
                 metadata={"repo": DEFAULT_SYNC_REPO, "stream_name": stream_name},
             )
-            for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
+            for stream_name in STREAM_ORDER
         ]
     )
 
     try:
-        watermarks = [
-            github_stream_updated_since(baselines["github"][stream_name])
-            for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
-        ]
-        updated_since = min(watermarks)
-        github_result = _ingest_supported_github_streams(
+        github_result = ingest_github(
             embedding_client=embedding_client,
             github_store=github_store,
-            github_token=config.github_token,
             bounds=GithubFetchBounds(repo=DEFAULT_SYNC_REPO, updated_since=updated_since),
+            github_token=config.github_token,
         )
     except Exception as error:
         sync_store.record_failures(
@@ -623,119 +1062,30 @@ def _sync_github_changed(
                     error=error,
                     metadata={"repo": DEFAULT_SYNC_REPO, "stream_name": stream_name},
                 )
-                for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
+                for stream_name in STREAM_ORDER
             ]
         )
         raise
 
-    persisted_states = [
-        state
-        for state in build_github_sync_state_updates(
+    states = merge_github_sync_states(
+        build_github_sync_state_updates(
             github_result,
             attempted_at=attempted_at,
-            succeeded_at=datetime.now(timezone.utc),
-        )
-        if state.metadata.get("stream_name") in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
-    ]
-
-    deferred_states = [
-        _build_deferred_github_state(
-            baselines["github"][stream_name],
-            attempted_at=attempted_at,
-        )
-        for stream_name in DEFERRED_GITHUB_BOOTSTRAP_STREAMS
-    ]
-    sync_store.upsert_sync_states([*persisted_states, *deferred_states])
+            succeeded_at=succeeded_at,
+        ),
+        baselines=baselines["github"],
+        succeeded_at=succeeded_at,
+        seed_empty_streams=False,
+    )
+    sync_store.upsert_sync_states(states)
 
     return {
+        "mode": "incremental",
         "updated_since": github_result.bounds.updated_since,
-        "synced_streams": SUPPORTED_GITHUB_BOOTSTRAP_STREAMS,
-        "deferred_streams": DEFERRED_GITHUB_BOOTSTRAP_STREAMS,
-        "stream_progress": {
-            stream_name: github_result.stream_progress[stream_name]
-            for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
-        },
+        "stream_progress": github_result.stream_progress,
+        "upstream_since_streams": UPSTREAM_SINCE_GITHUB_STREAMS,
+        "client_filtered_streams": CLIENT_FILTERED_GITHUB_STREAMS,
     }
-
-
-def _build_deferred_github_state(
-    baseline: SyncStateRecord,
-    *,
-    attempted_at: datetime,
-) -> PreparedSyncState:
-    metadata = dict(baseline.metadata)
-    metadata["task_604_status"] = "deferred"
-    metadata["task_604_note"] = (
-        "sync changed defers bounded bootstrap refresh for this GitHub stream until later follow-up work"
-    )
-    return PreparedSyncState(
-        id=baseline.id,
-        source_name=baseline.source_name,
-        scope_key=baseline.scope_key,
-        repo_commit_hash=baseline.repo_commit_hash,
-        cursor_text=baseline.cursor_text,
-        watermark_text=baseline.watermark_text,
-        watermark_timestamp=baseline.watermark_timestamp,
-        schema_version=baseline.schema_version,
-        last_attempted_at=attempted_at,
-        last_succeeded_at=baseline.last_succeeded_at,
-        last_error=baseline.last_error,
-        metadata=metadata,
-    )
-
-
-def _ingest_supported_github_streams(
-    *,
-    embedding_client,
-    github_store,
-    github_token: str,
-    bounds: GithubFetchBounds,
-) -> GithubIngestResult:
-    github_client = GithubApiClient(token=github_token)
-    parent_cache = _GithubParentCache(repo=bounds.repo)
-    progress = {
-        stream_name: _MutableStreamProgress(stream_name=stream_name)
-        for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS
-    }
-
-    for stream_name in SUPPORTED_GITHUB_BOOTSTRAP_STREAMS:
-        page_number = 1
-        while True:
-            payloads, has_next_page = github_client.fetch_stream_page(
-                stream_name,
-                bounds=bounds,
-                page_number=page_number,
-            )
-            batch = _prepare_page_batch(
-                stream_name,
-                page_number=page_number,
-                repo=bounds.repo,
-                payloads=payloads,
-                embedding_client=embedding_client,
-                github_client=github_client,
-                parent_cache=parent_cache,
-                has_next_page=has_next_page,
-                truncated_by_bound=False,
-            )
-            write_result = write_github_page_batch(batch, github_store=github_store)
-            progress[stream_name].observe_batch(batch, write_result)
-            if not has_next_page:
-                break
-            page_number += 1
-
-    frozen_progress = {
-        stream_name: stream_progress.freeze()
-        for stream_name, stream_progress in progress.items()
-    }
-    return GithubIngestResult(
-        repo=bounds.repo,
-        bounds=bounds,
-        stream_progress=frozen_progress,
-        issues_written=sum(item.issues_written for item in frozen_progress.values()),
-        issue_comments_written=sum(item.issue_comments_written for item in frozen_progress.values()),
-        prs_written=sum(item.prs_written for item in frozen_progress.values()),
-        pr_comments_written=sum(item.pr_comments_written for item in frozen_progress.values()),
-    )
 
 
 def _sync_project_changed(
@@ -746,12 +1096,9 @@ def _sync_project_changed(
     sync_store: PostgresSyncStateStore,
     baseline: SyncStateRecord,
     attempted_at: datetime,
+    succeeded_at: datetime,
 ) -> dict[str, Any]:
-    if not config.github_token:
-        raise SyncCommandError("GITHUB_TOKEN is required for sync changed project bootstrap refresh")
-
-    starting_cursor = require_project_cursor_baseline(baseline)
-
+    starting_cursor = project_cursor(baseline)
     scope_key = baseline.scope_key
     sync_store.record_attempts(
         [
@@ -795,13 +1142,17 @@ def _sync_project_changed(
         )
         raise
 
-    state = build_project_sync_state(
-        result,
-        attempted_at=attempted_at,
-        succeeded_at=datetime.now(timezone.utc),
+    state = merge_project_sync_state(
+        build_project_sync_state(
+            result,
+            attempted_at=attempted_at,
+            succeeded_at=succeeded_at,
+        ),
+        baseline=baseline,
     )
     sync_store.upsert_sync_states([state])
     return {
+        "mode": "incremental",
         "starting_cursor": starting_cursor,
         "final_cursor": result.final_cursor,
         "rows_written": result.rows_written,
@@ -809,10 +1160,81 @@ def _sync_project_changed(
     }
 
 
-def _run_sync_placeholder(args) -> int:
-    name = args.placeholder_name
-    print(
-        f"sync {name} is not implemented in task-604. "
-        f"Use `agentic-kb sync changed` for the post-import bootstrap path today; {SYNC_TASK_GUIDANCE[name]}"
+def merge_github_sync_states(
+    states: Sequence[PreparedSyncState],
+    *,
+    baselines: dict[str, SyncStateRecord] | None,
+    succeeded_at: datetime,
+    seed_empty_streams: bool,
+) -> list[PreparedSyncState]:
+    merged: list[PreparedSyncState] = []
+    for state in states:
+        stream_name = state.metadata.get("stream_name")
+        baseline = baselines.get(stream_name) if baselines is not None else None
+        watermark_timestamp = state.watermark_timestamp
+        watermark_text = state.watermark_text
+        metadata = dict(state.metadata)
+        if watermark_timestamp is None:
+            if baseline is not None and baseline.watermark_timestamp is not None:
+                watermark_timestamp = baseline.watermark_timestamp
+                watermark_text = baseline.watermark_text
+            elif seed_empty_streams:
+                watermark_timestamp = succeeded_at
+                watermark_text = _format_timestamp(succeeded_at)
+                metadata["watermark_seeded_from"] = "sync_completed_at"
+        merged.append(
+            PreparedSyncState(
+                id=state.id,
+                source_name=state.source_name,
+                scope_key=state.scope_key,
+                repo_commit_hash=state.repo_commit_hash,
+                cursor_text=state.cursor_text,
+                watermark_text=watermark_text,
+                watermark_timestamp=watermark_timestamp,
+                schema_version=state.schema_version,
+                last_attempted_at=state.last_attempted_at,
+                last_succeeded_at=state.last_succeeded_at,
+                last_error=state.last_error,
+                metadata=metadata,
+            )
+        )
+    return merged
+
+
+def merge_project_sync_state(
+    state: PreparedSyncState,
+    *,
+    baseline: SyncStateRecord | None,
+) -> PreparedSyncState:
+    watermark_timestamp = state.watermark_timestamp
+    watermark_text = state.watermark_text
+    if watermark_timestamp is None and baseline is not None and baseline.watermark_timestamp is not None:
+        watermark_timestamp = baseline.watermark_timestamp
+        watermark_text = baseline.watermark_text
+    return PreparedSyncState(
+        id=state.id,
+        source_name=state.source_name,
+        scope_key=state.scope_key,
+        repo_commit_hash=state.repo_commit_hash,
+        cursor_text=state.cursor_text,
+        watermark_text=watermark_text,
+        watermark_timestamp=watermark_timestamp,
+        schema_version=state.schema_version,
+        last_attempted_at=state.last_attempted_at,
+        last_succeeded_at=state.last_succeeded_at,
+        last_error=state.last_error,
+        metadata=dict(state.metadata),
     )
-    return 2
+
+
+def _require_code_ingest_dependencies(command_name: str) -> None:
+    if PostgresCodeChunksStore is None or ingest_code is None or is_supported_code_path is None:
+        raise SyncCommandError(
+            f"{command_name} requires the optional tree-sitter code-ingest dependencies to be installed"
+        )
+
+
+def _format_timestamp(value: datetime | None) -> str | None:
+    if value is None:
+        return None
+    return value.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")

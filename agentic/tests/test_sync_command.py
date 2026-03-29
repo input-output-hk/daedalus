@@ -17,7 +17,6 @@ from agentic_kb.ingest import docs, github, project
 from agentic_kb.sync.state import (
     InMemorySyncStateStore,
     PreparedSyncState,
-    build_docs_sync_state,
     deterministic_sync_state_id,
     github_scope_key,
     project_scope_key,
@@ -26,7 +25,7 @@ from agentic_kb.sync.state import (
 
 try:
     from agentic_kb.ingest import code
-except ImportError:  # pragma: no cover - local env may omit tree-sitter extras
+except ImportError:  # pragma: no cover
     code = None
 
 
@@ -36,24 +35,17 @@ class FakeEmbeddingClient:
 
 
 class SyncCommandTests(unittest.TestCase):
-    def test_cli_routes_sync_changed_to_real_handler_and_keeps_other_verbs_placeholder(self):
+    def test_cli_routes_all_sync_verbs_to_real_handlers(self):
         parser = cli.build_parser()
 
-        changed_args = parser.parse_args(["sync", "changed"])
-        docs_args = parser.parse_args(["sync", "docs"])
+        self.assertIs(parser.parse_args(["sync", "all"]).handler, sync.run_sync_all)
+        self.assertIs(parser.parse_args(["sync", "docs"]).handler, sync.run_sync_docs)
+        self.assertIs(parser.parse_args(["sync", "code"]).handler, sync.run_sync_code)
+        self.assertIs(parser.parse_args(["sync", "github"]).handler, sync.run_sync_github)
+        self.assertIs(parser.parse_args(["sync", "project"]).handler, sync.run_sync_project)
+        self.assertIs(parser.parse_args(["sync", "changed"]).handler, sync.run_sync_changed)
 
-        self.assertIs(changed_args.handler, sync.run_sync_changed)
-        self.assertIs(docs_args.handler, sync._run_sync_placeholder)
-
-    def test_placeholder_sync_verbs_remain_deferred(self):
-        stdout = io.StringIO()
-        with redirect_stdout(stdout):
-            exit_code = sync._run_sync_placeholder(Namespace(placeholder_name="docs"))
-
-        self.assertEqual(exit_code, 2)
-        self.assertIn("task-701", stdout.getvalue())
-
-    def test_load_required_baselines_rejects_missing_rows(self):
+    def test_load_required_incremental_baselines_rejects_missing_code_row(self):
         store = InMemorySyncStateStore()
         store.upsert_sync_states([
             PreparedSyncState(
@@ -72,28 +64,8 @@ class SyncCommandTests(unittest.TestCase):
             )
         ])
 
-        with self.assertRaisesRegex(sync.SyncCommandError, "missing code:repo:DripDropz/daedalus"):
-            sync.load_required_baselines(store)
-
-    def test_compute_docs_delta_uses_baseline_commit_and_deletion_filtering(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            workspace = Path(temp_dir)
-            self._git_init(workspace)
-            self._write_file(workspace / "AGENTS.md", "# Agents\n\nfirst\n")
-            self._write_file(workspace / "README.md", "# Readme\n\nfirst\n")
-            self._write_file(workspace / "docs/ignored.md", "# Ignored\n")
-            baseline = self._git_commit_all(workspace, "baseline")
-
-            self._write_file(workspace / "AGENTS.md", "# Agents\n\nsecond\n")
-            (workspace / "README.md").unlink()
-            self._write_file(workspace / "docs/ignored.md", "# Ignored\n\nchanged\n")
-            self._git_commit_all(workspace, "delta")
-
-            delta = sync.compute_docs_delta(workspace, baseline)
-
-        self.assertEqual(delta.baseline_commit, baseline)
-        self.assertEqual(delta.changed_paths, ("AGENTS.md",))
-        self.assertEqual(delta.deleted_paths, ("README.md",))
+        with self.assertRaisesRegex(sync.SyncCommandError, "existing successful code baseline"):
+            sync.load_required_incremental_baselines(store)
 
     def test_compute_docs_delta_treats_rename_as_delete_plus_add(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -191,45 +163,78 @@ class SyncCommandTests(unittest.TestCase):
         self.assertNotIn(("README.md", 0), docs_store.rows_by_key)
         self.assertEqual(docs_store.rows_by_key[("AGENTS.md", 0)]["repo_commit_hash"], "head-commit")
 
-    def test_sync_github_changed_uses_supported_streams_and_marks_deferred_streams(self):
+    def test_sync_github_explicit_initial_run_seeds_all_stream_rows(self):
+        sync_store = InMemorySyncStateStore()
+        github_result = self._fake_github_result(updated_since=None)
+
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresGithubStore.from_database_url") as github_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_github", return_value=github_result) as ingest_github:
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        github_store_factory.return_value.__enter__.return_value = github.InMemoryGithubStore()
+                        github_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_github(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                        )
+
+        self.assertEqual(result["mode"], "initial")
+        self.assertIsNone(ingest_github.call_args.kwargs["bounds"].updated_since)
+        for stream_name in sync.STREAM_ORDER:
+            state = sync_store.get_sync_state("github", github_scope_key(stream_name))
+            self.assertIsNotNone(state)
+            self.assertIsNotNone(state.last_succeeded_at)
+            self.assertIsNotNone(state.watermark_timestamp)
+
+    def test_sync_github_incremental_run_uses_earliest_stored_watermark(self):
         sync_store = InMemorySyncStateStore()
         baselines = self._seed_all_required_baselines(sync_store)
-        captured = {}
+        github_result = self._fake_github_result(
+            updated_since=datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc)
+        )
 
-        def fake_ingest_supported_github_streams(**kwargs):
-            captured.update(kwargs)
-            return github.GithubIngestResult(
-                repo="DripDropz/daedalus",
-                bounds=kwargs["bounds"],
-                stream_progress={
-                    "issues": github.GithubStreamProgress(
-                        stream_name="issues",
-                        pages_fetched=1,
-                        hit_bound=False,
-                        latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
-                        issues_written=1,
-                        issue_comments_written=0,
-                        prs_written=0,
-                        pr_comments_written=0,
-                    ),
-                    "issue_comments": github.GithubStreamProgress(
-                        stream_name="issue_comments",
-                        pages_fetched=1,
-                        hit_bound=False,
-                        latest_source_updated_at=datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
-                        issues_written=0,
-                        issue_comments_written=1,
-                        prs_written=0,
-                        pr_comments_written=0,
-                    ),
-                },
-                issues_written=1,
-                issue_comments_written=1,
-                prs_written=0,
-                pr_comments_written=0,
-            )
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresGithubStore.from_database_url") as github_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_github", return_value=github_result) as ingest_github:
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        github_store_factory.return_value.__enter__.return_value = github.InMemoryGithubStore()
+                        github_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_github(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                        )
 
-        with patch("agentic_kb.commands.sync._ingest_supported_github_streams", side_effect=fake_ingest_supported_github_streams):
+        self.assertEqual(result["mode"], "incremental")
+        self.assertEqual(
+            ingest_github.call_args.kwargs["bounds"].updated_since,
+            datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc),
+        )
+        self.assertEqual(result["upstream_since_streams"], sync.UPSTREAM_SINCE_GITHUB_STREAMS)
+        self.assertEqual(result["client_filtered_streams"], sync.CLIENT_FILTERED_GITHUB_STREAMS)
+        self.assertEqual(baselines["github"]["pulls"].watermark_timestamp, datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc))
+
+    def test_sync_github_changed_success_persists_updated_stream_states(self):
+        sync_store = InMemorySyncStateStore()
+        baselines = self._seed_all_required_baselines(sync_store)
+        github_result = self._fake_github_result(
+            updated_since=datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc)
+        )
+
+        with patch("agentic_kb.commands.sync.ingest_github", return_value=github_result) as ingest_github:
             result = sync._sync_github_changed(
                 config=AgenticConfig(
                     database_url="postgresql://localhost/test",
@@ -244,68 +249,116 @@ class SyncCommandTests(unittest.TestCase):
                 attempted_at=datetime(2026, 3, 29, 11, 0, tzinfo=timezone.utc),
             )
 
-        self.assertEqual(result["synced_streams"], sync.SUPPORTED_GITHUB_BOOTSTRAP_STREAMS)
-        self.assertEqual(result["deferred_streams"], sync.DEFERRED_GITHUB_BOOTSTRAP_STREAMS)
+        self.assertEqual(result["mode"], "incremental")
+        self.assertEqual(result["updated_since"], datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc))
         self.assertEqual(
-            captured["bounds"].updated_since,
+            ingest_github.call_args.kwargs["bounds"].updated_since,
             datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc),
         )
-        deferred_pulls = sync_store.get_sync_state("github", github_scope_key("pulls"))
-        self.assertEqual(deferred_pulls.metadata["task_604_status"], "deferred")
-        self.assertIn("follow-up work", deferred_pulls.metadata["task_604_note"])
+        for stream_name, expected_watermark in {
+            "issues": datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+            "pulls": datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+            "issue_comments": datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
+            "review_comments": datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
+        }.items():
+            state = sync_store.get_sync_state("github", github_scope_key(stream_name))
+            self.assertIsNotNone(state)
+            self.assertEqual(state.watermark_timestamp, expected_watermark)
+            self.assertIsNotNone(state.last_succeeded_at)
 
-    def test_load_required_baselines_rejects_missing_supported_github_watermark(self):
+    def test_load_required_incremental_baselines_rejects_missing_github_watermark(self):
         sync_store = InMemorySyncStateStore()
         self._seed_all_required_baselines(sync_store, github_watermarks={"issues": None}, validate=False)
 
-        with self.assertRaisesRegex(sync.SyncCommandError, "missing github:repo:DripDropz/daedalus:issues watermark"):
-            sync.load_required_baselines(sync_store)
+        with self.assertRaisesRegex(sync.SyncCommandError, "github baseline with watermark for issues"):
+            sync.load_required_incremental_baselines(sync_store)
 
-    def test_load_required_baselines_rejects_missing_project_cursor(self):
+    def test_load_required_incremental_baselines_rejects_missing_project_cursor(self):
         sync_store = InMemorySyncStateStore()
         self._seed_all_required_baselines(sync_store, project_cursor_text=None, validate=False)
 
-        with self.assertRaisesRegex(sync.SyncCommandError, "missing project:project:DripDropz/5 cursor_text"):
-            sync.load_required_baselines(sync_store)
+        with self.assertRaisesRegex(sync.SyncCommandError, "non-empty cursor_text"):
+            sync.load_required_incremental_baselines(sync_store)
 
-    def test_sync_project_changed_uses_cursor_continuation(self):
+    def test_sync_project_reuses_stored_cursor_and_preserves_end_cursor_noop(self):
         sync_store = InMemorySyncStateStore()
-        baselines = self._seed_all_required_baselines(sync_store)
-        captured = {}
+        baseline = PreparedSyncState(
+            id=deterministic_sync_state_id("project", project_scope_key()),
+            source_name="project",
+            scope_key=project_scope_key(),
+            repo_commit_hash=None,
+            cursor_text="cursor-seeded",
+            watermark_text="2026-03-29T08:30:00Z",
+            watermark_timestamp=datetime(2026, 3, 29, 8, 30, tzinfo=timezone.utc),
+            schema_version=None,
+            last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+            last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
+            last_error=None,
+            metadata={"project_owner": "DripDropz", "project_number": 5},
+        )
+        sync_store.upsert_sync_states([baseline])
 
         def fake_ingest_project_items(**kwargs):
-            captured.update(kwargs)
+            self.assertEqual(kwargs["bounds"].after_cursor, "cursor-seeded")
             return project.ProjectIngestResult(
                 project_owner="DripDropz",
                 project_number=5,
                 project_title="Daedalus Maintenance",
                 project_url="https://github.com/orgs/DripDropz/projects/5",
                 bounds=kwargs["bounds"],
-                pages_fetched=1,
+                pages_fetched=0,
                 hit_bound=False,
-                final_cursor="cursor-next",
-                latest_source_updated_at=datetime(2026, 3, 29, 13, 0, tzinfo=timezone.utc),
-                rows_written=2,
+                final_cursor="cursor-seeded",
+                latest_source_updated_at=None,
+                rows_written=0,
             )
 
-        with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
-            result = sync._sync_project_changed(
-                config=AgenticConfig(
-                    database_url="postgresql://localhost/test",
-                    ollama_base_url="http://ollama:11434",
-                    ollama_embed_model="all-minilm",
-                    github_token="token",
-                ),
-                embedding_client=FakeEmbeddingClient(),
-                project_store=project.InMemoryProjectItemsStore(),
-                sync_store=sync_store,
-                baseline=baselines["project"],
-                attempted_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
-            )
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresProjectItemsStore.from_database_url") as project_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        project_store_factory.return_value.__enter__.return_value = project.InMemoryProjectItemsStore()
+                        project_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_project(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                        )
 
-        self.assertEqual(captured["bounds"].after_cursor, "cursor-seeded")
+        self.assertEqual(result["mode"], "incremental")
         self.assertEqual(result["starting_cursor"], "cursor-seeded")
-        self.assertEqual(result["final_cursor"], "cursor-next")
+        self.assertEqual(result["final_cursor"], "cursor-seeded")
+        self.assertEqual(result["pages_fetched"], 0)
+
+    def test_sync_all_runs_expected_sources_in_order_and_stops_on_first_failure(self):
+        calls = []
+
+        def docs_handler(*args, **kwargs):
+            calls.append("docs")
+            return {"processed_count": 1, "deleted_paths": (), "repo_commit_hash": "a"}
+
+        def code_handler(*args, **kwargs):
+            calls.append("code")
+            raise sync.SyncCommandError("code failed")
+
+        with patch("agentic_kb.commands.sync.sync_docs", side_effect=docs_handler):
+            with patch("agentic_kb.commands.sync.sync_code", side_effect=code_handler):
+                with patch("agentic_kb.commands.sync.sync_github") as sync_github:
+                    with patch("agentic_kb.commands.sync.sync_project") as sync_project:
+                        with self.assertRaises(sync.SyncAllFailure) as error:
+                            sync.sync_all(Path.cwd(), config=AgenticConfig(None, "http://ollama", "model", "token"))
+
+        self.assertEqual(calls, ["docs", "code"])
+        self.assertEqual(error.exception.source_name, "code")
+        self.assertIn("docs", error.exception.partial_results)
+        sync_github.assert_not_called()
+        sync_project.assert_not_called()
 
     def test_run_sync_changed_writes_errors_to_stderr_only(self):
         stdout = io.StringIO()
@@ -319,10 +372,19 @@ class SyncCommandTests(unittest.TestCase):
         self.assertIn("sync changed failed: missing baseline", stderr.getvalue())
 
     def _seed_docs_baseline(self, store: InMemorySyncStateStore, *, repo_commit_hash: str):
-        state = build_docs_sync_state(
-            docs.DocsIngestResult(source_paths=("AGENTS.md",), processed_count=1, repo_commit_hash=repo_commit_hash),
-            attempted_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
-            succeeded_at=datetime(2026, 3, 29, 9, 1, tzinfo=timezone.utc),
+        state = PreparedSyncState(
+            id=deterministic_sync_state_id("docs", repo_scope_key()),
+            source_name="docs",
+            scope_key=repo_scope_key(),
+            repo_commit_hash=repo_commit_hash,
+            cursor_text=None,
+            watermark_text=None,
+            watermark_timestamp=None,
+            schema_version=None,
+            last_attempted_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+            last_succeeded_at=datetime(2026, 3, 29, 9, 1, tzinfo=timezone.utc),
+            last_error=None,
+            metadata={"repo": "DripDropz/daedalus"},
         )
         store.upsert_sync_states([state])
         return store.get_sync_state("docs", repo_scope_key())
@@ -364,41 +426,35 @@ class SyncCommandTests(unittest.TestCase):
             last_error=None,
             metadata={"repo": "DripDropz/daedalus"},
         )
-        github_states = [
-            PreparedSyncState(
-                id=deterministic_sync_state_id("github", github_scope_key(stream_name)),
-                source_name="github",
-                scope_key=github_scope_key(stream_name),
-                repo_commit_hash=None,
-                cursor_text=None,
-                watermark_text=(
-                    github_watermarks.get(stream_name).isoformat().replace("+00:00", "Z")
-                    if stream_name in github_watermarks and github_watermarks[stream_name] is not None
-                    else None
-                    if stream_name in github_watermarks
-                    else "2026-03-29T07:00:00Z"
-                    if stream_name == "issues"
-                    else "2026-03-29T08:00:00Z"
-                    if stream_name == "issue_comments"
-                    else None
-                ),
-                watermark_timestamp=(
-                    github_watermarks.get(stream_name)
-                    if stream_name in github_watermarks
-                    else datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc)
-                    if stream_name == "issues"
-                    else datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc)
-                    if stream_name == "issue_comments"
-                    else None
-                ),
-                schema_version=None,
-                last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
-                last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
-                last_error=None,
-                metadata={"repo": "DripDropz/daedalus", "stream_name": stream_name},
+        defaults = {
+            "issues": datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc),
+            "pulls": datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+            "issue_comments": datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+            "review_comments": datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+        }
+        github_states = []
+        for stream_name in sync.GITHUB_STREAM_NAMES:
+            watermark_timestamp = github_watermarks.get(stream_name, defaults[stream_name])
+            github_states.append(
+                PreparedSyncState(
+                    id=deterministic_sync_state_id("github", github_scope_key(stream_name)),
+                    source_name="github",
+                    scope_key=github_scope_key(stream_name),
+                    repo_commit_hash=None,
+                    cursor_text=None,
+                    watermark_text=(
+                        watermark_timestamp.isoformat().replace("+00:00", "Z")
+                        if watermark_timestamp is not None
+                        else None
+                    ),
+                    watermark_timestamp=watermark_timestamp,
+                    schema_version=None,
+                    last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+                    last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
+                    last_error=None,
+                    metadata={"repo": "DripDropz/daedalus", "stream_name": stream_name},
+                )
             )
-            for stream_name in sync.GITHUB_STREAM_NAMES
-        ]
         project_state = PreparedSyncState(
             id=deterministic_sync_state_id("project", project_scope_key()),
             source_name="project",
@@ -416,7 +472,32 @@ class SyncCommandTests(unittest.TestCase):
         store.upsert_sync_states([docs_state, code_state, *github_states, project_state])
         if not validate:
             return None
-        return sync.load_required_baselines(store)
+        return sync.load_required_incremental_baselines(store)
+
+    def _fake_github_result(self, *, updated_since):
+        return github.GithubIngestResult(
+            repo="DripDropz/daedalus",
+            bounds=github.GithubFetchBounds(repo="DripDropz/daedalus", updated_since=updated_since),
+            stream_progress={
+                stream_name: github.GithubStreamProgress(
+                    stream_name=stream_name,
+                    pages_fetched=1 if stream_name in {"issues", "issue_comments"} else 0,
+                    hit_bound=False,
+                    latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc)
+                    if stream_name in {"issues", "pulls"}
+                    else datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
+                    issues_written=1 if stream_name == "issues" else 0,
+                    issue_comments_written=1 if stream_name == "issue_comments" else 0,
+                    prs_written=1 if stream_name == "pulls" else 0,
+                    pr_comments_written=1 if stream_name == "review_comments" else 0,
+                )
+                for stream_name in sync.STREAM_ORDER
+            },
+            issues_written=1,
+            issue_comments_written=1,
+            prs_written=1,
+            pr_comments_written=1,
+        )
 
     def _git_init(self, workspace: Path) -> None:
         subprocess.run(["git", "init"], cwd=workspace, check=True, capture_output=True, text=True)

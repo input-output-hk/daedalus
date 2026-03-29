@@ -48,7 +48,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     sync_parser = subparsers.add_parser(
         "sync",
-        help="Grouped sync commands reserved for later tasks",
+        help="Sync docs, code, GitHub, project, or incremental changes",
     )
     add_sync_subcommands(sync_parser)
 

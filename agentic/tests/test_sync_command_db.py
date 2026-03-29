@@ -26,7 +26,7 @@ from agentic_kb.sync.state import (
 
 try:
     from agentic_kb.ingest import code
-except ImportError:  # pragma: no cover - local env may omit tree-sitter extras
+except ImportError:  # pragma: no cover
     code = None
 
 
@@ -52,7 +52,7 @@ class SyncCommandDbTests(unittest.TestCase):
         self.addCleanup(self.connection.close)
         _bootstrap_database(self.connection)
 
-    def test_sync_changed_bootstrap_reuses_watermarks_defers_unsupported_streams_and_continues_project_cursor(self):
+    def test_sync_changed_reuses_all_stored_github_watermarks_and_project_cursor(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             self._git_init(workspace)
@@ -83,38 +83,9 @@ class SyncCommandDbTests(unittest.TestCase):
             github_bounds = {}
             project_bounds = {}
 
-            def fake_ingest_supported_github_streams(**kwargs):
+            def fake_ingest_github(**kwargs):
                 github_bounds["bounds"] = kwargs["bounds"]
-                return github.GithubIngestResult(
-                    repo=DEFAULT_SYNC_REPO,
-                    bounds=kwargs["bounds"],
-                    stream_progress={
-                        "issues": github.GithubStreamProgress(
-                            stream_name="issues",
-                            pages_fetched=1,
-                            hit_bound=False,
-                            latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
-                            issues_written=1,
-                            issue_comments_written=0,
-                            prs_written=0,
-                            pr_comments_written=0,
-                        ),
-                        "issue_comments": github.GithubStreamProgress(
-                            stream_name="issue_comments",
-                            pages_fetched=1,
-                            hit_bound=False,
-                            latest_source_updated_at=datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
-                            issues_written=0,
-                            issue_comments_written=1,
-                            prs_written=0,
-                            pr_comments_written=0,
-                        ),
-                    },
-                    issues_written=1,
-                    issue_comments_written=1,
-                    prs_written=0,
-                    pr_comments_written=0,
-                )
+                return self._fake_github_result(kwargs["bounds"])
 
             def fake_ingest_project_items(**kwargs):
                 project_bounds["bounds"] = kwargs["bounds"]
@@ -132,14 +103,8 @@ class SyncCommandDbTests(unittest.TestCase):
                 )
 
             with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
-                with patch(
-                    "agentic_kb.commands.sync._ingest_supported_github_streams",
-                    side_effect=fake_ingest_supported_github_streams,
-                ):
-                    with patch(
-                        "agentic_kb.commands.sync.ingest_project_items",
-                        side_effect=fake_ingest_project_items,
-                    ):
+                with patch("agentic_kb.commands.sync.ingest_github", side_effect=fake_ingest_github):
+                    with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
                         result = sync.sync_changed(
                             workspace,
                             config=AgenticConfig(
@@ -160,11 +125,11 @@ class SyncCommandDbTests(unittest.TestCase):
                 )
                 code_rows = cursor.fetchall()
                 cursor.execute(
-                    "SELECT scope_key, watermark_timestamp, metadata FROM agentic.kb_sync_state WHERE source_name = 'github' ORDER BY scope_key"
+                    "SELECT scope_key, watermark_timestamp FROM agentic.kb_sync_state WHERE source_name = 'github' ORDER BY scope_key"
                 )
                 github_rows = cursor.fetchall()
                 cursor.execute(
-                    "SELECT cursor_text, watermark_timestamp, metadata FROM agentic.kb_sync_state WHERE source_name = 'project' AND scope_key = %s",
+                    "SELECT cursor_text, watermark_timestamp FROM agentic.kb_sync_state WHERE source_name = 'project' AND scope_key = %s",
                     (project_scope_key(),),
                 )
                 project_row = cursor.fetchone()
@@ -184,19 +149,13 @@ class SyncCommandDbTests(unittest.TestCase):
         )
         self.assertEqual(project_bounds["bounds"].after_cursor, "cursor-seeded")
         self.assertEqual(project_row[0], "cursor-next")
+        github_rows_by_scope = {scope_key: watermark_timestamp for scope_key, watermark_timestamp in github_rows}
+        self.assertEqual(github_rows_by_scope[github_scope_key("issues")], datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc))
+        self.assertEqual(github_rows_by_scope[github_scope_key("pulls")], datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc))
+        self.assertEqual(github_rows_by_scope[github_scope_key("issue_comments")], datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc))
+        self.assertEqual(github_rows_by_scope[github_scope_key("review_comments")], datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc))
 
-        github_rows_by_scope = {scope_key: (watermark_timestamp, metadata) for scope_key, watermark_timestamp, metadata in github_rows}
-        pulls_metadata = github_rows_by_scope[github_scope_key("pulls")][1]
-        review_comments_metadata = github_rows_by_scope[github_scope_key("review_comments")][1]
-        self.assertEqual(pulls_metadata["task_604_status"], "deferred")
-        self.assertEqual(review_comments_metadata["task_604_status"], "deferred")
-        self.assertEqual(github_rows_by_scope[github_scope_key("issues")][0], datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc))
-        self.assertEqual(
-            github_rows_by_scope[github_scope_key("issue_comments")][0],
-            datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
-        )
-
-    def test_sync_changed_fails_when_supported_github_watermark_is_missing(self):
+    def test_sync_changed_fails_before_writing_when_github_baseline_is_incomplete(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             self._git_init(workspace)
@@ -206,7 +165,7 @@ class SyncCommandDbTests(unittest.TestCase):
             self._seed_imported_baseline(workspace, baseline_commit, github_watermarks={"issues": None})
 
             with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
-                with self.assertRaisesRegex(sync.SyncCommandError, "missing github:repo:DripDropz/daedalus:issues watermark"):
+                with self.assertRaisesRegex(sync.SyncCommandError, "github baseline with watermark for issues"):
                     sync.sync_changed(
                         workspace,
                         config=AgenticConfig(
@@ -217,26 +176,40 @@ class SyncCommandDbTests(unittest.TestCase):
                         ),
                     )
 
-    def test_sync_changed_fails_when_project_cursor_is_missing(self):
+    def test_sync_all_stops_after_first_failure_and_persists_only_attempted_sources(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             self._git_init(workspace)
-            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(workspace / "README.md", "# Readme\n\nfirst\n")
             self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
-            baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
-            self._seed_imported_baseline(workspace, baseline_commit, project_cursor_text=None)
+            self._git_commit_all(workspace, "baseline")
 
             with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
-                with self.assertRaisesRegex(sync.SyncCommandError, "missing project:project:DripDropz/5 cursor_text"):
-                    sync.sync_changed(
-                        workspace,
-                        config=AgenticConfig(
-                            database_url=self.database_url,
-                            ollama_base_url="http://ollama:11434",
-                            ollama_embed_model="all-minilm",
-                            github_token="token",
-                        ),
-                    )
+                with patch("agentic_kb.commands.sync.ingest_code", side_effect=sync.SyncCommandError("code failed")):
+                    with self.assertRaises(sync.SyncAllFailure):
+                        sync.sync_all(
+                            workspace,
+                            config=AgenticConfig(
+                                database_url=self.database_url,
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                        )
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT source_name, scope_key, last_succeeded_at FROM agentic.kb_sync_state ORDER BY source_name, scope_key"
+                )
+                rows = cursor.fetchall()
+
+        rows_by_source = {(source_name, scope_key): last_succeeded_at for source_name, scope_key, last_succeeded_at in rows}
+        self.assertIn(("docs", repo_scope_key()), rows_by_source)
+        self.assertIn(("code", repo_scope_key()), rows_by_source)
+        self.assertNotIn(("github", github_scope_key("issues")), rows_by_source)
+        self.assertNotIn(("project", project_scope_key()), rows_by_source)
+        self.assertIsNotNone(rows_by_source[("docs", repo_scope_key())])
+        self.assertIsNone(rows_by_source[("code", repo_scope_key())])
 
     def _seed_imported_baseline(
         self,
@@ -324,8 +297,8 @@ class SyncCommandDbTests(unittest.TestCase):
         defaults = {
             "issues": datetime(2026, 3, 29, 7, 0, tzinfo=timezone.utc),
             "issue_comments": datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
-            "pulls": None,
-            "review_comments": None,
+            "pulls": datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+            "review_comments": datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
         }
         for stream_name in GITHUB_STREAM_NAMES:
             watermark_timestamp = github_watermarks.get(stream_name, defaults[stream_name])
@@ -350,6 +323,58 @@ class SyncCommandDbTests(unittest.TestCase):
                 )
             )
         return states
+
+    def _fake_github_result(self, bounds):
+        return github.GithubIngestResult(
+            repo=DEFAULT_SYNC_REPO,
+            bounds=bounds,
+            stream_progress={
+                "issues": github.GithubStreamProgress(
+                    stream_name="issues",
+                    pages_fetched=1,
+                    hit_bound=False,
+                    latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                    issues_written=1,
+                    issue_comments_written=0,
+                    prs_written=0,
+                    pr_comments_written=0,
+                ),
+                "pulls": github.GithubStreamProgress(
+                    stream_name="pulls",
+                    pages_fetched=1,
+                    hit_bound=False,
+                    latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                    issues_written=0,
+                    issue_comments_written=0,
+                    prs_written=1,
+                    pr_comments_written=0,
+                ),
+                "issue_comments": github.GithubStreamProgress(
+                    stream_name="issue_comments",
+                    pages_fetched=1,
+                    hit_bound=False,
+                    latest_source_updated_at=datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
+                    issues_written=0,
+                    issue_comments_written=1,
+                    prs_written=0,
+                    pr_comments_written=0,
+                ),
+                "review_comments": github.GithubStreamProgress(
+                    stream_name="review_comments",
+                    pages_fetched=1,
+                    hit_bound=False,
+                    latest_source_updated_at=datetime(2026, 3, 29, 12, 30, tzinfo=timezone.utc),
+                    issues_written=0,
+                    issue_comments_written=0,
+                    prs_written=0,
+                    pr_comments_written=1,
+                ),
+            },
+            issues_written=1,
+            issue_comments_written=1,
+            prs_written=1,
+            pr_comments_written=1,
+        )
 
     def _git_init(self, workspace: Path) -> None:
         subprocess.run(["git", "init"], cwd=workspace, check=True, capture_output=True, text=True)

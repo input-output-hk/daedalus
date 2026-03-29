@@ -55,6 +55,9 @@ class DocsStore(Protocol):
     def delete_documents_for_paths(self, source_paths: Sequence[str]) -> int:
         ...
 
+    def list_document_paths(self) -> list[str]:
+        ...
+
 
 @dataclass(frozen=True)
 class PreparedDocument:
@@ -649,6 +652,13 @@ class PostgresDocsStore:
                 )
                 return cursor.rowcount
 
+    def list_document_paths(self) -> list[str]:
+        with self._connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT DISTINCT source_path FROM agentic.kb_documents ORDER BY source_path"
+            )
+            return [row[0] for row in cursor.fetchall()]
+
 
 class InMemoryDocsStore:
     def __init__(self):
@@ -686,3 +696,6 @@ class InMemoryDocsStore:
         for key in to_delete:
             del self.rows_by_key[key]
         return len(to_delete)
+
+    def list_document_paths(self) -> list[str]:
+        return sorted({key[0] for key in self.rows_by_key})
