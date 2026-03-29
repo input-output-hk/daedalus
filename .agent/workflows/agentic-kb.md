@@ -92,11 +92,15 @@ Today:
 
 Shared baselines use one canonical embedding contract at a time. In v1, that is not a per-developer preference.
 
-- the canonical contract is the tuple of embedding model name, expected vector dimensionality, and versioned contract identifier recorded in snapshot metadata and enforced by the tooling
-- developers must treat the checked-in/default embedding configuration as the shared-baseline contract unless rollout docs explicitly announce a new one
-- changing the canonical contract requires a deliberate republish from `develop` on the trusted baseline-publisher machine before team handoff resumes
-- local `OLLAMA_EMBED_MODEL` overrides are acceptable only for disposable local rebuild experiments; they are out of contract for publishing or extending the shared team baseline
-- mismatch handling must be operator-visible: snapshot import should fail fast, `status` should distinguish readiness from sync-safe compatibility, and post-import incremental sync should refuse to mix incompatible embeddings
+- the canonical contract is the exact enforced `embedding_contract` tuple recorded in snapshot manifests: `contract_id`, `embedding_model`, and `embedding_dimension`
+- this workflow is the current operator-facing policy source of truth for the v1 canonical-contract shape and republish rule; the repo does not expose a separate dedicated canonical tuple registry
+- before importing or extending a specific shared baseline, operators should inspect that artifact's published `.manifest.json` to see the exact tuple it was built with, then confirm local post-import compatibility through `status --json` and its `embedding_compatibility` object
+- the checked-in schema and example manifest document the contract shape and an example v1 tuple, but they do not by themselves announce that every published shared baseline currently uses that tuple
+- local `OLLAMA_EMBED_MODEL` overrides are acceptable only for disposable local rebuild experiments; they are out of contract for publishing or extending the shared team baseline and must not be treated as a canonical-contract registry
+- any intentional change to the canonical contract on `develop` requires a fresh canonical snapshot rebuild and republish from `develop` on the trusted baseline-publisher machine before further team handoff resumes
+- snapshots built before an intentional canonical-contract change are no longer valid shared baselines for import-then-`sync changed` continuation under the new contract
+- ordinary content refreshes or baseline rebuilds that keep the same canonical tuple do not redefine the contract or require a policy change announcement
+- mismatch handling is operator-visible by design: `snapshot import` fails before restore for legacy or incompatible manifests, `status` keeps top-level readiness separate from `embedding_compatibility`, and `sync changed` refuses to extend an imported baseline whose latest imported manifest is legacy, malformed, or incompatible
 
 ## Status Behavior
 
@@ -110,6 +114,8 @@ Use `status` for a quick operator view of both service readiness and KB DB readi
 - searchable row counts and grouped `kb_sync_state` summaries
 
 `status` is intentionally limited to current repo-backed contracts and does not require sync orchestration or MCP readiness. GitHub and Project freshness probes run only on normal `status` when `GITHUB_TOKEN` is configured; without a token, those remote freshness entries report `skipped` and status remains usable. When imported snapshot metadata exists, `status` also reports the latest imported snapshot's embedding-contract compatibility separately from readiness. Compatible imports report `compatible`; legacy imported manifests report `unsupported_legacy_manifest`; malformed persisted metadata reports `unavailable` with detail instead of being silently normalized.
+
+For shared-baseline workflows, treat `status --json` as the post-import confirmation step, not as a canonical tuple discovery mechanism. It tells you whether the latest imported snapshot metadata is compatible with the local runtime contract, but the artifact's published manifest remains the source for the exact tuple a specific snapshot was built with.
 
 ## Clean-Machine Bootstrap
 
@@ -151,6 +157,8 @@ The canonical shared baseline is published locally, not through GitHub Actions.
 - publication runs from `develop` on a trusted GPU-capable developer machine
 - publication builds a fresh baseline with `sync all`, exports a snapshot pair, validates it locally, and uploads it to the chosen private shared storage backend
 - the portable payload remains exactly the exported `.dump` plus sibling `.manifest.json` pair; no extra repo-specific archive layer is required
+- if `develop` intentionally changes the canonical embedding-contract tuple (`contract_id`, `embedding_model`, or `embedding_dimension`), publish a newly rebuilt canonical snapshot before any further team handoff; older snapshots remain valid provenance but are no longer the canonical import-then-sync baseline under the new contract
+- if `develop` only changes content while keeping the same embedding-contract tuple, publication is an ordinary baseline refresh rather than a contract-policy change
 - GitHub Actions artifacts and GitHub Releases assets are both out of scope for KB snapshot sharing in v1
 - the exact storage backend, authentication/bootstrap path, artifact discovery path, retention, outage recovery behavior, and helper commands are still tracked as pending rollout work
 

@@ -531,14 +531,14 @@
           "id": "task-611",
           "title": "Define canonical embedding contract and republish policy",
           "description": "Document the single supported v1 embedding contract for shared baselines, how operators discover it, when canonical snapshots must be republished from develop, and how mismatch handling surfaces in import, status, and sync flows",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": [
             "task-601",
             "task-608"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {

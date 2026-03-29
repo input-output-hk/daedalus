@@ -36,7 +36,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [x] Support BM25 keyword search, vector search, and RRF fusion across all indexed entity types.
 - [x] Provide read-only Search MCP tools and setup instructions for OpenCode and Claude Code.
 - [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers, including a selected private shared-storage backend.
-- [ ] Enforce snapshot/embed-model compatibility checks so import and post-import sync cannot silently mix incompatible embedding contracts.
+- [x] Enforce snapshot/embed-model compatibility checks so import and post-import sync cannot silently mix incompatible embedding contracts.
 - [x] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
 - [ ] Add an automated Compose boot smoke/regression check for the repo-root stack contract.
 - [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
@@ -472,4 +472,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, and primary KB workflow docs are all in place. Snapshot export/import exists, but rollout is still blocked on embedding-contract enforcement, explicit import-target safety for disposable DB restores, private shared-storage selection, validated repo/Project removal reconciliation, Project 5 full re-convergence, explicit status surfacing for embedding mismatches, and the remaining automated smoke/regression coverage promised by this plan, especially the schema/bootstrap and search-quality gates.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, snapshot export/import, embedding-contract compatibility enforcement, disposable import-target safety, and primary KB workflow docs are all in place. Rollout is still blocked on private shared-storage selection, the documented local publish/download workflow, validated repo/Project removal reconciliation, Project 5 full re-convergence, and the remaining automated smoke/regression coverage promised by this plan.
