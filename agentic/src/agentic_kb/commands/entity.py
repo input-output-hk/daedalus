@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from argparse import Namespace
 from typing import Any, Mapping
 
 from agentic_kb.commands.output import format_text_value, print_json, print_stderr
@@ -50,19 +51,23 @@ def run_entity_get(args) -> int:
 
 
 def get_entity_from_args(args) -> dict[str, Any]:
+    return get_entity_payload(args.entity_type, args.id)
+
+
+def get_entity_payload(entity_type: str, entity_id: str) -> dict[str, Any]:
     try:
-        entity_config = get_search_entity_config(args.entity_type)
+        entity_config = get_search_entity_config(entity_type)
     except ValueError as error:
-        raise SearchValidationError(f"Unsupported entity_type value: {args.entity_type!r}") from error
+        raise SearchValidationError(f"Unsupported entity_type value: {entity_type!r}") from error
 
     config = AgenticConfig.from_env()
     if not config.database_url:
         raise SearchValidationError("DATABASE_URL is required for entity lookup")
 
-    row = fetch_entity_row(config.database_url, entity_config.table_name, entity_config.primary_key_column, args.id)
+    row = fetch_entity_row(config.database_url, entity_config.table_name, entity_config.primary_key_column, entity_id)
     if row is None:
         raise EntityCommandError(
-            f"{entity_config.entity_type.value} entity not found for id {args.id!r}"
+            f"{entity_config.entity_type.value} entity not found for id {entity_id!r}"
         )
     return {
         "entity_type": entity_config.entity_type,
@@ -70,6 +75,10 @@ def get_entity_from_args(args) -> dict[str, Any]:
         "table_name": entity_config.table_name,
         "row": row,
     }
+
+
+def build_entity_args(entity_type: str, entity_id: str) -> Namespace:
+    return Namespace(entity_type=entity_type, id=entity_id, json=False)
 
 
 def fetch_entity_row(

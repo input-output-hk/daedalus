@@ -561,15 +561,15 @@
           "id": "task-801",
           "title": "Implement read-only Search MCP server",
           "description": "Expose search, entity lookup, related results, and KB status tools over MCP",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-502",
             "task-503"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/mcp/search_server.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb/mcp/search_server.py"
         },
         {
           "id": "task-802",

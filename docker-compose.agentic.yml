@@ -83,31 +83,33 @@ services:
     restart: unless-stopped
 
   mcp-search:
-    image: python:3.12-alpine@sha256:7747d47f92cfca63a6e2b50275e23dba8407c30d8ae929a88ddd49a5d3f2d331
+    build:
+      context: ./agentic
+    entrypoint:
+      - agentic-kb
     environment:
       - DATABASE_URL=postgresql://${AGENTIC_DB_USER:-agentic}:${AGENTIC_DB_PASSWORD:-agentic}@paradedb:5432/${AGENTIC_DB_NAME:-agentic_kb}
       - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_EMBED_MODEL=${OLLAMA_EMBED_MODEL:-all-minilm}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
     volumes:
-      - mcp_search_data:/var/lib/mcp-search
+      - .:/workspace
+      - ./agentic/snapshots:/workspace/agentic/snapshots
     depends_on:
       paradedb:
         condition: service_healthy
       ollama-init:
         condition: service_completed_successfully
+    working_dir: /workspace
     command:
-      - /bin/sh
-      - -ec
-      - |
-        mkdir -p /var/lib/mcp-search
-        printf 'mcp-search placeholder service; replace in task-104\n' > /var/lib/mcp-search/README.txt
-        touch /tmp/mcp-search.ready
-        trap 'exit 0' TERM INT
-        while :; do sleep 3600; done
+      - mcp-search
+    stdin_open: true
     healthcheck:
       test:
-        - CMD-SHELL
-        - test -f /tmp/mcp-search.ready
+        - CMD
+        - agentic-kb
+        - status
+        - --healthcheck
       interval: 30s
       timeout: 5s
       retries: 3
@@ -118,6 +120,4 @@ volumes:
   paradedb_data:
     driver: local
   ollama_data:
-    driver: local
-  mcp_search_data:
     driver: local

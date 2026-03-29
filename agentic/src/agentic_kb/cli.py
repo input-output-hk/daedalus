@@ -3,11 +3,13 @@ from __future__ import annotations
 import argparse
 
 from agentic_kb.commands.entity import add_entity_subcommands
+from agentic_kb.commands.output import print_stderr
 from agentic_kb.commands.search import add_search_arguments, run_search
 from agentic_kb.commands.service import run_service
 from agentic_kb.commands.snapshot import add_snapshot_subcommands
 from agentic_kb.commands.status import run_status
 from agentic_kb.commands.sync import add_sync_subcommands
+from agentic_kb.mcp import run_mcp_search
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -64,6 +66,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     service_parser.set_defaults(handler=run_service)
 
+    mcp_search_parser = subparsers.add_parser(
+        "mcp-search",
+        help="Run the read-only Search MCP server over stdio",
+    )
+    mcp_search_parser.set_defaults(handler=run_mcp_search)
+
     return parser
 
 
@@ -76,7 +84,13 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 1
 
-    return int(handler(args) or 0)
+    try:
+        return int(handler(args) or 0)
+    except BrokenPipeError:
+        return 0
+    except Exception as error:  # pragma: no cover - top-level runtime guard
+        print_stderr(str(error))
+        return 1
 
 
 if __name__ == "__main__":
