@@ -1,5 +1,7 @@
 # Task Plan: task-602 Implement snapshot export and import commands
 
+Historical note: this task plan predates the retirement of the GitHub Actions-based snapshot publication path. Any references here to `task-603` as a future GitHub Actions publication workflow are now outdated; local GPU-backed publication to private shared storage is the only supported v1 direction.
+
 - Task ID: `task-602`
 - Title: `Implement snapshot export and import commands`
 - Planning Status: `approved`

@@ -1,5 +1,7 @@
 # Task Plan: task-603 Add shared snapshot publication workflow
 
+Historical note: this task plan describes a GitHub Actions-based publication path that has since been retired. `.github/workflows/agentic-kb-sync.yml` was removed as part of `task-607`, and local GPU-backed publication to private shared storage is the only supported v1 direction.
+
 - Task ID: `task-603`
 - Title: `Add shared snapshot publication workflow`
 - Planning Status: `approved`
@@ -162,7 +164,7 @@
 
 ## Final Outcome
 
-- `task-603` is complete. The planning loop reached approval, the implementation loop reached approval after one workflow sequencing fix, and the task now ships a manual GitHub Actions artifact publication path for the canonical `develop` KB baseline.
+- `task-603` is historical only. The planning loop and implementation loop originally shipped a manual GitHub Actions artifact publication path for the canonical `develop` KB baseline, but that path has since been retired and removed in favor of local-only publication.
 
 ## Planning Status Rationale
 

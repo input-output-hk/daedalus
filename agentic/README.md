@@ -71,33 +71,26 @@ Current boundaries:
 
 ## Shared Baseline Snapshot Artifact
 
-The canonical team baseline is now published manually with GitHub Actions workflow `.github/workflows/agentic-kb-sync.yml`.
+The canonical team baseline is local-only in v1.
 
-Publication contract:
+Current contract:
 
-- trigger: `workflow_dispatch` only for task-603
-- canonical source ref: `refs/heads/develop` only
-- required secret: `AGENTIC_KB_SYNC_GITHUB_TOKEN`
-- artifact name: `agentic-kb-develop-baseline-<github-sha>`
-- artifact payload: exactly one `.dump` plus its sibling `.manifest.json`
+- publication runs from `develop` on a trusted GPU-capable developer machine
+- the portable payload is exactly one `.dump` plus its sibling `.manifest.json`
+- snapshots are shared through a private storage backend outside git history
+- GitHub Actions artifacts are retired and are not a supported publication channel
 
-Why the explicit secret matters:
+Current local publication shape:
 
-- the workflow runs `sync all`, which includes `sync github` and `sync project`
-- `sync project` needs token access that the default GitHub Actions `GITHUB_TOKEN` cannot reliably guarantee for `DripDropz` ProjectV2 reads
-- the workflow fails early if `AGENTIC_KB_SYNC_GITHUB_TOKEN` is missing rather than silently skipping GitHub-backed sources
+1. Start the stack locally.
+2. Run `sync all` from a trusted developer machine.
+3. Run `snapshot export` to produce the portable pair.
+4. Upload the pair to the team's chosen private shared storage backend.
 
-Manual publication path:
+Current manual consumption path:
 
-1. Open the `Publish Agentic KB Develop Baseline` workflow in GitHub Actions.
-2. Run it from `develop`.
-3. Wait for `sync all`, `snapshot export`, `status --json`, and the deterministic BM25 proof to pass.
-4. Download the `agentic-kb-develop-baseline-<github-sha>` artifact from that run.
-
-Manual consumption path:
-
-1. Download the artifact from the successful workflow run.
-2. Extract the two files into `agentic/snapshots/`.
+1. Download the shared snapshot pair from the private storage backend.
+2. Place the two files into `agentic/snapshots/`.
 3. Import either the `.dump` path or the sibling `.manifest.json` path.
 
 ```bash
@@ -115,6 +108,8 @@ Validation expectations after import:
 - the first hit should have `fields.source_path = ".agent/workflows/agentic-kb.md"`
 
 `sync changed` remains optional follow-on work after import when a developer wants to refresh local deltas on top of the shared baseline.
+
+The exact backend selection, naming, retention, publish helpers, and fetch helpers are still tracked as pending rollout work.
 
 ## MCP Setup
 

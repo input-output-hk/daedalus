@@ -23,6 +23,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - Do not require pre-commit indexing or any other always-on local background daemon in v1.
 - Do not give MCP write access to GitHub, the repository, or the knowledge database in v1.
 - Do not treat GitHub-hosted Actions runners as the canonical embedding or snapshot publication environment in v1.
+- Retire and remove any existing GitHub Actions-based KB snapshot publication path. It is not a supported fallback in v1.
 
 ## Requirements
 
@@ -37,6 +38,8 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers.
 - [ ] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
 - [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
+- [ ] Provide a manual full Project 5 refresh path so eventual freshness converges even when edits land on already-seen items.
+- [ ] Document the v1 disposable-volume policy for schema changes and snapshot restore targets.
 
 ## Technical Design
 
@@ -212,6 +215,7 @@ Search should support filters by:
 - GPU is preferred for full rebuilds and canonical baseline publication because it keeps embedding latency practical as the corpus grows.
 - CPU-only local operation must still work for import, status checks, BM25 queries, and targeted sync operations, even if full rebuilds are slower.
 - GitHub-hosted Actions may remain useful later for lightweight verification, but they are not the source of truth for canonical KB snapshots in v1.
+- The prior GitHub Actions-based snapshot publication path is retired and should be removed rather than preserved as a fallback.
 
 ### Export / Import and Multi-Developer Sharing
 
@@ -245,6 +249,8 @@ This gives the team two supported modes:
 1. **Fast start** - import latest shared snapshot, then sync deltas
 2. **Full rebuild** - ingest from scratch on a local developer machine when validating the pipeline itself or republishing the canonical baseline
 
+Shared-baseline publication is local-only in v1. GitHub Actions artifacts are not a supported publication channel and any transitional workflow in that direction should be removed.
+
 ### Freshness and Update Strategy
 
 The knowledge base should be explicitly refreshable and able to detect staleness.
@@ -265,6 +271,7 @@ Provide commands for:
 - Compare indexed repo commit against local `HEAD` for docs/code sources.
 - Compare GitHub watermarks (`updatedAt`, comment counts, project cursors) against last sync state.
 - Warn agents and humans when local results are older than the current branch or GitHub state.
+- For GitHub Project 5 items, eventual freshness is acceptable in v1. Cursor-based incremental sync does not need to guarantee immediate replay of edits to already-seen items as long as the platform also provides a manual full refresh path that re-converges project state.
 
 #### Automation
 
@@ -273,6 +280,7 @@ Provide commands for:
 - The shared storage backend should be durable, private, and independently discoverable by the two developers using the platform.
 - Optional future automation should be evaluated only if it preserves GPU access, artifact durability, and the current security boundary.
 - Local developers should not be forced through expensive indexing on every commit.
+- Existing GitHub Actions-based publication automation should be removed as part of the rollout rather than maintained in parallel.
 
 ### MCP and Agent Integration
 
@@ -288,6 +296,8 @@ Recommended tools:
 - `find_related`
 - `kb_status`
 
+The supported MCP client contract is stdio via `docker compose -f docker-compose.agentic.yml run --rm -T mcp-search`. The Compose `mcp-search` service exists only as a parity or smoke harness for that same stdio process and is not a network daemon that clients connect to.
+
 Required documentation:
 
 - OpenCode setup example
@@ -302,6 +312,8 @@ Required documentation:
 - Do not couple KB credentials or services to the wallet runtime.
 - Treat snapshots as internal developer artifacts because they may contain copied GitHub discussions and project metadata.
 - Keep shared snapshots out of normal git history and out of Git LFS in v1.
+- Snapshot import is supported only against fresh, isolated, or otherwise disposable KB databases.
+- In-place schema upgrades are not a v1 requirement. When schema contracts change, the supported recovery path is to recreate the KB volume and import a compatible snapshot or rebuild locally.
 
 ## Implementation Phases
 
@@ -350,6 +362,7 @@ Required documentation:
 
 - Add `sync` commands.
 - Add stale-index detection.
+- Add a manual full Project 5 refresh path so eventual freshness can re-converge after edits to already-seen items.
 - Add local baseline refresh/publication workflow docs, shared-storage fetch helpers, and smoke checks.
 
 ### Phase 8 - MCP and Agent Documentation
@@ -396,6 +409,8 @@ Required documentation:
 - Shared snapshots should be published from trusted local GPU-equipped developer machines to private shared artifact storage outside git history.
 - Project 5 is new enough that we can shape its metadata to fit this workflow; the initial field conventions are `Status`, `Priority`, `Size`, `Work Type`, `Area`, `Phase`, `KB Impact`, `Start date`, and `Target date`.
 - The first code ingestor should cover the entire repository immediately, with metadata and filters preserving fast access to the most agent-relevant areas.
+- Eventual freshness is acceptable for Project 5 items in v1 as long as the platform provides a manual full refresh path.
+- Disposable KB volumes are acceptable in v1; in-place schema upgrade support is not required.
 
 ## References
 
@@ -409,4 +424,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`. The first schema bootstrap now lives in `agentic/schema/init.sql`, enabling `pg_search` and `vector`, creating the `agentic` schema, and seeding `agentic.kb_schema_migrations` for future upgrades on fresh DB volumes. After review of the remaining rollout work, the publication strategy has pivoted away from GitHub-hosted Actions toward trusted local GPU-backed baseline publication with private shared snapshot storage; the existing Actions workflow is now treated as transitional implementation to unwind rather than the target operating model.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The Phase 1 compose scaffold now exists in `docker-compose.agentic.yml` with pinned images, localhost-only ports, healthchecks, and named volumes. `kb-tools` now builds from the local `agentic/` Python package with a packaged `agentic-kb` CLI, while `mcp-search` remains the placeholder service scheduled for `task-104`. The first schema bootstrap now lives in `agentic/schema/init.sql`, enabling `pg_search` and `vector`, creating the `agentic` schema, and seeding `agentic.kb_schema_migrations` for future upgrades on fresh DB volumes. After review of the remaining rollout work, the publication strategy has pivoted away from GitHub-hosted Actions toward trusted local GPU-backed baseline publication with private shared snapshot storage; any existing Actions-based publication workflow is now out of target state and should be removed rather than retained as a fallback.

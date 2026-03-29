@@ -1,5 +1,7 @@
 # Task Plan: task-701 Implement sync commands for all sources
 
+Historical note: this task plan predates the retirement of the GitHub Actions-based snapshot publication path. References here to `task-703` as GitHub Actions or CI-based publication automation are now outdated; the remaining v1 work is local-only publication plus manual re-convergence paths.
+
 - Task ID: `task-701`
 - Title: `Implement sync commands for all sources`
 - Planning Status: `approved`

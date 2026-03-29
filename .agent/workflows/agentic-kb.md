@@ -117,12 +117,13 @@ The platform is designed for multiple human developers, not just one local machi
 
 ### Recommended Team Pattern
 
-1. Publish the canonical shared baseline manually from `develop` with `.github/workflows/agentic-kb-sync.yml`
-2. Download the successful workflow artifact `agentic-kb-develop-baseline-<github-sha>`
-3. Extract the `.dump` plus sibling `.manifest.json` pair into `agentic/snapshots/`
-4. Import the snapshot into a fresh or otherwise disposable KB database
-5. Validate the imported KB with `status --json` plus the deterministic BM25 documents-only proof
-6. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
+1. Build the canonical shared baseline locally from `develop` on a trusted GPU-capable developer machine
+2. Export the `.dump` plus sibling `.manifest.json` pair into `agentic/snapshots/`
+3. Upload that snapshot pair to the chosen private shared storage backend outside git history
+4. Download the snapshot pair onto another machine and place it in `agentic/snapshots/`
+5. Import the snapshot into a fresh or otherwise disposable KB database
+6. Validate the imported KB with `status --json` plus the deterministic BM25 documents-only proof
+7. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
 
 Incremental caveats for `sync changed`:
 
@@ -130,20 +131,19 @@ Incremental caveats for `sync changed`:
 - docs and code deltas are computed from each source's stored baseline commit to current `HEAD`, so rebases can include broader catch-up than purely branch-local edits
 - GitHub incremental runs use one shared lower bound across all four streams, but upstream `since` still applies only to `issues` and `issue_comments`; `pulls` and `review_comments` remain ordered-fetch streams with client-side filtering
 - Project refresh is cursor continuation only from stored `after_cursor`; it does not detect updates to already-seen items yet
+- eventual freshness is acceptable for Project 5 items in v1, but the final workflow must also document a manual full Project refresh path for re-convergence
 
 ### Snapshot Publication
 
-The canonical shared baseline is published manually with GitHub Actions workflow `.github/workflows/agentic-kb-sync.yml`.
+The canonical shared baseline is published locally, not through GitHub Actions.
 
-- trigger shape for task-603 is `workflow_dispatch` only
-- canonical publication is restricted to `refs/heads/develop`; manual dispatch from any other ref fails clearly and does not publish a canonical branch snapshot
-- the workflow bootstraps the stack with `docker-compose.agentic.yml`, runs `sync all`, exports a fresh snapshot pair, verifies `status --json`, runs `search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"`, and uploads the artifact only after those checks pass
-- the required artifact name is `agentic-kb-develop-baseline-<github-sha>`
-- the artifact payload is exactly the exported `.dump` plus sibling `.manifest.json` pair; no extra repo-specific archive layer is added
-- the workflow requires explicit secret `AGENTIC_KB_SYNC_GITHUB_TOKEN` because `sync github` and `sync project` need token-backed GitHub reads and ProjectV2 access cannot be assumed from the default Actions token
-- GitHub Releases assets are out of scope for KB snapshot sharing
+- publication runs from `develop` on a trusted GPU-capable developer machine
+- publication builds a fresh baseline with `sync all`, exports a snapshot pair, validates it locally, and uploads it to the chosen private shared storage backend
+- the portable payload remains exactly the exported `.dump` plus sibling `.manifest.json` pair; no extra repo-specific archive layer is required
+- GitHub Actions artifacts and GitHub Releases assets are both out of scope for KB snapshot sharing in v1
+- the exact storage backend, naming, retention, and helper commands are still tracked as pending rollout work
 
-Consumption path after download:
+Consumption path after download from the shared private storage backend:
 
 ```bash
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
@@ -185,6 +185,7 @@ Current shipped freshness handling is status-driven rather than automatic sync:
 - if `GITHUB_TOKEN` is absent, GitHub and Project freshness report `skipped` instead of pretending those sources are fresh
 - `status --healthcheck` remains lightweight and does not run git or GitHub freshness checks
 - `sync changed` remains the follow-on command to refresh stale baselines after a seeded or imported KB, but Project freshness still cannot guarantee replay of edits to already-seen items under the current cursor-only sync contract
+- eventual freshness for Project 5 items is acceptable in v1, and the remaining rollout work includes documenting a manual full Project refresh path for re-convergence
 
 ## MCP Setup
 

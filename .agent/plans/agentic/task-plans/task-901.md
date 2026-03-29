@@ -1,5 +1,7 @@
 # Task Plan: task-901 Validate clean-machine bootstrap
 
+Historical note: this task plan was written before the GitHub Actions-based snapshot publication path was retired. References here to `task-603` as a pending CI publication workflow are now outdated; v1 now assumes local GPU-backed publication to private shared storage, and `task-901` has been reopened in the tracker to validate that final workflow instead.
+
 - Task ID: `task-901`
 - Title: `Validate clean-machine bootstrap`
 - Planning Status: `approved`

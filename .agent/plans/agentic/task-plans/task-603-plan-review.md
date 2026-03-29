@@ -1,3 +1,5 @@
+Historical note: this planning review log covers the now-retired GitHub Actions publication path for `task-603`. That path has been removed, and this file remains only as historical record.
+
 Planner: Iteration 1
 Timestamp: 2026-03-29T16:46:46Z
 Outcome: initial_plan_documented

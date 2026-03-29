@@ -1,3 +1,5 @@
+Historical note: this review log documents implementation of a GitHub Actions publication path that has since been retired. `.github/workflows/agentic-kb-sync.yml` was removed as part of `task-607`, and this file remains only as historical record.
+
 Implementation: Iteration 1
 Timestamp: 2026-03-29T17:05:00Z
 Outcome: implemented

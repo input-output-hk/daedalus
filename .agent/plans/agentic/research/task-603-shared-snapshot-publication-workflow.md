@@ -1,5 +1,7 @@
 # Task 603 Shared Snapshot Publication Workflow Research
 
+Historical note: this research captured the now-retired GitHub Actions publication path for `task-603`. That path has been removed, and local GPU-backed publication to private shared storage is the only supported v1 direction.
+
 - Date: 2026-03-29
 - Task: `task-603`
 - Evidence: `.github/workflows/agentic-kb-sync.yml`, `docker-compose.agentic.yml`, `agentic/README.md`, `.agent/workflows/agentic-kb.md`, `agentic/src/agentic_kb/commands/snapshot.py`, `agentic/src/agentic_kb/commands/sync.py`, `agentic/src/agentic_kb/commands/status.py`, `agentic/src/agentic_kb/commands/search.py`
