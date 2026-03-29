@@ -452,7 +452,7 @@
           "id": "task-505",
           "title": "Add automated search ranking regression gate",
           "description": "Turn the checked-in search fixtures into an automated BM25, vector, and RRF regression suite so ranking quality remains a release-blocking contract rather than a manual check",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
@@ -460,7 +460,7 @@
             "task-503",
             "task-504"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/tests/test_search_regression.py"
         }
       ]
