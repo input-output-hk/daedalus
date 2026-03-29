@@ -13,6 +13,7 @@ from agentic_kb.snapshot_manifest import (
     SNAPSHOT_ARTIFACT_COMPRESSION_LEVEL,
     SNAPSHOT_ARTIFACT_CONTENT_HASH_PREFIX,
     SNAPSHOT_ARTIFACT_DUMP_FORMAT,
+    SNAPSHOT_EMBEDDING_CONTRACT_ID,
     SNAPSHOT_ENTITY_COUNT_KEYS,
     SNAPSHOT_MANIFEST_SCHEMA_ID,
     SNAPSHOT_MANIFEST_SCHEMA_VERSION,
@@ -47,6 +48,10 @@ class SnapshotManifestSchemaTests(unittest.TestCase):
             SNAPSHOT_ARTIFACT_COMPRESSION_LEVEL,
         )
         self.assertTrue(self.example["artifact"]["content_hash"].startswith(SNAPSHOT_ARTIFACT_CONTENT_HASH_PREFIX))
+        self.assertEqual(
+            self.example["embedding_contract"]["contract_id"],
+            SNAPSHOT_EMBEDDING_CONTRACT_ID,
+        )
         self.assertEqual(tuple(self.example["entity_counts"].keys()), SNAPSHOT_ENTITY_COUNT_KEYS)
 
     def test_example_manifest_conforms_to_schema(self):
@@ -96,6 +101,19 @@ class SnapshotManifestSchemaTests(unittest.TestCase):
         manifest = copy.deepcopy(self.example)
         manifest["sync_state"]["github"]["discussions"] = {"updated_at_watermark": None}
         self._assert_invalid(manifest, "sync_state/github")
+
+    def test_embedding_contract_rejects_missing_or_invalid_fields(self):
+        manifest = copy.deepcopy(self.example)
+        del manifest["embedding_contract"]["embedding_dimension"]
+        self._assert_invalid(manifest, "embedding_contract")
+
+        manifest = copy.deepcopy(self.example)
+        manifest["embedding_contract"]["contract_id"] = ""
+        self._assert_invalid(manifest, "embedding_contract/contract_id")
+
+        manifest = copy.deepcopy(self.example)
+        manifest["embedding_contract"]["unexpected"] = True
+        self._assert_invalid(manifest, "embedding_contract")
 
     def test_normalize_sync_state_records_exports_public_fields_only(self):
         attempted_at = datetime(2026, 3, 29, 1, 0, tzinfo=timezone.utc)

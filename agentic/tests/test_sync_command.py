@@ -14,6 +14,7 @@ from agentic_kb import cli
 from agentic_kb.commands import sync
 from agentic_kb.config import AgenticConfig
 from agentic_kb.ingest import docs, github, project
+from agentic_kb.snapshot_manifest import SNAPSHOT_EMBEDDING_CONTRACT_ID, SnapshotManifestRecord
 from agentic_kb.sync.state import (
     InMemorySyncStateStore,
     PreparedSyncState,
@@ -652,6 +653,103 @@ class SyncCommandTests(unittest.TestCase):
         self.assertEqual(stdout.getvalue(), "")
         self.assertIn("sync changed failed: missing baseline", stderr.getvalue())
 
+    @patch("agentic_kb.commands.sync._load_latest_imported_snapshot_manifest")
+    def test_sync_changed_allows_local_only_kb_without_imported_snapshot_metadata(self, load_manifest):
+        load_manifest.return_value = None
+
+        sync.ensure_sync_changed_snapshot_compatibility(
+            "postgresql://localhost/test",
+            AgenticConfig(
+                database_url="postgresql://localhost/test",
+                ollama_base_url="http://ollama:11434",
+                ollama_embed_model="all-minilm",
+                github_token="token",
+            ),
+        )
+
+    @patch("agentic_kb.commands.sync._load_latest_imported_snapshot_manifest")
+    def test_sync_changed_rejects_legacy_imported_manifest(self, load_manifest):
+        load_manifest.return_value = _snapshot_record(None, legacy=True)
+
+        with self.assertRaisesRegex(sync.SyncCommandError, "legacy embedding_model-only manifests are unsupported"):
+            sync.ensure_sync_changed_snapshot_compatibility(
+                "postgresql://localhost/test",
+                AgenticConfig(
+                    database_url="postgresql://localhost/test",
+                    ollama_base_url="http://ollama:11434",
+                    ollama_embed_model="all-minilm",
+                    github_token="token",
+                ),
+            )
+
+    @patch("agentic_kb.commands.sync._load_latest_imported_snapshot_manifest")
+    def test_sync_changed_rejects_incompatible_imported_manifest_before_sync_work(self, load_manifest):
+        load_manifest.return_value = _snapshot_record(
+            {
+                "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+                "embedding_model": "different-model",
+                "embedding_dimension": 384,
+            }
+        )
+
+        with self.assertRaisesRegex(sync.SyncCommandError, "embedding model"):
+            sync.ensure_sync_changed_snapshot_compatibility(
+                "postgresql://localhost/test",
+                AgenticConfig(
+                    database_url="postgresql://localhost/test",
+                    ollama_base_url="http://ollama:11434",
+                    ollama_embed_model="all-minilm",
+                    github_token="token",
+                ),
+            )
+
+    @patch("agentic_kb.commands.sync._load_latest_imported_snapshot_manifest")
+    def test_sync_changed_rejects_imported_manifest_with_extra_embedding_contract_keys(self, load_manifest):
+        load_manifest.return_value = _snapshot_record(
+            {
+                "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+                "embedding_model": "all-minilm",
+                "embedding_dimension": 384,
+                "unexpected": True,
+            }
+        )
+
+        with self.assertRaisesRegex(sync.SyncCommandError, "unexpected fields"):
+            sync.ensure_sync_changed_snapshot_compatibility(
+                "postgresql://localhost/test",
+                AgenticConfig(
+                    database_url="postgresql://localhost/test",
+                    ollama_base_url="http://ollama:11434",
+                    ollama_embed_model="all-minilm",
+                    github_token="token",
+                ),
+            )
+
+    @patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config")
+    @patch("agentic_kb.commands.sync.ensure_sync_changed_snapshot_compatibility")
+    @patch("agentic_kb.commands.sync._require_code_ingest_dependencies")
+    def test_sync_changed_checks_snapshot_compatibility_before_creating_embedding_client(
+        self,
+        require_code_ingest_dependencies,
+        ensure_compatibility,
+        embedding_client_from_config,
+    ):
+        ensure_compatibility.side_effect = sync.SyncCommandError("contract mismatch")
+
+        with self.assertRaisesRegex(sync.SyncCommandError, "contract mismatch"):
+            sync.sync_changed(
+                Path.cwd(),
+                config=AgenticConfig(
+                    database_url="postgresql://localhost/test",
+                    ollama_base_url="http://ollama:11434",
+                    ollama_embed_model="all-minilm",
+                    github_token="token",
+                ),
+            )
+
+        require_code_ingest_dependencies.assert_called_once_with("sync changed")
+        embedding_client_from_config.assert_not_called()
+
     def _seed_docs_baseline(self, store: InMemorySyncStateStore, *, repo_commit_hash: str):
         state = PreparedSyncState(
             id=deterministic_sync_state_id("docs", repo_scope_key()),
@@ -824,3 +922,52 @@ class SyncCommandTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _snapshot_record(contract, *, legacy=False):
+    manifest = {
+        "$schema": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json",
+        "schema_version": 1,
+        "snapshot_name": "imported-snapshot",
+        "snapshot_created_at": "2026-03-29T12:00:00Z",
+        "artifact": {
+            "filename": "imported-snapshot.dump",
+            "dump_format": "postgresql_custom",
+            "compression": {"algorithm": "gzip", "level": 6},
+            "size_bytes": 1,
+            "content_hash": "sha256:" + "1" * 64,
+        },
+        "repo": {"name": "DripDropz/daedalus", "docs_commit_hash": None, "code_commit_hash": None},
+        "entity_counts": {
+            "documents": 0,
+            "code_chunks": 0,
+            "github_issues": 0,
+            "github_issue_comments": 0,
+            "github_prs": 0,
+            "github_pr_comments": 0,
+            "project_items": 0,
+        },
+        "sync_state": {
+            "docs": {"repo_commit_hash": None, "last_synced_at": None},
+            "code": {"repo_commit_hash": None, "last_synced_at": None},
+            "github": {
+                "issues": {"updated_at_watermark": None},
+                "pulls": {"updated_at_watermark": None},
+                "issue_comments": {"updated_at_watermark": None},
+                "review_comments": {"updated_at_watermark": None},
+            },
+            "project": {"owner": "DripDropz", "number": 5, "cursor": None, "updated_at_watermark": None},
+        },
+    }
+    if legacy:
+        manifest["embedding_model"] = "all-minilm"
+    else:
+        manifest["embedding_contract"] = contract
+    return SnapshotManifestRecord(
+        snapshot_name="imported-snapshot",
+        snapshot_created_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+        imported_at=datetime(2026, 3, 29, 12, 5, tzinfo=timezone.utc),
+        source_path="/tmp/imported-snapshot.manifest.json",
+        content_hash="sha256:" + "1" * 64,
+        manifest=manifest,
+    )

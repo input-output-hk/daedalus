@@ -57,6 +57,8 @@ class SnapshotCommandDbTests(unittest.TestCase):
             self.assertEqual(manifest["artifact"]["filename"], dump_path.name)
             self.assertEqual(manifest["artifact"]["size_bytes"], dump_path.stat().st_size)
             self.assertEqual(manifest["artifact"]["content_hash"], snapshot.compute_file_sha256(dump_path))
+            self.assertEqual(manifest["embedding_contract"]["embedding_model"], "all-minilm:l6-v2")
+            self.assertEqual(manifest["embedding_contract"]["embedding_dimension"], 384)
             self.assertEqual(manifest["entity_counts"]["documents"], 1)
             self.assertEqual(manifest["repo"]["docs_commit_hash"], "cafebabe")
             self.assertIsNone(manifest["repo"]["code_commit_hash"])
@@ -216,7 +218,11 @@ class SnapshotCommandDbTests(unittest.TestCase):
                     "docs_commit_hash": None,
                     "code_commit_hash": None,
                 },
-                "embedding_model": "all-minilm:l6-v2",
+                "embedding_contract": {
+                    "contract_id": "daedalus-agentic-kb-embedding-contract-v1",
+                    "embedding_model": "all-minilm:l6-v2",
+                    "embedding_dimension": 384,
+                },
                 "entity_counts": {
                     "documents": 1,
                     "code_chunks": 0,
@@ -262,6 +268,45 @@ class SnapshotCommandDbTests(unittest.TestCase):
                 public_table_present = bool(cursor.fetchone()[0])
 
             self.assertFalse(public_table_present)
+
+    def test_import_fails_before_restore_when_embedding_contract_is_incompatible(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-608-contract-mismatch.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["embedding_contract"]["embedding_dimension"] = 512
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            before_counts = status.inspect_database(self.database_url).row_counts.copy()
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "snapshot embedding contract is incompatible"):
+                snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+            after_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(after_counts["agentic.kb_documents"], before_counts["agentic.kb_documents"])
+
+    def test_import_fails_before_restore_for_legacy_embedding_model_only_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-608-legacy-manifest.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["embedding_model"] = manifest["embedding_contract"]["embedding_model"]
+            del manifest["embedding_contract"]
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            before_counts = status.inspect_database(self.database_url).row_counts.copy()
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "legacy embedding_model-only manifests are unsupported"):
+                snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+            after_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(after_counts["agentic.kb_documents"], before_counts["agentic.kb_documents"])
 
     def test_import_succeeds_for_fresh_database_without_agentic_schema(self):
         with tempfile.TemporaryDirectory() as temp_dir:

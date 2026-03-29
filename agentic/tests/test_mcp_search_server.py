@@ -165,6 +165,13 @@ class SearchMcpServerTests(unittest.TestCase):
             environment_items=(),
             dependency_items=(status_command.CheckResult(name="ollama api", ok=False, detail="down"),),
             database_items=(),
+            embedding_compatibility=status_command.EmbeddingCompatibilityReport(
+                state="unavailable",
+                detail="embedding compatibility inspection unavailable",
+                runtime_contract=None,
+                snapshot_contract=None,
+                snapshot_source=None,
+            ),
             freshness=status_command.FreshnessReport(
                 up_to_date=False,
                 items=(

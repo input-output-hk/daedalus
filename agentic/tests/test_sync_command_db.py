@@ -4,6 +4,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+import json
 from datetime import datetime, timezone
 from importlib.util import find_spec
 from pathlib import Path
@@ -12,6 +13,7 @@ from unittest.mock import patch
 from agentic_kb.commands import sync
 from agentic_kb.config import AgenticConfig
 from agentic_kb.ingest import docs, github, project
+from agentic_kb.snapshot_manifest import SNAPSHOT_EMBEDDING_CONTRACT_ID
 from agentic_kb.sync.state import (
     DEFAULT_PROJECT_NUMBER,
     DEFAULT_PROJECT_OWNER,
@@ -252,6 +254,98 @@ class SyncCommandDbTests(unittest.TestCase):
         self.assertEqual(docs_state[1]["candidate_paths"], ["README.md"])
         self.assertEqual(docs_state[1]["updated_paths"], [])
         self.assertEqual(docs_state[1]["skipped_paths"], ["README.md"])
+
+    def test_sync_changed_allows_compatible_imported_snapshot_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._git_init(workspace)
+            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
+            baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
+            self._seed_imported_baseline(workspace, baseline_commit)
+            _replace_imported_snapshot_manifest(
+                self.connection,
+                _manifest_fixture(
+                    snapshot_name="compatible-imported",
+                    contract={
+                        "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+                        "embedding_model": "all-minilm",
+                        "embedding_dimension": 384,
+                    },
+                ),
+                embedding_model="all-minilm",
+            )
+
+            sync.ensure_sync_changed_snapshot_compatibility(
+                self.database_url,
+                AgenticConfig(
+                    database_url=self.database_url,
+                    ollama_base_url="http://ollama:11434",
+                    ollama_embed_model="all-minilm",
+                    github_token="token",
+                ),
+            )
+
+    def test_sync_changed_blocks_incompatible_imported_snapshot_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._git_init(workspace)
+            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
+            baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
+            self._seed_imported_baseline(workspace, baseline_commit)
+            _replace_imported_snapshot_manifest(
+                self.connection,
+                _manifest_fixture(
+                    snapshot_name="incompatible-imported",
+                    contract={
+                        "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+                        "embedding_model": "different-model",
+                        "embedding_dimension": 384,
+                    },
+                ),
+                embedding_model="different-model",
+            )
+
+            with self.assertRaisesRegex(sync.SyncCommandError, "embedding model"):
+                sync.ensure_sync_changed_snapshot_compatibility(
+                    self.database_url,
+                    AgenticConfig(
+                        database_url=self.database_url,
+                        ollama_base_url="http://ollama:11434",
+                        ollama_embed_model="all-minilm",
+                        github_token="token",
+                    ),
+                )
+
+    def test_sync_changed_blocks_legacy_imported_snapshot_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._git_init(workspace)
+            self._write_file(workspace / "README.md", "# Readme\n\nbaseline\n")
+            self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
+            baseline_commit = self._git_commit_all(workspace, "baseline snapshot")
+            self._seed_imported_baseline(workspace, baseline_commit)
+            _replace_imported_snapshot_manifest(
+                self.connection,
+                _manifest_fixture(
+                    snapshot_name="legacy-imported",
+                    contract=None,
+                    legacy=True,
+                ),
+                embedding_model="legacy-model",
+            )
+
+            with self.assertRaisesRegex(sync.SyncCommandError, "legacy embedding_model-only manifests are unsupported"):
+                sync.ensure_sync_changed_snapshot_compatibility(
+                    self.database_url,
+                    AgenticConfig(
+                        database_url=self.database_url,
+                        ollama_base_url="http://ollama:11434",
+                        ollama_embed_model="all-minilm",
+                        github_token="token",
+                    ),
+                )
 
     def test_sync_all_stops_after_first_failure_and_persists_only_attempted_sources(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -504,6 +598,100 @@ def _sanitized_sql(path: Path) -> str:
             continue
         lines.append(line)
     return "\n".join(lines)
+
+
+def _manifest_fixture(snapshot_name: str, contract, *, legacy=False) -> dict:
+    manifest = {
+        "$schema": "https://raw.githubusercontent.com/DripDropz/daedalus/develop/agentic/config/snapshot-manifest.schema.json",
+        "schema_version": 1,
+        "snapshot_name": snapshot_name,
+        "snapshot_created_at": "2026-03-29T10:00:00Z",
+        "artifact": {
+            "filename": f"{snapshot_name}.dump",
+            "dump_format": "postgresql_custom",
+            "compression": {"algorithm": "gzip", "level": 6},
+            "size_bytes": 1,
+            "content_hash": "sha256:" + "4" * 64,
+        },
+        "repo": {"name": DEFAULT_SYNC_REPO, "docs_commit_hash": None, "code_commit_hash": None},
+        "entity_counts": {
+            "documents": 0,
+            "code_chunks": 0,
+            "github_issues": 0,
+            "github_issue_comments": 0,
+            "github_prs": 0,
+            "github_pr_comments": 0,
+            "project_items": 0,
+        },
+        "sync_state": {
+            "docs": {"repo_commit_hash": None, "last_synced_at": None},
+            "code": {"repo_commit_hash": None, "last_synced_at": None},
+            "github": {
+                "issues": {"updated_at_watermark": None},
+                "pulls": {"updated_at_watermark": None},
+                "issue_comments": {"updated_at_watermark": None},
+                "review_comments": {"updated_at_watermark": None},
+            },
+            "project": {
+                "owner": DEFAULT_PROJECT_OWNER,
+                "number": DEFAULT_PROJECT_NUMBER,
+                "cursor": None,
+                "updated_at_watermark": None,
+            },
+        },
+    }
+    if legacy:
+        manifest["embedding_model"] = "legacy-model"
+    else:
+        manifest["embedding_contract"] = contract
+    return manifest
+
+
+def _replace_imported_snapshot_manifest(connection, manifest: dict, *, embedding_model: str) -> None:
+    snapshot_name = manifest["snapshot_name"]
+    with connection.transaction():
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM agentic.kb_snapshot_manifest")
+            cursor.execute(
+                """
+                INSERT INTO agentic.kb_snapshot_manifest (
+                    id,
+                    snapshot_name,
+                    schema_version,
+                    snapshot_created_at,
+                    embedding_model,
+                    entity_counts,
+                    github_watermarks,
+                    manifest,
+                    source_path,
+                    content_hash,
+                    imported_at
+                ) VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    '{}'::jsonb,
+                    '{}'::jsonb,
+                    %s::jsonb,
+                    %s,
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    f"snapshot-manifest:{snapshot_name}",
+                    snapshot_name,
+                    1,
+                    datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+                    embedding_model,
+                    json.dumps(manifest),
+                    f"/tmp/{snapshot_name}.manifest.json",
+                    "sha256:" + "4" * 64,
+                    datetime(2026, 3, 29, 10, 5, tzinfo=timezone.utc),
+                ),
+            )
 
 
 if __name__ == "__main__":

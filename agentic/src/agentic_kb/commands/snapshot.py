@@ -15,6 +15,9 @@ from agentic_kb.config import AgenticConfig, parse_database_endpoint
 from agentic_kb.snapshot_manifest import (
     SNAPSHOT_ENTITY_COUNT_KEYS,
     build_snapshot_manifest,
+    build_runtime_embedding_contract,
+    describe_embedding_contract_mismatches,
+    extract_snapshot_embedding_contract,
     normalize_sync_state_records,
     snapshot_manifest_record_fields,
     validate_snapshot_manifest,
@@ -74,7 +77,7 @@ class SnapshotExportMetadata:
     repo_name: str
     docs_commit_hash: str | None
     code_commit_hash: str | None
-    embedding_model: str
+    embedding_contract: Any
     entity_counts: dict[str, int]
     sync_state: dict[str, Any]
 
@@ -206,7 +209,7 @@ def export_snapshot(database_url: str, destination: str | Path) -> SnapshotResul
                 repo_name=metadata.repo_name,
                 docs_commit_hash=metadata.docs_commit_hash,
                 code_commit_hash=metadata.code_commit_hash,
-                embedding_model=metadata.embedding_model,
+                embedding_contract=metadata.embedding_contract,
                 entity_counts=metadata.entity_counts,
                 sync_state=metadata.sync_state,
             )
@@ -246,6 +249,7 @@ def import_snapshot(
     _ensure_required_binaries("psql", "pg_restore")
     validate_snapshot_artifact(pair.dump_path, manifest)
     ensure_disposable_import_target(database_url)
+    ensure_compatible_snapshot_import(manifest)
 
     restore_list_path = build_agentic_restore_list(pair.dump_path)
     _run_subprocess(build_drop_schema_command(database_url))
@@ -570,9 +574,8 @@ def _collect_export_metadata(
     repo_name = _resolve_repo_name(sync_records)
     sync_state = normalize_sync_state_records(sync_records, repo=repo_name)
     entity_counts = _fetch_entity_counts(cursor)
-    embedding_model = AgenticConfig.from_env().ollama_embed_model
-    if not embedding_model:
-        raise SnapshotCommandError("OLLAMA_EMBED_MODEL is required for snapshot export manifest metadata")
+    runtime_config = AgenticConfig.from_env()
+    embedding_contract = build_runtime_embedding_contract(runtime_config)
 
     return SnapshotExportMetadata(
         snapshot_name=snapshot_name_from_dump_path(output_path),
@@ -580,9 +583,29 @@ def _collect_export_metadata(
         repo_name=repo_name,
         docs_commit_hash=sync_state["docs"]["repo_commit_hash"],
         code_commit_hash=sync_state["code"]["repo_commit_hash"],
-        embedding_model=embedding_model,
+        embedding_contract=embedding_contract,
         entity_counts=entity_counts,
         sync_state=sync_state,
+    )
+
+
+def ensure_compatible_snapshot_import(manifest: dict[str, Any]) -> None:
+    try:
+        snapshot_contract = extract_snapshot_embedding_contract(manifest)
+        runtime_contract = build_runtime_embedding_contract(AgenticConfig.from_env())
+    except ValueError as error:
+        raise SnapshotCommandError(
+            f"{error}. Recreate the disposable KB volume and import a compatible snapshot or rebuild locally."
+        ) from error
+
+    mismatches = describe_embedding_contract_mismatches(snapshot_contract, runtime_contract)
+    if not mismatches:
+        return
+
+    mismatch_detail = "; ".join(mismatches)
+    raise SnapshotCommandError(
+        "snapshot embedding contract is incompatible with this KB tooling: "
+        f"{mismatch_detail}. Recreate the disposable KB volume and import a compatible snapshot or rebuild locally."
     )
 
 

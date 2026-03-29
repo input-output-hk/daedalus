@@ -9,6 +9,12 @@ from typing import Any, Sequence
 from agentic_kb.commands.output import print_stderr
 from agentic_kb.config import AgenticConfig
 from agentic_kb.embed import OllamaEmbeddingClient
+from agentic_kb.snapshot_manifest import (
+    build_runtime_embedding_contract,
+    describe_embedding_contract_mismatches,
+    extract_snapshot_embedding_contract,
+    fetch_latest_imported_snapshot_manifest,
+)
 from agentic_kb.ingest.docs import (
     DocsIngestResult,
     PostgresDocsStore,
@@ -505,6 +511,8 @@ def sync_changed(
     root = Path(workspace_root).resolve()
     attempted_at = datetime.now(timezone.utc)
     succeeded_at = datetime.now(timezone.utc)
+
+    ensure_sync_changed_snapshot_compatibility(config.database_url, config)
     embedding_client = OllamaEmbeddingClient.from_config(config)
 
     with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
@@ -563,6 +571,34 @@ def sync_changed(
         "project": project_result,
         "head_commit": get_head_commit(root),
     }
+
+
+def ensure_sync_changed_snapshot_compatibility(database_url: str, config: AgenticConfig) -> None:
+    runtime_contract = build_runtime_embedding_contract(config)
+    try:
+        imported_manifest = _load_latest_imported_snapshot_manifest(database_url)
+    except Exception as error:
+        raise SyncCommandError(f"unable to inspect imported snapshot compatibility metadata: {error}") from error
+
+    if imported_manifest is None:
+        return
+
+    try:
+        snapshot_contract = extract_snapshot_embedding_contract(imported_manifest.manifest)
+    except ValueError as error:
+        raise SyncCommandError(
+            f"{error}. The imported baseline is not safe to extend; recreate the KB and import a compatible snapshot or rebuild locally."
+        ) from error
+
+    mismatches = describe_embedding_contract_mismatches(snapshot_contract, runtime_contract)
+    if not mismatches:
+        return
+
+    raise SyncCommandError(
+        "latest imported snapshot embedding contract does not match this KB runtime contract: "
+        + "; ".join(mismatches)
+        + ". The imported baseline is not safe to extend; recreate the KB and import a compatible snapshot or rebuild locally."
+    )
 
 
 def format_sync_source_output(command_name: str, result: dict[str, Any]) -> list[str]:
@@ -1260,3 +1296,11 @@ def _format_timestamp(value: datetime | None) -> str | None:
     if value is None:
         return None
     return value.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _load_latest_imported_snapshot_manifest(database_url: str):
+    import psycopg
+
+    with psycopg.connect(database_url) as connection:
+        with connection.cursor() as cursor:
+            return fetch_latest_imported_snapshot_manifest(cursor)

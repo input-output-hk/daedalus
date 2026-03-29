@@ -12,6 +12,16 @@ from urllib.request import urlopen
 
 from agentic_kb.commands.output import print_json
 from agentic_kb.config import AgenticConfig, parse_database_endpoint
+from agentic_kb.snapshot_manifest import (
+    EmbeddingContract,
+    SnapshotManifestCompatibilityError,
+    SnapshotManifestRecord,
+    UnsupportedLegacySnapshotManifestError,
+    build_runtime_embedding_contract,
+    describe_embedding_contract_mismatches,
+    extract_snapshot_embedding_contract,
+    fetch_latest_imported_snapshot_manifest,
+)
 from agentic_kb.search.config import list_search_entity_configs
 from agentic_kb.sync import PostgresSyncStateStore
 from agentic_kb.sync.staleness import (
@@ -63,6 +73,16 @@ class DatabaseInspection:
     indexes: tuple[str, ...]
     row_counts: dict[str, int]
     sync_summaries: tuple[SyncSourceSummary, ...]
+    latest_imported_snapshot_manifest: SnapshotManifestRecord | None
+
+
+@dataclass(frozen=True)
+class EmbeddingCompatibilityReport:
+    state: str
+    detail: str
+    runtime_contract: dict[str, Any] | None
+    snapshot_contract: dict[str, Any] | None
+    snapshot_source: dict[str, Any] | None
 
 
 @dataclass(frozen=True)
@@ -73,6 +93,7 @@ class StatusReport:
     environment_items: tuple[CheckResult, ...]
     dependency_items: tuple[CheckResult, ...]
     database_items: tuple[CheckResult, ...]
+    embedding_compatibility: EmbeddingCompatibilityReport
     freshness: FreshnessReport | None
     notes: tuple[str, ...]
 
@@ -96,6 +117,7 @@ def collect_status_report(config: AgenticConfig, healthcheck: bool) -> StatusRep
     dependency_items = list(_dependency_results(config, healthcheck=healthcheck))
     environment_items = list(_environment_results())
     database_items = list(_database_results(config, healthcheck=healthcheck))
+    embedding_compatibility = _collect_embedding_compatibility(config, healthcheck=healthcheck)
     freshness = _collect_freshness(config, healthcheck=healthcheck)
     ok = all(
         item.ok
@@ -122,6 +144,7 @@ def collect_status_report(config: AgenticConfig, healthcheck: bool) -> StatusRep
         environment_items=tuple(environment_items),
         dependency_items=tuple(dependency_items),
         database_items=tuple(database_items),
+        embedding_compatibility=embedding_compatibility,
         freshness=freshness,
         notes=notes,
     )
@@ -138,6 +161,7 @@ def inspect_database(database_url: str) -> DatabaseInspection:
                 indexes = _fetch_indexes(cursor)
                 row_counts = _fetch_searchable_row_counts(cursor, tables)
                 sync_summaries = _fetch_sync_summaries(cursor, tables)
+                latest_imported_snapshot_manifest = _fetch_latest_imported_snapshot_manifest(cursor, tables)
     except Exception as error:  # pragma: no cover - exercised via caller-facing tests
         raise StatusCommandError(str(error)) from error
 
@@ -148,6 +172,7 @@ def inspect_database(database_url: str) -> DatabaseInspection:
         indexes=indexes,
         row_counts=row_counts,
         sync_summaries=sync_summaries,
+        latest_imported_snapshot_manifest=latest_imported_snapshot_manifest,
     )
 
 
@@ -296,6 +321,7 @@ def print_status_report(report: StatusReport) -> None:
     _print_section("dependencies", report.dependency_items)
     if report.database_items:
         _print_section("database", report.database_items)
+    _print_embedding_compatibility_section(report.embedding_compatibility)
     if report.freshness is not None:
         _print_freshness_section(report.freshness)
 
@@ -312,6 +338,7 @@ def serialize_status_report(report: StatusReport) -> dict[str, Any]:
         "environment_items": [serialize_check_result(item) for item in report.environment_items],
         "dependency_items": [serialize_check_result(item) for item in report.dependency_items],
         "database_items": [serialize_check_result(item) for item in report.database_items],
+        "embedding_compatibility": serialize_embedding_compatibility(report.embedding_compatibility),
         "freshness": serialize_freshness_report(report.freshness) if report.freshness is not None else None,
         "notes": list(report.notes),
     }
@@ -321,11 +348,47 @@ def serialize_check_result(item: CheckResult) -> dict[str, Any]:
     return {"name": item.name, "ok": item.ok, "detail": item.detail}
 
 
+def serialize_embedding_compatibility(report: EmbeddingCompatibilityReport) -> dict[str, Any]:
+    return {
+        "state": report.state,
+        "detail": report.detail,
+        "runtime_contract": report.runtime_contract,
+        "snapshot_contract": report.snapshot_contract,
+        "snapshot_source": report.snapshot_source,
+    }
+
+
 def _print_section(title: str, items: Iterable[CheckResult]) -> None:
     print(f"{title}:")
     for item in items:
         marker = "ok" if item.ok else "warn"
         print(f"- [{marker}] {item.name}: {item.detail}")
+
+
+def _print_embedding_compatibility_section(report: EmbeddingCompatibilityReport) -> None:
+    print(f"embedding compatibility: {report.state}")
+    print(f"- {report.detail}")
+    if report.runtime_contract is not None:
+        print(
+            "- local contract: "
+            f"id={report.runtime_contract['contract_id']}, "
+            f"model={report.runtime_contract['embedding_model']}, "
+            f"dimension={report.runtime_contract['embedding_dimension']}"
+        )
+    if report.snapshot_contract is not None:
+        print(
+            "- imported snapshot contract: "
+            f"id={report.snapshot_contract.get('contract_id', '<missing>')}, "
+            f"model={report.snapshot_contract.get('embedding_model', '<missing>')}, "
+            f"dimension={report.snapshot_contract.get('embedding_dimension', '<missing>')}"
+        )
+    if report.snapshot_source is not None:
+        print(
+            "- imported snapshot source: "
+            f"name={report.snapshot_source['snapshot_name']}, "
+            f"imported_at={report.snapshot_source['imported_at']}, "
+            f"path={report.snapshot_source['source_path'] or '<unknown>'}"
+        )
 
 
 def _print_freshness_section(report: FreshnessReport) -> None:
@@ -453,6 +516,103 @@ def _database_results(config: AgenticConfig, healthcheck: bool) -> Iterable[Chec
     return build_database_items(inspection, endpoint_detail=endpoint_detail)
 
 
+def _collect_embedding_compatibility(
+    config: AgenticConfig,
+    *,
+    healthcheck: bool,
+) -> EmbeddingCompatibilityReport:
+    try:
+        runtime_contract = build_runtime_embedding_contract(config)
+    except ValueError as error:
+        return EmbeddingCompatibilityReport(
+            state="unavailable",
+            detail=str(error),
+            runtime_contract=None,
+            snapshot_contract=None,
+            snapshot_source=None,
+        )
+
+    runtime_payload = _serialize_contract(runtime_contract)
+    if healthcheck:
+        return EmbeddingCompatibilityReport(
+            state="unavailable",
+            detail="embedding compatibility inspection skipped in healthcheck mode",
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=None,
+        )
+
+    if not config.database_url:
+        return EmbeddingCompatibilityReport(
+            state="unavailable",
+            detail="embedding compatibility inspection unavailable because DATABASE_URL is not set",
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=None,
+        )
+
+    try:
+        inspection = inspect_database(config.database_url)
+    except StatusCommandError as error:
+        return EmbeddingCompatibilityReport(
+            state="unavailable",
+            detail=f"embedding compatibility inspection unavailable: {error}",
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=None,
+        )
+
+    imported_manifest = inspection.latest_imported_snapshot_manifest
+    if imported_manifest is None:
+        return EmbeddingCompatibilityReport(
+            state="missing_imported_snapshot_metadata",
+            detail="no imported snapshot manifest metadata found; local-only KBs remain usable but snapshot compatibility cannot be assessed",
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=None,
+        )
+
+    snapshot_source = _serialize_snapshot_source(imported_manifest)
+    try:
+        snapshot_contract = extract_snapshot_embedding_contract(imported_manifest.manifest)
+    except UnsupportedLegacySnapshotManifestError as error:
+        return EmbeddingCompatibilityReport(
+            state="unsupported_legacy_manifest",
+            detail=str(error),
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=snapshot_source,
+        )
+    except SnapshotManifestCompatibilityError as error:
+        return EmbeddingCompatibilityReport(
+            state="unavailable",
+            detail=f"imported snapshot embedding-contract metadata is invalid: {error}",
+            runtime_contract=runtime_payload,
+            snapshot_contract=None,
+            snapshot_source=snapshot_source,
+        )
+
+    snapshot_payload = _serialize_contract(snapshot_contract)
+    mismatches = describe_embedding_contract_mismatches(snapshot_contract, runtime_contract)
+    if not mismatches:
+        return EmbeddingCompatibilityReport(
+            state="compatible",
+            detail="latest imported snapshot embedding contract matches the local KB runtime contract",
+            runtime_contract=runtime_payload,
+            snapshot_contract=snapshot_payload,
+            snapshot_source=snapshot_source,
+        )
+
+    return EmbeddingCompatibilityReport(
+        state="incompatible",
+        detail="latest imported snapshot embedding contract does not match the local KB runtime contract: "
+        + "; ".join(mismatches),
+        runtime_contract=runtime_payload,
+        snapshot_contract=snapshot_payload,
+        snapshot_source=snapshot_source,
+    )
+
+
 def _collect_freshness(config: AgenticConfig, *, healthcheck: bool) -> FreshnessReport | None:
     if healthcheck or not config.database_url:
         return None
@@ -561,6 +721,15 @@ def _fetch_sync_summaries(cursor: Any, tables: tuple[str, ...]) -> tuple[SyncSou
     )
 
 
+def _fetch_latest_imported_snapshot_manifest(
+    cursor: Any,
+    tables: tuple[str, ...],
+) -> SnapshotManifestRecord | None:
+    if "agentic.kb_snapshot_manifest" not in set(tables):
+        return None
+    return fetch_latest_imported_snapshot_manifest(cursor)
+
+
 def _check_tcp(host: str, port: int) -> None:
     with socket.create_connection((host, port), timeout=3):
         return None
@@ -615,6 +784,24 @@ def _format_timestamp(value: datetime | None) -> str:
     if value is None:
         return "never"
     return value.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _serialize_contract(contract: EmbeddingContract) -> dict[str, Any]:
+    return {
+        "contract_id": contract.contract_id,
+        "embedding_model": contract.embedding_model,
+        "embedding_dimension": contract.embedding_dimension,
+    }
+
+
+def _serialize_snapshot_source(record: SnapshotManifestRecord) -> dict[str, Any]:
+    return {
+        "snapshot_name": record.snapshot_name,
+        "snapshot_created_at": _format_timestamp(record.snapshot_created_at),
+        "imported_at": _format_timestamp(record.imported_at),
+        "source_path": record.source_path,
+        "content_hash": record.content_hash,
+    }
 
 
 def _load_psycopg():

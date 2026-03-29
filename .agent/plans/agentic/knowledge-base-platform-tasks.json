@@ -502,7 +502,7 @@
           "id": "task-608",
           "title": "Enforce snapshot embedding-contract compatibility",
           "description": "Reject incompatible snapshot imports, surface the mismatch clearly in status output, and block post-import sync when the snapshot's embedding model or vector contract does not match the local KB contract",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
@@ -511,8 +511,8 @@
             "task-503",
             "task-701"
           ],
-          "completedAt": "",
-          "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
+          "completedAt": "2026-03-29",
+          "targetPath": "agentic/src/agentic_kb"
         },
         {
           "id": "task-612",

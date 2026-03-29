@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from agentic_kb.commands import snapshot
+from agentic_kb.snapshot_manifest import SNAPSHOT_EMBEDDING_CONTRACT_ID
 
 
 class SnapshotCommandTests(unittest.TestCase):
@@ -203,7 +204,14 @@ class SnapshotCommandTests(unittest.TestCase):
         written_manifest = write_manifest_file.call_args.args[1]
         self.assertEqual(written_manifest["snapshot_name"], "kb")
         self.assertEqual(written_manifest["artifact"]["filename"], "kb.dump")
-        self.assertEqual(written_manifest["embedding_model"], "all-minilm:l6-v2")
+        self.assertEqual(
+            written_manifest["embedding_contract"],
+            {
+                "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+                "embedding_model": "all-minilm:l6-v2",
+                "embedding_dimension": 384,
+            },
+        )
         persist_snapshot_manifest.assert_called_once()
         self.assertEqual(result.path, destination)
         self.assertEqual(result.manifest_path, Path(temp_dir) / "kb.manifest.json")
@@ -252,6 +260,7 @@ class SnapshotCommandTests(unittest.TestCase):
     @patch("agentic_kb.commands.snapshot._ensure_required_binaries")
     @patch("agentic_kb.commands.snapshot._persist_snapshot_manifest")
     @patch("agentic_kb.commands.snapshot.ensure_disposable_import_target")
+    @patch("agentic_kb.commands.snapshot.ensure_compatible_snapshot_import")
     @patch("agentic_kb.commands.snapshot.validate_snapshot_artifact")
     @patch("agentic_kb.commands.snapshot.build_agentic_restore_list")
     @patch("agentic_kb.commands.snapshot._run_subprocess")
@@ -260,6 +269,7 @@ class SnapshotCommandTests(unittest.TestCase):
         run_subprocess,
         build_agentic_restore_list,
         validate_snapshot_artifact,
+        ensure_compatible_snapshot_import,
         ensure_disposable_import_target,
         persist_snapshot_manifest,
         ensure_required_binaries,
@@ -290,6 +300,7 @@ class SnapshotCommandTests(unittest.TestCase):
         ensure_disposable_import_target.assert_called_once_with(
             "postgresql://agentic:agentic@db:5432/agentic_kb"
         )
+        ensure_compatible_snapshot_import.assert_called_once_with(manifest)
         self.assertEqual(
             run_subprocess.call_args_list,
             [
@@ -325,6 +336,7 @@ class SnapshotCommandTests(unittest.TestCase):
     @patch("agentic_kb.commands.snapshot._ensure_required_binaries")
     @patch("agentic_kb.commands.snapshot._persist_snapshot_manifest")
     @patch("agentic_kb.commands.snapshot.ensure_disposable_import_target")
+    @patch("agentic_kb.commands.snapshot.ensure_compatible_snapshot_import")
     @patch("agentic_kb.commands.snapshot.validate_snapshot_artifact")
     @patch("agentic_kb.commands.snapshot.build_agentic_restore_list")
     @patch("agentic_kb.commands.snapshot._run_subprocess")
@@ -333,6 +345,7 @@ class SnapshotCommandTests(unittest.TestCase):
         run_subprocess,
         build_agentic_restore_list,
         validate_snapshot_artifact,
+        ensure_compatible_snapshot_import,
         ensure_disposable_import_target,
         persist_snapshot_manifest,
         ensure_required_binaries,
@@ -367,9 +380,53 @@ class SnapshotCommandTests(unittest.TestCase):
         ensure_disposable_import_target.assert_called_once_with(
             "postgresql://agentic:agentic@db:5432/agentic_kb"
         )
+        ensure_compatible_snapshot_import.assert_not_called()
         build_agentic_restore_list.assert_not_called()
         run_subprocess.assert_not_called()
         persist_snapshot_manifest.assert_not_called()
+
+    @patch("agentic_kb.commands.snapshot.AgenticConfig.from_env")
+    def test_import_snapshot_rejects_legacy_embedding_model_only_manifest(self, from_env):
+        from_env.return_value = MagicMock(ollama_embed_model="all-minilm:l6-v2")
+
+        manifest = _manifest_fixture(
+            artifact_filename="snapshot.dump",
+            artifact_size_bytes=1,
+            artifact_content_hash="sha256:" + "0" * 64,
+        )
+        manifest["embedding_model"] = manifest["embedding_contract"]["embedding_model"]
+        del manifest["embedding_contract"]
+
+        with self.assertRaisesRegex(snapshot.SnapshotCommandError, "legacy embedding_model-only manifests are unsupported"):
+            snapshot.ensure_compatible_snapshot_import(manifest)
+
+    @patch("agentic_kb.commands.snapshot.AgenticConfig.from_env")
+    def test_import_snapshot_rejects_embedding_dimension_mismatch(self, from_env):
+        from_env.return_value = MagicMock(ollama_embed_model="all-minilm:l6-v2")
+
+        manifest = _manifest_fixture(
+            artifact_filename="snapshot.dump",
+            artifact_size_bytes=1,
+            artifact_content_hash="sha256:" + "0" * 64,
+        )
+        manifest["embedding_contract"]["embedding_dimension"] = 512
+
+        with self.assertRaisesRegex(snapshot.SnapshotCommandError, "vector dimensionality"):
+            snapshot.ensure_compatible_snapshot_import(manifest)
+
+    @patch("agentic_kb.commands.snapshot.AgenticConfig.from_env")
+    def test_import_snapshot_rejects_contract_identifier_mismatch(self, from_env):
+        from_env.return_value = MagicMock(ollama_embed_model="all-minilm:l6-v2")
+
+        manifest = _manifest_fixture(
+            artifact_filename="snapshot.dump",
+            artifact_size_bytes=1,
+            artifact_content_hash="sha256:" + "0" * 64,
+        )
+        manifest["embedding_contract"]["contract_id"] = "older-contract-v0"
+
+        with self.assertRaisesRegex(snapshot.SnapshotCommandError, "contract identifier"):
+            snapshot.ensure_compatible_snapshot_import(manifest)
 
     def test_import_snapshot_requires_explicit_confirmation(self):
         with tempfile.NamedTemporaryFile(suffix=".dump") as temp_file:
@@ -612,7 +669,11 @@ def _manifest_fixture(
             "docs_commit_hash": "0123456789abcdef0123456789abcdef01234567",
             "code_commit_hash": "0123456789abcdef0123456789abcdef01234567",
         },
-        "embedding_model": "all-minilm:l6-v2",
+        "embedding_contract": {
+            "contract_id": SNAPSHOT_EMBEDDING_CONTRACT_ID,
+            "embedding_model": "all-minilm:l6-v2",
+            "embedding_dimension": 384,
+        },
         "entity_counts": {
             "documents": 1,
             "code_chunks": 0,

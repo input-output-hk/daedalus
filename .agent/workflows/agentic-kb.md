@@ -69,16 +69,17 @@ Today:
 
 - `status` reports runtime config, mount visibility, dependency reachability, and live KB database inspection when `DATABASE_URL` is usable.
 - `status --healthcheck` stays lightweight and exit-code-oriented for Compose healthchecks; it does not require schema inspection.
-- `status --json` emits one machine-readable JSON object on stdout for scripts.
+- `status --json` emits one machine-readable JSON object on stdout for scripts, including a separate `embedding_compatibility` object so snapshot compatibility does not change top-level readiness semantics.
 - `search` runs real BM25, vector, or hybrid KB queries with optional `--entity-type`, repeated `--filter key=value`, and `--json`.
 - `entity get <entity_type> <id>` fetches one indexed row by stable id, returns exit code `2` for invalid entity types, and returns exit code `4` for not-found rows.
 - `snapshot export` creates a real custom-format `pg_dump` of the `agentic` schema, writes to `/workspace/agentic/snapshots` by default, and emits a schema-valid sibling `.manifest.json` sidecar.
-- `snapshot import` accepts either the dump path or the sibling manifest path, validates the manifest plus dump size/hash before restore, and still requires `--yes` acknowledgement.
+- `snapshot import` accepts either the dump path or the sibling manifest path, validates the manifest plus dump size/hash, rejects legacy or incompatible embedding contracts before restore, enforces the disposable-target boundary, and still requires `--yes` acknowledgement.
 - `sync docs` refreshes the allowlisted docs corpus from the current checkout, removes stale indexed rows for allowlisted docs that are no longer discovered, skips unchanged docs before embedding by comparing deterministic stored chunk hashes, and reports actual work with `updated_paths`, `skipped_paths`, and `deleted_paths` while `processed_count` remains the stored markdown chunk rows rewritten in that run.
 - `sync code` refreshes the supported code corpus from the current checkout and prunes stale indexed rows for supported files that are now deleted or excluded.
 - `sync github` runs the existing four-stream GitHub ingest path for `issues`, `pulls`, `issue_comments`, and `review_comments`. Incremental runs reuse the earliest stored GitHub watermark as one shared lower bound; upstream `since` still applies only to `issues` and `issue_comments`, while `pulls` and `review_comments` remain client-filtered after fetch.
 - `sync project` seeds from `after_cursor=None` on its first explicit run and later continues only from the stored Project cursor. Repeated runs at the current end cursor succeed as no-op continuation and still do not guarantee replay of edits to already-seen items.
 - `sync changed` is now the general incremental command for an already-seeded KB. It still supports the post-import fast-start workflow, but it now requires successful existing baselines for docs, code, all four GitHub stream rows, and Project cursor state before it does any work.
+- `sync changed` also refuses to extend an imported baseline when the latest imported snapshot manifest is legacy, malformed, or incompatible with the local runtime embedding contract. KBs with no imported snapshot history still follow the local-only baseline path.
 - `sync all` runs only `sync docs`, `sync code`, `sync github`, and `sync project` in that fixed order and stops on the first failure.
 
 `sync changed` caveats:
@@ -108,7 +109,7 @@ Use `status` for a quick operator view of both service readiness and KB DB readi
 - presence of the current `agentic` tables, the seven searchable tables, and their BM25/HNSW indexes
 - searchable row counts and grouped `kb_sync_state` summaries
 
-`status` is intentionally limited to current repo-backed contracts and does not require sync orchestration or MCP readiness. GitHub and Project freshness probes run only on normal `status` when `GITHUB_TOKEN` is configured; without a token, those remote freshness entries report `skipped` and status remains usable.
+`status` is intentionally limited to current repo-backed contracts and does not require sync orchestration or MCP readiness. GitHub and Project freshness probes run only on normal `status` when `GITHUB_TOKEN` is configured; without a token, those remote freshness entries report `skipped` and status remains usable. When imported snapshot metadata exists, `status` also reports the latest imported snapshot's embedding-contract compatibility separately from readiness. Compatible imports report `compatible`; legacy imported manifests report `unsupported_legacy_manifest`; malformed persisted metadata reports `unavailable` with detail instead of being silently normalized.
 
 ## Clean-Machine Bootstrap
 
@@ -164,6 +165,7 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-t
 Expected validation shape after import:
 
 - `status --json` reports `ok = true`
+- `status --json` reports `embedding_compatibility.state = "compatible"`
 - search JSON reports `mode = "bm25"`
 - search returns at least one hit
 - the first hit has `entity_type = "documents"`
@@ -184,6 +186,7 @@ Expected validation shape after import:
 - The enforced v1 import contract allows two target states only: a fresh database with no `agentic` schema yet, or an initialized KB where all state-bearing `agentic` tables are empty.
 - Import fails before schema drop if searchable KB tables, `kb_sync_state`, or `kb_snapshot_manifest` already contain rows.
 - The canonical manifest contract lives at `agentic/config/snapshot-manifest.schema.json`; export now writes that manifest beside the dump, and import validates the manifest contract plus dump identity before any destructive restore.
+- Imported legacy `embedding_model`-only manifests and imported mismatched embedding contracts are hard failures before restore; the supported recovery path is to recreate the disposable KB and import a compatible snapshot or rebuild locally.
 
 ## Freshness Guidance
 
