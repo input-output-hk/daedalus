@@ -60,7 +60,7 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump --yes
 
 # Prove imported data is queryable without waiting on hybrid/vector readiness
-docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json "mithril bootstrap"
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
 ```
 
 `agentic/.env.example` now documents the optional Compose overrides. The supported clean-bootstrap path works with the defaults in `docker-compose.agentic.yml`; copying an env file is optional unless you need custom ports, credentials, model selection, or a `GITHUB_TOKEN` for GitHub-backed sync commands.
@@ -85,7 +85,7 @@ Today:
 
 - `agentic/src/agentic_kb/commands/sync.py` shells out to `git` for docs/code delta calculation, and the shipped `kb-tools` image now includes `git` plus a per-command safe-directory override for the bind-mounted `/workspace` checkout
 - `sync changed` still is not part of the clean-machine bootstrap acceptance path for this workflow; use it only after the KB already has successful docs, code, GitHub, and Project baselines
-- even with the container-path git fix, the broader import-then-`sync changed` team fast-start story remains distinct from the narrower task-901 clean-bootstrap contract and from the still-pending CI snapshot publication workflow
+- even with the container-path git fix, the broader import-then-`sync changed` team fast-start story remains distinct from the narrower task-901 clean-bootstrap contract and from the separate manual shared-baseline publication workflow
 
 ## Status Behavior
 
@@ -107,7 +107,7 @@ The currently validated narrow bootstrap contract is:
 1. Start a fresh isolated stack with `docker compose -f docker-compose.agentic.yml up -d`
 2. Import a valid snapshot with `docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import <dump-or-manifest> --yes`
 3. Prove readiness with `docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json`
-4. Prove imported data is searchable with `docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json <deterministic-query>`
+4. Prove imported data is searchable with `docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"`
 
 This is the current clean-machine acceptance path. It intentionally does not require `sync changed`.
 
@@ -117,12 +117,12 @@ The platform is designed for multiple human developers, not just one local machi
 
 ### Recommended Team Pattern
 
-The broader team-sharing story is only partially shipped today.
-
-1. Today, one developer can create a snapshot locally with `snapshot export` and another developer can import it into a fresh or otherwise disposable KB database
-2. After import, use `status --json` plus a deterministic BM25 `search --json` query to validate the imported KB
-3. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
-4. The team repeats this instead of rebuilding the whole knowledge base from scratch every time when a trusted snapshot artifact is available
+1. Publish the canonical shared baseline manually from `develop` with `.github/workflows/agentic-kb-sync.yml`
+2. Download the successful workflow artifact `agentic-kb-develop-baseline-<github-sha>`
+3. Extract the `.dump` plus sibling `.manifest.json` pair into `agentic/snapshots/`
+4. Import the snapshot into a fresh or otherwise disposable KB database
+5. Validate the imported KB with `status --json` plus the deterministic BM25 documents-only proof
+6. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
 
 Incremental caveats for `sync changed`:
 
@@ -133,11 +133,31 @@ Incremental caveats for `sync changed`:
 
 ### Snapshot Publication
 
-CI-published baseline snapshot distribution is still pending follow-up automation work.
+The canonical shared baseline is published manually with GitHub Actions workflow `.github/workflows/agentic-kb-sync.yml`.
 
-- the intended publication channel remains GitHub Actions artifacts
-- until that workflow lands, task-local or developer-local `snapshot export` output is the available snapshot source for clean bootstrap validation
+- trigger shape for task-603 is `workflow_dispatch` only
+- canonical publication is restricted to `refs/heads/develop`; manual dispatch from any other ref fails clearly and does not publish a canonical branch snapshot
+- the workflow bootstraps the stack with `docker-compose.agentic.yml`, runs `sync all`, exports a fresh snapshot pair, verifies `status --json`, runs `search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"`, and uploads the artifact only after those checks pass
+- the required artifact name is `agentic-kb-develop-baseline-<github-sha>`
+- the artifact payload is exactly the exported `.dump` plus sibling `.manifest.json` pair; no extra repo-specific archive layer is added
+- the workflow requires explicit secret `AGENTIC_KB_SYNC_GITHUB_TOKEN` because `sync github` and `sync project` need token-backed GitHub reads and ProjectV2 access cannot be assumed from the default Actions token
 - GitHub Releases assets are out of scope for KB snapshot sharing
+
+Consumption path after download:
+
+```bash
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
+```
+
+Expected validation shape after import:
+
+- `status --json` reports `ok = true`
+- search JSON reports `mode = "bm25"`
+- search returns at least one hit
+- the first hit has `entity_type = "documents"`
+- the first hit has `fields.source_path = ".agent/workflows/agentic-kb.md"`
 
 ### Why Snapshot Sharing Matters
 

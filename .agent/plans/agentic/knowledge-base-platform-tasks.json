@@ -459,13 +459,13 @@
           "id": "task-603",
           "title": "Add shared snapshot publication workflow",
           "description": "Document and automate publication and consumption of baseline KB snapshots as GitHub Actions artifacts",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-602"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": ".github/workflows/agentic-kb-sync.yml"
         },
         {

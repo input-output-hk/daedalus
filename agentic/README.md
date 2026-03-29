@@ -60,15 +60,61 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import a
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
 
 # Prove imported data is queryable without waiting on hybrid/vector readiness
-docker compose -f docker-compose.agentic.yml run --rm kb-tools search --mode bm25 --json "mithril bootstrap"
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
 ```
 
 `agentic/.env.example` contains optional Compose overrides only. The default bootstrap path works without creating a local env file.
 
 Current boundaries:
 
-- shared snapshot publication from CI is still pending
 - `sync changed` is available as an incremental command after a seeded baseline, but it is not part of the clean bootstrap acceptance path
+
+## Shared Baseline Snapshot Artifact
+
+The canonical team baseline is now published manually with GitHub Actions workflow `.github/workflows/agentic-kb-sync.yml`.
+
+Publication contract:
+
+- trigger: `workflow_dispatch` only for task-603
+- canonical source ref: `refs/heads/develop` only
+- required secret: `AGENTIC_KB_SYNC_GITHUB_TOKEN`
+- artifact name: `agentic-kb-develop-baseline-<github-sha>`
+- artifact payload: exactly one `.dump` plus its sibling `.manifest.json`
+
+Why the explicit secret matters:
+
+- the workflow runs `sync all`, which includes `sync github` and `sync project`
+- `sync project` needs token access that the default GitHub Actions `GITHUB_TOKEN` cannot reliably guarantee for `DripDropz` ProjectV2 reads
+- the workflow fails early if `AGENTIC_KB_SYNC_GITHUB_TOKEN` is missing rather than silently skipping GitHub-backed sources
+
+Manual publication path:
+
+1. Open the `Publish Agentic KB Develop Baseline` workflow in GitHub Actions.
+2. Run it from `develop`.
+3. Wait for `sync all`, `snapshot export`, `status --json`, and the deterministic BM25 proof to pass.
+4. Download the `agentic-kb-develop-baseline-<github-sha>` artifact from that run.
+
+Manual consumption path:
+
+1. Download the artifact from the successful workflow run.
+2. Extract the two files into `agentic/snapshots/`.
+3. Import either the `.dump` path or the sibling `.manifest.json` path.
+
+```bash
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
+```
+
+Validation expectations after import:
+
+- `status --json` should report `"ok": true`
+- the search result JSON should report `"mode": "bm25"`
+- the search result should contain at least one hit
+- the first hit should have `entity_type = "documents"`
+- the first hit should have `fields.source_path = ".agent/workflows/agentic-kb.md"`
+
+`sync changed` remains optional follow-on work after import when a developer wants to refresh local deltas on top of the shared baseline.
 
 ## MCP Setup
 
