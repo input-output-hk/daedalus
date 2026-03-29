@@ -1,0 +1,46 @@
+version: 1
+fixtures:
+  - id: bm25_documents_task_plan
+    query_text: search quality fixtures
+    mode: bm25
+    limit: 3
+    filters:
+      entity_type: documents
+      task_id: task-504
+      planning_status: approved
+      build_status: completed
+      plan_type: canonical_task_plan
+    expectations:
+      top_hit: docs:task-504-plan#0
+      ordered_prefix:
+        - docs:task-504-plan#0
+
+  - id: vector_code_fixture_loader
+    query_text: fixture loader helper
+    mode: vector
+    limit: 2
+    filters:
+      entity_type: code_chunks
+      repo_path_prefix: agentic/tests/
+    query_embedding_key: code_fixture_loader
+    expectations:
+      top_hit: code:search-quality-helper#0
+      ordered_prefix:
+        - code:search-quality-helper#0
+        - code:search-quality-test#0
+
+  - id: hybrid_cross_entity_search_quality
+    query_text: hybrid search quality regression
+    mode: hybrid
+    limit: 4
+    filters:
+      entity_type:
+        - documents
+        - github_issues
+        - project_items
+    query_embedding_key: hybrid_search_quality
+    expectations:
+      top_hit: docs:task-504-plan#0
+      contains_unordered:
+        - project:search-quality
+        - github:issue-search-quality

@@ -410,14 +410,14 @@
           "id": "task-504",
           "title": "Add search quality fixtures",
           "description": "Create a regression set of known queries so ranking quality can be checked as the KB evolves",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-502",
             "task-503"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/config/search-fixtures.yaml"
         }
       ]
