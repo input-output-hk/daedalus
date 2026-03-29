@@ -251,15 +251,15 @@
         {
           "id": "task-303",
           "title": "Extract structured plan and workflow metadata",
-          "description": "Capture doc kind, domain, workflow descriptions, and task-plan metadata as searchable filters",
-          "status": "pending",
+          "description": "Capture stable workflow and canonical task-plan metadata during docs ingest, and expose explicit docs-only filters for canonical task-plan fields while keeping workflow descriptions as stored metadata/search context.",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-301"
           ],
           "completedAt": "2026-03-29",
-          "targetPath": "agentic/src/ingest/doc_metadata.py"
+          "targetPath": "agentic/src/agentic_kb/ingest/docs.py"
         },
         {
           "id": "task-304",

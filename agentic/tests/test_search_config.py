@@ -68,6 +68,11 @@ class SearchConfigTests(unittest.TestCase):
             docs_filters["source_path_prefix"].match_type,
             SearchFilterMatchType.PREFIX,
         )
+        self.assertEqual(docs_filters["task_id"].metadata_key, "task_id")
+        self.assertEqual(docs_filters["planning_status"].metadata_key, "planning_status")
+        self.assertEqual(docs_filters["build_status"].metadata_key, "build_status")
+        self.assertEqual(docs_filters["plan_type"].metadata_key, "plan_type")
+        self.assertIsNone(docs_filters["task_id"].column_name)
 
         code_chunks = get_search_entity_config(SearchEntityType.CODE_CHUNKS)
         code_filters = {filter_config.key: filter_config for filter_config in code_chunks.filters}
@@ -167,6 +172,28 @@ class SearchConfigTests(unittest.TestCase):
             list_supported_filters(),
             GLOBAL_SEARCH_FILTERS,
         )
+
+    def test_documents_filter_vocabulary_stays_explicit_and_docs_scoped(self):
+        documents = get_search_entity_config(SearchEntityType.DOCUMENTS)
+        self.assertEqual(
+            [filter_config.key for filter_config in documents.filters],
+            [
+                "doc_kind",
+                "source_path_prefix",
+                "task_id",
+                "planning_status",
+                "build_status",
+                "plan_type",
+            ],
+        )
+        non_docs_entities = [
+            config for config in list_search_entity_configs() if config.entity_type != SearchEntityType.DOCUMENTS
+        ]
+        for config in non_docs_entities:
+            self.assertNotIn("task_id", {filter_config.key for filter_config in config.filters})
+            self.assertNotIn("planning_status", {filter_config.key for filter_config in config.filters})
+            self.assertNotIn("build_status", {filter_config.key for filter_config in config.filters})
+            self.assertNotIn("plan_type", {filter_config.key for filter_config in config.filters})
 
     def test_source_domain_groupings_match_expected_entities(self):
         self.assertEqual(

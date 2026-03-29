@@ -47,7 +47,7 @@ ALL_FILTER_KEYS = tuple(
         }
     )
 )
-DOC_FILTER_KEYS = ("doc_kind", "source_path_prefix")
+DOC_FILTER_KEYS = ("doc_kind", "source_path_prefix", "task_id", "planning_status", "build_status", "plan_type")
 CODE_FILTER_KEYS = ("repo_path_prefix", "language", "symbol_kind")
 GITHUB_FILTER_KEYS = ("repo", "state", "comment_type")
 GITHUB_ENTITY_TYPES = (

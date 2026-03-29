@@ -24,6 +24,7 @@ DEFAULT_RRF_K = 60
 DEFAULT_CANDIDATE_MULTIPLIER = 5
 MIN_CANDIDATE_POOL = 20
 _IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_METADATA_KEY_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 class SearchMode(StrEnum):
@@ -462,7 +463,7 @@ def build_entity_filter_clause(
         if filter_config is None:
             continue
 
-        column_sql = f"{table_alias}.{_quote_identifier(filter_config.column_name or '')}"
+        column_sql = _filter_config_sql_expression(filter_config, table_alias=table_alias)
         coerced_value = _coerce_filter_value(filter_config, raw_value)
         if filter_config.match_type == SearchFilterMatchType.PREFIX:
             clauses.append(f"{column_sql} LIKE %s")
@@ -737,6 +738,23 @@ def _all_supported_entity_filter_keys() -> set[str]:
     for config in SEARCH_ENTITY_REGISTRY.values():
         keys.update(filter_config.key for filter_config in config.filters)
     return keys
+
+
+def _filter_config_sql_expression(filter_config: SearchFilterConfig, *, table_alias: str) -> str:
+    if filter_config.column_name is not None:
+        return f"{table_alias}.{_quote_identifier(filter_config.column_name)}"
+    if filter_config.metadata_key is not None:
+        metadata_key = _quote_metadata_key(filter_config.metadata_key)
+        return f"{table_alias}.metadata ->> '{metadata_key}'"
+    raise SearchValidationError(
+        f"Search filter {filter_config.key!r} is missing a backing column or metadata key"
+    )
+
+
+def _quote_metadata_key(metadata_key: str) -> str:
+    if not _METADATA_KEY_PATTERN.match(metadata_key):
+        raise SearchValidationError(f"Unsafe metadata key: {metadata_key!r}")
+    return metadata_key
 
 
 def _quote_identifier(identifier: str) -> str:

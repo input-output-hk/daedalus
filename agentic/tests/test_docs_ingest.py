@@ -164,6 +164,7 @@ class DocsIngestTests(unittest.TestCase):
         self.assertEqual(document.metadata["source_group"], "agent")
         self.assertEqual(document.metadata["title_source"], "h1")
         self.assertTrue(document.metadata["title_from_h1"])
+        self.assertEqual(document.metadata["workflow_description"], "Example workflow")
         self.assertIn("description: Example workflow", document.preview_text)
         self.assertEqual(len(document.embedding), 384)
         self.assertEqual(document.embedding[0], 1.0)
@@ -197,6 +198,75 @@ class DocsIngestTests(unittest.TestCase):
         self.assertEqual(
             document.content_hash,
             docs.deterministic_content_hash("installers/README.md", "Installers and packaging notes.\n", chunk_index=0),
+        )
+
+    def test_prepare_documents_extracts_canonical_task_plan_metadata(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(
+                workspace / ".agent/plans/agentic/task-plans/task-303.md",
+                "# Task Plan: task-303 Extract structured plan and workflow metadata\n\n"
+                "- Task ID: `task-303`\n"
+                "- Title: `Extract structured plan and workflow metadata`\n"
+                "- Planning Status: `approved`\n"
+                "- Build Status: `completed`\n\n"
+                "## Scope\n\n"
+                "- Keep this narrow.\n",
+            )
+
+            prepared = docs.prepare_documents(
+                workspace,
+                source_paths=[".agent/plans/agentic/task-plans/task-303.md"],
+                embedding_client=FakeEmbeddingClient(),
+                repo_commit_hash="task-plan-metadata",
+            )
+
+        document = prepared[0]
+        self.assertEqual(document.doc_kind, "plan")
+        self.assertEqual(document.metadata["plan_type"], "canonical_task_plan")
+        self.assertEqual(document.metadata["task_id"], "task-303")
+        self.assertEqual(document.metadata["title"], "Extract structured plan and workflow metadata")
+        self.assertEqual(document.metadata["planning_status"], "approved")
+        self.assertEqual(document.metadata["build_status"], "completed")
+
+    def test_prepare_documents_does_not_misclassify_plan_review_or_impl_review_logs(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(
+                workspace / ".agent/plans/agentic/task-plans/task-303-plan-review.md",
+                "- Task ID: `task-303`\n- Planning Status: `approved`\n",
+            )
+            self._write_file(
+                workspace / ".agent/plans/agentic/task-plans/task-303-impl-review.md",
+                "Implementation: Iteration 1\n",
+            )
+
+            prepared = docs.prepare_documents(
+                workspace,
+                source_paths=[
+                    ".agent/plans/agentic/task-plans/task-303-plan-review.md",
+                    ".agent/plans/agentic/task-plans/task-303-impl-review.md",
+                ],
+                embedding_client=FakeEmbeddingClient(),
+                repo_commit_hash="review-logs",
+            )
+
+        review_rows = {document.source_path: document for document in prepared}
+        self.assertEqual(
+            review_rows[".agent/plans/agentic/task-plans/task-303-plan-review.md"].metadata["plan_type"],
+            "plan_review_log",
+        )
+        self.assertEqual(
+            review_rows[".agent/plans/agentic/task-plans/task-303-impl-review.md"].metadata["plan_type"],
+            "implementation_review_log",
+        )
+        self.assertNotIn(
+            "task_id",
+            review_rows[".agent/plans/agentic/task-plans/task-303-plan-review.md"].metadata,
+        )
+        self.assertNotIn(
+            "planning_status",
+            review_rows[".agent/plans/agentic/task-plans/task-303-impl-review.md"].metadata,
         )
 
     def test_prepare_documents_chunks_markdown_headings_with_intro_and_nested_paths(self):
@@ -368,6 +438,82 @@ class DocsIngestTests(unittest.TestCase):
         self.assertEqual(store.rows_by_key[("README.md", 0)], first_row)
         self.assertEqual(store.rows_by_key[("README.md", 0)]["repo_commit_hash"], "commit-a")
 
+    def test_ingest_docs_backfills_missing_structured_metadata_once_then_skips(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            source_path = ".agent/plans/agentic/task-plans/task-303.md"
+            file_content = (
+                "- Task ID: `task-303`\n"
+                "- Title: `Extract structured plan and workflow metadata`\n"
+                "- Planning Status: `approved`\n"
+                "- Build Status: `completed`\n"
+            )
+            self._write_file(
+                workspace / source_path,
+                file_content,
+            )
+            file_size_bytes = (workspace / source_path).stat().st_size
+            store = docs.InMemoryDocsStore()
+            legacy_document = docs.PreparedDocument(
+                id=f"docs:{source_path}#0",
+                source_domain="docs",
+                doc_kind="plan",
+                source_path=source_path,
+                title="Task 303",
+                section_title=None,
+                subsection_title=None,
+                heading_path=[],
+                chunk_index=0,
+                content=file_content,
+                preview_text="legacy preview",
+                content_hash=docs.deterministic_content_hash(
+                    source_path,
+                    file_content,
+                    chunk_index=0,
+                ),
+                repo_commit_hash="legacy-commit",
+                source_updated_at=datetime(2026, 3, 29, 9, 0, tzinfo=timezone.utc),
+                embedding=[1.0] * 384,
+                metadata={
+                    "relative_path": source_path,
+                    "file_size_bytes": file_size_bytes,
+                    "source_group": "agent",
+                    "title_source": "basename",
+                    "title_from_h1": False,
+                },
+            )
+            store.upsert_documents([legacy_document])
+
+            backfill_embedding_client = FakeEmbeddingClient()
+            backfill_result = docs.ingest_docs(
+                workspace,
+                embedding_client=backfill_embedding_client,
+                docs_store=store,
+                repo_commit_hash="backfill-commit",
+            )
+            rewritten_row = dict(store.rows_by_key[(source_path, 0)])
+
+            skip_embedding_client = FakeEmbeddingClient()
+            skip_result = docs.ingest_docs(
+                workspace,
+                embedding_client=skip_embedding_client,
+                docs_store=store,
+                repo_commit_hash="skip-commit",
+            )
+
+        self.assertEqual(backfill_result.updated_paths, (source_path,))
+        self.assertEqual(backfill_result.skipped_paths, ())
+        self.assertTrue(backfill_embedding_client.calls)
+        self.assertEqual(rewritten_row["repo_commit_hash"], "backfill-commit")
+        self.assertEqual(rewritten_row["metadata"]["task_id"], "task-303")
+        self.assertEqual(rewritten_row["metadata"]["planning_status"], "approved")
+        self.assertEqual(rewritten_row["metadata"]["build_status"], "completed")
+        self.assertEqual(rewritten_row["metadata"]["plan_type"], "canonical_task_plan")
+        self.assertEqual(skip_result.updated_paths, ())
+        self.assertEqual(skip_result.skipped_paths, (source_path,))
+        self.assertEqual(skip_embedding_client.calls, [])
+        self.assertEqual(store.rows_by_key[(source_path, 0)], rewritten_row)
+
     def test_replace_documents_for_paths_rolls_back_in_memory_on_failure(self):
         store = FailingReplaceDocsStore()
         baseline_document = docs.PreparedDocument(
@@ -433,6 +579,18 @@ class DocsIngestTests(unittest.TestCase):
             "First line Second line",
         )
         self.assertTrue(docs.build_preview_text("word " * 100).endswith("..."))
+        self.assertEqual(
+            docs._extract_plan_type(".agent/plans/agentic/task-plans/task-303.md"),
+            "canonical_task_plan",
+        )
+        self.assertEqual(
+            docs._extract_plan_type(".agent/plans/agentic/task-plans/task-303-plan-review.md"),
+            "plan_review_log",
+        )
+        self.assertEqual(
+            docs._extract_plan_type(".agent/plans/agentic/task-plans/task-303-impl-review.md"),
+            "implementation_review_log",
+        )
 
     def test_embedding_batches_preserve_input_order(self):
         embedding_client = FakeEmbeddingClient()

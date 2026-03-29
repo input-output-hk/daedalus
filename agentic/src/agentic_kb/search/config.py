@@ -46,18 +46,27 @@ class SearchFilterConfig:
     value_type: SearchFilterValueType
     match_type: SearchFilterMatchType = SearchFilterMatchType.EXACT
     column_name: str | None = None
+    metadata_key: str | None = None
     description: str = ""
 
     def __post_init__(self) -> None:
         if not self.key:
             raise ValueError("Search filter keys must be non-empty")
-        if self.scope == SearchFilterScope.ENTITY and not self.column_name:
+        if self.scope == SearchFilterScope.ENTITY and not self.column_name and not self.metadata_key:
             raise ValueError(
-                f"Entity search filter {self.key!r} must define a backing column name"
+                f"Entity search filter {self.key!r} must define a backing column name or metadata key"
             )
         if self.scope == SearchFilterScope.GLOBAL and self.column_name is not None:
             raise ValueError(
                 f"Global search filter {self.key!r} cannot define a backing column name"
+            )
+        if self.scope == SearchFilterScope.GLOBAL and self.metadata_key is not None:
+            raise ValueError(
+                f"Global search filter {self.key!r} cannot define a backing metadata key"
+            )
+        if self.column_name is not None and self.metadata_key is not None:
+            raise ValueError(
+                f"Entity search filter {self.key!r} cannot define both a backing column name and metadata key"
             )
         if (
             self.match_type == SearchFilterMatchType.PREFIX
@@ -135,7 +144,8 @@ def _global_filter(key: str, *, description: str) -> SearchFilterConfig:
 def _entity_filter(
     key: str,
     *,
-    column_name: str,
+    column_name: str | None = None,
+    metadata_key: str | None = None,
     description: str,
     value_type: SearchFilterValueType = SearchFilterValueType.TEXT,
     match_type: SearchFilterMatchType = SearchFilterMatchType.EXACT,
@@ -146,6 +156,7 @@ def _entity_filter(
         value_type=value_type,
         match_type=match_type,
         column_name=column_name,
+        metadata_key=metadata_key,
         description=description,
     )
 
@@ -188,6 +199,26 @@ _ENTITY_CONFIGS: tuple[SearchEntityConfig, ...] = (
                 column_name="source_path",
                 match_type=SearchFilterMatchType.PREFIX,
                 description="Restrict document results to a repo-relative source path prefix.",
+            ),
+            _entity_filter(
+                "task_id",
+                metadata_key="task_id",
+                description="Restrict document results to a canonical task plan id.",
+            ),
+            _entity_filter(
+                "planning_status",
+                metadata_key="planning_status",
+                description="Restrict document results to a canonical task plan planning status.",
+            ),
+            _entity_filter(
+                "build_status",
+                metadata_key="build_status",
+                description="Restrict document results to a canonical task plan build status.",
+            ),
+            _entity_filter(
+                "plan_type",
+                metadata_key="plan_type",
+                description="Restrict document results to a plan artifact classification.",
             ),
         ),
     ),

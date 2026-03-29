@@ -7,7 +7,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, Protocol, Sequence
+from typing import Any, Mapping, Protocol, Sequence
 
 from agentic_kb.config import AgenticConfig
 from agentic_kb.embed import EmbeddingResponseError, OllamaEmbeddingClient
@@ -44,6 +44,12 @@ EMBED_SEGMENT_MIN_CHARS = 100
 FIRST_H1_PATTERN = re.compile(r"^\s*#(?!#)\s+(.+?)\s*$", re.MULTILINE)
 ATX_HEADING_PATTERN = re.compile(r"^[ \t]{0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$")
 FENCED_CODE_BLOCK_PATTERN = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
+TASK_PLAN_FIELD_PATTERNS: dict[str, re.Pattern[str]] = {
+    "task_id": re.compile(r"^- Task ID:\s*`?([^`]+?)`?\s*$", re.MULTILINE),
+    "title": re.compile(r"^- Title:\s*`?([^`]+?)`?\s*$", re.MULTILINE),
+    "planning_status": re.compile(r"^- Planning Status:\s*`?([^`]+?)`?\s*$", re.MULTILINE),
+    "build_status": re.compile(r"^- Build Status:\s*`?([^`]+?)`?\s*$", re.MULTILINE),
+}
 
 
 class EmbeddingClient(Protocol):
@@ -121,6 +127,7 @@ class StoredDocumentVersion:
     content_hash: str
     repo_commit_hash: str
     source_updated_at: datetime
+    metadata: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -494,6 +501,14 @@ def _load_document_payload(
     title, title_from_h1 = extract_title(content, source_path=source_path)
     preview_text = build_preview_text(content)
     source_updated_at = datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc)
+    metadata = {
+        "relative_path": source_path,
+        "file_size_bytes": file_path.stat().st_size,
+        "source_group": _source_group(source_path),
+        "title_source": "h1" if title_from_h1 else "basename",
+        "title_from_h1": title_from_h1,
+    }
+    metadata.update(_extract_structured_doc_metadata(source_path, content))
 
     return {
         "doc_kind": classify_doc_kind(source_path),
@@ -504,14 +519,85 @@ def _load_document_payload(
         "content_hash": deterministic_content_hash(source_path, content),
         "repo_commit_hash": repo_commit_hash,
         "source_updated_at": source_updated_at,
-        "metadata": {
-            "relative_path": source_path,
-            "file_size_bytes": file_path.stat().st_size,
-            "source_group": _source_group(source_path),
-            "title_source": "h1" if title_from_h1 else "basename",
-            "title_from_h1": title_from_h1,
-        },
+        "metadata": metadata,
     }
+
+
+def _extract_structured_doc_metadata(source_path: str, content: str) -> dict[str, Any]:
+    metadata: dict[str, Any] = {}
+
+    if source_path.startswith(".agent/workflows/"):
+        front_matter = _parse_leading_yaml_front_matter(content)
+        description = front_matter.get("description")
+        if description:
+            metadata["workflow_description"] = description
+
+    plan_type = _extract_plan_type(source_path)
+    if plan_type is not None:
+        metadata["plan_type"] = plan_type
+
+    if _is_canonical_task_plan_path(source_path):
+        metadata.update(_extract_canonical_task_plan_metadata(content))
+
+    return metadata
+
+
+def _parse_leading_yaml_front_matter(content: str) -> dict[str, str]:
+    lines = content.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}
+
+    parsed: dict[str, str] = {}
+    for line in lines[1:]:
+        stripped = line.strip()
+        if stripped == "---":
+            return parsed
+        if not stripped or stripped.startswith("#") or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        normalized_key = key.strip()
+        normalized_value = value.strip()
+        if not normalized_key or not normalized_value:
+            continue
+        if normalized_value in {"|", ">", "|-", ">-", "|+", ">+"}:
+            continue
+        parsed[normalized_key] = _strip_wrapping_quotes(normalized_value)
+    return {}
+
+
+def _is_canonical_task_plan_path(source_path: str) -> bool:
+    path = PurePosixPath(source_path)
+    return (
+        path.match(".agent/plans/agentic/task-plans/task-*.md")
+        and not source_path.endswith("-plan-review.md")
+        and not source_path.endswith("-impl-review.md")
+    )
+
+
+def _extract_plan_type(source_path: str) -> str | None:
+    if _is_canonical_task_plan_path(source_path):
+        return "canonical_task_plan"
+    if source_path.endswith("-plan-review.md"):
+        return "plan_review_log"
+    if source_path.endswith("-impl-review.md"):
+        return "implementation_review_log"
+    return None
+
+
+def _extract_canonical_task_plan_metadata(content: str) -> dict[str, str]:
+    extracted: dict[str, str] = {}
+    for key, pattern in TASK_PLAN_FIELD_PATTERNS.items():
+        match = pattern.search(content)
+        if match is None:
+            continue
+        extracted[key] = match.group(1).strip()
+    return extracted
+
+
+def _strip_wrapping_quotes(value: str) -> str:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        return value[1:-1].strip()
+    return value
 
 
 def _chunk_markdown_document(
@@ -665,7 +751,19 @@ def _document_drafts_match_versions(
             return False
         if draft.content_hash != version.content_hash:
             return False
+        if _normalize_metadata_for_comparison(draft.metadata) != _normalize_metadata_for_comparison(version.metadata):
+            return False
     return True
+
+
+def _normalize_metadata_for_comparison(metadata: Mapping[str, Any]) -> dict[str, Any]:
+    normalized: dict[str, Any] = {}
+    for key, value in metadata.items():
+        if isinstance(value, list):
+            normalized[key] = list(value)
+            continue
+        normalized[key] = value
+    return normalized
 
 
 def _fallback_title(source_path: str) -> str:
@@ -945,7 +1043,7 @@ class PostgresDocsStore:
         with self._connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at
+                SELECT source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at, metadata
                 FROM agentic.kb_documents
                 WHERE source_path = ANY(%s)
                 ORDER BY source_path, chunk_index
@@ -955,7 +1053,7 @@ class PostgresDocsStore:
             rows = cursor.fetchall()
 
         versions_by_path: dict[str, list[StoredDocumentVersion]] = {}
-        for source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at in rows:
+        for source_path, chunk_index, content_hash, repo_commit_hash, source_updated_at, metadata in rows:
             versions_by_path.setdefault(source_path, []).append(
                 StoredDocumentVersion(
                     source_path=source_path,
@@ -963,6 +1061,7 @@ class PostgresDocsStore:
                     content_hash=content_hash,
                     repo_commit_hash=repo_commit_hash,
                     source_updated_at=source_updated_at,
+                    metadata=dict(metadata or {}),
                 )
             )
         return versions_by_path
@@ -1130,6 +1229,7 @@ class InMemoryDocsStore:
                         content_hash=row["content_hash"],
                         repo_commit_hash=row["repo_commit_hash"],
                         source_updated_at=row["source_updated_at"],
+                        metadata=dict(row.get("metadata", {})),
                     )
                 )
             if rows_for_path:

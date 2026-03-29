@@ -6,7 +6,12 @@ from unittest.mock import patch
 from agentic_kb.commands import entity as entity_command
 from agentic_kb.commands import status as status_command
 from agentic_kb.embed.client import EmbeddingConnectionError
-from agentic_kb.mcp.search_server import MCP_ENTITY_NOT_FOUND, MCP_INVALID_PARAMS, SearchMcpServer
+from agentic_kb.mcp.search_server import (
+    DOC_FILTER_KEYS,
+    MCP_ENTITY_NOT_FOUND,
+    MCP_INVALID_PARAMS,
+    SearchMcpServer,
+)
 from agentic_kb.search import SearchEntityType, SearchHit, SearchMode, SearchResultSet
 
 
@@ -81,6 +86,16 @@ class SearchMcpServerTests(unittest.TestCase):
         self.assertEqual(captured_requests[0].filters["entity_type"], ["documents"])
         self.assertEqual(result["structuredContent"]["entity_types"], ["documents"])
         self.assertEqual(result["structuredContent"]["filters"]["doc_kind"], "workflow")
+
+    def test_search_docs_schema_and_filter_allowlist_include_plan_metadata_filters(self):
+        tools = {tool["name"]: tool for tool in self.server.list_tools()}
+        docs_filters = tools["search_docs"]["inputSchema"]["properties"]["filters"]["properties"]
+
+        self.assertEqual(
+            DOC_FILTER_KEYS,
+            ("doc_kind", "source_path_prefix", "task_id", "planning_status", "build_status", "plan_type"),
+        )
+        self.assertEqual(tuple(docs_filters), DOC_FILTER_KEYS)
 
     def test_search_github_rejects_incompatible_entity_type_and_filter(self):
         with self.assertRaisesRegex(Exception, "Selected entity_type values do not support the requested filters"):

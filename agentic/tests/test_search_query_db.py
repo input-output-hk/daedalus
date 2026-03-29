@@ -58,7 +58,8 @@ class SearchQueryDbTests(unittest.TestCase):
                         content,
                         preview_text,
                         content_hash,
-                        embedding
+                        embedding,
+                        metadata
                     ) VALUES (
                         %s,
                         %s,
@@ -70,7 +71,8 @@ class SearchQueryDbTests(unittest.TestCase):
                         %s,
                         %s,
                         %s,
-                        %s::vector
+                        %s::vector,
+                        %s::jsonb
                     )
                     """,
                     [
@@ -84,6 +86,7 @@ class SearchQueryDbTests(unittest.TestCase):
                             "hybrid search with rrf",
                             "docs-plan-hash",
                             _vector_literal(_unit_vector(1)),
+                            '{"plan_type":"canonical_task_plan","task_id":"task-502","planning_status":"approved","build_status":"completed"}',
                         ),
                         (
                             "docs:guide#0",
@@ -95,6 +98,7 @@ class SearchQueryDbTests(unittest.TestCase):
                             "agentic workflow details",
                             "docs-guide-hash",
                             _vector_literal(_unit_vector(2)),
+                            '{"workflow_description":"workflow guide"}',
                         ),
                     ],
                 )
@@ -236,6 +240,36 @@ class SearchQueryDbTests(unittest.TestCase):
             )
         )
         self.assertEqual([hit.id for hit in result.hits], ["project:item-1"])
+
+    def test_bm25_document_metadata_filters_match_canonical_task_plans_only(self):
+        result = self.store.search(
+            SearchRequest(
+                query_text="search",
+                mode=SearchMode.BM25,
+                filters={
+                    "entity_type": "documents",
+                    "task_id": "task-502",
+                    "planning_status": "approved",
+                    "build_status": "completed",
+                    "plan_type": "canonical_task_plan",
+                },
+            )
+        )
+        self.assertEqual([hit.id for hit in result.hits], ["docs:plan#0"])
+        self.assertEqual(result.hits[0].fields["doc_kind"], "plan")
+
+    def test_bm25_document_metadata_filters_exclude_non_matching_docs(self):
+        result = self.store.search(
+            SearchRequest(
+                query_text="workflow",
+                mode=SearchMode.BM25,
+                filters={
+                    "entity_type": "documents",
+                    "task_id": "task-999",
+                },
+            )
+        )
+        self.assertEqual(result.hits, ())
 
 
 def _unit_vector(index: int, *, dimensions: int = 384) -> list[float]:

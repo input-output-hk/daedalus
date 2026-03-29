@@ -45,17 +45,19 @@ class McpSearchServerDbTests(unittest.TestCase):
                     """
                     INSERT INTO agentic.kb_documents (
                         id, source_domain, doc_kind, source_path, title, heading_path,
-                        chunk_index, content, preview_text, content_hash
+                        chunk_index, content, preview_text, content_hash, metadata
                     ) VALUES (
                         'docs:mcp#seed', 'docs', 'workflow', '.agent/workflows/agentic-kb.md',
                         'mithril bootstrap workflow', '[]'::jsonb, 0,
                         'mithril bootstrap workflow details and operational steps',
-                        'mithril bootstrap workflow details', 'docs-mcp-seed'
+                        'mithril bootstrap workflow details', 'docs-mcp-seed',
+                        '{"workflow_description":"bootstrap workflow"}'::jsonb
                     ), (
-                        'docs:mcp#related', 'docs', 'workflow', '.agent/workflows/related.md',
+                        'docs:mcp#related', 'docs', 'plan', '.agent/plans/agentic/task-plans/task-303.md',
                         'related workflow', '[]'::jsonb, 0,
                         'workflow details related to mithril bootstrap and sync',
-                        'workflow details related to mithril bootstrap and sync', 'docs-mcp-related'
+                        'workflow details related to mithril bootstrap and sync', 'docs-mcp-related',
+                        '{"plan_type":"canonical_task_plan","task_id":"task-303","planning_status":"approved","build_status":"completed"}'::jsonb
                     )
                     """
                 )
@@ -94,6 +96,27 @@ class McpSearchServerDbTests(unittest.TestCase):
         self.assertTrue(any(hit["id"] == "docs:mcp#seed" for hit in search_payload["structuredContent"]["hits"]))
         self.assertEqual(docs_payload["structuredContent"]["entity_types"], ["documents"])
         self.assertTrue(all(hit["entity_type"] == "documents" for hit in docs_payload["structuredContent"]["hits"]))
+
+    def test_search_docs_accepts_plan_metadata_filters(self):
+        payload = _tool_call(
+            self.server,
+            "search_docs",
+            {
+                "query_text": "workflow",
+                "mode": "bm25",
+                "filters": {
+                    "task_id": "task-303",
+                    "planning_status": "approved",
+                    "build_status": "completed",
+                    "plan_type": "canonical_task_plan",
+                },
+            },
+        )
+
+        self.assertEqual(
+            [hit["id"] for hit in payload["structuredContent"]["hits"]],
+            ["docs:mcp#related"],
+        )
 
     def test_get_entity_and_kb_status_return_real_db_backed_payloads(self):
         entity_payload = _tool_call(self.server, "get_entity", {"entity_type": "documents", "id": "docs:mcp#seed"})
