@@ -575,13 +575,13 @@
           "id": "task-802",
           "title": "Write OpenCode and Claude Code setup docs",
           "description": "Document how to connect local agents to the Search MCP service, including example configs and environment variables",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-801"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/README.md"
         },
         {

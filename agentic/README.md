@@ -38,9 +38,85 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools status
 # Start the long-running service mode used by compose
 docker compose -f docker-compose.agentic.yml up -d kb-tools
 
-# Start the packaged stdio MCP server in the compose parity service
-docker compose -f docker-compose.agentic.yml up -d mcp-search
+# Run the packaged stdio MCP server in a client-spawned session
+docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
 ```
+
+## MCP Setup
+
+`agentic-kb mcp-search` is a stdio MCP server. MCP clients should spawn it as a no-TTY child process and communicate over stdin/stdout.
+
+Use this repo-supported launcher for MCP clients:
+
+```bash
+docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+```
+
+Do not point MCP clients at `docker compose -f docker-compose.agentic.yml up -d mcp-search`. That Compose service is only a parity/smoke harness for the same stdio process; it is not a network endpoint.
+
+### Environment Variables
+
+- `DATABASE_URL`: required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires it automatically.
+- `OLLAMA_BASE_URL`: required for direct local launches and needed for vector/hybrid MCP queries; the Compose launcher wires it automatically.
+- `OLLAMA_EMBED_MODEL`: optional override. Keep it aligned with the embedding model used to index the current KB.
+- `GITHUB_TOKEN`: optional for read-only MCP search/status. It is still required for `sync github` and `sync project`, and Project 5 reads need a token that can read `DripDropz` ProjectV2 data.
+
+### OpenCode
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "daedalus-agentic-search": {
+      "type": "local",
+      "command": [
+        "docker",
+        "compose",
+        "-f",
+        "docker-compose.agentic.yml",
+        "run",
+        "--rm",
+        "-T",
+        "mcp-search"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add --transport stdio --scope project daedalus-agentic-search -- \
+  docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+```
+
+This writes the project-scoped MCP entry into `.mcp.json` for Claude Code.
+
+### Local `.mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "daedalus-agentic-search": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "compose",
+        "-f",
+        "docker-compose.agentic.yml",
+        "run",
+        "--rm",
+        "-T",
+        "mcp-search"
+      ]
+    }
+  }
+}
+```
+
+All three examples intentionally resolve to the same launcher contract. If your client stores the process definition differently, preserve the same argv and keep `-T` so Docker does not allocate a TTY for the stdio MCP session.
 
 Container contract:
 
