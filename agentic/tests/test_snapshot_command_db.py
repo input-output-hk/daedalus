@@ -263,6 +263,135 @@ class SnapshotCommandDbTests(unittest.TestCase):
 
             self.assertFalse(public_table_present)
 
+    def test_import_succeeds_for_fresh_database_without_agentic_schema(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-612-fresh-schema-missing.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            with self.connection.transaction():
+                with self.connection.cursor() as cursor:
+                    cursor.execute("DROP SCHEMA IF EXISTS agentic CASCADE")
+
+            import_result = snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+        self.assertEqual(import_result.path, dump_path)
+        restored = status.inspect_database(self.database_url)
+        self.assertEqual(restored.row_counts["agentic.kb_documents"], 1)
+
+    def test_import_succeeds_for_initialized_but_empty_kb(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-612-empty-kb.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            with self.connection.transaction():
+                with self.connection.cursor() as cursor:
+                    cursor.execute(
+                        "TRUNCATE TABLE agentic.kb_snapshot_manifest, agentic.kb_sync_state, agentic.kb_documents CASCADE"
+                    )
+
+            import_result = snapshot.import_snapshot(self.database_url, dump_path, confirmed=True)
+
+        self.assertEqual(import_result.manifest_path, manifest_path)
+        restored = status.inspect_database(self.database_url)
+        self.assertEqual(restored.row_counts["agentic.kb_documents"], 1)
+
+    def test_import_rejects_seeded_documents_before_restore(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-612-seeded-docs.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            before_counts = status.inspect_database(self.database_url).row_counts.copy()
+
+            with self.assertRaisesRegex(
+                snapshot.SnapshotCommandError,
+                "fresh, isolated, or otherwise disposable KB database",
+            ):
+                snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+            after_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(after_counts["agentic.kb_documents"], before_counts["agentic.kb_documents"])
+
+    def test_import_rejects_leftover_sync_state_before_restore(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-612-seeded-sync-state.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            with self.connection.transaction():
+                with self.connection.cursor() as cursor:
+                    cursor.execute("TRUNCATE TABLE agentic.kb_snapshot_manifest, agentic.kb_sync_state, agentic.kb_documents CASCADE")
+                    cursor.execute(
+                        """
+                        INSERT INTO agentic.kb_sync_state (
+                            id,
+                            source_name,
+                            scope_key,
+                            repo_commit_hash,
+                            metadata
+                        ) VALUES (
+                            'sync-state:docs:repo:DripDropz/daedalus',
+                            'docs',
+                            'repo:DripDropz/daedalus',
+                            'deadbeef',
+                            '{"repo": "DripDropz/daedalus"}'::jsonb
+                        )
+                        """
+                    )
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "agentic.kb_sync_state=1"):
+                snapshot.import_snapshot(self.database_url, dump_path, confirmed=True)
+
+            restored_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(restored_counts["agentic.kb_documents"], 0)
+
+    def test_import_rejects_leftover_snapshot_manifest_before_restore(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "task-612-seeded-manifest.dump"
+            export_result = snapshot.export_snapshot(self.database_url, dump_path)
+            manifest_path = export_result.manifest_path
+            self.assertIsNotNone(manifest_path)
+
+            with self.connection.transaction():
+                with self.connection.cursor() as cursor:
+                    cursor.execute("TRUNCATE TABLE agentic.kb_snapshot_manifest, agentic.kb_sync_state, agentic.kb_documents CASCADE")
+                    cursor.execute(
+                        """
+                        INSERT INTO agentic.kb_snapshot_manifest (
+                            id,
+                            snapshot_name,
+                            schema_version,
+                            snapshot_created_at,
+                            manifest,
+                            entity_counts,
+                            github_watermarks,
+                            content_hash
+                        ) VALUES (
+                            'snapshot-manifest:task-612-leftover',
+                            'leftover',
+                            1,
+                            %s,
+                            '{}'::jsonb,
+                            '{}'::jsonb,
+                            '{}'::jsonb,
+                            'sha256:' || repeat('0', 64)
+                        )
+                        """,
+                        (datetime(2026, 3, 29, 21, 0, tzinfo=timezone.utc),),
+                    )
+
+            with self.assertRaisesRegex(snapshot.SnapshotCommandError, "agentic.kb_snapshot_manifest=1"):
+                snapshot.import_snapshot(self.database_url, manifest_path, confirmed=True)
+
+            restored_counts = status.inspect_database(self.database_url).row_counts
+            self.assertEqual(restored_counts["agentic.kb_documents"], 0)
+
     def _restore_embed_model(self):
         if self.original_embed_model is None:
             os.environ.pop("OLLAMA_EMBED_MODEL", None)

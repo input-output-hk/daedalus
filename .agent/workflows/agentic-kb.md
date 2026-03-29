@@ -181,6 +181,8 @@ Expected validation shape after import:
 - `snapshot export` is schema-scoped to `agentic`; it is not a full-cluster backup.
 - `snapshot import` drops and recreates the `agentic` schema before restore.
 - Only run import against fresh, isolated, or otherwise disposable KB databases.
+- The enforced v1 import contract allows two target states only: a fresh database with no `agentic` schema yet, or an initialized KB where all state-bearing `agentic` tables are empty.
+- Import fails before schema drop if searchable KB tables, `kb_sync_state`, or `kb_snapshot_manifest` already contain rows.
 - The canonical manifest contract lives at `agentic/config/snapshot-manifest.schema.json`; export now writes that manifest beside the dump, and import validates the manifest contract plus dump identity before any destructive restore.
 
 ## Freshness Guidance

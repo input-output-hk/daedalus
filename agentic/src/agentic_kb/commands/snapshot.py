@@ -41,6 +41,17 @@ SNAPSHOT_ENTITY_TABLES: tuple[tuple[str, str], ...] = (
     ("github_pr_comments", "agentic.kb_github_pr_comments"),
     ("project_items", "agentic.kb_project_items"),
 )
+SNAPSHOT_IMPORT_STATE_TABLES: tuple[str, ...] = (
+    "agentic.kb_documents",
+    "agentic.kb_code_chunks",
+    "agentic.kb_github_issues",
+    "agentic.kb_github_issue_comments",
+    "agentic.kb_github_prs",
+    "agentic.kb_github_pr_comments",
+    "agentic.kb_project_items",
+    "agentic.kb_sync_state",
+    "agentic.kb_snapshot_manifest",
+)
 
 
 @dataclass(frozen=True)
@@ -66,6 +77,20 @@ class SnapshotExportMetadata:
     embedding_model: str
     entity_counts: dict[str, int]
     sync_state: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class SnapshotImportTargetInspection:
+    schema_exists: bool
+    state_table_row_counts: dict[str, int]
+
+    @property
+    def nonempty_tables(self) -> dict[str, int]:
+        return {
+            table_name: row_count
+            for table_name, row_count in self.state_table_row_counts.items()
+            if row_count > 0
+        }
 
 
 class SnapshotCommandError(RuntimeError):
@@ -220,6 +245,7 @@ def import_snapshot(
     pair, manifest = resolve_import_snapshot_pair(source_path)
     _ensure_required_binaries("psql", "pg_restore")
     validate_snapshot_artifact(pair.dump_path, manifest)
+    ensure_disposable_import_target(database_url)
 
     restore_list_path = build_agentic_restore_list(pair.dump_path)
     _run_subprocess(build_drop_schema_command(database_url))
@@ -433,6 +459,68 @@ def validate_snapshot_artifact(dump_path: Path, manifest: dict[str, Any]) -> Non
         raise SnapshotCommandError(
             f"snapshot dump content hash mismatch: expected {expected_hash}, found {actual_hash}"
         )
+
+
+def inspect_snapshot_import_target(database_url: str) -> SnapshotImportTargetInspection:
+    psycopg = _load_psycopg()
+    try:
+        with psycopg.connect(database_url) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT to_regnamespace(%s) IS NOT NULL", (AGENTIC_SCHEMA,))
+                schema_row = cursor.fetchone()
+                schema_exists = bool(schema_row[0]) if schema_row else False
+                if not schema_exists:
+                    return SnapshotImportTargetInspection(
+                        schema_exists=False,
+                        state_table_row_counts={},
+                    )
+
+                row_counts: dict[str, int] = {}
+                missing_tables: list[str] = []
+                for table_name in SNAPSHOT_IMPORT_STATE_TABLES:
+                    cursor.execute("SELECT to_regclass(%s)", (table_name,))
+                    table_row = cursor.fetchone()
+                    if not table_row or table_row[0] is None:
+                        missing_tables.append(table_name)
+                        continue
+
+                    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+                    count_row = cursor.fetchone()
+                    row_counts[table_name] = int(count_row[0] if count_row else 0)
+    except SnapshotCommandError:
+        raise
+    except Exception as error:
+        raise SnapshotCommandError(f"failed to inspect snapshot import target: {error}") from error
+
+    if missing_tables:
+        missing_summary = ", ".join(sorted(missing_tables))
+        raise SnapshotCommandError(
+            "snapshot import target does not match the expected KB schema state; "
+            f"missing state tables: {missing_summary}. Recreate the disposable KB volume and retry import."
+        )
+
+    return SnapshotImportTargetInspection(
+        schema_exists=True,
+        state_table_row_counts=row_counts,
+    )
+
+
+def ensure_disposable_import_target(database_url: str) -> SnapshotImportTargetInspection:
+    inspection = inspect_snapshot_import_target(database_url)
+    if not inspection.schema_exists:
+        return inspection
+
+    if inspection.nonempty_tables:
+        table_summary = ", ".join(
+            f"{table_name}={row_count}"
+            for table_name, row_count in sorted(inspection.nonempty_tables.items())
+        )
+        raise SnapshotCommandError(
+            "snapshot import requires a fresh, isolated, or otherwise disposable KB database; "
+            f"found existing rows in {table_summary}. Recreate the disposable KB volume and retry import."
+        )
+
+    return inspection
 
 
 def compute_file_sha256(path: Path) -> str:

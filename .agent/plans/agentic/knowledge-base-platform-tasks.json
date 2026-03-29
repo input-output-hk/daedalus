@@ -518,13 +518,13 @@
           "id": "task-612",
           "title": "Enforce disposable import target safety",
           "description": "Make snapshot import fail fast when the target KB is not fresh, isolated, or otherwise explicitly disposable so restore cannot silently merge into an existing seeded database",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-602"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-29",
           "targetPath": "agentic/src/agentic_kb/commands/snapshot.py"
         },
         {

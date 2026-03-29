@@ -251,6 +251,7 @@ class SnapshotCommandTests(unittest.TestCase):
 
     @patch("agentic_kb.commands.snapshot._ensure_required_binaries")
     @patch("agentic_kb.commands.snapshot._persist_snapshot_manifest")
+    @patch("agentic_kb.commands.snapshot.ensure_disposable_import_target")
     @patch("agentic_kb.commands.snapshot.validate_snapshot_artifact")
     @patch("agentic_kb.commands.snapshot.build_agentic_restore_list")
     @patch("agentic_kb.commands.snapshot._run_subprocess")
@@ -259,6 +260,7 @@ class SnapshotCommandTests(unittest.TestCase):
         run_subprocess,
         build_agentic_restore_list,
         validate_snapshot_artifact,
+        ensure_disposable_import_target,
         persist_snapshot_manifest,
         ensure_required_binaries,
     ):
@@ -285,6 +287,9 @@ class SnapshotCommandTests(unittest.TestCase):
 
         ensure_required_binaries.assert_called_once_with("psql", "pg_restore")
         validate_snapshot_artifact.assert_called_once_with(dump_path, manifest)
+        ensure_disposable_import_target.assert_called_once_with(
+            "postgresql://agentic:agentic@db:5432/agentic_kb"
+        )
         self.assertEqual(
             run_subprocess.call_args_list,
             [
@@ -317,6 +322,55 @@ class SnapshotCommandTests(unittest.TestCase):
         self.assertEqual(result.manifest_path, manifest_path)
         self.assertFalse(restore_list.exists())
 
+    @patch("agentic_kb.commands.snapshot._ensure_required_binaries")
+    @patch("agentic_kb.commands.snapshot._persist_snapshot_manifest")
+    @patch("agentic_kb.commands.snapshot.ensure_disposable_import_target")
+    @patch("agentic_kb.commands.snapshot.validate_snapshot_artifact")
+    @patch("agentic_kb.commands.snapshot.build_agentic_restore_list")
+    @patch("agentic_kb.commands.snapshot._run_subprocess")
+    def test_import_snapshot_fails_before_drop_when_target_not_disposable(
+        self,
+        run_subprocess,
+        build_agentic_restore_list,
+        validate_snapshot_artifact,
+        ensure_disposable_import_target,
+        persist_snapshot_manifest,
+        ensure_required_binaries,
+    ):
+        ensure_disposable_import_target.side_effect = snapshot.SnapshotCommandError(
+            "snapshot import requires a fresh, isolated, or otherwise disposable KB database"
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dump_path = Path(temp_dir) / "snapshot.dump"
+            dump_path.write_bytes(b"dump-bytes")
+            manifest_path = Path(temp_dir) / "snapshot.manifest.json"
+            manifest = _manifest_fixture(
+                artifact_filename=dump_path.name,
+                artifact_size_bytes=dump_path.stat().st_size,
+                artifact_content_hash=snapshot.compute_file_sha256(dump_path),
+            )
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                snapshot.SnapshotCommandError,
+                "fresh, isolated, or otherwise disposable KB database",
+            ):
+                snapshot.import_snapshot(
+                    "postgresql://agentic:agentic@db:5432/agentic_kb",
+                    dump_path,
+                    confirmed=True,
+                )
+
+        ensure_required_binaries.assert_called_once_with("psql", "pg_restore")
+        validate_snapshot_artifact.assert_called_once_with(dump_path, manifest)
+        ensure_disposable_import_target.assert_called_once_with(
+            "postgresql://agentic:agentic@db:5432/agentic_kb"
+        )
+        build_agentic_restore_list.assert_not_called()
+        run_subprocess.assert_not_called()
+        persist_snapshot_manifest.assert_not_called()
+
     def test_import_snapshot_requires_explicit_confirmation(self):
         with tempfile.NamedTemporaryFile(suffix=".dump") as temp_file:
             with self.assertRaisesRegex(snapshot.SnapshotCommandError, "explicit destructive confirmation"):
@@ -325,6 +379,120 @@ class SnapshotCommandTests(unittest.TestCase):
                     temp_file.name,
                     confirmed=False,
                 )
+
+    @patch("agentic_kb.commands.snapshot.inspect_snapshot_import_target")
+    def test_ensure_disposable_import_target_allows_missing_agentic_schema(self, inspect_target):
+        inspect_target.return_value = snapshot.SnapshotImportTargetInspection(
+            schema_exists=False,
+            state_table_row_counts={},
+        )
+
+        inspection = snapshot.ensure_disposable_import_target("postgresql://agentic:agentic@db:5432/agentic_kb")
+
+        self.assertEqual(
+            inspection,
+            snapshot.SnapshotImportTargetInspection(
+                schema_exists=False,
+                state_table_row_counts={},
+            ),
+        )
+
+    @patch("agentic_kb.commands.snapshot.inspect_snapshot_import_target")
+    def test_ensure_disposable_import_target_allows_initialized_but_empty_kb(self, inspect_target):
+        inspect_target.return_value = snapshot.SnapshotImportTargetInspection(
+            schema_exists=True,
+            state_table_row_counts={table_name: 0 for table_name in snapshot.SNAPSHOT_IMPORT_STATE_TABLES},
+        )
+
+        inspection = snapshot.ensure_disposable_import_target(
+            "postgresql://agentic:agentic@db:5432/agentic_kb"
+        )
+
+        self.assertTrue(inspection.schema_exists)
+        self.assertEqual(inspection.nonempty_tables, {})
+
+    @patch("agentic_kb.commands.snapshot.inspect_snapshot_import_target")
+    def test_ensure_disposable_import_target_rejects_seeded_tables(self, inspect_target):
+        inspect_target.return_value = snapshot.SnapshotImportTargetInspection(
+            schema_exists=True,
+            state_table_row_counts={
+                "agentic.kb_documents": 3,
+                "agentic.kb_sync_state": 1,
+                "agentic.kb_snapshot_manifest": 0,
+            },
+        )
+
+        with self.assertRaisesRegex(
+            snapshot.SnapshotCommandError,
+            "agentic.kb_documents=3, agentic.kb_sync_state=1",
+        ):
+            snapshot.ensure_disposable_import_target(
+                "postgresql://agentic:agentic@db:5432/agentic_kb"
+            )
+
+    @patch("agentic_kb.commands.snapshot._load_psycopg")
+    def test_inspect_snapshot_import_target_counts_state_tables_when_schema_exists(self, load_psycopg):
+        row_counts = [
+            (True,),
+            ("agentic.kb_documents",),
+            (0,),
+            ("agentic.kb_code_chunks",),
+            (0,),
+            ("agentic.kb_github_issues",),
+            (0,),
+            ("agentic.kb_github_issue_comments",),
+            (0,),
+            ("agentic.kb_github_prs",),
+            (0,),
+            ("agentic.kb_github_pr_comments",),
+            (0,),
+            ("agentic.kb_project_items",),
+            (0,),
+            ("agentic.kb_sync_state",),
+            (1,),
+            ("agentic.kb_snapshot_manifest",),
+            (2,),
+        ]
+        cursor = _FakeCursor(fetchone_values=row_counts)
+        load_psycopg.return_value = MagicMock(connect=MagicMock(return_value=_FakePsycopgConnection(cursor)))
+
+        inspection = snapshot.inspect_snapshot_import_target(
+            "postgresql://agentic:agentic@db:5432/agentic_kb"
+        )
+
+        self.assertTrue(inspection.schema_exists)
+        self.assertEqual(inspection.state_table_row_counts["agentic.kb_sync_state"], 1)
+        self.assertEqual(inspection.state_table_row_counts["agentic.kb_snapshot_manifest"], 2)
+
+    @patch("agentic_kb.commands.snapshot._load_psycopg")
+    def test_inspect_snapshot_import_target_rejects_partial_schema_state(self, load_psycopg):
+        fetchone_values = [
+            (True,),
+            ("agentic.kb_documents",),
+            (0,),
+            (None,),
+            ("agentic.kb_github_issues",),
+            (0,),
+            ("agentic.kb_github_issue_comments",),
+            (0,),
+            ("agentic.kb_github_prs",),
+            (0,),
+            ("agentic.kb_github_pr_comments",),
+            (0,),
+            ("agentic.kb_project_items",),
+            (0,),
+            ("agentic.kb_sync_state",),
+            (0,),
+            ("agentic.kb_snapshot_manifest",),
+            (0,),
+        ]
+        cursor = _FakeCursor(fetchone_values=fetchone_values)
+        load_psycopg.return_value = MagicMock(connect=MagicMock(return_value=_FakePsycopgConnection(cursor)))
+
+        with self.assertRaisesRegex(snapshot.SnapshotCommandError, "missing state tables: agentic.kb_code_chunks"):
+            snapshot.inspect_snapshot_import_target(
+                "postgresql://agentic:agentic@db:5432/agentic_kb"
+            )
 
     def test_build_pg_restore_command_uses_filtered_restore_list(self):
         command = snapshot.build_pg_restore_command(
@@ -410,6 +578,15 @@ class _FakeConnection:
 
     def close(self):
         self.closed = True
+
+
+class _FakePsycopgConnection(_FakeConnection):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+        return False
 
 
 def _manifest_fixture(
