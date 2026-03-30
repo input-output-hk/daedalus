@@ -199,7 +199,8 @@ Project anchors
 - Final orchestrator signoff complete
 - Task commit created only when the task reached a truthful completion point and the user interaction requirements, if any, have been satisfied
   Task selection
-- Always pick next unblocked critical-path task unless justified otherwise
+- Always pick the next unblocked critical-path task unless justified otherwise
+- When multiple unblocked tasks exist, pick the one with the lowest task ID number. This is a deterministic tiebreaker so the orchestrator never stops to ask which to pick
 - Reconcile inconsistencies between repo/docs/tasks/project/research before starting
   Ask user when required for correctness or truthful completion
 - Material architecture tradeoff
