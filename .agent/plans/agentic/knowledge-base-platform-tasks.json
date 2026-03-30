@@ -923,14 +923,14 @@
           "id": "task-805",
           "title": "Add MCP smoke tests against seeded KB",
           "description": "Exercise the stdio Search MCP against a seeded database so search, entity lookup, related-results, and status calls stay wired to the documented non-daemon client contract",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-801",
             "task-803"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_mcp_smoke.py"
         }
       ]
