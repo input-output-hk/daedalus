@@ -27,6 +27,10 @@
             name = "makeSignedInstaller-${cluster}${suffix}";
             value = internal.makeSignedInstaller.${cluster};
           }
+          {
+            name = "daedalus-bridge-${cluster}${suffix}";
+            value = internal.common.daedalus-bridge.${cluster};
+          }
         ])
         inputs.self.internal.installerClusters))
       // {

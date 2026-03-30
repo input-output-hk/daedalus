@@ -19,6 +19,7 @@ export type RunCommandOptions = {
   onStdout?: (chunk: string) => void;
   onStderr?: (chunk: string) => void;
   requireKeys?: boolean;
+  stdinInput?: string;
 };
 
 export type RunCommandCallbacks = {
@@ -113,6 +114,82 @@ export function attachLogStream(
   if (child.stderr) {
     child.stderr.on('data', (chunk) => logStream.write(chunk));
   }
+}
+
+export async function runBinary(
+  binaryName: string,
+  args: string[],
+  workDir: string,
+  options: RunCommandOptions = {},
+  callbacks?: RunCommandCallbacks
+): Promise<RunCommandResult> {
+  const { onStdout, onStderr } = options;
+  const logStream = openLogStream();
+  if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
+
+  const env = normalizeSpawnEnv(process.env);
+  const pathKey = getWindowsPathKey(env);
+
+  const resolvedBinaryName = environment.isWindows
+    ? `${binaryName}.exe`
+    : binaryName;
+  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY;
+  const binaryPath = installDir
+    ? path.join(installDir, resolvedBinaryName)
+    : resolvedBinaryName;
+
+  ensureDirectoryExists(workDir);
+
+  logger.info(`[mithril] Spawning: ${binaryPath} ${args.join(' ')}`, {
+    binaryPath,
+    installDir: installDir || '(not set)',
+    cwd: workDir,
+    pathEnv: env[pathKey] || '(not set)',
+    pathKey,
+  });
+
+  return new Promise((resolve, reject) => {
+    const child = spawn(binaryPath, args, { cwd: workDir, env });
+
+    if (callbacks?.onProcess) callbacks.onProcess(child);
+    attachLogStream(child, logStream);
+
+    if (options.stdinInput !== undefined) {
+      child.stdin?.write(options.stdinInput);
+      child.stdin?.end();
+    }
+
+    let stdout = '';
+    let stderr = '';
+
+    if (child.stdout) {
+      child.stdout.on('data', (chunk) => {
+        const text = chunk.toString();
+        stdout += text;
+        if (onStdout) onStdout(text);
+      });
+    }
+
+    if (child.stderr) {
+      child.stderr.on('data', (chunk) => {
+        const text = chunk.toString();
+        stderr += text;
+        if (onStderr) onStderr(text);
+      });
+    }
+
+    child.on('error', (error) => {
+      if (callbacks?.onProcess) callbacks.onProcess(null);
+      logStream.end();
+      reject(error);
+    });
+
+    child.on('close', (exitCode) => {
+      if (callbacks?.onProcess) callbacks.onProcess(null);
+      logStream.end();
+      resolve({ stdout, stderr, exitCode });
+    });
+  });
 }
 
 export async function runCommand(
