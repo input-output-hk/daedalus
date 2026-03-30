@@ -70,7 +70,9 @@
     "itn:shelley:wallet:importer": "yarn node-swc utils/api-importer/itn-shelley-wallet-importer.ts",
     "yoroi:wallet:importer": "yarn node-swc utils/api-importer/yoroi-wallet-importer.ts",
     "create-news-verification-hashes": "yarn node-swc utils/create-news-verification-hashes/index.ts",
-    "typedef:sass": "typed-scss-modules source/renderer/app"
+    "typedef:sass": "typed-scss-modules source/renderer/app",
+    "agentic:kb:publish": "bash ./scripts/agentic-kb-publish.sh",
+    "agentic:kb:fetch": "bash ./scripts/agentic-kb-fetch.sh"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"

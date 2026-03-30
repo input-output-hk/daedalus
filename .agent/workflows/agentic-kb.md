@@ -56,14 +56,27 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools search "mithril b
 # Export a portable snapshot for another developer
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export
 
+# Publish the current local baseline into a local Dropbox-synced Daedalus_KB folder
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:publish
+
+# Fetch one explicit shared snapshot pair back into agentic/snapshots/
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- agentic-kb-<timestamp>
+
 # Restore a snapshot into a disposable KB database
-docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/latest.dump --yes
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
 
 # Prove imported data is queryable without waiting on hybrid/vector readiness
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
 ```
 
 `agentic/.env.example` now documents the optional Compose overrides. The supported clean-bootstrap path works with the defaults in `docker-compose.agentic.yml`; copying an env file is optional unless you need custom ports, credentials, model selection, or a `GITHUB_TOKEN` for GitHub-backed sync commands.
+
+The shipped publish/fetch helpers stay intentionally narrow:
+
+- they require `AGENTIC_KB_SHARED_DIR` to point to a locally accessible Dropbox-synced folder named `Daedalus_KB`
+- `yarn agentic:kb:publish` wraps `sync all` plus `snapshot export`, then copies one `.dump` and sibling `.manifest.json` pair into that local folder
+- `yarn agentic:kb:fetch -- <snapshot-basename>` copies one explicit sibling pair back into `agentic/snapshots/`
+- they do not call Dropbox APIs, bootstrap Dropbox accounts, or maintain any repo-owned latest-artifact registry
 
 Today:
 
@@ -135,9 +148,8 @@ The platform is designed for multiple human developers, not just one local machi
 ### Recommended Team Pattern
 
 1. Build the canonical shared baseline locally from `develop` on a trusted GPU-capable developer machine
-2. Export the `.dump` plus sibling `.manifest.json` pair into `agentic/snapshots/`
-3. Upload that snapshot pair to the chosen private shared storage backend outside git history
-4. Download the snapshot pair onto another machine and place it in `agentic/snapshots/`
+2. Run `AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:publish` to refresh the local baseline, export one `.dump` plus sibling `.manifest.json` pair into `agentic/snapshots/`, and copy that pair into the local Dropbox-synced shared folder
+3. On another machine, run `AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- <snapshot-basename>` to copy that explicit pair back into `agentic/snapshots/`
 5. Import the snapshot into a fresh or otherwise disposable KB database
 6. Validate the imported KB with `status --json` plus the deterministic BM25 documents-only proof
 7. Treat `sync changed` as a follow-on incremental command, not part of the clean-machine bootstrap success path
@@ -163,16 +175,19 @@ The canonical shared baseline is published locally, not through GitHub Actions.
 - the selected v1 backend is Dropbox shared-folder storage
 - the canonical shared location is the Dropbox shared folder `Daedalus_KB`
 - Developer 1 creates `Daedalus_KB` in an existing Dropbox account and shares that folder with Developer 2 with write access; the team contract for this backend is one shared folder that is writable by both developers
-- Developer 2 bootstrap is documented only to the current repo-truth minimum: Developer 2 must have a Dropbox access path that can accept the shared folder and verify write access; no repo-owned helper command or deeper account-bootstrap SOP is defined here yet
-- artifact discovery is by opening `Daedalus_KB` and locating the intended canonical `.dump` plus sibling `.manifest.json` pair with the same basename
+- Developer 2 bootstrap is documented only to the current repo-truth minimum: Developer 2 must have a Dropbox access path that can accept the shared folder and verify write access; the repo now ships only local-path helper wrappers, not a deeper account-bootstrap SOP
+- the helper path contract is local-file based: set `AGENTIC_KB_SHARED_DIR` to the local Dropbox-synced `Daedalus_KB` path and keep Dropbox desktop sync or equivalent local access working outside the repo
+- artifact discovery remains intentionally explicit rather than automatic: `yarn agentic:kb:fetch` requires a snapshot basename or sibling filename and does not claim zero-argument latest selection or a richer canonical registry
 - naming and location expectations stay minimal: upload the exported pair directly into `Daedalus_KB`, keep the `.dump` and sibling `.manifest.json` together, and do not rename only one file from the pair
+- `yarn agentic:kb:publish` enforces that same sibling-pair contract locally by failing if export does not leave both files together before copy, and `yarn agentic:kb:fetch` fails if either side of the selected pair is missing in `Daedalus_KB`
 - retention remains manual in v1: keep the current canonical pair in `Daedalus_KB` until a newer compatible pair has been uploaded, and keep the previous known-good pair available as a short-term fallback when possible
 - post-download integrity stays on the shipped import contract: download both sibling files together and rely on `snapshot import` to validate manifest schema plus dump size/hash before any restore; if validation fails, discard the download and fetch both files again
 - outage or latest-artifact-unavailable recovery is to use a last known-good compatible local pair or rebuild locally from `develop` on a trusted GPU-capable machine; do not switch to GitHub Actions artifacts, GitHub Releases, or another ad hoc publication channel
 
-Consumption path after download from the Dropbox shared folder `Daedalus_KB`:
+Consumption path after helper fetch from the Dropbox shared folder `Daedalus_KB`:
 
 ```bash
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- <snapshot-basename>
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
@@ -221,7 +236,7 @@ Current shipped freshness handling is status-driven rather than automatic sync:
 Bootstrap and broader team rollout remain separate acceptance contracts:
 
 - clean-machine bootstrap succeeds when the documented import, `status --json`, and deterministic BM25 proof succeed on a fresh stack
-- team-ready rollout additionally requires the private shared-storage handoff, canonical embedding-contract guidance, Project token guidance, helper commands, and the manual full Project refresh path
+- team-ready rollout additionally requires the private shared-storage handoff, canonical embedding-contract guidance, Project token guidance, and the manual full Project refresh path
 
 ## MCP Setup
 

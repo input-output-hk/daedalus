@@ -83,6 +83,21 @@ Current boundaries:
 
 The canonical team baseline is local-only in v1.
 
+Shipped local helper commands:
+
+```bash
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:publish
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- agentic-kb-<timestamp>
+```
+
+Helper contract:
+
+- `AGENTIC_KB_SHARED_DIR` is required and must point to a locally accessible Dropbox-synced folder named `Daedalus_KB`
+- `yarn agentic:kb:publish` runs `sync all`, exports one snapshot pair into `agentic/snapshots/`, and copies that `.dump` plus sibling `.manifest.json` into `Daedalus_KB`
+- `yarn agentic:kb:fetch` copies one explicit sibling pair back from `Daedalus_KB` into local `agentic/snapshots/`
+- fetch requires an explicit snapshot basename or sibling filename; it does not claim zero-argument latest discovery
+- these helpers stay local-path based only: no Dropbox API usage, OAuth flow, remote listing, or account bootstrap automation is added here
+
 Current contract:
 
 - publication runs from `develop` on a trusted GPU-capable developer machine
@@ -91,8 +106,8 @@ Current contract:
 - GitHub Actions artifacts are retired and are not a supported publication channel
 - the shared baseline uses one canonical embedding contract at a time; local model overrides are out of contract for team publication and handoff
 - Developer 1 creates `Daedalus_KB` in an existing Dropbox account and shares it with Developer 2 with write access; the shared-folder contract for v1 requires that both developers can write to the same folder
-- Developer 2 bootstrap is only documented to the truthful minimum today: Developer 2 must have a Dropbox access path that can accept the shared folder and verify writable access
-- artifact discovery is by opening `Daedalus_KB` and locating the intended `.dump` plus sibling `.manifest.json` pair with the same basename
+- Developer 2 bootstrap is only documented to the truthful minimum today: Developer 2 must have a Dropbox access path that can accept the shared folder and verify writable access; the repo's shipped helper surface starts only after that local path exists
+- artifact discovery stays explicit: select the intended `.dump` plus sibling `.manifest.json` basename in `Daedalus_KB` and pass that basename to `yarn agentic:kb:fetch`
 - upload the exported pair directly into `Daedalus_KB` and keep the two sibling files together; do not rename only one file from the pair
 - retention is manual in v1: keep the current canonical pair in `Daedalus_KB` until its replacement is uploaded, and keep the previous known-good pair available as a short-term fallback when possible
 - after download, rely on `snapshot import` to validate manifest schema plus dump size/hash before restore; if import reports an artifact mismatch, redownload both files together
@@ -101,17 +116,18 @@ Current contract:
 Current local publication shape:
 
 1. Start the stack locally.
-2. Run `sync all` from a trusted developer machine.
-3. Run `snapshot export` to produce the portable pair.
-4. Upload the pair to the Dropbox shared folder `Daedalus_KB`.
+2. Set `AGENTIC_KB_SHARED_DIR` to the local Dropbox-synced path for `Daedalus_KB`.
+3. Run `yarn agentic:kb:publish` from a trusted developer machine.
+4. Confirm the helper copied both sibling files into the Dropbox shared folder `Daedalus_KB`.
 
-Current manual consumption path:
+Current local fetch and consumption path:
 
-1. Download the shared snapshot pair from the Dropbox shared folder `Daedalus_KB`.
-2. Place the two files into `agentic/snapshots/`.
+1. Set `AGENTIC_KB_SHARED_DIR` to the local Dropbox-synced path for `Daedalus_KB`.
+2. Run `yarn agentic:kb:fetch -- <snapshot-basename>`.
 3. Import either the `.dump` path or the sibling `.manifest.json` path.
 
 ```bash
+AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- <snapshot-basename>
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
@@ -127,8 +143,6 @@ Validation expectations after import:
 
 `sync changed` remains optional follow-on work after import when a developer wants to refresh local deltas on top of the shared baseline.
 
-Publish and fetch helper commands are still tracked as later rollout work; the current contract here is the backend decision and minimum manual Dropbox handoff expectations only.
-
 ## Canonical Embedding Contract
 
 Shared baseline publication is pinned to one canonical embedding contract at a time rather than being a per-developer preference.
@@ -141,7 +155,7 @@ Shared baseline publication is pinned to one canonical embedding contract at a t
 Clean-machine bootstrap and full team rollout are separate acceptance levels:
 
 - bootstrap only requires stack start, compatible snapshot import, `status --json`, and the deterministic BM25 proof query
-- broader team rollout additionally requires the documented shared-storage handoff, Project token guidance, helper commands, and post-import sync workflow
+- broader team rollout additionally requires the documented shared-storage handoff, Project token guidance, and post-import sync workflow
 
 ## MCP Setup
 

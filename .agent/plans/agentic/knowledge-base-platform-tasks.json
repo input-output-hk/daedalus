@@ -3,7 +3,7 @@
     "title": "Agentic Knowledge Base and Workflow Platform Tasks",
     "created": "2026-03-27",
     "updated": "2026-03-30",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "totalTasks": 68,
     "prdReference": ".agent/plans/agentic/knowledge-base-platform-prd.md",
     "description": "Implement the Docker Compose-based Daedalus knowledge base, search stack, sync workflow, and read-only MCP tooling"
@@ -19,7 +19,7 @@
           "id": "task-001",
           "title": "Create agentic platform plan and tasks JSON",
           "description": "Add the implementation plan and machine-readable task tracker under .agent/plans/agentic/",
-          "status": "completed",
+          "status": "pending",
           "priority": "high",
           "estimatedHours": 2,
           "dependencies": [],
@@ -571,13 +571,13 @@
           "id": "task-613",
           "title": "Add snapshot import target-safety tests",
           "description": "Prove that snapshot restore is refused for non-empty or otherwise non-disposable KB targets and only succeeds against the supported fresh-database restore path",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
             "task-612"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_snapshot_import_safety.py"
         },
         {
@@ -830,7 +830,7 @@
           "id": "task-705",
           "title": "Add local publish and fetch helper commands",
           "description": "Provide developer-friendly helper commands or scripts for building the canonical baseline locally, exporting the snapshot pair, and downloading/importing the latest shared baseline from the chosen private storage backend",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
@@ -838,7 +838,7 @@
             "task-605",
             "task-608"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "package.json"
         },
         {
