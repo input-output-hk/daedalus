@@ -1,3 +1,10 @@
+---
+name: theme-management
+description: "Add, update, validate and verify theme files using built-in package.json commands and utilities."
+user-invocable: true
+---
+
+
 # Theme Management Skill
 
 > **Purpose**: Add, update, validate and verify theme files using built-in package.json commands and utilities.

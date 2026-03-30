@@ -71,7 +71,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   progressElapsedLabel: {
     id: 'loading.mithrilBootstrap.progress.elapsedLabel',
-    defaultMessage: '!!!Elapsed',
+    defaultMessage: '!!!Elapsed time:',
     description: 'Label for Mithril elapsed time metadata.',
   },
   cancel: {
@@ -240,16 +240,16 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   nodeStartingTitle: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingTitle',
-    defaultMessage: '!!!Starting cardano-node',
+    defaultMessage: '!!!Starting Cardano node',
     description:
-      'Title shown during the completion delay after Mithril snapshot restore, while cardano-node is starting to complete remaining sync.',
+      'Title shown during the completion delay after Mithril snapshot restore, while Cardano node is starting to complete remaining sync.',
   },
   nodeStartingDetail: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingDetail',
     defaultMessage:
-      '!!!The Mithril snapshot has been restored. Cardano-node is starting up to complete the remaining sync.',
+      '!!!The Mithril snapshot has been restored. Cardano node is starting up to complete the remaining sync.',
     description:
-      'Detail copy shown during the completion delay while cardano-node is starting after Mithril restore.',
+      'Detail copy shown during the completion delay while Cardano node is starting after Mithril restore.',
   },
 });
 

@@ -1,4 +1,10 @@
-# i18n Messaging Skill
+---
+name: i18n-messaging
+description: "Manage and maintain i18n messaging or copy for Daedalus multi-language support."
+user-invocable: true
+---
+
+# i18n Messaging
 
 **Manage and maintain i18n messaging for Daedalus multi-language support**
 

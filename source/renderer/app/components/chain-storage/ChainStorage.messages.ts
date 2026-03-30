@@ -61,7 +61,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   availableSpaceUnknown: {
     id: 'chainStorage.locationPicker.availableSpaceUnknown',
-    defaultMessage: '!!!Unavailable',
+    defaultMessage: '!!!Disk space unknown',
     description:
       'Fallback value when available disk space is unavailable in the storage picker.',
   },

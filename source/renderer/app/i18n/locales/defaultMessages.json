@@ -922,7 +922,7 @@
         "id": "chainStorage.locationPicker.availableSpaceSubtext"
       },
       {
-        "defaultMessage": "!!!Unavailable",
+        "defaultMessage": "!!!Disk space unknown",
         "description": "Fallback value when available disk space is unavailable in the storage picker.",
         "id": "chainStorage.locationPicker.availableSpaceUnknown"
       },
@@ -2507,7 +2507,7 @@
         "id": "loading.mithrilBootstrap.snapshotDigestLabel"
       },
       {
-        "defaultMessage": "!!!Elapsed",
+        "defaultMessage": "!!!Elapsed time:",
         "description": "Label for Mithril elapsed time metadata.",
         "id": "loading.mithrilBootstrap.progress.elapsedLabel"
       },
@@ -2657,13 +2657,13 @@
         "id": "loading.mithrilBootstrap.progress.combinedDetail"
       },
       {
-        "defaultMessage": "!!!Starting cardano-node",
-        "description": "Title shown during the completion delay after Mithril snapshot restore, while cardano-node is starting to complete remaining sync.",
+        "defaultMessage": "!!!Starting Cardano node",
+        "description": "Title shown during the completion delay after Mithril snapshot restore, while Cardano node is starting to complete remaining sync.",
         "id": "loading.mithrilBootstrap.progress.nodeStartingTitle"
       },
       {
-        "defaultMessage": "!!!The Mithril snapshot has been restored. Cardano-node is starting up to complete the remaining sync.",
-        "description": "Detail copy shown during the completion delay while cardano-node is starting after Mithril restore.",
+        "defaultMessage": "!!!The Mithril snapshot has been restored. Cardano node is starting up to complete the remaining sync.",
+        "description": "Detail copy shown during the completion delay while Cardano node is starting after Mithril restore.",
         "id": "loading.mithrilBootstrap.progress.nodeStartingDetail"
       }
     ],
