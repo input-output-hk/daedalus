@@ -716,13 +716,13 @@
           "id": "task-708",
           "title": "Add Project full-refresh replay regression check",
           "description": "Verify that an edit to an already-seen Project 5 item becomes visible after the explicit full-refresh path so eventual freshness really re-converges",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-707"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_project_full_refresh.py"
         },
         {
