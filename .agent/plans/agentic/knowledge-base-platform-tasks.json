@@ -757,7 +757,7 @@
           "id": "task-712",
           "title": "Add ingest fixture coverage",
           "description": "Create automated docs, code, GitHub, and Project ingest fixtures so canonical metadata extraction, chunking, and idempotent re-ingest behavior stay regression-tested",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 4,
           "dependencies": [
@@ -766,7 +766,7 @@
             "task-403",
             "task-404"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_ingest_fixtures.py"
         },
         {
