@@ -729,14 +729,14 @@
           "id": "task-704",
           "title": "Add incremental update smoke checks",
           "description": "Verify that small repo and GitHub changes update only the affected entities instead of forcing a full rebuild, and cover the imported-baseline local refresh path used by the two developers",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-701",
             "task-702"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_incremental_sync.py"
         },
         {
