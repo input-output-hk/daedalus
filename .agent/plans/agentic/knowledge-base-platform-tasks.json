@@ -558,13 +558,13 @@
           "id": "task-609",
           "title": "Add snapshot compatibility guard tests",
           "description": "Prove that import, status, and post-import sync fail safely when a snapshot's embedding contract does not match the running KB contract",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-608"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_snapshot_compatibility.py"
         },
         {
