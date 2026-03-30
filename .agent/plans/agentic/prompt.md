@@ -112,6 +112,7 @@ Project anchors
 - Critique must reject any plan that hides a required human checkpoint inside an autonomous implementation loop.
   Orchestrator-owned user interaction policy (mandatory)
 - Subagents do not communicate with the user directly. The orchestrator is the only component that asks the user questions, requests decisions, or presents manual test instructions.
+- Whenever the orchestrator is about to exit and wait for user input, it must print a standalone machine-readable line exactly `RALPH_STOP_REASON=user_feedback_required` in its final response immediately before exiting. Do not wrap this sentinel in backticks, bullets, or surrounding prose.
 - If a selected task is `interactive_decision`, the orchestrator must stop before build implementation and ask the user the minimum blocking question set.
 - If a selected task is `interactive_validation`, the implementation subagent may complete all agent-executable work first, but must then produce a concise manual-validation handoff for the orchestrator.
 - If a selected task is `manual_execution`, the orchestrator must not force the task through a fake autonomous build loop. Instead:
@@ -120,6 +121,7 @@ Project anchors
   - orchestrator presents those steps to the user and waits for results
 - Waiting for user input is a valid in-progress state, not a failure and not a reason to recurse into more subagents.
 - A pause for user interaction does not count against planning-loop or build-loop iteration limits.
+- The required stop sentinel also applies to any other truthful user-owned checkpoint, including planning/build max-iteration escalations that require a user decision before work can continue.
   A) Planning loop (must converge before implementation; max 5 iterations; subagents run in series, not parallel)
 0. Orchestrator does not create the canonical task plan doc or planning review log.
 1. Planning subagent creates or revises the canonical task plan doc and creates or appends `.agent/plans/agentic/task-plans/<task-id>-plan-review.md`.

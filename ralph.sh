@@ -63,6 +63,8 @@ prompt_file=''
 max_iterations=10
 iterations_completed=0
 start_head=''
+stop_reason_prefix='RALPH_STOP_REASON='
+resume_hint=''
 
 for arg in "$@"; do
   case "$arg" in
@@ -156,6 +158,9 @@ exit_with_summary() {
   printf '%sIterations completed:%s %s/%s\n' "$color_bold" "$color_reset" "$iterations_completed" "$max_iterations"
   printf '%sTasks file:%s %s%s%s\n' "$color_bold" "$color_reset" "$color_magenta" "$tasks_file" "$color_reset"
   printf '%sPrompt file:%s %s%s%s\n' "$color_bold" "$color_reset" "$color_magenta" "$prompt_file" "$color_reset"
+  if [[ -n "$resume_hint" ]]; then
+    printf '%sResume:%s %s%s%s\n' "$color_bold" "$color_reset" "$color_magenta" "$resume_hint" "$color_reset"
+  fi
   print_commit_summary
   exit "$exit_code"
 }
@@ -190,12 +195,28 @@ for ((iteration = 1; iteration <= max_iterations; iteration++)); do
   info "Tasks remaining: ${remaining_tasks}/${total_tasks}"
   info "Launching: opencode run < ${prompt_file}"
 
+  opencode_output_file=$(mktemp)
+
   set +e
-  opencode run < "$prompt_file"
-  opencode_status=$?
+  opencode run < "$prompt_file" 2>&1 | tee "$opencode_output_file"
+  opencode_status=${PIPESTATUS[0]}
   set -e
 
   iterations_completed="$iteration"
+
+  stop_reason=''
+  while IFS= read -r output_line; do
+    if [[ "$output_line" == ${stop_reason_prefix}* ]]; then
+      stop_reason="${output_line#${stop_reason_prefix}}"
+    fi
+  done < "$opencode_output_file"
+
+  rm -f "$opencode_output_file"
+
+  if [[ -n "$stop_reason" ]]; then
+    resume_hint='opencode --continue'
+    exit_with_summary 0 "opencode paused for ${stop_reason//_/ } after iteration ${iteration}."
+  fi
 
   if [[ "$opencode_status" -ne 0 ]]; then
     exit_with_summary "$opencode_status" "opencode exited with status ${opencode_status} on iteration ${iteration}."
