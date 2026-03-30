@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path, PurePosixPath
-from typing import Any, Protocol, Sequence
+from typing import Any, Callable, Protocol, Sequence
 
 from tree_sitter import Node
 from tree_sitter_language_pack import get_parser
@@ -524,6 +524,7 @@ def ingest_code(
     repo_commit_hash: str | None = None,
     run_mode: str = "targeted",
     prune_missing: bool = False,
+    progress_callback: Callable[[int, int, str], None] | None = None,
 ) -> CodeIngestResult:
     root = Path(workspace_root).resolve()
     options = CodeDiscoveryOptions(run_mode=run_mode, prune_missing=prune_missing)
@@ -532,7 +533,9 @@ def ingest_code(
     resolved_repo_commit_hash = repo_commit_hash or get_repo_commit_hash(root)
     chunk_count = 0
 
-    for repo_path in resolved_source_paths:
+    total_files = len(resolved_source_paths)
+
+    for index, repo_path in enumerate(resolved_source_paths, start=1):
         try:
             prepared_chunks = _prepare_file_code_chunks(
                 root,
@@ -542,10 +545,14 @@ def ingest_code(
             )
         except ValueError as error:
             if "exceeds" in str(error):
+                if progress_callback is not None:
+                    progress_callback(index, total_files, repo_path)
                 continue
             raise
         code_store.replace_chunks_for_path(repo_path, prepared_chunks)
         chunk_count += len(prepared_chunks)
+        if progress_callback is not None:
+            progress_callback(index, total_files, repo_path)
 
     if options.prune_missing:
         code_store.delete_missing_paths(resolved_source_paths)
@@ -698,6 +705,7 @@ def _prepare_file_code_chunks(
 ) -> list[PreparedCodeChunk]:
     content = _read_source_content(workspace_root, repo_path)
     extracted_symbols = _extract_code_symbols(repo_path, content)
+    extracted_symbols = [symbol for symbol in extracted_symbols if symbol.content.strip()]
     if not extracted_symbols:
         return []
 

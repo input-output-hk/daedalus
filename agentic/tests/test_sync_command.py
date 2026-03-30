@@ -625,22 +625,120 @@ class SyncCommandTests(unittest.TestCase):
             calls.append("docs")
             return {"processed_count": 1, "deleted_paths": (), "repo_commit_hash": "a"}
 
-        def code_handler(*args, **kwargs):
-            calls.append("code")
-            raise sync.SyncCommandError("code failed")
+        def github_handler(*args, **kwargs):
+            calls.append("github")
+            raise sync.SyncCommandError("github failed")
 
         with patch("agentic_kb.commands.sync.sync_docs", side_effect=docs_handler):
-            with patch("agentic_kb.commands.sync.sync_code", side_effect=code_handler):
-                with patch("agentic_kb.commands.sync.sync_github") as sync_github:
+            with patch("agentic_kb.commands.sync.sync_github", side_effect=github_handler):
+                with patch("agentic_kb.commands.sync.sync_code") as sync_code:
                     with patch("agentic_kb.commands.sync.sync_project") as sync_project:
                         with self.assertRaises(sync.SyncAllFailure) as error:
                             sync.sync_all(Path.cwd(), config=AgenticConfig(None, "http://ollama", "model", "token"))
 
-        self.assertEqual(calls, ["docs", "code"])
-        self.assertEqual(error.exception.source_name, "code")
+        self.assertEqual(calls, ["docs", "github"])
+        self.assertEqual(error.exception.source_name, "github")
         self.assertIn("docs", error.exception.partial_results)
-        sync_github.assert_not_called()
+        sync_code.assert_not_called()
         sync_project.assert_not_called()
+
+    def test_sync_all_stage_start_callback_runs_in_new_order(self):
+        calls = []
+        stage_starts = []
+
+        def docs_handler(*args, **kwargs):
+            calls.append("docs")
+            return {"processed_count": 1, "deleted_paths": (), "repo_commit_hash": "docs-sha", "mode": "explicit", "updated_paths": (), "source_paths": (), "skipped_paths": ()}
+
+        def github_handler(*args, **kwargs):
+            calls.append("github")
+            return {
+                "mode": "explicit",
+                "updated_since": None,
+                "stream_progress": {
+                    stream_name: type("Progress", (), {"pages_fetched": 0, "hit_bound": False, "latest_source_updated_at": None})()
+                    for stream_name in sync.STREAM_ORDER
+                },
+            }
+
+        def project_handler(*args, **kwargs):
+            calls.append("project")
+            return {"mode": "explicit", "starting_cursor": None, "final_cursor": None, "pages_fetched": 0, "rows_written": 0}
+
+        def code_handler(*args, **kwargs):
+            calls.append("code")
+            return {"mode": "explicit", "processed_file_count": 1, "chunk_count": 1, "repo_commit_hash": "code-sha"}
+
+        with patch("agentic_kb.commands.sync.sync_docs", side_effect=docs_handler):
+            with patch("agentic_kb.commands.sync.sync_github", side_effect=github_handler):
+                with patch("agentic_kb.commands.sync.sync_project", side_effect=project_handler):
+                    with patch("agentic_kb.commands.sync.sync_code", side_effect=code_handler):
+                        sync.sync_all(
+                            Path.cwd(),
+                            config=AgenticConfig(None, "http://ollama", "model", "token"),
+                            stage_start_callback=stage_starts.append,
+                        )
+
+        self.assertEqual(stage_starts, ["docs", "github", "project", "code"])
+        self.assertEqual(calls, ["docs", "github", "project", "code"])
+
+    def test_run_sync_all_prints_stage_start_lines_before_completion_summaries(self):
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        result = {
+            "docs": {
+                "mode": "explicit",
+                "updated_paths": (),
+                "source_paths": (),
+                "skipped_paths": (),
+                "processed_count": 0,
+                "deleted_paths": (),
+                "repo_commit_hash": "docs-sha",
+            },
+            "github": {
+                "mode": "explicit",
+                "updated_since": None,
+                "stream_progress": {
+                    stream_name: type("Progress", (), {"pages_fetched": 0, "hit_bound": False, "latest_source_updated_at": None})()
+                    for stream_name in sync.STREAM_ORDER
+                },
+            },
+            "project": {
+                "mode": "explicit",
+                "starting_cursor": None,
+                "final_cursor": None,
+                "pages_fetched": 0,
+                "rows_written": 0,
+            },
+            "code": {
+                "mode": "explicit",
+                "processed_file_count": 2,
+                "chunk_count": 5,
+                "repo_commit_hash": "code-sha",
+            },
+        }
+
+        def sync_all_side_effect(*args, **kwargs):
+            stage_start_callback = kwargs.get("stage_start_callback")
+            for source_name in sync.SYNC_ALL_ORDER:
+                stage_start_callback(source_name)
+            return result
+
+        with patch("agentic_kb.commands.sync.sync_all", side_effect=sync_all_side_effect):
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                exit_code = sync.run_sync_all(Namespace())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(stderr.getvalue(), "")
+        output = stdout.getvalue()
+        self.assertIn("starting sync docs...", output)
+        self.assertIn("starting sync github...", output)
+        self.assertIn("starting sync project...", output)
+        self.assertIn("starting sync code...", output)
+        self.assertLess(output.index("starting sync docs..."), output.index("sync docs completed"))
+        self.assertLess(output.index("starting sync github..."), output.index("sync github completed"))
+        self.assertLess(output.index("starting sync project..."), output.index("sync project completed"))
+        self.assertLess(output.index("starting sync code..."), output.index("sync code completed"))
 
     def test_run_sync_changed_writes_errors_to_stderr_only(self):
         stdout = io.StringIO()

@@ -496,6 +496,27 @@ class CodeIngestTests(unittest.TestCase):
                 reason="non_symbol_aware_family",
             )
 
+    def test_ingest_code_skips_whitespace_only_fallback_chunks(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "translations/blank.json", "   \n\n\t\n")
+            store = code.InMemoryCodeChunksStore()
+            progress_events = []
+
+            result = code.ingest_code(
+                workspace,
+                embedding_client=FakeEmbeddingClient(),
+                code_store=store,
+                source_paths=["translations/blank.json"],
+                repo_commit_hash="blank-json",
+                progress_callback=lambda current, total, repo_path: progress_events.append((current, total, repo_path)),
+            )
+
+        self.assertEqual(result.processed_file_count, 1)
+        self.assertEqual(result.chunk_count, 0)
+        self.assertEqual(store.rows_by_key, {})
+        self.assertEqual(progress_events, [(1, 1, "translations/blank.json")])
+
     def test_full_repository_prune_removes_rows_when_path_becomes_oversize(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
@@ -585,6 +606,32 @@ class CodeIngestTests(unittest.TestCase):
         self.assertEqual(set(second_rows), {("source/common/example.ts", 0)})
         self.assertEqual(second_rows[("source/common/example.ts", 0)]["symbol_name"], "Gamma")
         self.assertEqual(second_rows[("source/common/example.ts", 0)]["repo_commit_hash"], "commit-b")
+
+    def test_ingest_code_reports_file_progress(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "source/common/alpha.ts", "export const Alpha = 1;\n")
+            self._write_file(workspace / "source/common/beta.ts", "export const Beta = 2;\n")
+            store = code.InMemoryCodeChunksStore()
+            progress_events = []
+
+            result = code.ingest_code(
+                workspace,
+                embedding_client=FakeEmbeddingClient(),
+                code_store=store,
+                source_paths=["source/common/alpha.ts", "source/common/beta.ts"],
+                repo_commit_hash="abc123",
+                progress_callback=lambda current, total, repo_path: progress_events.append((current, total, repo_path)),
+            )
+
+        self.assertEqual(result.processed_file_count, 2)
+        self.assertEqual(
+            progress_events,
+            [
+                (1, 2, "source/common/alpha.ts"),
+                (2, 2, "source/common/beta.ts"),
+            ],
+        )
 
     def test_parser_only_allowlist_sweep_succeeds_for_task_401_scope(self):
         source_paths = code.discover_code_source_paths(REPO_ROOT)

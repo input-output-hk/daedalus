@@ -970,7 +970,9 @@ class PostgresDocsStore:
     @classmethod
     def from_database_url(cls, database_url: str) -> "PostgresDocsStore":
         psycopg, _ = _load_psycopg()
-        return cls(psycopg.connect(database_url))
+        connection = psycopg.connect(database_url)
+        connection.autocommit = True
+        return cls(connection)
 
     def __enter__(self) -> "PostgresDocsStore":
         return self

@@ -9,6 +9,11 @@ from unittest.mock import patch
 
 from agentic_kb.ingest import docs
 
+try:
+    import psycopg
+except ModuleNotFoundError:  # pragma: no cover - optional in local unit env
+    psycopg = None
+
 
 class FakeEmbeddingClient:
     def __init__(self):
@@ -559,6 +564,42 @@ class DocsIngestTests(unittest.TestCase):
             store.replace_documents_for_paths(("README.md",), [replacement_document])
 
         self.assertEqual(store.rows_by_key[("README.md", 0)]["content"], "baseline")
+
+    @unittest.skipIf(psycopg is None, "psycopg is required for Postgres docs store regression coverage")
+    def test_postgres_docs_store_commits_after_read_then_replace(self):
+        database_url = "postgresql://agentic:agentic@paradedb:5432/agentic_kb"
+        readme_content = "# Title\n\nBody\n"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            self._write_file(workspace / "README.md", readme_content)
+
+            with psycopg.connect(database_url) as connection:
+                connection.autocommit = True
+                with connection.cursor() as cursor:
+                    cursor.execute("TRUNCATE TABLE agentic.kb_documents")
+
+            store = docs.PostgresDocsStore.from_database_url(database_url)
+            try:
+                self.assertEqual(store.list_document_paths(), [])
+                prepared = docs.prepare_documents(
+                    workspace,
+                    source_paths=["README.md"],
+                    embedding_client=FakeEmbeddingClient(),
+                    repo_commit_hash="postgres-regression",
+                )
+                store.replace_documents_for_paths(["README.md"], prepared)
+            finally:
+                store.close()
+
+            with psycopg.connect(database_url) as verify_connection:
+                with verify_connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT source_path, chunk_index, content FROM agentic.kb_documents ORDER BY source_path, chunk_index"
+                    )
+                    rows = cursor.fetchall()
+
+        self.assertEqual(rows, [("README.md", 0, readme_content)])
 
     def test_helper_contracts_cover_classification_preview_and_path_normalization(self):
         self.assertEqual(docs.classify_doc_kind(".agent/readme.md"), "agent_index")

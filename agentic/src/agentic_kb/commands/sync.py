@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from subprocess import CalledProcessError, run
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 from agentic_kb.commands.output import print_stderr
 from agentic_kb.config import AgenticConfig
@@ -71,7 +71,7 @@ except ModuleNotFoundError as error:
 
 UPSTREAM_SINCE_GITHUB_STREAMS = ("issues", "issue_comments")
 CLIENT_FILTERED_GITHUB_STREAMS = ("pulls", "review_comments")
-SYNC_ALL_ORDER = ("docs", "code", "github", "project")
+SYNC_ALL_ORDER = ("docs", "github", "project", "code")
 
 
 class SyncCommandError(RuntimeError):
@@ -110,7 +110,7 @@ class RepoDeltaEntry:
 def add_sync_subcommands(parser) -> None:
     subparsers = parser.add_subparsers(dest="sync_command", required=True)
 
-    all_parser = subparsers.add_parser("all", help="Sync docs, code, GitHub, and project in order")
+    all_parser = subparsers.add_parser("all", help="Sync docs, GitHub, project, and code in order")
     all_parser.set_defaults(handler=run_sync_all)
 
     docs_parser = subparsers.add_parser("docs", help="Sync the allowlisted docs corpus")
@@ -155,7 +155,7 @@ def run_sync_changed(args) -> int:
 def run_sync_all(args) -> int:
     try:
         config = AgenticConfig.from_env()
-        result = sync_all(Path.cwd(), config=config)
+        result = sync_all(Path.cwd(), config=config, stage_start_callback=_print_sync_stage_start)
     except SyncAllFailure as error:
         for source_name in SYNC_ALL_ORDER:
             source_result = error.partial_results.get(source_name)
@@ -194,17 +194,24 @@ def _run_single_source_command(command_name: str, handler) -> int:
     return 0
 
 
-def sync_all(workspace_root: str | Path, *, config: AgenticConfig) -> dict[str, dict[str, Any]]:
+def sync_all(
+    workspace_root: str | Path,
+    *,
+    config: AgenticConfig,
+    stage_start_callback: Callable[[str], None] | None = None,
+) -> dict[str, dict[str, Any]]:
     root = Path(workspace_root).resolve()
     results: dict[str, dict[str, Any]] = {}
 
     for source_name, handler in (
         ("docs", sync_docs),
-        ("code", sync_code),
         ("github", sync_github),
         ("project", sync_project),
+        ("code", sync_code),
     ):
         try:
+            if stage_start_callback is not None:
+                stage_start_callback(source_name)
             results[source_name] = handler(root, config=config)
         except Exception as error:
             raise SyncAllFailure(
@@ -214,6 +221,15 @@ def sync_all(workspace_root: str | Path, *, config: AgenticConfig) -> dict[str, 
             ) from error
 
     return results
+
+
+def _print_sync_stage_start(source_name: str) -> None:
+    print(f"starting sync {source_name}...")
+
+
+def _print_sync_code_progress(current: int, total: int, repo_path: str) -> None:
+    percent = 100 if total == 0 else int((current / total) * 100)
+    print(f"sync code progress: {current}/{total} files ({percent}%) - {repo_path}")
 
 
 def sync_docs(
@@ -323,6 +339,7 @@ def sync_code(
                     repo_commit_hash=repo_commit_hash,
                     run_mode="full_repository",
                     prune_missing=True,
+                    progress_callback=_print_sync_code_progress,
                 )
             except Exception as error:
                 sync_store.record_failures(
@@ -1038,6 +1055,7 @@ def _sync_code_changed(
                 repo_commit_hash=delta.head_commit,
                 run_mode="targeted",
                 prune_missing=False,
+                progress_callback=_print_sync_code_progress,
             )
         else:
             result = type(
