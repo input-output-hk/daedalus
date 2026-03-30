@@ -198,11 +198,10 @@ export class MithrilBootstrapService {
       this._markActiveProgressItemAs('completed');
       await this._downloadSnapshot(snapshotDigest, snapshot, workDir);
 
-      // Conversion would go here when needed:
-      // this._markActiveProgressItemAs('completed');
-      // this._addProgressItem('conversion', 'conversion', 'active');
-      // await this._convertSnapshot(snapshot);
-      // Skip conversion - Mithril provides in-memory format snapshots, no conversion needed
+      // Convert snapshot from in-memory format to LSM (required after Mithril LSM snapshot support)
+      this._markActiveProgressItemAs('completed');
+      this._addProgressItem('conversion', 'conversion', 'active');
+      await this._convertSnapshot(snapshot);
 
       const dbDirectory = await this._resolveDbDirectory(
         snapshot?.digest,
@@ -794,7 +793,7 @@ export class MithrilBootstrapService {
       '--cardano-node-version',
       cardanoNodeVersion,
       '--utxo-hd-flavor',
-      'LMDB',
+      'LSM',
       '--commit',
     ]);
 
