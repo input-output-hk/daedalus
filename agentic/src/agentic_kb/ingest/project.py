@@ -399,6 +399,7 @@ class ProjectIngestResult:
     final_cursor: str | None
     latest_source_updated_at: datetime | None
     rows_written: int
+    seen_node_ids: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -669,6 +670,7 @@ def ingest_project_items(
     rows_written = 0
     project_title: str | None = None
     project_url: str | None = None
+    seen_node_ids: set[str] = set()
 
     for page in iter_project_item_pages(
         bounds=active_bounds,
@@ -686,6 +688,8 @@ def ingest_project_items(
         rows_written += write_result.rows_written
         project_title = page.project_title
         project_url = page.project_url
+        for item in page.items:
+            seen_node_ids.add(item.project_item_node_id)
 
     return ProjectIngestResult(
         project_owner=active_bounds.project_owner,
@@ -698,6 +702,7 @@ def ingest_project_items(
         final_cursor=final_cursor,
         latest_source_updated_at=latest_source_updated_at,
         rows_written=rows_written,
+        seen_node_ids=frozenset(seen_node_ids),
     )
 
 
@@ -1310,6 +1315,23 @@ class PostgresProjectItemsStore:
                 )
         return len(items)
 
+    def delete_archived_items(self) -> int:
+        with self._connection.transaction():
+            with self._connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM agentic.kb_project_items WHERE metadata->>'is_archived' = 'true'"
+                )
+                return cursor.rowcount
+
+    def delete_missing_items(self, valid_node_ids: frozenset[str]) -> int:
+        with self._connection.transaction():
+            with self._connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM agentic.kb_project_items WHERE NOT (project_item_node_id = ANY(%s))",
+                    (list(valid_node_ids),),
+                )
+                return cursor.rowcount
+
 
 class InMemoryProjectItemsStore:
     def __init__(self):
@@ -1327,3 +1349,19 @@ class InMemoryProjectItemsStore:
                 "updated_at_token": self.write_count,
             }
         return len(items)
+
+    def delete_archived_items(self) -> int:
+        archived = [
+            k for k, v in self.rows_by_key.items()
+            if v.get("metadata", {}).get("is_archived")
+        ]
+        for k in archived:
+            del self.rows_by_key[k]
+        return len(archived)
+
+    def delete_missing_items(self, valid_node_ids: frozenset[str]) -> int:
+        allowed = set(valid_node_ids)
+        to_delete = [k for k in self.rows_by_key if k not in allowed]
+        for k in to_delete:
+            del self.rows_by_key[k]
+        return len(to_delete)

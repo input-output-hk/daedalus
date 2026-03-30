@@ -743,14 +743,14 @@
           "id": "task-711",
           "title": "Handle repo and project removals during sync",
           "description": "Make sync converge on source truth by removing or invalidating stale KB records for deleted or renamed repo content and for removed Project items or cleared Project field values",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4,
           "dependencies": [
             "task-701",
             "task-707"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/src/agentic_kb/commands/sync.py"
         },
         {

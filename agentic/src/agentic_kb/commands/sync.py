@@ -490,6 +490,9 @@ def sync_project(
                     ),
                     github_token=config.github_token,
                 )
+                project_store.delete_archived_items()
+                if mode == "full" and result.seen_node_ids:
+                    project_store.delete_missing_items(result.seen_node_ids)
             except Exception as error:
                 sync_store.record_failures(
                     [
@@ -1217,6 +1220,7 @@ def _sync_project_changed(
             ),
             github_token=config.github_token,
         )
+        project_store.delete_archived_items()
     except Exception as error:
         sync_store.record_failures(
             [

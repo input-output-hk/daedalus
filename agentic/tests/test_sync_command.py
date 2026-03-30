@@ -1004,6 +1004,402 @@ class SyncCommandTests(unittest.TestCase):
         self.assertTrue(captured_args["full_refresh"])
         mock_sync.assert_called_once()
 
+    def test_in_memory_project_items_store_delete_archived_items(self):
+        store = project.InMemoryProjectItemsStore()
+        item1 = project.PreparedProjectItem(
+            id="item-1",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-1",
+            content_type="Issue",
+            content_id="content-1",
+            content_node_id="content-node-1",
+            title="Item 1",
+            body_text="Body 1",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/1",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": False},
+        )
+        item2 = project.PreparedProjectItem(
+            id="item-2",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-2",
+            content_type="Issue",
+            content_id="content-2",
+            content_node_id="content-node-2",
+            title="Item 2",
+            body_text="Body 2",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/2",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": True},
+        )
+        store.upsert_project_items([item1, item2])
+        self.assertEqual(len(store.rows_by_key), 2)
+        deleted = store.delete_archived_items()
+        self.assertEqual(deleted, 1)
+        self.assertEqual(len(store.rows_by_key), 1)
+        self.assertIn("node-1", store.rows_by_key)
+        self.assertNotIn("node-2", store.rows_by_key)
+
+    def test_in_memory_project_items_store_delete_missing_items(self):
+        store = project.InMemoryProjectItemsStore()
+        item1 = project.PreparedProjectItem(
+            id="item-1",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-1",
+            content_type="Issue",
+            content_id="content-1",
+            content_node_id="content-node-1",
+            title="Item 1",
+            body_text="Body 1",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/1",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={},
+        )
+        item2 = project.PreparedProjectItem(
+            id="item-2",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-2",
+            content_type="Issue",
+            content_id="content-2",
+            content_node_id="content-node-2",
+            title="Item 2",
+            body_text="Body 2",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/2",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={},
+        )
+        store.upsert_project_items([item1, item2])
+        self.assertEqual(len(store.rows_by_key), 2)
+        deleted = store.delete_missing_items(frozenset({"node-1"}))
+        self.assertEqual(deleted, 1)
+        self.assertEqual(len(store.rows_by_key), 1)
+        self.assertIn("node-1", store.rows_by_key)
+        self.assertNotIn("node-2", store.rows_by_key)
+
+    def test_in_memory_project_items_store_delete_missing_items_empty_set(self):
+        store = project.InMemoryProjectItemsStore()
+        item1 = project.PreparedProjectItem(
+            id="item-1",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-1",
+            content_type="Issue",
+            content_id="content-1",
+            content_node_id="content-node-1",
+            title="Item 1",
+            body_text="Body 1",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/1",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={},
+        )
+        store.upsert_project_items([item1])
+        self.assertEqual(len(store.rows_by_key), 1)
+        deleted = store.delete_missing_items(frozenset())
+        self.assertEqual(deleted, 1)
+        self.assertEqual(len(store.rows_by_key), 0)
+
+    def test_sync_project_full_refresh_calls_delete_archived_and_delete_missing(self):
+        sync_store = InMemorySyncStateStore()
+        project_store = project.InMemoryProjectItemsStore()
+        item1 = project.PreparedProjectItem(
+            id="item-1",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-1",
+            content_type="Issue",
+            content_id="content-1",
+            content_node_id="content-node-1",
+            title="Item 1",
+            body_text="Body 1",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/1",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": False},
+        )
+        item2 = project.PreparedProjectItem(
+            id="item-2",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-2",
+            content_type="Issue",
+            content_id="content-2",
+            content_node_id="content-node-2",
+            title="Item 2",
+            body_text="Body 2",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/2",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": True},
+        )
+        item3 = project.PreparedProjectItem(
+            id="item-3",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-3",
+            content_type="Issue",
+            content_id="content-3",
+            content_node_id="content-node-3",
+            title="Item 3",
+            body_text="Body 3",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/3",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": False},
+        )
+        project_store.upsert_project_items([item1, item2, item3])
+        self.assertEqual(len(project_store.rows_by_key), 3)
+
+        def fake_ingest_project_items(**kwargs):
+            self.assertIsNone(kwargs["bounds"].after_cursor)
+            return project.ProjectIngestResult(
+                project_owner="DripDropz",
+                project_number=5,
+                project_title="Daedalus Maintenance",
+                project_url="https://github.com/orgs/DripDropz/projects/5",
+                bounds=kwargs["bounds"],
+                pages_fetched=1,
+                hit_bound=False,
+                final_cursor="new-end-cursor",
+                latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                rows_written=2,
+                seen_node_ids=frozenset({"node-1", "node-3"}),
+            )
+
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresProjectItemsStore.from_database_url") as project_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        project_store_factory.return_value.__enter__.return_value = project_store
+                        project_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_project(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                            full_refresh=True,
+                        )
+
+        self.assertEqual(result["mode"], "full")
+        self.assertEqual(len(project_store.rows_by_key), 2)
+        self.assertIn("node-1", project_store.rows_by_key)
+        self.assertIn("node-3", project_store.rows_by_key)
+        self.assertNotIn("node-2", project_store.rows_by_key)
+
+    def test_sync_project_incremental_calls_delete_archived_items(self):
+        sync_store = InMemorySyncStateStore()
+        baseline = PreparedSyncState(
+            id=deterministic_sync_state_id("project", project_scope_key()),
+            source_name="project",
+            scope_key=project_scope_key(),
+            repo_commit_hash=None,
+            cursor_text="cursor-seeded",
+            watermark_text="2026-03-29T08:30:00Z",
+            watermark_timestamp=datetime(2026, 3, 29, 8, 30, tzinfo=timezone.utc),
+            schema_version=None,
+            last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+            last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
+            last_error=None,
+            metadata={"project_owner": "DripDropz", "project_number": 5},
+        )
+        sync_store.upsert_sync_states([baseline])
+        project_store = project.InMemoryProjectItemsStore()
+        item1 = project.PreparedProjectItem(
+            id="item-1",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-1",
+            content_type="Issue",
+            content_id="content-1",
+            content_node_id="content-node-1",
+            title="Item 1",
+            body_text="Body 1",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/1",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": False},
+        )
+        item2 = project.PreparedProjectItem(
+            id="item-2",
+            project_owner="DripDropz",
+            project_number=5,
+            project_item_node_id="node-2",
+            content_type="Issue",
+            content_id="content-2",
+            content_node_id="content-node-2",
+            title="Item 2",
+            body_text="Body 2",
+            repo="DripDropz/daedalus",
+            status=None,
+            priority=None,
+            size=None,
+            work_type=None,
+            area=None,
+            phase=None,
+            kb_impact=None,
+            start_date=None,
+            target_date=None,
+            field_values={},
+            html_url="https://github.com/issues/2",
+            source_updated_at=datetime(2026, 3, 29, 10, 0, tzinfo=timezone.utc),
+            embedding=[1.0] * 384,
+            metadata={"is_archived": True},
+        )
+        project_store.upsert_project_items([item1, item2])
+        self.assertEqual(len(project_store.rows_by_key), 2)
+
+        def fake_ingest_project_items(**kwargs):
+            self.assertEqual(kwargs["bounds"].after_cursor, "cursor-seeded")
+            return project.ProjectIngestResult(
+                project_owner="DripDropz",
+                project_number=5,
+                project_title="Daedalus Maintenance",
+                project_url="https://github.com/orgs/DripDropz/projects/5",
+                bounds=kwargs["bounds"],
+                pages_fetched=0,
+                hit_bound=False,
+                final_cursor="cursor-seeded",
+                latest_source_updated_at=None,
+                rows_written=0,
+                seen_node_ids=frozenset(),
+            )
+
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresProjectItemsStore.from_database_url") as project_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        project_store_factory.return_value.__enter__.return_value = project_store
+                        project_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_project(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                            full_refresh=False,
+                        )
+
+        self.assertEqual(result["mode"], "incremental")
+        self.assertEqual(len(project_store.rows_by_key), 1)
+        self.assertIn("node-1", project_store.rows_by_key)
+        self.assertNotIn("node-2", project_store.rows_by_key)
+
     def _seed_docs_baseline(self, store: InMemorySyncStateStore, *, repo_commit_hash: str):
         state = PreparedSyncState(
             id=deterministic_sync_state_id("docs", repo_scope_key()),
