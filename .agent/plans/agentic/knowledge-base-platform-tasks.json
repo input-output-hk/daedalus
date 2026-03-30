@@ -801,7 +801,7 @@
           "id": "task-710",
           "title": "Document and validate ProjectV2 token failure handling",
           "description": "Spell out the required ProjectV2 token scopes and verify the operator-facing error path when GitHub repo reads work but organization Project 5 reads are denied.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
@@ -809,7 +809,7 @@
             "task-701",
             "task-803"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {

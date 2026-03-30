@@ -284,6 +284,26 @@ Use GitHub Issues and Project 5 for planning and execution tracking.
 ### Notes
 
 - Project operations may require `gh auth refresh -s read:project,project`
+
+### ProjectV2 Token Scope
+
+`GITHUB_TOKEN` must have `read:project` scope to run `sync project`.
+
+**Required scope:**
+- `read:project` - classic scope for ProjectV2 read access
+
+**Token behavior:**
+- A token with only repo scope (e.g., from `gh auth login --hostname github.com`) successfully runs `sync github` for issues, PRs, and comments
+- The same token fails on `sync project` with HTTP 403 and error detail `"project scope missing"`
+- This is the expected failure mode documented in the PRD
+
+**Recovery:**
+```bash
+gh auth refresh -s read:project
+```
+
+**Note:** `read:project,project` is the fine-grained permission format for org-level projects and also works, but `read:project` alone is sufficient for this platform.
+
 - Search MCP remains read-only even though coordination happens in GitHub
 
 ## Related Files
