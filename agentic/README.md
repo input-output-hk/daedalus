@@ -45,6 +45,16 @@ docker compose -f docker-compose.agentic.yml up -d kb-tools
 docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
 ```
 
+## Compose Smoke Regression
+
+Run the host-side Compose smoke regression only when you intentionally want to exercise the full repo-root boot contract:
+
+```bash
+AGENTIC_RUN_COMPOSE_SMOKE=1 PYTHONPATH=agentic/src python3 -m unittest discover -s agentic/tests -p 'test_compose_bootstrap.py'
+```
+
+The explicit env gate keeps normal unittest discovery from unexpectedly booting Docker Compose and pulling the Ollama model.
+
 ## Clean Bootstrap
 
 The currently validated clean-machine bootstrap path is intentionally narrow:

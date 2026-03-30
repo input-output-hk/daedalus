@@ -38,7 +38,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [ ] Provide snapshot export/import plus a documented team-sharing workflow for multiple developers, including a selected private shared-storage backend.
 - [x] Enforce snapshot/embed-model compatibility checks so import and post-import sync cannot silently mix incompatible embedding contracts.
 - [x] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
-- [ ] Add an automated Compose boot smoke/regression check for the repo-root stack contract.
+- [x] Add an automated Compose boot smoke/regression check for the repo-root stack contract.
 - [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
 - [ ] Provide a manual full Project 5 refresh path so eventual freshness converges even when edits land on already-seen items.
 - [x] Document the v1 disposable-volume policy for schema changes and snapshot restore targets.

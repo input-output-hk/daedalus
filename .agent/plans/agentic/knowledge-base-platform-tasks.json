@@ -786,7 +786,7 @@
           "id": "task-709",
           "title": "Add Compose boot smoke regression check",
           "description": "Automate the repo-root stack contract by proving docker compose up, lightweight kb-tools readiness, and teardown continue to work as the platform evolves.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -794,7 +794,7 @@
             "task-103",
             "task-205"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/tests/test_compose_bootstrap.py"
         },
         {
