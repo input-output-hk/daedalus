@@ -265,9 +265,12 @@ Each export should produce:
 - After import, developers run `sync changed` to capture local branch changes and any recent GitHub updates.
 - Build and publish the canonical baseline on one of the trusted GPU-equipped developer machines.
 - Store shared snapshots in durable private artifact storage outside git history.
-- Prefer object storage or another private shared artifact store; avoid Git LFS for rotating KB dumps.
+- v1 selects Dropbox shared-folder storage as that private shared artifact store. The canonical location is the shared Dropbox folder `Daedalus_KB`.
+- Developer 1 creates `Daedalus_KB` in an existing Dropbox account and shares it with Developer 2 with write access so both developers can publish to and fetch from the same folder.
+- Developer 2 bootstrap is only specified to the truthful minimum so far: use a Dropbox access path that can accept the shared folder and confirm write access. Avoid inventing repo-owned bootstrap helpers until later tasks define them.
+- Avoid Git LFS for rotating KB dumps.
 - Selecting and documenting that private shared storage backend is a rollout gate for the team-sharing workflow, not optional follow-up polish.
-- The selected backend must also document artifact discovery, authentication/bootstrap, integrity expectations after download, and the operator recovery path when the backend or latest artifact is unavailable.
+- The selected backend must also document artifact discovery, authentication/bootstrap, naming/location expectations, manual retention expectations, integrity expectations after download, and the operator recovery path when the backend or latest artifact is unavailable.
 
 This gives the team two supported modes:
 
@@ -472,4 +475,4 @@ Required documentation:
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, snapshot export/import, embedding-contract compatibility enforcement, disposable import-target safety, and primary KB workflow docs are all in place. Rollout is still blocked on private shared-storage selection, the documented local publish/download workflow, validated repo/Project removal reconciliation, Project 5 full re-convergence, and the remaining automated smoke/regression coverage promised by this plan.
+**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, snapshot export/import, embedding-contract compatibility enforcement, disposable import-target safety, and primary KB workflow docs are all in place. Dropbox shared-folder storage is now selected and validated as the private shared snapshot backend for v1. Remaining rollout work is blocked on the documented local publish/download workflow, validated repo/Project removal reconciliation, Project 5 full re-convergence, and the remaining automated smoke/regression coverage promised by this plan.

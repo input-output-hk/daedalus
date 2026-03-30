@@ -160,9 +160,17 @@ The canonical shared baseline is published locally, not through GitHub Actions.
 - if `develop` intentionally changes the canonical embedding-contract tuple (`contract_id`, `embedding_model`, or `embedding_dimension`), publish a newly rebuilt canonical snapshot before any further team handoff; older snapshots remain valid provenance but are no longer the canonical import-then-sync baseline under the new contract
 - if `develop` only changes content while keeping the same embedding-contract tuple, publication is an ordinary baseline refresh rather than a contract-policy change
 - GitHub Actions artifacts and GitHub Releases assets are both out of scope for KB snapshot sharing in v1
-- the exact storage backend, authentication/bootstrap path, artifact discovery path, retention, outage recovery behavior, and helper commands are still tracked as pending rollout work
+- the selected v1 backend is Dropbox shared-folder storage
+- the canonical shared location is the Dropbox shared folder `Daedalus_KB`
+- Developer 1 creates `Daedalus_KB` in an existing Dropbox account and shares that folder with Developer 2 with write access; the team contract for this backend is one shared folder that is writable by both developers
+- Developer 2 bootstrap is documented only to the current repo-truth minimum: Developer 2 must have a Dropbox access path that can accept the shared folder and verify write access; no repo-owned helper command or deeper account-bootstrap SOP is defined here yet
+- artifact discovery is by opening `Daedalus_KB` and locating the intended canonical `.dump` plus sibling `.manifest.json` pair with the same basename
+- naming and location expectations stay minimal: upload the exported pair directly into `Daedalus_KB`, keep the `.dump` and sibling `.manifest.json` together, and do not rename only one file from the pair
+- retention remains manual in v1: keep the current canonical pair in `Daedalus_KB` until a newer compatible pair has been uploaded, and keep the previous known-good pair available as a short-term fallback when possible
+- post-download integrity stays on the shipped import contract: download both sibling files together and rely on `snapshot import` to validate manifest schema plus dump size/hash before any restore; if validation fails, discard the download and fetch both files again
+- outage or latest-artifact-unavailable recovery is to use a last known-good compatible local pair or rebuild locally from `develop` on a trusted GPU-capable machine; do not switch to GitHub Actions artifacts, GitHub Releases, or another ad hoc publication channel
 
-Consumption path after download from the shared private storage backend:
+Consumption path after download from the Dropbox shared folder `Daedalus_KB`:
 
 ```bash
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes

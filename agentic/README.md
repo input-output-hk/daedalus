@@ -77,20 +77,27 @@ Current contract:
 
 - publication runs from `develop` on a trusted GPU-capable developer machine
 - the portable payload is exactly one `.dump` plus its sibling `.manifest.json`
-- snapshots are shared through a private storage backend outside git history
+- snapshots are shared through Dropbox, using the shared folder `Daedalus_KB` outside git history
 - GitHub Actions artifacts are retired and are not a supported publication channel
 - the shared baseline uses one canonical embedding contract at a time; local model overrides are out of contract for team publication and handoff
+- Developer 1 creates `Daedalus_KB` in an existing Dropbox account and shares it with Developer 2 with write access; the shared-folder contract for v1 requires that both developers can write to the same folder
+- Developer 2 bootstrap is only documented to the truthful minimum today: Developer 2 must have a Dropbox access path that can accept the shared folder and verify writable access
+- artifact discovery is by opening `Daedalus_KB` and locating the intended `.dump` plus sibling `.manifest.json` pair with the same basename
+- upload the exported pair directly into `Daedalus_KB` and keep the two sibling files together; do not rename only one file from the pair
+- retention is manual in v1: keep the current canonical pair in `Daedalus_KB` until its replacement is uploaded, and keep the previous known-good pair available as a short-term fallback when possible
+- after download, rely on `snapshot import` to validate manifest schema plus dump size/hash before restore; if import reports an artifact mismatch, redownload both files together
+- if Dropbox is unavailable or the latest intended pair is unavailable, use a last known-good compatible local pair or perform a full local rebuild from `develop`; do not fall back to GitHub Actions artifacts or GitHub Releases assets
 
 Current local publication shape:
 
 1. Start the stack locally.
 2. Run `sync all` from a trusted developer machine.
 3. Run `snapshot export` to produce the portable pair.
-4. Upload the pair to the team's chosen private shared storage backend.
+4. Upload the pair to the Dropbox shared folder `Daedalus_KB`.
 
 Current manual consumption path:
 
-1. Download the shared snapshot pair from the private storage backend.
+1. Download the shared snapshot pair from the Dropbox shared folder `Daedalus_KB`.
 2. Place the two files into `agentic/snapshots/`.
 3. Import either the `.dump` path or the sibling `.manifest.json` path.
 
@@ -110,9 +117,7 @@ Validation expectations after import:
 
 `sync changed` remains optional follow-on work after import when a developer wants to refresh local deltas on top of the shared baseline.
 
-The exact backend selection, naming, retention, publish helpers, and fetch helpers are still tracked as pending rollout work.
-
-Pending rollout work also includes the backend authentication/bootstrap path, artifact discovery path, and outage recovery behavior.
+Publish and fetch helper commands are still tracked as later rollout work; the current contract here is the backend decision and minimum manual Dropbox handoff expectations only.
 
 ## Canonical Embedding Contract
 
