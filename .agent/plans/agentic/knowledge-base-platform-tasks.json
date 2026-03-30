@@ -702,14 +702,14 @@
           "id": "task-707",
           "title": "Add manual full Project refresh path",
           "description": "Provide and document a full Project 5 refresh mode so eventual freshness converges even when edits land on already-seen items that cursor-only incremental sync may miss",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-404",
             "task-701"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": "agentic/src/agentic_kb/commands/sync.py"
         },
         {

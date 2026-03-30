@@ -122,7 +122,14 @@ def add_sync_subcommands(parser) -> None:
     github_parser = subparsers.add_parser("github", help="Sync GitHub issues, PRs, and comments")
     github_parser.set_defaults(handler=run_sync_github)
 
-    project_parser = subparsers.add_parser("project", help="Sync GitHub Project 5 items")
+    project_parser = subparsers.add_parser(
+        "project", help="Sync GitHub Project 5 items (use --full to force full re-ingest)"
+    )
+    project_parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Force full re-ingest from after_cursor=None, bypassing stored cursor continuation",
+    )
     project_parser.set_defaults(handler=run_sync_project)
 
     changed_parser = subparsers.add_parser(
@@ -145,7 +152,8 @@ def run_sync_github(args) -> int:
 
 
 def run_sync_project(args) -> int:
-    return _run_single_source_command("project", sync_project)
+    full_refresh = getattr(args, "full", False)
+    return _run_single_source_command("project", lambda root, config: sync_project(root, config=config, full_refresh=full_refresh))
 
 
 def run_sync_changed(args) -> int:
@@ -441,6 +449,7 @@ def sync_project(
     workspace_root: str | Path,
     *,
     config: AgenticConfig,
+    full_refresh: bool = False,
 ) -> dict[str, Any]:
     del workspace_root
     if not config.database_url:
@@ -455,7 +464,7 @@ def sync_project(
     with PostgresProjectItemsStore.from_database_url(config.database_url) as project_store:
         with PostgresSyncStateStore.from_database_url(config.database_url) as sync_store:
             baseline = load_project_sync_baseline(sync_store, allow_empty=True)
-            starting_cursor, mode = derive_project_cursor_for_explicit_sync(baseline)
+            starting_cursor, mode = derive_project_cursor_for_explicit_sync(baseline, full_refresh=full_refresh)
             scope_key = project_scope_key(DEFAULT_PROJECT_OWNER, DEFAULT_PROJECT_NUMBER)
             sync_store.record_attempts(
                 [
@@ -646,7 +655,7 @@ def format_sync_source_output(command_name: str, result: dict[str, Any]) -> list
     if command_name == "github":
         return _format_github_output("sync github completed", result)
     if command_name == "project":
-        return [
+        lines = [
             "sync project completed",
             (
                 "project: "
@@ -654,8 +663,12 @@ def format_sync_source_output(command_name: str, result: dict[str, Any]) -> list
                 f"cursor={result['starting_cursor'] or '<start>'} -> {result['final_cursor'] or '<unchanged>'}, "
                 f"pages={result['pages_fetched']}, rows={result['rows_written']}"
             ),
-            "note: Project sync is cursor continuation only and can still miss edits to already-seen items.",
         ]
+        if result["mode"] == "full":
+            lines.append("note: Project sync ran in full-refresh mode and re-ingested all items.")
+        elif result["mode"] == "incremental":
+            lines.append("note: Project sync is cursor continuation only and can still miss edits to already-seen items.")
+        return lines
     if command_name == "changed":
         lines = ["sync changed completed"]
         lines.extend(_format_changed_local_output("docs", result["docs"]))
@@ -817,7 +830,10 @@ def require_successful_github_watermark(
 
 def derive_project_cursor_for_explicit_sync(
     baseline: SyncStateRecord | None,
+    full_refresh: bool = False,
 ) -> tuple[str | None, str]:
+    if full_refresh:
+        return None, "full"
     if baseline is None:
         return None, "initial"
     if baseline.last_succeeded_at is None:

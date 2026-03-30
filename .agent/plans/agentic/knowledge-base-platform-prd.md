@@ -40,7 +40,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [x] Provide incremental sync commands and staleness detection so the knowledge base can be refreshed after repo or GitHub changes.
 - [x] Add an automated Compose boot smoke/regression check for the repo-root stack contract.
 - [ ] Provide a documented local baseline publish/download workflow that uses GPU-capable developer machines and private shared snapshot storage outside git history.
-- [ ] Provide a manual full Project 5 refresh path so eventual freshness converges even when edits land on already-seen items.
+- [x] Provide a manual full Project 5 refresh path so eventual freshness converges even when edits land on already-seen items.
 - [x] Document the v1 disposable-volume policy for schema changes and snapshot restore targets.
 - [ ] Document ProjectV2 token scope requirements and the expected failure mode when repo reads work but org project reads do not.
 - [x] Enforce that snapshot import only targets fresh, isolated, or otherwise disposable KB databases.

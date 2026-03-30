@@ -848,6 +848,162 @@ class SyncCommandTests(unittest.TestCase):
         require_code_ingest_dependencies.assert_called_once_with("sync changed")
         embedding_client_from_config.assert_not_called()
 
+    def test_sync_project_parser_accepts_full_flag(self):
+        parser = cli.build_parser()
+        args = parser.parse_args(["sync", "project", "--full"])
+        self.assertTrue(args.full)
+        self.assertIs(args.handler, sync.run_sync_project)
+
+    def test_sync_project_parser_defaults_full_to_false(self):
+        parser = cli.build_parser()
+        args = parser.parse_args(["sync", "project"])
+        self.assertFalse(args.full)
+
+    def test_sync_changed_parser_rejects_full_flag(self):
+        parser = cli.build_parser()
+        with self.assertRaises(SystemExit):
+            parser.parse_args(["sync", "changed", "--full"])
+
+    def test_derive_project_cursor_for_explicit_sync_full_refresh(self):
+        cursor, mode = sync.derive_project_cursor_for_explicit_sync(None, full_refresh=True)
+        self.assertIsNone(cursor)
+        self.assertEqual(mode, "full")
+
+    def test_derive_project_cursor_for_explicit_sync_incremental_with_baseline(self):
+        baseline = PreparedSyncState(
+            id=deterministic_sync_state_id("project", project_scope_key()),
+            source_name="project",
+            scope_key=project_scope_key(),
+            repo_commit_hash=None,
+            cursor_text="stored-cursor",
+            watermark_text="2026-03-29T08:30:00Z",
+            watermark_timestamp=datetime(2026, 3, 29, 8, 30, tzinfo=timezone.utc),
+            schema_version=None,
+            last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+            last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
+            last_error=None,
+            metadata={"project_owner": "DripDropz", "project_number": 5},
+        )
+        cursor, mode = sync.derive_project_cursor_for_explicit_sync(baseline, full_refresh=False)
+        self.assertEqual(cursor, "stored-cursor")
+        self.assertEqual(mode, "incremental")
+
+    def test_sync_project_with_full_refresh_produces_mode_full(self):
+        sync_store = InMemorySyncStateStore()
+        baseline = PreparedSyncState(
+            id=deterministic_sync_state_id("project", project_scope_key()),
+            source_name="project",
+            scope_key=project_scope_key(),
+            repo_commit_hash=None,
+            cursor_text="stored-cursor",
+            watermark_text="2026-03-29T08:30:00Z",
+            watermark_timestamp=datetime(2026, 3, 29, 8, 30, tzinfo=timezone.utc),
+            schema_version=None,
+            last_attempted_at=datetime(2026, 3, 29, 8, 0, tzinfo=timezone.utc),
+            last_succeeded_at=datetime(2026, 3, 29, 8, 1, tzinfo=timezone.utc),
+            last_error=None,
+            metadata={"project_owner": "DripDropz", "project_number": 5},
+        )
+        sync_store.upsert_sync_states([baseline])
+
+        def fake_ingest_project_items(**kwargs):
+            self.assertIsNone(kwargs["bounds"].after_cursor)
+            return project.ProjectIngestResult(
+                project_owner="DripDropz",
+                project_number=5,
+                project_title="Daedalus Maintenance",
+                project_url="https://github.com/orgs/DripDropz/projects/5",
+                bounds=kwargs["bounds"],
+                pages_fetched=3,
+                hit_bound=True,
+                final_cursor="new-end-cursor",
+                latest_source_updated_at=datetime(2026, 3, 29, 12, 0, tzinfo=timezone.utc),
+                rows_written=10,
+            )
+
+        with patch("agentic_kb.commands.sync.OllamaEmbeddingClient.from_config", return_value=FakeEmbeddingClient()):
+            with patch("agentic_kb.commands.sync.PostgresSyncStateStore.from_database_url") as sync_store_factory:
+                with patch("agentic_kb.commands.sync.PostgresProjectItemsStore.from_database_url") as project_store_factory:
+                    with patch("agentic_kb.commands.sync.ingest_project_items", side_effect=fake_ingest_project_items):
+                        sync_store_factory.return_value.__enter__.return_value = sync_store
+                        sync_store_factory.return_value.__exit__.return_value = False
+                        project_store_factory.return_value.__enter__.return_value = project.InMemoryProjectItemsStore()
+                        project_store_factory.return_value.__exit__.return_value = False
+                        result = sync.sync_project(
+                            Path.cwd(),
+                            config=AgenticConfig(
+                                database_url="postgresql://localhost/test",
+                                ollama_base_url="http://ollama:11434",
+                                ollama_embed_model="all-minilm",
+                                github_token="token",
+                            ),
+                            full_refresh=True,
+                        )
+
+        self.assertEqual(result["mode"], "full")
+        self.assertIsNone(result["starting_cursor"])
+        self.assertEqual(result["final_cursor"], "new-end-cursor")
+        self.assertEqual(result["pages_fetched"], 3)
+
+    def test_format_sync_source_output_project_full_mode(self):
+        result = {
+            "mode": "full",
+            "starting_cursor": None,
+            "final_cursor": "end-cursor",
+            "pages_fetched": 5,
+            "rows_written": 20,
+        }
+        lines = sync.format_sync_source_output("project", result)
+        self.assertEqual(lines[0], "sync project completed")
+        self.assertIn("mode=full", lines[1])
+        self.assertIn("note: Project sync ran in full-refresh mode and re-ingested all items.", lines)
+
+    def test_format_sync_source_output_project_incremental_mode(self):
+        result = {
+            "mode": "incremental",
+            "starting_cursor": "start-cursor",
+            "final_cursor": "end-cursor",
+            "pages_fetched": 1,
+            "rows_written": 2,
+        }
+        lines = sync.format_sync_source_output("project", result)
+        self.assertEqual(lines[0], "sync project completed")
+        self.assertIn("mode=incremental", lines[1])
+        self.assertIn("note: Project sync is cursor continuation only and can still miss edits to already-seen items.", lines)
+
+    def test_format_sync_source_output_project_initial_mode(self):
+        result = {
+            "mode": "initial",
+            "starting_cursor": None,
+            "final_cursor": "end-cursor",
+            "pages_fetched": 3,
+            "rows_written": 15,
+        }
+        lines = sync.format_sync_source_output("project", result)
+        self.assertEqual(lines[0], "sync project completed")
+        self.assertIn("mode=initial", lines[1])
+        self.assertEqual(len(lines), 2)
+
+    def test_run_sync_project_passes_full_refresh_flag(self):
+        captured_args = {}
+
+        def capture_sync_project(root, *, config, full_refresh=False):
+            captured_args["full_refresh"] = full_refresh
+            return {
+                "mode": "full" if full_refresh else "incremental",
+                "starting_cursor": None,
+                "final_cursor": "cursor",
+                "pages_fetched": 0,
+                "rows_written": 0,
+            }
+
+        with patch.object(sync, "sync_project", side_effect=capture_sync_project) as mock_sync:
+            args = Namespace(full=True)
+            sync.run_sync_project(args)
+
+        self.assertTrue(captured_args["full_refresh"])
+        mock_sync.assert_called_once()
+
     def _seed_docs_baseline(self, store: InMemorySyncStateStore, *, repo_commit_hash: str):
         state = PreparedSyncState(
             id=deterministic_sync_state_id("docs", repo_scope_key()),
