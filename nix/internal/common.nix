@@ -29,40 +29,20 @@
 
   flake-compat = import inputs.flake-compat;
 
-  walletFlake = let
-    unpatched = inputs.cardano-wallet-unpatched;
-  in
+  walletFlake =
     (flake-compat {
-      src = {
-        outPath = toString (pkgs.runCommand "source" {} ''
-          cp -r ${unpatched} $out
-          chmod -R +w $out
-          cd $out
-          patch -p1 -i ${./cardano-wallet--expose-packages.patch}
-        '');
-        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
-      };
+      src = inputs.cardano-wallet;
     }).defaultNix;
 
-  nodeFlake = let
-    unpatched = inputs.cardano-node-override;
-  in
+  nodeFlake =
     (flake-compat {
-      src = {
-        outPath = toString (pkgs.runCommand "source" {} ''
-          cp -r ${unpatched} $out
-          chmod -R +w $out
-          cd $out
-          cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
-        '');
-        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
-      };
+      src = inputs.cardano-node;
     }).defaultNix;
 
   walletPackages =
     {
-      x86_64-windows = walletFlake.packages.x86_64-linux.ci.artifacts.win64.windowsPackages;
-      x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
+      x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
+      x86_64-linux = walletFlake.packages.x86_64-linux.staticPackages;
       x86_64-darwin = walletFlake.packages.x86_64-darwin;
       aarch64-darwin = walletFlake.packages.aarch64-darwin;
     }.${
