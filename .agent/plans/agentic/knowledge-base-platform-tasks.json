@@ -610,7 +610,7 @@
           "id": "task-606",
           "title": "Document local baseline publish and download workflow",
           "description": "Document the real local GPU-backed publication, upload, download, and import workflow for two developers using the chosen private shared storage backend",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -618,7 +618,7 @@
             "task-608",
             "task-611"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-30",
           "targetPath": ".agent/workflows/agentic-kb.md"
         },
         {
