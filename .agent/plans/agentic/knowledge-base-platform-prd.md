@@ -6,6 +6,164 @@ Build a Docker Compose-based agentic development platform for Daedalus that comb
 
 This work should adapt the useful parts of the `vibe-node` workflow to Daedalus without copying its full research pipeline. The result should be a practical developer platform for this repository: searchable docs, searchable code, searchable GitHub history, searchable project context, and a repeatable way to export, import, and refresh the shared knowledge base.
 
+## Quick-Start Cheat Sheet
+
+### First-Time Setup (5 Steps)
+
+```bash
+# 1. Start the stack (includes mcp-search-http on port 8765)
+yarn agentic:kb:up
+
+# 2. Ingest everything
+docker compose -f docker-compose.agentic.yml run --rm kb-tools sync all
+
+# 3. Run a test query
+docker compose -f docker-compose.agentic.yml run --rm kb-tools search "wallet restore"
+
+# 4. Check KB status
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
+# 5. Export your baseline (optional, for team sharing)
+docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot export --output agentic/snapshots/
+```
+
+### Import a Shared Snapshot (Developer Onboarding)
+
+```bash
+# 1. Start the stack
+yarn agentic:kb:up
+
+# 2. Download latest snapshot from Dropbox shared folder (Daedalus_KB)
+# Copy the .dump and .manifest.json files to agentic/snapshots/
+
+# 3. Import the snapshot (target must be fresh/empty)
+yarn agentic:kb:import
+
+# 4. Check KB status
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
+# 5. Sync only deltas since the snapshot was taken
+yarn agentic:kb:sync:changed
+```
+
+### Sync Commands Reference
+
+| Command | What it does |
+|---------|---------------|
+| `yarn agentic:kb:sync:all` | Full sync of all sources |
+| `yarn agentic:kb:sync:changed` | Sync docs + code + github deltas only |
+| `docker compose ... run --rm kb-tools sync docs` | Refresh .agent docs, READMEs, workflows |
+| `docker compose ... run --rm kb-tools sync code` | Refresh source code with symbol-aware chunking |
+| `docker compose ... run --rm kb-tools sync github` | Fetch new issues, PRs, comments |
+| `docker compose ... run --rm kb-tools sync project` | Refresh Project 5 items (incremental) |
+| `docker compose ... run --rm kb-tools sync project --full` | Full re-convergence for Project 5 |
+
+### Prompting Your Agent to Use the MCP Server
+
+When working with an AI agent (OpenCode, Claude Code, etc.), include the following in your prompt to ensure it uses the local KB MCP server:
+
+```
+You have access to a local knowledge base search MCP server at http://127.0.0.1:8765.
+Before answering questions about the Daedalus codebase, architecture, workflows,
+or past decisions, use the MCP search tools to retrieve current, indexed
+information from the knowledge base.
+
+Available tools: search, search_docs, search_code, search_github, get_entity,
+find_related, kb_status
+
+Example prompt to agent: "Use the knowledge base to find how cardano-node
+lifecycle is managed in the main process. Use the daedalus-agentic-search MCP."
+```
+
+The KB is indexed with Daedalus-specific knowledge including:
+- Agent documentation, workflows, and SOPs (`.agent/`)
+- Source code with symbol-aware chunks (TypeScript/TSX)
+- GitHub issues, PRs, and Project 5 item metadata
+- This implementation plan and task tracker
+
+Always prefer querying the KB first when answering questions about code structure, historical decisions, workflow procedures, or project context.
+
+### Snapshot Management
+
+```bash
+# Check KB status and staleness
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
+
+# Export baseline (run on develop, GPU machine)
+yarn agentic:kb:publish
+
+# Import snapshot (target must be fresh)
+yarn agentic:kb:import
+
+# Check embedding contract compatibility
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json | jq .embedding_contract
+```
+
+### Agent Setup Examples
+
+The repo's `opencode.json` is pre-configured for OpenCode. Start the MCP server first:
+
+```bash
+# Start the HTTP/SSE MCP server (runs on port 8765)
+yarn agentic:kb:up
+```
+
+**OpenCode** — The repo's `opencode.json` already configures the MCP server:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "daedalus-agentic-search": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8765",
+      "enabled": true,
+      "timeout": 60000
+    }
+  }
+}
+```
+
+**Claude Code** (project scope):
+```bash
+claude mcp add --transport http --scope project daedalus-agentic-search -- http://127.0.0.1:8765
+```
+
+Or via `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "daedalus-agentic-search": {
+      "url": "http://127.0.0.1:8765"
+    }
+  }
+}
+```
+
+### Troubleshooting
+
+```bash
+# Stack not responding?
+docker compose -f docker-compose.agentic.yml ps
+
+# Check logs
+docker compose -f docker-compose.agentic.yml logs -f
+
+# Verify MCP server is running
+curl http://127.0.0.1:8765 2>/dev/null || echo "MCP server not responding"
+
+# Stale results?
+yarn agentic:kb:sync:changed
+
+# Embedding contract mismatch?
+docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json | jq .embedding_contract
+# If mismatched: recreate volume and re-import compatible snapshot
+
+# Project 5 data missing?
+# Verify GITHUB_TOKEN has org:read scope for DripDropz
+# gh auth token --type org --scope DripDropz
+```
+
 ## Goals
 
 - Use GitHub Issues + GitHub Project 5 (`Daedalus Maintenance`) as the coordination layer for agentic platform work.
@@ -24,6 +182,16 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - Do not give MCP write access to GitHub, the repository, or the knowledge database in v1.
 - Do not treat GitHub-hosted Actions runners as the canonical embedding or snapshot publication environment in v1.
 - Retire and remove any existing GitHub Actions-based KB snapshot publication path. It is not a supported fallback in v1.
+
+## Known Limitations
+
+- **No background daemon**: The KB does not auto-refresh. Run `sync changed` or `sync all` explicitly to refresh.
+- **Append-only GitHub history**: Previously ingested issues/PRs are not retroactively deleted; only newer comments, bodies, and metadata are refreshed through sync.
+- **Eventual consistency for Project 5**: Incremental Project sync uses cursors and may miss edits to already-seen items. Use `sync project --full` to re-converge.
+- **Disposable volumes only**: In-place schema upgrades are not supported. When schema contracts change, recreate the KB volume and import a compatible snapshot or rebuild locally.
+- **CPU-only embedding**: Full rebuilds on CPU-only machines are significantly slower; GPU is strongly preferred for canonical baseline publication.
+- **Single canonical embedding contract**: Ad-hoc local overrides to `OLLAMA_EMBED_MODEL` are out-of-contract for shared baseline publication. The canonical contract must be used for team snapshot handoff.
+- **Two-developer scope**: v1 is validated for two developers sharing via Dropbox. Wider team workflows are out of scope.
 
 ## Requirements
 
@@ -102,7 +270,8 @@ The v1 Compose stack should include:
 - `ollama` - local embedding service
 - `ollama-init` - pulls the configured embedding model on first boot
 - `kb-tools` - ingestion, sync, snapshot, and CLI commands
-- `mcp-search` - read-only MCP server that queries the knowledge base
+- `mcp-search` - stdio-based read-only MCP server (parity/smoke harness)
+- `mcp-search-http` - HTTP/SSE-based read-only MCP server (recommended for agents)
 
 Design rules:
 
@@ -334,7 +503,7 @@ Recommended tools:
 - `find_related`
 - `kb_status`
 
-The supported MCP client contract is stdio via `docker compose -f docker-compose.agentic.yml run --rm -T mcp-search`. The Compose `mcp-search` entry exists only as a parity or smoke harness for that same stdio process and is not a network daemon that clients connect to. Task and implementation wording should consistently describe it as a stdio tool container, not a long-lived service API.
+The recommended MCP client contract is HTTP/SSE via the `mcp-search-http` service on `http://127.0.0.1:8765`. The `mcp-search` stdio variant remains available as a parity/smoke harness but is not the primary agent-facing endpoint.
 
 Required documentation:
 
@@ -472,10 +641,8 @@ Required documentation:
 
 ---
 
-**Status:** 🚧 In Progress  
+**Status:** ✅ Feature Complete  
 **Date:** 2026-03-27  
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
-**Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, snapshot export/import, embedding-contract compatibility enforcement, disposable import-target safety, and primary KB workflow docs are all in place. Dropbox shared-folder storage is now selected and validated as the private shared snapshot backend for v1. Removal reconciliation regression tests (task-713) are complete, covering deleted docs/code and cleared Project metadata convergence. Remaining rollout work is blocked on the documented local publish/download workflow, Project 5 full re-convergence, snapshot round-trip tests, and the remaining automated smoke/regression coverage promised by this plan.
-
-**Phase 9 progress:** Pilot SOPs (task-903) completed 2026-03-31. Canonical baseline ownership and fallback SOP (task-904) completed 2026-03-31.
+**Notes:** All 68 tasks across Phases 0–9 are complete. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub/project ingestion, sync commands (including full Project 5 refresh), read-only Search MCP in both stdio (`mcp-search`) and HTTP/SSE (`mcp-search-http`) variants, snapshot export/import with embedding-contract compatibility enforcement, disposable import-target safety, removal reconciliation regression tests, Compose boot smoke check, snapshot round-trip tests, local publish/fetch helper commands, automated search ranking regression gate, and all Phase 9 validation tasks (clean-machine bootstrap, security review, two-developer pilot, canonical baseline ownership, publish-download-import handoff) are complete. Dropbox shared-folder storage is validated as the private shared snapshot backend for v1. Five pilot SOPs and one canonical baseline ownership SOP delivered 2026-03-31.
