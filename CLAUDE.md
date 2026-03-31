@@ -27,7 +27,7 @@ All agent documentation is centralized in the [`.agent/`](./.agent/) directory.
 - [/hardware-wallets](./.agent/workflows/hardware-wallets.md) — Ledger/Trezor development
 - [/ipc](./.agent/workflows/ipc.md) — IPC channel development
 - [/nix](./.agent/workflows/nix.md) — Nix environment setup
-- [/agentic-kb](./.agent/workflows/agentic-kb.md) — KB workflow for Compose boot, sync, snapshots, and read-only MCP
+- [/agentic-kb](./.agent/workflows/agentic-kb.md) — KB workflow: `yarn agentic:kb:up|down|sync:all|sync:changed|publish|fetch|import`
 - [/storybook](./.agent/workflows/storybook.md) — Storybook component development
 - [/update-doc](./.agent/workflows/update-doc.md) — Update documentation
 

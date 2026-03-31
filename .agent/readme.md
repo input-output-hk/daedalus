@@ -123,6 +123,20 @@ Available workflows:
 
 Use [`/workflows/agentic-kb.md`](./workflows/agentic-kb.md) as the operator source of truth for KB boot, status, sync, snapshots, and GitHub coordination. Use [`../agentic/README.md`](../agentic/README.md) for copy-paste OpenCode, Claude Code, and local `.mcp.json` MCP client setup examples.
 
+### Agentic KB SOPs
+
+For team workflows on the agentic knowledge base platform:
+
+| SOP | Purpose |
+|-----|---------|
+| [`canonical-baseline-ownership`](./SOPs/agentic/canonical-baseline-ownership.md) | Publisher ownership, republish triggers, recovery |
+| [`pilot-two-developer`](./SOPs/agentic/pilot-two-developer.md) | Two-developer publish/fetch/import/sync workflow |
+| [`pilot-failure-modes`](./SOPs/agentic/pilot-failure-modes.md) | Operational failures and recovery |
+| [`pilot-rollback`](./SOPs/agentic/pilot-rollback.md) | Rollback procedures by stage |
+| [`pilot-coordination`](./SOPs/agentic/pilot-coordination.md) | Team communication patterns |
+
+For KB plans and implementation history, see [`.agent/plans/agentic/`](./plans/agentic/).
+
 ---
 
 ## Project Overview

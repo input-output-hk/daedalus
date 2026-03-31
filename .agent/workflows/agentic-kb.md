@@ -69,6 +69,26 @@ docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import a
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
 ```
 
+### Convenience Scripts
+
+For common operations, the package.json convenience scripts source `agentic/.env` automatically:
+
+```bash
+# Start/stop the stack
+yarn agentic:kb:up          # docker compose up -d
+yarn agentic:kb:down        # docker compose down
+yarn agentic:kb:down:clean  # docker compose down -v
+
+# Sync operations
+yarn agentic:kb:sync:all     # sync docs + code + github + project
+yarn agentic:kb:sync:changed  # incremental sync after import/baseline
+
+# Snapshot sharing
+yarn agentic:kb:publish                  # sync all + export + copy to Dropbox
+yarn agentic:kb:fetch -- <snapshot>     # copy from Dropbox to snapshots/
+yarn agentic:kb:import                  # import snapshot into fresh KB
+```
+
 `agentic/.env.example` now documents the optional Compose overrides. The supported clean-bootstrap path works with the defaults in `docker-compose.agentic.yml`; copying an env file is optional unless you need custom ports, credentials, model selection, or a `GITHUB_TOKEN` for GitHub-backed sync commands.
 
 The shipped publish/fetch helpers stay intentionally narrow:
@@ -241,7 +261,7 @@ Bootstrap and broader team rollout remain separate acceptance contracts:
 
 ## MCP Setup
 
-`agentic-kb mcp-search` is the shipped read-only Search MCP server over stdio.
+`agentic-kb mcp-search-http` is the shipped read-only Search MCP server over HTTP/SSE.
 
 Implemented tool surface:
 
@@ -253,21 +273,23 @@ Implemented tool surface:
 - `find_related`
 - `kb_status`
 
-### OpenCode / Claude Code Setup
+### Starting the MCP Server
 
-Use this repo-supported launcher contract for MCP clients:
+Start the MCP server as a long-running daemon:
 
 ```bash
-docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+docker compose -f docker-compose.agentic.yml up -d mcp-search-http
 ```
 
-Do not use `docker compose -f docker-compose.agentic.yml up -d mcp-search` as a client setup path. That service is only a parity/smoke harness for the same stdio process.
+The server listens on `127.0.0.1:8765` by default.
 
-Copy-pasteable OpenCode, Claude Code, and local `.mcp.json` examples live in `agentic/README.md`.
+### OpenCode / Claude Code Setup
+
+The repo's `opencode.json` is pre-configured for OpenCode. Claude Code examples live in `agentic/README.md`.
 
 Environment notes:
 
-- `DATABASE_URL` and `OLLAMA_BASE_URL` are required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires them automatically
+- `DATABASE_URL` and `OLLAMA_BASE_URL` are required; the Compose launcher wires them automatically
 - `OLLAMA_EMBED_MODEL` is an optional override and should stay aligned with the embedding model used for the indexed KB
 - for shared baseline publication and post-import sync, `OLLAMA_EMBED_MODEL` must match the current canonical embedding contract; treat ad hoc overrides as disposable local-only experiments
 - `GITHUB_TOKEN` is optional for read-only MCP search and `status`
