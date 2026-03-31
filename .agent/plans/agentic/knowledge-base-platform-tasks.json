@@ -1031,7 +1031,7 @@
           "id": "task-905",
           "title": "Validate two-developer publish-download-import handoff",
           "description": "Prove that developer A can publish a baseline from develop on a GPU-equipped machine and developer B can fetch, import, validate, and continue with sync changed on another machine using only the documented workflow",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -1044,7 +1044,7 @@
             "task-906",
             "task-904"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": "agentic/README.md"
         }
       ]

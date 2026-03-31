@@ -72,7 +72,13 @@
     "create-news-verification-hashes": "yarn node-swc utils/create-news-verification-hashes/index.ts",
     "typedef:sass": "typed-scss-modules source/renderer/app",
     "agentic:kb:publish": "bash ./scripts/agentic-kb-publish.sh",
-    "agentic:kb:fetch": "bash ./scripts/agentic-kb-fetch.sh"
+    "agentic:kb:fetch": "bash ./scripts/agentic-kb-fetch.sh",
+    "agentic:kb:up": "docker compose -f docker-compose.agentic.yml up -d",
+    "agentic:kb:down": "docker compose -f docker-compose.agentic.yml down",
+    "agentic:kb:down:clean": "docker compose -f docker-compose.agentic.yml down -v",
+    "agentic:kb:import": "bash ./scripts/agentic-kb-import.sh",
+    "agentic:kb:sync:all": "bash ./scripts/agentic-kb-sync-all.sh",
+    "agentic:kb:sync:changed": "bash ./scripts/agentic-kb-sync-changed.sh"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
