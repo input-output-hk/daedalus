@@ -1005,7 +1005,8 @@
             "task-707",
             "task-710",
             "task-611",
-            "task-901"
+            "task-901",
+            "task-904"
           ],
           "completedAt": "",
           "targetPath": "agentic/README.md"
@@ -1014,7 +1015,7 @@
           "id": "task-904",
           "title": "Document canonical baseline ownership and fallback",
           "description": "Define who is allowed to publish the canonical baseline, when to republish from develop, and how the second developer recovers if the latest shared snapshot is stale, missing, or incompatible",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2,
           "dependencies": [
@@ -1023,7 +1024,7 @@
             "task-611",
             "task-902"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": ".agent/SOPs/agentic"
         },
         {

@@ -420,6 +420,7 @@ Required documentation:
 - Validate the narrow clean-machine bootstrap contract separately from the broader two-developer publication and handoff workflow.
 - Validate snapshot import/export round-trips.
 - Pilot with multiple developers and document SOPs for common failure modes. ✅ Completed 2026-03-31 — Five SOPs delivered in `.agent/SOPs/agentic/`: `pilot-two-developer.md`, `pilot-failure-modes.md`, `pilot-evidence-template.md`, `pilot-rollback.md`, `pilot-coordination.md`.
+- Document canonical baseline ownership and fallback. ✅ Completed 2026-03-31 — SOP delivered at `.agent/SOPs/agentic/canonical-baseline-ownership.md` covering publisher ownership, republish triggers, Developer 2 recovery (stale/missing/incompatible), fallback hierarchy, retention policy, and ownership boundaries.
 
 ## Testing Strategy
 
@@ -476,3 +477,5 @@ Required documentation:
 **Author:** OpenCode  
 **Tracking:** GitHub epic `DripDropz/daedalus#22`; local tasks tracked in `knowledge-base-platform-tasks.json`  
 **Notes:** GitHub issue created and added to Project 5 on 2026-03-27. Project field conventions are now established with `Work Type`, `Area`, `Phase`, and `KB Impact` custom fields. The repo-root Compose scaffold, core schema, search stack, docs/code/GitHub ingestion, sync commands, read-only stdio Search MCP, snapshot export/import, embedding-contract compatibility enforcement, disposable import-target safety, and primary KB workflow docs are all in place. Dropbox shared-folder storage is now selected and validated as the private shared snapshot backend for v1. Removal reconciliation regression tests (task-713) are complete, covering deleted docs/code and cleared Project metadata convergence. Remaining rollout work is blocked on the documented local publish/download workflow, Project 5 full re-convergence, snapshot round-trip tests, and the remaining automated smoke/regression coverage promised by this plan.
+
+**Phase 9 progress:** Pilot SOPs (task-903) completed 2026-03-31. Canonical baseline ownership and fallback SOP (task-904) completed 2026-03-31.
