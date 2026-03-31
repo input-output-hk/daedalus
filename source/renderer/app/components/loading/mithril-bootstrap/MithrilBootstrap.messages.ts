@@ -240,16 +240,16 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   nodeStartingTitle: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingTitle',
-    defaultMessage: '!!!Starting Cardano node',
+    defaultMessage: '!!!Starting Cardano node...',
     description:
-      'Title shown during the completion delay after Mithril snapshot restore, while Cardano node is starting to complete remaining sync.',
+      'Title shown for the dedicated starting-node handoff state after Mithril snapshot restore.',
   },
   nodeStartingDetail: {
     id: 'loading.mithrilBootstrap.progress.nodeStartingDetail',
     defaultMessage:
-      '!!!The Mithril snapshot has been restored. Cardano node is starting up to complete the remaining sync.',
+      '!!!The Mithril snapshot has been restored. Cardano node is starting so Daedalus can continue syncing.',
     description:
-      'Detail copy shown during the completion delay while Cardano node is starting after Mithril restore.',
+      'Detail copy shown for the dedicated starting-node handoff state after Mithril restore.',
   },
 });
 

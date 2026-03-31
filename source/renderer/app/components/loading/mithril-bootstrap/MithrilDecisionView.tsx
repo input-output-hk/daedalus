@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -47,16 +47,11 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
     customChainPath ||
     defaultChainPath ||
     intl.formatMessage(chainStorageMessages.defaultLocationLabel);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1 id={MITHRIL_DECISION_HEADING_ID} ref={headingRef} tabIndex={-1}>
+        <h1 id={MITHRIL_DECISION_HEADING_ID}>
           {intl.formatMessage(messages.title)}
         </h1>
         <p>{intl.formatMessage(messages.description)}</p>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -66,8 +66,6 @@ function MithrilProgressView(props: Props, { intl }: Context) {
   } = props;
 
   const isStartingNode = status === 'starting-node';
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const completionRef = useRef<HTMLHeadingElement>(null);
 
   // Local elapsed-seconds timer — only this component re-renders each second
   const [elapsedSeconds, setElapsedSeconds] = useState<number | undefined>(
@@ -89,22 +87,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     return () => clearInterval(id);
   }, [bootstrapStartedAt, status]);
 
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    if (isStartingNode && completionRef.current) {
-      completionRef.current.focus();
-    }
-  }, [isStartingNode]);
-
   const elapsedLabel = formatDuration(elapsedSeconds) ?? '0:00';
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1 id={MITHRIL_PROGRESS_HEADING_ID} ref={headingRef} tabIndex={-1}>
+        <h1 id={MITHRIL_PROGRESS_HEADING_ID}>
           {intl.formatMessage(messages.title)}
         </h1>
         <p>{intl.formatMessage(messages.progressSubtitle)}</p>
@@ -136,11 +124,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
           aria-live="polite"
           aria-atomic="true"
         >
-          <h2
-            className={styles.completionTitle}
-            ref={completionRef}
-            tabIndex={-1}
-          >
+          <h2 className={styles.completionTitle}>
             {intl.formatMessage(messages.nodeStartingTitle)}
           </h2>
           <p className={styles.completionDetail}>

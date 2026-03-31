@@ -73,7 +73,6 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     selectionValidation,
     setSelectionValidation,
   ] = React.useState<ChainStorageValidation | null>(null);
-  const headingRef = React.useRef<HTMLHeadingElement>(null);
   const isMountedRef = React.useRef(true);
 
   React.useEffect(
@@ -82,10 +81,6 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     },
     []
   );
-
-  React.useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
 
   const defaultValidation = React.useMemo(
     () =>
@@ -297,11 +292,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h1
-          id={MITHRIL_CHAIN_STORAGE_HEADING_ID}
-          ref={headingRef}
-          tabIndex={-1}
-        >
+        <h1 id={MITHRIL_CHAIN_STORAGE_HEADING_ID}>
           {intl.formatMessage(messages.title)}
         </h1>
         <p>{storageDescription}</p>

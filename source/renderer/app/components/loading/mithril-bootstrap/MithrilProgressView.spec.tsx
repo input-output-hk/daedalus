@@ -51,8 +51,6 @@ describe('MithrilProgressView', () => {
 
     expect(heading).toBeInTheDocument();
     expect(heading).toHaveAttribute('id', MITHRIL_PROGRESS_HEADING_ID);
-    expect(heading).toHaveAttribute('tabindex', '-1');
-    expect(heading).toHaveFocus();
     expect(
       screen.getByText(
         /snapshot download and verification time can vary based on your network connection and storage performance/i
@@ -72,11 +70,10 @@ describe('MithrilProgressView', () => {
 
     const statusRegion = screen.getByRole('status');
     const completionHeading = screen.getByRole('heading', {
-      name: /starting cardano-node/i,
+      name: /starting cardano node/i,
     });
 
     expect(completionHeading).toBeInTheDocument();
-    expect(completionHeading).toHaveFocus();
     expect(statusRegion).toHaveAttribute('aria-live', 'polite');
     expect(statusRegion).toHaveAttribute('aria-atomic', 'true');
     expect(
@@ -88,7 +85,7 @@ describe('MithrilProgressView', () => {
     renderComponent({ status: 'completed' });
 
     expect(
-      screen.queryByRole('heading', { name: /starting cardano-node/i })
+      screen.queryByRole('heading', { name: /starting cardano node/i })
     ).not.toBeInTheDocument();
   });
 
@@ -96,7 +93,7 @@ describe('MithrilProgressView', () => {
     renderComponent({ status: 'downloading' });
 
     expect(
-      screen.queryByRole('heading', { name: /starting cardano-node/i })
+      screen.queryByRole('heading', { name: /starting cardano node/i })
     ).not.toBeInTheDocument();
   });
 

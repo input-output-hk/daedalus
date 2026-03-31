@@ -85,11 +85,11 @@ When `status === 'completed'`, the completion block appears between the waterfal
 │                                               margin-bottom: 18px    │
 │  ┌─ .completionBlock ────────────────────────────────────────────┐  │
 │  │                                                                │  │
-│  │  Starting cardano-node                                         │  │
+│  │  Starting Cardano node...                                      │  │
 │  │  (16px medium, bright white)                                   │  │
 │  │                           4px gap                              │  │
 │  │  The Mithril snapshot has been restored.                       │  │
-│  │  Cardano-node is starting up to complete the remaining sync.   │  │
+│  │  Cardano node is starting so Daedalus can continue syncing.    │  │
 │  │  (14px regular, muted)                                         │  │
 │  │                           12px gap                             │  │
 │  │  [spinner] 64px × 64px, centered below text                    │  │
@@ -117,7 +117,7 @@ When `status === 'completed'`, the completion block appears between the waterfal
 | **Waterfall container** | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible | ✓ visible (collapsed — all steps completed) |
 | **Completion block** | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✗ hidden | ✓ visible (fade-in) |
 | **Cancel button** | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ enabled | ✓ visible, **disabled** |
-| **Completion live region** | — | — | — | — | — | — | announces "Starting cardano-node" |
+| **Completion live region** | — | — | — | — | — | — | announces "Starting Cardano node..." |
 
 ### 2.2 Status → Visual Phase Mapping
 
@@ -309,9 +309,8 @@ Appears only when `status === 'completed'`. Centered content with a spinner abov
 
 | Property | Value |
 |---|---|
-| Content | `messages.nodeStartingTitle` ("Starting cardano-node") |
+| Content | `messages.nodeStartingTitle` ("Starting Cardano node...") |
 | Tag | `<h2>` |
-| `tabindex` | `-1` (allows programmatic focus on completed transition; not in natural tab order) |
 | Font size | 16px |
 | Font weight | medium (`var(--font-medium)`) |
 | Color | `rgba(243, 247, 251, 0.98)` |
@@ -322,7 +321,7 @@ Appears only when `status === 'completed'`. Centered content with a spinner abov
 
 | Property | Value |
 |---|---|
-| Content | `messages.nodeStartingDetail` ("The Mithril snapshot has been restored. Cardano-node is starting up to complete the remaining sync.") |
+| Content | `messages.nodeStartingDetail` ("The Mithril snapshot has been restored. Cardano node is starting so Daedalus can continue syncing.") |
 | Tag | `<p>` |
 | Font size | 13px |
 | Font weight | regular (`var(--font-regular)`) |
@@ -507,7 +506,6 @@ Breakpoint: `@media (max-width: 720px)` — consistent with all Mithril componen
 | Completion block | `role` | `status` |
 | Completion block | `aria-live` | `polite` |
 | Completion block | `aria-atomic` | `true` |
-| Completion heading | `tabIndex` | `-1` |
 | Cancel button (completed) | `disabled` | `true` |
 | Waterfall container | `role` | none (read-only wrapper) |
 
@@ -517,7 +515,7 @@ Broader top-level phase announcements are deferred to the accessibility phase. T
 
 ### Focus management
 
-When `status` transitions to `completed`, focus moves programmatically to the completion heading (`<h2>`). The heading uses `tabIndex="-1"` so it can receive focus without entering the normal tab order. Cancel remains the only interactive control during active progress.
+No extra programmatic focus movement is specified for the completion handoff in the current implementation. The completion block remains the only live-announced status region, and keyboard interaction continues to center on the existing dialog controls.
 
 ### Reduced motion
 
@@ -565,7 +563,7 @@ New/changed classes in `MithrilProgressView.scss`:
 .waterfallContainer            — Scrollable wrapper around the step indicator
 .completionBlock               — NEW: centered card, fade-in animation
   .completionSpinner           — NEW: 64px spinning icon
-  .completionTitle             — NEW: 16px medium h2, tabindex=-1 for programmatic focus
+  .completionTitle             — NEW: 16px medium h2
   .completionDetail            — NEW: 14px muted paragraph
 .actions                       — unchanged
   .secondaryAction             — unchanged, with disabled pseudo-state
@@ -604,7 +602,7 @@ The following items are explicitly deferred and not part of this design spec:
 
 | Item | Deferred to | Notes |
 |---|---|---|
-| **Storybook stories** | Phase 8 | Visual regression stories for all MithrilProgressView states (preparing, downloading, unpacking, converting, finalizing, completed, narrow viewport, overflow scroll, keyboard focus). Story acceptance matrix will be defined in the Phase 8 design task. |
+| **Storybook stories** | Phase 8 | Visual regression stories for all MithrilProgressView states (preparing, downloading, unpacking, converting, finalizing, completed, narrow viewport, overflow scroll). Story acceptance matrix will be defined in the Phase 8 design task. |
 | **Theme variable migration** | ✅ Done | Migrated to CSS custom properties via `mithrilBootstrap` and `chainStorage` token maps in `createTheme.ts` and all per-theme output files. |
 | **Scroll fade hints** | Future enhancement | Gradient fade pseudo-elements on waterfall overflow edges (see §3.3 optional note). |
 
@@ -623,5 +621,5 @@ The following items are explicitly deferred and not part of this design spec:
 9. **Keep** the completion block as the only live-announced status region for this phase; broader phase-announcement a11y is deferred
 10. **Props simplification**: The view receives `status`, `bootstrapStartedAt`, `onCancel`, plus pass-through props for `MithrilStepIndicator` (progress items and determinate progress data). Timer is derived locally from `bootstrapStartedAt` via `useState` + `setInterval`. The view does not own any overall percentage, throughput, or remaining-time UI.
 11. **Skip** scroll fade pseudo-elements (§3.3 optional enhancement) — not required for initial implementation
-12. **Focus management**: On completed transition, move focus to the completion heading (`<h2>`)
+12. **Focus management**: No additional focus handoff is required for the completion block in the current implementation
 13. **Keep** the 6-second delay orchestration outside the component; it belongs to the main-process handoff path

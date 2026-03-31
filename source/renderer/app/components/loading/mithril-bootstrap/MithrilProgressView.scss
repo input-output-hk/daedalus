@@ -12,10 +12,6 @@
     font-family: var(--font-medium);
     font-size: 22px;
     margin-bottom: 8px;
-
-    &:focus {
-      outline: none;
-    }
   }
 
   p {
@@ -118,10 +114,6 @@
   font-size: 16px;
   line-height: 1.35;
   margin: 0 0 6px;
-
-  &:focus {
-    outline: none;
-  }
 }
 
 .completionDetail {

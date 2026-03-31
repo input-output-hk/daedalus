@@ -58,7 +58,7 @@
 
 ## Accessibility and Storybook reminders
 - `MithrilBootstrap` is the accessibility shell for the overlay: dialog semantics belong at the root, while the active child view owns the visible heading referenced by `aria-labelledby`.
-- `MithrilDecisionView`, `MithrilProgressView`, and `MithrilErrorView` should each own a focus target on mount so view changes move assistive-technology focus to the active heading instead of leaving users in the background page.
+- `MithrilDecisionView`, `MithrilProgressView`, and `MithrilErrorView` currently rely on dialog labeling and local semantic structure rather than extra mount-time focus management; avoid adding heading autofocus unless there is a specific accessibility requirement and reviewed visual treatment.
 - `MithrilSnapshotSelector` owns snapshot-picking semantics and should expose a grouped, labeled control even if the underlying select implementation does not provide a stable input id.
 - `MithrilSnapshotDetails` is metadata, not layout-only chrome; semantic description-list markup is the durable contract for digest, size, time, and version rows.
 - `BlockDataStorageLocationPicker` owns label association, validation messaging, and status feedback for blockchain-data directory selection; keep those accessibility relationships local to the picker.

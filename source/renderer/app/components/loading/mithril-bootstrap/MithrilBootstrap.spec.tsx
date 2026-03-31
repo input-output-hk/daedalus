@@ -173,7 +173,7 @@ describe('MithrilBootstrap', () => {
     renderComponent({ status: 'starting-node' });
 
     expect(
-      screen.getByRole('heading', { name: /starting cardano-node/i })
+      screen.getByRole('heading', { name: /starting cardano node/i })
     ).toBeInTheDocument();
   });
 

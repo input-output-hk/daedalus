@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -76,16 +76,11 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const hint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
   const detailsHeader = error?.message || error?.code || '';
   const logPath = error?.logPath;
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
 
   return (
     <div className={styles.root} role="alert">
       <div className={styles.header}>
-        <h1 id={MITHRIL_ERROR_HEADING_ID} ref={headingRef} tabIndex={-1}>
+        <h1 id={MITHRIL_ERROR_HEADING_ID}>
           {intl.formatMessage(messages[copy.title])}
         </h1>
         {error?.message && <p>{error.message}</p>}

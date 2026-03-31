@@ -93,7 +93,7 @@ Phase 10 is complete with task-034 verification closed on 2026-03-24: compile, l
   - Distinguish Files vs Ancillary progress by `label` field; graceful degradation if `label` absent
 - [x] Split download tracking in service: separate Files and Ancillary streams, waterfall item accumulation
 - [x] Add single elapsed timer for the whole 3-step process (not per-step), displayed throughout from `bootstrapStartedAt`
-- [x] Add completion delay with spinning circle showing "cardano-node is starting up to complete sync" before yielding
+- [x] Add completion delay with spinning circle showing "Starting Cardano node..." before yielding
 - [x] Add ~15 new i18n messages for waterfall step labels, ancillary progress, and node-starting delay
   - Do not route Mithril JSON step messages into the renderer as user-facing copy; map step_num to localized labels
 - [ ] Show conversion waterfall item in Finalizing only if snapshot conversion actually runs
@@ -255,7 +255,7 @@ components/chain-storage/
 
 **Completion delay:**
 - 6-second delay with spinning circle after all steps complete
-- Shows "cardano-node is starting up to complete sync" message
+- Shows "Starting Cardano node..." handoff message while the node-start flow continues
 - Cancel button disabled during delay
 
 **Icons:**
