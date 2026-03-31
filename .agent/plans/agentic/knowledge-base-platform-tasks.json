@@ -995,7 +995,7 @@
           "id": "task-906",
           "title": "Validate team-ready publication and handoff workflow",
           "description": "Confirm the broader two-developer rollout contract after bootstrap validation: canonical publish from develop, private storage handoff, import on a second machine, explicit mismatch handling, Project token guidance, and post-import incremental refresh behavior",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -1008,7 +1008,7 @@
             "task-901",
             "task-904"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": "agentic/README.md"
         },
         {
