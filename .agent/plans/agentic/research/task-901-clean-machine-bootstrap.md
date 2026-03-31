@@ -36,3 +36,19 @@
 - Snapshots excluded from git via `agentic/.gitignore:2` (`snapshots`); no `.dump` or `.manifest.json` committed.
 - Snapshot import documented as targeting disposable databases only; no in-place schema upgrade procedures.
 - One canonical embedding contract enforced in docs and tooling.
+
+---
+
+## Task-903 Pilot SOP Completion (2026-03-31)
+
+- task-903 ("Pilot with multiple developers") completed as a documentation-only deliverable.
+- Five SOP files created in `.agent/SOPs/agentic/`:
+  - `pilot-two-developer.md` — End-to-end pilot workflow with pre-pilot checklist, Dev 1/Dev 2 steps, HUMAN CHECKPOINT callouts, conditional sync gating
+  - `pilot-failure-modes.md` — 9 failure modes with symptoms and recovery procedures
+  - `pilot-evidence-template.md` — Structured evidence capture with JSON artifacts and task-905 field mapping
+  - `pilot-rollback.md` — Per-stage and full rollback procedures
+  - `pilot-coordination.md` — Developer coordination, notification, checkpoint acks, escalation, debrief
+- Planning review: 2 iterations in `task-903-plan-review.md` (approved)
+- Implementation review: 1 iteration in `task-903-impl-review.md` (approved)
+- No code, Compose, or helper script changes — documentation only
+- All commands cross-referenced against `agentic/README.md` and `.agent/workflows/agentic-kb.md`

@@ -419,7 +419,7 @@ Required documentation:
 
 - Validate the narrow clean-machine bootstrap contract separately from the broader two-developer publication and handoff workflow.
 - Validate snapshot import/export round-trips.
-- Pilot with multiple developers and document SOPs for common failure modes.
+- Pilot with multiple developers and document SOPs for common failure modes. ✅ Completed 2026-03-31 — Five SOPs delivered in `.agent/SOPs/agentic/`: `pilot-two-developer.md`, `pilot-failure-modes.md`, `pilot-evidence-template.md`, `pilot-rollback.md`, `pilot-coordination.md`.
 
 ## Testing Strategy
 
