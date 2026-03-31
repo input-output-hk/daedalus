@@ -773,13 +773,13 @@
           "id": "task-713",
           "title": "Add removal reconciliation regression tests",
           "description": "Verify that deleted docs/code and removed or cleared Project metadata stop surfacing after the relevant sync or explicit full-refresh path runs against an already-seeded KB",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
             "task-711"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": "agentic/tests/test_removal_reconciliation.py"
         },
         {
@@ -945,7 +945,7 @@
           "id": "task-901",
           "title": "Validate clean-machine bootstrap",
           "description": "Confirm the narrow clean-machine bootstrap contract: clone the repo, start the KB stack, import a compatible snapshot, run status --json, and prove a deterministic BM25 documents query succeeds",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3,
           "dependencies": [
@@ -957,7 +957,7 @@
             "task-803",
             "task-709"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": "agentic/README.md"
         },
         {
