@@ -2,8 +2,8 @@
   "metadata": {
     "title": "Agentic Knowledge Base and Workflow Platform Tasks",
     "created": "2026-03-27",
-    "updated": "2026-03-30",
-    "version": "1.7.1",
+    "updated": "2026-03-31",
+    "version": "1.7.2",
     "totalTasks": 68,
     "prdReference": ".agent/plans/agentic/knowledge-base-platform-prd.md",
     "description": "Implement the Docker Compose-based Daedalus knowledge base, search stack, sync workflow, and read-only MCP tooling"
@@ -845,14 +845,14 @@
           "id": "task-706",
           "title": "Add local baseline publication smoke checks",
           "description": "Verify the end-to-end local publication path from develop: sync all, snapshot export, manifest validation, upload to shared storage, download, import, and deterministic post-import search proof",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 3,
           "dependencies": [
             "task-605",
             "task-705"
           ],
-          "completedAt": "",
+          "completedAt": "2026-03-31",
           "targetPath": "agentic/tests/test_snapshot_publication_workflow.py"
         }
       ]
