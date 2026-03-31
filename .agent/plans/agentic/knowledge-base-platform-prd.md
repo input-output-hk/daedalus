@@ -45,7 +45,7 @@ This work should adapt the useful parts of the `vibe-node` workflow to Daedalus 
 - [x] Document ProjectV2 token scope requirements and the expected failure mode when repo reads work but org project reads do not.
 - [x] Enforce that snapshot import only targets fresh, isolated, or otherwise disposable KB databases.
 - [x] Define and validate convergence rules for deleted or renamed repo content and removed or cleared Project 5 state, while treating GitHub history as append-only in v1.
-- [ ] Add automated ingest fixtures, snapshot round-trip coverage, and MCP smoke tests so the documented v1 validation contract is executable.
+- [x] Add automated ingest fixtures, snapshot round-trip coverage, and MCP smoke tests so the documented v1 validation contract is executable.
 
 ## Technical Design
 
