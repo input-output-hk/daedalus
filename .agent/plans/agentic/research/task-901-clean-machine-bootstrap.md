@@ -24,3 +24,15 @@
 ## No New Research Beyond Task Scope
 
 - Task-901 did not validate the broader CI snapshot publication workflow, did not pull `sync changed` into the acceptance path, and did not resolve the separate `sync code` ingestion failure surfaced during exploratory seeding.
+
+---
+
+## Task-902 Security Review Findings (2026-03-31)
+
+- All 7 PRD Security and Operational Boundaries constraints (lines 347-355) are HONORED in current repo reality.
+- MCP server (`search_server.py`) is strictly read-only — 7 tools, no write-capable endpoints, stdio only.
+- `GITHUB_TOKEN` sourced only from environment (`config.py:33`), never hardcoded; `agentic/.env.example` has empty placeholder.
+- KB services isolated from wallet runtime — separate Compose file, zero references in `source/` to KB config.
+- Snapshots excluded from git via `agentic/.gitignore:2` (`snapshots`); no `.dump` or `.manifest.json` committed.
+- Snapshot import documented as targeting disposable databases only; no in-place schema upgrade procedures.
+- One canonical embedding contract enforced in docs and tooling.
