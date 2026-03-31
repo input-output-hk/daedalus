@@ -103,7 +103,43 @@ services:
     working_dir: /workspace
     command:
       - mcp-search
-    stdin_open: true
+    healthcheck:
+      test:
+        - CMD
+        - agentic-kb
+        - status
+        - --healthcheck
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+  mcp-search-http:
+    build:
+      context: ./agentic
+    entrypoint:
+      - agentic-kb
+    environment:
+      - DATABASE_URL=postgresql://${AGENTIC_DB_USER:-agentic}:${AGENTIC_DB_PASSWORD:-agentic}@paradedb:5432/${AGENTIC_DB_NAME:-agentic_kb}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_EMBED_MODEL=${OLLAMA_EMBED_MODEL:-all-minilm}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    volumes:
+      - .:/workspace
+      - ./agentic/snapshots:/workspace/agentic/snapshots
+    depends_on:
+      paradedb:
+        condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
+    working_dir: /workspace
+    command:
+      - mcp-search-http
+      - --port
+      - "8765"
+    ports:
+      - "127.0.0.1:8765:8765"
     healthcheck:
       test:
         - CMD

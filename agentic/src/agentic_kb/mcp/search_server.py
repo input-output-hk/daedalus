@@ -3,8 +3,12 @@ from __future__ import annotations
 import json
 import re
 import sys
+import threading
 from dataclasses import dataclass
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
 from typing import Any, BinaryIO, Callable, Mapping, Sequence
+from urllib.parse import parse_qs
 
 from agentic_kb import __version__
 from agentic_kb.commands.entity import EntityCommandError, get_entity_payload, serialize_entity_payload
@@ -375,6 +379,11 @@ def run_mcp_search(_args) -> int:
     return run_stdio_server()
 
 
+def run_mcp_search_http(args) -> int:
+    port = getattr(args, "port", 8765)
+    return run_http_server(port=port)
+
+
 def _build_search_request(
     arguments: Mapping[str, Any],
     *,
@@ -603,3 +612,97 @@ def _write_message(stream: BinaryIO, payload: Mapping[str, Any]) -> None:
     stream.write(f"Content-Length: {len(encoded)}\r\n\r\n".encode("ascii"))
     stream.write(encoded)
     stream.flush()
+
+
+class McpHttpHandler(BaseHTTPRequestHandler):
+    server: "McpHttpServer"
+
+    def do_POST(self) -> None:
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length)
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except json.JSONDecodeError:
+            self.send_error(400, "Invalid JSON")
+            return
+
+        response = self.server.mcp_server.handle_message(payload)
+        if response is not None:
+            response_body = json.dumps(response, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(response_body)))
+            self.end_headers()
+            self.wfile.write(response_body)
+        else:
+            self.send_response(204)
+            self.end_headers()
+
+    def do_GET(self) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+
+        queue: list[dict[str, Any]] = []
+        event = threading.Event()
+
+        def enqueue(response: dict[str, Any]) -> None:
+            queue.append(response)
+            event.set()
+
+        self.server.notification_handlers.append(enqueue)
+
+        try:
+            while True:
+                if event.wait(timeout=30):
+                    event.clear()
+                    while queue:
+                        msg = queue.pop(0)
+                        data = json.dumps(msg, ensure_ascii=True, separators=(",", ":"))
+                        self.wfile.write(f"data: {data}\r\n\r\n".encode("utf-8"))
+                        self.wfile.flush()
+        except Exception:
+            pass
+        finally:
+            self.server.notification_handlers.remove(enqueue)
+
+    def log_message(self, format: str, *args: Any) -> None:
+        pass
+
+
+class ThreadingHttpServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
+
+
+class McpHttpServer(ThreadingHttpServer):
+    def __init__(self, server_address: tuple[str, int], mcp_server: SearchMcpServer) -> None:
+        super().__init__(server_address, McpHttpHandler)
+        self.mcp_server = mcp_server
+        self.notification_handlers: list[Callable[[dict[str, Any]], None]] = []
+        self._notification_lock = threading.Lock()
+
+    def broadcast_notification(self, payload: dict[str, Any]) -> None:
+        with self._notification_lock:
+            for handler in self.notification_handlers[:]:
+                try:
+                    handler(payload)
+                except Exception:
+                    pass
+
+
+def run_http_server(
+    *,
+    host: str = "0.0.0.0",
+    port: int = 8765,
+    config: AgenticConfig | None = None,
+) -> int:
+    mcp_server = SearchMcpServer(config=config)
+    server = McpHttpServer((host, port), mcp_server)
+    print(f"MCP HTTP server listening on {host}:{port}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    return 0

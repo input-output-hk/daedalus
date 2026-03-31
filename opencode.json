@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "daedalus-agentic-search": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8765",
+      "enabled": true,
+      "timeout": 60000
+    }
+  }
+}

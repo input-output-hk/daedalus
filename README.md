@@ -219,6 +219,29 @@ Dependencies are updated in the `inputs` section of `flake.nix` followed with e.
 nix flake lock --update-input cardano-wallet-unpatched
 ```
 
+### Agentic Knowledge Base
+
+Daedalus includes an agentic knowledge base platform for searchable docs, code, GitHub issues/PRs, and Project 5 context. When running OpenCode with the stack active, agents can query the KB directly using natural language.
+
+**Yarn commands:**
+```bash
+yarn agentic:kb:up           # Start the KB stack
+yarn agentic:kb:down          # Stop the KB stack
+yarn agentic:kb:down:clean   # Stop and remove volumes
+yarn agentic:kb:import       # Import a snapshot into the KB
+yarn agentic:kb:sync:all     # Sync all KB sources from scratch
+yarn agentic:kb:sync:changed  # Sync only changes since last sync
+yarn agentic:kb:publish      # Publish baseline to shared storage
+yarn agentic:kb:fetch        # Fetch baseline from shared storage
+```
+
+**MCP tools** — OpenCode automatically discovers the MCP server via `.opencode/config.json`. When the stack is running, use natural language to query the KB:
+
+- Ask questions about docs, code, issues, PRs, or project context
+- Use `search`, `search_docs`, `search_code`, `search_github`, `get_entity`, `find_related`, `kb_status` via MCP tools
+
+See [`.opencode/workflows/agentic-kb.md`](.opencode/workflows/agentic-kb.md) for full workflow documentation.
+
 ### Cardano Wallet Api documentation
 
 Api documentation for edge `cardano-wallet` version: https://input-output-hk.github.io/cardano-wallet/api/edge/

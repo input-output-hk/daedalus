@@ -86,13 +86,14 @@ The canonical team baseline is local-only in v1.
 Shipped local helper commands:
 
 ```bash
-AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:publish
-AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- agentic-kb-<timestamp>
+yarn agentic:kb:publish
+yarn agentic:kb:fetch -- agentic-kb-<timestamp>
 ```
 
 Helper contract:
 
 - `AGENTIC_KB_SHARED_DIR` is required and must point to a locally accessible Dropbox-synced folder named `Daedalus_KB`
+- Set it in `agentic/.env` (see `.env.example` for the variable name)
 - `yarn agentic:kb:publish` runs `sync all`, exports one snapshot pair into `agentic/snapshots/`, and copies that `.dump` plus sibling `.manifest.json` into `Daedalus_KB`
 - `yarn agentic:kb:fetch` copies one explicit sibling pair back from `Daedalus_KB` into local `agentic/snapshots/`
 - fetch requires an explicit snapshot basename or sibling filename; it does not claim zero-argument latest discovery
@@ -116,18 +117,18 @@ Current contract:
 Current local publication shape:
 
 1. Start the stack locally.
-2. Set `AGENTIC_KB_SHARED_DIR` to the local Dropbox-synced path for `Daedalus_KB`.
+2. Ensure `AGENTIC_KB_SHARED_DIR` is set in `agentic/.env` (pointing to the local Dropbox-synced `Daedalus_KB` path).
 3. Run `yarn agentic:kb:publish` from a trusted developer machine.
 4. Confirm the helper copied both sibling files into the Dropbox shared folder `Daedalus_KB`.
 
 Current local fetch and consumption path:
 
-1. Set `AGENTIC_KB_SHARED_DIR` to the local Dropbox-synced path for `Daedalus_KB`.
+1. Ensure `AGENTIC_KB_SHARED_DIR` is set in `agentic/.env` (pointing to the local Dropbox-synced `Daedalus_KB` path).
 2. Run `yarn agentic:kb:fetch -- <snapshot-basename>`.
 3. Import either the `.dump` path or the sibling `.manifest.json` path.
 
 ```bash
-AGENTIC_KB_SHARED_DIR="/path/to/Daedalus_KB" yarn agentic:kb:fetch -- <snapshot-basename>
+yarn agentic:kb:fetch -- <snapshot-basename>
 docker compose -f docker-compose.agentic.yml run --rm kb-tools snapshot import agentic/snapshots/<snapshot>.dump --yes
 docker compose -f docker-compose.agentic.yml run --rm kb-tools status --json
 docker compose -f docker-compose.agentic.yml run --rm kb-tools search --entity-type documents --mode bm25 --json "GitHub Releases assets are out of scope for KB snapshot sharing"
@@ -159,80 +160,66 @@ Clean-machine bootstrap and full team rollout are separate acceptance levels:
 
 ## MCP Setup
 
-`agentic-kb mcp-search` is a stdio MCP server. MCP clients should spawn it as a no-TTY child process and communicate over stdin/stdout.
+The agentic KB provides two MCP server variants:
 
-Use this repo-supported launcher for MCP clients:
+- `agentic-kb mcp-search` - stdio-based MCP server (for compatibility)
+- `agentic-kb mcp-search-http` - HTTP/SSE-based MCP server (recommended)
+
+The HTTP/SSE-based MCP server is the recommended approach as it avoids stdio-related issues in some MCP clients.
+
+### Starting the MCP Server
+
+Start the MCP server as a long-running daemon:
 
 ```bash
-docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+docker compose -f docker-compose.agentic.yml up -d mcp-search-http
 ```
 
-Do not point MCP clients at `docker compose -f docker-compose.agentic.yml up -d mcp-search`. That Compose service is only a parity/smoke harness for the same stdio process; it is not a network endpoint.
+The server listens on `127.0.0.1:8765` by default.
 
 ### Environment Variables
 
-- `DATABASE_URL`: required for direct local `agentic-kb mcp-search` launches; the Compose launcher wires it automatically.
-- `OLLAMA_BASE_URL`: required for direct local launches and needed for vector/hybrid MCP queries; the Compose launcher wires it automatically.
+- `DATABASE_URL`: required; the Compose launcher wires it automatically.
+- `OLLAMA_BASE_URL`: required for vector/hybrid search queries; the Compose launcher wires it automatically.
 - `OLLAMA_EMBED_MODEL`: optional override. Keep it aligned with the embedding model used to index the current KB.
-- `OLLAMA_EMBED_MODEL`: optional for disposable local rebuild experiments, but shared baseline publication and post-import sync must match the current canonical embedding contract.
-- `GITHUB_TOKEN`: optional for read-only MCP search/status. It is still required for `sync github` and `sync project`, and Project 5 reads need a token that can read `DripDropz` ProjectV2 data.
+- `GITHUB_TOKEN`: optional for read-only MCP search/status. It is still required for `sync github` and `sync project`.
 
 ### OpenCode
+
+The repo's `opencode.json` is pre-configured for OpenCode:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "daedalus-agentic-search": {
-      "type": "local",
-      "command": [
-        "docker",
-        "compose",
-        "-f",
-        "docker-compose.agentic.yml",
-        "run",
-        "--rm",
-        "-T",
-        "mcp-search"
-      ],
-      "enabled": true
+      "type": "remote",
+      "url": "http://127.0.0.1:8765",
+      "enabled": true,
+      "timeout": 60000
     }
   }
 }
 ```
 
-### Claude Code
+### Claude Code (HTTP/SSE)
 
 ```bash
-claude mcp add --transport stdio --scope project daedalus-agentic-search -- \
-  docker compose -f docker-compose.agentic.yml run --rm -T mcp-search
+claude mcp add --transport http --scope project daedalus-agentic-search -- \
+  http://127.0.0.1:8765
 ```
 
-This writes the project-scoped MCP entry into `.mcp.json` for Claude Code.
-
-### Local `.mcp.json`
+### Local `.mcp.json` (HTTP/SSE)
 
 ```json
 {
   "mcpServers": {
     "daedalus-agentic-search": {
-      "type": "stdio",
-      "command": "docker",
-      "args": [
-        "compose",
-        "-f",
-        "docker-compose.agentic.yml",
-        "run",
-        "--rm",
-        "-T",
-        "mcp-search"
-      ]
+      "url": "http://127.0.0.1:8765"
     }
   }
 }
 ```
-
-All three examples intentionally resolve to the same launcher contract. If your client stores the process definition differently, preserve the same argv and keep `-T` so Docker does not allocate a TTY for the stdio MCP session.
 
 Container contract:
 
@@ -241,6 +228,4 @@ Container contract:
 - Default entrypoint: `agentic-kb`
 - Default command: `service`
 
-The `mcp-search` compose service now runs the same packaged stdio MCP process exposed locally as `agentic-kb mcp-search`; it does not expose a separate HTTP daemon.
-
-The image uses `python:3.12-slim-bookworm` so later tasks can add PostgreSQL-adjacent tooling without reworking the base image away from Alpine.
+The image uses `python:3.12-slim-bookworm`.

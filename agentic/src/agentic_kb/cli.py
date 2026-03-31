@@ -9,7 +9,7 @@ from agentic_kb.commands.service import run_service
 from agentic_kb.commands.snapshot import add_snapshot_subcommands
 from agentic_kb.commands.status import run_status
 from agentic_kb.commands.sync import add_sync_subcommands
-from agentic_kb.mcp import run_mcp_search
+from agentic_kb.mcp import run_mcp_search, run_mcp_search_http
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -71,6 +71,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run the read-only Search MCP server over stdio",
     )
     mcp_search_parser.set_defaults(handler=run_mcp_search)
+
+    mcp_search_http_parser = subparsers.add_parser(
+        "mcp-search-http",
+        help="Run the read-only Search MCP server over HTTP/SSE",
+    )
+    mcp_search_http_parser.add_argument(
+        "--port",
+        type=int,
+        default=8765,
+        help="Port to listen on (default: 8765)",
+    )
+    mcp_search_http_parser.set_defaults(handler=run_mcp_search_http)
 
     return parser
 
