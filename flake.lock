@@ -20,16 +20,16 @@
     "cardano-playground": {
       "flake": false,
       "locked": {
-        "lastModified": 1770935502,
-        "narHash": "sha256-8l7usN3WWbBlAsy6zZlTDA7vDW+l9EUIGRrZYONwZ8U=",
+        "lastModified": 1774915538,
+        "narHash": "sha256-0jr2MzQnZtC9nLbni5taGhc0gI+Ub5Shf7po1jUSATw=",
         "owner": "input-output-hk",
         "repo": "cardano-playground",
-        "rev": "c9f15e5b7d42f17f7f3d6ffb4182f5a91b12e1ac",
+        "rev": "488c21bbeb1426fcf0b41a1c1a832308ac284080",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "node-10.6.2-pre-config",
+        "ref": "node-10.6.2-config",
         "repo": "cardano-playground",
         "type": "github"
       }

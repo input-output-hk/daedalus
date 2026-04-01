@@ -182,6 +182,7 @@ in rec {
   bundle-cardano-node = mkBundle "cardano-node" (lib.getExe common.cardano-node);
   bundle-cardano-cli = mkBundle "cardano-cli" (lib.getExe common.cardano-cli);
   bundle-cardano-address = mkBundle "cardano-address" (lib.getExe common.cardano-address);
+  bundle-mithril-client = mkBundle "mithril-client" (common.mithril-client + "/bin/mithril-client");
   bundle-mock-token-metadata-server = mkBundle "mock-token-metadata-server" (lib.getExe common.mock-token-metadata-server);
   bundle-local-cluster = mkBundle "local-cluster" (lib.getExe common.walletPackages.local-cluster);
 
@@ -314,6 +315,7 @@ in rec {
         cp -r ${bundle-cardano-cli}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-address}/. "$dir"/ && chmod -R +w "$dir/"
         cp -r ${bundle-cardano-wallet}/. "$dir"/ && chmod -R +w "$dir/"
+        cp -r ${bundle-mithril-client}/. "$dir"/ && chmod -R +w "$dir/"
 
         ${lib.optionalString (cluster == "selfnode") ''
           cp -r ${bundle-mock-token-metadata-server}/. "$dir"/ && chmod -R +w "$dir/"

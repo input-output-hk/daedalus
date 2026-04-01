@@ -25,6 +25,13 @@ runCommandCC "daedalus-cardano-bridge" {
   copy_glob "cardano-node" "${cardano-node}/bin/*"
   copy_glob "cardano-cli" "${cardano-cli}/bin/cardano-cli*"
   copy_glob "mithril-client" "${mithril-client}/bin/mithril-client*"
+  ${lib.optionalString (target == "x86_64-windows") ''
+    # Upstream mithril package can emit a binary named `mithril-client`
+    # even for Windows cross builds; NSIS/runtime expect `mithril-client.exe`.
+    if [ -f mithril-client ] && [ ! -f mithril-client.exe ]; then
+      cp -f mithril-client mithril-client.exe
+    fi
+  ''}
   ${lib.optionalString (local-cluster != null) ''
 
     ${if target == "x86_64-windows" then ''
@@ -44,7 +51,7 @@ runCommandCC "daedalus-cardano-bridge" {
   ''}
   ${lib.optionalString (target == "aarch64-darwin") ''
     chmod +w -R .
-    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet mithril-client; do
       ${darwin.sigtool}/bin/codesign --force -s - $x
     done
   ''}

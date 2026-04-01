@@ -14,7 +14,7 @@
     cardano-wallet-unpatched.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-node-override.url = "github:IntersectMBO/cardano-node/10.6.2";
     cardano-node-override.flake = false;
-    cardano-playground.url = "github:input-output-hk/cardano-playground/node-10.6.2-pre-config";
+    cardano-playground.url = "github:input-output-hk/cardano-playground/node-10.6.2-config";
     cardano-playground.flake = false; # otherwise, +9k dependencies in flake.lock…
     cardano-shell.url = "github:input-output-hk/cardano-shell/79f48aa3aa8007a1597cbedc22031eab1f05decd";
     cardano-shell.flake = false;
