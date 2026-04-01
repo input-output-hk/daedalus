@@ -30,7 +30,7 @@ The Nix build pipeline has multiple stages, and `mithril-client` was missing fro
 #### Build Pipeline Flow
 ```
 flake.nix (mithril input)
-  → common.nix (mithril-client package reference)
+  → common.nix (target-specific mithril package selection)
     → cardano-bridge.nix (copies binary to bridge/bin/)
       → Platform-specific packaging (MISSING mithril-client)
 ```
@@ -38,7 +38,7 @@ flake.nix (mithril input)
 #### Windows Pipeline
 | Stage | File | Status |
 |-------|------|--------|
-| Nix package | `common.nix:96` | ✅ `mithril-client-cli` resolved |
+| Nix package | `common.nix` | ✅ Final implementation reads the Mithril release tag from `flake.lock`, fetches the Windows release tarball, and exposes `mithril-client.exe` as the Windows package source |
 | Bridge copy | `cardano-bridge.nix:27` | ✅ `copy_glob "mithril-client"` |
 | Staging | `x86_64-windows.nix:582` | ✅ `cp -vr ${bridge}/bin/* .` copies all |
 | NSIS file list | `WindowsInstaller.hs:224-230` | ❌ **MISSING** `file [] "mithril-client.exe"` |
@@ -47,7 +47,7 @@ flake.nix (mithril input)
 #### macOS Pipeline
 | Stage | File | Status |
 |-------|------|--------|
-| Nix package | `common.nix:96` | ✅ `mithril-client-cli` resolved |
+| Nix package | `common.nix` | ✅ Final implementation keeps using the Darwin `mithril-client-cli` package outputs |
 | Bridge copy | `cardano-bridge.nix:27` | ✅ `copy_glob "mithril-client"` |
 | Bundle definition | `any-darwin.nix` | ❌ **MISSING** `bundle-mithril-client` |
 | App copy | `any-darwin.nix` (package build) | ❌ **MISSING** copy into `Contents/MacOS/` |
@@ -65,15 +65,25 @@ Linux bundles the entire `daedalus-bridge` directory and symlinks all `bin/*` en
 
 Even if the binary were present, `mithrilCommandRunner.ts` spawned `'mithril-client'` by bare name, relying on `PATH` lookup. While `source/main/index.ts` prepends `DAEDALUS_INSTALL_DIRECTORY` to `PATH`, other Cardano binaries use absolute paths via the `mkBinPath` helper in `launcher-config.nix`. Using absolute paths is more reliable and provides better diagnostic information on failure.
 
-### Fixes Applied
+### Final `common.nix` Implementation Note
 
-**5 files changed, 24 insertions(+), 2 deletions(-):**
+The initial investigation treated `common.nix` mostly as a pass-through package reference, but the final branch implementation is more explicit on Windows:
+
+- `common.nix` now reads the pinned Mithril release tag directly from `flake.lock`
+- Windows builds fetch the matching upstream Mithril release tarball with `pkgs.fetchurl`
+- The Windows package is created by extracting `mithril-client.exe` into `$out/bin`
+- `mithril-client` is then selected from a target-specific package map, while Linux and macOS continue to use the flake-provided `mithril-client-cli` outputs
+
+This matters because Windows no longer depends on a missing or mismatched flake package output for Mithril. The installer, runtime spawn path, and fetched binary now all derive from the same flake-locked Mithril release.
+
+### Fixes Applied
 
 1. **`installers/common/WindowsInstaller.hs`** — Added `file [] "mithril-client.exe"` to NSIS file list
 2. **`nix/internal/launcher-config.nix`** — Added `"mithril-client.exe"` to `installerWinBinaries`
 3. **`nix/internal/any-darwin.nix`** — Added `bundle-mithril-client` definition and copy into `.app` bundle
 4. **`nix/internal/cardano-bridge.nix`** — Added `mithril-client` to aarch64-darwin ad-hoc codesigning
-5. **`source/main/mithril/mithrilCommandRunner.ts`** — Absolute path resolution using `DAEDALUS_INSTALL_DIRECTORY` + diagnostic logging (binary path, install dir, cwd, PATH)
+5. **`nix/internal/common.nix`** — Switched Mithril package sourcing to a target-specific map and added Windows release-asset fetching based on the flake-locked Mithril tag
+6. **`source/main/mithril/mithrilCommandRunner.ts`** — Absolute path resolution using `DAEDALUS_INSTALL_DIRECTORY` + diagnostic logging (binary path, install dir, cwd, PATH)
 
 ### Follow-up Test Coverage
 
@@ -83,6 +93,7 @@ The PR review follow-up added focused unit coverage in `source/main/mithril/mith
 - install directory set on non-Windows spawns the absolute installed path
 - install directory unset on Windows spawns `mithril-client.exe`
 - install directory set on Windows spawns the installed `.exe` path
+- Windows environment normalization collapses duplicate `PATH` / `Path` keys and prepends the install directory before spawn
 
 ### Build Validation Follow-up (Windows)
 
@@ -92,9 +103,10 @@ Running `nix build -L .#installer-preprod-x86_64-windows` first surfaced a packa
 - Bridge staging produced `mithril-client` (no `.exe` suffix) from the mithril package output
 - Build failed with: `File: "mithril-client.exe" -> no files found.`
 
-Additional fix applied:
+Additional fixes applied:
 
-6. **`nix/internal/cardano-bridge.nix`** — On `x86_64-windows`, if `mithril-client` exists and `mithril-client.exe` does not, copy to `mithril-client.exe` so NSIS and runtime naming stay consistent.
+- **`nix/internal/cardano-bridge.nix`** — On `x86_64-windows`, if `mithril-client` exists and `mithril-client.exe` does not, copy to `mithril-client.exe` so NSIS and runtime naming stay consistent.
+- **`nix/internal/common.nix`** — Keep the Windows bridge input aligned with the flake-locked Mithril release by fetching the tagged upstream artifact directly instead of assuming the Windows package output already matches installer/runtime naming.
 
 Verification result:
 
@@ -228,6 +240,7 @@ After applying these fixes, verify on each platform:
 |------|---------|
 | `installers/common/WindowsInstaller.hs` | Added `mithril-client.exe` to NSIS |
 | `nix/internal/launcher-config.nix` | Added to `installerWinBinaries` |
+| `nix/internal/common.nix` | Added target-specific Mithril package sourcing and Windows release-asset fetch |
 | `nix/internal/any-darwin.nix` | Added bundle + copy for macOS |
 | `nix/internal/cardano-bridge.nix` | Added to aarch64 codesigning |
 | `source/main/mithril/mithrilCommandRunner.ts` | Absolute path + logging |
