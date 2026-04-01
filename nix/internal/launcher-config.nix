@@ -339,6 +339,7 @@ let
         "cardano-wallet.exe"
         "cardano-cli.exe"
         "cardano-address.exe"
+        "mithril-client.exe"
       ];
     };
 

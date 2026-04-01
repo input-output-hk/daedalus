@@ -6,6 +6,8 @@ import type { WriteStream } from 'fs';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import { stateDirectoryPath } from '../config';
 import { buildMithrilEnv } from './mithrilNetworkConfig';
+import { logger } from '../utils/logging';
+import { environment } from '../environment';
 
 export type RunCommandResult = {
   stdout: string;
@@ -55,8 +57,24 @@ export async function runCommand(
 
   const env = await buildMithrilEnv(requireKeys);
 
+  // Resolve mithril-client binary path
+  const binaryName = environment.isWindows
+    ? 'mithril-client.exe'
+    : 'mithril-client';
+  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY;
+  const binaryPath = installDir
+    ? path.join(installDir, binaryName)
+    : binaryName;
+
+  logger.info(`[mithril] Spawning: ${binaryPath} ${args.join(' ')}`, {
+    binaryPath,
+    installDir: installDir || '(not set)',
+    cwd: workDir,
+    pathEnv: env.PATH || '(not set)',
+  });
+
   return new Promise((resolve, reject) => {
-    const child = spawn('mithril-client', args, {
+    const child = spawn(binaryPath, args, {
       cwd: workDir,
       env,
     });
