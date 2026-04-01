@@ -1175,7 +1175,7 @@ export class CardanoNode {
     promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
   _waitForCardanoToExitOrKillIt = async () => {
     const { _config } = this;
-    if (this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
+    if (await this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
 
     try {
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);

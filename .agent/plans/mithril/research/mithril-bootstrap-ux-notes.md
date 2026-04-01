@@ -76,8 +76,10 @@
 ## Final verification insights
 - Final verification confirmed the Mithril bootstrap flow and standalone chain-storage picker pass the automated Mithril-scope checks.
 - Runtime log analysis on 2026-04-01 confirmed the cancel-path bug and its fix: logs showed `accept` during Mithril start, later `decline` with Mithril status `cancelled`, and no `cardano-node.start()` until explicit `cancelled -> decline` recovery was added in `handleDiskSpace.ts`.
+- Follow-up PR review hardening on 2026-04-01 added an explicit in-flight guard around `handleMithrilCancelledDecline()` so overlapping polling and decision-listener triggers become no-ops while cancel-to-genesis recovery is already wiping/startup sequencing.
 - Theme structure is correct in all 9 Daedalus runtime theme files, with `chainStorage` and `mithrilBootstrap` tokens at the expected nesting level.
 - Jest passed with 37 suites and 295 tests, including `MithrilBootstrapService.spec.ts`, `MithrilBootstrapStore.spec.ts`, `MithrilBootstrap.spec.tsx`, `MithrilProgressView.spec.tsx`, `MithrilStepIndicator.spec.tsx`, `ChainStorageLocationPicker.spec.tsx`, `chainStorageChannel.spec.ts`, and `chainStorageManager.spec.ts`.
+- Targeted follow-up Jest coverage now also exercises `mithrilCommandRunner.spec.ts` for installed-path/binary-name resolution branches and `handleDiskSpace.spec.ts` for idempotent cancel-to-decline recovery;
 - Mithril loading and chain-storage Storybook stories compile successfully; the remaining `yarn storybook --smoke-test` failure is the pre-existing unrelated news utility import issue.
 - i18n review confirmed about 62 new Mithril and chain-storage message keys are ready for Japanese translation.
 - E2E coverage now includes the Mithril bootstrap feature file and step definitions, and the added test files are lint-clean.

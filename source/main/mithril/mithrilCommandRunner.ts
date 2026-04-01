@@ -26,6 +26,78 @@ export type RunCommandCallbacks = {
   onLogStream?: (logStream: WriteStream) => void;
 };
 
+const getWindowsPathKey = (env: NodeJS.ProcessEnv): string => {
+  const pathKeys = Object.keys(env).filter(
+    (key) => key.toLowerCase() === 'path'
+  );
+
+  if (pathKeys.includes('Path')) return 'Path';
+  if (pathKeys.includes('PATH')) return 'PATH';
+  return pathKeys[0] || 'Path';
+};
+
+const dedupeWindowsPathSegments = (segments: Array<string>): Array<string> => {
+  const seen = new Set<string>();
+
+  return segments.filter((segment) => {
+    const normalized = segment.trim();
+    if (!normalized) return false;
+
+    const fingerprint = normalized.toLowerCase();
+    if (seen.has(fingerprint)) return false;
+
+    seen.add(fingerprint);
+    return true;
+  });
+};
+
+export function normalizeSpawnEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  if (!environment.isWindows) return env;
+
+  const nextEnv = { ...env };
+  const pathKey = getWindowsPathKey(nextEnv);
+  const pathDelimiter = ';';
+  const pathValues = Object.keys(nextEnv)
+    .filter((key) => key.toLowerCase() === 'path')
+    .map((key) => nextEnv[key])
+    .filter(Boolean);
+  const installDir = process.env.DAEDALUS_INSTALL_DIRECTORY;
+  const currentPath =
+    pathValues.join(pathDelimiter) ||
+    process.env[pathKey] ||
+    process.env.Path ||
+    process.env.PATH ||
+    '';
+
+  Object.keys(nextEnv)
+    .filter((key) => key.toLowerCase() === 'path' && key !== pathKey)
+    .forEach((key) => delete nextEnv[key]);
+
+  const normalizedPath = dedupeWindowsPathSegments(
+    [installDir, currentPath]
+      .filter(Boolean)
+      .reduce<Array<string>>(
+        (segments, value) =>
+          segments.concat(String(value).split(pathDelimiter)),
+        []
+      )
+  ).join(pathDelimiter);
+
+  if (normalizedPath) {
+    nextEnv[pathKey] = normalizedPath;
+  }
+
+  if (!nextEnv.SystemRoot && process.env.SystemRoot) {
+    nextEnv.SystemRoot = process.env.SystemRoot;
+  }
+
+  if (!nextEnv.ComSpec && process.env.ComSpec) {
+    nextEnv.ComSpec = process.env.ComSpec;
+  }
+
+  return nextEnv;
+}
+
 export function openLogStream(): WriteStream {
   const logsDir = path.join(stateDirectoryPath, 'Logs');
   ensureDirectoryExists(logsDir);
@@ -55,7 +127,8 @@ export async function runCommand(
   const logStream = openLogStream();
   if (callbacks?.onLogStream) callbacks.onLogStream(logStream);
 
-  const env = await buildMithrilEnv(requireKeys);
+  const env = normalizeSpawnEnv(await buildMithrilEnv(requireKeys));
+  const pathKey = getWindowsPathKey(env);
 
   // Resolve mithril-client binary path
   const binaryName = environment.isWindows
@@ -66,11 +139,14 @@ export async function runCommand(
     ? path.join(installDir, binaryName)
     : binaryName;
 
+  ensureDirectoryExists(workDir);
+
   logger.info(`[mithril] Spawning: ${binaryPath} ${args.join(' ')}`, {
     binaryPath,
     installDir: installDir || '(not set)',
     cwd: workDir,
-    pathEnv: env.PATH || '(not set)',
+    pathEnv: env[pathKey] || '(not set)',
+    pathKey,
   });
 
   return new Promise((resolve, reject) => {
