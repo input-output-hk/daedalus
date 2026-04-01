@@ -75,8 +75,9 @@
 
 ## Final verification insights
 - Final verification confirmed the Mithril bootstrap flow and standalone chain-storage picker pass the automated Mithril-scope checks.
-- Runtime log analysis on 2026-04-01 confirmed the cancel-path bug and its fix: logs showed `accept` during Mithril start, later `decline` with Mithril status `cancelled`, and no `cardano-node.start()` until explicit `cancelled -> decline` recovery was added in `handleDiskSpace.ts`.
-- Follow-up PR review hardening on 2026-04-01 added an explicit in-flight guard around `handleMithrilCancelledDecline()` so overlapping polling and decision-listener triggers become no-ops while cancel-to-genesis recovery is already wiping/startup sequencing.
+- Runtime log analysis confirmed the cancel-path bug and its fix: logs showed `accept` during Mithril start, later `decline` with Mithril status `cancelled`, and no `cardano-node.start()` until explicit `cancelled -> decline` recovery was added in `handleDiskSpace.ts`.
+- Follow-up PR review hardening added an explicit in-flight guard around `handleMithrilCancelledDecline()` so overlapping polling and decision-listener triggers become no-ops while cancel-to-genesis recovery is already wiping/startup sequencing.
+- Packaging/runtime hardening also updated `nix/internal/common.nix` so Windows Mithril packaging now fetches the flake-locked upstream release artifact directly, while `mithrilCommandRunner` test coverage now locks in installed-path resolution and Windows `PATH` normalization behavior.
 - Theme structure is correct in all 9 Daedalus runtime theme files, with `chainStorage` and `mithrilBootstrap` tokens at the expected nesting level.
 - Jest passed with 37 suites and 295 tests, including `MithrilBootstrapService.spec.ts`, `MithrilBootstrapStore.spec.ts`, `MithrilBootstrap.spec.tsx`, `MithrilProgressView.spec.tsx`, `MithrilStepIndicator.spec.tsx`, `ChainStorageLocationPicker.spec.tsx`, `chainStorageChannel.spec.ts`, and `chainStorageManager.spec.ts`.
 - Targeted follow-up Jest coverage now also exercises `mithrilCommandRunner.spec.ts` for installed-path/binary-name resolution branches and `handleDiskSpace.spec.ts` for idempotent cancel-to-decline recovery;
