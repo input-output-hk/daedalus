@@ -3,6 +3,8 @@
   inputs,
   targetSystem,
 }: rec {
+  flakeLock = builtins.fromJSON (builtins.readFile (inputs.self + "/flake.lock"));
+
   sourceLib = import ./source-lib.nix {inherit inputs;};
 
   pkgs = let
@@ -76,6 +78,26 @@
       targetSystem
     };
 
+  mithrilReleaseVersion = flakeLock.nodes.mithril.original.ref;
+  mithrilWindowsAssetHash = "sha256-PEO1HKhHwCgEIK+CmkCaYNbWkXqaoDCnqzR/rN+G2Z4=";
+
+  mithrilWindowsAsset = pkgs.fetchurl {
+    # Read the release tag from flake.lock so this stays aligned with the flake input pin.
+    url = "https://github.com/input-output-hk/mithril/releases/download/${mithrilReleaseVersion}/mithril-${mithrilReleaseVersion}-windows-x64.tar.gz";
+    hash = mithrilWindowsAssetHash;
+  };
+
+  mithrilPackages = {
+    x86_64-windows =
+      pkgs.runCommand "mithril-client-windows" {} ''
+        mkdir -p $out/bin
+        tar -xzf ${mithrilWindowsAsset} -C $out/bin mithril-client.exe
+      '';
+    x86_64-linux = inputs.mithril.packages.x86_64-linux.mithril-client-cli;
+    x86_64-darwin = inputs.mithril.packages.x86_64-darwin.mithril-client-cli;
+    aarch64-darwin = inputs.mithril.packages.aarch64-darwin.mithril-client-cli;
+  };
+
   inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
   daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
@@ -93,7 +115,7 @@
 
   inherit (nodePackages) cardano-node cardano-cli;
 
-  mithril-client = inputs.mithril.packages.${pkgs.stdenv.hostPlatform.system}.mithril-client-cli;
+  mithril-client = mithrilPackages.${targetSystem};
 
   cardano-shell =
     (flake-compat {

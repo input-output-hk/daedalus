@@ -75,6 +75,15 @@ Even if the binary were present, `mithrilCommandRunner.ts` spawned `'mithril-cli
 4. **`nix/internal/cardano-bridge.nix`** — Added `mithril-client` to aarch64-darwin ad-hoc codesigning
 5. **`source/main/mithril/mithrilCommandRunner.ts`** — Absolute path resolution using `DAEDALUS_INSTALL_DIRECTORY` + diagnostic logging (binary path, install dir, cwd, PATH)
 
+### Follow-up Test Coverage
+
+The PR review follow-up added focused unit coverage in `source/main/mithril/mithrilCommandRunner.spec.ts` to lock the runtime resolution behavior down across the packaging-sensitive branches:
+
+- install directory unset on non-Windows spawns `mithril-client`
+- install directory set on non-Windows spawns the absolute installed path
+- install directory unset on Windows spawns `mithril-client.exe`
+- install directory set on Windows spawns the installed `.exe` path
+
 ### Build Validation Follow-up (Windows)
 
 Running `nix build -L .#installer-preprod-x86_64-windows` first surfaced a packaging mismatch after the NSIS inclusion fix:

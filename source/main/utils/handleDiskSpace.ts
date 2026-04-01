@@ -93,6 +93,7 @@ export const handleDiskSpace = (
   let mithrilDecisionInFlight = false;
   let mithrilFailureDecisionInFlight = false;
   let mithrilFailureDeclineInFlight = false;
+  let mithrilCancelledDeclineInFlight = false;
   let mithrilStartupCheckDone = false;
   let mithrilDecisionPrompted = false;
   let mithrilDecision: 'accept' | 'decline' | null = null;
@@ -244,43 +245,62 @@ export const handleDiskSpace = (
   };
 
   const handleMithrilCancelledDecline = async (source: string) => {
-    const pendingDecision = getPendingMithrilBootstrapDecision();
-    const status = getMithrilBootstrapStatus().status;
+    if (mithrilCancelledDeclineInFlight) {
+      logger.info(
+        '[MITHRIL] Decline recovery after bootstrap cancel already in progress',
+        {
+          source,
+        }
+      );
+      return false;
+    }
 
-    if (pendingDecision !== 'decline' || status !== 'cancelled') return false;
+    mithrilCancelledDeclineInFlight = true;
 
-    logger.info('[MITHRIL] Starting decline recovery after bootstrap cancel', {
-      source,
-      status,
-    });
+    try {
+      const pendingDecision = getPendingMithrilBootstrapDecision();
+      const status = getMithrilBootstrapStatus().status;
 
-    await emitMithrilIdleStatus();
-    await syncMithrilWorkDir();
-    await mithrilBootstrapService.wipeChainAndSnapshots(
-      `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`
-    );
+      if (pendingDecision !== 'decline' || status !== 'cancelled') return false;
 
-    logger.info(
-      '[MITHRIL] Starting cardano-node after bootstrap cancel decline',
-      {
-        source,
-      }
-    );
+      logger.info(
+        '[MITHRIL] Starting decline recovery after bootstrap cancel',
+        {
+          source,
+          status,
+        }
+      );
 
-    await cardanoNode.start();
+      await emitMithrilIdleStatus();
+      await syncMithrilWorkDir();
+      await mithrilBootstrapService.wipeChainAndSnapshots(
+        `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`
+      );
 
-    logger.info(
-      '[MITHRIL] cardano-node start requested after bootstrap cancel decline',
-      {
-        source,
-        state: cardanoNode.state,
-      }
-    );
+      logger.info(
+        '[MITHRIL] Starting cardano-node after bootstrap cancel decline',
+        {
+          source,
+        }
+      );
 
-    mithrilDecision = null;
-    mithrilDecisionPrompted = false;
+      await cardanoNode.start();
 
-    return true;
+      logger.info(
+        '[MITHRIL] cardano-node start requested after bootstrap cancel decline',
+        {
+          source,
+          state: cardanoNode.state,
+        }
+      );
+
+      mithrilDecision = null;
+      mithrilDecisionPrompted = false;
+
+      return true;
+    } finally {
+      mithrilCancelledDeclineInFlight = false;
+    }
   };
 
   const ensureMithrilStartupGate = async (): Promise<boolean> => {
