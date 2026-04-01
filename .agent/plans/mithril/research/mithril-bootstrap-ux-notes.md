@@ -38,6 +38,7 @@
 - The current 90% UX gap comes from backend phase mapping, not missing renderer math: `MithrilBootstrapService` maps Mithril CLI download progress into 10-90%, then `_installSnapshot()` does the heavy local file move/copy after status has already left `downloading`.
 - The visible Mithril stepper is now a 3-step flow: `preparing -> downloading -> finalizing`; main emits internal `unpacking`/`converting` statuses for post-download local work, and the renderer maps those back into the visible finalizing step while the overlay stays mounted through cleanup and handoff.
 - The post-restore Cardano startup handoff must not reuse `completed` as the long-lived UI state. `completed` is now the restore-complete milestone, and `starting-node` is the visible handoff state used for the node-start spinner/cancel-disable block.
+- Cancellation-to-genesis is a separate backend recovery path from failure-to-genesis. If the user cancels Mithril mid-download and then chooses `Sync from genesis`, the backend must handle `cancelled -> decline` immediately; relying on the next disk-space poll leaves the renderer on the stopped-node loading screen even though genesis was selected.
 - A previous bug let the generic Cardano crash-restart path fire during active Mithril bootstrap, which could restart Cardano outside the Mithril gate and strand the overlay on a fully checked-off waterfall. UX now relies on main suppressing generic restarts while Mithril is active and converting handoff instability into a Mithril `node-start` failure.
 - Task-024h finding: waterfall sub-items are intentionally not pre-seeded in the renderer; they appear only as backend waterfall events arrive so the UI reflects actual Mithril step emission rather than a fabricated pending list.
 - Preferred follow-up: keep late-download verification as copy inside `downloading`, then instrument `_installSnapshot()` and cleanup/handoff directly so finalizing can expose real local restore telemetry rather than guessed percentages.
@@ -74,6 +75,7 @@
 
 ## Final verification insights
 - Final verification confirmed the Mithril bootstrap flow and standalone chain-storage picker pass the automated Mithril-scope checks.
+- Runtime log analysis on 2026-04-01 confirmed the cancel-path bug and its fix: logs showed `accept` during Mithril start, later `decline` with Mithril status `cancelled`, and no `cardano-node.start()` until explicit `cancelled -> decline` recovery was added in `handleDiskSpace.ts`.
 - Theme structure is correct in all 9 Daedalus runtime theme files, with `chainStorage` and `mithrilBootstrap` tokens at the expected nesting level.
 - Jest passed with 37 suites and 295 tests, including `MithrilBootstrapService.spec.ts`, `MithrilBootstrapStore.spec.ts`, `MithrilBootstrap.spec.tsx`, `MithrilProgressView.spec.tsx`, `MithrilStepIndicator.spec.tsx`, `ChainStorageLocationPicker.spec.tsx`, `chainStorageChannel.spec.ts`, and `chainStorageManager.spec.ts`.
 - Mithril loading and chain-storage Storybook stories compile successfully; the remaining `yarn storybook --smoke-test` failure is the pre-existing unrelated news utility import issue.
