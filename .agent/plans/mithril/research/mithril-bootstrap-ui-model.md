@@ -51,3 +51,4 @@
 - Keep Mithril restore completion and Cardano startup handoff as separate statuses: `completed` for restore done, `starting-node` for the live post-restore Cardano startup phase.
 - Generic Cardano crash recovery must not restart the backend while Mithril is active; Mithril owns the first post-restore startup attempt and any immediate retry/error handling.
 - If Cardano exits during the `starting-node` handoff, surface that as Mithril `node-start` failure rather than leaving the UI in a terminal-looking completed state.
+- If Mithril is cancelled mid-download and the user then chooses genesis sync, the backend should transition out of Mithril immediately instead of waiting for background polling. `cancelled -> decline` needs to emit `idle`, wipe partial artifacts, and request `cardanoNode.start()` directly so the full-screen loading view does not remain stuck on `Cardano node stopped`.

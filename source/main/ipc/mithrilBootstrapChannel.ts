@@ -128,12 +128,20 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   );
 
   mithrilBootstrapDecisionChannel.onRequest(async ({ decision }) => {
+    logger.info('[MITHRIL] Received bootstrap decision', {
+      decision,
+      previousDecision: pendingDecision,
+      status: lastStatus.status,
+    });
     pendingDecision = decision;
     decisionWaiters.forEach((resolve) => resolve(decision));
     decisionWaiters = [];
     decisionListeners.forEach((listener) => listener(decision));
     if (decision === 'decline') {
       if (lastStatus.status === 'failed') {
+        logger.info(
+          '[MITHRIL] Keeping failed status active while decline recovery starts'
+        );
         return;
       }
       const update = setMithrilBootstrapStatus({

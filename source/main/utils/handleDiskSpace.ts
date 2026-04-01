@@ -209,18 +209,78 @@ export const handleDiskSpace = (
     if (pendingDecision !== 'decline') return false;
     mithrilFailureDeclineInFlight = true;
     try {
+      logger.info(
+        '[MITHRIL] Starting decline recovery after bootstrap failure',
+        {
+          source,
+          status: getMithrilBootstrapStatus().status,
+        }
+      );
       await emitMithrilIdleStatus();
       await syncMithrilWorkDir();
       await mithrilBootstrapService.wipeChainAndSnapshots(
         `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`
       );
+      logger.info(
+        '[MITHRIL] Starting cardano-node after bootstrap failure decline',
+        {
+          source,
+        }
+      );
       await cardanoNode.start();
+      logger.info(
+        '[MITHRIL] cardano-node start requested after bootstrap failure decline',
+        {
+          source,
+          state: cardanoNode.state,
+        }
+      );
       mithrilDecision = null;
       mithrilDecisionPrompted = false;
       return true;
     } finally {
       mithrilFailureDeclineInFlight = false;
     }
+  };
+
+  const handleMithrilCancelledDecline = async (source: string) => {
+    const pendingDecision = getPendingMithrilBootstrapDecision();
+    const status = getMithrilBootstrapStatus().status;
+
+    if (pendingDecision !== 'decline' || status !== 'cancelled') return false;
+
+    logger.info('[MITHRIL] Starting decline recovery after bootstrap cancel', {
+      source,
+      status,
+    });
+
+    await emitMithrilIdleStatus();
+    await syncMithrilWorkDir();
+    await mithrilBootstrapService.wipeChainAndSnapshots(
+      `User declined after bootstrap cancel (${source}). Wiped chain directory and Mithril snapshots.`
+    );
+
+    logger.info(
+      '[MITHRIL] Starting cardano-node after bootstrap cancel decline',
+      {
+        source,
+      }
+    );
+
+    await cardanoNode.start();
+
+    logger.info(
+      '[MITHRIL] cardano-node start requested after bootstrap cancel decline',
+      {
+        source,
+        state: cardanoNode.state,
+      }
+    );
+
+    mithrilDecision = null;
+    mithrilDecisionPrompted = false;
+
+    return true;
   };
 
   const ensureMithrilStartupGate = async (): Promise<boolean> => {
@@ -291,6 +351,16 @@ export const handleDiskSpace = (
     if (getMithrilBootstrapStatus().status !== 'failed') return;
     handleMithrilFailureDecline('decision-listener').catch((error) => {
       logger.error('[MITHRIL] Decline handling failed after decision', {
+        error,
+      });
+    });
+  });
+
+  onMithrilBootstrapDecision((decision) => {
+    if (decision !== 'decline') return;
+    if (getMithrilBootstrapStatus().status !== 'cancelled') return;
+    handleMithrilCancelledDecline('decision-listener').catch((error) => {
+      logger.error('[MITHRIL] Decline handling failed after cancel', {
         error,
       });
     });
@@ -410,6 +480,12 @@ export const handleDiskSpace = (
                 break;
               }
 
+              if (mithrilStatus.status === 'cancelled') {
+                await handleMithrilCancelledDecline('polling-chain-empty');
+                response.hadNotEnoughSpaceLeft = false;
+                break;
+              }
+
               if (mithrilBootstrapCompleted) {
                 await startNodeAfterMithrilCompletion();
                 break;
@@ -423,10 +499,14 @@ export const handleDiskSpace = (
                 mithrilDecisionPrompted = true;
               }
               if (mithrilDecision === 'decline') {
+                logger.info('[MITHRIL] Processing immediate decline decision');
                 await emitMithrilIdleStatus();
                 await syncMithrilWorkDir();
                 await mithrilBootstrapService.wipeChainAndSnapshots(
                   'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                );
+                logger.info(
+                  '[MITHRIL] Starting cardano-node after bootstrap decline'
                 );
                 await cardanoNode.start();
                 break;
@@ -435,6 +515,12 @@ export const handleDiskSpace = (
                 mithrilDecisionInFlight = true;
                 waitForMithrilBootstrapDecision()
                   .then(async (decision) => {
+                    logger.info(
+                      '[MITHRIL] Bootstrap decision waiter resolved',
+                      {
+                        decision,
+                      }
+                    );
                     mithrilDecision = decision;
                     mithrilDecisionPrompted = decision !== 'accept';
                     if (decision === 'decline') {
@@ -442,6 +528,9 @@ export const handleDiskSpace = (
                       await syncMithrilWorkDir();
                       await mithrilBootstrapService.wipeChainAndSnapshots(
                         'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                      );
+                      logger.info(
+                        '[MITHRIL] Starting cardano-node after waited bootstrap decline'
                       );
                       await cardanoNode.start();
                     }
@@ -460,6 +549,12 @@ export const handleDiskSpace = (
             const mithrilStatus = getMithrilBootstrapStatus();
             if (mithrilStatus.status === 'failed') {
               await handleMithrilFailureDecline('polling-chain-present');
+              response.hadNotEnoughSpaceLeft = false;
+              break;
+            }
+
+            if (mithrilStatus.status === 'cancelled') {
+              await handleMithrilCancelledDecline('polling-chain-present');
               response.hadNotEnoughSpaceLeft = false;
               break;
             }
