@@ -68,7 +68,7 @@ in rec {
     nativeBuildInputs =
       [yarn nodejs]
       ++ (with pkgs; [perl pkg-config jq])
-      ++ (with pkgsJs; [darwin.cctools xcbuild python3]);  # Use nixpkgs-22.11 for build tools to avoid clang/linker compatibility issues
+      ++ (with pkgsJs; [darwin.cctools xcbuild python3]); # Use nixpkgs-22.11 for build tools to avoid clang/linker compatibility issues
     buildInputs = with pkgsJs.darwin; [
       apple_sdk.frameworks.CoreServices
       apple_sdk.frameworks.AppKit
@@ -234,7 +234,7 @@ in rec {
       nativeBuildInputs =
         [yarn nodejs]
         ++ (with pkgs; [perl pkg-config darwin.cctools xcbuild jq])
-        ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
+        ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
       buildInputs =
         (with pkgsJs.darwin; [
           apple_sdk.frameworks.CoreServices

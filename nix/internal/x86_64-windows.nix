@@ -62,7 +62,7 @@ in rec {
       nativeBuildInputs =
         [yarn nodejs wine64]
         ++ (with pkgs; [pkg-config unzip jq])
-        ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
+        ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
       buildInputs = [pkgsJs.libusb1];
       CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
       CARDANO_NODE_VERSION = common.cardanoNodeVersion;
@@ -243,7 +243,7 @@ in rec {
         */
       ])
       ++ (with pkgs; [pkg-config jq file procps])
-      ++ [pkgsJs.python3];  # Use Python from nixpkgs-22.11 for distutils
+      ++ [pkgsJs.python3]; # Use Python from nixpkgs-22.11 for distutils
     buildInputs = with pkgs; [libusb1];
     configurePhase =
       common.setupCacheAndGypDirs

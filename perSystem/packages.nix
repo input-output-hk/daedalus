@@ -9,22 +9,26 @@
     # x86_64-linux can build for both x86_64-linux and x86_64-windows
     mkPackages = targetSystem: let
       internal = inputs.self.internal.${targetSystem};
-      suffix = if system != targetSystem then "-${targetSystem}" else "";
+      suffix =
+        if system != targetSystem
+        then "-${targetSystem}"
+        else "";
     in
       (lib.listToAttrs (lib.concatMap (cluster: [
-        {
-          name = "daedalus-${cluster}${suffix}";
-          value = internal.package.${cluster};
-        }
-        {
-          name = "installer-${cluster}${suffix}";
-          value = internal.unsignedInstaller.${cluster};
-        }
-        {
-          name = "makeSignedInstaller-${cluster}${suffix}";
-          value = internal.makeSignedInstaller.${cluster};
-        }
-      ]) inputs.self.internal.installerClusters))
+          {
+            name = "daedalus-${cluster}${suffix}";
+            value = internal.package.${cluster};
+          }
+          {
+            name = "installer-${cluster}${suffix}";
+            value = internal.unsignedInstaller.${cluster};
+          }
+          {
+            name = "makeSignedInstaller-${cluster}${suffix}";
+            value = internal.makeSignedInstaller.${cluster};
+          }
+        ])
+        inputs.self.internal.installerClusters))
       // {
         "buildkitePipeline${suffix}" = import ../nix/internal/buildkite-pipeline.nix {
           inherit inputs;

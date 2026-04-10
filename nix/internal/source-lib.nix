@@ -1,22 +1,29 @@
-{ inputs }:
-
-let
-
-  readClustersFile = fileName:
-    let unique = builtins.foldl' (acc: e: if builtins.elem e acc then acc else acc ++ [ e ]) []; in
+{inputs}: let
+  readClustersFile = fileName: let
+    unique = builtins.foldl' (acc: e:
+      if builtins.elem e acc
+      then acc
+      else acc ++ [e]) [];
+  in
     unique (
       builtins.map builtins.unsafeDiscardStringContext (
         builtins.filter (el: builtins.isString el && el != "") (
           builtins.split "[ \n\r\t]+" (
             builtins.readFile fileName
-          ))));
-
+          )
+        )
+      )
+    );
 in rec {
-
   installerClusters = readClustersFile (inputs.self + "/installer-clusters.cfg");
 
-  forEach = xs: fun: builtins.listToAttrs
-    (builtins.map (cluster: { name = cluster; value = fun cluster; }) xs);
+  forEach = xs: fun:
+    builtins.listToAttrs
+    (builtins.map (cluster: {
+        name = cluster;
+        value = fun cluster;
+      })
+      xs);
 
   forEachCluster = forEach installerClusters;
 
@@ -41,5 +48,4 @@ in rec {
     if inputs.self ? lastModified
     then (inputs.self.lastModified - daedalusEpoch) / (60 * 60)
     else 0;
-
 }

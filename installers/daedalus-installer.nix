@@ -1,9 +1,36 @@
-{ mkDerivation, aeson, base, bytestring, containers, directory
-, filepath, foldl, github, Glob, hspec, lens-aeson, managed
-, megaparsec, microlens, network-uri, nsis, optional-args
-, optparse-applicative, optparse-generic, split, lib
-, system-filepath, temporary, text, turtle, universum, raw-strings-qq
-, unordered-containers, wreq, yaml, zip-archive
+{
+  mkDerivation,
+  aeson,
+  base,
+  bytestring,
+  containers,
+  directory,
+  filepath,
+  foldl,
+  github,
+  Glob,
+  hspec,
+  lens-aeson,
+  managed,
+  megaparsec,
+  microlens,
+  network-uri,
+  nsis,
+  optional-args,
+  optparse-applicative,
+  optparse-generic,
+  split,
+  lib,
+  system-filepath,
+  temporary,
+  text,
+  turtle,
+  universum,
+  raw-strings-qq,
+  unordered-containers,
+  wreq,
+  yaml,
+  zip-archive,
 }:
 mkDerivation {
   pname = "daedalus-installer";
@@ -11,33 +38,90 @@ mkDerivation {
   src = lib.cleanSourceWith {
     name = "daedalus-installer-src";
     src = ./.;
-    filter = name: type: (type == "directory" && (
-      lib.hasSuffix "/common" name
-    )) || (type == "regular" && (
-      lib.hasSuffix ".hs" name ||
-      lib.hasSuffix ".cabal" name ||
-      lib.hasSuffix "/cabal.project" name
-    ));
+    filter = name: type:
+      (type
+        == "directory"
+        && (
+          lib.hasSuffix "/common" name
+        ))
+      || (type
+        == "regular"
+        && (
+          lib.hasSuffix ".hs" name
+          || lib.hasSuffix ".cabal" name
+          || lib.hasSuffix "/cabal.project" name
+        ));
   };
   isLibrary = true;
   isExecutable = true;
   doCheck = false;
   libraryHaskellDepends = [
-    aeson base bytestring containers directory github Glob lens-aeson
-    megaparsec microlens network-uri nsis optional-args raw-strings-qq
-    system-filepath text turtle universum unordered-containers wreq
-    yaml zip-archive
+    aeson
+    base
+    bytestring
+    containers
+    directory
+    github
+    Glob
+    lens-aeson
+    megaparsec
+    microlens
+    network-uri
+    nsis
+    optional-args
+    raw-strings-qq
+    system-filepath
+    text
+    turtle
+    universum
+    unordered-containers
+    wreq
+    yaml
+    zip-archive
   ];
   executableHaskellDepends = [
-    base bytestring containers directory filepath foldl optional-args
-    optparse-applicative optparse-generic raw-strings-qq split
-    system-filepath temporary text turtle universum yaml
+    base
+    bytestring
+    containers
+    directory
+    filepath
+    foldl
+    optional-args
+    optparse-applicative
+    optparse-generic
+    raw-strings-qq
+    split
+    system-filepath
+    temporary
+    text
+    turtle
+    universum
+    yaml
   ];
   testHaskellDepends = [
-    aeson base bytestring containers directory filepath foldl github
-    hspec lens-aeson managed megaparsec optional-args
-    optparse-applicative optparse-generic raw-strings-qq split
-    system-filepath temporary text turtle universum yaml
+    aeson
+    base
+    bytestring
+    containers
+    directory
+    filepath
+    foldl
+    github
+    hspec
+    lens-aeson
+    managed
+    megaparsec
+    optional-args
+    optparse-applicative
+    optparse-generic
+    raw-strings-qq
+    split
+    system-filepath
+    temporary
+    text
+    turtle
+    universum
+    yaml
   ];
   description = "Daedalus Installer Builder";
   license = lib.licenses.asl20;

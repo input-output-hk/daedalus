@@ -1,5 +1,13 @@
-{ mkDerivation, base, directory, fetchFromGitHub, process, stdenv, lib
-, transformers, uniplate
+{
+  mkDerivation,
+  base,
+  directory,
+  fetchFromGitHub,
+  process,
+  stdenv,
+  lib,
+  transformers,
+  uniplate,
 }:
 mkDerivation {
   pname = "nsis";
@@ -10,9 +18,13 @@ mkDerivation {
     rev = "020e61eced93eaa6ab86ac603617e93aa6bf5af0";
     sha256 = "0l0naknnyyrmkrn41mn7ggnjdagld0isdji98khn2iasbcllyip5";
   };
-  libraryHaskellDepends = [ base transformers uniplate ];
+  libraryHaskellDepends = [base transformers uniplate];
   testHaskellDepends = [
-    base directory process transformers uniplate
+    base
+    directory
+    process
+    transformers
+    uniplate
   ];
   homepage = "https://github.com/ndmitchell/nsis#readme";
   description = "DSL for producing Windows Installer using NSIS";

@@ -46,7 +46,7 @@ in rec {
     nativeBuildInputs =
       [yarn nodejs]
       ++ (with pkgsJs; [pkg-config jq python3])
-      ++ [pkgs.jq];  # Use newer jq for JSON parsing
+      ++ [pkgs.jq]; # Use newer jq for JSON parsing
     buildInputs = with pkgsJs; [libusb1];
     configurePhase = common.setupCacheAndGypDirs + linuxSpecificCaches;
     buildPhase = ''
@@ -91,7 +91,7 @@ in rec {
       nativeBuildInputs =
         [yarn nodejs]
         ++ (with pkgsJs; [pkg-config jq python3])
-        ++ [pkgs.jq];  # Use newer jq for JSON parsing
+        ++ [pkgs.jq]; # Use newer jq for JSON parsing
       buildInputs = with pkgsJs; [libusb1];
       CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
       CARDANO_NODE_VERSION = common.cardanoNodeVersion;
