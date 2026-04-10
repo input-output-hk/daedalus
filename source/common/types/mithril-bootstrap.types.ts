@@ -87,11 +87,18 @@ export type ChainStorageConfig = {
   setAt?: string;
 };
 
+export type ChainSubdirectoryStatus =
+  | 'will-create'
+  | 'existing-directory'
+  | 'path-is-file';
+
 export type ChainStorageValidationReason =
   | 'not-writable'
   | 'insufficient-space'
   | 'inside-state-dir'
+  | 'is-managed-child'
   | 'path-not-found'
+  | 'path-is-file'
   | 'unknown';
 
 export type ChainStorageValidation = {
@@ -100,6 +107,7 @@ export type ChainStorageValidation = {
   resolvedPath?: string;
   availableSpaceBytes?: number;
   requiredSpaceBytes?: number;
+  chainSubdirectoryStatus?: ChainSubdirectoryStatus;
   reason?: ChainStorageValidationReason;
   message?: string;
 };

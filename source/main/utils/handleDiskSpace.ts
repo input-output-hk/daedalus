@@ -33,8 +33,10 @@ import {
   mithrilBootstrapStatusChannel,
   setMithrilBootstrapStatus,
 } from '../ipc/mithrilBootstrapChannel';
-import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
-import { ChainStorageManager } from './chainStorageManager';
+import {
+  chainStorageCoordinator,
+  getChainStorageManager,
+} from './chainStorageCoordinator';
 
 const getDiskCheckReport = async (
   targetPath: string,
@@ -86,6 +88,21 @@ export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   cardanoNode: CardanoNode
 ) => {
+  const MANAGED_CHAIN_LAYOUT_ERROR = 'MANAGED_CHAIN_LAYOUT_ERROR';
+  const markManagedChainLayoutError = (error: unknown): Error => {
+    const normalizedError =
+      error instanceof Error ? error : new Error(String(error));
+
+    Object.assign(normalizedError, {
+      code: MANAGED_CHAIN_LAYOUT_ERROR,
+    });
+
+    return normalizedError;
+  };
+  const isManagedChainLayoutError = (error: unknown): boolean =>
+    (error as NodeJS.ErrnoException | undefined)?.code ===
+    MANAGED_CHAIN_LAYOUT_ERROR;
+
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
 
@@ -111,13 +128,7 @@ export const handleDiskSpace = (
     : undefined;
   const wipeChainFlag =
     envWipeChain ?? argvWipeChain ?? launcherConfig.wipeChain ?? false;
-  const chainStorageManager = new ChainStorageManager();
-  const mithrilBootstrapService = new MithrilBootstrapService();
-
-  const syncMithrilWorkDir = async () => {
-    const workDir = await chainStorageManager.resolveMithrilWorkDir();
-    mithrilBootstrapService.setWorkDir(workDir);
-  };
+  const chainStorageManager = getChainStorageManager();
   const emitMithrilDecisionStatus = async () => {
     const update: MithrilBootstrapStatusUpdate = {
       status: 'decision',
@@ -218,9 +229,9 @@ export const handleDiskSpace = (
         }
       );
       await emitMithrilIdleStatus();
-      await syncMithrilWorkDir();
-      await mithrilBootstrapService.wipeChainAndSnapshots(
-        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`
+      await chainStorageCoordinator.wipeChainAndSnapshots(
+        `User declined after bootstrap failure (${source}). Wiped chain directory and Mithril snapshots.`,
+        cardanoNode.state
       );
       logger.info(
         '[MITHRIL] Starting cardano-node after bootstrap failure decline',
@@ -305,7 +316,6 @@ export const handleDiskSpace = (
 
   const ensureMithrilStartupGate = async (): Promise<boolean> => {
     if (mithrilStartupCheckDone) return true;
-    mithrilStartupCheckDone = true;
 
     try {
       if (wipeChainFlag) {
@@ -321,24 +331,35 @@ export const handleDiskSpace = (
             });
           }
         }
-        await syncMithrilWorkDir();
-        await mithrilBootstrapService.wipeChainAndSnapshots(
-          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.'
+        await chainStorageCoordinator.ensureManagedChainLayout(
+          cardanoNode.state
+        );
+        await chainStorageCoordinator.wipeChainAndSnapshots(
+          'wipe-chain flag set. Wiped chain directory and Mithril snapshots.',
+          cardanoNode.state
+        );
+      } else {
+        await chainStorageCoordinator.ensureManagedChainLayout(
+          cardanoNode.state
         );
       }
       const lockExists = await fs.pathExists(mithrilLockFilePath);
       if (lockExists) {
-        await syncMithrilWorkDir();
-        await mithrilBootstrapService.wipeChainAndSnapshots(
-          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.'
+        await chainStorageCoordinator.wipeChainAndSnapshots(
+          'Incomplete bootstrap detected. Wiped chain directory and Mithril snapshots.',
+          cardanoNode.state
         );
         mithrilDecisionPrompted = false;
         mithrilDecision = null;
       }
     } catch (error) {
-      logger.warn('[MITHRIL] Failed to handle bootstrap lock', { error });
+      logger.error('[MITHRIL] Failed to verify managed chain layout', {
+        error,
+      });
+      throw markManagedChainLayoutError(error);
     }
 
+    mithrilStartupCheckDone = true;
     return true;
   };
 
@@ -400,7 +421,7 @@ export const handleDiskSpace = (
   ): Promise<CheckDiskSpaceResponse> => {
     const hadNotEnoughSpaceFlag = hadNotEnoughSpaceLeft ?? false;
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
-    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
+    const diskSpacePath = await chainStorageManager.resolveDiskSpaceCheckPath();
     const response = await getDiskCheckReport(diskSpacePath);
     await ensureMithrilStartupGate();
     const latestDecision = getPendingMithrilBootstrapDecision();
@@ -485,7 +506,17 @@ export const handleDiskSpace = (
 
         case CARDANO_NODE_CAN_BE_STARTED_FOR_THE_FIRST_TIME:
           try {
-            const chainEmpty = await isChainEmpty();
+            try {
+              await chainStorageCoordinator.ensureManagedChainLayout(
+                cardanoNode.state
+              );
+            } catch (error) {
+              logger.error('[MITHRIL] Failed to verify managed chain layout', {
+                error,
+              });
+              throw markManagedChainLayoutError(error);
+            }
+            const chainEmpty = await chainStorageCoordinator.isManagedChainEmpty();
             if (chainEmpty) {
               const mithrilStatus = getMithrilBootstrapStatus();
               if (
@@ -521,9 +552,9 @@ export const handleDiskSpace = (
               if (mithrilDecision === 'decline') {
                 logger.info('[MITHRIL] Processing immediate decline decision');
                 await emitMithrilIdleStatus();
-                await syncMithrilWorkDir();
-                await mithrilBootstrapService.wipeChainAndSnapshots(
-                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                await chainStorageCoordinator.wipeChainAndSnapshots(
+                  'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
+                  cardanoNode.state
                 );
                 logger.info(
                   '[MITHRIL] Starting cardano-node after bootstrap decline'
@@ -545,9 +576,9 @@ export const handleDiskSpace = (
                     mithrilDecisionPrompted = decision !== 'accept';
                     if (decision === 'decline') {
                       await emitMithrilIdleStatus();
-                      await syncMithrilWorkDir();
-                      await mithrilBootstrapService.wipeChainAndSnapshots(
-                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.'
+                      await chainStorageCoordinator.wipeChainAndSnapshots(
+                        'User declined Mithril bootstrap. Wiped chain directory and Mithril snapshots.',
+                        cardanoNode.state
                       );
                       logger.info(
                         '[MITHRIL] Starting cardano-node after waited bootstrap decline'
@@ -584,7 +615,9 @@ export const handleDiskSpace = (
             logger.error('[MITHRIL] Failed to handle bootstrap decision', {
               error,
             });
-            await cardanoNode.start();
+            if (isManagedChainLayoutError(error)) {
+              throw error;
+            }
           }
           break;
 
@@ -609,6 +642,9 @@ export const handleDiskSpace = (
         default:
       }
     } catch (error) {
+      if (isManagedChainLayoutError(error)) {
+        throw error;
+      }
       logger.error('[DISK-SPACE-DEBUG] Unknown error', error);
       resetInterval(DISK_SPACE_CHECK_MEDIUM_INTERVAL);
     }
@@ -640,7 +676,7 @@ export const handleDiskSpace = (
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
-    const diskSpacePath = await chainStorageManager.resolveChainStoragePath();
+    const diskSpacePath = await chainStorageManager.resolveDiskSpaceCheckPath();
     const diskReport = await getDiskCheckReport(diskSpacePath);
     await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
     return diskReport;

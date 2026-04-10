@@ -1,35 +1,78 @@
 import path from 'path';
 import fs from 'fs-extra';
-import checkDiskSpace from 'check-disk-space';
-import { DISK_SPACE_REQUIRED, stateDirectoryPath } from '../config';
+import { stateDirectoryPath } from '../config';
 import {
   ChainStorageConfig,
   ChainStorageValidation,
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
+import { isSamePath } from './chainStorageValidation';
 import {
-  isSamePath,
-  validateChainStorageDirectory,
-} from './chainStorageValidation';
-import {
-  ResolvedStateDirectory,
+  getManagedChainPath,
   resolveStateDirectoryPath,
   resolveChainStoragePath as resolveChainStoragePathFn,
   resolveMithrilWorkDir as resolveMithrilWorkDirFn,
 } from './chainStoragePathResolver';
+import type { ResolvedStateDirectory } from './chainStoragePathResolver';
+import {
+  getConfig as getChainStorageConfig,
+  getDefaultStorageConfig,
+  validate as validateChainStorageConfig,
+  verifySymlink as verifyChainStorageSymlink,
+} from './chainStorageManagerConfig';
+import {
+  adoptManagedLayout,
+  assertNodeStopped,
+  detectLayout,
+  emptyManagedContents as emptyManagedChainContents,
+  ensureManagedChainLayout as ensureManagedChainLayoutHelper,
+  installSnapshot as installChainSnapshot,
+  migrateLegacyCustomLayout,
+  preflightLegacyMigration,
+  readMigrationJournal,
+  recoverInterruptedMigration,
+  rollbackMigrationJournal,
+  writeMigrationJournal,
+} from './chainStorageManagerLayout';
+import {
+  canonicalizeManagedChildSelection,
+  captureChainPathState,
+  CHAIN_DIRECTORY_NAME,
+  CHAIN_STORAGE_CONFIG_FILE,
+  CHAIN_STORAGE_MIGRATION_JOURNAL_FILE,
+  createSymlink,
+  ensureDefaultChainDirectory,
+  getEntriesSizeBytes,
+  getPathSizeBytes,
+  listLegacyManagedEntries,
+  movePath,
+  pathExistsViaLstat,
+  replaceCustomChainEntryPoint,
+  resetToDefault,
+  resolveExistingDirectory,
+  resolveRealPathOrInput,
+  rollbackSetDirectory,
+  safeLstat,
+  safeReadDir,
+} from './chainStorageManagerShared';
+import type {
+  ChainPathState,
+  ChainStorageDefaults,
+  ChainStorageLayout,
+  ChainStorageMigrationJournal,
+  EmptyManagedContentsOptions,
+  EnsureManagedLayoutOptions,
+} from './chainStorageManagerShared';
 
-const CHAIN_STORAGE_CONFIG_FILE = 'chain-storage-config.json';
-const CHAIN_DIRECTORY_NAME = 'chain';
-
-type ChainPathState = {
-  type: 'missing' | 'directory' | 'symlink';
-  resolvedPath?: string;
-};
+export { CHAIN_STORAGE_CONFIG_FILE, CHAIN_DIRECTORY_NAME };
 
 export class ChainStorageManager {
   _stateDirectoryPath: string;
   _configPath: string;
   _chainPath: string;
+  _logsDirectoryPath: string;
+  _migrationJournalPath: string;
+  _mutationQueue: Promise<void> = Promise.resolve();
 
   constructor(daedalusStateDirectoryPath: string = stateDirectoryPath) {
     this._stateDirectoryPath = daedalusStateDirectoryPath;
@@ -38,169 +81,110 @@ export class ChainStorageManager {
       this._stateDirectoryPath,
       CHAIN_STORAGE_CONFIG_FILE
     );
+    this._logsDirectoryPath = path.join(this._stateDirectoryPath, 'Logs');
+    this._migrationJournalPath = path.join(
+      this._logsDirectoryPath,
+      CHAIN_STORAGE_MIGRATION_JOURNAL_FILE
+    );
   }
 
   async setDirectory(
     targetDir: string | null
   ): Promise<ChainStorageValidation> {
-    const normalizedTargetDir =
-      typeof targetDir === 'string' && targetDir.trim().length > 0
-        ? targetDir.trim()
-        : null;
+    return this._withMutationLock('setDirectory', async () => {
+      const normalizedTargetDir =
+        typeof targetDir === 'string' && targetDir.trim().length > 0
+          ? targetDir.trim()
+          : null;
 
-    if (normalizedTargetDir == null) {
-      return this.resetToDefault();
-    }
-
-    if (this._isSamePath(normalizedTargetDir, this._chainPath)) {
-      return this.resetToDefault();
-    }
-
-    const validation = await this.validate(normalizedTargetDir);
-    if (!validation.isValid || validation.path == null) {
-      return validation;
-    }
-
-    const resolvedTargetPath = validation.resolvedPath
-      ? validation.resolvedPath
-      : await fs.realpath(validation.path);
-
-    const previousState = await this._captureChainPathState();
-    const previousConfig = await this.getConfig();
-
-    if (previousState.type === 'directory') {
-      const entries = await fs.readdir(this._chainPath);
-      if (entries.length > 0) {
-        return {
-          isValid: false,
-          path: validation.path,
-          resolvedPath: resolvedTargetPath,
-          reason: 'unknown',
-          message:
-            'Existing blockchain data must be cleared before switching storage locations.',
-        };
+      if (normalizedTargetDir == null) {
+        return this._resetToDefault();
       }
-    }
 
-    try {
-      await fs.remove(this._chainPath);
-      await fs.ensureDir(resolvedTargetPath);
-      await fs.symlink(
-        resolvedTargetPath,
-        this._chainPath,
-        process.platform === 'win32' ? 'junction' : 'dir'
+      const previousConfig = await this.getConfig();
+      const canonicalTargetDir = await this._canonicalizeManagedChildSelection(
+        normalizedTargetDir,
+        previousConfig.customPath
       );
 
-      const setAt = new Date().toISOString();
-      await fs.writeJson(
-        this._configPath,
-        {
-          customPath: validation.path,
-          setAt,
-        },
-        { spaces: 2 }
-      );
-    } catch (error) {
-      await this._rollbackSetDirectory({
-        previousState,
-        previousConfig,
-        targetPath: resolvedTargetPath,
-      });
-      throw error;
-    }
+      if (this._isSamePath(canonicalTargetDir, this._chainPath)) {
+        return this._resetToDefault();
+      }
 
-    return {
-      ...validation,
-      resolvedPath: resolvedTargetPath,
-    };
+      const validation = await this.validate(canonicalTargetDir);
+      if (!validation.isValid || validation.path == null) {
+        return validation;
+      }
+
+      const nextManagedChainPath = this._getManagedChainPath(validation.path);
+      const resolvedTargetPath = await this._resolveRealPathOrInput(
+        nextManagedChainPath
+      );
+      const previousState = await this._captureChainPathState();
+
+      if (
+        previousConfig.customPath == null &&
+        previousState.type === 'directory'
+      ) {
+        const entries = await this._safeReadDir(this._chainPath);
+        if (entries.length > 0) {
+          return {
+            isValid: false,
+            path: validation.path,
+            resolvedPath: validation.resolvedPath,
+            chainSubdirectoryStatus: validation.chainSubdirectoryStatus,
+            reason: 'unknown',
+            message:
+              'Existing blockchain data must be cleared before switching storage locations.',
+          };
+        }
+      }
+
+      try {
+        await fs.ensureDir(resolvedTargetPath);
+        await this._replaceCustomChainEntryPoint(resolvedTargetPath);
+
+        const setAt = new Date().toISOString();
+        await fs.writeJson(
+          this._configPath,
+          {
+            customPath: validation.path,
+            setAt,
+          },
+          { spaces: 2 }
+        );
+      } catch (error) {
+        await this._rollbackSetDirectory({
+          previousState,
+          previousConfig,
+          targetPath: resolvedTargetPath,
+        });
+        throw error;
+      }
+
+      return {
+        ...validation,
+        resolvedPath: validation.resolvedPath,
+      };
+    });
   }
 
   async resetToDefault(): Promise<ChainStorageValidation> {
-    const chainPathExists = await fs.pathExists(this._chainPath);
+    return this._withMutationLock('resetToDefault', async () =>
+      this._resetToDefault()
+    );
+  }
 
-    if (chainPathExists) {
-      const chainStats = await fs.lstat(this._chainPath);
-      if (chainStats.isSymbolicLink()) {
-        await fs.remove(this._chainPath);
-      }
-    }
-
-    await fs.ensureDir(this._chainPath);
-
-    await fs.remove(this._configPath);
-
-    const defaultStorageConfig = await this._getDefaultStorageConfig();
-
-    return {
-      isValid: true,
-      path: null,
-      resolvedPath: defaultStorageConfig.defaultPath,
-      availableSpaceBytes: defaultStorageConfig.availableSpaceBytes,
-      requiredSpaceBytes: defaultStorageConfig.requiredSpaceBytes,
-    };
+  async ensureManagedChainLayout(
+    options: EnsureManagedLayoutOptions = {}
+  ): Promise<string> {
+    return this._withMutationLock('ensureManagedChainLayout', async () => {
+      return this._ensureManagedChainLayout(options);
+    });
   }
 
   async verifySymlink(): Promise<ChainStorageValidation> {
-    const config = await this.getConfig();
-    if (!config.customPath) {
-      return {
-        isValid: true,
-        path: null,
-      };
-    }
-
-    const configuredPath = config.customPath;
-
-    try {
-      const chainPathExists = await fs.pathExists(this._chainPath);
-      if (!chainPathExists) {
-        return {
-          isValid: false,
-          path: configuredPath,
-          reason: 'path-not-found',
-          message: 'Chain symlink is missing.',
-        };
-      }
-
-      const chainStats = await fs.lstat(this._chainPath);
-      if (!chainStats.isSymbolicLink()) {
-        return {
-          isValid: false,
-          path: configuredPath,
-          reason: 'unknown',
-          message: 'Chain path is not a symlink.',
-        };
-      }
-
-      const symlinkTarget = await fs.realpath(this._chainPath);
-      const configuredResolved = await fs.realpath(configuredPath);
-      if (path.resolve(symlinkTarget) !== path.resolve(configuredResolved)) {
-        return {
-          isValid: false,
-          path: configuredPath,
-          resolvedPath: symlinkTarget,
-          reason: 'unknown',
-          message: 'Chain symlink target does not match configured path.',
-        };
-      }
-
-      return {
-        isValid: true,
-        path: configuredPath,
-        resolvedPath: symlinkTarget,
-      };
-    } catch (error) {
-      logger.warn('ChainStorageManager: verify symlink failed', {
-        error,
-        chainPath: this._chainPath,
-      });
-      return {
-        isValid: false,
-        path: configuredPath,
-        reason: 'path-not-found',
-        message: 'Configured chain storage target is unavailable.',
-      };
-    }
+    return verifyChainStorageSymlink(this);
   }
 
   async resolveChainStoragePath(): Promise<string> {
@@ -213,6 +197,79 @@ export class ChainStorageManager {
     return resolveMithrilWorkDirFn(this._stateDirectoryPath, () =>
       this.getConfig()
     );
+  }
+
+  async resolveDiskSpaceCheckPath(): Promise<string> {
+    const config = await this.getConfig();
+    const managedChainPath = this._getManagedChainPath(config.customPath);
+    const managedChainExists = await fs.pathExists(managedChainPath);
+
+    return managedChainExists
+      ? managedChainPath
+      : path.dirname(managedChainPath);
+  }
+
+  async getManagedChainPath(): Promise<string> {
+    const config = await this.getConfig();
+    return this._getManagedChainPath(config.customPath);
+  }
+
+  async getResolvedManagedChainPath(): Promise<string> {
+    return this._resolveRealPathOrInput(await this.getManagedChainPath());
+  }
+
+  async getManagedParentPath(): Promise<string> {
+    const config = await this.getConfig();
+    return config.customPath
+      ? path.resolve(config.customPath)
+      : this._stateDirectoryPath;
+  }
+
+  async isManagedChainEmpty(): Promise<boolean> {
+    const managedChainPath = await this.getManagedChainPath();
+    const managedChainExists = await fs.pathExists(managedChainPath);
+
+    if (!managedChainExists) {
+      return true;
+    }
+
+    const entries = await this._safeReadDir(managedChainPath);
+    return entries.length === 0;
+  }
+
+  async unlinkChainEntryPoint(): Promise<void> {
+    return this._withMutationLock('unlinkChainEntryPoint', async () => {
+      const chainState = await this._captureChainPathState();
+      if (chainState.type === 'missing') {
+        return;
+      }
+
+      await fs.remove(this._chainPath);
+    });
+  }
+
+  async removeManagedDirectory(): Promise<void> {
+    return this._withMutationLock('removeManagedDirectory', async () => {
+      const managedChainPath = await this.getManagedChainPath();
+      if (await this._pathExistsViaLstat(managedChainPath)) {
+        await fs.remove(managedChainPath);
+      }
+    });
+  }
+
+  async emptyManagedContents(
+    options: EmptyManagedContentsOptions = {}
+  ): Promise<void> {
+    return this._withMutationLock('emptyManagedContents', async () => {
+      const managedChainPath = await this.getManagedChainPath();
+      await this._emptyManagedContents(managedChainPath, options);
+    });
+  }
+
+  async installSnapshot(dbDirectory: string): Promise<void> {
+    return this._withMutationLock('installSnapshot', async () => {
+      await installChainSnapshot(this, dbDirectory);
+    });
   }
 
   async migrateData(
@@ -230,34 +287,20 @@ export class ChainStorageManager {
       return;
     }
 
-    const sourceExists = await fs.pathExists(source);
-    if (!sourceExists) {
+    const sourceStats = await this._safeLstat(source);
+    if (!sourceStats) {
       return;
     }
 
-    const sourceStats = await fs.lstat(source);
     if (!sourceStats.isDirectory()) {
       throw new Error('Chain storage source must be a directory.');
     }
 
     await fs.ensureDir(target);
-    const entries = await fs.readdir(source);
+    const entries = await this._safeReadDir(source);
 
     for (const entry of entries) {
-      const sourceEntry = path.join(source, entry);
-      const targetEntry = path.join(target, entry);
-
-      try {
-        await fs.move(sourceEntry, targetEntry, { overwrite: true });
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException)?.code !== 'EXDEV') {
-          throw error;
-        }
-
-        // Cross-device moves are handled via copy + remove fallback.
-        await fs.copy(sourceEntry, targetEntry, { overwrite: true });
-        await fs.remove(sourceEntry);
-      }
+      await this._movePath(path.join(source, entry), path.join(target, entry));
     }
 
     if (!preserveSourceRoot) {
@@ -265,80 +308,16 @@ export class ChainStorageManager {
     }
   }
 
-  async _getDefaultStorageConfig(): Promise<
-    Pick<
-      ChainStorageConfig,
-      'defaultPath' | 'availableSpaceBytes' | 'requiredSpaceBytes'
-    >
-  > {
-    const {
-      exists: stateDirectoryExists,
-      resolvedPath: resolvedStatePath,
-    } = await this._resolveStateDirectoryPath();
-    const diskCheckPath = stateDirectoryExists
-      ? resolvedStatePath
-      : path.dirname(resolvedStatePath);
-    const { free } = await checkDiskSpace(diskCheckPath);
-
-    return {
-      defaultPath: path.join(resolvedStatePath, CHAIN_DIRECTORY_NAME),
-      availableSpaceBytes: free,
-      requiredSpaceBytes: DISK_SPACE_REQUIRED,
-    };
+  async _getDefaultStorageConfig(): Promise<ChainStorageDefaults> {
+    return getDefaultStorageConfig(this);
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
-    try {
-      const defaultStorageConfig = await this._getDefaultStorageConfig();
-      const exists = await fs.pathExists(this._configPath);
-      if (!exists) {
-        return {
-          customPath: null,
-          ...defaultStorageConfig,
-        };
-      }
-
-      const parsed = await fs.readJson(this._configPath);
-      const customPath =
-        typeof parsed?.customPath === 'string' && parsed.customPath.trim()
-          ? parsed.customPath.trim()
-          : null;
-      const setAt =
-        typeof parsed?.setAt === 'string' && parsed.setAt.trim()
-          ? parsed.setAt.trim()
-          : undefined;
-
-      return {
-        customPath,
-        ...defaultStorageConfig,
-        setAt,
-      };
-    } catch (error) {
-      logger.warn('ChainStorageManager: failed to read storage config', {
-        error,
-        configPath: this._configPath,
-      });
-
-      try {
-        const fallbackConfig = await this._getDefaultStorageConfig();
-        return { customPath: null, ...fallbackConfig };
-      } catch {
-        return {
-          customPath: null,
-          defaultPath: this._chainPath,
-          availableSpaceBytes: Number.NaN,
-          requiredSpaceBytes: DISK_SPACE_REQUIRED,
-        };
-      }
-    }
+    return getChainStorageConfig(this);
   }
 
   async validate(targetDir: string | null): Promise<ChainStorageValidation> {
-    return validateChainStorageDirectory(
-      targetDir,
-      this._stateDirectoryPath,
-      () => this._getDefaultStorageConfig()
-    );
+    return validateChainStorageConfig(this, targetDir);
   }
 
   _isSamePath(firstPath: string, secondPath: string): boolean {
@@ -350,35 +329,7 @@ export class ChainStorageManager {
   }
 
   async _captureChainPathState(): Promise<ChainPathState> {
-    const exists = await fs.pathExists(this._chainPath);
-    if (!exists) {
-      return { type: 'missing' };
-    }
-
-    const stats = await fs.lstat(this._chainPath);
-    if (stats.isSymbolicLink()) {
-      try {
-        return {
-          type: 'symlink',
-          resolvedPath: await fs.realpath(this._chainPath),
-        };
-      } catch (error) {
-        logger.warn('ChainStorageManager: failed to snapshot symlink state', {
-          error,
-          chainPath: this._chainPath,
-        });
-        return { type: 'symlink' };
-      }
-    }
-
-    if (stats.isDirectory()) {
-      return {
-        type: 'directory',
-        resolvedPath: this._chainPath,
-      };
-    }
-
-    return { type: 'missing' };
+    return captureChainPathState(this);
   }
 
   async _rollbackSetDirectory({
@@ -390,58 +341,181 @@ export class ChainStorageManager {
     previousConfig: ChainStorageConfig;
     targetPath: string;
   }): Promise<void> {
-    logger.warn('ChainStorageManager: rolling back setDirectory change', {
-      chainPath: this._chainPath,
+    return rollbackSetDirectory(this, {
+      previousState,
+      previousConfig,
       targetPath,
-      previousState: previousState.type,
+    });
+  }
+
+  async _resetToDefault(): Promise<ChainStorageValidation> {
+    return resetToDefault(this);
+  }
+
+  async _ensureDefaultChainDirectory(): Promise<void> {
+    return ensureDefaultChainDirectory(this);
+  }
+
+  async _ensureManagedChainLayout(
+    options: EnsureManagedLayoutOptions = {}
+  ): Promise<string> {
+    return ensureManagedChainLayoutHelper(this, options);
+  }
+
+  async _detectLayout(customPath: string): Promise<ChainStorageLayout> {
+    return detectLayout(this, customPath);
+  }
+
+  async _adoptManagedLayout(layout: ChainStorageLayout): Promise<void> {
+    return adoptManagedLayout(this, layout);
+  }
+
+  async _migrateLegacyCustomLayout(layout: ChainStorageLayout): Promise<void> {
+    return migrateLegacyCustomLayout(this, layout);
+  }
+
+  async _recoverInterruptedMigration(
+    options: EnsureManagedLayoutOptions
+  ): Promise<void> {
+    return recoverInterruptedMigration(this, options);
+  }
+
+  async _rollbackMigrationJournal(
+    journal: ChainStorageMigrationJournal
+  ): Promise<void> {
+    return rollbackMigrationJournal(this, journal);
+  }
+
+  async _preflightLegacyMigration({
+    legacyRootPath,
+    managedChainPath,
+    managedEntries,
+  }: {
+    legacyRootPath: string;
+    managedChainPath: string;
+    managedEntries: string[];
+  }): Promise<void> {
+    return preflightLegacyMigration(this, {
+      legacyRootPath,
+      managedChainPath,
+      managedEntries,
+    });
+  }
+
+  async _writeMigrationJournal(
+    journal: ChainStorageMigrationJournal
+  ): Promise<void> {
+    return writeMigrationJournal(this, journal);
+  }
+
+  async _readMigrationJournal(): Promise<ChainStorageMigrationJournal | null> {
+    return readMigrationJournal(this);
+  }
+
+  async _assertNodeStopped(
+    nodeState: string | null | undefined,
+    reason: string
+  ): Promise<void> {
+    return assertNodeStopped(this, nodeState, reason);
+  }
+
+  async _emptyManagedContents(
+    managedChainPath: string,
+    options: EmptyManagedContentsOptions = {}
+  ): Promise<void> {
+    return emptyManagedChainContents(this, managedChainPath, options);
+  }
+
+  async _replaceCustomChainEntryPoint(targetPath: string): Promise<void> {
+    return replaceCustomChainEntryPoint(this, targetPath);
+  }
+
+  async _createSymlink(targetPath: string, symlinkPath: string): Promise<void> {
+    return createSymlink(this, targetPath, symlinkPath);
+  }
+
+  async _movePath(sourcePath: string, targetPath: string): Promise<void> {
+    return movePath(this, sourcePath, targetPath);
+  }
+
+  async _safeReadDir(targetPath: string): Promise<string[]> {
+    return safeReadDir(this, targetPath);
+  }
+
+  async _safeLstat(targetPath: string): Promise<fs.Stats | null> {
+    return safeLstat(this, targetPath);
+  }
+
+  async _pathExistsViaLstat(targetPath: string): Promise<boolean> {
+    return pathExistsViaLstat(this, targetPath);
+  }
+
+  async _resolveExistingDirectory(
+    directoryPath: string
+  ): Promise<string | undefined> {
+    return resolveExistingDirectory(this, directoryPath);
+  }
+
+  async _resolveRealPathOrInput(targetPath: string): Promise<string> {
+    return resolveRealPathOrInput(this, targetPath);
+  }
+
+  async _canonicalizeManagedChildSelection(
+    targetDir: string,
+    currentCustomPath: string | null
+  ): Promise<string> {
+    return canonicalizeManagedChildSelection(
+      this,
+      targetDir,
+      currentCustomPath
+    );
+  }
+
+  _getManagedChainPath(customPath: string | null): string {
+    return getManagedChainPath(this._stateDirectoryPath, customPath);
+  }
+
+  async _listLegacyManagedEntries(
+    legacyRootPath: string,
+    managedChainPath: string
+  ): Promise<{ managedEntries: string[]; ignoredEntries: string[] }> {
+    return listLegacyManagedEntries(this, legacyRootPath, managedChainPath);
+  }
+
+  async _getEntriesSizeBytes(
+    rootPath: string,
+    entries: string[]
+  ): Promise<number> {
+    return getEntriesSizeBytes(this, rootPath, entries);
+  }
+
+  async _getPathSizeBytes(targetPath: string): Promise<number> {
+    return getPathSizeBytes(this, targetPath);
+  }
+
+  async _withMutationLock<T>(
+    label: string,
+    operation: () => Promise<T>
+  ): Promise<T> {
+    const previousMutation = this._mutationQueue;
+    let releaseLock: (() => void) | undefined;
+
+    this._mutationQueue = new Promise<void>((resolve) => {
+      releaseLock = resolve;
     });
 
+    await previousMutation.catch(() => undefined);
+
     try {
-      switch (previousState.type) {
-        case 'symlink': {
-          const rollbackTarget = previousState.resolvedPath;
-          if (!rollbackTarget) {
-            break;
-          }
-          await fs.ensureDir(rollbackTarget);
-
-          await fs.remove(this._chainPath);
-          await fs.symlink(
-            rollbackTarget,
-            this._chainPath,
-            process.platform === 'win32' ? 'junction' : 'dir'
-          );
-          break;
-        }
-
-        case 'directory': {
-          await fs.remove(this._chainPath);
-          await fs.ensureDir(this._chainPath);
-          break;
-        }
-
-        default:
-          await fs.remove(this._chainPath);
-          await fs.ensureDir(this._chainPath);
-      }
-
-      if (previousConfig.customPath) {
-        await fs.writeJson(
-          this._configPath,
-          {
-            customPath: previousConfig.customPath,
-            setAt: previousConfig.setAt,
-          },
-          { spaces: 2 }
-        );
-      } else {
-        await fs.remove(this._configPath);
-      }
-    } catch (rollbackError) {
-      logger.error('ChainStorageManager: rollback failed', {
-        rollbackError,
-        chainPath: this._chainPath,
+      return await operation();
+    } catch (error) {
+      logger.warn('ChainStorageManager: serialized mutation failed', {
+        error,
+        label,
       });
+      throw error;
+    } finally {
+      releaseLock?.();
     }
   }
 }

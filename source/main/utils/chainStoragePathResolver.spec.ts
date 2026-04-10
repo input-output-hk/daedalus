@@ -136,17 +136,19 @@ describe('resolveChainStoragePath', () => {
   });
 
   it('falls back to custom path from config when chain path does not exist', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+      '/mnt/custom-parent/chain'
     );
     const getConfig = jest
       .fn()
-      .mockResolvedValue(makeConfig('/mnt/custom-chain'));
+      .mockResolvedValue(makeConfig('/mnt/custom-parent'));
 
     const result = await resolveChainStoragePath('/tmp/state', getConfig);
 
-    expect(result).toBe('/mnt/custom-chain');
+    expect(result).toBe('/mnt/custom-parent/chain');
   });
 
   it('falls back to stateDir when chain path fails and no custom path configured', async () => {
@@ -155,21 +157,36 @@ describe('resolveChainStoragePath', () => {
 
     const result = await resolveChainStoragePath('/tmp/state', getConfig);
 
-    expect(result).toBe('/tmp/state');
+    expect(result).toBe('/tmp/state/chain');
   });
 
   it('falls back to stateDir when custom path realpath fails', async () => {
-    (fs.pathExists as jest.Mock).mockResolvedValue(false);
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
     ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
       new Error('no such path')
     );
     const getConfig = jest
       .fn()
-      .mockResolvedValue(makeConfig('/mnt/missing-chain'));
+      .mockResolvedValue(makeConfig('/mnt/missing-parent'));
 
     const result = await resolveChainStoragePath('/tmp/state', getConfig);
 
-    expect(result).toBe('/tmp/state');
+    expect(result).toBe('/tmp/state/chain');
+  });
+
+  it('falls back to the managed chain subdirectory when it does not exist yet', async () => {
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(false);
+    const getConfig = jest
+      .fn()
+      .mockResolvedValue(makeConfig('/mnt/missing-parent'));
+
+    const result = await resolveChainStoragePath('/tmp/state', getConfig);
+
+    expect(result).toBe('/mnt/missing-parent/chain');
   });
 });
 
@@ -181,33 +198,35 @@ describe('resolveMithrilWorkDir', () => {
 
     const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
 
-    expect(result).toBe('/tmp/state');
+    expect(result).toBe('/tmp/state/chain');
     expect(fs.realpath).not.toHaveBeenCalled();
   });
 
   it('returns resolved custom path when configured', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+      '/mnt/custom-parent/chain'
     );
     const getConfig = jest
       .fn()
-      .mockResolvedValue(makeConfig('/mnt/custom-chain'));
+      .mockResolvedValue(makeConfig('/mnt/custom-parent'));
 
     const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
 
-    expect(result).toBe('/mnt/custom-chain');
+    expect(result).toBe('/mnt/custom-parent/chain');
   });
 
   it('falls back to stateDir when realpath of custom path fails', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
     ((fs.realpath as unknown) as jest.Mock).mockRejectedValue(
       new Error('path unavailable')
     );
     const getConfig = jest
       .fn()
-      .mockResolvedValue(makeConfig('/mnt/missing-chain'));
+      .mockResolvedValue(makeConfig('/mnt/missing-parent'));
 
     const result = await resolveMithrilWorkDir('/tmp/state', getConfig);
 
-    expect(result).toBe('/tmp/state');
+    expect(result).toBe('/mnt/missing-parent/chain');
   });
 });

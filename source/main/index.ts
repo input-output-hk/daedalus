@@ -54,6 +54,7 @@ import {
 } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
+import { setMithrilBootstrapNodeStateProvider } from './ipc/mithrilBootstrapChannel';
 
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
@@ -196,6 +197,7 @@ const onAppReady = async () => {
     `Setting up Cardano Node... with flags: ${JSON.stringify(currentRtsFlags)}`
   );
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow, currentRtsFlags);
+  setMithrilBootstrapNodeStateProvider(() => cardanoNode.state);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, cardanoNode, userLocale, {
     isNavigationEnabled: false,

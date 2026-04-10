@@ -12,8 +12,8 @@ import type {
   ValidateChainStorageDirectoryRendererRequest,
   ValidateChainStorageDirectoryMainResponse,
 } from '../../common/ipc/api';
-import { ChainStorageManager } from '../utils/chainStorageManager';
 import { logger } from '../utils/logging';
+import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
 
 const setChainStorageDirectoryChannel: MainIpcChannel<
   SetChainStorageDirectoryRendererRequest,
@@ -30,10 +30,8 @@ const validateChainStorageDirectoryChannel: MainIpcChannel<
   ValidateChainStorageDirectoryMainResponse
 > = new MainIpcChannel(VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL);
 
-const chainStorageManager = new ChainStorageManager();
-
 export const handleChainStorageRequests = () => {
-  chainStorageManager
+  chainStorageCoordinator
     .verifySymlink()
     .then((verification) => {
       if (!verification.isValid && verification.path) {
@@ -49,14 +47,14 @@ export const handleChainStorageRequests = () => {
     });
 
   setChainStorageDirectoryChannel.onRequest(async ({ path }) => {
-    return chainStorageManager.setDirectory(path);
+    return chainStorageCoordinator.setDirectory(path);
   });
 
   getChainStorageDirectoryChannel.onRequest(async () =>
-    chainStorageManager.getConfig()
+    chainStorageCoordinator.getConfig()
   );
 
   validateChainStorageDirectoryChannel.onRequest(async ({ path }) =>
-    chainStorageManager.validate(path)
+    chainStorageCoordinator.validate(path)
   );
 };

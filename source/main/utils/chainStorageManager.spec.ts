@@ -13,6 +13,7 @@ jest.mock('fs-extra', () => ({
   symlink: jest.fn(),
   copy: jest.fn(),
   remove: jest.fn(),
+  rename: jest.fn(),
   writeJson: jest.fn(),
   readJson: jest.fn(),
   constants: {
@@ -44,6 +45,9 @@ describe('ChainStorageManager', () => {
     setAt,
   });
 
+  const createPathNotFoundError = (message = 'path unavailable') =>
+    Object.assign(new Error(message), { code: 'ENOENT' });
+
   beforeEach(() => {
     jest.clearAllMocks();
     const checkDiskSpace = require('check-disk-space');
@@ -73,7 +77,7 @@ describe('ChainStorageManager', () => {
   it('setDirectory with null path resets to default chain storage', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     const resetSpy = jest
-      .spyOn(manager, 'resetToDefault')
+      .spyOn(manager, '_resetToDefault')
       .mockResolvedValue({ isValid: true, path: null });
 
     const result = await manager.setDirectory(null);
@@ -85,7 +89,7 @@ describe('ChainStorageManager', () => {
   it('setDirectory with explicit default path resets to default chain storage', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     const resetSpy = jest
-      .spyOn(manager, 'resetToDefault')
+      .spyOn(manager, '_resetToDefault')
       .mockResolvedValue({ isValid: true, path: null });
 
     const result = await manager.setDirectory('/tmp/state/chain');
@@ -98,28 +102,33 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
-      path: '/tmp/custom-chain',
-      resolvedPath: '/mnt/external/daedalus-chain',
+      path: '/tmp/custom-parent',
+      resolvedPath: '/mnt/external/daedalus-parent',
+      chainSubdirectoryStatus: 'will-create',
     });
+    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
+    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+      createPathNotFoundError()
+    );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'directory',
       resolvedPath: '/tmp/state/chain',
     });
     (fs.readdir as jest.Mock).mockResolvedValue([]);
 
-    const result = await manager.setDirectory('/tmp/custom-chain');
+    const result = await manager.setDirectory('/tmp/custom-parent');
 
     expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain');
-    expect(fs.ensureDir).toHaveBeenCalledWith('/mnt/external/daedalus-chain');
+    expect(fs.ensureDir).toHaveBeenCalledWith('/tmp/custom-parent/chain');
     expect(fs.symlink).toHaveBeenCalledWith(
-      '/mnt/external/daedalus-chain',
+      '/tmp/custom-parent/chain',
       '/tmp/state/chain',
       process.platform === 'win32' ? 'junction' : 'dir'
     );
     expect(fs.writeJson).toHaveBeenCalledWith(
       '/tmp/state/chain-storage-config.json',
       expect.objectContaining({
-        customPath: '/tmp/custom-chain',
+        customPath: '/tmp/custom-parent',
         setAt: expect.any(String),
       }),
       { spaces: 2 }
@@ -127,8 +136,9 @@ describe('ChainStorageManager', () => {
     expect(result).toEqual(
       expect.objectContaining({
         isValid: true,
-        path: '/tmp/custom-chain',
-        resolvedPath: '/mnt/external/daedalus-chain',
+        path: '/tmp/custom-parent',
+        resolvedPath: '/mnt/external/daedalus-parent',
+        chainSubdirectoryStatus: 'will-create',
       })
     );
   });
@@ -137,42 +147,80 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
-      path: '/tmp/custom-chain',
-      resolvedPath: '/mnt/external/daedalus-chain',
+      path: '/tmp/custom-parent',
+      resolvedPath: '/mnt/external/daedalus-parent',
     });
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/old-parent'));
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockImplementation(async (targetPath: string) => targetPath);
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'symlink',
-      resolvedPath: '/mnt/old-chain',
+      resolvedPath: '/mnt/old-parent/chain',
     });
     const migrateSpy = jest
       .spyOn(manager, 'migrateData')
       .mockResolvedValue(undefined);
 
-    await manager.setDirectory('/tmp/custom-chain');
+    await manager.setDirectory('/tmp/custom-parent');
 
     expect(migrateSpy).not.toHaveBeenCalled();
     expect(fs.symlink).toHaveBeenCalled();
+  });
+
+  it('setDirectory canonicalizes selecting the current managed child back to the configured parent', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/custom-parent'));
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockImplementation(async (targetPath: string) => targetPath);
+    const validateSpy = jest.spyOn(manager, 'validate').mockResolvedValue({
+      isValid: true,
+      path: '/mnt/custom-parent',
+      resolvedPath: '/mnt/custom-parent',
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/custom-parent/chain',
+    });
+
+    await manager.setDirectory('/mnt/custom-parent/chain');
+
+    expect(validateSpy).toHaveBeenCalledWith('/mnt/custom-parent');
+    expect(fs.ensureDir).toHaveBeenCalledWith('/mnt/custom-parent/chain');
+    expect(fs.ensureDir).not.toHaveBeenCalledWith(
+      '/mnt/custom-parent/chain/chain'
+    );
   });
 
   it('setDirectory rejects switching when default chain data already exists locally', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
-      path: '/tmp/new-custom-chain',
-      resolvedPath: '/mnt/new-chain',
+      path: '/tmp/new-custom-parent',
+      resolvedPath: '/mnt/new-parent',
     });
+    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
+    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+      createPathNotFoundError()
+    );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'directory',
       resolvedPath: '/tmp/state/chain',
     });
     (fs.readdir as jest.Mock).mockResolvedValue(['immutable']);
 
-    const result = await manager.setDirectory('/tmp/new-custom-chain');
+    const result = await manager.setDirectory('/tmp/new-custom-parent');
 
     expect(result).toEqual(
       expect.objectContaining({
         isValid: false,
-        path: '/tmp/new-custom-chain',
+        path: '/tmp/new-custom-parent',
         reason: 'unknown',
       })
     );
@@ -183,27 +231,30 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest.spyOn(manager, 'validate').mockResolvedValue({
       isValid: true,
-      path: '/tmp/custom-chain',
-      resolvedPath: '/mnt/external/daedalus-chain',
+      path: '/tmp/custom-parent',
+      resolvedPath: '/mnt/external/daedalus-parent',
     });
+    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
+    ((fs.realpath as unknown) as jest.Mock).mockRejectedValueOnce(
+      createPathNotFoundError()
+    );
     jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
       type: 'directory',
       resolvedPath: '/tmp/state/chain',
     });
     (fs.readdir as jest.Mock).mockResolvedValue([]);
-    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
     const rollbackSpy = jest
       .spyOn(manager, '_rollbackSetDirectory')
       .mockResolvedValue(undefined);
     (fs.symlink as jest.Mock).mockRejectedValue(new Error('symlink failed'));
 
-    await expect(manager.setDirectory('/tmp/custom-chain')).rejects.toThrow(
+    await expect(manager.setDirectory('/tmp/custom-parent')).rejects.toThrow(
       'symlink failed'
     );
 
     expect(rollbackSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        targetPath: '/mnt/external/daedalus-chain',
+        targetPath: '/tmp/custom-parent/chain',
       })
     );
   });
@@ -288,21 +339,22 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest
       .spyOn(manager, 'getConfig')
-      .mockResolvedValue(createConfig('/mnt/configured-chain'));
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    (fs.lstat as jest.Mock).mockResolvedValue({
-      isSymbolicLink: () => true,
+      .mockResolvedValue(createConfig('/mnt/configured-parent'));
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/resolved-parent');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/actual-parent/chain',
     });
-    ((fs.realpath as unknown) as jest.Mock)
-      .mockResolvedValueOnce('/mnt/actual-chain')
-      .mockResolvedValueOnce('/mnt/configured-chain');
 
     const result = await manager.verifySymlink();
 
     expect(result).toEqual(
       expect.objectContaining({
         isValid: false,
-        path: '/mnt/configured-chain',
+        path: '/mnt/configured-parent',
+        resolvedPath: '/mnt/actual-parent/chain',
         reason: 'unknown',
       })
     );
@@ -312,21 +364,45 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest
       .spyOn(manager, 'getConfig')
-      .mockResolvedValue(createConfig('/mnt/configured-chain'));
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
-    (fs.lstat as jest.Mock).mockResolvedValue({
-      isSymbolicLink: () => true,
+      .mockResolvedValue(createConfig('/mnt/configured-parent'));
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/configured-parent');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/configured-parent/chain',
     });
-    ((fs.realpath as unknown) as jest.Mock)
-      .mockResolvedValueOnce('/mnt/configured-chain')
-      .mockResolvedValueOnce('/mnt/configured-chain');
 
     const result = await manager.verifySymlink();
 
     expect(result).toEqual({
       isValid: true,
-      path: '/mnt/configured-chain',
-      resolvedPath: '/mnt/configured-chain',
+      path: '/mnt/configured-parent',
+      resolvedPath: '/mnt/configured-parent/chain',
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+  });
+
+  it('verifySymlink resolves a symlinked custom parent before comparing targets', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/alias-parent'));
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/actual-parent');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/actual-parent/chain',
+    });
+
+    const result = await manager.verifySymlink();
+
+    expect(result).toEqual({
+      isValid: true,
+      path: '/mnt/alias-parent',
+      resolvedPath: '/mnt/actual-parent/chain',
+      chainSubdirectoryStatus: 'existing-directory',
     });
   });
 
@@ -340,10 +416,10 @@ describe('ChainStorageManager', () => {
     await manager._rollbackSetDirectory({
       previousState: {
         type: 'symlink',
-        resolvedPath: '/mnt/old-chain',
+        resolvedPath: '/mnt/old-parent/chain',
       },
       previousConfig: createConfig(
-        '/mnt/old-chain',
+        '/mnt/old-parent',
         '2026-03-09T00:00:00.000Z'
       ),
       targetPath: '/mnt/new-chain',
@@ -351,14 +427,14 @@ describe('ChainStorageManager', () => {
 
     expect(migrateSpy).not.toHaveBeenCalled();
     expect(fs.symlink).toHaveBeenCalledWith(
-      '/mnt/old-chain',
+      '/mnt/old-parent/chain',
       '/tmp/state/chain',
       process.platform === 'win32' ? 'junction' : 'dir'
     );
     expect(fs.writeJson).toHaveBeenCalledWith(
       '/tmp/state/chain-storage-config.json',
       {
-        customPath: '/mnt/old-chain',
+        customPath: '/mnt/old-parent',
         setAt: '2026-03-09T00:00:00.000Z',
       },
       { spaces: 2 }
@@ -401,14 +477,15 @@ describe('ChainStorageManager', () => {
     const manager = new ChainStorageManager('/tmp/state');
     jest
       .spyOn(manager, 'getConfig')
-      .mockResolvedValue(createConfig('/mnt/custom-chain'));
+      .mockResolvedValue(createConfig('/mnt/custom-parent'));
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+      '/mnt/custom-parent/chain'
     );
 
     const result = await manager.resolveMithrilWorkDir();
 
-    expect(result).toBe('/mnt/custom-chain');
+    expect(result).toBe('/mnt/custom-parent/chain');
   });
 
   it('validate treats the default chain path as a valid default selection', async () => {
@@ -432,8 +509,10 @@ describe('ChainStorageManager', () => {
   it('validate succeeds when the state directory has not been created yet', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     const checkDiskSpace = require('check-disk-space');
+    jest.spyOn(manager, 'getConfig').mockResolvedValue(createConfig(null));
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(false);
     ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
       '/mnt/custom-chain'
@@ -452,6 +531,7 @@ describe('ChainStorageManager', () => {
       resolvedPath: '/mnt/custom-chain',
       availableSpaceBytes: 4096,
       requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'will-create',
     });
   });
 
@@ -466,5 +546,303 @@ describe('ChainStorageManager', () => {
     expect(result.defaultPath).toBe('/tmp/state/chain');
     expect(Number.isNaN(result.availableSpaceBytes)).toBe(true);
     expect(result.requiredSpaceBytes).toBe(1024);
+  });
+
+  it('_detectLayout identifies a legacy direct-target custom root', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_resolveExistingDirectory')
+      .mockResolvedValue('/mnt/custom-parent');
+    jest.spyOn(manager, '_safeLstat').mockResolvedValue(null);
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/custom-parent',
+    });
+    jest.spyOn(manager, '_listLegacyManagedEntries').mockResolvedValue({
+      managedEntries: ['immutable'],
+      ignoredEntries: ['note.txt'],
+    });
+
+    const result = await manager._detectLayout('/mnt/custom-parent');
+
+    expect(result).toMatchObject({
+      kind: 'legacy-custom-root',
+      customPath: '/mnt/custom-parent',
+      managedChainPath: '/mnt/custom-parent/chain',
+      currentChainSource: '/mnt/custom-parent',
+      managedLegacyEntries: ['immutable'],
+      ignoredLegacyEntries: ['note.txt'],
+    });
+  });
+
+  it('_detectLayout identifies an already managed custom root', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_resolveExistingDirectory')
+      .mockResolvedValue('/mnt/custom-parent');
+    jest.spyOn(manager, '_safeLstat').mockResolvedValue({
+      isDirectory: () => true,
+    } as fs.Stats);
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/custom-parent/chain');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/custom-parent/chain',
+    });
+    jest.spyOn(manager, '_listLegacyManagedEntries').mockResolvedValue({
+      managedEntries: [],
+      ignoredEntries: [],
+    });
+
+    const result = await manager._detectLayout('/mnt/custom-parent');
+
+    expect(result).toMatchObject({
+      kind: 'managed-custom-root',
+      managedChainPath: '/mnt/custom-parent/chain',
+      resolvedManagedChainPath: '/mnt/custom-parent/chain',
+      currentChainSource: '/mnt/custom-parent/chain',
+    });
+  });
+
+  it('_detectLayout resolves a symlinked custom parent before deriving the managed path', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_resolveExistingDirectory')
+      .mockResolvedValue('/mnt/actual-parent');
+    jest.spyOn(manager, '_safeLstat').mockResolvedValue({
+      isDirectory: () => true,
+    } as fs.Stats);
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/actual-parent/chain');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/actual-parent/chain',
+    });
+    jest.spyOn(manager, '_listLegacyManagedEntries').mockResolvedValue({
+      managedEntries: [],
+      ignoredEntries: [],
+    });
+
+    const result = await manager._detectLayout('/mnt/alias-parent');
+
+    expect(result).toMatchObject({
+      kind: 'managed-custom-root',
+      customPath: '/mnt/alias-parent',
+      resolvedCustomPath: '/mnt/actual-parent',
+      managedChainPath: '/mnt/actual-parent/chain',
+      resolvedManagedChainPath: '/mnt/actual-parent/chain',
+      currentChainSource: '/mnt/actual-parent/chain',
+    });
+  });
+
+  it('_detectLayout marks a local chain directory as inconsistent when the managed child already exists', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_resolveExistingDirectory')
+      .mockResolvedValue('/mnt/custom-parent');
+    jest.spyOn(manager, '_safeLstat').mockResolvedValue({
+      isDirectory: () => true,
+    } as fs.Stats);
+    jest
+      .spyOn(manager, '_resolveRealPathOrInput')
+      .mockResolvedValue('/mnt/custom-parent/chain');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'directory',
+      resolvedPath: '/tmp/state/chain',
+    });
+    jest.spyOn(manager, '_listLegacyManagedEntries').mockResolvedValue({
+      managedEntries: [],
+      ignoredEntries: [],
+    });
+
+    const result = await manager._detectLayout('/mnt/custom-parent');
+
+    expect(result).toMatchObject({
+      kind: 'inconsistent',
+      managedChainPath: '/mnt/custom-parent/chain',
+      currentChainSource: '/tmp/state/chain',
+    });
+  });
+
+  it('_detectLayout identifies a broken link when neither managed nor legacy data is present', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_resolveExistingDirectory')
+      .mockResolvedValue('/mnt/custom-parent');
+    jest.spyOn(manager, '_safeLstat').mockResolvedValue(null);
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+    });
+    jest.spyOn(manager, '_listLegacyManagedEntries').mockResolvedValue({
+      managedEntries: [],
+      ignoredEntries: [],
+    });
+
+    const result = await manager._detectLayout('/mnt/custom-parent');
+
+    expect(result).toMatchObject({
+      kind: 'broken-link',
+      managedChainPath: '/mnt/custom-parent/chain',
+      currentChainSource: null,
+      managedLegacyEntries: [],
+    });
+  });
+
+  it('_migrateLegacyCustomLayout records journal progress through completion', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    const writtenStates: string[] = [];
+
+    jest
+      .spyOn(manager, '_preflightLegacyMigration')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(manager, '_writeMigrationJournal')
+      .mockImplementation(async (journal) => {
+        writtenStates.push(journal.state);
+      });
+    jest.spyOn(manager, '_movePath').mockResolvedValue(undefined);
+    jest.spyOn(manager, '_createSymlink').mockResolvedValue(undefined);
+    jest.spyOn(manager, '_pathExistsViaLstat').mockResolvedValue(false);
+
+    await manager._migrateLegacyCustomLayout({
+      kind: 'legacy-custom-root',
+      customPath: '/mnt/custom-parent',
+      resolvedCustomPath: '/mnt/custom-parent',
+      managedChainPath: '/mnt/custom-parent/chain',
+      resolvedManagedChainPath: undefined,
+      currentChainSource: '/mnt/custom-parent',
+      entryPointState: {
+        type: 'symlink',
+        resolvedPath: '/mnt/custom-parent',
+      },
+      managedChainExists: false,
+      managedChainIsDirectory: false,
+      managedLegacyEntries: ['immutable', 'ledger'],
+      ignoredLegacyEntries: ['note.txt'],
+    });
+
+    expect(writtenStates).toEqual([
+      'start',
+      'progress',
+      'progress',
+      'cutover',
+      'completion',
+    ]);
+    expect(fs.rename).toHaveBeenCalledWith(
+      '/tmp/state/chain.managed-next',
+      '/tmp/state/chain'
+    );
+    expect(fs.remove).toHaveBeenCalledWith(
+      '/tmp/state/Logs/chain-storage-migration-journal.json'
+    );
+  });
+
+  it('_recoverInterruptedMigration cleans up a completed cutover on restart', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+
+    jest.spyOn(manager, '_readMigrationJournal').mockResolvedValue({
+      state: 'cutover',
+      customPath: '/mnt/custom-parent',
+      legacyRootPath: '/mnt/custom-parent',
+      managedChainPath: '/mnt/custom-parent/chain',
+      movedEntries: ['immutable'],
+      ignoredEntries: [],
+      backupEntryPointPath: '/tmp/state/chain.legacy-backup',
+      tempEntryPointPath: '/tmp/state/chain.managed-next',
+      createdAt: '2026-04-03T00:00:00.000Z',
+      updatedAt: '2026-04-03T00:00:00.000Z',
+    });
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/custom-parent/chain',
+    });
+    jest.spyOn(manager, '_pathExistsViaLstat').mockResolvedValue(true);
+
+    await manager._recoverInterruptedMigration({});
+
+    expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain.legacy-backup');
+    expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain.managed-next');
+    expect(fs.remove).toHaveBeenCalledWith(
+      '/tmp/state/Logs/chain-storage-migration-journal.json'
+    );
+  });
+
+  it('ensureManagedChainLayout fails closed when a non-empty local chain directory conflicts with the managed child', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, '_recoverInterruptedMigration')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/custom-parent'));
+    jest.spyOn(manager, '_detectLayout').mockResolvedValue({
+      kind: 'inconsistent',
+      customPath: '/mnt/custom-parent',
+      resolvedCustomPath: '/mnt/custom-parent',
+      managedChainPath: '/mnt/custom-parent/chain',
+      resolvedManagedChainPath: '/mnt/custom-parent/chain',
+      currentChainSource: '/tmp/state/chain',
+      entryPointState: {
+        type: 'directory',
+        resolvedPath: '/tmp/state/chain',
+      },
+      managedChainExists: true,
+      managedChainIsDirectory: true,
+      managedLegacyEntries: [],
+      ignoredLegacyEntries: [],
+    });
+    (fs.readdir as jest.Mock).mockResolvedValue(['immutable']);
+
+    await expect(manager.ensureManagedChainLayout()).rejects.toThrow(
+      'Configured chain storage entry point is a non-empty local directory and could not be safely replaced automatically.'
+    );
+
+    expect(fs.remove).not.toHaveBeenCalledWith('/tmp/state/chain');
+    expect(fs.symlink).not.toHaveBeenCalled();
+  });
+
+  it('unlinkChainEntryPoint removes only the chain entry point', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest.spyOn(manager, '_captureChainPathState').mockResolvedValue({
+      type: 'symlink',
+      resolvedPath: '/mnt/custom-parent/chain',
+    });
+
+    await manager.unlinkChainEntryPoint();
+
+    expect(fs.remove).toHaveBeenCalledWith('/tmp/state/chain');
+  });
+
+  it('removeManagedDirectory removes the managed chain subdirectory', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/custom-parent'));
+    jest.spyOn(manager, '_pathExistsViaLstat').mockResolvedValue(true);
+
+    await manager.removeManagedDirectory();
+
+    expect(fs.remove).toHaveBeenCalledWith('/mnt/custom-parent/chain');
+  });
+
+  it('emptyManagedContents removes managed entries without deleting the managed directory', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    jest
+      .spyOn(manager, 'getConfig')
+      .mockResolvedValue(createConfig('/mnt/custom-parent'));
+    (fs.readdir as jest.Mock).mockResolvedValue(['db', 'immutable']);
+
+    await manager.emptyManagedContents({
+      excludeTopLevelEntries: ['db'],
+    });
+
+    expect(fs.ensureDir).toHaveBeenCalledWith('/mnt/custom-parent/chain');
+    expect(fs.remove).toHaveBeenCalledWith(
+      '/mnt/custom-parent/chain/immutable'
+    );
+    expect(fs.remove).not.toHaveBeenCalledWith('/mnt/custom-parent/chain/db');
+    expect(fs.remove).not.toHaveBeenCalledWith('/mnt/custom-parent/chain');
   });
 });

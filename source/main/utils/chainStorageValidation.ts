@@ -17,6 +17,10 @@ type GetDefaultConfig = () => Promise<
   >
 >;
 
+type ValidateChainStorageDirectoryOptions = {
+  currentCustomPath?: string | null;
+};
+
 /**
  * Returns true when `child` is equal to or nested under `parent`.
  */
@@ -66,7 +70,8 @@ export async function validateChainStorageDirectory(
   targetDir: string | null,
   stateDir: string,
   getDefaultConfig: GetDefaultConfig,
-  requiredSpace: number = DISK_SPACE_REQUIRED
+  requiredSpace: number = DISK_SPACE_REQUIRED,
+  options: ValidateChainStorageDirectoryOptions = {}
 ): Promise<ChainStorageValidation> {
   const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
   const normalizedPath =
@@ -119,6 +124,29 @@ export async function validateChainStorageDirectory(
       };
     }
 
+    if (options.currentCustomPath) {
+      const currentCustomPathExists = await fs.pathExists(
+        options.currentCustomPath
+      );
+      const resolvedCurrentCustomPath = currentCustomPathExists
+        ? await fs.realpath(options.currentCustomPath)
+        : path.resolve(options.currentCustomPath);
+      const currentManagedChainPath = path.join(
+        resolvedCurrentCustomPath,
+        CHAIN_DIRECTORY_NAME
+      );
+
+      if (isSamePath(resolvedPath, currentManagedChainPath)) {
+        return {
+          ...defaultValidation,
+          resolvedPath,
+          reason: 'is-managed-child',
+          message:
+            'Select the parent directory for blockchain storage, not the managed chain subdirectory itself.',
+        };
+      }
+    }
+
     const stateDirExists = await fs.pathExists(stateDir);
     const resolvedStatePath = stateDirExists
       ? await fs.realpath(stateDir)
@@ -135,6 +163,30 @@ export async function validateChainStorageDirectory(
 
     await fs.access(resolvedPath, fs.constants.W_OK);
 
+    const managedChainPath = path.join(resolvedPath, CHAIN_DIRECTORY_NAME);
+    const managedChainExists = await fs.pathExists(managedChainPath);
+    let chainSubdirectoryStatus:
+      | ChainStorageValidation['chainSubdirectoryStatus']
+      | undefined = 'will-create';
+
+    if (managedChainExists) {
+      const managedChainStats = await fs.lstat(managedChainPath);
+      if (managedChainStats.isDirectory()) {
+        chainSubdirectoryStatus = 'existing-directory';
+      } else {
+        return {
+          ...defaultValidation,
+          resolvedPath,
+          availableSpaceBytes: undefined,
+          requiredSpaceBytes: requiredSpace,
+          chainSubdirectoryStatus: 'path-is-file',
+          reason: 'path-is-file',
+          message:
+            'Daedalus cannot use this location because <selected directory>/chain already exists as a file.',
+        };
+      }
+    }
+
     const { free } = await checkDiskSpace(resolvedPath);
     if (free < requiredSpace) {
       return {
@@ -142,6 +194,7 @@ export async function validateChainStorageDirectory(
         resolvedPath,
         availableSpaceBytes: free,
         requiredSpaceBytes: requiredSpace,
+        chainSubdirectoryStatus,
         reason: 'insufficient-space',
         message: 'Selected directory does not have enough free space.',
       };
@@ -153,6 +206,7 @@ export async function validateChainStorageDirectory(
       resolvedPath,
       availableSpaceBytes: free,
       requiredSpaceBytes: requiredSpace,
+      chainSubdirectoryStatus,
     };
   } catch (error) {
     logger.warn('ChainStorageManager: validation failed', {

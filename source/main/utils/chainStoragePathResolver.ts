@@ -11,6 +11,14 @@ export type ResolvedStateDirectory = {
   resolvedPath: string;
 };
 
+export const getManagedChainPath = (
+  stateDir: string,
+  customPath: string | null
+): string =>
+  customPath
+    ? path.join(path.resolve(customPath), CHAIN_DIRECTORY_NAME)
+    : path.join(stateDir, CHAIN_DIRECTORY_NAME);
+
 /**
  * Resolves the Daedalus state directory path, accounting for the directory
  * not existing yet.
@@ -49,21 +57,29 @@ export async function resolveChainStoragePath(
   }
 
   const config = await getConfig();
+  const managedChainPath = getManagedChainPath(stateDir, config.customPath);
+
   if (config.customPath) {
     try {
-      return await fs.realpath(config.customPath);
+      const managedChainExists = await fs.pathExists(managedChainPath);
+      if (managedChainExists) {
+        return await fs.realpath(managedChainPath);
+      }
+
+      return path.resolve(managedChainPath);
     } catch (error) {
       logger.warn(
         'ChainStorageManager: failed to resolve configured custom path',
         {
           error,
           customPath: config.customPath,
+          managedChainPath,
         }
       );
     }
   }
 
-  return stateDir;
+  return path.resolve(chainPath);
 }
 
 /**
@@ -75,19 +91,22 @@ export async function resolveMithrilWorkDir(
   getConfig: () => Promise<ChainStorageConfig>
 ): Promise<string> {
   const config = await getConfig();
-
-  if (!config.customPath) {
-    return stateDir;
-  }
+  const managedChainPath = getManagedChainPath(stateDir, config.customPath);
 
   try {
-    return await fs.realpath(config.customPath);
+    const managedChainExists = await fs.pathExists(managedChainPath);
+    if (managedChainExists) {
+      return await fs.realpath(managedChainPath);
+    }
+
+    return path.resolve(managedChainPath);
   } catch (error) {
     logger.warn('ChainStorageManager: failed to resolve Mithril work dir', {
       error,
       customPath: config.customPath,
+      managedChainPath,
     });
-    return stateDir;
+    return path.resolve(managedChainPath);
   }
 }
 

@@ -24,9 +24,12 @@ import type {
   MithrilBootstrapStatusUpdate,
 } from '../../common/types/mithril-bootstrap.types';
 import { isMithrilBootstrapBlockingNodeStart } from '../../common/types/mithril-bootstrap.types';
-import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
-import { ChainStorageManager } from '../utils/chainStorageManager';
+import type { CardanoNodeState } from '../../common/types/cardano-node.types';
 import { logger } from '../utils/logging';
+import {
+  chainStorageCoordinator,
+  getMithrilBootstrapService,
+} from '../utils/chainStorageCoordinator';
 
 const mithrilBootstrapDecisionChannel: MainIpcChannel<
   MithrilBootstrapDecisionRendererRequest,
@@ -53,6 +56,7 @@ let pendingDecision: MithrilBootstrapDecision | null = null;
 let decisionWaiters: Array<(decision: MithrilBootstrapDecision) => void> = [];
 let statusListeners: Array<(status: MithrilBootstrapStatusUpdate) => void> = [];
 let decisionListeners: Array<(decision: MithrilBootstrapDecision) => void> = [];
+let getNodeState: () => CardanoNodeState | null | undefined = () => undefined;
 
 let lastStatus: MithrilBootstrapStatusUpdate = {
   status: 'idle',
@@ -62,6 +66,11 @@ let lastStatus: MithrilBootstrapStatusUpdate = {
 
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
 export const getMithrilBootstrapStatus = () => lastStatus;
+export const setMithrilBootstrapNodeStateProvider = (
+  provider: () => CardanoNodeState | null | undefined
+) => {
+  getNodeState = provider;
+};
 export const isMithrilBootstrapNodeStartBlocked = () =>
   isMithrilBootstrapBlockingNodeStart(lastStatus.status);
 export const onMithrilBootstrapStatus = (
@@ -106,14 +115,14 @@ export const waitForMithrilBootstrapDecision = (): Promise<
 };
 
 export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
-  const service = new MithrilBootstrapService();
-  const chainStorageManager = new ChainStorageManager();
+  const service = getMithrilBootstrapService();
   lastStatus = service.status;
 
-  const syncWorkDir = async () => {
-    const workDir = await chainStorageManager.resolveMithrilWorkDir();
-    service.setWorkDir(workDir);
-  };
+  chainStorageCoordinator.syncMithrilWorkDir().catch((error) => {
+    logger.warn('Failed to sync Mithril work directory on IPC setup', {
+      error,
+    });
+  });
 
   service.onStatus((status) => {
     lastStatus = status;
@@ -124,7 +133,7 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   mithrilBootstrapStatusChannel.onRequest(async () => lastStatus);
 
   mithrilBootstrapSnapshotsChannel.onRequest(async () =>
-    service.listSnapshots()
+    chainStorageCoordinator.listSnapshots()
   );
 
   mithrilBootstrapDecisionChannel.onRequest(async ({ decision }) => {
@@ -157,8 +166,10 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
 
   mithrilBootstrapStartChannel.onRequest(async ({ digest, wipeChain }) => {
     try {
-      await syncWorkDir();
-      await service.startBootstrap(digest, { wipeChain });
+      await chainStorageCoordinator.startBootstrap(digest, {
+        wipeChain,
+        nodeState: getNodeState(),
+      });
     } catch (error) {
       logger.error('Mithril bootstrap failed to start', error);
       throw error;
@@ -166,7 +177,6 @@ export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
   });
 
   mithrilBootstrapCancelChannel.onRequest(async () => {
-    await syncWorkDir();
-    await service.cancel();
+    await chainStorageCoordinator.cancelBootstrap();
   });
 };

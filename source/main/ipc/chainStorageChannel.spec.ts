@@ -7,19 +7,19 @@ jest.mock('./lib/MainIpcChannel', () => ({
   })),
 }));
 
-jest.mock('../utils/chainStorageManager', () => {
+jest.mock('../utils/chainStorageCoordinator', () => {
   const verifySymlink = jest.fn();
   const validate = jest.fn();
   const setDirectory = jest.fn();
   const getConfig = jest.fn();
 
   return {
-    ChainStorageManager: jest.fn().mockImplementation(() => ({
+    chainStorageCoordinator: {
       verifySymlink,
       validate,
       setDirectory,
       getConfig,
-    })),
+    },
     __mocks: {
       verifySymlink,
       validate,
@@ -35,8 +35,9 @@ jest.mock('../utils/logging', () => ({
   },
 }));
 
-const chainStorageManagerMock = jest.requireMock('../utils/chainStorageManager')
-  .__mocks;
+const chainStorageCoordinatorMock = jest.requireMock(
+  '../utils/chainStorageCoordinator'
+).__mocks;
 
 describe('chainStorageChannel startup verification', () => {
   const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -46,7 +47,7 @@ describe('chainStorageChannel startup verification', () => {
   });
 
   it('logs warning when startup symlink verification is invalid', async () => {
-    chainStorageManagerMock.verifySymlink.mockResolvedValue({
+    chainStorageCoordinatorMock.verifySymlink.mockResolvedValue({
       isValid: false,
       path: '/mnt/missing-chain',
       reason: 'path-not-found',
@@ -55,7 +56,7 @@ describe('chainStorageChannel startup verification', () => {
     handleChainStorageRequests();
     await flushPromises();
 
-    expect(chainStorageManagerMock.verifySymlink).toHaveBeenCalledTimes(1);
+    expect(chainStorageCoordinatorMock.verifySymlink).toHaveBeenCalledTimes(1);
     expect(logger.warn).toHaveBeenCalledWith(
       'Chain storage symlink verification failed on startup',
       expect.objectContaining({
@@ -68,7 +69,7 @@ describe('chainStorageChannel startup verification', () => {
   });
 
   it('logs warning when startup verification throws', async () => {
-    chainStorageManagerMock.verifySymlink.mockRejectedValue(
+    chainStorageCoordinatorMock.verifySymlink.mockRejectedValue(
       new Error('verification failed')
     );
 

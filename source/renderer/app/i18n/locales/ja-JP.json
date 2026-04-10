@@ -101,6 +101,7 @@
   "chainStorage.locationPicker.title": "ブロックチェーンデータの保存場所を選択",
   "chainStorage.locationPicker.updating": "ブロックチェーンデータの保存場所を更新しています...",
   "chainStorage.locationPicker.validation.insideStateDir": "Daedalusのステートディレクトリの外にあるディレクトリを選択してください。",
+  "chainStorage.locationPicker.validation.isManagedChild": "Daedalusが管理している既存のchainサブディレクトリではなく、その親フォルダーを選択してください。",
   "chainStorage.locationPicker.validation.insufficientSpace": "選択したディレクトリにはブロックチェーンデータに必要な空き容量がありません。",
   "chainStorage.locationPicker.validation.notWritable": "選択したパスは書き込み可能なディレクトリである必要があります。",
   "chainStorage.locationPicker.validation.pathNotFound": "選択したディレクトリは存在しません。",

@@ -6,6 +6,7 @@ import { logger } from '../utils/logging';
 import { getTranslation } from '../utils/getTranslation';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import { decodeKeystore } from '../utils/restoreKeystore';
+import { ChainStorageManager } from '../utils/chainStorageManager';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
@@ -152,11 +153,12 @@ export const createSelfnodeConfig = async (
   });
   await fs.remove(configPath);
   await fs.writeFile(configPath, configFile);
-  const chainDir = path.join(stateDir, 'chain');
-  logger.info('Removing selfnode chain folder...', {
-    chainDir,
+  logger.info('Resetting selfnode chain storage...', {
+    stateDir,
   });
-  await fs.remove(chainDir);
+  const chainStorageManager = new ChainStorageManager(stateDir);
+  await chainStorageManager.unlinkChainEntryPoint();
+  await chainStorageManager.resetToDefault();
   const walletsDir = path.join(stateDir, 'wallets');
   logger.info('Removing selfnode wallets folder...', {
     walletsDir,

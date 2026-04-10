@@ -59,6 +59,27 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Available disk space: {availableSpace}',
     description: 'Subtext shown below the storage location input.',
   },
+  subdirectoryCreationNotice: {
+    id: 'chainStorage.locationPicker.subdirectoryCreationNotice',
+    defaultMessage:
+      '!!!Daedalus will create a chain subdirectory inside the selected parent folder.',
+    description:
+      'Help text shown when Daedalus will create the managed chain subdirectory.',
+  },
+  subdirectoryWarningExists: {
+    id: 'chainStorage.locationPicker.subdirectoryWarningExists',
+    defaultMessage:
+      '!!!Daedalus will use the existing chain subdirectory inside the selected parent folder.',
+    description:
+      'Help text shown when the managed chain subdirectory already exists.',
+  },
+  subdirectoryErrorConflict: {
+    id: 'chainStorage.locationPicker.subdirectoryErrorConflict',
+    defaultMessage:
+      '!!!The selected parent folder already contains a chain entry that is not a directory.',
+    description:
+      'Validation message shown when the managed chain subdirectory conflicts with an existing file.',
+  },
   availableSpaceUnknown: {
     id: 'chainStorage.locationPicker.availableSpaceUnknown',
     defaultMessage: '!!!Disk space unknown',
@@ -88,6 +109,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!Choose a directory outside the Daedalus state directory.',
     description:
       'Validation message when the selected chain storage path is inside the state directory.',
+  },
+  validationIsManagedChild: {
+    id: 'chainStorage.locationPicker.validation.isManagedChild',
+    defaultMessage:
+      '!!!Select the parent folder, not the existing chain subdirectory managed by Daedalus.',
+    description:
+      'Validation message when the selected chain storage path is already the managed chain child directory.',
   },
   validationInsufficientSpace: {
     id: 'chainStorage.locationPicker.validation.insufficientSpace',

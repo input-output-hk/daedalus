@@ -9,6 +9,7 @@ jest.mock('fs-extra', () => ({
   pathExists: jest.fn(),
   realpath: jest.fn(),
   stat: jest.fn(),
+  lstat: jest.fn(),
   access: jest.fn(),
   constants: {
     W_OK: 2,
@@ -181,7 +182,10 @@ describe('validateChainStorageDirectory', () => {
   it('returns insufficient-space when free space is below the threshold', async () => {
     const checkDiskSpace = require('check-disk-space');
     checkDiskSpace.mockResolvedValue({ free: 100 });
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
     ((fs.realpath as unknown) as jest.Mock).mockImplementation(
       async (p: string) => p
     );
@@ -201,6 +205,7 @@ describe('validateChainStorageDirectory', () => {
         reason: 'insufficient-space',
         availableSpaceBytes: 100,
         requiredSpaceBytes: REQUIRED_SPACE,
+        chainSubdirectoryStatus: 'will-create',
       })
     );
   });
@@ -208,7 +213,10 @@ describe('validateChainStorageDirectory', () => {
   it('returns valid when all checks pass', async () => {
     const checkDiskSpace = require('check-disk-space');
     checkDiskSpace.mockResolvedValue({ free: 4096 });
-    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
     ((fs.realpath as unknown) as jest.Mock).mockImplementation(
       async (p: string) => p
     );
@@ -227,6 +235,7 @@ describe('validateChainStorageDirectory', () => {
       resolvedPath: '/mnt/external',
       availableSpaceBytes: 4096,
       requiredSpaceBytes: REQUIRED_SPACE,
+      chainSubdirectoryStatus: 'will-create',
     });
   });
 
@@ -235,7 +244,8 @@ describe('validateChainStorageDirectory', () => {
     checkDiskSpace.mockResolvedValue({ free: 4096 });
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true) // target dir exists
-      .mockResolvedValueOnce(false); // state dir does not exist yet
+      .mockResolvedValueOnce(false) // state dir does not exist yet
+      .mockResolvedValueOnce(false); // managed chain dir does not exist yet
     ((fs.realpath as unknown) as jest.Mock).mockImplementation(
       async (p: string) => p
     );
@@ -254,7 +264,101 @@ describe('validateChainStorageDirectory', () => {
       resolvedPath: '/mnt/external',
       availableSpaceBytes: 4096,
       requiredSpaceBytes: REQUIRED_SPACE,
+      chainSubdirectoryStatus: 'will-create',
     });
+  });
+
+  it('reports an existing managed chain subdirectory when present', async () => {
+    const checkDiskSpace = require('check-disk-space');
+    checkDiskSpace.mockResolvedValue({ free: 4096 });
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+      async (p: string) => p
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isDirectory: () => true,
+    });
+    (fs.access as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/external',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual({
+      isValid: true,
+      path: '/mnt/external',
+      resolvedPath: '/mnt/external',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: REQUIRED_SPACE,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+  });
+
+  it('rejects selecting the already managed chain child directory', async () => {
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+      async (targetPath: string) => targetPath
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/external/chain',
+      STATE_DIR,
+      makeGetDefaultConfig(),
+      REQUIRED_SPACE,
+      {
+        currentCustomPath: '/mnt/external',
+      }
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        path: '/mnt/external/chain',
+        resolvedPath: '/mnt/external/chain',
+        reason: 'is-managed-child',
+      })
+    );
+  });
+
+  it('rejects a selected parent when the managed chain subdirectory is a file', async () => {
+    (fs.pathExists as jest.Mock)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation(
+      async (p: string) => p
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+    (fs.lstat as jest.Mock).mockResolvedValue({
+      isDirectory: () => false,
+    });
+    (fs.access as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await validateChainStorageDirectory(
+      '/mnt/external',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        path: '/mnt/external',
+        resolvedPath: '/mnt/external',
+        reason: 'path-is-file',
+        chainSubdirectoryStatus: 'path-is-file',
+      })
+    );
   });
 
   it('returns unknown reason when an unexpected error is thrown', async () => {

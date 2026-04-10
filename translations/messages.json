@@ -947,6 +947,11 @@
         "id": "chainStorage.locationPicker.validation.insideStateDir"
       },
       {
+        "defaultMessage": "!!!Select the parent folder, not the existing chain subdirectory managed by Daedalus.",
+        "description": "Validation message when the selected chain storage path is already the managed chain child directory.",
+        "id": "chainStorage.locationPicker.validation.isManagedChild"
+      },
+      {
         "defaultMessage": "!!!The selected directory does not have enough free space for blockchain data.",
         "description": "Validation message when the selected chain storage path does not have enough free space.",
         "id": "chainStorage.locationPicker.validation.insufficientSpace"

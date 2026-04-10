@@ -16,6 +16,7 @@ import {
   formatStorageSize,
   formatAvailableSpace,
   getValidationMessage,
+  getStorageHelpText,
   pathsAreEqual,
   createDefaultValidation,
 } from './chainStorageUtils';
@@ -46,6 +47,7 @@ type StorageCandidate = {
 };
 
 const STORAGE_LOCATION_INPUT_ID = 'chain-storage-location-input';
+const STORAGE_LOCATION_HELP_TEXT_ID = 'chain-storage-help-text';
 const STORAGE_LOCATION_VALIDATION_MESSAGE_ID =
   'chain-storage-location-validation-message';
 
@@ -127,6 +129,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
           requiredSpace: estimatedRequiredSpace,
         });
   const validationMessage = getValidationMessage(intl, displayedValidation);
+  const storageHelpText = getStorageHelpText(intl, displayedValidation);
   const isCurrentStorageInvalid =
     customChainPath != null &&
     chainStorageValidation != null &&
@@ -145,9 +148,12 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   const inputClasses = classNames(styles.storageInput, {
     [styles.error]: validationMessage != null,
   });
-  const validationMessageId = validationMessage
-    ? STORAGE_LOCATION_VALIDATION_MESSAGE_ID
-    : undefined;
+  const describedByIds = [
+    storageHelpText ? STORAGE_LOCATION_HELP_TEXT_ID : undefined,
+    validationMessage ? STORAGE_LOCATION_VALIDATION_MESSAGE_ID : undefined,
+  ].filter(Boolean);
+  const validationMessageId =
+    describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
   const displayedPath =
     currentPath || intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
@@ -339,6 +345,17 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             />
           </button>
         </div>
+        {storageHelpText && (
+          <p
+            className={classNames(
+              styles.storageSubtext,
+              styles.storageHelpText
+            )}
+            id={STORAGE_LOCATION_HELP_TEXT_ID}
+          >
+            {storageHelpText}
+          </p>
+        )}
         <div className={styles.resetActionRow}>
           {canResetToDefault && (
             <button

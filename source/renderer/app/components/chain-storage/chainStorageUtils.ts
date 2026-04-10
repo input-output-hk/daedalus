@@ -40,11 +40,33 @@ export const getValidationMessage = (
       return intl.formatMessage(messages.validationNotWritable);
     case 'inside-state-dir':
       return intl.formatMessage(messages.validationInsideStateDir);
+    case 'is-managed-child':
+      return intl.formatMessage(messages.validationIsManagedChild);
     case 'insufficient-space':
       return intl.formatMessage(messages.validationInsufficientSpace);
+    case 'path-is-file':
+      return intl.formatMessage(messages.subdirectoryErrorConflict);
     case 'unknown':
     default:
       return intl.formatMessage(messages.validationUnknown);
+  }
+};
+
+export const getStorageHelpText = (
+  intl: Intl,
+  validation?: ChainStorageValidation
+): string | null => {
+  if (!validation || !validation.isValid) {
+    return null;
+  }
+
+  switch (validation.chainSubdirectoryStatus) {
+    case 'will-create':
+      return intl.formatMessage(messages.subdirectoryCreationNotice);
+    case 'existing-directory':
+      return intl.formatMessage(messages.subdirectoryWarningExists);
+    default:
+      return null;
   }
 };
 
