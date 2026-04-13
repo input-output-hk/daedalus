@@ -44,6 +44,7 @@ describe('ChainStorageLocationPicker', () => {
           defaultChainPath="/tmp/state/chain"
           defaultChainStorageValidation={defaultValidation}
           chainStorageValidation={customValidation}
+          isRecoveryFallback={false}
           isChainStorageLoading={false}
           onSetChainStorageDirectory={jest.fn()}
           onResetChainStorageDirectory={jest.fn()}
@@ -287,5 +288,107 @@ describe('ChainStorageLocationPicker', () => {
       });
       await Promise.resolve();
     });
+  });
+
+  it('focuses and announces the recovery fallback notice on initial render', () => {
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+    });
+
+    const recoveryNotice = screen.getByText(
+      /we couldn't access your previous storage location/i
+    );
+
+    expect(recoveryNotice).toHaveAttribute('role', 'status');
+    expect(recoveryNotice).toHaveAttribute('aria-live', 'polite');
+    expect(recoveryNotice).toHaveFocus();
+  });
+
+  it('clears the recovery notice after choosing a new directory', async () => {
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/new-chain',
+      resolvedPath: '/mnt/new-chain',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/new-chain'],
+    });
+
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/new-chain'
+      );
+    });
+
+    expect(
+      screen.queryByText(/we couldn't access your previous storage location/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears the recovery notice immediately after continue is clicked', async () => {
+    const onConfirmStorageLocation = jest.fn();
+
+    renderComponent({
+      customChainPath: null,
+      chainStorageValidation: defaultValidation,
+      isRecoveryFallback: true,
+      onConfirmStorageLocation,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    await waitFor(() => {
+      expect(onConfirmStorageLocation).toHaveBeenCalled();
+    });
+
+    expect(
+      screen.queryByText(/we couldn't access your previous storage location/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the data-found notice instead of the existing-directory help text', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+        chainSubdirectoryStatus: 'existing-directory',
+      },
+      isRecoveryFallback: true,
+    });
+
+    const input = screen.getByLabelText(/blockchain data location/i);
+    const recoveryNotice = screen.getByText(
+      /we couldn't access your previous storage location/i
+    );
+    const dataFoundNotice = screen.getByText(
+      /existing blockchain data found\. proceeding will reuse this data\./i
+    );
+    const describedByIds =
+      input.getAttribute('aria-describedby')?.split(' ') ?? [];
+
+    expect(
+      screen.queryByText(/will use the existing chain subdirectory/i)
+    ).not.toBeInTheDocument();
+    expect(dataFoundNotice).toBeInTheDocument();
+    expect(describedByIds).toContain(recoveryNotice.getAttribute('id'));
+    expect(describedByIds).toContain(dataFoundNotice.getAttribute('id'));
   });
 });

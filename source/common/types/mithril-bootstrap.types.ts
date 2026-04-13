@@ -84,6 +84,11 @@ export type ChainStorageConfig = {
   defaultPath: string;
   availableSpaceBytes: number;
   requiredSpaceBytes: number;
+  isRecoveryFallback?: boolean;
+  /**
+   * @deprecated Legacy config-file metadata retained for rollout tolerance only.
+   * @removal Consider removing after the next major release.
+   */
   setAt?: string;
 };
 

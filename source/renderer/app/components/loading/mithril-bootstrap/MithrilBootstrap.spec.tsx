@@ -66,6 +66,7 @@ describe('MithrilBootstrap', () => {
             path: '/mnt/current-chain',
             resolvedPath: '/mnt/current-chain',
           }}
+          isRecoveryFallback={false}
           storageLocationConfirmed
           snapshots={snapshots}
           selectedDigest="latest"
@@ -143,6 +144,23 @@ describe('MithrilBootstrap', () => {
     expect(
       screen.queryByRole('button', { name: /use mithril fast sync/i })
     ).not.toBeInTheDocument();
+  });
+
+  it('passes the recovery fallback notice through to the storage picker', () => {
+    renderComponent({
+      storageLocationConfirmed: false,
+      customChainPath: null,
+      chainStorageValidation: {
+        isValid: true,
+        path: null,
+        resolvedPath: '/tmp/state/chain',
+      },
+      isRecoveryFallback: true,
+    });
+
+    expect(
+      screen.getByText(/we couldn't access your previous storage location/i)
+    ).toBeInTheDocument();
   });
 
   it('shows the progress view for active bootstrap statuses', () => {

@@ -133,6 +133,12 @@ export const createSelfnodeConfig = async (
   logger.info('Generated selfnode genesis hash', {
     genesisHash,
   });
+  logger.info('Resetting selfnode chain storage...', {
+    stateDir,
+  });
+  const chainStorageManager = new ChainStorageManager(stateDir);
+  await chainStorageManager.unlinkChainEntryPoint();
+  await chainStorageManager.resetToDefault();
   const configFileExists = await fs.pathExists(configFilePath);
 
   if (!configFileExists) {
@@ -153,12 +159,6 @@ export const createSelfnodeConfig = async (
   });
   await fs.remove(configPath);
   await fs.writeFile(configPath, configFile);
-  logger.info('Resetting selfnode chain storage...', {
-    stateDir,
-  });
-  const chainStorageManager = new ChainStorageManager(stateDir);
-  await chainStorageManager.unlinkChainEntryPoint();
-  await chainStorageManager.resetToDefault();
   const walletsDir = path.join(stateDir, 'wallets');
   logger.info('Removing selfnode wallets folder...', {
     walletsDir,

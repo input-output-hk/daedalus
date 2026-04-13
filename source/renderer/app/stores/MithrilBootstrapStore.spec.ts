@@ -141,7 +141,23 @@ describe('MithrilBootstrapStore', () => {
       path: '/mnt/external/daedalus-chain',
       resolvedPath: '/mnt/external/daedalus-chain',
     });
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.isChainStorageLoading).toBe(false);
+  });
+
+  it('stores recovery fallback state from the IPC config response', async () => {
+    const store = setupStore();
+    mockGetChainStorageDirectoryRequest.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 987654321,
+      requiredSpaceBytes: 654321,
+      isRecoveryFallback: true,
+    });
+
+    await store.loadChainStorageConfig();
+
+    expect(store.isRecoveryFallback).toBe(true);
   });
 
   it('surfaces invalid startup custom path validation through store state', async () => {
@@ -203,6 +219,7 @@ describe('MithrilBootstrapStore', () => {
 
   it('sets custom chain storage path when validation succeeds', async () => {
     const store = setupStore();
+    store.isRecoveryFallback = true;
     mockSetChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
       path: '/mnt/custom-chain',
@@ -225,6 +242,7 @@ describe('MithrilBootstrapStore', () => {
       path: '/mnt/custom-chain',
       resolvedPath: '/mnt/custom-chain',
     });
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.isChainStorageLoading).toBe(false);
   });
 
@@ -252,6 +270,7 @@ describe('MithrilBootstrapStore', () => {
   it('resets chain storage to default through dedicated action', async () => {
     const store = setupStore();
     store.defaultChainPath = '/tmp/state/chain';
+    store.isRecoveryFallback = true;
     mockSetChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,
       path: null,
@@ -281,6 +300,7 @@ describe('MithrilBootstrapStore', () => {
       availableSpaceBytes: 456789,
       requiredSpaceBytes: 654321,
     });
+    expect(store.isRecoveryFallback).toBe(false);
   });
 
   it('validates chain storage directory without mutating selected config', async () => {
@@ -307,9 +327,11 @@ describe('MithrilBootstrapStore', () => {
 
   it('marks storage location as confirmed when requested', () => {
     const store = setupStore();
+    store.isRecoveryFallback = true;
 
     expect(store.storageLocationConfirmed).toBe(false);
     store.confirmStorageLocation();
+    expect(store.isRecoveryFallback).toBe(false);
     expect(store.storageLocationConfirmed).toBe(true);
   });
 

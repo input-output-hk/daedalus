@@ -59,6 +59,20 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Available disk space: {availableSpace}',
     description: 'Subtext shown below the storage location input.',
   },
+  recoveryNotice: {
+    id: 'chainStorage.locationPicker.recoveryNotice',
+    defaultMessage:
+      "!!!We couldn't access your previous storage location. A default fallback location has been selected. You can proceed with this or choose a new one.",
+    description:
+      'Notice shown when Daedalus falls back to the default chain storage location after the previous location becomes unavailable.',
+  },
+  dataFoundNotice: {
+    id: 'chainStorage.locationPicker.dataFoundNotice',
+    defaultMessage:
+      '!!!Existing blockchain data found. Proceeding will reuse this data.',
+    description:
+      'Notice shown when the selected blockchain data location already contains chain data that will be reused.',
+  },
   subdirectoryCreationNotice: {
     id: 'chainStorage.locationPicker.subdirectoryCreationNotice',
     defaultMessage:

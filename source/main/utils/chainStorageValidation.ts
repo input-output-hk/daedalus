@@ -7,8 +7,7 @@ import {
   ChainStorageValidation,
 } from '../../common/types/mithril-bootstrap.types';
 import { logger } from './logging';
-
-const CHAIN_DIRECTORY_NAME = 'chain';
+import { CHAIN_DIRECTORY_NAME } from './chainStorageManagerShared';
 
 type GetDefaultConfig = () => Promise<
   Pick<

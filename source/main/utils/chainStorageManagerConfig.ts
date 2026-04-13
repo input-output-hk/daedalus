@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs-extra';
 import checkDiskSpace from 'check-disk-space';
 import { DISK_SPACE_REQUIRED } from '../config';
 import type {
@@ -37,45 +36,38 @@ export async function getConfig(
 ): Promise<ChainStorageConfig> {
   try {
     const defaultStorageConfig = await ctx._getDefaultStorageConfig();
-    const configExists = await fs.pathExists(ctx._configPath);
+    const chainState = await ctx._captureChainPathState();
+    let customPath = null;
 
-    if (!configExists) {
-      return {
-        customPath: null,
-        ...defaultStorageConfig,
-      };
+    if (chainState.type === 'symlink' && chainState.resolvedPath) {
+      customPath = path.dirname(chainState.resolvedPath);
     }
-
-    const parsed = await fs.readJson(ctx._configPath);
-    const customPath =
-      typeof parsed?.customPath === 'string' && parsed.customPath.trim()
-        ? parsed.customPath.trim()
-        : null;
-    const setAt =
-      typeof parsed?.setAt === 'string' && parsed.setAt.trim()
-        ? parsed.setAt.trim()
-        : undefined;
 
     return {
       customPath,
       ...defaultStorageConfig,
-      setAt,
+      isRecoveryFallback: ctx._isRecoveryFallback || undefined,
     };
   } catch (error) {
-    logger.warn('ChainStorageManager: failed to read storage config', {
+    logger.warn('ChainStorageManager: failed to derive storage config', {
       error,
-      configPath: ctx._configPath,
+      chainPath: ctx._chainPath,
     });
 
     try {
       const fallbackConfig = await ctx._getDefaultStorageConfig();
-      return { customPath: null, ...fallbackConfig };
+      return {
+        customPath: null,
+        ...fallbackConfig,
+        isRecoveryFallback: ctx._isRecoveryFallback || undefined,
+      };
     } catch {
       return {
         customPath: null,
         defaultPath: ctx._chainPath,
         availableSpaceBytes: Number.NaN,
         requiredSpaceBytes: DISK_SPACE_REQUIRED,
+        isRecoveryFallback: ctx._isRecoveryFallback || undefined,
       };
     }
   }
@@ -96,58 +88,4 @@ export async function validate(
       currentCustomPath: config.customPath,
     }
   );
-}
-
-export async function verifySymlink(
-  ctx: ChainStorageManagerContext
-): Promise<ChainStorageValidation> {
-  const config = await ctx.getConfig();
-  if (!config.customPath) {
-    return {
-      isValid: true,
-      path: null,
-    };
-  }
-
-  const resolvedCustomPath = await ctx._resolveRealPathOrInput(
-    config.customPath
-  );
-  const expectedManagedChainPath = ctx._getManagedChainPath(resolvedCustomPath);
-  const chainState = await ctx._captureChainPathState();
-
-  if (chainState.type !== 'symlink') {
-    return {
-      isValid: false,
-      path: config.customPath,
-      reason: 'unknown',
-      message: 'Chain path is not a symlink or junction.',
-    };
-  }
-
-  if (!chainState.resolvedPath) {
-    return {
-      isValid: false,
-      path: config.customPath,
-      reason: 'path-not-found',
-      message: 'Chain symlink target is unavailable.',
-    };
-  }
-
-  if (!ctx._isSamePath(chainState.resolvedPath, expectedManagedChainPath)) {
-    return {
-      isValid: false,
-      path: config.customPath,
-      resolvedPath: chainState.resolvedPath,
-      reason: 'unknown',
-      message:
-        'Chain symlink target does not match the configured managed chain directory.',
-    };
-  }
-
-  return {
-    isValid: true,
-    path: config.customPath,
-    resolvedPath: chainState.resolvedPath,
-    chainSubdirectoryStatus: 'existing-directory',
-  };
 }

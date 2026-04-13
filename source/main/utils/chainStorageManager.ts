@@ -18,7 +18,6 @@ import {
   getConfig as getChainStorageConfig,
   getDefaultStorageConfig,
   validate as validateChainStorageConfig,
-  verifySymlink as verifyChainStorageSymlink,
 } from './chainStorageManagerConfig';
 import {
   adoptManagedLayout,
@@ -62,6 +61,7 @@ import type {
   ChainStorageMigrationJournal,
   EmptyManagedContentsOptions,
   EnsureManagedLayoutOptions,
+  ManagedChainLayoutResult,
 } from './chainStorageManagerShared';
 
 export { CHAIN_STORAGE_CONFIG_FILE, CHAIN_DIRECTORY_NAME };
@@ -72,6 +72,7 @@ export class ChainStorageManager {
   _chainPath: string;
   _logsDirectoryPath: string;
   _migrationJournalPath: string;
+  _isRecoveryFallback = false;
   _mutationQueue: Promise<void> = Promise.resolve();
 
   constructor(daedalusStateDirectoryPath: string = stateDirectoryPath) {
@@ -98,7 +99,9 @@ export class ChainStorageManager {
           : null;
 
       if (normalizedTargetDir == null) {
-        return this._resetToDefault();
+        const validation = await this._resetToDefault();
+        this._isRecoveryFallback = false;
+        return validation;
       }
 
       const previousConfig = await this.getConfig();
@@ -108,7 +111,9 @@ export class ChainStorageManager {
       );
 
       if (this._isSamePath(canonicalTargetDir, this._chainPath)) {
-        return this._resetToDefault();
+        const validation = await this._resetToDefault();
+        this._isRecoveryFallback = false;
+        return validation;
       }
 
       const validation = await this.validate(canonicalTargetDir);
@@ -143,20 +148,10 @@ export class ChainStorageManager {
       try {
         await fs.ensureDir(resolvedTargetPath);
         await this._replaceCustomChainEntryPoint(resolvedTargetPath);
-
-        const setAt = new Date().toISOString();
-        await fs.writeJson(
-          this._configPath,
-          {
-            customPath: validation.path,
-            setAt,
-          },
-          { spaces: 2 }
-        );
+        this._isRecoveryFallback = false;
       } catch (error) {
         await this._rollbackSetDirectory({
           previousState,
-          previousConfig,
           targetPath: resolvedTargetPath,
         });
         throw error;
@@ -170,33 +165,30 @@ export class ChainStorageManager {
   }
 
   async resetToDefault(): Promise<ChainStorageValidation> {
-    return this._withMutationLock('resetToDefault', async () =>
-      this._resetToDefault()
-    );
+    return this._withMutationLock('resetToDefault', async () => {
+      const validation = await this._resetToDefault();
+      this._isRecoveryFallback = false;
+      return validation;
+    });
   }
 
   async ensureManagedChainLayout(
     options: EnsureManagedLayoutOptions = {}
-  ): Promise<string> {
+  ): Promise<ManagedChainLayoutResult> {
     return this._withMutationLock('ensureManagedChainLayout', async () => {
-      return this._ensureManagedChainLayout(options);
+      const layoutResult = await this._ensureManagedChainLayout(options);
+      this._isRecoveryFallback =
+        this._isRecoveryFallback || layoutResult.isRecoveryFallback;
+      return layoutResult;
     });
   }
 
-  async verifySymlink(): Promise<ChainStorageValidation> {
-    return verifyChainStorageSymlink(this);
-  }
-
   async resolveChainStoragePath(): Promise<string> {
-    return resolveChainStoragePathFn(this._stateDirectoryPath, () =>
-      this.getConfig()
-    );
+    return resolveChainStoragePathFn(this._stateDirectoryPath);
   }
 
   async resolveMithrilWorkDir(): Promise<string> {
-    return resolveMithrilWorkDirFn(this._stateDirectoryPath, () =>
-      this.getConfig()
-    );
+    return resolveMithrilWorkDirFn(this._stateDirectoryPath);
   }
 
   async resolveDiskSpaceCheckPath(): Promise<string> {
@@ -334,16 +326,13 @@ export class ChainStorageManager {
 
   async _rollbackSetDirectory({
     previousState,
-    previousConfig,
     targetPath,
   }: {
     previousState: ChainPathState;
-    previousConfig: ChainStorageConfig;
     targetPath: string;
   }): Promise<void> {
     return rollbackSetDirectory(this, {
       previousState,
-      previousConfig,
       targetPath,
     });
   }
@@ -358,7 +347,7 @@ export class ChainStorageManager {
 
   async _ensureManagedChainLayout(
     options: EnsureManagedLayoutOptions = {}
-  ): Promise<string> {
+  ): Promise<ManagedChainLayoutResult> {
     return ensureManagedChainLayoutHelper(this, options);
   }
 

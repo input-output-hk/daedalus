@@ -9,32 +9,77 @@ import type {
   ChainStorageMigrationJournal,
   EmptyManagedContentsOptions,
   EnsureManagedLayoutOptions,
+  ManagedChainLayoutResult,
 } from './chainStorageManagerShared';
 import { isPathWithin, toIsoString } from './chainStorageManagerShared';
+
+const toLayoutResult = (
+  managedChainPath: string,
+  isRecoveryFallback = false
+): ManagedChainLayoutResult => ({
+  managedChainPath,
+  isRecoveryFallback,
+});
+
+const cleanupLegacyConfigIfPresent = async (
+  ctx: ChainStorageManagerContext
+): Promise<void> => {
+  try {
+    if (await fs.pathExists(ctx._configPath)) {
+      await fs.remove(ctx._configPath);
+    }
+  } catch (error) {
+    logger.warn(
+      'ChainStorageManager: failed to remove legacy chain storage config',
+      {
+        error,
+        configPath: ctx._configPath,
+      }
+    );
+  }
+};
 
 export async function ensureManagedChainLayout(
   ctx: ChainStorageManagerContext,
   options: EnsureManagedLayoutOptions = {}
-): Promise<string> {
+): Promise<ManagedChainLayoutResult> {
   await ctx._recoverInterruptedMigration(options);
-  const config = await ctx.getConfig();
+  await cleanupLegacyConfigIfPresent(ctx);
+  const entryPointState = await ctx._captureChainPathState();
 
-  if (!config.customPath) {
+  if (entryPointState.type !== 'symlink') {
     await ctx._ensureDefaultChainDirectory();
-    return ctx._getManagedChainPath(null);
+    return toLayoutResult(ctx._getManagedChainPath(null));
   }
 
-  const layout = await ctx._detectLayout(config.customPath);
+  const currentChainTarget =
+    entryPointState.resolvedPath || entryPointState.linkTargetPath;
+  const customPath = currentChainTarget
+    ? path.dirname(currentChainTarget)
+    : null;
+
+  if (!customPath) {
+    await ctx._ensureDefaultChainDirectory();
+    logger.warn(
+      'ChainStorageManager: recovered missing custom chain target by falling back to default storage',
+      {
+        chainPath: ctx._chainPath,
+      }
+    );
+    return toLayoutResult(ctx._getManagedChainPath(null), true);
+  }
+
+  const layout = await ctx._detectLayout(customPath);
 
   switch (layout.kind) {
     case 'managed-custom-root': {
       await ctx._adoptManagedLayout(layout);
-      break;
+      return toLayoutResult(layout.managedChainPath);
     }
 
     case 'inconsistent': {
       await ctx._adoptManagedLayout(layout);
-      break;
+      return toLayoutResult(layout.managedChainPath);
     }
 
     case 'legacy-custom-root': {
@@ -43,13 +88,13 @@ export async function ensureManagedChainLayout(
         'migrate legacy chain storage layout'
       );
       await ctx._migrateLegacyCustomLayout(layout);
-      break;
+      return toLayoutResult(layout.managedChainPath);
     }
 
     case 'broken-link': {
       if (layout.managedChainIsDirectory) {
         await ctx._adoptManagedLayout(layout);
-        break;
+        return toLayoutResult(layout.managedChainPath);
       }
 
       if (layout.managedLegacyEntries.length > 0) {
@@ -58,22 +103,27 @@ export async function ensureManagedChainLayout(
           'recover legacy chain storage layout'
         );
         await ctx._migrateLegacyCustomLayout(layout);
-        break;
+        return toLayoutResult(layout.managedChainPath);
       }
 
-      throw new Error(
-        'Configured chain storage entry point is unavailable and could not be recovered.'
+      await ctx._ensureDefaultChainDirectory();
+      logger.warn(
+        'ChainStorageManager: fell back to default storage after unrecoverable custom chain target failure',
+        {
+          chainPath: ctx._chainPath,
+          customPath: layout.customPath,
+          managedChainPath: layout.managedChainPath,
+        }
       );
+      return toLayoutResult(ctx._getManagedChainPath(null), true);
     }
 
     case 'default':
     default: {
       await ctx._ensureDefaultChainDirectory();
-      break;
+      return toLayoutResult(ctx._getManagedChainPath(null));
     }
   }
-
-  return ctx._getManagedChainPath(config.customPath);
 }
 
 export async function detectLayout(

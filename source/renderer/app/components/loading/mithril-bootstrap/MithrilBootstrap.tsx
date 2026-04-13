@@ -26,6 +26,7 @@ interface Props {
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
+  isRecoveryFallback?: boolean;
   latestSnapshotSize?: number;
   isChainStorageLoading?: boolean;
   storageLocationConfirmed?: boolean;
@@ -108,6 +109,7 @@ function MithrilBootstrap(props: Props) {
     defaultChainPath,
     defaultChainStorageValidation,
     chainStorageValidation,
+    isRecoveryFallback,
     latestSnapshotSize,
     isChainStorageLoading,
     storageLocationConfirmed,
@@ -139,6 +141,7 @@ function MithrilBootstrap(props: Props) {
         defaultChainPath={defaultChainPath}
         defaultChainStorageValidation={defaultChainStorageValidation}
         chainStorageValidation={chainStorageValidation}
+        isRecoveryFallback={isRecoveryFallback}
         estimatedRequiredSpaceBytes={latestSnapshotSize}
         isChainStorageLoading={isChainStorageLoading}
         onSetChainStorageDirectory={onSetChainStorageDirectory}

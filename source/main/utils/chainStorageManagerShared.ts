@@ -7,6 +7,7 @@ import type {
 import { logger } from './logging';
 import type { ResolvedStateDirectory } from './chainStoragePathResolver';
 
+/** @deprecated Retained solely for legacy config cleanup on startup. See cleanupLegacyConfigIfPresent(). */
 export const CHAIN_STORAGE_CONFIG_FILE = 'chain-storage-config.json';
 export const CHAIN_DIRECTORY_NAME = 'chain';
 
@@ -25,6 +26,12 @@ export const LEGACY_MANAGED_CHAIN_ENTRIES = new Set([
 export type ChainPathState = {
   type: 'missing' | 'directory' | 'symlink';
   resolvedPath?: string;
+  linkTargetPath?: string;
+};
+
+export type ManagedChainLayoutResult = {
+  managedChainPath: string;
+  isRecoveryFallback: boolean;
 };
 
 export type ChainStorageLayoutKind =
@@ -87,6 +94,7 @@ export interface ChainStorageManagerContext {
   _chainPath: string;
   _logsDirectoryPath: string;
   _migrationJournalPath: string;
+  _isRecoveryFallback: boolean;
   getConfig(): Promise<ChainStorageConfig>;
   getManagedChainPath(): Promise<string>;
   _getDefaultStorageConfig(): Promise<ChainStorageDefaults>;
@@ -139,7 +147,7 @@ export interface ChainStorageManagerContext {
   }): Promise<void>;
   _ensureManagedChainLayout(
     options?: EnsureManagedLayoutOptions
-  ): Promise<string>;
+  ): Promise<ManagedChainLayoutResult>;
 }
 
 export const toIsoString = () => new Date().toISOString();
@@ -169,9 +177,29 @@ export async function captureChainPathState(
   }
 
   if (stats.isSymbolicLink()) {
+    let linkTargetPath: string | undefined;
+
+    try {
+      const rawLinkTarget = await fs.readlink(ctx._chainPath);
+      linkTargetPath = path.isAbsolute(rawLinkTarget)
+        ? rawLinkTarget
+        : path.resolve(path.dirname(ctx._chainPath), rawLinkTarget);
+    } catch (error) {
+      if (!isPathNotFoundError(error)) {
+        logger.warn(
+          'ChainStorageManager: failed to read chain entry point target',
+          {
+            error,
+            chainPath: ctx._chainPath,
+          }
+        );
+      }
+    }
+
     try {
       return {
         type: 'symlink',
+        linkTargetPath,
         resolvedPath: await fs.realpath(ctx._chainPath),
       };
     } catch (error) {
@@ -179,7 +207,48 @@ export async function captureChainPathState(
         error,
         chainPath: ctx._chainPath,
       });
-      return { type: 'symlink' };
+      return { type: 'symlink', linkTargetPath };
+    }
+  }
+
+  if (process.platform === 'win32' && stats.isDirectory()) {
+    try {
+      const rawLinkTarget = await fs.readlink(ctx._chainPath);
+      const linkTargetPath = path.isAbsolute(rawLinkTarget)
+        ? rawLinkTarget
+        : path.resolve(path.dirname(ctx._chainPath), rawLinkTarget);
+
+      try {
+        return {
+          type: 'symlink',
+          linkTargetPath,
+          resolvedPath: await fs.realpath(ctx._chainPath),
+        };
+      } catch (error) {
+        logger.warn(
+          'ChainStorageManager: failed to snapshot Windows junction state',
+          {
+            error,
+            chainPath: ctx._chainPath,
+          }
+        );
+        return { type: 'symlink', linkTargetPath };
+      }
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException)?.code;
+      if (
+        !isPathNotFoundError(error) &&
+        code !== 'EINVAL' &&
+        code !== 'UNKNOWN'
+      ) {
+        logger.warn(
+          'ChainStorageManager: failed to inspect Windows junction target',
+          {
+            error,
+            chainPath: ctx._chainPath,
+          }
+        );
+      }
     }
   }
 
@@ -197,11 +266,9 @@ export async function rollbackSetDirectory(
   ctx: ChainStorageManagerContext,
   {
     previousState,
-    previousConfig,
     targetPath,
   }: {
     previousState: ChainPathState;
-    previousConfig: ChainStorageConfig;
     targetPath: string;
   }
 ): Promise<void> {
@@ -234,19 +301,6 @@ export async function rollbackSetDirectory(
         break;
       }
     }
-
-    if (previousConfig.customPath) {
-      await fs.writeJson(
-        ctx._configPath,
-        {
-          customPath: previousConfig.customPath,
-          setAt: previousConfig.setAt,
-        },
-        { spaces: 2 }
-      );
-    } else {
-      await fs.remove(ctx._configPath);
-    }
   } catch (rollbackError) {
     logger.error('ChainStorageManager: failed to rollback setDirectory', {
       rollbackError,
@@ -259,7 +313,6 @@ export async function resetToDefault(
 ): Promise<ChainStorageValidation> {
   await fs.remove(ctx._chainPath);
   await fs.ensureDir(ctx._chainPath);
-  await fs.remove(ctx._configPath);
 
   const defaultStorageConfig = await ctx._getDefaultStorageConfig();
 

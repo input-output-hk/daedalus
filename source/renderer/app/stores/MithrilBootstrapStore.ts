@@ -65,6 +65,7 @@ export default class MithrilBootstrapStore extends Store {
     path: null,
   };
   @observable isChainStorageLoading = false;
+  @observable isRecoveryFallback = false;
   @observable storageLocationConfirmed = false;
   @observable ancillaryBytesDownloaded: number | undefined = undefined;
   @observable ancillaryBytesTotal: number | undefined = undefined;
@@ -266,6 +267,7 @@ export default class MithrilBootstrapStore extends Store {
         this.defaultChainPath = config?.defaultPath ?? null;
         this.defaultChainStorageValidation = defaultValidation;
         this.chainStorageValidation = validation;
+        this.isRecoveryFallback = Boolean(config?.isRecoveryFallback);
       });
     } catch (error) {
       logger.warn(
@@ -291,6 +293,7 @@ export default class MithrilBootstrapStore extends Store {
       });
 
       runInAction('set chain storage directory', () => {
+        this.isRecoveryFallback = false;
         this.chainStorageValidation = validation;
         if (validation.isValid) {
           this.customChainPath = validation.path ?? null;
@@ -338,6 +341,7 @@ export default class MithrilBootstrapStore extends Store {
 
   @action
   confirmStorageLocation = () => {
+    this.isRecoveryFallback = false;
     this.storageLocationConfirmed = true;
   };
 

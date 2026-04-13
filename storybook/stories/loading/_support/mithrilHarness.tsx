@@ -89,8 +89,10 @@ interface ManagedChainStorageLocationPickerProps {
   customChainPath?: string | null;
   defaultChainPath?: string | null;
   validationPreset: ValidationPresetName;
+  defaultChainStorageValidation?: ChainStorageValidation;
   estimatedRequiredSpaceBytes?: number;
   availableSpaceBytes?: number;
+  isRecoveryFallback?: boolean;
   isChainStorageLoading?: boolean;
 }
 
@@ -98,8 +100,10 @@ export function ManagedChainStorageLocationPicker({
   customChainPath = null,
   defaultChainPath,
   validationPreset,
+  defaultChainStorageValidation: managedDefaultValidation = defaultChainStorageValidation,
   estimatedRequiredSpaceBytes,
   availableSpaceBytes,
+  isRecoveryFallback,
   isChainStorageLoading,
 }: ManagedChainStorageLocationPickerProps) {
   const [currentCustomPath, setCurrentCustomPath] = useState<string | null>(
@@ -141,8 +145,9 @@ export function ManagedChainStorageLocationPicker({
     <ChainStorageLocationPicker
       customChainPath={currentCustomPath}
       defaultChainPath={defaultChainPath}
-      defaultChainStorageValidation={defaultChainStorageValidation}
+      defaultChainStorageValidation={managedDefaultValidation}
       chainStorageValidation={currentValidation}
+      isRecoveryFallback={isRecoveryFallback}
       estimatedRequiredSpaceBytes={estimatedRequiredSpaceBytes}
       isChainStorageLoading={isChainStorageLoading}
       onSetChainStorageDirectory={async (path) => {
@@ -161,7 +166,7 @@ export function ManagedChainStorageLocationPicker({
         bootstrapActions.onResetChainStorageDirectory();
         setCurrentCustomPath(null);
         setCurrentValidation(undefined);
-        return defaultChainStorageValidation;
+        return managedDefaultValidation;
       }}
       onValidateChainStorageDirectory={async (path) => {
         bootstrapActions.onValidateChainStorageDirectory(path);
@@ -191,6 +196,7 @@ interface ManagedMithrilBootstrapProps {
   isFetchingSnapshots: boolean;
   validationPreset: ValidationPresetName;
   availableSpaceBytes?: number;
+  isRecoveryFallback?: boolean;
   isChainStorageLoading?: boolean;
   bytesDownloaded?: number;
   snapshotSize?: number;
@@ -214,6 +220,7 @@ export function ManagedMithrilBootstrap({
   isFetchingSnapshots,
   validationPreset,
   availableSpaceBytes,
+  isRecoveryFallback,
   isChainStorageLoading,
   bytesDownloaded,
   snapshotSize,
@@ -289,6 +296,7 @@ export function ManagedMithrilBootstrap({
       defaultChainPath={defaultChainPath}
       defaultChainStorageValidation={defaultValidation}
       chainStorageValidation={currentValidation}
+      isRecoveryFallback={isRecoveryFallback}
       latestSnapshotSize={latestSnapshotSize}
       isChainStorageLoading={isChainStorageLoading}
       isFetchingSnapshots={isFetchingSnapshots}

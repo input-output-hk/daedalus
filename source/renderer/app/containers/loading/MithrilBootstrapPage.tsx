@@ -160,6 +160,7 @@ class MithrilBootstrapPage extends Component<Props> {
           mithrilBootstrap.defaultChainStorageValidation
         }
         chainStorageValidation={mithrilBootstrap.chainStorageValidation}
+        isRecoveryFallback={mithrilBootstrap.isRecoveryFallback}
         latestSnapshotSize={latestSnapshot?.size}
         isChainStorageLoading={mithrilBootstrap.isChainStorageLoading}
         storageLocationConfirmed={mithrilBootstrap.storageLocationConfirmed}

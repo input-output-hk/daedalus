@@ -7,12 +7,14 @@ import type {
 import { MithrilBootstrapService } from '../mithril/MithrilBootstrapService';
 import { logger } from './logging';
 import { ChainStorageManager } from './chainStorageManager';
+import type { ManagedChainLayoutResult } from './chainStorageManagerShared';
 
 class ChainStorageCoordinator {
   _chainStorageManager: ChainStorageManager;
   _mithrilBootstrapService: MithrilBootstrapService;
   _mutationQueue: Promise<void> = Promise.resolve();
   _bootstrapInProgress = false;
+  _directoryChangedCallbacks: Array<() => void> = [];
 
   constructor() {
     this._chainStorageManager = new ChainStorageManager();
@@ -31,6 +33,7 @@ class ChainStorageCoordinator {
   }
 
   async getConfig(): Promise<ChainStorageConfig> {
+    await this._awaitPendingMutations();
     return this._chainStorageManager.getConfig();
   }
 
@@ -38,8 +41,8 @@ class ChainStorageCoordinator {
     return this._chainStorageManager.validate(path);
   }
 
-  async verifySymlink(): Promise<ChainStorageValidation> {
-    return this._chainStorageManager.verifySymlink();
+  onDirectoryChanged(callback: () => void): void {
+    this._directoryChangedCallbacks.push(callback);
   }
 
   async setDirectory(path: string | null): Promise<ChainStorageValidation> {
@@ -51,14 +54,19 @@ class ChainStorageCoordinator {
           ? await this._chainStorageManager.resetToDefault()
           : await this._chainStorageManager.setDirectory(path);
 
+      if (!validation.isValid) {
+        return validation;
+      }
+
       await this._syncMithrilWorkDir();
+      this._notifyDirectoryChanged();
       return validation;
     });
   }
 
   async ensureManagedChainLayout(
     nodeState?: CardanoNodeState | null
-  ): Promise<string> {
+  ): Promise<ManagedChainLayoutResult> {
     return this._withMutationLock('ensureManagedChainLayout', async () => {
       return this._ensureManagedChainLayoutAndSyncWorkDir(nodeState);
     });
@@ -99,7 +107,24 @@ class ChainStorageCoordinator {
         throw new Error('Mithril bootstrap is already in progress.');
       }
 
-      await this._ensureManagedChainLayoutAndSyncWorkDir(options?.nodeState);
+      const layoutResult = await this._ensureManagedChainLayoutAndSyncWorkDir(
+        options?.nodeState
+      );
+      if (!options?.wipeChain) {
+        const isManagedChainEmpty = await this._chainStorageManager.isManagedChainEmpty();
+
+        if (!isManagedChainEmpty) {
+          logger.warn(
+            '[MITHRIL] Rejecting bootstrap start on non-empty managed chain without wipeChain',
+            {
+              managedChainPath: layoutResult.managedChainPath,
+            }
+          );
+          throw new Error(
+            'Cannot start Mithril bootstrap on a non-empty managed chain without wipeChain.'
+          );
+        }
+      }
       this._bootstrapInProgress = true;
     });
 
@@ -140,13 +165,32 @@ class ChainStorageCoordinator {
 
   async _ensureManagedChainLayoutAndSyncWorkDir(
     nodeState?: CardanoNodeState | null
-  ): Promise<string> {
-    const managedChainPath = await this._chainStorageManager.ensureManagedChainLayout(
+  ): Promise<ManagedChainLayoutResult> {
+    const layoutResult = await this._chainStorageManager.ensureManagedChainLayout(
       { nodeState }
     );
 
     await this._syncMithrilWorkDir();
-    return managedChainPath;
+    return layoutResult;
+  }
+
+  async _awaitPendingMutations(): Promise<void> {
+    await this._mutationQueue.catch(() => undefined);
+  }
+
+  _notifyDirectoryChanged(): void {
+    for (const callback of this._directoryChangedCallbacks) {
+      try {
+        callback();
+      } catch (error) {
+        logger.warn(
+          'ChainStorageCoordinator: directory-change callback failed',
+          {
+            error,
+          }
+        );
+      }
+    }
   }
 
   async _withMutationLock<T>(

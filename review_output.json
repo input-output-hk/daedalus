@@ -1,0 +1,35 @@
+{
+  "status": "completed",
+  "taskId": "review-gemini-sync-bypass",
+  "summary": "Review completed. Implementation generally matches the plan, but there are issues such as missing generation checks before starting cardano-node and selfnode bypass.",
+  "details": {
+    "findings": [
+      {
+        "issue": "System Consistency: Selfnode bypasses coordinator",
+        "description": "In source/main/cardano/utils.ts, a new ChainStorageManager is instantiated directly and resetToDefault is called. This bypasses the chainStorageCoordinator entirely, thus missing the onDirectoryChanged listener. While selfnode is a dev feature, it violates the architectural rule that storage mutations should route through the coordinator."
+      },
+      {
+        "issue": "Hidden Regression: Race condition around idle status emission",
+        "description": "In handleDiskSpace.ts non-empty branch, `await emitMithrilIdleStatus()` is called before `await cardanoNode.start()`. There is no generation check before `cardanoNode.start()`, meaning that if a directory changes during the idle emission, the node might start anyway. The plan mandates checking generation around await boundaries, including `cardanoNode.start`."
+      },
+      {
+        "issue": "Hidden Regression: Unhandled Promise Rejection risk in resetMithrilDecisionState",
+        "description": "In resetMithrilDecisionState (mithrilBootstrapChannel.ts), broadcastMithrilBootstrapStatus(update).catch(...) is used. However, if sendStatusUpdate throws synchronously, it could cause an unhandled rejection, although it is an async function. Waiters are rejected with MithrilDecisionCancelledError, which properly handles .catch blocks in handleDiskSpace.ts."
+      }
+    ],
+    "approvalStatus": "request-changes",
+    "confidence": 0.95
+  },
+  "cycleFeedback": {
+    "summary": "Implementation needs minor fixes for stale check boundaries.",
+    "whatWorked": [
+      "The atomic reset and cancellation structures were correctly implemented."
+    ],
+    "frictionPoints": [
+      "Stale generation checks were missed in some branches before node start."
+    ],
+    "nextCycleAdvice": [
+      "Ensure that all await boundaries, including emitMithrilIdleStatus, are followed by a generation check."
+    ]
+  }
+}

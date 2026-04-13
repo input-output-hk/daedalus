@@ -1,7 +1,8 @@
+import type {} from './chainStorageCoordinator';
+
 const chainStorageManagerMock = {
   getConfig: jest.fn(),
   validate: jest.fn(),
-  verifySymlink: jest.fn(),
   setDirectory: jest.fn(),
   resetToDefault: jest.fn(),
   ensureManagedChainLayout: jest.fn(),
@@ -60,15 +61,17 @@ describe('chainStorageCoordinator', () => {
     chainStorageManagerMock.resolveMithrilWorkDir.mockResolvedValue(
       '/mnt/custom-parent/chain'
     );
+    chainStorageManagerMock.isManagedChainEmpty.mockResolvedValue(true);
     mithrilBootstrapServiceMock.listSnapshots.mockResolvedValue([]);
     mithrilBootstrapServiceMock.startBootstrap.mockResolvedValue(undefined);
     mithrilBootstrapServiceMock.cancel.mockResolvedValue(undefined);
     mithrilBootstrapServiceMock.wipeChainAndSnapshots.mockResolvedValue(
       undefined
     );
-    chainStorageManagerMock.ensureManagedChainLayout.mockResolvedValue(
-      '/mnt/custom-parent/chain'
-    );
+    chainStorageManagerMock.ensureManagedChainLayout.mockResolvedValue({
+      managedChainPath: '/mnt/custom-parent/chain',
+      isRecoveryFallback: false,
+    });
   });
 
   it('exposes the singleton-backed manager and Mithril service accessors', () => {
@@ -143,7 +146,56 @@ describe('chainStorageCoordinator', () => {
     );
   });
 
+  it('waits for an in-flight layout mutation before reading config', async () => {
+    const layoutMutation = createDeferred();
+
+    chainStorageManagerMock.ensureManagedChainLayout.mockImplementationOnce(
+      async () => {
+        await layoutMutation.promise;
+        return {
+          managedChainPath: '/tmp/state/chain',
+          isRecoveryFallback: true,
+        };
+      }
+    );
+    chainStorageManagerMock.getConfig.mockResolvedValue({
+      customPath: null,
+      defaultPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+      isRecoveryFallback: true,
+    });
+
+    const moduleExports = loadModule();
+
+    const ensureLayoutCall = moduleExports.chainStorageCoordinator.ensureManagedChainLayout(
+      'stopped'
+    );
+
+    await flushPromises();
+
+    const getConfigCall = moduleExports.chainStorageCoordinator.getConfig();
+
+    await flushPromises();
+
+    expect(chainStorageManagerMock.getConfig).not.toHaveBeenCalled();
+
+    layoutMutation.resolve();
+
+    await ensureLayoutCall;
+    const config = await getConfigCall;
+
+    expect(chainStorageManagerMock.getConfig).toHaveBeenCalledTimes(1);
+    expect(config).toEqual(
+      expect.objectContaining({
+        isRecoveryFallback: true,
+        customPath: null,
+      })
+    );
+  });
+
   it('ensures managed layout and synced work dir before starting bootstrap', async () => {
+    chainStorageManagerMock.isManagedChainEmpty.mockResolvedValue(false);
     const moduleExports = loadModule();
 
     await moduleExports.chainStorageCoordinator.startBootstrap('digest-1', {
@@ -160,6 +212,28 @@ describe('chainStorageCoordinator', () => {
     expect(
       mithrilBootstrapServiceMock.startBootstrap
     ).toHaveBeenCalledWith('digest-1', { wipeChain: true });
+  });
+
+  it('rejects startBootstrap when the managed chain is non-empty and wipeChain is false', async () => {
+    chainStorageManagerMock.isManagedChainEmpty.mockResolvedValue(false);
+
+    const moduleExports = loadModule();
+
+    await expect(
+      moduleExports.chainStorageCoordinator.startBootstrap('digest-guard', {
+        nodeState: 'stopped',
+      })
+    ).rejects.toThrow(
+      'Cannot start Mithril bootstrap on a non-empty managed chain without wipeChain.'
+    );
+
+    expect(
+      chainStorageManagerMock.ensureManagedChainLayout
+    ).toHaveBeenCalledWith({ nodeState: 'stopped' });
+    expect(chainStorageManagerMock.isManagedChainEmpty).toHaveBeenCalledTimes(
+      1
+    );
+    expect(mithrilBootstrapServiceMock.startBootstrap).not.toHaveBeenCalled();
   });
 
   it('blocks setDirectory while bootstrap is in progress', async () => {
@@ -328,5 +402,76 @@ describe('chainStorageCoordinator', () => {
     ).toBeLessThan(
       chainStorageManagerMock.setDirectory.mock.invocationCallOrder[0]
     );
+  });
+
+  it('emits directory-change callbacks after a successful custom directory mutation', async () => {
+    chainStorageManagerMock.setDirectory.mockResolvedValue({
+      isValid: true,
+      path: '/mnt/next',
+      resolvedPath: '/mnt/next/chain',
+    });
+
+    const moduleExports = loadModule();
+    const onDirectoryChanged = jest.fn();
+
+    moduleExports.chainStorageCoordinator.onDirectoryChanged(
+      onDirectoryChanged
+    );
+
+    await moduleExports.chainStorageCoordinator.setDirectory('/mnt/next');
+
+    expect(onDirectoryChanged).toHaveBeenCalledTimes(1);
+    expect(mithrilBootstrapServiceMock.setWorkDir).toHaveBeenCalledWith(
+      '/mnt/custom-parent/chain'
+    );
+    expect(
+      mithrilBootstrapServiceMock.setWorkDir.mock.invocationCallOrder[0]
+    ).toBeLessThan(onDirectoryChanged.mock.invocationCallOrder[0]);
+  });
+
+  it('emits directory-change callbacks after resetting to the default directory', async () => {
+    chainStorageManagerMock.resetToDefault.mockResolvedValue({
+      isValid: true,
+      path: null,
+    });
+
+    const moduleExports = loadModule();
+    const onDirectoryChanged = jest.fn();
+
+    moduleExports.chainStorageCoordinator.onDirectoryChanged(
+      onDirectoryChanged
+    );
+
+    await moduleExports.chainStorageCoordinator.setDirectory(null);
+
+    expect(chainStorageManagerMock.resetToDefault).toHaveBeenCalledTimes(1);
+    expect(onDirectoryChanged).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not emit directory-change callbacks for rejected directory mutations', async () => {
+    chainStorageManagerMock.setDirectory.mockResolvedValue({
+      isValid: false,
+      path: '/mnt/blocked',
+      reason: 'unknown',
+    });
+
+    const moduleExports = loadModule();
+    const onDirectoryChanged = jest.fn();
+
+    moduleExports.chainStorageCoordinator.onDirectoryChanged(
+      onDirectoryChanged
+    );
+
+    await expect(
+      moduleExports.chainStorageCoordinator.setDirectory('/mnt/blocked')
+    ).resolves.toEqual(
+      expect.objectContaining({
+        isValid: false,
+        path: '/mnt/blocked',
+      })
+    );
+
+    expect(onDirectoryChanged).not.toHaveBeenCalled();
+    expect(mithrilBootstrapServiceMock.setWorkDir).not.toHaveBeenCalled();
   });
 });
