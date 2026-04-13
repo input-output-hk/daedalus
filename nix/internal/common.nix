@@ -1,88 +1,126 @@
 # Things common between all OS-es, that build on all platforms.
+{
+  inputs,
+  targetSystem,
+}: rec {
+  flakeLock = builtins.fromJSON (builtins.readFile (inputs.self + "/flake.lock"));
 
-{ inputs, targetSystem }:
-
-rec {
-
-  sourceLib = import ./source-lib.nix { inherit inputs; };
+  sourceLib = import ./source-lib.nix {inherit inputs;};
 
   pkgs = let
     # Windows can only be cross-built from Linux now
-    system = if targetSystem == "x86_64-windows" then "x86_64-linux" else targetSystem;
+    system =
+      if targetSystem == "x86_64-windows"
+      then "x86_64-linux"
+      else targetSystem;
   in
-    if targetSystem != "x86_64-linux"
-    then inputs.nixpkgs.legacyPackages.${system}
-    else import inputs.nixpkgs {
-      inherit system;
-      config.packageOverrides = super: {
-        # XXX: non-root users need to be able to use sd-device/device-monitor.c to detect Ledger:
-        # FIXME: find the correct (minimal) place to override this:
-        systemd = super.systemd.overrideAttrs (oldAttrs: {
-          patches = oldAttrs.patches ++ [./libsystemd--device-monitor.patch];
-        });
-      };
-    };
+    inputs.nixpkgs.legacyPackages.${system};
+  # Note: The systemd patch for Ledger detection was removed during nixos-25.11 upgrade
+  # TODO: Verify Ledger hardware wallet detection still works without the patch
+  # If not, the patch needs to be updated for systemd 258.3
+
+  pkgsJs = let
+    system =
+      if targetSystem == "x86_64-windows"
+      then "x86_64-linux"
+      else targetSystem;
+  in
+    inputs.nixpkgsJs.legacyPackages.${system};
 
   flake-compat = import inputs.flake-compat;
 
   walletFlake = let
     unpatched = inputs.cardano-wallet-unpatched;
-  in (flake-compat {
-    src = {
-      outPath = toString (pkgs.runCommand "source" {} ''
-        cp -r ${unpatched} $out
-        chmod -R +w $out
-        cd $out
-        patch -p1 -i ${./cardano-wallet--expose-packages.patch}
-      '');
-      inherit (unpatched) rev shortRev lastModified lastModifiedDate;
-    };
-  }).defaultNix;
+  in
+    (flake-compat {
+      src = {
+        outPath = toString (pkgs.runCommand "source" {} ''
+          cp -r ${unpatched} $out
+          chmod -R +w $out
+          cd $out
+          patch -p1 -i ${./cardano-wallet--expose-packages.patch}
+        '');
+        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
+      };
+    }).defaultNix;
 
   nodeFlake = let
     unpatched = inputs.cardano-node-override;
-  in (flake-compat {
-    src = {
-      outPath = toString (pkgs.runCommand "source" {} ''
-        cp -r ${unpatched} $out
-        chmod -R +w $out
-        cd $out
-        cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
-      '');
-      inherit (unpatched) rev shortRev lastModified lastModifiedDate;
+  in
+    (flake-compat {
+      src = {
+        outPath = toString (pkgs.runCommand "source" {} ''
+          cp -r ${unpatched} $out
+          chmod -R +w $out
+          cd $out
+          cp ${walletFlake}/nix/supported-systems.nix $out/nix/supported-systems.nix
+        '');
+        inherit (unpatched) rev shortRev lastModified lastModifiedDate;
+      };
+    }).defaultNix;
+
+  walletPackages =
+    {
+      x86_64-windows = walletFlake.packages.x86_64-linux.ci.artifacts.win64.windowsPackages;
+      x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
+      x86_64-darwin = walletFlake.packages.x86_64-darwin;
+      aarch64-darwin = walletFlake.packages.aarch64-darwin;
+    }.${
+      targetSystem
     };
-  }).defaultNix;
 
-  walletPackages = {
-    x86_64-windows = walletFlake.packages.x86_64-linux.ci.artifacts.win64.windowsPackages;
-    x86_64-linux = walletFlake.packages.x86_64-linux.musl64Packages;
-    x86_64-darwin = walletFlake.packages.x86_64-darwin;
-    aarch64-darwin = walletFlake.packages.aarch64-darwin;
-  }.${targetSystem};
+  nodePackages =
+    {
+      x86_64-windows = nodeFlake.legacyPackages.x86_64-linux.hydraJobs.windows; # a bug in ${cardano-node}/flake.nix
+      x86_64-linux = nodeFlake.hydraJobs.x86_64-linux.musl;
+      x86_64-darwin = nodeFlake.packages.x86_64-darwin;
+      aarch64-darwin = nodeFlake.packages.aarch64-darwin;
+    }.${
+      targetSystem
+    };
 
-  nodePackages = {
-    x86_64-windows = nodeFlake.legacyPackages.x86_64-linux.hydraJobs.windows; # a bug in ${cardano-node}/flake.nix
-    x86_64-linux = nodeFlake.hydraJobs.x86_64-linux.musl;
-    x86_64-darwin = nodeFlake.packages.x86_64-darwin;
-    aarch64-darwin = nodeFlake.packages.aarch64-darwin;
-  }.${targetSystem};
+  mithrilReleaseVersion = flakeLock.nodes.mithril.original.ref;
+  mithrilWindowsAssetHash = "sha256-PEO1HKhHwCgEIK+CmkCaYNbWkXqaoDCnqzR/rN+G2Z4=";
 
-  inherit (walletFlake.legacyPackages.${pkgs.system}.pkgs) cardanoLib;
+  mithrilWindowsAsset = pkgs.fetchurl {
+    # Read the release tag from flake.lock so this stays aligned with the flake input pin.
+    url = "https://github.com/input-output-hk/mithril/releases/download/${mithrilReleaseVersion}/mithril-${mithrilReleaseVersion}-windows-x64.tar.gz";
+    hash = mithrilWindowsAssetHash;
+  };
 
-  daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: import ./cardano-bridge.nix {
-    target = targetSystem;
-    inherit (pkgs) lib runCommandCC darwin;
-    inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server;
-    local-cluster = if cluster == "selfnode" then walletPackages.local-cluster else null;
-  });
+  mithrilPackages = {
+    x86_64-windows = pkgs.runCommand "mithril-client-windows" {} ''
+      mkdir -p $out/bin
+      tar -xzf ${mithrilWindowsAsset} -C $out/bin mithril-client.exe
+    '';
+    x86_64-linux = inputs.mithril.packages.x86_64-linux.mithril-client-cli;
+    x86_64-darwin = inputs.mithril.packages.x86_64-darwin.mithril-client-cli;
+    aarch64-darwin = inputs.mithril.packages.aarch64-darwin.mithril-client-cli;
+  };
+
+  inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
+
+  daedalus-bridge = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
+    import ./cardano-bridge.nix {
+      target = targetSystem;
+      inherit (pkgs) lib runCommandCC darwin;
+      inherit cardano-wallet cardano-node cardano-launcher cardano-cli cardano-address mock-token-metadata-server mithril-client;
+      local-cluster =
+        if cluster == "selfnode"
+        then walletPackages.local-cluster
+        else null;
+    });
 
   inherit (walletPackages) cardano-wallet cardano-address mock-token-metadata-server;
 
   inherit (nodePackages) cardano-node cardano-cli;
 
-  cardano-shell = (flake-compat {
-    src = inputs.cardano-shell;
-  }).defaultNix;
+  mithril-client = mithrilPackages.${targetSystem};
+
+  cardano-shell =
+    (flake-compat {
+      src = inputs.cardano-shell;
+    }).defaultNix;
 
   cardano-launcher = cardano-shell.hydraJobs.cardano-launcher.${targetSystem};
 
@@ -90,27 +128,36 @@ rec {
 
   cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
 
-  mkLauncherConfigs = { devShell ? false, cluster }: import ./launcher-config.nix {
-    inherit devShell;
-    inherit cardanoLib;
-    inherit (pkgs) system runCommand lib;
-    inherit (inputs) cardano-playground;
-    network = cluster;
-    os = {
-      x86_64-windows = "windows";
-      x86_64-linux = "linux";
-      x86_64-darwin = "macos64";
-      aarch64-darwin = "macos64-arm";
-    }.${targetSystem};
-  };
+  mkLauncherConfigs = {
+    devShell ? false,
+    cluster,
+  }:
+    import ./launcher-config.nix {
+      inherit devShell;
+      inherit cardanoLib;
+      inherit (pkgs) runCommand lib jq;
+      system = pkgs.stdenv.hostPlatform.system;
+      inherit (inputs) cardano-playground;
+      network = cluster;
+      os =
+        {
+          x86_64-windows = "windows";
+          x86_64-linux = "linux";
+          x86_64-darwin = "macos64";
+          aarch64-darwin = "macos64-arm";
+        }.${
+          targetSystem
+        };
+    };
 
-  launcherConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster: mkLauncherConfigs {
-    devShell = false;
-    inherit cluster;
-  });
+  launcherConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
+    mkLauncherConfigs {
+      devShell = false;
+      inherit cluster;
+    });
 
   tests = {
-    runShellcheck = import ../tests/shellcheck.nix { src = ../.;};
+    runShellcheck = import ../tests/shellcheck.nix {src = ../.;};
   };
 
   originalPackageJson = builtins.fromJSON (builtins.readFile ../../package.json);
@@ -130,35 +177,44 @@ rec {
   #   };
 
   nodejs = let
-    base = pkgs.nodejs-18_x;
-  in if !(pkgs.lib.hasInfix "-darwin" targetSystem) then base else base.overrideAttrs (drv: {
-    # XXX: we don’t want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
-    # the pure `xcbuild` – without that, `blake2` doesn’t build,
-    # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
-    patches = pkgs.lib.filter (patch: !(
-      pkgs.lib.hasInfix "bypass-xcodebuild" patch ||
-      pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
-    )) drv.patches;
-  });
+    base = pkgsJs.nodejs-18_x;
+  in
+    if !(pkgsJs.lib.hasInfix "-darwin" targetSystem)
+    then base
+    else
+      base.overrideAttrs (drv: {
+        # XXX: we don't want `bypass-xcodebuild.diff` or `bypass-darwin-xcrun-node16.patch`, rather we supply
+        # the pure `xcbuild` – without that, `blake2` doesn't build,
+        # cf. <https://github.com/NixOS/nixpkgs/blob/29ae6a1f3d7a8886b3772df4dc42a13817875c7d/pkgs/development/web/nodejs/bypass-xcodebuild.diff>
+        patches = pkgsJs.lib.filter (patch:
+          !(
+            pkgsJs.lib.hasInfix "bypass-xcodebuild" patch
+            || pkgsJs.lib.hasInfix "bypass-darwin-xcrun" patch
+          ))
+        drv.patches;
+      });
 
-  yarn = (pkgs.yarn.override { inherit nodejs; }).overrideAttrs (drv: {
-    # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn’t catch this)
-    postFixup = (drv.postFixup or "") + ''
-      sed -r 's,#!/bin/sh,#!${pkgs.bash}/bin/sh,g' -i $out/libexec/yarn/lib/cli.js
-    '';
+  yarn = (pkgsJs.yarn.override {inherit nodejs;}).overrideAttrs (drv: {
+    # XXX: otherwise, unable to run our package.json scripts in Nix sandbox (patchShebangs doesn't catch this)
+    postFixup =
+      (drv.postFixup or "")
+      + ''
+        sed -r 's,#!/bin/sh,#!${pkgs.bash}/bin/sh,g' -i $out/libexec/yarn/lib/cli.js
+      '';
   });
 
   yarn2nix = let
     # Nixpkgs master @ 2022-07-18
     # Why → newer `yarn2nix` uses `deep-equal` to see if anything changed in the lockfile, we need that.
-    source = pkgs.fetchzip {
+    source = pkgsJs.fetchzip {
       url = "https://github.com/NixOS/nixpkgs/archive/e4d49de45a3b5dbcb881656b4e3986e666141ea9.tar.gz";
       hash = "sha256-X/nhnMCa1Wx4YapsspyAs6QYz6T/85FofrI6NpdPDHg=";
     };
-    subdir = builtins.path { path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix"; };
-    in
+    subdir = builtins.path {path = source + "/pkgs/development/tools/yarn2nix-moretea/yarn2nix";};
+  in
     import subdir {
-      inherit pkgs nodejs yarn;
+      pkgs = pkgsJs;
+      inherit nodejs yarn;
       allowAliases = true;
     };
 
@@ -171,12 +227,35 @@ rec {
 
   srcWithoutNix = pkgs.lib.cleanSourceWith {
     src = inputs.self;
-    filter = name: type: !(type == "regular" && (
-      pkgs.lib.hasInfix "-source/nix/" name ||
-      pkgs.lib.hasSuffix ".nix" name ||
-      pkgs.lib.hasSuffix ".hs" name ||
-      pkgs.lib.hasSuffix ".cabal" name
-    ));
+    filter = name: type: let
+      baseName = baseNameOf (toString name);
+      relPath = pkgs.lib.removePrefix (toString inputs.self + "/") (toString name);
+    in
+      # Exclude nix files
+      !(type
+        == "regular"
+        && (
+          pkgs.lib.hasInfix "-source/nix/" name
+          || pkgs.lib.hasSuffix ".nix" name
+          || pkgs.lib.hasSuffix ".hs" name
+          || pkgs.lib.hasSuffix ".cabal" name
+        ))
+      # Exclude directories that shouldn't trigger rebuilds
+      && !(type
+        == "directory"
+        && (
+          baseName
+          == ".direnv"
+          || baseName == ".agent"
+          || baseName == "node_modules"
+          || baseName == "dist"
+          || baseName == "release"
+          || baseName == ".git"
+        ))
+      # Exclude specific files
+      && !(baseName == ".envrc")
+      # Exclude markdown docs but keep terms-of-use .md files (runtime assets loaded by webpack)
+      && !(pkgs.lib.hasSuffix ".md" name && type == "regular" && !(pkgs.lib.hasInfix "/terms-of-use/" name));
   };
 
   # This is the only thing we use the original `yarn2nix` for:
@@ -201,16 +280,16 @@ rec {
 
     ${pkgs.lib.concatMapStringsSep "\n" (cacheDir: ''
 
-      # Node.js headers for building native `*.node` extensions with node-gyp:
-      # TODO: learn why installVersion=9 – where does it come from? see node-gyp
-      mkdir -p ${cacheDir}/node-gyp/${nodejs.version}
-      echo 9 > ${cacheDir}/node-gyp/${nodejs.version}/installVersion
-      ln -sf ${nodejs}/include ${cacheDir}/node-gyp/${nodejs.version}
+        # Node.js headers for building native `*.node` extensions with node-gyp:
+        # TODO: learn why installVersion=9 – where does it come from? see node-gyp
+        mkdir -p ${cacheDir}/node-gyp/${nodejs.version}
+        echo 9 > ${cacheDir}/node-gyp/${nodejs.version}/installVersion
+        ln -sf ${nodejs}/include ${cacheDir}/node-gyp/${nodejs.version}
 
-    '') [
-      "$HOME/.cache"          # Linux, Windows (cross-compiled)
-      "$HOME/Library/Caches"  # Darwin
-    ]}
+      '') [
+        "$HOME/.cache" # Linux, Windows (cross-compiled)
+        "$HOME/Library/Caches" # Darwin
+      ]}
 
     mkdir -p $HOME/.electron-gyp/
     ln -sf ${commonSources.electronHeaders} $HOME/.electron-gyp/${electronVersion}
@@ -249,17 +328,18 @@ rec {
   electronChromedriverVersion = versionInOfflineCache "electron_chromedriver";
 
   commonSources = {
-    electronHeaders = pkgs.runCommandLocal "electron-headers" {
-      # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
-      src = pkgs.fetchurl {
-        url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
-        hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
-      };
-    } ''
-      tar -xf $src
-      mv node_headers $out
-      echo 9 >$out/installVersion
-    '';
+    electronHeaders =
+      pkgs.runCommandLocal "electron-headers" {
+        # XXX: don’t use fetchzip, we need the raw .tar.gz in `patchElectronRebuild` below
+        src = pkgs.fetchurl {
+          url = "https://electronjs.org/headers/v${electronVersion}/node-v${electronVersion}-headers.tar.gz";
+          hash = "sha256-er08CKt3fwotSjYxqdzpm8Q0YjvD1PhfNBDZ3Jozsvk=";
+        };
+      } ''
+        tar -xf $src
+        mv node_headers $out
+        echo 9 >$out/installVersion
+      '';
 
     electronShaSums = pkgs.fetchurl {
       name = "electronShaSums-${electronVersion}"; # cache invalidation
@@ -267,7 +347,8 @@ rec {
       hash = "sha256-75bNqt2c7u/fm0P2Ha6NvkbGThEifIHXl2x5UCdy4fM=";
     };
 
-    electronCacheHash = builtins.hashString "sha256"
+    electronCacheHash =
+      builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronVersion}";
 
     electronChromedriverShaSums = pkgs.fetchurl {
@@ -276,7 +357,8 @@ rec {
       hash = "sha256-nV0aT0nuzsVK5J37lEo0egXmRy/tpdF3jyrY3VBVvR8=";
     };
 
-    electronChromedriverCacheHash = builtins.hashString "sha256"
+    electronChromedriverCacheHash =
+      builtins.hashString "sha256"
       "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}";
   };
 
@@ -294,22 +376,22 @@ rec {
   #
   # TODO: That `sed` is rather awful… Can it be done better? – @michalrus
   patchElectronRebuild = pkgs.writeShellScriptBin "patch-electron-rebuild" ''
-    echo 'Patching electron-rebuild to force our Node.js headers…'
+    echo 'Patching electron-rebuild to force our Node.js headers and CXXFLAGS…'
 
     tarball="''${1:-${commonSources.electronHeaders.src}}"
     nodedir="''${2:-${commonSources.electronHeaders}}"
 
     echo "  → tarball=$tarball"
     echo "  → nodedir=$nodedir"
+    echo "  → forcing CXXFLAGS=-Wno-error for Darwin builds"
 
     nodeGypJs="node_modules/@electron/rebuild/lib/module-type/node-gyp/node-gyp.js"
 
     # Patch idempotently (matters in repetitive shell.nix):
     if ! grep -qF "$tarball" $nodeGypJs ; then
-      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir');|" -i $nodeGypJs
+      sed -r "s|const extraNodeGypArgs.*|\0 extraNodeGypArgs.push('--tarball', '$tarball', '--nodedir', '$nodedir'); process.env.CXXFLAGS='-Wno-error'; process.env.npm_config_cxxflags='-Wno-error';|" -i $nodeGypJs
     fi
 
     echo "  → result=$(grep -F "const extraNodeGypArgs" $nodeGypJs)"
   '';
-
 }

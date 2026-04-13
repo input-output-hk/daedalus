@@ -1,0 +1,116 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: left;
+
+  h1 {
+    color: var(--theme-mithril-heading-color);
+    font-family: var(--font-medium);
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--theme-mithril-body-text-color);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+.locationContext {
+  align-items: center;
+  background: var(--theme-mithril-context-panel-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
+  border-radius: 10px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+}
+
+.locationSummary {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.locationLabel {
+  color: var(--theme-mithril-secondary-text-color);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.locationValue {
+  color: var(--theme-mithril-bright-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.locationAction {
+  color: var(--theme-mithril-link-color);
+  flex: 0 0 auto;
+  font-family: var(--font-medium);
+  font-size: 13px;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--theme-mithril-link-color-hover);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.primaryAction {
+  background-color: var(--theme-mithril-button-primary-background);
+  border: none;
+  color: var(--theme-mithril-button-primary-text-color);
+  font-family: var(--font-medium);
+  font-size: 14px;
+  padding: 12px 24px;
+
+  &:hover {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+  }
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  padding: 12px 24px;
+
+  &:hover {
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
+  }
+}
+
+@media (max-width: 720px) {
+  .locationContext {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

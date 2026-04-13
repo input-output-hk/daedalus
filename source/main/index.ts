@@ -126,7 +126,7 @@ const safeExit = async () => {
   }
 };
 
-const handleWindowClose = async (event: Event | null | undefined) => {
+const handleWindowClose = async (event?: Event | null) => {
   // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
   logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
   event?.preventDefault();

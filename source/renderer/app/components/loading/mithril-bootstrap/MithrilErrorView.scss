@@ -1,0 +1,107 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: left;
+
+  h1 {
+    color: var(--theme-mithril-heading-color);
+    font-family: var(--font-medium);
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--theme-mithril-body-text-color);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+}
+
+.errorHint {
+  color: var(--theme-mithril-secondary-text-color);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.detailsSection {
+  margin-bottom: 24px;
+}
+
+.detailsBody {
+  background: var(--theme-mithril-panel-background);
+  border: 1px solid var(--theme-mithril-panel-border-color);
+  border-radius: 10px;
+  margin-top: 12px;
+  padding: 16px 20px;
+}
+
+.errorCode {
+  color: var(--theme-mithril-button-secondary-text-color);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.errorMessage {
+  color: var(--theme-mithril-bright-text-color);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.logPathLink {
+  display: inline-block;
+  font-size: 13px;
+  margin-top: 12px;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.primaryAction {
+  background-color: var(--theme-mithril-button-primary-background);
+  border: none;
+  color: var(--theme-mithril-button-primary-text-color);
+  font-family: var(--font-medium);
+  font-size: 14px;
+  padding: 12px 24px;
+
+  &:hover {
+    background-color: var(--theme-mithril-button-primary-background-hover);
+    color: var(--theme-mithril-button-primary-text-color);
+  }
+}
+
+.secondaryAction {
+  background-color: transparent;
+  border: 1px solid var(--theme-mithril-button-secondary-border-color);
+  color: var(--theme-mithril-button-secondary-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  padding: 12px 24px;
+
+  &:hover {
+    border-color: var(--theme-mithril-button-secondary-border-color-hover);
+    color: var(--theme-mithril-button-secondary-text-color-hover);
+  }
+}
+
+@media (max-width: 720px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

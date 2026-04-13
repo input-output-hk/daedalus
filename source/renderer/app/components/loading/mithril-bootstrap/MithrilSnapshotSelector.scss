@@ -1,0 +1,47 @@
+.selectorRow {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 120px 1fr;
+  margin-bottom: 24px;
+}
+
+.label {
+  color: var(--theme-mithril-secondary-text-color);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.selectInput {
+  background-color: var(--theme-mithril-selector-background);
+  border-radius: 8px;
+  color: var(--theme-mithril-bright-text-color);
+  width: 100%;
+}
+
+.selectInput :global {
+  .SimpleSelect_simpleSelect__menu,
+  .SimpleSelect_simpleSelect__menuList,
+  .SimpleSelect_simpleSelect__control,
+  .SimpleSelect_simpleSelect__singleValue,
+  .SimpleSelect_simpleSelect__option {
+    background-color: var(--theme-mithril-selector-option-background);
+    color: var(--theme-mithril-bright-text-color);
+  }
+
+  .SimpleSelect_simpleSelect__control {
+    border-color: var(--theme-mithril-selector-border-color);
+  }
+
+  .SimpleSelect_simpleSelect__option--is-focused,
+  .SimpleSelect_simpleSelect__option--is-selected {
+    background-color: var(--theme-mithril-selector-option-background);
+  }
+}
+
+@media (max-width: 720px) {
+  .selectorRow {
+    grid-template-columns: 1fr;
+  }
+}

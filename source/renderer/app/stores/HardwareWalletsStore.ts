@@ -1405,7 +1405,9 @@ export default class HardwareWalletsStore extends Store {
         address
       );
       const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-        { extendedPublicKey }
+        {
+          extendedPublicKey,
+        }
       );
 
       if (associatedWallet) {
@@ -2110,7 +2112,9 @@ export default class HardwareWalletsStore extends Store {
         address
       );
       const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-        { extendedPublicKey }
+        {
+          extendedPublicKey,
+        }
       );
 
       if (associatedWallet) {
@@ -2789,7 +2793,9 @@ export default class HardwareWalletsStore extends Store {
           walletId
         );
         const associatedWallet = await this._findAssociatedWalletByExtendedPublicKey(
-          { extendedPublicKey }
+          {
+            extendedPublicKey,
+          }
         );
 
         if (associatedWallet) {

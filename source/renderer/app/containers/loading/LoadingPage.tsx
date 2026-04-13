@@ -4,6 +4,7 @@ import CenteredLayout from '../../components/layout/CenteredLayout';
 import NoDiskSpaceErrorPage from './NoDiskSpaceErrorPage';
 import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
+import MithrilBootstrapPage from './MithrilBootstrapPage';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -20,6 +21,13 @@ class LoadingPage extends Component<InjectedProps> {
     return null;
   }
 
+  get shouldShowMithrilBootstrap() {
+    return (
+      !this.isSetupPage &&
+      (this.isMithrilBootstrapDecision || this.isMithrilBootstrapActive)
+    );
+  }
+
   get isNotEnoughDiskSpace() {
     return this.networkStatus.isNotEnoughDiskSpace;
   }
@@ -33,11 +41,45 @@ class LoadingPage extends Component<InjectedProps> {
     return !isSystemTimeCorrect && !isNodeStopping && !isNodeStopped;
   }
 
+  get isMithrilBootstrapDecision() {
+    const { mithrilBootstrap } = this.props.stores;
+    return mithrilBootstrap.status === 'decision';
+  }
+
+  get isMithrilBootstrapActive() {
+    const { mithrilBootstrap } = this.props.stores;
+    const activeStatuses = [
+      'preparing',
+      'downloading',
+      'verifying',
+      'unpacking',
+      'finalizing',
+      'converting',
+      'completed',
+      'starting-node',
+      'failed',
+      'cancelled',
+    ];
+    return activeStatuses.includes(mithrilBootstrap.status);
+  }
+
+  get isSetupPage() {
+    return this.props.stores.app.isSetupPage;
+  }
+
   get networkStatus() {
     return this.props.stores.networkStatus;
   }
 
   render() {
+    if (this.shouldShowMithrilBootstrap) {
+      return (
+        <CenteredLayout>
+          <MithrilBootstrapPage />
+        </CenteredLayout>
+      );
+    }
+
     return (
       <CenteredLayout>
         <SyncingConnectingPage />

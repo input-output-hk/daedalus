@@ -16,6 +16,8 @@ import './settings';
 // Assets
 import './assets/Asset.stories';
 import './assets/AssetSettingsDialog.stories';
+// Loading
+import './loading';
 // News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';

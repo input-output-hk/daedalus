@@ -71,6 +71,13 @@ import type {
   TrezorDeviceErrorPayload,
   TrezorDevicePayload,
 } from '../types/hardware-wallets.types';
+import type {
+  ChainStorageConfig,
+  ChainStorageValidation,
+  MithrilBootstrapDecision,
+  MithrilBootstrapStatusUpdate,
+  MithrilSnapshotItem,
+} from '../types/mithril-bootstrap.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -403,6 +410,60 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
 export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
+
+/**
+ * ====================== MITHRIL BOOTSTRAP IPC =====================
+ * Channels for Mithril snapshot bootstrapping flow.
+ * ==================================================================
+ */
+export const MITHRIL_BOOTSTRAP_DECISION_CHANNEL =
+  'MITHRIL_BOOTSTRAP_DECISION_CHANNEL';
+export type MithrilBootstrapDecisionRendererRequest = {
+  decision: MithrilBootstrapDecision;
+};
+export type MithrilBootstrapDecisionMainResponse = void;
+
+export const MITHRIL_BOOTSTRAP_START_CHANNEL =
+  'MITHRIL_BOOTSTRAP_START_CHANNEL';
+export type MithrilBootstrapStartRendererRequest = {
+  digest?: string;
+  wipeChain?: boolean;
+};
+export type MithrilBootstrapStartMainResponse = void;
+
+export const MITHRIL_BOOTSTRAP_STATUS_CHANNEL =
+  'MITHRIL_BOOTSTRAP_STATUS_CHANNEL';
+export type MithrilBootstrapStatusRendererRequest = void;
+export type MithrilBootstrapStatusMainResponse = MithrilBootstrapStatusUpdate;
+
+export const MITHRIL_BOOTSTRAP_CANCEL_CHANNEL =
+  'MITHRIL_BOOTSTRAP_CANCEL_CHANNEL';
+export type MithrilBootstrapCancelRendererRequest = void;
+export type MithrilBootstrapCancelMainResponse = void;
+
+export const MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL =
+  'MITHRIL_BOOTSTRAP_SNAPSHOTS_CHANNEL';
+export type MithrilBootstrapSnapshotsRendererRequest = void;
+export type MithrilBootstrapSnapshotsMainResponse = Array<MithrilSnapshotItem>;
+
+export const SET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'SET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type SetChainStorageDirectoryRendererRequest = {
+  path: string | null;
+};
+export type SetChainStorageDirectoryMainResponse = ChainStorageValidation;
+
+export const GET_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'GET_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type GetChainStorageDirectoryRendererRequest = void;
+export type GetChainStorageDirectoryMainResponse = ChainStorageConfig;
+
+export const VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL =
+  'VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL';
+export type ValidateChainStorageDirectoryRendererRequest = {
+  path: string | null;
+};
+export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
 
 /**
  * Channel for quitting Daedalus and installing update

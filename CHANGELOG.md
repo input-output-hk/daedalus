@@ -1,10 +1,20 @@
 # Changelog
 
-## vNext
+## 7.3.0
+
+### Features
+
+- Added Mithril bootstrap to speed up chain initialization with snapshot restore, storage location selection, and guided progress views.
+
+### Fixes
+
+- Improved Mithril bootstrap recovery and loading feedback, including clearer progress messaging and decline handling.
+
+- Fixed Windows and macOS installer issues affecting Mithril bootstrap support.
 
 ### Chores
 
-- Update `cardano-node` to 10.5.1 and support `peer-snapshot.json` ([PR 3294](https://github.com/input-output-hk/daedalus/pull/3294))
+- Update `cardano-node` to 10.6.2.
 
 ## 7.2.0
 

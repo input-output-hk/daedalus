@@ -1,0 +1,351 @@
+{
+  "metadata": {
+    "title": "Mithril Snapshot UX - Component & UX Tasks",
+    "created": "2026-03-03",
+    "updated": "2026-03-20",
+    "version": "2.0.0",
+    "totalTasks": 26,
+    "prdReference": ".agent/plans/mithril/mithril-snapshot-ux.md",
+    "description": "i18n extraction, component decomposition, and 3-step vertical waterfall UX implementation"
+  },
+  "phases": [
+    {
+      "id": "phase-4",
+      "name": "i18n Message Extraction",
+      "description": "Extract and extend i18n messages before component decomposition. Follow i18n-messaging skill.",
+      "skill": "i18n-messaging",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-015",
+          "title": "Extract i18n messages file",
+          "description": "Create MithrilBootstrap.messages.ts with existing 19 messages plus ~14 new messages for stage-specific error titles/hints, download metadata labels, step indicator labels, and storage location picker (directory label, buttons, space, validation errors). Follow i18n-messaging skill conventions.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": [],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
+        },
+        {
+          "id": "task-016",
+          "title": "Run i18n manage workflow",
+          "description": "Run 'yarn i18n:manage' to sync/validate translations for en-US and ja-JP",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "translations/messages.json"
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Component Decomposition",
+      "description": "Break monolithic MithrilBootstrap.tsx into focused sub-components",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-017a",
+          "title": "MithrilStepIndicator - step logic and rendering",
+          "description": "4-step indicator (preparing, downloading, verifying, finalizing) with spinner/checkmark/pending states. Model on SyncingProgress.tsx.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2.5,
+          "dependencies": ["task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx"
+        },
+        {
+          "id": "task-017b",
+          "title": "MithrilStepIndicator - download metadata and SCSS",
+          "description": "Add download metadata display (bytes, throughput) to active download step. Create SCSS with themed spinner animation.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-017a"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.scss"
+        },
+        {
+          "id": "task-018",
+          "title": "Implement MithrilSnapshotSelector",
+          "description": "Snapshot dropdown with truncated digest labels ({first8}...{last8}), locale-aware dates, and formatted size",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotSelector.tsx"
+        },
+        {
+          "id": "task-019",
+          "title": "Implement MithrilSnapshotDetails",
+          "description": "Metadata grid (digest, date, size, node version) with truncated digest display",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilSnapshotDetails.tsx"
+        },
+        {
+          "id": "task-020",
+          "title": "Implement MithrilErrorView",
+          "description": "Stage-specific error screens (download, verify, convert, node-start, generic) with contextual titles/hints, collapsible error details, and log path link",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-015", "task-001"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilErrorView.tsx"
+        },
+        {
+          "id": "task-021",
+          "title": "Implement MithrilProgressView",
+          "description": "Compose MithrilStepIndicator + ProgressBarLarge + timing metadata + cancel button",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-017b", "task-006"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
+        },
+        {
+          "id": "task-021a",
+          "title": "Clean up post-download progress phases",
+          "description": "Expose an explicit 'Installing snapshot' stage for `_installSnapshot()` local chain move/copy work, fold Mithril verification into the download phase, and swap live transfer stats for local-processing copy once network download finishes.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-021", "task-011"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/"
+        },
+        {
+          "id": "task-022",
+          "title": "Implement MithrilDecisionView",
+          "description": "Decision screen with snapshot selector, details grid, and accept/decline buttons. Shown after storage location is confirmed.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-018", "task-019", "task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilDecisionView.tsx"
+        },
+        {
+          "id": "task-023a",
+          "title": "BlockDataStorageLocationPicker - layout and path display",
+          "description": "Preliminary screen before decision view showing the current blockchain-data path (default or custom), available disk space (formatted with prettysize), and Continue button to proceed to decision view",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-012", "task-015"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/BlockDataStorageLocationPicker.tsx"
+        },
+        {
+          "id": "task-023b",
+          "title": "BlockDataStorageLocationPicker - picker and validation",
+          "description": "Add directory picker via SHOW_OPEN_DIALOG_CHANNEL, validation feedback, reset-to-default link, migration spinner, and generic blockchain-data messaging. Disable the picker during active bootstrap.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-023a"],
+          "completedAt": "2026-03-11",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/BlockDataStorageLocationPicker.tsx"
+        },
+        {
+          "id": "task-023c",
+          "title": "Return from decision view to storage picker",
+          "description": "Allow users to navigate back from the Fast sync with Mithril snapshot decision screen to BlockDataStorageLocationPicker so they can choose a better blockchain-data location before continuing.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1,
+          "dependencies": ["task-022", "task-023b"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
+        },
+        {
+          "id": "task-024",
+          "title": "Slim down root MithrilBootstrap.tsx",
+          "description": "Reduce to overlay chrome + view delegation: storage picker -> decision -> progress/error. Create index.ts re-export.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-020", "task-021", "task-021a", "task-022", "task-023b"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.tsx"
+        },
+        {
+          "id": "task-024a",
+          "title": "Collapse visible progress to 3 steps",
+          "description": "Update Mithril bootstrap progress so the user-visible flow is Preparing -> Downloading -> Finalizing. Keep verify inside download, fold post-download install/db-to-chain movement into finalizing, remove the lingering ~90% stall, and keep the Mithril overlay visible until local post-download work finishes.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-021a", "task-003"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-024b",
+          "title": "Rename install states and copy to unpacking",
+          "description": "Rename install-related post-download states, details, and messages to unpacking where they describe snapshot materialization work. Keep the visible 3-step UX as Preparing -> Downloading -> Finalizing, but stop leaking install wording into the finalizing phase.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-024a", "task-015"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-024c",
+          "title": "Derive step labels from status",
+          "description": "Remove `currentStep` as user-facing transport. Let MithrilProgressView and MithrilStepIndicator derive localized labels from MithrilBootstrapStatus, keep verify as an error stage only, and update shared types/store plumbing to stop depending on hardcoded step copy from the main process.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-024a", "task-024b", "task-015"],
+          "completedAt": "2026-03-12",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "3-Step Vertical Waterfall UX",
+      "description": "Replace the progress view with a 3-step vertical waterfall (Preparing → Downloading → Finalizing). Preparing is the initial mithril-snapshot call to kick off the process. All mithril-client steps 1-7 are exposed as waterfall sub-items under Downloading with two progress bars (snapshot files + ancillary). Finalizing covers only post-mithril-client work: snapshot conversion (if enabled) and DB install/move. Single elapsed timer throughout. 3-second completion delay with spinner before node handoff. Auto-scroll waterfall to latest item.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-024d",
+          "title": "Extend mithril progress parser for label, step_num, and ancillary bytes",
+          "description": "Add label, stepNum, totalSteps, message, bytesDownloaded, and bytesTotal to MithrilProgressUpdate. Update parseMithrilProgressUpdate() to extract label ('Files' | 'Ancillary'), step_num, total_steps, message, bytes_downloaded, and bytes_total from mithril-client JSON. Add MithrilProgressItem to shared types and extend MithrilBootstrapStatusUpdate with ancillaryBytesDownloaded, ancillaryBytesTotal, and progressItems. Graceful degradation: if mithril-client doesn't emit label field, fall back to single-stream behavior.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-024c"],
+          "completedAt": "2026-03-16",
+          "targetPath": "source/main/mithril/mithrilProgress.ts"
+        },
+        {
+          "id": "task-024e",
+          "title": "Split download tracking and emit waterfall items in service",
+          "description": "Route Files vs Ancillary progress by label in _downloadSnapshot(). Track progress items for all mithril-client steps 1-7 under the downloading phase so users can follow along. Emit separate ancillary byte totals without overwriting main Files progress. Map step_num to localizable progress item IDs: step-1 (disk check), step-2 (certificate chain), step-3 (downloading snapshot data), step-4 (verifying digests), step-5 (verifying database), step-6 (computing message), step-7 (verifying signature). When step 4 starts, transition the backend status to `verifying`, synthesize known download totals to 100%, and drop late download-stream updates while the visible waterfall stays on the Downloading phase. After mithril-client exits, append finalizing progress items for snapshot conversion (only if conversion runs) and DB install/move. Fast steps (sub-second) show as completed checkmarks immediately — no minimum display time. Use Preparing status only for the initial mithril-snapshot call to kick off the process; the actual download starts after the step process renders.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 5,
+          "dependencies": ["task-024d"],
+          "completedAt": "2026-03-16",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-024f",
+          "title": "Extend store and container for waterfall and dual progress",
+          "description": "Add observables: ancillaryBytesDownloaded, ancillaryBytesTotal, progressItems (observable array), and bootstrapStartedAt. Add @computed ancillaryProgress (bytes ratio * 100) and @computed overallElapsedSeconds with a 1-second tick interval timer started when bootstrapStartedAt is set, cleared on completed/failed/cancelled — this is the single elapsed timer for the whole 3-step process. Update _updateStatus() to assign ancillary and progress-item fields. Reset all new fields on idle/decision/cancelled. Update MithrilBootstrapPage container to pass the new observables.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": ["task-024e"],
+          "completedAt": "2026-03-16",
+          "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
+        },
+        {
+          "id": "task-024f1",
+          "title": "Harden service cancellation and progress state",
+          "description": "Keep user cancel on the cancelled path instead of falling through to failed when mithril-client is intentionally killed. Preserve the last Files progress payload across step-only announcements so the Downloading bar can stay truthful through late verification items. Clear ancillary transfer metrics when leaving downloading or starting a fresh run so finalizing/error states do not reuse stale download stats. Ensure there is an active/error waterfall item when download fails before the first step announcement.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2,
+          "dependencies": ["task-024f"],
+          "completedAt": "2026-03-17",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.ts"
+        },
+        {
+          "id": "task-024f2",
+          "title": "Reseed elapsed timer across resync and retry",
+          "description": "Seed bootstrapStartedAt from backend elapsedSeconds when syncing into an in-progress bootstrap so the single elapsed timer survives renderer refresh/resubscribe. Reset/reseed run-scoped timer and transfer state when a new bootstrap starts from failed/completed so wipe-and-retry does not inherit the previous run. Clear stale ticker state on reset.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-024f"],
+          "completedAt": "2026-03-17",
+          "targetPath": "source/renderer/app/stores/MithrilBootstrapStore.ts"
+        },
+        {
+          "id": "task-024g",
+          "title": "Add waterfall and ancillary i18n messages",
+          "description": "Add ~15 new defineMessages entries to MithrilBootstrap.messages.ts: 7 waterfall step labels for mithril-client steps (disk check, certificate chain, downloading snapshot, verifying digests, verifying database, computing message, verifying signature), 2 finalizing waterfall labels (moving snapshot to storage, cleaning up files — conversion label only if enabled), snapshot files / ancillary data progress bar labels, ancillary downloaded label, node-starting delay title and detail messages. Follow !!!-prefix react-intl convention. Run yarn i18n:manage to sync translations.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-024e"],
+          "completedAt": "2026-03-17",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilBootstrap.messages.ts"
+        },
+        {
+          "id": "task-024h",
+          "title": "Vertical waterfall MithrilStepIndicator",
+          "description": "Replace horizontal 3-step layout with vertical waterfall. Each top-level step (Preparing, Downloading, Finalizing) renders: left icon column (spinner=active, checkmark=completed, red-X=error, grey-circle=pending) + right label + sub-content area + vertical connector line between steps. Downloading sub-content: all mithril-client steps 1-7 as individual waterfall sub-items with spinner/check icons that appear as they arrive. Two inline progress bars (snapshot files + ancillary) render only while `Downloading snapshot data` is the active sub-item and show progress %, plus transferred bytes; once verification starts, the bars are hidden and the verification rows continue underneath. Finalizing sub-content: conversion waterfall item (only if conversion runs) + DB install/move + cleanup as individual waterfall sub-items. CSS transitions for smooth item appearance (opacity 0→1, translateY). Reuse existing error/close SVG tinted red for error state (per user preference). Auto-scroll to latest active item. Fast sub-second steps show as completed checkmarks immediately.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-024g", "task-024f1", "task-024f2"],
+          "completedAt": "2026-03-18",
+          "completedDate": "2026-03-18",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilStepIndicator.tsx"
+        },
+        {
+          "id": "task-024i",
+          "title": "Recompose MithrilProgressView with waterfall, timer, and delay",
+          "description": "Remove standalone ProgressBarLarge and 4-item metadata grid. Render vertical waterfall (MithrilStepIndicator) as primary content in a scrollable container. Add single overallElapsedSeconds timer display at top (H:MM:SS or M:SS format), visible from Preparing through completion. Add 3-second completion delay: when status=completed, show spinning circle + 'cardano-node is starting up to complete sync' message before yielding to parent. Cancel button disabled during delay. Pass all new props (waterfallItems, ancillary progress, files data) to waterfall indicator. Keep 'Fast sync with Mithril' header title.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["task-024h"],
+          "completedAt": "2026-03-18",
+          "targetPath": "source/renderer/app/components/loading/mithril-bootstrap/MithrilProgressView.tsx"
+        },
+        {
+          "id": "task-024j",
+          "title": "Backend and renderer integration tests",
+          "description": "Parser tests: label/stepNum/bytesDownloaded extraction for Files lines, Ancillary lines, step announcements, mixed/interleaved lines, graceful degradation without label field, and removal of stale remaining-time parsing. Service tests: split Files/Ancillary tracking payloads, verification transition into `verifying`, synthetic 100% completion at step 4, dropped late download-stream updates, post-download finalizing progress items (conversion if enabled + install + cleanup), error-state marks active progress item as `error`, extracted stderr summaries, and interleaved stream behavior. Renderer/store tests: overallElapsedSeconds timer lifecycle, ancillary computed progress, progress-item reactivity, timer reseeding from backend elapsedSeconds on resync and reset on new run, `verifying` as a working state, no download bars before step 3 or during verification, and loading-page overlay retention on `cancelled`.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 3,
+          "dependencies": ["task-024i"],
+          "completedAt": "2026-03-20",
+          "targetPath": "source/main/mithril/MithrilBootstrapService.spec.ts"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 3,
+    "totalTasks": 26,
+    "criticalPath": [
+      "task-015",
+      "task-017a",
+      "task-017b",
+      "task-021",
+      "task-021a",
+      "task-022",
+      "task-023a",
+      "task-023b",
+      "task-024",
+      "task-024a",
+      "task-024b",
+      "task-024c",
+      "task-024d",
+      "task-024e",
+      "task-024f",
+      "task-024f1",
+      "task-024f2",
+      "task-024h",
+      "task-024i",
+      "task-024j"
+    ]
+  }
+}

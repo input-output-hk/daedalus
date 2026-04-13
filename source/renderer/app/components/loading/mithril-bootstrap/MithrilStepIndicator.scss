@@ -1,0 +1,310 @@
+/* ─── Waterfall Step Indicator ─────────────────────────────────────── */
+
+@keyframes waterfallItemEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Root container ──────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── Top-level step wrapper ──────────────────────────────────────────── */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── Step row (icon + label side by side) ────────────────────────────── */
+
+.stepRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  min-height: 36px;
+}
+
+/* ── Top-level icon column ───────────────────────────────────────────── */
+
+.iconContainer {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.icon {
+  font-size: 20px;
+
+  > svg {
+    backface-visibility: hidden;
+    display: block;
+    fill: currentColor;
+    height: 1em;
+    transform: translateZ(0);
+    width: 1em;
+  }
+}
+
+.iconCheck {
+  color: var(--theme-mithril-step-icon-success-color);
+  font-size: 24px;
+}
+
+.iconSpinner {
+  color: var(--theme-mithril-step-icon-spinner-color);
+
+  :global {
+    animation: loading-spin 1.2s linear infinite;
+  }
+}
+
+.activeCircle {
+  background: var(--theme-mithril-step-icon-spinner-color);
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+}
+
+.iconError {
+  color: var(--theme-mithril-step-icon-error-color);
+}
+
+.pendingCircle {
+  background: var(--theme-mithril-step-icon-pending-background);
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+}
+
+/* ── Step label ─────────────────────────────────────────────────────── */
+
+.labelContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.stepPending .label {
+  color: var(--theme-mithril-step-pending-label-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+}
+
+.stepActive .label {
+  color: var(--theme-mithril-step-active-label-color);
+  font-family: var(--font-medium);
+  font-size: 15px;
+}
+
+.stepError .label {
+  color: var(--theme-mithril-step-error-label-color);
+  font-family: var(--font-medium);
+  font-size: 15px;
+}
+
+.stepCompleted .label {
+  color: var(--theme-mithril-step-completed-label-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+}
+
+/* ── Vertical connector line ─────────────────────────────────────────── */
+
+.connector {
+  background: var(--theme-mithril-step-connector-color);
+  bottom: 0;
+  left: 15px;
+  position: absolute;
+  top: 32px;
+  transform: translateX(-50%);
+  width: 2px;
+}
+
+.connectorCompleted {
+  background: var(--theme-mithril-step-connector-completed-color);
+}
+
+.connectorError {
+  background: var(--theme-mithril-step-connector-error-color);
+}
+
+/* ── Sub-content area ───────────────────────────────────────────────── */
+
+.subContent {
+  padding-bottom: 14px;
+  padding-left: 44px;
+  padding-top: 10px;
+}
+
+/* ── Sub-items ──────────────────────────────────────────────────────── */
+
+.subItem {
+  align-items: center;
+  animation: waterfallItemEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  display: flex;
+  gap: 8px;
+  min-height: 24px;
+
+  & + & {
+    margin-top: 7px;
+  }
+}
+
+.subItemNoAnimate {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.subItemAfterBars {
+  margin-top: 12px;
+}
+
+.subItemIconContainer {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.subItemIcon {
+  font-size: 16px;
+
+  > svg {
+    backface-visibility: hidden;
+    display: block;
+    fill: currentColor;
+    height: 1em;
+    transform: translateZ(0);
+    width: 1em;
+  }
+}
+
+.subItemIconCheck {
+  color: var(--theme-mithril-sub-item-icon-success-color);
+}
+
+.subItemIconSpinner {
+  backface-visibility: hidden;
+  color: var(--theme-mithril-sub-item-icon-spinner-color);
+  transform: translateZ(0);
+  transform-origin: center;
+  will-change: transform;
+
+  :global {
+    animation: loading-spin 1.2s linear infinite;
+  }
+}
+
+.subItemIconError {
+  color: var(--theme-mithril-sub-item-icon-error-color);
+}
+
+.subItemPendingCircle {
+  background: var(--theme-mithril-sub-item-pending-background);
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+}
+
+.subItemLabel {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.subItemPending .subItemLabel {
+  color: var(--theme-mithril-sub-item-pending-color);
+}
+
+.subItemActive .subItemLabel {
+  color: var(--theme-mithril-sub-item-active-color);
+}
+
+.subItemError .subItemLabel {
+  color: var(--theme-mithril-sub-item-error-color);
+}
+
+.subItemCompleted .subItemLabel {
+  color: var(--theme-mithril-sub-item-completed-color);
+}
+
+/* ── Inline progress bars ───────────────────────────────────────────── */
+
+.progressBars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progressBarsAfterSubItems {
+  margin-top: 12px;
+}
+
+/* ── Responsive: ≤720px ─────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .label {
+    font-size: 14px;
+    white-space: normal;
+  }
+
+  .subContent {
+    padding-left: 38px;
+  }
+
+  .subItem {
+    gap: 6px;
+
+    & + & {
+      margin-top: 6px;
+    }
+  }
+
+  .subItemLabel {
+    font-size: 12px;
+    white-space: normal;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .subItem {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .iconSpinner,
+  .subItemIconSpinner {
+    :global {
+      animation: none;
+    }
+  }
+}

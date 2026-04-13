@@ -1,0 +1,72 @@
+.inlineBar {
+  display: block;
+}
+
+.inlineBarMeta {
+  color: var(--theme-mithril-progress-meta-color);
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.inlineBarTrack {
+  background: var(--theme-mithril-progress-track-color);
+  border-radius: 3px;
+  height: 6px;
+  margin: 4px 0;
+  overflow: hidden;
+}
+
+.inlineBarFill {
+  border-radius: 3px;
+  height: 100%;
+  transition: width 0.24s ease;
+}
+
+.inlineBarFillActive {
+  animation: animatedStripesBackground 1s linear infinite;
+  background: linear-gradient(
+    135deg,
+    var(--theme-mithril-progress-active-stripe-color-strong) 25%,
+    var(--theme-mithril-progress-active-stripe-color-soft) 25%,
+    var(--theme-mithril-progress-active-stripe-color-soft) 50%,
+    var(--theme-mithril-progress-active-stripe-color-strong) 50%,
+    var(--theme-mithril-progress-active-stripe-color-strong) 75%,
+    var(--theme-mithril-progress-active-stripe-color-soft) 75%
+  );
+  background-size: 20px 20px;
+}
+
+.inlineBarFillComplete {
+  background: var(--theme-mithril-progress-complete-color);
+}
+
+@keyframes animatedStripesBackground {
+  0% {
+    background-position-x: 0;
+  }
+
+  100% {
+    background-position-x: 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  .inlineBarMeta {
+    flex-direction: column;
+    font-size: 11px;
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inlineBarFill {
+    transition: none;
+  }
+
+  .inlineBarFillActive {
+    animation: none;
+  }
+}

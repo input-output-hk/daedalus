@@ -7,10 +7,14 @@ class ManageElectronProcessPlugin {
   _process = null;
   _shouldRestart = false;
   start() {
-    this._process = spawn('yarn', ['electron', '.'], {
-      stdio: 'inherit',
-      shell: true,
-    });
+    this._process = spawn(
+      'yarn',
+      ['electron', '--disable-setuid-sandbox', '--no-sandbox', '.'],
+      {
+        stdio: 'inherit',
+        shell: true,
+      }
+    );
     this.isRunning = true;
     // Handle next electron shutdown
     this._process.once('close', () => this.onProcessClose());
