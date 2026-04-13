@@ -16,17 +16,20 @@ jest.mock('../utils/chainStorageCoordinator', () => {
   const validate = jest.fn();
   const setDirectory = jest.fn();
   const getConfig = jest.fn();
+  const prepareForLocationChange = jest.fn();
 
   return {
     chainStorageCoordinator: {
       validate,
       setDirectory,
       getConfig,
+      prepareForLocationChange,
     },
     __mocks: {
       validate,
       setDirectory,
       getConfig,
+      prepareForLocationChange,
     },
   };
 });
@@ -55,11 +58,11 @@ describe('chainStorageChannel', () => {
     mockChannels.length = 0;
   });
 
-  it('registers request handlers for get, set, and validate', () => {
+  it('registers request handlers for get, set, validate, and prepare', () => {
     const { moduleExports } = loadModule();
     moduleExports.handleChainStorageRequests();
 
-    expect(mockChannels).toHaveLength(3);
+    expect(mockChannels).toHaveLength(4);
     for (const channel of mockChannels) {
       expect(channel.onRequest).toHaveBeenCalledTimes(1);
     }
@@ -104,6 +107,31 @@ describe('chainStorageChannel', () => {
       expect.objectContaining({
         customPath: null,
         isRecoveryFallback: true,
+      })
+    );
+  });
+
+  it('delegates prepare requests to the coordinator cleanup hook', async () => {
+    const { moduleExports, chainStorageCoordinatorMock } = loadModule();
+    moduleExports.handleChainStorageRequests();
+    const prepareHandler = mockChannels[3].onRequest.mock.calls[0][0];
+    chainStorageCoordinatorMock.prepareForLocationChange.mockResolvedValue({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+
+    const result = await prepareHandler();
+
+    expect(
+      chainStorageCoordinatorMock.prepareForLocationChange
+    ).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(
+      expect.objectContaining({
+        path: null,
+        resolvedPath: '/tmp/state/chain',
       })
     );
   });

@@ -73,7 +73,7 @@ describe('ChainStorageLocationPicker', () => {
         name: /select blockchain data location/i,
       })
     ).toBeInTheDocument();
-    expect(input).toHaveDisplayValue('/mnt/current-chain');
+    expect(input).toHaveDisplayValue('/mnt/current-chain/chain');
     expect(
       screen.getByText(/the latest available snapshot is about 2 kB/i)
     ).toBeInTheDocument();
@@ -129,7 +129,9 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(onSetChainStorageDirectory).not.toHaveBeenCalled();
-    expect(screen.getByDisplayValue('/mnt/new-chain')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('/mnt/new-chain/chain')
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /continue/i }));
 
@@ -138,6 +140,56 @@ describe('ChainStorageLocationPicker', () => {
     });
 
     expect(onConfirmStorageLocation).toHaveBeenCalled();
+  });
+
+  it('applies the canonical parent when a selected alias resolves to chain data', async () => {
+    const onSetChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/external',
+      resolvedPath: '/mnt/external',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: true,
+      path: '/mnt/external',
+      resolvedPath: '/mnt/external',
+      availableSpaceBytes: 3000,
+      requiredSpaceBytes: 1024,
+      chainSubdirectoryStatus: 'existing-directory',
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/link-to-chain'],
+    });
+
+    renderComponent({
+      onSetChainStorageDirectory,
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/link-to-chain'
+      );
+    });
+
+    expect(screen.getByDisplayValue('/mnt/external/chain')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /existing blockchain data found\. proceeding will reuse this data\./i
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    await waitFor(() => {
+      expect(onSetChainStorageDirectory).toHaveBeenCalledWith('/mnt/external');
+    });
   });
 
   it('defers reset-to-default until continue is pressed', async () => {
@@ -255,6 +307,24 @@ describe('ChainStorageLocationPicker', () => {
     expect(document.getElementById(describedById || '')).toHaveTextContent(
       /does not have enough free space/i
     );
+  });
+
+  it('keeps the attempted path visible and continue disabled after an invalid apply remount', () => {
+    renderComponent({
+      pendingChainPath: '/mnt/invalid-chain',
+      chainStorageValidation: {
+        isValid: false,
+        path: '/mnt/invalid-chain',
+        resolvedPath: '/mnt/invalid-chain',
+        reason: 'insufficient-space',
+        message: 'Selected directory does not have enough free space.',
+      },
+    });
+
+    expect(
+      screen.getByDisplayValue('/mnt/invalid-chain/chain')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
   });
 
   it('announces apply feedback in a polite status region while updating', async () => {
@@ -390,5 +460,27 @@ describe('ChainStorageLocationPicker', () => {
     expect(dataFoundNotice).toBeInTheDocument();
     expect(describedByIds).toContain(recoveryNotice.getAttribute('id'));
     expect(describedByIds).toContain(dataFoundNotice.getAttribute('id'));
+  });
+
+  it('shows no storage status message for an empty directly selected chain directory', () => {
+    renderComponent({
+      customChainPath: '/mnt/current-parent',
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-parent',
+        resolvedPath: '/mnt/current-parent',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+      },
+    });
+
+    expect(
+      screen.queryByText(/existing blockchain data found/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        /chain subdirectory inside the selected parent folder/i
+      )
+    ).not.toBeInTheDocument();
   });
 });

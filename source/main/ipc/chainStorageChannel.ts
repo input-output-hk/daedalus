@@ -3,6 +3,7 @@ import {
   SET_CHAIN_STORAGE_DIRECTORY_CHANNEL,
   GET_CHAIN_STORAGE_DIRECTORY_CHANNEL,
   VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL,
+  PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL,
 } from '../../common/ipc/api';
 import type {
   SetChainStorageDirectoryRendererRequest,
@@ -11,6 +12,8 @@ import type {
   GetChainStorageDirectoryMainResponse,
   ValidateChainStorageDirectoryRendererRequest,
   ValidateChainStorageDirectoryMainResponse,
+  PrepareChainStorageLocationChangeRendererRequest,
+  PrepareChainStorageLocationChangeMainResponse,
 } from '../../common/ipc/api';
 import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
 
@@ -29,6 +32,11 @@ const validateChainStorageDirectoryChannel: MainIpcChannel<
   ValidateChainStorageDirectoryMainResponse
 > = new MainIpcChannel(VALIDATE_CHAIN_STORAGE_DIRECTORY_CHANNEL);
 
+const prepareChainStorageLocationChangeChannel: MainIpcChannel<
+  PrepareChainStorageLocationChangeRendererRequest,
+  PrepareChainStorageLocationChangeMainResponse
+> = new MainIpcChannel(PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL);
+
 export const handleChainStorageRequests = () => {
   setChainStorageDirectoryChannel.onRequest(async ({ path }) => {
     return chainStorageCoordinator.setDirectory(path);
@@ -40,5 +48,9 @@ export const handleChainStorageRequests = () => {
 
   validateChainStorageDirectoryChannel.onRequest(async ({ path }) =>
     chainStorageCoordinator.validate(path)
+  );
+
+  prepareChainStorageLocationChangeChannel.onRequest(async () =>
+    chainStorageCoordinator.prepareForLocationChange()
   );
 };

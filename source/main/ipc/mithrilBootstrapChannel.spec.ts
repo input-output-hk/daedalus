@@ -93,6 +93,31 @@ describe('mithrilBootstrapChannel', () => {
     );
   });
 
+  it('can reset outstanding decision waiters without broadcasting idle', async () => {
+    const moduleExports = loadModule();
+    const window = { webContents: {} };
+
+    moduleExports.handleMithrilBootstrapRequests(window as never);
+
+    const waiter = moduleExports.waitForMithrilBootstrapDecision();
+    const waiterResult = waiter
+      .then(() => ({ error: null }))
+      .catch((error) => ({ error }));
+
+    moduleExports.resetMithrilDecisionState({
+      suppressStatusBroadcast: true,
+    });
+    await flushPromises();
+
+    const { error } = await waiterResult;
+    expect(error).toBeInstanceOf(moduleExports.MithrilDecisionCancelledError);
+    expect(moduleExports.getPendingMithrilBootstrapDecision()).toBeNull();
+    expect(moduleExports.getMithrilBootstrapStatus()).toEqual(
+      expect.objectContaining({ status: 'idle' })
+    );
+    expect(mockChannels[2].send).not.toHaveBeenCalled();
+  });
+
   it('resolves decision waiters and stores the pending decision until reset', async () => {
     const moduleExports = loadModule();
 

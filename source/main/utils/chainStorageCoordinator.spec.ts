@@ -5,6 +5,7 @@ const chainStorageManagerMock = {
   validate: jest.fn(),
   setDirectory: jest.fn(),
   resetToDefault: jest.fn(),
+  prepareForLocationChange: jest.fn(),
   ensureManagedChainLayout: jest.fn(),
   resolveDiskSpaceCheckPath: jest.fn(),
   isManagedChainEmpty: jest.fn(),
@@ -144,6 +145,51 @@ describe('chainStorageCoordinator', () => {
     ).toBeLessThan(
       mithrilBootstrapServiceMock.listSnapshots.mock.invocationCallOrder[0]
     );
+  });
+
+  it('re-evaluates startup only when returning to the picker resets an empty custom selection', async () => {
+    chainStorageManagerMock.prepareForLocationChange.mockResolvedValueOnce({
+      isValid: true,
+      path: null,
+      resolvedPath: '/tmp/state/chain',
+      availableSpaceBytes: 4096,
+      requiredSpaceBytes: 1024,
+    });
+    const moduleExports = loadModule();
+    const directoryChanged = jest.fn();
+
+    moduleExports.chainStorageCoordinator.onDirectoryChanged(directoryChanged);
+
+    const result = await moduleExports.chainStorageCoordinator.prepareForLocationChange();
+
+    expect(chainStorageManagerMock.prepareForLocationChange).toHaveBeenCalled();
+    expect(chainStorageManagerMock.resolveMithrilWorkDir).toHaveBeenCalled();
+    expect(directoryChanged).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(
+      expect.objectContaining({
+        path: null,
+        resolvedPath: '/tmp/state/chain',
+      })
+    );
+  });
+
+  it('does not notify directory changes when returning to the picker keeps the current storage', async () => {
+    chainStorageManagerMock.prepareForLocationChange.mockResolvedValueOnce(
+      null
+    );
+    const moduleExports = loadModule();
+    const directoryChanged = jest.fn();
+
+    moduleExports.chainStorageCoordinator.onDirectoryChanged(directoryChanged);
+
+    const result = await moduleExports.chainStorageCoordinator.prepareForLocationChange();
+
+    expect(chainStorageManagerMock.prepareForLocationChange).toHaveBeenCalled();
+    expect(
+      chainStorageManagerMock.resolveMithrilWorkDir
+    ).not.toHaveBeenCalled();
+    expect(directoryChanged).not.toHaveBeenCalled();
+    expect(result).toBeNull();
   });
 
   it('waits for an in-flight layout mutation before reading config', async () => {

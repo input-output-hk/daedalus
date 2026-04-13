@@ -104,22 +104,18 @@ export class ChainStorageManager {
         return validation;
       }
 
-      const previousConfig = await this.getConfig();
-      const canonicalTargetDir = await this._canonicalizeManagedChildSelection(
-        normalizedTargetDir,
-        previousConfig.customPath
-      );
+      const validation = await this.validate(normalizedTargetDir);
+      if (!validation.isValid) {
+        return validation;
+      }
 
-      if (this._isSamePath(canonicalTargetDir, this._chainPath)) {
+      if (validation.path == null) {
         const validation = await this._resetToDefault();
         this._isRecoveryFallback = false;
         return validation;
       }
 
-      const validation = await this.validate(canonicalTargetDir);
-      if (!validation.isValid || validation.path == null) {
-        return validation;
-      }
+      const previousConfig = await this.getConfig();
 
       const nextManagedChainPath = this._getManagedChainPath(validation.path);
       const resolvedTargetPath = await this._resolveRealPathOrInput(
@@ -227,6 +223,31 @@ export class ChainStorageManager {
 
     const entries = await this._safeReadDir(managedChainPath);
     return entries.length === 0;
+  }
+
+  async prepareForLocationChange(): Promise<ChainStorageValidation | null> {
+    return this._withMutationLock('prepareForLocationChange', async () => {
+      const config = await this.getConfig();
+
+      if (config.customPath == null) {
+        return null;
+      }
+
+      const managedChainPath = this._getManagedChainPath(config.customPath);
+      const managedEntries = await this._safeReadDir(managedChainPath);
+
+      if (managedEntries.length > 0) {
+        return null;
+      }
+
+      const validation = await this._resetToDefault();
+
+      if (await this._pathExistsViaLstat(managedChainPath)) {
+        await fs.remove(managedChainPath);
+      }
+
+      return validation;
+    });
   }
 
   async unlinkChainEntryPoint(): Promise<void> {

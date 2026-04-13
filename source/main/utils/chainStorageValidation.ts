@@ -123,59 +123,58 @@ export async function validateChainStorageDirectory(
       };
     }
 
-    if (options.currentCustomPath) {
-      const currentCustomPathExists = await fs.pathExists(
-        options.currentCustomPath
-      );
-      const resolvedCurrentCustomPath = currentCustomPathExists
-        ? await fs.realpath(options.currentCustomPath)
-        : path.resolve(options.currentCustomPath);
-      const currentManagedChainPath = path.join(
-        resolvedCurrentCustomPath,
-        CHAIN_DIRECTORY_NAME
-      );
-
-      if (isSamePath(resolvedPath, currentManagedChainPath)) {
-        return {
-          ...defaultValidation,
-          resolvedPath,
-          reason: 'is-managed-child',
-          message:
-            'Select the parent directory for blockchain storage, not the managed chain subdirectory itself.',
-        };
-      }
-    }
+    const isDirectChainSelection =
+      path.basename(resolvedPath) === CHAIN_DIRECTORY_NAME;
+    const validationPath = isDirectChainSelection
+      ? path.dirname(resolvedPath)
+      : normalizedPath;
+    const resolvedValidationPath = isDirectChainSelection
+      ? path.dirname(resolvedPath)
+      : resolvedPath;
 
     const stateDirExists = await fs.pathExists(stateDir);
     const resolvedStatePath = stateDirExists
       ? await fs.realpath(stateDir)
       : path.resolve(stateDir);
 
-    if (isSubPath(resolvedStatePath, resolvedPath)) {
+    if (isSubPath(resolvedStatePath, resolvedValidationPath)) {
       return {
         ...defaultValidation,
-        resolvedPath,
+        resolvedPath: resolvedValidationPath,
         reason: 'inside-state-dir',
         message: 'Selected directory cannot be inside Daedalus state dir.',
       };
     }
 
-    await fs.access(resolvedPath, fs.constants.W_OK);
+    await fs.access(resolvedValidationPath, fs.constants.W_OK);
 
-    const managedChainPath = path.join(resolvedPath, CHAIN_DIRECTORY_NAME);
-    const managedChainExists = await fs.pathExists(managedChainPath);
+    const managedChainPath = isDirectChainSelection
+      ? resolvedPath
+      : path.join(resolvedValidationPath, CHAIN_DIRECTORY_NAME);
+    const managedChainExists = isDirectChainSelection
+      ? true
+      : await fs.pathExists(managedChainPath);
     let chainSubdirectoryStatus:
       | ChainStorageValidation['chainSubdirectoryStatus']
-      | undefined = 'will-create';
+      | undefined = isDirectChainSelection
+      ? 'existing-directory'
+      : 'will-create';
 
     if (managedChainExists) {
-      const managedChainStats = await fs.lstat(managedChainPath);
+      const managedChainStats = isDirectChainSelection
+        ? targetStats
+        : await fs.lstat(managedChainPath);
       if (managedChainStats.isDirectory()) {
-        chainSubdirectoryStatus = 'existing-directory';
+        const existingManagedChainPath = isDirectChainSelection
+          ? resolvedPath
+          : managedChainPath;
+        const managedChainEntries = await fs.readdir(existingManagedChainPath);
+        chainSubdirectoryStatus =
+          managedChainEntries.length > 0 ? 'existing-directory' : undefined;
       } else {
         return {
           ...defaultValidation,
-          resolvedPath,
+          resolvedPath: resolvedValidationPath,
           availableSpaceBytes: undefined,
           requiredSpaceBytes: requiredSpace,
           chainSubdirectoryStatus: 'path-is-file',
@@ -186,11 +185,11 @@ export async function validateChainStorageDirectory(
       }
     }
 
-    const { free } = await checkDiskSpace(resolvedPath);
+    const { free } = await checkDiskSpace(resolvedValidationPath);
     if (free < requiredSpace) {
       return {
         ...defaultValidation,
-        resolvedPath,
+        resolvedPath: resolvedValidationPath,
         availableSpaceBytes: free,
         requiredSpaceBytes: requiredSpace,
         chainSubdirectoryStatus,
@@ -201,8 +200,8 @@ export async function validateChainStorageDirectory(
 
     return {
       isValid: true,
-      path: normalizedPath,
-      resolvedPath,
+      path: validationPath,
+      resolvedPath: resolvedValidationPath,
       availableSpaceBytes: free,
       requiredSpaceBytes: requiredSpace,
       chainSubdirectoryStatus,

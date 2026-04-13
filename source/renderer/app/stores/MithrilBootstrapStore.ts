@@ -20,6 +20,7 @@ import {
   setChainStorageDirectoryChannel,
   getChainStorageDirectoryChannel,
   validateChainStorageDirectoryChannel,
+  prepareChainStorageLocationChangeChannel,
 } from '../ipc/chainStorageChannel';
 import { logger } from '../utils/logging';
 
@@ -65,6 +66,8 @@ export default class MithrilBootstrapStore extends Store {
     path: null,
   };
   @observable isChainStorageLoading = false;
+  @observable isApplyingStorageLocation = false;
+  @observable pendingChainPath: string | null | undefined = undefined;
   @observable isRecoveryFallback = false;
   @observable storageLocationConfirmed = false;
   @observable ancillaryBytesDownloaded: number | undefined = undefined;
@@ -160,6 +163,8 @@ export default class MithrilBootstrapStore extends Store {
       !isDecisionCycleStatus(previousStatus)
     ) {
       this.storageLocationConfirmed = false;
+      this.isApplyingStorageLocation = false;
+      this.pendingChainPath = undefined;
       this.ancillaryBytesDownloaded = undefined;
       this.ancillaryBytesTotal = undefined;
       this.progressItems = [];
@@ -286,6 +291,8 @@ export default class MithrilBootstrapStore extends Store {
   @action
   setChainStorageDirectory = async (path: string | null) => {
     this.isChainStorageLoading = true;
+    this.isApplyingStorageLocation = true;
+    this.pendingChainPath = path;
 
     try {
       const validation = await setChainStorageDirectoryChannel.request({
@@ -296,18 +303,30 @@ export default class MithrilBootstrapStore extends Store {
         this.isRecoveryFallback = false;
         this.chainStorageValidation = validation;
         if (validation.isValid) {
+          this.storageLocationConfirmed = true;
+          this.pendingChainPath = undefined;
           this.customChainPath = validation.path ?? null;
           if (validation.path == null && validation.resolvedPath) {
             this.defaultChainPath = validation.resolvedPath;
             this.defaultChainStorageValidation = validation;
           }
+        } else {
+          this.storageLocationConfirmed = false;
+          this.pendingChainPath = validation.path ?? path ?? null;
         }
       });
 
       return validation;
+    } catch (error) {
+      runInAction('revert storage location apply state', () => {
+        this.storageLocationConfirmed = false;
+        this.pendingChainPath = undefined;
+      });
+      throw error;
     } finally {
       runInAction('finish setting chain storage directory', () => {
         this.isChainStorageLoading = false;
+        this.isApplyingStorageLocation = false;
       });
     }
   };
@@ -343,10 +362,43 @@ export default class MithrilBootstrapStore extends Store {
   confirmStorageLocation = () => {
     this.isRecoveryFallback = false;
     this.storageLocationConfirmed = true;
+    this.isApplyingStorageLocation = false;
+    this.pendingChainPath = undefined;
   };
 
   @action
   clearStorageLocationConfirmation = () => {
     this.storageLocationConfirmed = false;
+    this.isApplyingStorageLocation = false;
+    this.pendingChainPath = undefined;
+  };
+
+  @action
+  returnToStorageLocation = async () => {
+    const previousCustomPath = this.customChainPath;
+    const cleanupValidation = await prepareChainStorageLocationChangeChannel.request();
+
+    runInAction('return to chain storage location picker', () => {
+      this.storageLocationConfirmed = false;
+      this.isApplyingStorageLocation = false;
+
+      if (cleanupValidation && previousCustomPath != null) {
+        this.customChainPath = null;
+        this.defaultChainPath =
+          cleanupValidation.resolvedPath ?? this.defaultChainPath;
+        this.defaultChainStorageValidation = cleanupValidation;
+        this.chainStorageValidation = {
+          isValid: true,
+          path: previousCustomPath,
+          resolvedPath: previousCustomPath,
+          availableSpaceBytes: cleanupValidation.availableSpaceBytes,
+          requiredSpaceBytes: cleanupValidation.requiredSpaceBytes,
+          chainSubdirectoryStatus: 'will-create',
+        };
+        this.pendingChainPath = previousCustomPath;
+      } else {
+        this.pendingChainPath = undefined;
+      }
+    });
   };
 }

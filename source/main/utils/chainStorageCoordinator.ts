@@ -41,6 +41,24 @@ class ChainStorageCoordinator {
     return this._chainStorageManager.validate(path);
   }
 
+  async prepareForLocationChange(): Promise<ChainStorageValidation | null> {
+    return this._withMutationLock('prepareForLocationChange', async () => {
+      this._assertBootstrapMutationAllowed(
+        'prepare chain storage location change'
+      );
+
+      const validation = await this._chainStorageManager.prepareForLocationChange();
+
+      if (!validation) {
+        return null;
+      }
+
+      await this._syncMithrilWorkDir();
+      this._notifyDirectoryChanged();
+      return validation;
+    });
+  }
+
   onDirectoryChanged(callback: () => void): void {
     this._directoryChangedCallbacks.push(callback);
   }

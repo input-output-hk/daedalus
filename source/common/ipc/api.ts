@@ -465,6 +465,11 @@ export type ValidateChainStorageDirectoryRendererRequest = {
 };
 export type ValidateChainStorageDirectoryMainResponse = ChainStorageValidation;
 
+export const PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL =
+  'PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL';
+export type PrepareChainStorageLocationChangeRendererRequest = void;
+export type PrepareChainStorageLocationChangeMainResponse = ChainStorageValidation | null;
+
 /**
  * Channel for quitting Daedalus and installing update
  */

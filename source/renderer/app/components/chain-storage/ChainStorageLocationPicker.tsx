@@ -19,6 +19,7 @@ import {
   getStorageHelpText,
   pathsAreEqual,
   createDefaultValidation,
+  getManagedChainDisplayPath,
 } from './chainStorageUtils';
 import { MITHRIL_CHAIN_STORAGE_HEADING_ID } from '../loading/mithril-bootstrap/accessibilityIds';
 
@@ -27,6 +28,7 @@ interface Props {
   defaultChainPath?: string | null;
   defaultChainStorageValidation?: ChainStorageValidation;
   chainStorageValidation?: ChainStorageValidation;
+  pendingChainPath?: string | null;
   isRecoveryFallback?: boolean;
   estimatedRequiredSpaceBytes?: number;
   isChainStorageLoading?: boolean;
@@ -61,6 +63,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     defaultChainPath,
     defaultChainStorageValidation,
     chainStorageValidation,
+    pendingChainPath,
     isRecoveryFallback,
     estimatedRequiredSpaceBytes,
     isChainStorageLoading,
@@ -111,6 +114,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     setSelectionValidation(null);
   }, [
     customChainPath,
+    pendingChainPath,
     defaultChainPath,
     chainStorageValidation,
     defaultChainStorageValidation,
@@ -125,19 +129,20 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     }
   }, [shouldShowRecoveryNotice]);
 
+  const committedPath =
+    pendingChainPath !== undefined ? pendingChainPath : customChainPath;
   const committedValidation =
-    customChainPath == null
+    committedPath == null
       ? defaultValidation
       : chainStorageValidation || {
           isValid: true,
-          path: customChainPath,
+          path: committedPath,
         };
   const effectiveSelection = candidate || {
-    path: customChainPath,
+    path: committedPath,
     validation: committedValidation,
   };
 
-  const currentPath = effectiveSelection.path || defaultChainPath;
   const displayedValidation =
     selectionValidation != null && !selectionValidation.isValid
       ? selectionValidation
@@ -159,11 +164,11 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     displayedValidation.isValid &&
     displayedValidation.chainSubdirectoryStatus === 'existing-directory';
   const isCurrentStorageInvalid =
-    customChainPath != null &&
+    committedPath != null &&
     chainStorageValidation != null &&
     !chainStorageValidation.isValid &&
     chainStorageValidation.path != null &&
-    pathsAreEqual(chainStorageValidation.path, customChainPath);
+    pathsAreEqual(chainStorageValidation.path, committedPath);
   const hasValidCandidateOverride =
     candidate != null && candidate.validation.isValid;
   const isBusy =
@@ -187,7 +192,8 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   const describedById =
     describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
   const displayedPath =
-    currentPath || intl.formatMessage(messages.defaultLocationLabel);
+    getManagedChainDisplayPath(effectiveSelection.path, defaultChainPath) ||
+    intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
     intl,
     effectiveSelection.validation.availableSpaceBytes
@@ -289,7 +295,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
 
     setIsRecoveryNoticeDismissed(true);
 
-    const nextPath = candidate ? candidate.path : customChainPath;
+    const nextPath = candidate ? candidate.path : committedPath;
     const shouldResetToDefault = nextPath == null && customChainPath != null;
     const shouldSetCustomPath =
       nextPath != null &&

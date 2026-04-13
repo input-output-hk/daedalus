@@ -7,6 +7,7 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type { MithrilSnapshotItem } from '../../../../../common/types/mithril-bootstrap.types';
 import type { Intl } from '../../../types/i18nTypes';
 import chainStorageMessages from '../../chain-storage/ChainStorage.messages';
+import { getManagedChainDisplayPath } from '../../chain-storage/chainStorageUtils';
 import messages from './MithrilBootstrap.messages';
 import { MITHRIL_DECISION_HEADING_ID } from './accessibilityIds';
 import MithrilSnapshotDetails from './MithrilSnapshotDetails';
@@ -18,6 +19,8 @@ interface Props {
   selectedDigest?: string | null;
   selectedSnapshot?: MithrilSnapshotItem | null;
   isFetchingSnapshots: boolean;
+  isStorageLocationApplying?: boolean;
+  pendingChainPath?: string | null;
   customChainPath?: string | null;
   defaultChainPath?: string | null;
   onSelectSnapshot: (arg: string | null) => void;
@@ -36,6 +39,8 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
     selectedDigest,
     selectedSnapshot,
     isFetchingSnapshots,
+    isStorageLocationApplying,
+    pendingChainPath,
     customChainPath,
     defaultChainPath,
     onSelectSnapshot,
@@ -44,9 +49,11 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
     onDecline,
   } = props;
   const currentStoragePath =
-    customChainPath ||
-    defaultChainPath ||
-    intl.formatMessage(chainStorageMessages.defaultLocationLabel);
+    getManagedChainDisplayPath(
+      pendingChainPath !== undefined ? pendingChainPath : customChainPath,
+      defaultChainPath
+    ) || intl.formatMessage(chainStorageMessages.defaultLocationLabel);
+  const isDecisionDisabled = Boolean(isStorageLocationApplying);
 
   return (
     <div className={styles.root}>
@@ -65,21 +72,23 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
             </span>
             <span className={styles.locationValue}>{currentStoragePath}</span>
           </div>
-          <Link
-            className={styles.locationAction}
-            skin={LinkSkin}
-            isUnderlined={false}
-            underlineOnHover
-            label={intl.formatMessage(chainStorageMessages.changeLocation)}
-            onClick={onReturnToStorageLocation}
-          />
+          {!isDecisionDisabled && (
+            <Link
+              className={styles.locationAction}
+              skin={LinkSkin}
+              isUnderlined={false}
+              underlineOnHover
+              label={intl.formatMessage(chainStorageMessages.changeLocation)}
+              onClick={onReturnToStorageLocation}
+            />
+          )}
         </div>
       )}
 
       <MithrilSnapshotSelector
         snapshots={snapshots}
         selectedDigest={selectedDigest}
-        isFetchingSnapshots={isFetchingSnapshots}
+        isFetchingSnapshots={isFetchingSnapshots || isDecisionDisabled}
         onSelectSnapshot={onSelectSnapshot}
       />
 
@@ -89,12 +98,14 @@ function MithrilDecisionView(props: Props, { intl }: Context) {
         <Button
           className={styles.primaryAction}
           skin={ButtonSkin}
+          disabled={isDecisionDisabled}
           label={intl.formatMessage(messages.accept)}
           onClick={onAccept}
         />
         <Button
           className={styles.secondaryAction}
           skin={ButtonSkin}
+          disabled={isDecisionDisabled}
           label={intl.formatMessage(messages.decline)}
           onClick={onDecline}
         />

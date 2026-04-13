@@ -142,7 +142,11 @@ export const waitForMithrilBootstrapDecision = (): Promise<
   });
 };
 
-export const resetMithrilDecisionState = (): void => {
+export const resetMithrilDecisionState = (
+  options: {
+    suppressStatusBroadcast?: boolean;
+  } = {}
+): void => {
   pendingDecision = null;
   const cancellationError = new MithrilDecisionCancelledError();
   decisionWaiters.forEach(({ reject }) => reject(cancellationError));
@@ -159,6 +163,10 @@ export const resetMithrilDecisionState = (): void => {
     ancillaryBytesTotal: undefined,
     progressItems: undefined,
   });
+
+  if (options.suppressStatusBroadcast) {
+    return;
+  }
 
   broadcastMithrilBootstrapStatus(update).catch((error) => {
     logger.warn(
