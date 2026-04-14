@@ -940,9 +940,24 @@ export const handleDiskSpace = (
 
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
-    diskSpaceCheckInterval = setInterval(async () => {
-      const response = await handleCheckDiskSpace(hadNotEnoughSpaceLeft);
-      hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
+    diskSpaceCheckInterval = setInterval(() => {
+      handleCheckDiskSpace(hadNotEnoughSpaceLeft)
+        .then((response) => {
+          hadNotEnoughSpaceLeft = response?.hadNotEnoughSpaceLeft;
+        })
+        .catch((error) => {
+          if (isMithrilDecisionCancelledError(error)) {
+            logger.info(
+              '[MITHRIL] Background disk-space poll cancelled after directory change',
+              null
+            );
+            return;
+          }
+
+          logger.error('[MITHRIL] Background disk-space poll failed', {
+            error,
+          });
+        });
     }, interval);
     diskSpaceCheckIntervalLength = interval;
   };

@@ -38,12 +38,11 @@ jest.mock('./logging', () => ({
 }));
 
 describe('ChainStorageManager', () => {
-  const createConfig = (customPath: string | null, setAt?: string) => ({
+  const createConfig = (customPath: string | null) => ({
     customPath,
     defaultPath: '/tmp/state/chain',
     availableSpaceBytes: 4096,
     requiredSpaceBytes: 1024,
-    setAt,
   });
 
   const createPathNotFoundError = (message = 'path unavailable') =>
@@ -351,10 +350,6 @@ describe('ChainStorageManager', () => {
       type: 'symlink',
       resolvedPath: '/mnt/live-parent/chain',
     });
-    (fs.readJson as jest.Mock).mockResolvedValue({
-      customPath: '/mnt/stale-parent',
-      setAt: '2026-04-01T00:00:00.000Z',
-    });
 
     const result = await manager.getConfig();
 
@@ -363,7 +358,6 @@ describe('ChainStorageManager', () => {
         customPath: '/mnt/live-parent',
       })
     );
-    expect(fs.readJson).not.toHaveBeenCalled();
   });
 
   it('rollback restores the previous symlink target without rewriting config', async () => {

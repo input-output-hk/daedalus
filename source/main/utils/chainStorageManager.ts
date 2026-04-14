@@ -34,10 +34,8 @@ import {
   writeMigrationJournal,
 } from './chainStorageManagerLayout';
 import {
-  canonicalizeManagedChildSelection,
   captureChainPathState,
   CHAIN_DIRECTORY_NAME,
-  CHAIN_STORAGE_CONFIG_FILE,
   CHAIN_STORAGE_MIGRATION_JOURNAL_FILE,
   createSymlink,
   ensureDefaultChainDirectory,
@@ -64,11 +62,10 @@ import type {
   ManagedChainLayoutResult,
 } from './chainStorageManagerShared';
 
-export { CHAIN_STORAGE_CONFIG_FILE, CHAIN_DIRECTORY_NAME };
+export { CHAIN_DIRECTORY_NAME };
 
 export class ChainStorageManager {
   _stateDirectoryPath: string;
-  _configPath: string;
   _chainPath: string;
   _logsDirectoryPath: string;
   _migrationJournalPath: string;
@@ -78,10 +75,6 @@ export class ChainStorageManager {
   constructor(daedalusStateDirectoryPath: string = stateDirectoryPath) {
     this._stateDirectoryPath = daedalusStateDirectoryPath;
     this._chainPath = path.join(this._stateDirectoryPath, CHAIN_DIRECTORY_NAME);
-    this._configPath = path.join(
-      this._stateDirectoryPath,
-      CHAIN_STORAGE_CONFIG_FILE
-    );
     this._logsDirectoryPath = path.join(this._stateDirectoryPath, 'Logs');
     this._migrationJournalPath = path.join(
       this._logsDirectoryPath,
@@ -468,17 +461,6 @@ export class ChainStorageManager {
 
   async _resolveRealPathOrInput(targetPath: string): Promise<string> {
     return resolveRealPathOrInput(this, targetPath);
-  }
-
-  async _canonicalizeManagedChildSelection(
-    targetDir: string,
-    currentCustomPath: string | null
-  ): Promise<string> {
-    return canonicalizeManagedChildSelection(
-      this,
-      targetDir,
-      currentCustomPath
-    );
   }
 
   _getManagedChainPath(customPath: string | null): string {

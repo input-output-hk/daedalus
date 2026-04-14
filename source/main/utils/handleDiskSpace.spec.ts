@@ -526,6 +526,35 @@ describe('handleDiskSpace', () => {
     );
   });
 
+  it('logs and contains managed-layout failures from the background polling interval', async () => {
+    const {
+      handleDiskSpace,
+    } = require('./handleDiskSpace') as typeof import('./handleDiskSpace');
+    const cardanoNode = createCardanoNode();
+    const layoutError = new Error('permission denied');
+
+    chainStorageCoordinatorMock.ensureManagedChainLayout.mockRejectedValue(
+      layoutError
+    );
+
+    handleDiskSpace({ webContents: {} } as never, cardanoNode as never);
+
+    const intervalCallback = (global.setInterval as jest.Mock).mock.calls[0][0];
+
+    expect(() => intervalCallback()).not.toThrow();
+    await flushPromises();
+
+    expect(logger.error).toHaveBeenCalledWith(
+      '[MITHRIL] Background disk-space poll failed',
+      expect.objectContaining({
+        error: expect.objectContaining({
+          code: 'MANAGED_CHAIN_LAYOUT_ERROR',
+          message: 'permission denied',
+        }),
+      })
+    );
+  });
+
   it('clears Mithril decision state and emits idle before starting on a non-empty managed chain', async () => {
     const {
       handleDiskSpace,

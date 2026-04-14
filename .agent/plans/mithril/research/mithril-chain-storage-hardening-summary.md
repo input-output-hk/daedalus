@@ -14,7 +14,7 @@ The resulting system now behaves like this:
 - Default storage uses a local `stateDir/chain` directory.
 - Custom storage uses a symlink or junction from `stateDir/chain` to `<parent>/chain`.
 - Validation accepts a directly selected `chain` directory or alias that resolves to one, then canonicalizes it back to the owning parent.
-- The old config-file-based chain-storage state is no longer authoritative.
+- No chain-storage config file is consulted; runtime state is derived only from the live `stateDir/chain` entry point.
 - Broken custom storage falls back to default storage instead of aborting startup.
 - Directory changes cancel stale Mithril decision flows and cached startup assumptions.
 - Returning to the picker can discard a newly created empty custom `chain` directory safely before reopening selection.
@@ -42,7 +42,7 @@ Previously, live symlink or junction state and persisted config state could disa
 The fix removed that ambiguity:
 
 - live link state is authoritative
-- legacy config data is tolerated only for cleanup or rollout compatibility
+- legacy config cleanup was removed once rollout tolerance was no longer needed
 - recovery no longer depends on config-file interpretation
 
 ### 3. Broken custom storage causing startup failure
@@ -301,6 +301,7 @@ If future work touches chain storage or Mithril startup, start from these assump
 - async overlap must be treated as normal, not exceptional
 - any new destructive operation must be explicit about whether it unlinks, removes, or empties managed chain state
 - any new renderer state around storage selection must reflect the real main-process decision flow
+- cancellation paths must prove they only clean snapshot artifacts while a bootstrap run is actually active
 - any validation change for storage selection must preserve canonical parent ownership even when the user chooses the managed `chain` path directly
 - any rollback to the storage picker must decide explicitly whether an empty custom managed directory should be discarded first
 - any renderer notification added to startup must be safe to drop, delay, or fail without changing node-start behavior

@@ -136,7 +136,6 @@ describe('MithrilBootstrapStore', () => {
       defaultPath: '/tmp/state/chain',
       availableSpaceBytes: 123456,
       requiredSpaceBytes: 654321,
-      setAt: '2026-03-09T00:00:00.000Z',
     });
     mockValidateChainStorageDirectoryRequest.mockResolvedValue({
       isValid: true,

@@ -21,30 +21,11 @@ const toLayoutResult = (
   isRecoveryFallback,
 });
 
-const cleanupLegacyConfigIfPresent = async (
-  ctx: ChainStorageManagerContext
-): Promise<void> => {
-  try {
-    if (await fs.pathExists(ctx._configPath)) {
-      await fs.remove(ctx._configPath);
-    }
-  } catch (error) {
-    logger.warn(
-      'ChainStorageManager: failed to remove legacy chain storage config',
-      {
-        error,
-        configPath: ctx._configPath,
-      }
-    );
-  }
-};
-
 export async function ensureManagedChainLayout(
   ctx: ChainStorageManagerContext,
   options: EnsureManagedLayoutOptions = {}
 ): Promise<ManagedChainLayoutResult> {
   await ctx._recoverInterruptedMigration(options);
-  await cleanupLegacyConfigIfPresent(ctx);
   const entryPointState = await ctx._captureChainPathState();
 
   if (entryPointState.type !== 'symlink') {

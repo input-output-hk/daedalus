@@ -16,10 +16,6 @@ type GetDefaultConfig = () => Promise<
   >
 >;
 
-type ValidateChainStorageDirectoryOptions = {
-  currentCustomPath?: string | null;
-};
-
 /**
  * Returns true when `child` is equal to or nested under `parent`.
  */
@@ -69,8 +65,7 @@ export async function validateChainStorageDirectory(
   targetDir: string | null,
   stateDir: string,
   getDefaultConfig: GetDefaultConfig,
-  requiredSpace: number = DISK_SPACE_REQUIRED,
-  options: ValidateChainStorageDirectoryOptions = {}
+  requiredSpace: number = DISK_SPACE_REQUIRED
 ): Promise<ChainStorageValidation> {
   const chainPath = path.join(stateDir, CHAIN_DIRECTORY_NAME);
   const normalizedPath =

@@ -279,6 +279,14 @@ export class MithrilBootstrapService {
   }
 
   async cancel(): Promise<void> {
+    if (!this._currentProcess && !this._activeWorkDir) {
+      logger.info(
+        'MithrilBootstrapService: ignoring cancel request with no active bootstrap',
+        null
+      );
+      return;
+    }
+
     const workDir = this._activeWorkDir ?? this._workDir;
 
     this._isCancelled = true;

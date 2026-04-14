@@ -7,8 +7,6 @@ import type {
 import { logger } from './logging';
 import type { ResolvedStateDirectory } from './chainStoragePathResolver';
 
-/** @deprecated Retained solely for legacy config cleanup on startup. See cleanupLegacyConfigIfPresent(). */
-export const CHAIN_STORAGE_CONFIG_FILE = 'chain-storage-config.json';
 export const CHAIN_DIRECTORY_NAME = 'chain';
 
 export const CHAIN_STORAGE_MIGRATION_JOURNAL_FILE =
@@ -90,7 +88,6 @@ export type ChainStorageDefaults = Pick<
 
 export interface ChainStorageManagerContext {
   _stateDirectoryPath: string;
-  _configPath: string;
   _chainPath: string;
   _logsDirectoryPath: string;
   _migrationJournalPath: string;
@@ -110,10 +107,6 @@ export interface ChainStorageManagerContext {
   _movePath(sourcePath: string, targetPath: string): Promise<void>;
   _createSymlink(targetPath: string, symlinkPath: string): Promise<void>;
   _resolveExistingDirectory(directoryPath: string): Promise<string | undefined>;
-  _canonicalizeManagedChildSelection(
-    targetDir: string,
-    currentCustomPath: string | null
-  ): Promise<string>;
   _listLegacyManagedEntries(
     legacyRootPath: string,
     managedChainPath: string
@@ -444,25 +437,6 @@ export async function resolveRealPathOrInput(
     }
     throw error;
   }
-}
-
-export async function canonicalizeManagedChildSelection(
-  ctx: ChainStorageManagerContext,
-  targetDir: string,
-  currentCustomPath: string | null
-): Promise<string> {
-  if (!currentCustomPath) {
-    return targetDir;
-  }
-
-  const resolvedTargetPath = await ctx._resolveRealPathOrInput(targetDir);
-  const resolvedManagedChainPath = await ctx._resolveRealPathOrInput(
-    ctx._getManagedChainPath(currentCustomPath)
-  );
-
-  return ctx._isSamePath(resolvedTargetPath, resolvedManagedChainPath)
-    ? currentCustomPath
-    : targetDir;
 }
 
 export async function listLegacyManagedEntries(

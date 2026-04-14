@@ -77,15 +77,10 @@ export async function validate(
   ctx: ChainStorageManagerContext,
   targetDir: string | null
 ): Promise<ChainStorageValidation> {
-  const config = await ctx.getConfig();
-
   return validateChainStorageDirectory(
     targetDir,
     ctx._stateDirectoryPath,
     () => ctx._getDefaultStorageConfig(),
-    DISK_SPACE_REQUIRED,
-    {
-      currentCustomPath: config.customPath,
-    }
+    DISK_SPACE_REQUIRED
   );
 }
