@@ -118,6 +118,24 @@ export async function validateChainStorageDirectory(
       };
     }
 
+    // Treat symlink aliases that resolve to the default chain path as reset-to-default.
+    const resolvedDefaultChainPath = await fs
+      .realpath(chainPath)
+      .catch(() => path.resolve(chainPath));
+    if (
+      resolvedPath === resolvedDefaultChainPath ||
+      isSamePath(resolvedPath, chainPath)
+    ) {
+      const defaultStorageConfig = await getDefaultConfig();
+      return {
+        isValid: true,
+        path: null,
+        resolvedPath: defaultStorageConfig.defaultPath,
+        availableSpaceBytes: defaultStorageConfig.availableSpaceBytes,
+        requiredSpaceBytes: defaultStorageConfig.requiredSpaceBytes,
+      };
+    }
+
     const isDirectChainSelection =
       path.basename(resolvedPath) === CHAIN_DIRECTORY_NAME;
     const validationPath = isDirectChainSelection
@@ -131,6 +149,25 @@ export async function validateChainStorageDirectory(
     const resolvedStatePath = stateDirExists
       ? await fs.realpath(stateDir)
       : path.resolve(stateDir);
+
+    // Reject paths that are nested inside the current managed chain directory.
+    // Selecting such a path would create a nested chain/ inside existing chain data.
+    // For direct chain selections (path ending in /chain), check the parent directory.
+    const pathToCheckNesting = isDirectChainSelection
+      ? resolvedValidationPath
+      : resolvedPath;
+    if (
+      isSubPath(resolvedDefaultChainPath, pathToCheckNesting) &&
+      pathToCheckNesting !== resolvedDefaultChainPath
+    ) {
+      return {
+        ...defaultValidation,
+        resolvedPath: pathToCheckNesting,
+        reason: 'is-managed-child',
+        message:
+          'Selected directory is inside the current chain storage location.',
+      };
+    }
 
     if (isSubPath(resolvedStatePath, resolvedValidationPath)) {
       return {

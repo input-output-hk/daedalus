@@ -473,4 +473,92 @@ describe('validateChainStorageDirectory', () => {
       })
     );
   });
+
+  it('rejects a path nested inside the current managed chain directory', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+      Promise.resolve(p)
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+
+    const result = await validateChainStorageDirectory(
+      '/tmp/state/chain/db',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        reason: 'is-managed-child',
+      })
+    );
+  });
+
+  it('rejects a deeply nested path inside the managed chain directory', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+      Promise.resolve(p)
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+
+    const result = await validateChainStorageDirectory(
+      '/tmp/state/chain/deeply/nested',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        reason: 'is-managed-child',
+      })
+    );
+  });
+
+  it('treats a symlink alias resolving to the default chain path as reset-to-default', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    // Symlink /tmp/alias resolves to /tmp/state/chain (the default chain path)
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) => {
+      if (p === '/tmp/alias') return Promise.resolve(CHAIN_PATH);
+      return Promise.resolve(p);
+    });
+
+    const result = await validateChainStorageDirectory(
+      '/tmp/alias',
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: true,
+        path: null,
+      })
+    );
+  });
+
+  it('rejects a chain-suffixed descendant nested inside the managed chain directory', async () => {
+    (fs.pathExists as jest.Mock).mockResolvedValue(true);
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+      Promise.resolve(p)
+    );
+    (fs.stat as jest.Mock).mockResolvedValue({ isDirectory: () => true });
+
+    // Selecting /tmp/state/chain/db/chain — basename is "chain", so
+    // isDirectChainSelection=true, but the parent /tmp/state/chain/db
+    // is still inside the managed chain dir.
+    const result = await validateChainStorageDirectory(
+      `${CHAIN_PATH}/db/chain`,
+      STATE_DIR,
+      makeGetDefaultConfig()
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        isValid: false,
+        reason: 'is-managed-child',
+      })
+    );
+  });
 });

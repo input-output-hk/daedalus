@@ -133,17 +133,18 @@ export const createSelfnodeConfig = async (
   logger.info('Generated selfnode genesis hash', {
     genesisHash,
   });
+  const configFileExists = await fs.pathExists(configFilePath);
+
+  if (!configFileExists) {
+    throw new Error('No config file found');
+  }
+
   logger.info('Resetting selfnode chain storage...', {
     stateDir,
   });
   const chainStorageManager = new ChainStorageManager(stateDir);
   await chainStorageManager.unlinkChainEntryPoint();
   await chainStorageManager.resetToDefault();
-  const configFileExists = await fs.pathExists(configFilePath);
-
-  if (!configFileExists) {
-    throw new Error('No config file found');
-  }
 
   const configFileContent = await fs.readFile(configFilePath);
   const configFile = JSON.stringify({

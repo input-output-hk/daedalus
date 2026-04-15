@@ -312,4 +312,48 @@ If future work touches chain storage or Mithril startup, start from these assump
 
 These fixes turned chain storage from a loosely coordinated set of path assumptions into a coherent model with one authoritative entry point, explicit recovery, and safe invalidation around directory changes.
 
+---
+
+## Review-Driven Hardening (2025-07)
+
+The following changes were applied to address 15 review findings from the chain-storage and Mithril bootstrap hardening work. All 180 affected tests pass.
+
+### Validation hardening
+
+- **Nested managed-child rejection**: `validateChainStorageDirectory` now rejects any path nested inside the active managed chain root, including paths ending in `/chain` (direct-chain-selection descendants). Both `isDirectChainSelection` and non-direct cases check against the resolved default chain path.
+- **Symlink alias detection**: Symlinks or aliases that resolve to the default `stateDir/chain` path are treated as reset-to-default rather than new custom selections. The check happens after the `isDirectory()` guard to avoid false positives on files.
+- **Test coverage**: 5 new validation tests (nested path, deeply nested, chain-suffixed descendant, symlink alias, direct chain selection).
+
+### Coordinator and IPC safety
+
+- **Node-state guard**: `prepareForLocationChange`, `setDirectory`, and `wipeChainAndSnapshots` accept an optional `nodeState` parameter. If the node is not strictly `STOPPED`, the mutation throws before touching the filesystem. The `STOPPING` state is also rejected because `cardano-node` may still have the database open while shutting down. The guard uses a parameter-passing pattern rather than coupling the coordinator to IPC internals.
+- **Channel forwarding**: `chainStorageChannel` passes `getMithrilBootstrapNodeState()` to both coordinator calls.
+- **Idempotent channel setup**: Both `handleMithrilBootstrapRequests` and `handleChainStorageRequests` use a module-level flag to prevent double registration during window recreation.
+
+### Mithril bootstrap resilience
+
+- **Decoupled status listeners**: `broadcastMithrilBootstrapStatus` now fires internal listeners before attempting renderer send, and wraps the send in try/catch. A renderer crash or rejected IPC cannot prevent other listeners from receiving status updates.
+- **Generation checks in handoff**: `startNodeAfterMithrilCompletion` captures `directoryChangeGeneration` at entry and checks it after each async boundary (status emit, node start, delay, state poll) to abort stale handoffs.
+- **Full transient-state reset**: The `preparing` status now sends `snapshot: null`. The `cancelled` status now resets all transient fields (snapshot, error, file counts, ancillary counts, elapsed time, progress items).
+
+### Selfnode safety
+
+- **Validate before mutating**: `createSelfnodeConfig` now checks that the selfnode config file exists before calling `unlinkChainEntryPoint` or `resetToDefault`. Previously, the chain entry point could be destroyed even when the config file was missing.
+
+### Rollback reliability
+
+- **Broken symlink rollback**: `rollbackSetDirectory` falls back from `resolvedPath` to `linkTargetPath` for the symlink case. Uses `fs.remove` + `createSymlink` directly instead of `replaceCustomChainEntryPoint` (which internally calls `ensureDir`, failing on broken targets).
+
+### Renderer resilience
+
+- **Return-to-storage serialization**: `returnToStorageLocation` in `MithrilBootstrapStore` has a re-entry guard (`_returnToStorageInFlight`) and try/catch/finally. Concurrent clicks are suppressed, and failures safely reset storage state.
+- **IPC rejection handling**: `handleContinue` in `ChainStorageLocationPicker` catches apply/reset IPC rejections and surfaces a generic validation error instead of letting the exception propagate.
+- **Rejected path preservation**: When validation fails in `handleChooseDirectory`, the rejected path is stored in local candidate state so the user sees what they attempted. The display helper now bypasses managed-chain path formatting for invalid draft candidates, showing the exact path the user selected instead of appending `/chain`.
+
+### Remaining known edges (documented, not addressed)
+
+1. ~~Mithril IPC idempotent guard pins `sendStatusUpdate` to the first window; window recreation in the same process lifetime could leave status targeting stale webContents.~~ **Fixed**: `handleMithrilBootstrapRequests` now always rebinds `sendStatusUpdate` to the latest `BrowserWindow` while keeping IPC request listeners idempotent. Daedalus is single-window in normal operation but recreates the main window after renderer failure via `RendererErrorHandler`, so `sendStatusUpdate` must always target the current live `webContents`.
+2. Status listeners in `broadcastMithrilBootstrapStatus` are not individually isolated — one bad listener can abort subsequent listeners.
+3. Fire-and-forget status emitters in `startNodeAfterMithrilCompletion` can still race with directory changes between the generation check and the actual emit. The critical `start()` call is protected.
+
 That is the durable takeaway for future work: do not reopen the source-of-truth question, do not weaken the directory-change invalidation boundary, and do not let startup decisions continue on stale chain-location state.

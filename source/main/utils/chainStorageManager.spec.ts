@@ -384,6 +384,27 @@ describe('ChainStorageManager', () => {
     expect(fs.writeJson).not.toHaveBeenCalled();
   });
 
+  it('rollback restores a broken symlink using linkTargetPath when resolvedPath is undefined', async () => {
+    const manager = new ChainStorageManager('/tmp/state');
+    (fs.symlink as jest.Mock).mockResolvedValue(undefined);
+    (fs.ensureDir as jest.Mock).mockRejectedValueOnce(new Error('ENOENT'));
+
+    await manager._rollbackSetDirectory({
+      previousState: {
+        type: 'symlink',
+        linkTargetPath: '/nonexistent/mount/chain',
+        resolvedPath: undefined,
+      },
+      targetPath: '/mnt/new-chain',
+    });
+
+    expect(fs.symlink).toHaveBeenCalledWith(
+      '/nonexistent/mount/chain',
+      '/tmp/state/chain',
+      process.platform === 'win32' ? 'junction' : 'dir'
+    );
+  });
+
   it('migrateData can preserve the source root directory', async () => {
     const manager = new ChainStorageManager('/tmp/state');
     (fs.pathExists as jest.Mock).mockResolvedValue(true);
@@ -460,8 +481,8 @@ describe('ChainStorageManager', () => {
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(false);
-    ((fs.realpath as unknown) as jest.Mock).mockResolvedValue(
-      '/mnt/custom-chain'
+    ((fs.realpath as unknown) as jest.Mock).mockImplementation((p: string) =>
+      Promise.resolve(p === '/mnt/custom-chain' ? '/mnt/custom-chain' : p)
     );
     (fs.stat as jest.Mock).mockResolvedValue({
       isDirectory: () => true,

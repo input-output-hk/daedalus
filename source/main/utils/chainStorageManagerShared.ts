@@ -274,10 +274,17 @@ export async function rollbackSetDirectory(
   try {
     switch (previousState.type) {
       case 'symlink': {
-        const rollbackTarget = previousState.resolvedPath;
+        const rollbackTarget =
+          previousState.resolvedPath ?? previousState.linkTargetPath;
         if (rollbackTarget) {
-          await fs.ensureDir(rollbackTarget);
-          await ctx._replaceCustomChainEntryPoint(rollbackTarget);
+          try {
+            await fs.ensureDir(rollbackTarget);
+          } catch {
+            // Target directory may not be creatable (e.g. broken mount);
+            // still restore the symlink pointing to the original target.
+          }
+          await fs.remove(ctx._chainPath);
+          await ctx._createSymlink(rollbackTarget, ctx._chainPath);
         }
         break;
       }

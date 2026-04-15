@@ -16,6 +16,7 @@ import type {
   PrepareChainStorageLocationChangeMainResponse,
 } from '../../common/ipc/api';
 import { chainStorageCoordinator } from '../utils/chainStorageCoordinator';
+import { getMithrilBootstrapNodeState } from './mithrilBootstrapChannel';
 
 const setChainStorageDirectoryChannel: MainIpcChannel<
   SetChainStorageDirectoryRendererRequest,
@@ -37,9 +38,16 @@ const prepareChainStorageLocationChangeChannel: MainIpcChannel<
   PrepareChainStorageLocationChangeMainResponse
 > = new MainIpcChannel(PREPARE_CHAIN_STORAGE_LOCATION_CHANGE_CHANNEL);
 
+let chainStorageRequestsInitialized = false;
+
 export const handleChainStorageRequests = () => {
+  if (chainStorageRequestsInitialized) return;
+  chainStorageRequestsInitialized = true;
   setChainStorageDirectoryChannel.onRequest(async ({ path }) => {
-    return chainStorageCoordinator.setDirectory(path);
+    return chainStorageCoordinator.setDirectory(
+      path,
+      getMithrilBootstrapNodeState()
+    );
   });
 
   getChainStorageDirectoryChannel.onRequest(async () =>
@@ -51,6 +59,8 @@ export const handleChainStorageRequests = () => {
   );
 
   prepareChainStorageLocationChangeChannel.onRequest(async () =>
-    chainStorageCoordinator.prepareForLocationChange()
+    chainStorageCoordinator.prepareForLocationChange(
+      getMithrilBootstrapNodeState()
+    )
   );
 };

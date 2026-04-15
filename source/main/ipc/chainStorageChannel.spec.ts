@@ -34,6 +34,10 @@ jest.mock('../utils/chainStorageCoordinator', () => {
   };
 });
 
+jest.mock('./mithrilBootstrapChannel', () => ({
+  getMithrilBootstrapNodeState: jest.fn().mockReturnValue(null),
+}));
+
 const loadModule = () => {
   let moduleExports;
   let chainStorageCoordinatorMock;

@@ -220,12 +220,31 @@ export const handleDiskSpace = (
   const startNodeAfterMithrilCompletion = async (): Promise<void> => {
     if (mithrilStartInFlight) return;
     mithrilStartInFlight = true;
+    const gen = directoryChangeGeneration;
     try {
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       await emitMithrilStartingNodeStatus();
       await cardanoNode.start();
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       await new Promise<void>((resolve) => {
         setTimeout(resolve, MITHRIL_COMPLETION_DELAY_MS);
       });
+      if (gen !== directoryChangeGeneration) {
+        logger.info(
+          '[MITHRIL] Aborting node start — directory changed during handoff'
+        );
+        return;
+      }
       if (cardanoNode.state !== CardanoNodeStates.RUNNING) {
         throw new Error(
           'Cardano node stopped responding during startup after Mithril bootstrap.'

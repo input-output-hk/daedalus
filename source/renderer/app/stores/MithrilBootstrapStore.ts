@@ -373,32 +373,49 @@ export default class MithrilBootstrapStore extends Store {
     this.pendingChainPath = undefined;
   };
 
+  @observable _returnToStorageInFlight = false;
+
   @action
   returnToStorageLocation = async () => {
-    const previousCustomPath = this.customChainPath;
-    const cleanupValidation = await prepareChainStorageLocationChangeChannel.request();
+    if (this._returnToStorageInFlight) return;
+    this._returnToStorageInFlight = true;
 
-    runInAction('return to chain storage location picker', () => {
-      this.storageLocationConfirmed = false;
-      this.isApplyingStorageLocation = false;
+    try {
+      const previousCustomPath = this.customChainPath;
+      const cleanupValidation = await prepareChainStorageLocationChangeChannel.request();
 
-      if (cleanupValidation && previousCustomPath != null) {
-        this.customChainPath = null;
-        this.defaultChainPath =
-          cleanupValidation.resolvedPath ?? this.defaultChainPath;
-        this.defaultChainStorageValidation = cleanupValidation;
-        this.chainStorageValidation = {
-          isValid: true,
-          path: previousCustomPath,
-          resolvedPath: previousCustomPath,
-          availableSpaceBytes: cleanupValidation.availableSpaceBytes,
-          requiredSpaceBytes: cleanupValidation.requiredSpaceBytes,
-          chainSubdirectoryStatus: 'will-create',
-        };
-        this.pendingChainPath = previousCustomPath;
-      } else {
-        this.pendingChainPath = undefined;
-      }
-    });
+      runInAction('return to chain storage location picker', () => {
+        this.storageLocationConfirmed = false;
+        this.isApplyingStorageLocation = false;
+
+        if (cleanupValidation && previousCustomPath != null) {
+          this.customChainPath = null;
+          this.defaultChainPath =
+            cleanupValidation.resolvedPath ?? this.defaultChainPath;
+          this.defaultChainStorageValidation = cleanupValidation;
+          this.chainStorageValidation = {
+            isValid: true,
+            path: previousCustomPath,
+            resolvedPath: previousCustomPath,
+            availableSpaceBytes: cleanupValidation.availableSpaceBytes,
+            requiredSpaceBytes: cleanupValidation.requiredSpaceBytes,
+            chainSubdirectoryStatus: 'will-create',
+          };
+          this.pendingChainPath = previousCustomPath;
+        } else {
+          this.pendingChainPath = undefined;
+        }
+      });
+    } catch (error) {
+      logger.error('Failed to prepare for location change', { error });
+      runInAction('return to chain storage location picker — error', () => {
+        this.storageLocationConfirmed = false;
+        this.isApplyingStorageLocation = false;
+      });
+    } finally {
+      runInAction('return to storage — clear in-flight', () => {
+        this._returnToStorageInFlight = false;
+      });
+    }
   };
 }

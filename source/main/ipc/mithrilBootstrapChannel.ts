@@ -86,14 +86,19 @@ const broadcastMithrilBootstrapStatus = async (
   status: MithrilBootstrapStatusUpdate
 ): Promise<void> => {
   lastStatus = status;
-  if (sendStatusUpdate) {
-    await sendStatusUpdate(status);
-  }
   statusListeners.forEach((listener) => listener(status));
+  try {
+    if (sendStatusUpdate) {
+      await sendStatusUpdate(status);
+    }
+  } catch (error) {
+    logger.warn('Failed to send Mithril status to renderer', { error });
+  }
 };
 
 export const getPendingMithrilBootstrapDecision = () => pendingDecision;
 export const getMithrilBootstrapStatus = () => lastStatus;
+export const getMithrilBootstrapNodeState = () => getNodeState();
 export const setMithrilBootstrapNodeStateProvider = (
   provider: () => CardanoNodeState | null | undefined
 ) => {
@@ -178,12 +183,20 @@ export const resetMithrilDecisionState = (
   });
 };
 
+let mithrilBootstrapRequestsInitialized = false;
+
 export const handleMithrilBootstrapRequests = (window: BrowserWindow) => {
-  const service = getMithrilBootstrapService();
-  lastStatus = service.status;
+  // Always rebind sendStatusUpdate to the latest window so status
+  // targets the current webContents after window recreation.
   sendStatusUpdate = async (status) => {
     await mithrilBootstrapStatusChannel.send(status, window.webContents);
   };
+
+  if (mithrilBootstrapRequestsInitialized) return;
+  mithrilBootstrapRequestsInitialized = true;
+
+  const service = getMithrilBootstrapService();
+  lastStatus = service.status;
 
   chainStorageCoordinator.syncMithrilWorkDir().catch((error) => {
     logger.warn('Failed to sync Mithril work directory on IPC setup', {

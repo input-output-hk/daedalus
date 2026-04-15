@@ -1,4 +1,5 @@
 import type { CardanoNodeState } from '../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import type {
   ChainStorageConfig,
   ChainStorageValidation,
@@ -41,9 +42,15 @@ class ChainStorageCoordinator {
     return this._chainStorageManager.validate(path);
   }
 
-  async prepareForLocationChange(): Promise<ChainStorageValidation | null> {
+  async prepareForLocationChange(
+    nodeState?: CardanoNodeState | null
+  ): Promise<ChainStorageValidation | null> {
     return this._withMutationLock('prepareForLocationChange', async () => {
       this._assertBootstrapMutationAllowed(
+        'prepare chain storage location change'
+      );
+      this._assertNodeStopped(
+        nodeState,
         'prepare chain storage location change'
       );
 
@@ -63,9 +70,13 @@ class ChainStorageCoordinator {
     this._directoryChangedCallbacks.push(callback);
   }
 
-  async setDirectory(path: string | null): Promise<ChainStorageValidation> {
+  async setDirectory(
+    path: string | null,
+    nodeState?: CardanoNodeState | null
+  ): Promise<ChainStorageValidation> {
     return this._withMutationLock('setDirectory', async () => {
       this._assertBootstrapMutationAllowed('change chain storage directory');
+      this._assertNodeStopped(nodeState, 'change chain storage directory');
 
       const validation =
         path == null
@@ -167,6 +178,10 @@ class ChainStorageCoordinator {
       this._assertBootstrapMutationAllowed(
         'wipe chain storage and snapshot data'
       );
+      this._assertNodeStopped(
+        nodeState,
+        'wipe chain storage and snapshot data'
+      );
 
       await this._ensureManagedChainLayoutAndSyncWorkDir(nodeState);
       await this._mithrilBootstrapService.wipeChainAndSnapshots(reason);
@@ -177,6 +192,17 @@ class ChainStorageCoordinator {
     if (this._bootstrapInProgress) {
       throw new Error(
         `Cannot ${action} while Mithril bootstrap is in progress.`
+      );
+    }
+  }
+
+  _assertNodeStopped(
+    nodeState: CardanoNodeState | null | undefined,
+    action: string
+  ): void {
+    if (nodeState != null && nodeState !== CardanoNodeStates.STOPPED) {
+      throw new Error(
+        `Daedalus can only ${action} while cardano-node is stopped.`
       );
     }
   }

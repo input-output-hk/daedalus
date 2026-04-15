@@ -520,4 +520,80 @@ describe('chainStorageCoordinator', () => {
     expect(onDirectoryChanged).not.toHaveBeenCalled();
     expect(mithrilBootstrapServiceMock.setWorkDir).not.toHaveBeenCalled();
   });
+
+  it('rejects prepareForLocationChange when node is running', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.prepareForLocationChange('running')
+    ).rejects.toThrow('while cardano-node is stopped');
+  });
+
+  it('allows prepareForLocationChange when node is stopped', async () => {
+    chainStorageManagerMock.prepareForLocationChange.mockResolvedValue(null);
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.prepareForLocationChange('stopped')
+    ).resolves.toBeNull();
+  });
+
+  it('rejects setDirectory when node is running', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.setDirectory(
+        '/mnt/external',
+        'running'
+      )
+    ).rejects.toThrow('while cardano-node is stopped');
+  });
+
+  it('allows setDirectory when node is stopped', async () => {
+    chainStorageManagerMock.setDirectory.mockResolvedValue({
+      isValid: true,
+      path: '/mnt/external',
+    });
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.setDirectory(
+        '/mnt/external',
+        'stopped'
+      )
+    ).resolves.toEqual(expect.objectContaining({ isValid: true }));
+  });
+
+  it('rejects prepareForLocationChange when node is stopping', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.prepareForLocationChange('stopping')
+    ).rejects.toThrow('while cardano-node is stopped');
+  });
+
+  it('rejects setDirectory when node is stopping', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.setDirectory(
+        '/mnt/external',
+        'stopping'
+      )
+    ).rejects.toThrow('while cardano-node is stopped');
+  });
+
+  it('rejects wipeChainAndSnapshots when node is stopping', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.wipeChainAndSnapshots(
+        'wipe-reason',
+        'stopping'
+      )
+    ).rejects.toThrow('while cardano-node is stopped');
+  });
+
+  it('allows wipeChainAndSnapshots when node is stopped', async () => {
+    const moduleExports = loadModule();
+    await expect(
+      moduleExports.chainStorageCoordinator.wipeChainAndSnapshots(
+        'wipe-reason',
+        'stopped'
+      )
+    ).resolves.toBeUndefined();
+  });
 });

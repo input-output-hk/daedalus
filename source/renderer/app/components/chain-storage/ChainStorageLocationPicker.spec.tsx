@@ -483,4 +483,53 @@ describe('ChainStorageLocationPicker', () => {
       )
     ).not.toBeInTheDocument();
   });
+
+  it('displays the raw rejected path after validation failure instead of managed chain path', async () => {
+    const onValidateChainStorageDirectory = jest.fn().mockResolvedValue({
+      isValid: false,
+      path: '/mnt/bad-chain/chain/db',
+      reason: 'is-managed-child',
+      message: 'Cannot select a path inside the managed chain directory.',
+    });
+
+    (showOpenDialogChannel.send as jest.Mock).mockResolvedValue({
+      canceled: false,
+      filePaths: ['/mnt/bad-chain/chain/db'],
+    });
+
+    renderComponent({
+      onValidateChainStorageDirectory,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /choose directory/i }));
+
+    await waitFor(() => {
+      expect(onValidateChainStorageDirectory).toHaveBeenCalledWith(
+        '/mnt/bad-chain/chain/db'
+      );
+    });
+
+    // Should display the raw rejected path, NOT /mnt/bad-chain/chain/db/chain
+    expect(
+      screen.getByDisplayValue('/mnt/bad-chain/chain/db')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
+  });
+
+  it('displays managed chain path for valid committed custom selections', () => {
+    renderComponent({
+      customChainPath: '/mnt/my-storage',
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/my-storage',
+        resolvedPath: '/mnt/my-storage',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+      },
+    });
+
+    expect(
+      screen.getByDisplayValue('/mnt/my-storage/chain')
+    ).toBeInTheDocument();
+  });
 });

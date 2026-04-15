@@ -171,12 +171,16 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     pathsAreEqual(chainStorageValidation.path, committedPath);
   const hasValidCandidateOverride =
     candidate != null && candidate.validation.isValid;
+  const hasInvalidCandidate =
+    candidate != null && !candidate.validation.isValid;
   const isBusy =
     Boolean(isSelectingDirectory) ||
     Boolean(isApplyingStorageChange) ||
     Boolean(isChainStorageLoading);
   const isContinueDisabled =
-    isBusy || (isCurrentStorageInvalid && !hasValidCandidateOverride);
+    isBusy ||
+    hasInvalidCandidate ||
+    (isCurrentStorageInvalid && !hasValidCandidateOverride);
   const canResetToDefault = effectiveSelection.path != null;
   const inputClasses = classNames(styles.storageInput, {
     [styles.error]: validationMessage != null,
@@ -191,9 +195,14 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
   ].filter(Boolean);
   const describedById =
     describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
-  const displayedPath =
-    getManagedChainDisplayPath(effectiveSelection.path, defaultChainPath) ||
-    intl.formatMessage(messages.defaultLocationLabel);
+  const isInvalidDraft =
+    candidate != null &&
+    !candidate.validation.isValid &&
+    candidate.path != null;
+  const displayedPath = isInvalidDraft
+    ? candidate.path
+    : getManagedChainDisplayPath(effectiveSelection.path, defaultChainPath) ||
+      intl.formatMessage(messages.defaultLocationLabel);
   const availableSpace = formatAvailableSpace(
     intl,
     effectiveSelection.validation.availableSpaceBytes
@@ -267,6 +276,11 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
           path: validation.path ?? selectedPath,
           validation,
         });
+      } else {
+        setCandidate({
+          path: selectedPath,
+          validation,
+        });
       }
     } finally {
       if (isMountedRef.current) {
@@ -331,6 +345,15 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
       }
 
       onConfirmStorageLocation();
+    } catch {
+      if (isMountedRef.current) {
+        setSelectionValidation({
+          isValid: false,
+          path: nextPath ?? null,
+          reason: 'unknown',
+          message: 'An unexpected error occurred. Please try again.',
+        });
+      }
     } finally {
       if (isMountedRef.current) {
         setIsApplyingStorageChange(false);

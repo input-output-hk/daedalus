@@ -131,4 +131,68 @@ describe('mithrilBootstrapChannel', () => {
     await expect(waiter).resolves.toBe('accept');
     expect(moduleExports.getPendingMithrilBootstrapDecision()).toBe('accept');
   });
+
+  it('fires status listeners even when sendStatusUpdate rejects', async () => {
+    const moduleExports = loadModule();
+    const window = { webContents: {} };
+    moduleExports.handleMithrilBootstrapRequests(window as never);
+
+    // Make sendStatusUpdate reject
+    mockChannels[2].send.mockRejectedValueOnce(
+      new Error('webContents destroyed')
+    );
+
+    const handler = jest.fn();
+    moduleExports.onMithrilBootstrapStatus(handler);
+
+    // Get the onStatus callback and invoke it with a status
+    const onStatusCallback =
+      mithrilBootstrapServiceMock.onStatus.mock.calls[0][0];
+    await onStatusCallback({
+      status: 'downloading',
+      snapshot: null,
+      error: null,
+    });
+    await flushPromises();
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'downloading' })
+    );
+  });
+
+  it('rebinds status delivery to a replacement window without duplicating request handlers', async () => {
+    const moduleExports = loadModule();
+    const firstWindow = { webContents: { id: 1 } };
+    const secondWindow = { webContents: { id: 2 } };
+
+    moduleExports.handleMithrilBootstrapRequests(firstWindow as never);
+
+    const requestHandlerCountAfterFirst = mockChannels.filter(
+      (ch) => ch.onRequest.mock.calls.length > 0
+    ).length;
+
+    moduleExports.handleMithrilBootstrapRequests(secondWindow as never);
+
+    // IPC request handlers should NOT be registered again
+    const requestHandlerCountAfterSecond = mockChannels.filter(
+      (ch) => ch.onRequest.mock.calls.length > 0
+    ).length;
+    expect(requestHandlerCountAfterSecond).toBe(requestHandlerCountAfterFirst);
+
+    // Status updates should now target the second window
+    const onStatusCallback =
+      mithrilBootstrapServiceMock.onStatus.mock.calls[0][0];
+    await onStatusCallback({
+      status: 'downloading',
+      snapshot: null,
+      error: null,
+    });
+    await flushPromises();
+
+    // The status channel send should have targeted the second window's webContents
+    const statusChannel = mockChannels[2];
+    const lastSendCall =
+      statusChannel.send.mock.calls[statusChannel.send.mock.calls.length - 1];
+    expect(lastSendCall[1]).toBe(secondWindow.webContents);
+  });
 });

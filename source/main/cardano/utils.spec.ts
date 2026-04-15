@@ -93,7 +93,7 @@ describe('cardano utils', () => {
     });
   });
 
-  it('still clears chain storage before failing when the selfnode config file is missing', async () => {
+  it('throws early without mutating chain storage when the selfnode config file is missing', async () => {
     (fs.pathExists as jest.Mock).mockReset();
     (fs.pathExists as jest.Mock)
       .mockResolvedValueOnce(true)
@@ -108,10 +108,10 @@ describe('cardano utils', () => {
       )
     ).rejects.toThrow('No config file found');
 
-    expect(chainStorageManagerMock.unlinkChainEntryPoint).toHaveBeenCalledTimes(
-      1
-    );
-    expect(chainStorageManagerMock.resetToDefault).toHaveBeenCalledTimes(1);
+    expect(
+      chainStorageManagerMock.unlinkChainEntryPoint
+    ).not.toHaveBeenCalled();
+    expect(chainStorageManagerMock.resetToDefault).not.toHaveBeenCalled();
     expect(fs.remove).not.toHaveBeenCalledWith('/tmp/selfnode/state/wallets');
   });
 });

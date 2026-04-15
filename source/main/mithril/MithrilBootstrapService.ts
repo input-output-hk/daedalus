@@ -167,6 +167,7 @@ export class MithrilBootstrapService {
       this._addProgressItem('preparing', 'preparing', 'active');
       this._updateStatus({
         status: 'preparing',
+        snapshot: null,
         filesDownloaded: undefined,
         filesTotal: undefined,
         ancillaryBytesDownloaded: undefined,
@@ -293,6 +294,13 @@ export class MithrilBootstrapService {
     this._progressItems = [];
     this._updateStatus({
       status: 'cancelled',
+      snapshot: null,
+      error: null,
+      filesDownloaded: undefined,
+      filesTotal: undefined,
+      ancillaryBytesDownloaded: undefined,
+      ancillaryBytesTotal: undefined,
+      elapsedSeconds: undefined,
       progressItems: [],
     });
 

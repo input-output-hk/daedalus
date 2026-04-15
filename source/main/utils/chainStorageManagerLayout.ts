@@ -503,11 +503,7 @@ export async function assertNodeStopped(
   nodeState: string | null | undefined,
   reason: string
 ): Promise<void> {
-  if (
-    nodeState != null &&
-    nodeState !== CardanoNodeStates.STOPPED &&
-    nodeState !== CardanoNodeStates.STOPPING
-  ) {
+  if (nodeState != null && nodeState !== CardanoNodeStates.STOPPED) {
     throw new Error(
       `Daedalus can only ${reason} while cardano-node is stopped.`
     );
