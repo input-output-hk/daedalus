@@ -120,7 +120,7 @@ describe('runCommand', () => {
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client',
-      ['cardano-db', 'snapshot', 'list'],
+      ['--origin-tag', 'DAEDALUS', 'cardano-db', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: '/tmp/workdir',
       })
@@ -146,7 +146,7 @@ describe('runCommand', () => {
 
     expect(spawn).toHaveBeenCalledWith(
       '/opt/daedalus/mithril-client',
-      ['snapshot', 'list'],
+      ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: '/tmp/workdir',
       })
@@ -171,7 +171,7 @@ describe('runCommand', () => {
 
     expect(spawn).toHaveBeenCalledWith(
       'mithril-client.exe',
-      ['snapshot', 'list'],
+      ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: 'C:\\workdir',
       })
@@ -197,9 +197,34 @@ describe('runCommand', () => {
 
     expect(spawn).toHaveBeenCalledWith(
       'C:\\Program Files\\Daedalus/mithril-client.exe',
-      ['snapshot', 'list'],
+      ['--origin-tag', 'DAEDALUS', 'snapshot', 'list'],
       expect.objectContaining({
         cwd: 'C:\\workdir',
+      })
+    );
+  });
+
+  it('prepends the Daedalus origin tag before command args', async () => {
+    const { spawn } = require('child_process');
+
+    const childEmitter = createChildProcess();
+    spawn.mockImplementation(() => {
+      setTimeout(() => {
+        childEmitter.emit('close', 0);
+      }, 0);
+      return childEmitter;
+    });
+
+    await runCommand(
+      ['tools', 'utxo-hd', 'snapshot-converter'],
+      '/tmp/workdir'
+    );
+
+    expect(spawn).toHaveBeenCalledWith(
+      'mithril-client',
+      ['--origin-tag', 'DAEDALUS', 'tools', 'utxo-hd', 'snapshot-converter'],
+      expect.objectContaining({
+        cwd: '/tmp/workdir',
       })
     );
   });
