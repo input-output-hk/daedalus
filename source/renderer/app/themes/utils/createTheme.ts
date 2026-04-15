@@ -584,123 +584,261 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-spinner-medium-color': '#fff',
     },
     mithrilBootstrap: {
-      // Overlay backdrop (fixed dark — does not vary with theme)
-      '--theme-mithril-overlay-backdrop-start': 'rgba(9, 18, 28, 0.92)',
-      '--theme-mithril-overlay-backdrop-end': 'rgba(23, 33, 45, 0.92)',
+      // Overlay backdrop — derived from theme overlay base
+      '--theme-mithril-overlay-backdrop-start': `${chroma(
+        background.secondary.regular
+      )
+        .darken(0.5)
+        .alpha(0.92)}`,
+      '--theme-mithril-overlay-backdrop-end': `${chroma(
+        background.secondary.regular
+      ).alpha(0.92)}`,
       // Card container
-      '--theme-mithril-card-background': 'rgba(15, 24, 34, 0.96)',
+      '--theme-mithril-card-background': `${chroma(background.secondary.regular)
+        .darken(0.3)
+        .alpha(0.96)}`,
       '--theme-mithril-card-shadow': 'rgba(0, 0, 0, 0.35)',
-      '--theme-mithril-card-text-color': 'rgba(233, 237, 242, 0.92)',
+      '--theme-mithril-card-text-color': `${chroma(text.secondary).alpha(
+        0.92
+      )}`,
       // Text hierarchy
-      '--theme-mithril-heading-color': 'rgba(255, 255, 255, 0.98)',
-      '--theme-mithril-body-text-color': 'rgba(199, 208, 219, 0.9)',
-      '--theme-mithril-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
-      '--theme-mithril-bright-text-color': 'rgba(236, 241, 247, 0.95)',
-      '--theme-mithril-detail-label-color': 'rgba(158, 173, 189, 0.85)',
+      '--theme-mithril-heading-color': `${chroma(text.secondary).alpha(0.98)}`,
+      '--theme-mithril-body-text-color': `${chroma(text.secondary).alpha(0.7)}`,
+      '--theme-mithril-secondary-text-color': `${chroma(text.secondary).alpha(
+        0.6
+      )}`,
+      '--theme-mithril-bright-text-color': `${chroma(text.secondary).alpha(
+        0.95
+      )}`,
+      '--theme-mithril-detail-label-color': `${chroma(text.secondary).alpha(
+        0.55
+      )}`,
       // Inner panels
-      '--theme-mithril-panel-background': 'rgba(10, 18, 28, 0.6)',
-      '--theme-mithril-panel-border-color': 'rgba(46, 64, 82, 0.6)',
-      '--theme-mithril-context-panel-background': 'rgba(10, 18, 28, 0.42)',
+      '--theme-mithril-panel-background': `${chroma(
+        background.secondary.regular
+      )
+        .darken(0.7)
+        .alpha(0.6)}`,
+      '--theme-mithril-panel-border-color': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.5)
+        .alpha(0.6)}`,
+      '--theme-mithril-context-panel-background': `${chroma(
+        background.secondary.regular
+      )
+        .darken(0.7)
+        .alpha(0.42)}`,
       // Primary button
-      '--theme-mithril-button-primary-background': '#1ea47e',
-      '--theme-mithril-button-primary-background-hover': '#29b58c',
-      '--theme-mithril-button-primary-text-color': '#071017',
+      '--theme-mithril-button-primary-background': `${background.secondary.regular}`,
+      '--theme-mithril-button-primary-background-hover': `${background.secondary.light}`,
+      '--theme-mithril-button-primary-text-color': `${text.secondary}`,
       // Secondary button
-      '--theme-mithril-button-secondary-border-color':
-        'rgba(92, 110, 128, 0.6)',
-      '--theme-mithril-button-secondary-border-color-hover':
-        'rgba(129, 147, 166, 0.9)',
-      '--theme-mithril-button-secondary-text-color':
-        'rgba(225, 233, 242, 0.92)',
-      '--theme-mithril-button-secondary-text-color-hover':
-        'rgba(255, 255, 255, 0.98)',
-      '--theme-mithril-button-secondary-text-color-disabled':
-        'rgba(143, 157, 173, 0.7)',
+      '--theme-mithril-button-secondary-border-color': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
+      '--theme-mithril-button-secondary-border-color-hover': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
+      '--theme-mithril-button-secondary-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.92)}`,
+      '--theme-mithril-button-secondary-text-color-hover': `${chroma(
+        text.secondary
+      ).alpha(0.98)}`,
+      '--theme-mithril-button-secondary-text-color-disabled': `${chroma(
+        text.secondary
+      ).alpha(0.4)}`,
       // Links
-      '--theme-mithril-link-color': 'rgba(129, 219, 194, 0.96)',
-      '--theme-mithril-link-color-hover': 'rgba(180, 240, 221, 0.98)',
+      '--theme-mithril-link-color': `${chroma(background.secondary.light).alpha(
+        0.96
+      )}`,
+      '--theme-mithril-link-color-hover': `${chroma(
+        background.secondary.lightest
+      ).alpha(0.98)}`,
       // Completion block
-      '--theme-mithril-completion-title-color': 'rgba(243, 247, 251, 0.98)',
-      '--theme-mithril-completion-detail-color': 'rgba(187, 198, 210, 0.92)',
+      '--theme-mithril-completion-title-color': `${chroma(text.secondary).alpha(
+        0.98
+      )}`,
+      '--theme-mithril-completion-detail-color': `${chroma(
+        text.secondary
+      ).alpha(0.72)}`,
       // Step indicator — top-level step labels
-      '--theme-mithril-step-active-label-color': 'rgba(233, 237, 242, 0.98)',
-      '--theme-mithril-step-pending-label-color': 'rgba(158, 173, 189, 0.75)',
+      '--theme-mithril-step-active-label-color': `${chroma(
+        text.secondary
+      ).alpha(0.98)}`,
+      '--theme-mithril-step-pending-label-color': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
       '--theme-mithril-step-completed-label-color': 'rgba(30, 164, 126, 0.85)',
-      '--theme-mithril-step-error-label-color': 'rgba(220, 60, 60, 0.95)',
+      '--theme-mithril-step-error-label-color': `${chroma(error.regular).alpha(
+        0.95
+      )}`,
       // Step indicator — top-level icons
       '--theme-mithril-step-icon-success-color': 'rgba(30, 164, 126, 0.95)',
-      '--theme-mithril-step-icon-error-color': 'rgba(220, 60, 60, 0.95)',
-      '--theme-mithril-step-icon-spinner-color': 'rgba(233, 237, 242, 0.92)',
-      '--theme-mithril-step-icon-pending-background':
-        'rgba(92, 110, 128, 0.35)',
+      '--theme-mithril-step-icon-error-color': `${chroma(error.regular).alpha(
+        0.95
+      )}`,
+      '--theme-mithril-step-icon-spinner-color': `${chroma(
+        text.secondary
+      ).alpha(0.92)}`,
+      '--theme-mithril-step-icon-pending-background': `${chroma(
+        text.secondary
+      ).alpha(0.2)}`,
       // Step indicator — connector lines
-      '--theme-mithril-step-connector-color': 'rgba(92, 110, 128, 0.22)',
+      '--theme-mithril-step-connector-color': `${chroma(text.secondary).alpha(
+        0.15
+      )}`,
       '--theme-mithril-step-connector-completed-color':
         'rgba(30, 164, 126, 0.55)',
-      '--theme-mithril-step-connector-error-color': 'rgba(220, 60, 60, 0.35)',
+      '--theme-mithril-step-connector-error-color': `${chroma(
+        error.regular
+      ).alpha(0.35)}`,
       // Step indicator — sub-item labels
-      '--theme-mithril-sub-item-active-color': 'rgba(210, 220, 232, 0.9)',
-      '--theme-mithril-sub-item-pending-color': 'rgba(158, 173, 189, 0.72)',
+      '--theme-mithril-sub-item-active-color': `${chroma(text.secondary).alpha(
+        0.85
+      )}`,
+      '--theme-mithril-sub-item-pending-color': `${chroma(text.secondary).alpha(
+        0.5
+      )}`,
       '--theme-mithril-sub-item-completed-color': 'rgba(140, 175, 161, 0.8)',
-      '--theme-mithril-sub-item-error-color': 'rgba(220, 60, 60, 0.85)',
+      '--theme-mithril-sub-item-error-color': `${chroma(error.regular).alpha(
+        0.85
+      )}`,
       // Step indicator — sub-item icons
       '--theme-mithril-sub-item-icon-success-color': 'rgba(30, 164, 126, 0.8)',
-      '--theme-mithril-sub-item-icon-spinner-color':
-        'rgba(210, 220, 232, 0.88)',
-      '--theme-mithril-sub-item-icon-error-color': 'rgba(220, 60, 60, 0.88)',
-      '--theme-mithril-sub-item-pending-background': 'rgba(92, 110, 128, 0.3)',
+      '--theme-mithril-sub-item-icon-spinner-color': `${chroma(
+        text.secondary
+      ).alpha(0.88)}`,
+      '--theme-mithril-sub-item-icon-error-color': `${chroma(
+        error.regular
+      ).alpha(0.88)}`,
+      '--theme-mithril-sub-item-pending-background': `${chroma(
+        text.secondary
+      ).alpha(0.18)}`,
       // Progress bars
-      '--theme-mithril-progress-track-color': 'rgba(92, 110, 128, 0.2)',
+      '--theme-mithril-progress-track-color': `${chroma(text.secondary).alpha(
+        0.15
+      )}`,
       '--theme-mithril-progress-complete-color': 'rgba(30, 164, 126, 0.7)',
-      '--theme-mithril-progress-meta-color': 'rgba(140, 155, 173, 0.75)',
-      '--theme-mithril-progress-active-stripe-color-strong':
-        'rgba(233, 237, 242, 0.3)',
-      '--theme-mithril-progress-active-stripe-color-soft':
-        'rgba(233, 237, 242, 0.15)',
+      '--theme-mithril-progress-meta-color': `${chroma(text.secondary).alpha(
+        0.5
+      )}`,
+      '--theme-mithril-progress-active-stripe-color-strong': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
+      '--theme-mithril-progress-active-stripe-color-soft': `${chroma(
+        text.secondary
+      ).alpha(0.15)}`,
       // Scrollbar
-      '--theme-mithril-scrollbar-thumb-color': 'rgba(92, 110, 128, 0.5)',
-      '--theme-mithril-scrollbar-thumb-color-hover': 'rgba(129, 147, 166, 0.7)',
+      '--theme-mithril-scrollbar-thumb-color': `${chroma(text.secondary).alpha(
+        0.3
+      )}`,
+      '--theme-mithril-scrollbar-thumb-color-hover': `${chroma(
+        text.secondary
+      ).alpha(0.5)}`,
       // Snapshot selector input
-      '--theme-mithril-selector-background': 'rgba(22, 33, 46, 0.9)',
-      '--theme-mithril-selector-option-background': 'rgba(34, 52, 70, 0.96)',
-      '--theme-mithril-selector-border-color': 'rgba(92, 110, 128, 0.6)',
-      '--theme-mithril-selector-button-background': 'rgba(34, 52, 70, 0.95)',
-      '--theme-mithril-selector-button-background-hover':
-        'rgba(48, 69, 90, 0.98)',
-      '--theme-mithril-icon-color': 'rgba(236, 241, 247, 0.95)',
+      '--theme-mithril-selector-background': `${chroma(
+        background.secondary.regular
+      )
+        .darken(0.2)
+        .alpha(0.9)}`,
+      '--theme-mithril-selector-option-background': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.2)
+        .alpha(0.96)}`,
+      '--theme-mithril-selector-border-color': `${chroma(text.secondary).alpha(
+        0.3
+      )}`,
+      '--theme-mithril-selector-button-background': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.2)
+        .alpha(0.95)}`,
+      '--theme-mithril-selector-button-background-hover': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.4)
+        .alpha(0.98)}`,
+      '--theme-mithril-icon-color': `${chroma(text.secondary).alpha(0.95)}`,
       // Validation / error states
-      '--theme-mithril-error-background': 'rgba(110, 37, 44, 0.26)',
-      '--theme-mithril-error-border-color': 'rgba(201, 96, 103, 0.38)',
-      '--theme-mithril-error-input-border-color': 'rgba(201, 96, 103, 0.75)',
-      '--theme-mithril-error-text-color': 'rgba(255, 219, 223, 0.96)',
+      '--theme-mithril-error-background': `${chroma(error.regular).alpha(
+        0.12
+      )}`,
+      '--theme-mithril-error-border-color': `${chroma(error.regular).alpha(
+        0.38
+      )}`,
+      '--theme-mithril-error-input-border-color': `${chroma(
+        error.regular
+      ).alpha(0.75)}`,
+      '--theme-mithril-error-text-color': `${chroma(error.lighter).alpha(
+        0.96
+      )}`,
     },
     chainStorage: {
-      '--theme-chain-storage-heading-color': 'rgba(255, 255, 255, 0.98)',
-      '--theme-chain-storage-body-text-color': 'rgba(199, 208, 219, 0.9)',
-      '--theme-chain-storage-secondary-text-color': 'rgba(172, 182, 195, 0.9)',
-      '--theme-chain-storage-bright-text-color': 'rgba(236, 241, 247, 0.95)',
-      '--theme-chain-storage-card-text-color': 'rgba(233, 237, 242, 0.92)',
-      '--theme-chain-storage-panel-background': 'rgba(10, 18, 28, 0.6)',
-      '--theme-chain-storage-panel-border-color': 'rgba(46, 64, 82, 0.6)',
-      '--theme-chain-storage-button-primary-background': '#1ea47e',
-      '--theme-chain-storage-button-primary-background-hover': '#29b58c',
-      '--theme-chain-storage-button-primary-text-color': '#071017',
-      '--theme-chain-storage-button-secondary-text-color':
-        'rgba(225, 233, 242, 0.92)',
-      '--theme-chain-storage-button-secondary-text-color-hover':
-        'rgba(255, 255, 255, 0.98)',
-      '--theme-chain-storage-button-secondary-text-color-disabled':
-        'rgba(143, 157, 173, 0.7)',
-      '--theme-chain-storage-selector-button-background':
-        'rgba(34, 52, 70, 0.95)',
-      '--theme-chain-storage-selector-button-background-hover':
-        'rgba(48, 69, 90, 0.98)',
-      '--theme-chain-storage-icon-color': 'rgba(236, 241, 247, 0.95)',
-      '--theme-chain-storage-error-background': 'rgba(110, 37, 44, 0.26)',
-      '--theme-chain-storage-error-border-color': 'rgba(201, 96, 103, 0.38)',
-      '--theme-chain-storage-error-input-border-color':
-        'rgba(201, 96, 103, 0.75)',
-      '--theme-chain-storage-error-text-color': 'rgba(255, 219, 223, 0.96)',
+      '--theme-chain-storage-heading-color': `${chroma(text.secondary).alpha(
+        0.98
+      )}`,
+      '--theme-chain-storage-body-text-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
+      '--theme-chain-storage-secondary-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.6)}`,
+      '--theme-chain-storage-bright-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.95)}`,
+      '--theme-chain-storage-card-text-color': `${chroma(text.secondary).alpha(
+        0.92
+      )}`,
+      '--theme-chain-storage-panel-background': `${chroma(
+        background.secondary.regular
+      )
+        .darken(0.7)
+        .alpha(0.6)}`,
+      '--theme-chain-storage-panel-border-color': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.5)
+        .alpha(0.6)}`,
+      '--theme-chain-storage-button-primary-background': `${background.secondary.regular}`,
+      '--theme-chain-storage-button-primary-background-hover': `${background.secondary.light}`,
+      '--theme-chain-storage-button-primary-text-color': `${text.secondary}`,
+      '--theme-chain-storage-button-secondary-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.92)}`,
+      '--theme-chain-storage-button-secondary-text-color-hover': `${chroma(
+        text.secondary
+      ).alpha(0.98)}`,
+      '--theme-chain-storage-button-secondary-text-color-disabled': `${chroma(
+        text.secondary
+      ).alpha(0.4)}`,
+      '--theme-chain-storage-selector-button-background': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.2)
+        .alpha(0.95)}`,
+      '--theme-chain-storage-selector-button-background-hover': `${chroma(
+        background.secondary.regular
+      )
+        .brighten(0.4)
+        .alpha(0.98)}`,
+      '--theme-chain-storage-icon-color': `${chroma(text.secondary).alpha(
+        0.95
+      )}`,
+      '--theme-chain-storage-error-background': `${chroma(error.regular).alpha(
+        0.12
+      )}`,
+      '--theme-chain-storage-error-border-color': `${chroma(
+        error.regular
+      ).alpha(0.38)}`,
+      '--theme-chain-storage-error-input-border-color': `${chroma(
+        error.regular
+      ).alpha(0.75)}`,
+      '--theme-chain-storage-error-text-color': `${chroma(error.lighter).alpha(
+        0.96
+      )}`,
     },
     appUpdateOverlay: {
       '--theme-app-update-overlay-background-color': `${chroma(

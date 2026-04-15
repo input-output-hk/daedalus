@@ -1,5 +1,7 @@
 /* ─── Waterfall Step Indicator ─────────────────────────────────────── */
 
+@import '../../../themes/mixins/loading-spinner';
+
 @keyframes waterfallItemEnter {
   from {
     opacity: 0;

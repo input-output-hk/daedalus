@@ -10,6 +10,7 @@
 
 | Date | Change |
 |---|---|
+| 2026-04-15 | Changed combined progress bar weighting from fixed 85/15 to dynamic weights based on actual snapshot size and ancillary `bytes_total`; falls back to 95/5 when ancillary size is unavailable. Colors now reference per-theme `mithrilBootstrap` tokens instead of a single fixed dark palette. |
 | 2026-03-23 | Merged the two progress bars ("Snapshot files" + "Fast State Sync") into a single combined "Snapshot Files and Fast Sync" bar (85 % snapshot / 15 % ancillary weighting). Extracted `InlineProgressBar` to its own component. Added 500 ms verification-handoff delay before synthesizing the verifying-digests active row. Top-level active icon changed from spinner to 12 px open dot (`activeCircle`). Updated completion delay from 3 s to 6 s. Colors now reference `mithrilBootstrap` theme tokens. |
 | 2026-03-20 | Updated the spec to match the shipped waterfall: progress bars render only while `Downloading snapshot data` is active, verification uses sub-items without bars, and remaining-time copy was removed from the inline metadata rows. |
 | 2026-03-18 | Established the 3-step vertical waterfall structure for Preparing, Downloading, and Finalizing, including connector rules, icon states, and inline progress bars. |
@@ -271,14 +272,21 @@ Implementation: apply one class per connector `<div>` based on its parent step's
 
 ## 6. Progress Bars
 
-A single combined inline progress bar appears inside the Downloading sub-content area immediately below the `Downloading snapshot data` row (`step-3`). It renders only while `step-3` is the active sub-item. The bar merges snapshot-file download progress (85 % weight) with fast-sync ancillary progress (15 % weight) into one unified percentage. When both transfers complete or the backend transitions into `verifying`, the combined bar shows 100 % and, after a **500 ms** verification-handoff delay, the renderer synthesizes the `Verifying snapshot digests` row as active and hides the bar.
+A single combined inline progress bar appears inside the Downloading sub-content area immediately below the `Downloading snapshot data` row (`step-3`). It renders only while `step-3` is the active sub-item. The bar dynamically weights snapshot-file download progress and fast-sync ancillary progress based on actual byte sizes when both totals are known, falling back to 95 % snapshot / 5 % ancillary when ancillary size is unavailable. When both transfers complete or the backend transitions into `verifying`, the combined bar shows 100 % and, after a **500 ms** verification-handoff delay, the renderer synthesizes the `Verifying snapshot digests` row as active and hides the bar.
 
 The `InlineProgressBar` component has been extracted to its own file (`InlineProgressBar.tsx`) for reuse.
 
 ### Combined Percentage Formula
 
 ```
-combinedPercent = (snapshotPercent / 100) × 85 + (ancillaryPercent / 100) × 15
+// When both byte totals are known (snapshotSize > 0 and ancillaryBytesTotal > 0):
+totalBytes = snapshotSize + ancillaryBytesTotal
+snapshotWeight = (snapshotSize / totalBytes) × 100
+ancillaryWeight = (ancillaryBytesTotal / totalBytes) × 100
+combinedPercent = (snapshotPercent / 100) × snapshotWeight + (ancillaryPercent / 100) × ancillaryWeight
+
+// Fallback when ancillary size is unavailable:
+combinedPercent = (snapshotPercent / 100) × 95 + (ancillaryPercent / 100) × 5
 ```
 
 Clamps to 100 when either transfer is complete or the status is `verifying` or later.

@@ -8,6 +8,7 @@
 
 .label {
   color: var(--theme-mithril-secondary-text-color);
+  font-family: var(--font-medium);
   font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -21,21 +22,21 @@
 }
 
 .selectInput :global {
-  .SimpleSelect_simpleSelect__menu,
-  .SimpleSelect_simpleSelect__menuList,
-  .SimpleSelect_simpleSelect__control,
-  .SimpleSelect_simpleSelect__singleValue,
-  .SimpleSelect_simpleSelect__option {
+  .SimpleSelect_selectInput,
+  .SimpleSelect_selectInput input,
+  .SimpleOptions_options,
+  .SimpleOptions_ul,
+  .SimpleOptions_option {
     background-color: var(--theme-mithril-selector-option-background);
     color: var(--theme-mithril-bright-text-color);
   }
 
-  .SimpleSelect_simpleSelect__control {
+  .SimpleSelect_selectInput {
     border-color: var(--theme-mithril-selector-border-color);
   }
 
-  .SimpleSelect_simpleSelect__option--is-focused,
-  .SimpleSelect_simpleSelect__option--is-selected {
+  .SimpleOptions_option.SimpleOptions_highlightedOption,
+  .SimpleOptions_option.SimpleOptions_selectedOption {
     background-color: var(--theme-mithril-selector-option-background);
   }
 }
